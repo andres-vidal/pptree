@@ -1,1 +1,3 @@
+namespace pptree {
 void fit();
+}
