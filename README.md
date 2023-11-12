@@ -48,5 +48,5 @@ make install
 In order to use the tools defined in the `tool_requires` section of the `conanfile.txt`, it's necessary to activate the Conan environment in the current terminal:
 
 ```bash
-source _conan_/conanbuild.sh
+source _conan/conanbuild.sh
 ```
