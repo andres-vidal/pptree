@@ -1,0 +1,12 @@
+fail_fast: false
+repos:
+  - repo: local
+    hooks:
+      - id: qa-format
+        name: Format (uncrustify)
+        entry: make format
+        language: system
+      - id: qa-lint
+        name: Lint (cppcheck)
+        entry: make lint
+        language: system
