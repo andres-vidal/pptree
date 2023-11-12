@@ -3,6 +3,6 @@
 #include "pptree.hpp"
 
 int main() {
-  fit();
+  pptree::fit();
   return 0;
 }
