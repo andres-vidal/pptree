@@ -29,7 +29,25 @@ Install the environment dependencies described in the `.tool-versions` file. The
 
 ## Project Automation
 
-Project automation is achieved via Make. Useful scripts are defined in the `Makefile`.
+Project automation is achieved via Make. Useful scripts are defined in the `Makefile`. The most important ones are:
+
+| Command            | Description                                                                                                                                                                                                                                |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `make install`     | Install dependencies. Tools installed this way won't be available in the command line until the Conan environment is activated. See [Dependency Management](#dependency-management). Also installs [Pre-commit Hooks](#pre-commit-hooks)   |
+| `make build-cmake` | Runs the meta-build system (CMake) to generate build specifications and scripts. Is the first step to build the app. It's also necessary for the IDE to resolve include paths correctly. **Must be run when a CMakeLists.txt is changed.** |
+| `make build`       | Builds the library, effectively generating the relevant executables.                                                                                                                                                                       |
+| `make build-all`   | Runs `make build-cmake` and `make build` in sequence.                                                                                                                                                                                      |
+| `make clean`       | Removes the build files inside the `_build` directory. To be regenerated with `make build-all`                                                                                                                                             |
+| `make clean-env`   | Removes the conan files inside the `_conan` directory. To be regenerated with `make install`. Does not clear the environment from the termina.                                                                                             |
+| `make clean-all`   | Runs `make clean` and `make clean-env` in sequence.                                                                                                                                                                                        |
+| `make run`         | Runs the app's entry point, defined in `main.cpp`                                                                                                                                                                                          |
+| `make test`        | Builds the app (`make build-all`) and runs all tests using CTest.                                                                                                                                                                          |
+| `make format`      | Runs the formatter over every `.cpp` and `.hpp` file, making changes in files with format inconsistent with the definitions in `uncrustify.cfg`.                                                                                           |
+| `make lint`        | Runs the code analysis tool over every `.cpp` and `.hpp` file.                                                                                                                                                                             |
+
+## Pre-commit hooks
+
+This project has pre-commit hooks configured to run the formatter, the code analysis tool and the test when a new commit is added. Please ensure each commit leaves the code in a valid state. These hooks are installed during the execution of `make install`.
 
 ## Dependency Management
 
@@ -53,7 +71,7 @@ source _conan/conanbuild.sh
 
 ## Running Tests
 
-Tests can be run using the following command from the project's root:
+This project has tests configured with GoogleTest. They can be run using the following command from the project's root:
 
 ```bash
 make test
