@@ -1,4 +1,5 @@
 [tool_requires]
+cppcheck/2.12.1
 
 [requires]
 
