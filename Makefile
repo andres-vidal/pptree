@@ -6,3 +6,6 @@ install:
 lint:
 	@cppcheck ./core/**/*.cpp ./core/**/*.hpp
 
+format:
+	@uncrustify ./core/**/*.cpp ./core/**/*.hpp -c uncrustify.cfg --no-backup --replace 
+

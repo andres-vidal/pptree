@@ -1,5 +1,6 @@
 [tool_requires]
 cppcheck/2.12.1
+uncrustify/0.77.1
 
 [requires]
 
