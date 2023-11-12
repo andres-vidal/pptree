@@ -1,8 +1,7 @@
 CONAN_DIR=_conan
 
 CORE_DIR=core
-CORE_FILES := $(find $CORE_DIR -type f -o -name '*.cpp' -o -name '*.hpp')
-
+CORE_FILES=$(shell find $(CORE_DIR) -type f -name '*.cpp' -o -name '*.hpp')
 BUILD_DIR=_build
 
 install:
