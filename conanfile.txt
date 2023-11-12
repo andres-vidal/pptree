@@ -5,6 +5,9 @@ uncrustify/0.77.1
 
 [requires]
 
+[test_requires]
+gtest/1.12.1
+
 [generators]
 CMakeDeps
 CMakeToolchain

@@ -10,3 +10,7 @@ repos:
         name: Lint (cppcheck)
         entry: make lint
         language: system
+      - id: qa-test
+        name: Tests (ctest)
+        entry: make test
+        language: system

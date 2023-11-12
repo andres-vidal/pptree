@@ -50,3 +50,17 @@ In order to use the tools defined in the `tool_requires` section of the `conanfi
 ```bash
 source _conan/conanbuild.sh
 ```
+
+## Running Tests
+
+Tests can be run using the following command from the project's root:
+
+```bash
+make test
+```
+
+## Troubleshooting
+
+#### Header files downloaded with Conan not found in VSCode
+
+Add Conan data directory to `includePath` in VSCode. The path is `~/.conan2/**`.

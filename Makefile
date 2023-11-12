@@ -46,3 +46,6 @@ clean-all: clean clean-env
 
 run:
 	@./$(BUILD_DIR)/pptree-cli
+
+test: build-all
+	@cd ./$(BUILD_DIR) && ctest --output-on-failure
