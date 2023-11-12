@@ -1,1 +1,19 @@
 # pptree
+
+## Project Structure
+
+```yaml
+core # C++ core library
+ ├── pptree
+ │     ├── include
+ │     │   └── pptree # Public header files
+ │     │         └── ...
+ │     ├── src  # Private source files
+ │     │   ├── ...
+ │     │   ├── ...
+ │     │   └── ...
+ │     └── test # Test files
+ │        ├── ...
+ │        └── ...
+bindings # Interfaces to other languages
+```
