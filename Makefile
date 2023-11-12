@@ -1,3 +1,5 @@
+MAKEFLAGS += --no-print-directory
+
 CONAN_DIR=_conan
 
 CORE_DIR=core
@@ -21,13 +23,18 @@ else
 	@uncrustify $(CORE_DIR)/**/*.cpp ./core/**/*.hpp -c uncrustify.cfg --no-backup --replace
 endif
 
-build: 
+build:
+	@cd $(BUILD_DIR) && make
+
+build-cmake: 
 	@cmake \
 		-DCMAKE_TOOLCHAIN_FILE=../$(CONAN_DIR)/conan_toolchain.cmake \
 		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		-S=$(CORE_DIR) \
 		-B=$(BUILD_DIR)
-	@cd $(BUILD_DIR) && make
+
+build-all: build-cmake build
 
 clean:
 	rm -rf _build
