@@ -4,7 +4,7 @@ repos:
     hooks:
       - id: qa-format
         name: Format (uncrustify)
-        entry: make format
+        entry: make format-dry
         language: system
       - id: qa-lint
         name: Lint (cppcheck)

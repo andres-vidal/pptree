@@ -23,6 +23,13 @@ else
 	@uncrustify $(CORE_DIR)/**/*.cpp ./core/**/*.hpp -c uncrustify.cfg --no-backup --replace
 endif
 
+format-dry:
+ifeq (,$(CORE_FILES))
+	@echo "No files to format"
+else
+	@uncrustify $(CORE_DIR)/**/*.cpp ./core/**/*.hpp -c uncrustify.cfg --check
+endif
+
 build:
 	@cd $(BUILD_DIR) && make
 

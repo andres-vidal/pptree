@@ -8,4 +8,4 @@ jobs:
       - name: Install asdf & tools
         uses: asdf-vm/actions/install@v2
       - run: conan profile detect
-      - run: make install && source _conan/conanbuild.sh && make format
+      - run: make install && source _conan/conanbuild.sh && make format-dry
