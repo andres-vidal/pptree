@@ -141,3 +141,81 @@ TEST(StatSelectGroup, empty_result) {
 
   ASSERT_EQ(0, actual.size());
 }
+
+
+TEST(StatInterGroupSquaredSum, single_group) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    0,
+    0,
+    0;
+
+  double actual = inter_group_squared_sum(data, groups, 1);
+  double expected = 0.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInterGroupSquaredSum, multiple_groups_univariate) {
+  DMatrix<double> data(8, 1);
+  data <<
+    23.0,
+    25.0,
+    18.0,
+    29.0,
+    19.0,
+    21.0,
+    35.0,
+    17.0;
+
+  DVector<unsigned short> groups(8);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    2,
+    2;
+
+  double actual = inter_group_squared_sum(data, groups, 3);
+  double expected = 19.875;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInterGroupSquaredSum, multiple_groups_multivariate) {
+  DMatrix<double> data(8, 3);
+  data <<
+    23.0, 1.0, 1.0,
+    25.0, 1.0, 1.0,
+    18.0, 1.0, 1.0,
+    29.0, 1.0, 1.0,
+    19.0, 1.0, 1.0,
+    21.0, 1.0, 1.0,
+    35.0, 1.0, 1.0,
+    17.0, 1.0, 1.0;
+
+  DVector<unsigned short> groups(8);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    2,
+    2;
+
+  double actual = inter_group_squared_sum(data, groups, 3);
+  double expected = 19.875;
+
+  ASSERT_EQ(expected, actual);
+}

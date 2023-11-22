@@ -1,4 +1,5 @@
 #include <Eigen/Dense>
+#include <vector>
 
 using namespace Eigen;
 
@@ -15,3 +16,8 @@ DMatrix<double> select_group(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned short          group);
+
+double inter_group_squared_sum(
+  DMatrix<double>         data,
+  DVector<unsigned short> groups,
+  unsigned int            group_count);

@@ -28,3 +28,22 @@ DMatrix<double> select_group(
 
   return data(index, Eigen::all);
 }
+
+double inter_group_squared_sum(
+  DMatrix<double>         data,
+  DVector<unsigned short> groups,
+  unsigned int            group_count
+  ) {
+  DVector<double> global_mean = mean(data);
+
+  double result = 0.0;
+
+  for (unsigned short g = 0; g < group_count; g++) {
+    DMatrix<double> group_data = select_group(data, groups, g);
+    DVector<double> group_mean = mean(group_data);
+    DVector<double> diff = group_mean - global_mean;
+    result += group_data.rows() * diff.squaredNorm();
+  }
+
+  return result;
+}
