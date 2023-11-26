@@ -22,6 +22,18 @@ bindings # Interfaces to other languages
 
 Install the environment dependencies described in the `.tool-versions` file. The [asdf version manager](https://asdf-vm.com/) is recommended to do this if using UNIX based operative system (Linux or Mac). If using Windows, the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) and following UNIX-like instructions is recommended for development.
 
+Install `asdf`:
+
+```
+brew install asdf
+```
+
+Install `cmake`:
+
+```
+brew install cmake
+```
+
 ### Using asdf version manager
 
 1. Install asdf following [the docs](https://asdf-vm.com/guide/getting-started.html)
