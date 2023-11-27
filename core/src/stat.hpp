@@ -21,3 +21,8 @@ double inter_group_squared_sum(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count);
+
+double intra_group_squared_sum(
+  DMatrix<double>         data,
+  DVector<unsigned short> groups,
+  unsigned int            group_count);

@@ -142,7 +142,6 @@ TEST(StatSelectGroup, empty_result) {
   ASSERT_EQ(0, actual.size());
 }
 
-
 TEST(StatInterGroupSquaredSum, single_group) {
   DMatrix<double> data(3, 3);
   data <<
@@ -157,6 +156,31 @@ TEST(StatInterGroupSquaredSum, single_group) {
     0;
 
   double actual = inter_group_squared_sum(data, groups, 1);
+  double expected = 0.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInterGroupSquaredSum, two_equal_groups) {
+  DMatrix<double> data(6, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0,
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DVector<unsigned short> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  double actual = inter_group_squared_sum(data, groups, 2);
   double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
@@ -216,6 +240,148 @@ TEST(StatInterGroupSquaredSum, multiple_groups_multivariate) {
 
   double actual = inter_group_squared_sum(data, groups, 3);
   double expected = 19.875;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatIntraGroupSquaredSum, single_group_no_variance) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    0,
+    0,
+    0;
+
+  double actual = intra_group_squared_sum(data, groups, 1);
+  double expected = 0.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatIntraGroupSquaredSum, single_group_with_variance) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    0,
+    0,
+    0;
+
+  double actual = intra_group_squared_sum(data, groups, 1);
+  double expected = 6.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatIntraGroupSquaredSum, two_equal_groups) {
+  DMatrix<double> data(6, 3);
+  data <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0,
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0;
+
+  DVector<unsigned short> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  double actual = intra_group_squared_sum(data, groups, 2);
+  double expected = 12.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatIntraGroupSquaredSum, two_groups_same_variance) {
+  DMatrix<double> data(6, 3);
+  data <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0,
+    4.0, 4.0, 4.0,
+    5.0, 5.0, 5.0,
+    6.0, 6.0, 6.0;
+
+  DVector<unsigned short> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  double actual = intra_group_squared_sum(data, groups, 2);
+  double expected = 12.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatIntraGroupSquaredSum, two_groups_different_variance) {
+  DMatrix<double> data(6, 3);
+  data <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0,
+    1.0, 1.0, 1.0,
+    5.0, 5.0, 5.0,
+    6.0, 6.0, 6.0;
+
+  DVector<unsigned short> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  double actual = intra_group_squared_sum(data, groups, 2);
+  double expected = 6.0 + 42.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatIntraGroupSquaredSum, multiple_groups_multivariate) {
+  DMatrix<double> data(8, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 2.0, 1.0,
+    4.0, 3.0, 2.0,
+    5.0, 4.0, 3.0,
+    9.0, 8.0, 7.0,
+    6.0, 5.0, 4.0;
+
+  DVector<unsigned short> groups(8);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    2,
+    2;
+
+  double actual = intra_group_squared_sum(data, groups, 3);
+  double expected = 54.0 + 6.0 + 13.5;
 
   ASSERT_EQ(expected, actual);
 }
