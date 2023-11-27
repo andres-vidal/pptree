@@ -29,7 +29,7 @@ DMatrix<double> select_group(
   return data(index, Eigen::all);
 }
 
-double inter_group_squared_sum(
+double inter_group_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count
@@ -48,7 +48,7 @@ double inter_group_squared_sum(
   return result;
 }
 
-double intra_group_squared_sum(
+double intra_group_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count
