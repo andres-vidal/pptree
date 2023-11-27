@@ -47,3 +47,21 @@ double inter_group_squared_sum(
 
   return result;
 }
+
+double intra_group_squared_sum(
+  DMatrix<double>         data,
+  DVector<unsigned short> groups,
+  unsigned int            group_count
+  ) {
+  double result = 0.0;
+
+  for (unsigned short g = 0; g < group_count; g++) {
+    DMatrix<double> group_data = select_group(data, groups, g);
+    DVector<double> group_mean = mean(group_data);
+    DMatrix<double> diff = group_data.rowwise() - group_mean;
+
+    result += diff.squaredNorm();
+  }
+
+  return result;
+}
