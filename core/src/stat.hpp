@@ -17,12 +17,12 @@ DMatrix<double> select_group(
   DVector<unsigned short> groups,
   unsigned short          group);
 
-double inter_group_squared_sum(
+double inter_group_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count);
 
-double intra_group_squared_sum(
+double intra_group_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count);
