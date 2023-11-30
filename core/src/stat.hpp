@@ -22,7 +22,7 @@ double between_groups_sum_of_squares(
   DVector<unsigned short> groups,
   unsigned int            group_count);
 
-double intra_group_sum_of_squares(
+double within_groups_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count);
