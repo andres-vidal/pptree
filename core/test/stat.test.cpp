@@ -142,7 +142,7 @@ TEST(StatSelectGroup, empty_result) {
   ASSERT_EQ(0, actual.size());
 }
 
-TEST(StatInterGroupSumOfSquares, single_group) {
+TEST(StatBetweenGroupsSumOfSquares, single_group) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -155,13 +155,13 @@ TEST(StatInterGroupSumOfSquares, single_group) {
     0,
     0;
 
-  double actual = inter_group_sum_of_squares(data, groups, 1);
+  double actual = between_groups_sum_of_squares(data, groups, 1);
   double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatInterGroupSumOfSquares, two_equal_groups) {
+TEST(StatBetweenGroupsSumOfSquares, two_equal_groups) {
   DMatrix<double> data(6, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -180,13 +180,13 @@ TEST(StatInterGroupSumOfSquares, two_equal_groups) {
     1,
     1;
 
-  double actual = inter_group_sum_of_squares(data, groups, 2);
+  double actual = between_groups_sum_of_squares(data, groups, 2);
   double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatInterGroupSumOfSquares, multiple_groups_univariate) {
+TEST(StatBetweenGroupsSumOfSquares, multiple_groups_univariate) {
   DMatrix<double> data(8, 1);
   data <<
     23.0,
@@ -209,13 +209,13 @@ TEST(StatInterGroupSumOfSquares, multiple_groups_univariate) {
     2,
     2;
 
-  double actual = inter_group_sum_of_squares(data, groups, 3);
+  double actual = between_groups_sum_of_squares(data, groups, 3);
   double expected = 19.875;
 
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatInterGroupSumOfSquares, multiple_groups_multivariate) {
+TEST(StatBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
   DMatrix<double> data(8, 3);
   data <<
     23.0, 1.0, 1.0,
@@ -238,7 +238,7 @@ TEST(StatInterGroupSumOfSquares, multiple_groups_multivariate) {
     2,
     2;
 
-  double actual = inter_group_sum_of_squares(data, groups, 3);
+  double actual = between_groups_sum_of_squares(data, groups, 3);
   double expected = 19.875;
 
   ASSERT_EQ(expected, actual);
