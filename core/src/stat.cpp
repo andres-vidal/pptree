@@ -29,20 +29,32 @@ DMatrix<double> select_group(
   return data(index, Eigen::all);
 }
 
-double between_groups_sum_of_squares(
+DMatrix<double> outer_product(
+  DVector<double> a,
+  DVector<double> b
+  ) {
+  return a.transpose() * b;
+}
+
+DMatrix<double> outer_square(
+  DVector<double> a
+  ) {
+  return outer_product(a, a);
+}
+
+DMatrix<double> between_groups_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count
   ) {
   DVector<double> global_mean = mean(data);
-
-  double result = 0.0;
+  DMatrix<double> result = DMatrix<double>::Zero(data.cols(), data.cols());
 
   for (unsigned short g = 0; g < group_count; g++) {
     DMatrix<double> group_data = select_group(data, groups, g);
     DVector<double> group_mean = mean(group_data);
-    DVector<double> diff = group_mean - global_mean;
-    result += group_data.rows() * diff.squaredNorm();
+
+    result += group_data.rows() * outer_square(group_mean - global_mean);
   }
 
   return result;
