@@ -7,7 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(pptree
   src/pptree.cpp
-  src/stat.cpp)
+  src/stat.cpp
+  src/pp.cpp)
 
 find_package(Eigen3 REQUIRED)
 
