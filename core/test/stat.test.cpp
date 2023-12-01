@@ -453,9 +453,16 @@ TEST(StatWithinGroupsSumOfSquares, single_group_no_variance) {
     0,
     0;
 
-  double actual = within_groups_sum_of_squares(data, groups, 1);
-  double expected = 0.0;
+  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 1);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0;
 
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
 
@@ -472,9 +479,16 @@ TEST(StatWithinGroupsSumOfSquares, single_group_with_variance) {
     0,
     0;
 
-  double actual = within_groups_sum_of_squares(data, groups, 1);
-  double expected = 6.0;
+  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 1);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    2.0, 2.0, 2.0,
+    2.0, 2.0, 2.0,
+    2.0, 2.0, 2.0;
 
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
 
@@ -497,9 +511,16 @@ TEST(StatWithinGroupsSumOfSquares, two_equal_groups) {
     1,
     1;
 
-  double actual = within_groups_sum_of_squares(data, groups, 2);
-  double expected = 12.0;
+  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    4.0, 4.0, 4.0,
+    4.0, 4.0, 4.0,
+    4.0, 4.0, 4.0;
 
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
 
@@ -522,9 +543,16 @@ TEST(StatWithinGroupsSumOfSquares, two_groups_same_variance) {
     1,
     1;
 
-  double actual = within_groups_sum_of_squares(data, groups, 2);
-  double expected = 12.0;
+  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    4.0, 4.0, 4.0,
+    4.0, 4.0, 4.0,
+    4.0, 4.0, 4.0;
 
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
 
@@ -547,13 +575,20 @@ TEST(StatWithinGroupsSumOfSquares, two_groups_different_variance) {
     1,
     1;
 
-  double actual = within_groups_sum_of_squares(data, groups, 2);
-  double expected = 6.0 + 42.0;
+  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    16.0, 16.0, 16.0,
+    16.0, 16.0, 16.0,
+    16.0, 16.0, 16.0;
 
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatWithinGroupsSumOfSquares, multiple_groups_multivariate) {
+TEST(StatWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
   DMatrix<double> data(8, 3);
   data <<
     1.0, 2.0, 3.0,
@@ -576,8 +611,52 @@ TEST(StatWithinGroupsSumOfSquares, multiple_groups_multivariate) {
     2,
     2;
 
-  double actual = within_groups_sum_of_squares(data, groups, 3);
-  double expected = 54.0 + 6.0 + 13.5;
+  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 3);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    24.5, 24.5, 24.5,
+    24.5, 24.5, 24.5,
+    24.5, 24.5, 24.5;
 
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
+  DMatrix<double> data(8, 4);
+  data <<
+    1.0, 2.0, 3.0, 0.0,
+    4.0, 5.0, 6.0, 0.0,
+    7.0, 8.0, 9.0, 0.0,
+    3.0, 2.0, 1.0, 0.0,
+    4.0, 3.0, 2.0, 0.0,
+    5.0, 4.0, 3.0, 0.0,
+    9.0, 8.0, 7.0, 0.0,
+    6.0, 5.0, 4.0, 0.0;
+
+  DVector<unsigned short> groups(8);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    2,
+    2;
+
+  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 3);
+  DMatrix<double> expected(4, 4);
+  expected <<
+    24.5, 24.5, 24.5, 0.0,
+    24.5, 24.5, 24.5, 0.0,
+    24.5, 24.5, 24.5, 0.0,
+    0.0,  0.0,  0.0,  0.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
