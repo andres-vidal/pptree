@@ -60,19 +60,21 @@ DMatrix<double> between_groups_sum_of_squares(
   return result;
 }
 
-double within_groups_sum_of_squares(
+DMatrix<double> within_groups_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count
   ) {
-  double result = 0.0;
+  DMatrix<double> result = DMatrix<double>::Zero(data.cols(), data.cols());
 
   for (unsigned short g = 0; g < group_count; g++) {
     DMatrix<double> group_data = select_group(data, groups, g);
     DVector<double> group_mean = mean(group_data);
-    DMatrix<double> diff = group_data.rowwise() - group_mean;
+    DMatrix<double> centered_data = group_data.rowwise() - group_mean;
 
-    result += diff.squaredNorm();
+    for (unsigned int r = 0; r < centered_data.rows(); r++) {
+      result += outer_square(centered_data.row(r));
+    }
   }
 
   return result;
