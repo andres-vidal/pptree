@@ -1,7 +1,6 @@
 #include "stat.hpp"
 
 #include <vector>
-#include <iostream>
 
 DVector<double> mean(
   DMatrix<double> data
