@@ -1,0 +1,13 @@
+[tool_requires]
+cmake/3.27.7
+cppcheck/2.12.1
+uncrustify/0.77.1
+
+[requires]
+
+[test_requires]
+gtest/1.12.1
+
+[generators]
+CMakeDeps
+CMakeToolchain
