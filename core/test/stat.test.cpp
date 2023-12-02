@@ -212,6 +212,152 @@ TEST(StatOuterSquare, zero_vector) {
   ASSERT_EQ(expected, actual);
 }
 
+TEST(StatInnerProduct, equal_vectors_unweighted) {
+  DVector<double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<double> b(3);
+  b << 1.0, 2.0, 6.0;
+
+  DMatrix<double> weights(3, 3);
+  weights <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  double actual = inner_product(a, b, weights);
+  double expected = 41;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInnerProduct, equal_vectors_weighted) {
+  DVector<double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<double> b(3);
+  b << 1.0, 2.0, 6.0;
+
+  DMatrix<double> weights(3, 3);
+  weights <<
+    1.0, 2.0,  6.0,
+    2.0, 4.0,  12.0,
+    6.0, 12.0, 36.0;
+
+  double actual = inner_product(a, b, weights);
+  double expected = 1681;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInnerProduct, zero_vectors_unweighted) {
+  DVector<double> a(3);
+  a << 0.0, 0.0, 0.0;
+
+  DVector<double> b(3);
+  b << 0.0, 0.0, 0.0;
+
+  DMatrix<double> weights(3, 3);
+  weights <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  double actual = inner_product(a, b, weights);
+  double expected = 0.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInnerProduct, zero_vectors_weighted) {
+  DVector<double> a(3);
+  a << 0.0, 0.0, 0.0;
+
+  DVector<double> b(3);
+  b << 0.0, 0.0, 0.0;
+
+  DMatrix<double> weights(3, 3);
+  weights <<
+    1.0, 2.0,  6.0,
+    2.0, 4.0,  12.0,
+    6.0, 12.0, 36.0;
+
+  double actual = inner_product(a, b, weights);
+  double expected = 0.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInnerProduct, different_vectors_unweighted) {
+  DVector<double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<double> b(3);
+  b << 2.0, 3.0, 7.0;
+
+  DMatrix<double> weights(3, 3);
+  weights <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  double actual = inner_product(a, b, weights);
+  double expected = 50;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInnerProduct, different_vectors_weighted) {
+  DVector<double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<double> b(3);
+  b << 2.0, 3.0, 7.0;
+
+  DMatrix<double> weights(3, 3);
+  weights <<
+    1.0, 2.0,  6.0,
+    2.0, 4.0,  12.0,
+    6.0, 12.0, 36.0;
+
+  double actual = inner_product(a, b, weights);
+  double expected = 2050;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInnerSquare, generic_unweighted) {
+  DVector<double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DMatrix<double> weights(3, 3);
+  weights <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  double actual = inner_square(a, weights);
+  double expected = 41;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatInnerSquare, generic_weighted) {
+  DVector<double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DMatrix<double> weights(3, 3);
+  weights <<
+    1.0, 2.0,  6.0,
+    2.0, 4.0,  12.0,
+    6.0, 12.0, 36.0;
+
+  double actual = inner_square(a, weights);
+  double expected = 1681;
+
+  ASSERT_EQ(expected, actual);
+}
+
 TEST(StatSelectGroup, single_group) {
   DMatrix<double> data(3, 3);
   data <<

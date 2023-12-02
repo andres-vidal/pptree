@@ -19,6 +19,15 @@ DMatrix<double> outer_product(
 DMatrix<double> outer_square(
   DVector<double> a);
 
+double inner_product(
+  DVector<double>  a,
+  DVector<double>  b,
+  DMatrix <double> weights);
+
+double inner_square(
+  DVector<double> a,
+  DMatrix<double> weights);
+
 DMatrix<double> select_group(
   DMatrix<double>         data,
   DVector<unsigned short> groups,

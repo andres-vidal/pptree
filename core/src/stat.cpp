@@ -41,6 +41,20 @@ DMatrix<double> outer_square(
   return outer_product(a, a);
 }
 
+double inner_product(
+  DVector<double>  a,
+  DVector<double>  b,
+  DMatrix <double> weights) {
+  return a * weights * b.transpose();
+}
+
+double inner_square(
+  DVector<double> a,
+  DMatrix<double> weights
+  ) {
+  return inner_product(a, a, weights);
+}
+
 DMatrix<double> between_groups_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
