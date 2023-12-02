@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 #include <vector>
 
+namespace stats {
 using namespace Eigen;
 
 template<typename T = double>
@@ -42,3 +43,4 @@ DMatrix<double> within_groups_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
   unsigned int            group_count);
+}

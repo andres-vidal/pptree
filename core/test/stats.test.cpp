@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "stat.hpp"
+#include "stats.hpp"
+
+using namespace stats;
 
 TEST(StatMean, single_observation) {
   DMatrix<double> data(1, 3);
