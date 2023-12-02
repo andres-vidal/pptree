@@ -1,7 +1,7 @@
-#include "stat.hpp"
+#include "stats.hpp"
 
 #include <vector>
-
+namespace stats {
 DVector<double> mean(
   DMatrix<double> data
   ) {
@@ -91,4 +91,5 @@ DMatrix<double> within_groups_sum_of_squares(
   }
 
   return result;
+}
 }

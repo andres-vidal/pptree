@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(pptree
   src/pptree.cpp
-  src/stat.cpp
+  src/stats.cpp
   src/pp.cpp)
 
 find_package(Eigen3 REQUIRED)
@@ -23,7 +23,7 @@ target_link_libraries(pptree
 enable_testing()
 
 add_executable(pptree-test
-  test/stat.test.cpp)
+  test/stats.test.cpp)
 
 find_package(GTest REQUIRED)
 
