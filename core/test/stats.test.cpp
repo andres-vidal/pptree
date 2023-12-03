@@ -604,6 +604,60 @@ TEST(StatInnerSquare, generic_matrix_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
+TEST(StatDeterminant, generic_positive_determinant) {
+  DMatrix<double> a(3, 3);
+  a <<
+    6.0, 1.0, 4.0,
+    4.0, 8.0, 4.0,
+    6.0, 3.0, 5.0;
+
+  double actual = determinant(a);
+  double expected = 28.0;
+
+  ASSERT_DOUBLE_EQ(expected, actual);
+}
+
+
+TEST(StatDeterminant, generic_negative_determinant) {
+  DMatrix<double> a(3, 3);
+  a <<
+    6.0, 1.0, 4.0,
+    4.0, 8.0, 4.0,
+    8.0, 3.0, 5.0;
+
+  double actual = determinant(a);
+  double expected = -28.0;
+
+  ASSERT_DOUBLE_EQ(expected, actual);
+}
+
+TEST(StatDeterminant, zero_matrix) {
+  DMatrix<double> a(3, 3);
+  a <<
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0;
+
+  double actual = determinant(a);
+  double expected = 0.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatDeterminant, singular_matrix) {
+  DMatrix<double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 7.0,
+    3.0, 6.0, 8.0;
+
+  double actual = determinant(a);
+  double expected = 0.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+
 TEST(StatSelectGroup, single_group) {
   DMatrix<double> data(3, 3);
   data <<

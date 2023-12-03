@@ -69,6 +69,12 @@ DMatrix<double> inner_square(
   return inner_product(a, a, weights);
 }
 
+double determinant(
+  DMatrix<double> a
+  ) {
+  return a.determinant();
+}
+
 DMatrix<double> between_groups_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,

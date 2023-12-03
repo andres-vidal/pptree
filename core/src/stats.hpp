@@ -38,6 +38,9 @@ DMatrix<double> inner_square(
   DMatrix<double> a,
   DMatrix<double> weights);
 
+double determinant(
+  DMatrix<double> a);
+
 DMatrix<double> select_group(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
