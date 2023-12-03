@@ -29,6 +29,15 @@ double inner_square(
   DVector<double> a,
   DMatrix<double> weights);
 
+DMatrix<double> inner_product(
+  DMatrix<double> a,
+  DMatrix<double> b,
+  DMatrix<double> weights);
+
+DMatrix<double> inner_square(
+  DMatrix<double> a,
+  DMatrix<double> weights);
+
 DMatrix<double> select_group(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
