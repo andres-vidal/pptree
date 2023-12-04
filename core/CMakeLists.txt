@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(pptree
   src/pptree.cpp
   src/stats.cpp
+  src/linear_algebra.cpp
   src/pp.cpp)
 
 find_package(Eigen3 REQUIRED)
@@ -23,7 +24,8 @@ target_link_libraries(pptree
 enable_testing()
 
 add_executable(pptree-test
-  test/stats.test.cpp)
+  test/stats.test.cpp
+  test/linear_algebra.test.cpp)
 
 find_package(GTest REQUIRED)
 
