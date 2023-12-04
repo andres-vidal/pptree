@@ -4,661 +4,8 @@
 
 using namespace stats;
 
-TEST(StatMean, single_observation) {
-  DMatrix<double> data(1, 3);
-  data <<
-    1.0, 2.0, 6.0;
 
-  DVector<double> actual = mean(data);
-
-  DVector<double> expected(3);
-  expected <<
-    1.0, 2.0, 6.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatMean, multiple_equal_observations) {
-  DMatrix<double> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    1.0, 2.0, 6.0,
-    1.0, 2.0, 6.0;
-
-  DVector<double> actual = mean(data);
-
-  DVector<double> expected(3);
-  expected <<
-    1.0, 2.0, 6.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatMean, multiple_different_observations) {
-  DMatrix<double> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DVector<double> actual = mean(data);
-
-  DVector<double> expected(3);
-  expected <<
-    2.0, 3.0, 7.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatOuterProduct, equal_vectors) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DVector<double> b(3);
-  b << 1.0, 2.0, 6.0;
-
-  DMatrix<double> actual = outer_product(a, b);
-
-  DMatrix<double> expected(3, 3);
-  expected <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatOuterProduct, different_vectors1) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DVector<double> b(3);
-  b << 2.0, 3.0, 7.0;
-
-  DMatrix<double> actual = outer_product(a, b);
-
-  DMatrix<double> expected(3, 3);
-  expected <<
-    2.0,  3.0,  7.0,
-    4.0,  6.0,  14.0,
-    12.0, 18.0, 42.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatOuterProduct, different_vectors2) {
-  DVector<double> a(3);
-  a << 2.0, 3.0, 7.0;
-
-  DVector<double> b(3);
-  b << 1.0, 2.0, 6.0;
-
-  DMatrix<double> actual = outer_product(a, b);
-
-  DMatrix<double> expected(3, 3);
-  expected <<
-    2.0,  4.0,  12.0,
-    3.0,  6.0,  18.0,
-    7.0,  14.0, 42.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatOuterProduct, zero_vectors) {
-  DVector<double> a(3);
-  a << 0.0, 0.0, 0.0;
-
-  DVector<double> b(3);
-  b << 0.0, 0.0, 0.0;
-
-  DMatrix<double> actual = outer_product(a, b);
-
-  DMatrix<double> expected(3, 3);
-  expected <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatOuterProduct, scalar_vectors) {
-  DVector<double> a(1);
-  a << 4.0;
-
-  DVector<double> b(1);
-  b << 3.0;
-
-  DMatrix<double> actual = outer_product(a, b);
-  DMatrix<double> expected(1, 1);
-  expected << 12.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatOuterSquare, generic) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DMatrix<double> actual = outer_square(a);
-
-  DMatrix<double> expected(3, 3);
-  expected <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatOuterSquare, generic2) {
-  DVector<double> a(3);
-  a << 2.0, 3.0, 7.0;
-
-  DMatrix<double> actual = outer_square(a);
-
-  DMatrix<double> expected(3, 3);
-  expected <<
-    4.0,  6.0,  14.0,
-    6.0,  9.0,  21.0,
-    14.0, 21.0, 49.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatOuterSquare, zero_vector) {
-  DVector<double> a(3);
-  a << 0.0, 0.0, 0.0;
-
-  DMatrix<double> actual = outer_square(a);
-
-  DMatrix<double> expected(3, 3);
-  expected <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, equal_vectors_unweighted) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DVector<double> b(3);
-  b << 1.0, 2.0, 6.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  double actual = inner_product(a, b, weights);
-  double expected = 41;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, equal_vectors_weighted) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DVector<double> b(3);
-  b << 1.0, 2.0, 6.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  double actual = inner_product(a, b, weights);
-  double expected = 1681;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, zero_vectors_unweighted) {
-  DVector<double> a(3);
-  a << 0.0, 0.0, 0.0;
-
-  DVector<double> b(3);
-  b << 0.0, 0.0, 0.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  double actual = inner_product(a, b, weights);
-  double expected = 0.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, zero_vectors_weighted) {
-  DVector<double> a(3);
-  a << 0.0, 0.0, 0.0;
-
-  DVector<double> b(3);
-  b << 0.0, 0.0, 0.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  double actual = inner_product(a, b, weights);
-  double expected = 0.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, different_vectors_unweighted) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DVector<double> b(3);
-  b << 2.0, 3.0, 7.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  double actual = inner_product(a, b, weights);
-  double expected = 50;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, different_vectors_weighted) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DVector<double> b(3);
-  b << 2.0, 3.0, 7.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  double actual = inner_product(a, b, weights);
-  double expected = 2050;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, equal_matrices_unweighted) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
-  expected <<
-    14.0, 20.0, 44.0,
-    20.0, 29.0, 65.0,
-    44.0, 65.0, 149.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, equal_matrices_weighted) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
-  expected <<
-    529.0,  736.0,  1564.0,
-    736.0,  1024.0, 2176.0,
-    1564.0, 2176.0, 4624.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, zero_matrices_unweighted) {
-  DMatrix<double> a(3, 3);
-  a <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
-  expected <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, zero_matrices_weighted) {
-  DMatrix<double> a(3, 3);
-  a <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
-  expected <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, different_matrices_unweighted) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0,
-    4.0, 5.0, 9.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
-  expected <<
-    20.0, 26.0, 50.0,
-    29.0, 38.0, 74.0,
-    65.0, 86.0, 170.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerProduct, different_matrices_weighted) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0,
-    4.0, 5.0, 9.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
-  expected <<
-    736.0,  943.0,  1771.0,
-    1024.0, 1312.0, 2464.0,
-    2176.0, 2788.0, 5236.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerSquare, generic_unweighted) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  double actual = inner_square(a, weights);
-  double expected = 41;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerSquare, generic_weighted) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  double actual = inner_square(a, weights);
-  double expected = 1681;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerSquare, generic_matrix_unweighted) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  DMatrix<double> actual = inner_square(a, weights);
-  DMatrix<double> expected(3, 3);
-  expected <<
-    14.0, 20.0, 44.0,
-    20.0, 29.0, 65.0,
-    44.0, 65.0, 149.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatInnerSquare, generic_matrix_weighted) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DMatrix<double> weights(3, 3);
-  weights <<
-    1.0, 2.0,  6.0,
-    2.0, 4.0,  12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> actual = inner_square(a, weights);
-  DMatrix<double> expected(3, 3);
-  expected <<
-    529.0,  736.0,  1564.0,
-    736.0,  1024.0, 2176.0,
-    1564.0, 2176.0, 4624.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatDeterminant, generic_positive_determinant) {
-  DMatrix<double> a(3, 3);
-  a <<
-    6.0, 1.0, 4.0,
-    4.0, 8.0, 4.0,
-    6.0, 3.0, 5.0;
-
-  double actual = determinant(a);
-  double expected = 28.0;
-
-  ASSERT_DOUBLE_EQ(expected, actual);
-}
-
-
-TEST(StatDeterminant, generic_negative_determinant) {
-  DMatrix<double> a(3, 3);
-  a <<
-    6.0, 1.0, 4.0,
-    4.0, 8.0, 4.0,
-    8.0, 3.0, 5.0;
-
-  double actual = determinant(a);
-  double expected = -28.0;
-
-  ASSERT_DOUBLE_EQ(expected, actual);
-}
-
-TEST(StatDeterminant, zero_matrix) {
-  DMatrix<double> a(3, 3);
-  a <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  double actual = determinant(a);
-  double expected = 0.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(StatDeterminant, singular_matrix) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 4.0, 7.0,
-    3.0, 6.0, 8.0;
-
-  double actual = determinant(a);
-  double expected = 0.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-
-TEST(StatSelectGroup, single_group) {
+TEST(StatsSelectGroup, single_group) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -685,7 +32,7 @@ TEST(StatSelectGroup, single_group) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatSelectGroup, multiple_groups_adjacent) {
+TEST(StatsSelectGroup, multiple_groups_adjacent) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -711,7 +58,7 @@ TEST(StatSelectGroup, multiple_groups_adjacent) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatSelectGroup, multiple_groups_mixed) {
+TEST(StatsSelectGroup, multiple_groups_mixed) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -737,7 +84,7 @@ TEST(StatSelectGroup, multiple_groups_mixed) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatSelectGroup, empty_result) {
+TEST(StatsSelectGroup, empty_result) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -757,7 +104,7 @@ TEST(StatSelectGroup, empty_result) {
   ASSERT_EQ(0, actual.cols());
 }
 
-TEST(StatBetweenGroupsSumOfSquares, single_group) {
+TEST(StatsBetweenGroupsSumOfSquares, single_group) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -783,7 +130,7 @@ TEST(StatBetweenGroupsSumOfSquares, single_group) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatBetweenGroupsSumOfSquares, two_equal_groups) {
+TEST(StatsBetweenGroupsSumOfSquares, two_equal_groups) {
   DMatrix<double> data(6, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -816,7 +163,7 @@ TEST(StatBetweenGroupsSumOfSquares, two_equal_groups) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatBetweenGroupsSumOfSquares, multiple_groups_univariate) {
+TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate) {
   DMatrix<double> data(8, 1);
   data <<
     23.0,
@@ -850,7 +197,7 @@ TEST(StatBetweenGroupsSumOfSquares, multiple_groups_univariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
+TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
   DMatrix<double> data(8, 3);
   data <<
     23.0, 1.0, 1.0,
@@ -886,7 +233,7 @@ TEST(StatBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatWithinGroupsSumOfSquares, single_group_no_variance) {
+TEST(StatsWithinGroupsSumOfSquares, single_group_no_variance) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 1.0, 1.0,
@@ -912,7 +259,7 @@ TEST(StatWithinGroupsSumOfSquares, single_group_no_variance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatWithinGroupsSumOfSquares, single_group_with_variance) {
+TEST(StatsWithinGroupsSumOfSquares, single_group_with_variance) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 1.0, 1.0,
@@ -938,7 +285,7 @@ TEST(StatWithinGroupsSumOfSquares, single_group_with_variance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatWithinGroupsSumOfSquares, two_equal_groups) {
+TEST(StatsWithinGroupsSumOfSquares, two_equal_groups) {
   DMatrix<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
@@ -970,7 +317,7 @@ TEST(StatWithinGroupsSumOfSquares, two_equal_groups) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatWithinGroupsSumOfSquares, two_groups_same_variance) {
+TEST(StatsWithinGroupsSumOfSquares, two_groups_same_variance) {
   DMatrix<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
@@ -1002,7 +349,7 @@ TEST(StatWithinGroupsSumOfSquares, two_groups_same_variance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatWithinGroupsSumOfSquares, two_groups_different_variance) {
+TEST(StatsWithinGroupsSumOfSquares, two_groups_different_variance) {
   DMatrix<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
@@ -1034,7 +381,7 @@ TEST(StatWithinGroupsSumOfSquares, two_groups_different_variance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
+TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
   DMatrix<double> data(8, 3);
   data <<
     1.0, 2.0, 3.0,
@@ -1070,7 +417,7 @@ TEST(StatWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
+TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
   DMatrix<double> data(8, 4);
   data <<
     1.0, 2.0, 3.0, 0.0,
