@@ -34,9 +34,12 @@ DMatrix<double> inner_product(
   DMatrix<double> weights);
 
 DMatrix<double> inner_square(
-  DMatrix<double> a,
+  DMatrix<double> m,
   DMatrix<double> weights);
 
 double determinant(
-  DMatrix<double> a);
+  DMatrix<double> m);
+
+DMatrix<double> inverse(
+  DMatrix<double> m);
 }
