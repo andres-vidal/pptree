@@ -42,15 +42,29 @@ DMatrix<double> inner_product(
 }
 
 DMatrix<double> inner_square(
-  DMatrix<double> a,
+  DMatrix<double> m,
   DMatrix<double> weights
   ) {
-  return inner_product(a, a, weights);
+  return inner_product(m, m, weights);
 }
 
 double determinant(
-  DMatrix<double> a
+  DMatrix<double> m
   ) {
-  return a.determinant();
+  return m.determinant();
+}
+
+DMatrix<double> inverse(
+  DMatrix<double> m
+  ) {
+  DMatrix<double> inverse = m.inverse();
+
+  if (!inverse.allFinite()) {
+    std::stringstream message;
+    message << "Matrix is not invertible:" << std::endl << m << std::endl;
+    throw std::invalid_argument(message.str());
+  }
+
+  return inverse;
 }
 }

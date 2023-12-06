@@ -521,8 +521,8 @@ TEST(LinearAlgebraInnerProduct, different_matrices_weighted) {
 }
 
 TEST(LinearAlgebraInnerSquare, generic_unweighted) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
+  DVector<double> m(3);
+  m << 1.0, 2.0, 6.0;
 
   DMatrix<double> weights(3, 3);
   weights <<
@@ -530,15 +530,15 @@ TEST(LinearAlgebraInnerSquare, generic_unweighted) {
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  double actual = inner_square(a, weights);
+  double actual = inner_square(m, weights);
   double expected = 41;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinearAlgebraInnerSquare, generic_weighted) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
+  DVector<double> m(3);
+  m << 1.0, 2.0, 6.0;
 
   DMatrix<double> weights(3, 3);
   weights <<
@@ -546,15 +546,15 @@ TEST(LinearAlgebraInnerSquare, generic_weighted) {
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  double actual = inner_square(a, weights);
+  double actual = inner_square(m, weights);
   double expected = 1681;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinearAlgebraInnerSquare, generic_matrix_unweighted) {
-  DMatrix<double> a(3, 3);
-  a <<
+  DMatrix<double> m(3, 3);
+  m <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
@@ -565,7 +565,7 @@ TEST(LinearAlgebraInnerSquare, generic_matrix_unweighted) {
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<double> actual = inner_square(a, weights);
+  DMatrix<double> actual = inner_square(m, weights);
   DMatrix<double> expected(3, 3);
   expected <<
     14.0, 20.0, 44.0,
@@ -579,8 +579,8 @@ TEST(LinearAlgebraInnerSquare, generic_matrix_unweighted) {
 }
 
 TEST(LinearAlgebraInnerSquare, generic_matrix_weighted) {
-  DMatrix<double> a(3, 3);
-  a <<
+  DMatrix<double> m(3, 3);
+  m <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
@@ -591,7 +591,7 @@ TEST(LinearAlgebraInnerSquare, generic_matrix_weighted) {
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<double> actual = inner_square(a, weights);
+  DMatrix<double> actual = inner_square(m, weights);
   DMatrix<double> expected(3, 3);
   expected <<
     529.0,  736.0,  1564.0,
@@ -605,13 +605,13 @@ TEST(LinearAlgebraInnerSquare, generic_matrix_weighted) {
 }
 
 TEST(LinearAlgebraDeterminant, generic_positive_determinant) {
-  DMatrix<double> a(3, 3);
-  a <<
+  DMatrix<double> m(3, 3);
+  m <<
     6.0, 1.0, 4.0,
     4.0, 8.0, 4.0,
     6.0, 3.0, 5.0;
 
-  double actual = determinant(a);
+  double actual = determinant(m);
   double expected = 28.0;
 
   ASSERT_DOUBLE_EQ(expected, actual);
@@ -619,40 +619,100 @@ TEST(LinearAlgebraDeterminant, generic_positive_determinant) {
 
 
 TEST(LinearAlgebraDeterminant, generic_negative_determinant) {
-  DMatrix<double> a(3, 3);
-  a <<
+  DMatrix<double> m(3, 3);
+  m <<
     6.0, 1.0, 4.0,
     4.0, 8.0, 4.0,
     8.0, 3.0, 5.0;
 
-  double actual = determinant(a);
+  double actual = determinant(m);
   double expected = -28.0;
 
   ASSERT_DOUBLE_EQ(expected, actual);
 }
 
 TEST(LinearAlgebraDeterminant, zero_matrix) {
-  DMatrix<double> a(3, 3);
-  a <<
+  DMatrix<double> m(3, 3);
+  m <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  double actual = determinant(a);
+  double actual = determinant(m);
   double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinearAlgebraDeterminant, singular_matrix) {
-  DMatrix<double> a(3, 3);
-  a <<
+  DMatrix<double> m(3, 3);
+  m <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 7.0,
     3.0, 6.0, 8.0;
 
-  double actual = determinant(a);
+  double actual = determinant(m);
   double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
+}
+
+TEST(LinearAlgebraInverse, zero_matrix) {
+  DMatrix<double> m(3, 3);
+  m <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  ASSERT_THROW({ inverse(m); }, std::invalid_argument);
+}
+
+TEST(LinearAlgebraInverse, singular_matrix) {
+  DMatrix<double> m(3, 3);
+  m <<
+    1.0, 1.0, 6.0,
+    2.0, 2.0, 7.0,
+    3.0, 3.0, 8.0;
+
+  ASSERT_THROW({ inverse(m); }, std::invalid_argument);
+}
+
+TEST(LinearAlgebraInverse, identity) {
+  DMatrix<double> m(3, 3);
+  m <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  DMatrix<double> actual = inverse(m);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinearAlgebraInverse, generic) {
+  DMatrix<double> m(3, 3);
+  m <<
+    0.0, 1.0, 2.0,
+    1.0, 2.0, 3.0,
+    3.0, 1.0, 1.0;
+
+  DMatrix<double> actual = inverse(m);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    0.5,  -0.5,   0.5,
+    -4.0,  3.0,  -1.0,
+    2.5,  -1.5,   0.5;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_TRUE(expected.isApprox(actual));
 }
