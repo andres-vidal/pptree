@@ -42,4 +42,7 @@ double determinant(
 
 DMatrix<double> inverse(
   DMatrix<double> m);
+
+std::tuple<DVector<double>, DMatrix<double> > eigen(
+  DMatrix<double> m);
 }
