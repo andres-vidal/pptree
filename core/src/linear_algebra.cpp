@@ -67,4 +67,20 @@ DMatrix<double> inverse(
 
   return inverse;
 }
+
+std::tuple<DVector<double>, DMatrix<double> > eigen(
+  DMatrix<double> m
+  ) {
+  if (!m.isApprox(m.transpose())) {
+    std::stringstream message;
+    message << "Matrix is not symmetric:" << std::endl << m << std::endl;
+    throw std::invalid_argument(message.str());
+  }
+
+  Eigen::SelfAdjointEigenSolver<DMatrix<double> > solver(m);
+  DVector<double> values = solver.eigenvalues().real();
+  DMatrix<double> vectors = solver.eigenvectors().real();
+
+  return std::make_tuple(values, vectors);
+}
 }
