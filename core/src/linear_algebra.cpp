@@ -68,16 +68,36 @@ DMatrix<double> inverse(
   return inverse;
 }
 
+std::tuple<DVector<double>, DMatrix<double> > sort_eigen(
+  DVector<double> values,
+  DMatrix<double> vectors
+  ) {
+  DVector<unsigned int> idx = DVector<unsigned int>::Zero(values.size());
+
+  for (int i = 0; i < values.size(); ++i) {
+    idx[i] = i;
+  }
+
+  std::sort(idx.data(), idx.data() + idx.size(), [&values](double a, double b)
+    {
+      return abs(values.col(a).value()) < abs(values.col(b).value());
+    });
+
+  return std::make_tuple(values(idx), vectors(all, idx));
+}
+
 std::tuple<DVector<double>, DMatrix<double> > eigen(
   DMatrix<double> m
   ) {
   if (!m.isApprox(m.transpose())) {
-    std::stringstream message;
-    message << "Matrix is not symmetric:" << std::endl << m << std::endl;
-    throw std::invalid_argument(message.str());
+    EigenSolver<DMatrix<double> > solver(m);
+    DVector<double> values = solver.eigenvalues().real();
+    DMatrix<double> vectors = solver.eigenvectors().real();
+
+    return sort_eigen(values, vectors);
   }
 
-  Eigen::SelfAdjointEigenSolver<DMatrix<double> > solver(m);
+  SelfAdjointEigenSolver<DMatrix<double> > solver(m);
   DVector<double> values = solver.eigenvalues().real();
   DMatrix<double> vectors = solver.eigenvectors().real();
 
