@@ -777,7 +777,7 @@ TEST(LinearAlgebraEigen, diagonal) {
   ASSERT_EQ(expected_vectors, actual_vectors);
 }
 
-TEST(LinearAlgebraEigen, symmetric) {
+TEST(LinearAlgebraEigen, symmetric_real_non_negative_eigenvalues) {
   DMatrix<double> m(3, 3);
   m <<
     3.0, 1.0, 1.0,
@@ -813,12 +813,38 @@ TEST(LinearAlgebraEigen, symmetric) {
   ASSERT_TRUE(Mv.isApprox(Lv, 0.0001));
 }
 
-TEST(LinearAlgebraEigen, asymmetric) {
+TEST(LinearAlgebraEigen, asymmetric_real_mixed_eigenvalues) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
-  ASSERT_THROW({ eigen(m); }, std::invalid_argument);
+  auto [actual_values, actual_vectors] = eigen(m);
+
+  DVector<double> expected_values(3);
+  expected_values <<
+    0.0, -1.11684, 16.11684;
+
+  DMatrix<double> expected_vectors(3, 3);
+  expected_vectors <<
+    00.408248,  0.7858302, 0.2319707,
+    -0.816497,  0.0867513, 0.5253221,
+    00.408248, -0.6123276, 0.8186735;
+
+  ASSERT_EQ(expected_values.size(), actual_values.size());
+  ASSERT_EQ(expected_values.rows(), actual_values.rows());
+  ASSERT_EQ(expected_values.cols(), actual_values.cols());
+  ASSERT_TRUE(expected_values.isApprox(actual_values, 0.0005));
+
+  ASSERT_EQ(expected_vectors.size(), actual_vectors.size());
+  ASSERT_EQ(expected_vectors.rows(), actual_vectors.rows());
+  ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
+  ASSERT_TRUE(expected_vectors.isApprox(actual_vectors, 0.0001));
+
+  DiagonalMatrix<double, 3> DL;
+  DL.diagonal() = actual_values;
+  DMatrix<double> Mv = m * actual_vectors;
+  DMatrix<double> Lv =  actual_vectors * DL;
+  ASSERT_TRUE(Mv.isApprox(Lv, 0.0001));
 }
