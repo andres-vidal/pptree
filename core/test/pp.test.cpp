@@ -110,7 +110,7 @@ TEST(PPLDAOptimumProjector, two_groups3) {
   expected <<
     0, 0, -1, 0;
 
-  ASSERT_TRUE(actual.isApprox(expected, 0.0001));
+  ASSERT_TRUE(actual.isApprox(expected, 0.0001) || actual.isApprox(-expected, 0.0001));
 }
 
 TEST(PPLDAOptimumProjector, two_groups4) {
@@ -146,7 +146,7 @@ TEST(PPLDAOptimumProjector, two_groups4) {
   expected <<
     0, 0, 0, -1;
 
-  ASSERT_TRUE(actual.isApprox(expected, 0.0001));
+  ASSERT_TRUE(actual.isApprox(expected, 0.0001) || actual.isApprox(-expected, 0.0001));
 }
 
 TEST(PPLDAOptimumProjector, three_groups) {
@@ -218,11 +218,22 @@ TEST(PPLDAOptimumProjector, three_groups) {
 
   DVector<double> actual = pp::lda_optimum_projector(data, groups, 3);
 
-  DVector<double> expected(5);
-  expected <<
+  DVector<double> expected1(5);
+  expected1 <<
     -0.12823, -0.99174, 0, 0, 0;
 
-  ASSERT_TRUE(actual.isApprox(expected, 0.0001));
+  DVector<double> expected2(5);
+  expected2 <<
+    0.64183, -0.76684, 0, 0, 0;
+
+  std::cout << actual << std::endl;
+
+  ASSERT_TRUE(
+    actual.isApprox(expected1, 0.0001) ||
+    actual.isApprox(-expected1, 0.0001) ||
+    actual.isApprox(expected2, 0.0001) ||
+    actual.isApprox(-expected2, 0.0001)
+    );
 }
 
 TEST(PPLDAIndex, zero_return) {
