@@ -4,10 +4,10 @@ namespace linear_algebra {
 using namespace Eigen;
 
 template<typename T = double>
-using DMatrix = Eigen::Matrix<T, Dynamic, Dynamic>;
+using DMatrix = Matrix<T, Dynamic, Dynamic>;
 
 template<typename T = double>
-using DVector = Eigen::Matrix<T, 1, Dynamic>;
+using DVector = Matrix<T, Dynamic, 1>;
 
 DVector<double> mean(
   DMatrix<double> data);

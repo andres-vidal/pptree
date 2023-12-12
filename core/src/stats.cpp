@@ -8,7 +8,7 @@ DMatrix<double> select_group(
   ) {
   std::vector<unsigned short> index;
 
-  for (unsigned short i = 0; i < groups.cols(); i++) {
+  for (unsigned short i = 0; i < groups.rows(); i++) {
     if (groups(i) == group) {
       index.push_back(i);
     }
@@ -49,7 +49,7 @@ DMatrix<double> within_groups_sum_of_squares(
   for (unsigned short g = 0; g < group_count; g++) {
     DMatrix<double> group_data = select_group(data, groups, g);
     DVector<double> group_mean = mean(group_data);
-    DMatrix<double> centered_data = group_data.rowwise() - group_mean;
+    DMatrix<double> centered_data = group_data.rowwise() - group_mean.transpose();
 
     for (unsigned int r = 0; r < centered_data.rows(); r++) {
       result += outer_square(centered_data.row(r));

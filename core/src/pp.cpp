@@ -11,7 +11,7 @@ DVector<double> lda_optimum_projector(
 
   auto [eigen_val, eigen_vec] = eigen(linear_algebra::inverse(W + B) * B);
 
-  return eigen_vec(all, last).transpose();
+  return eigen_vec(all, last);
 }
 
 double lda_index(

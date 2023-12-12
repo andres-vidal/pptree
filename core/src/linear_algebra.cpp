@@ -11,7 +11,7 @@ DMatrix<double> outer_product(
   DVector<double> a,
   DVector<double> b
   ) {
-  return a.transpose() * b;
+  return a * b.transpose();
 }
 
 DMatrix<double> outer_square(
@@ -24,7 +24,7 @@ double inner_product(
   DVector<double>  a,
   DVector<double>  b,
   DMatrix <double> weights) {
-  return a * weights * b.transpose();
+  return a.transpose() * weights * b;
 }
 
 double inner_square(
@@ -80,7 +80,7 @@ std::tuple<DVector<double>, DMatrix<double> > sort_eigen(
 
   std::sort(idx.data(), idx.data() + idx.size(), [&values](double a, double b)
     {
-      return abs(values.col(a).value()) < abs(values.col(b).value());
+      return abs(values.row(a).value()) < abs(values.row(b).value());
     });
 
   return std::make_tuple(values(idx), vectors(all, idx));

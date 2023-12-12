@@ -226,12 +226,12 @@ TEST(PPLDAOptimumProjector, three_groups) {
 }
 
 TEST(PPLDAIndex, zero_return) {
-  DMatrix<double> data(4, 4);
+  DMatrix<double> data(4, 12);
   data <<
-    1, 0, 1, 1,
-    1, 1, 0, 0,
-    4, 1, 0, 1,
-    4, 0, 1, 1;
+    1, 0, 1, 1, 0, 1, 0, 1, 2, 3, 4, 5,
+    1, 1, 0, 0, 0, 1, 0, 1, 2, 3, 4, 5,
+    1, 1, 0, 1, 1, 0, 1, 0, 2, 3, 4, 5,
+    1, 0, 1, 1, 1, 0, 1, 0, 2, 3, 4, 5;
 
   DVector<unsigned short> groups(4);
   groups <<
@@ -240,9 +240,9 @@ TEST(PPLDAIndex, zero_return) {
     1,
     1;
 
-  DVector<double> projection_vector(4);
+  DVector<double> projection_vector(12);
   projection_vector <<
-    1, 1, 4, 4;
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
   double actual = pp::lda_index(data, projection_vector, groups, 2);
 
@@ -320,7 +320,7 @@ TEST(PPLDAIndex, optimal) {
   projection_vector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
-  double actual = pp::lda_index(data, projection_vector.transpose(), groups, 3);
+  double actual = pp::lda_index(data, projection_vector, groups, 3);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -397,7 +397,7 @@ TEST(PPLDAIndex, optimal2) {
   projection_vector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
 
-  double actual = pp::lda_index(data, projection_vector.transpose(), groups, 3);
+  double actual = pp::lda_index(data, projection_vector, groups, 3);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -474,7 +474,7 @@ TEST(PPLDAIndex, optimal3) {
   projection_vector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
 
-  double actual = pp::lda_index(data, projection_vector.transpose(), groups, 3);
+  double actual = pp::lda_index(data, projection_vector, groups, 3);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -551,7 +551,7 @@ TEST(PPLDAIndex, suboptimal) {
   projection_vector <<
     0, 0, 1, 1, 1;
 
-  double actual = pp::lda_index(data, projection_vector.transpose(), groups, 3);
+  double actual = pp::lda_index(data, projection_vector, groups, 3);
 
   ASSERT_NEAR(0.134985, actual, 0.00001);
 }
@@ -628,7 +628,7 @@ TEST(PPLDAIndex, suboptimal2) {
   projection_vector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double actual = pp::lda_index(data, projection_vector.transpose(), groups, 3);
+  double actual = pp::lda_index(data, projection_vector, groups, 3);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
