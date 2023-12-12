@@ -26,7 +26,8 @@ enable_testing()
 
 add_executable(pptree-test
   test/stats.test.cpp
-  test/linear_algebra.test.cpp)
+  test/linear_algebra.test.cpp
+  test/pp.test.cpp)
 
 find_package(GTest REQUIRED)
 
