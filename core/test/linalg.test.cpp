@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include "linear_algebra.hpp"
+#include "linalg.hpp"
 
-using namespace linear_algebra;
+using namespace linalg;
 using namespace Eigen;
 
 
-TEST(LinearAlgebraMean, single_observation) {
+TEST(LinAlgMean, single_observation) {
   DMatrix<double> data(1, 3);
   data <<
     1.0, 2.0, 6.0;
@@ -23,7 +23,7 @@ TEST(LinearAlgebraMean, single_observation) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraMean, multiple_equal_observations) {
+TEST(LinAlgMean, multiple_equal_observations) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -42,7 +42,7 @@ TEST(LinearAlgebraMean, multiple_equal_observations) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraMean, multiple_different_observations) {
+TEST(LinAlgMean, multiple_different_observations) {
   DMatrix<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
@@ -61,7 +61,7 @@ TEST(LinearAlgebraMean, multiple_different_observations) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraOuterProduct, equal_vectors) {
+TEST(LinAlgOuterProduct, equal_vectors) {
   DVector<double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -82,7 +82,7 @@ TEST(LinearAlgebraOuterProduct, equal_vectors) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraOuterProduct, different_vectors1) {
+TEST(LinAlgOuterProduct, different_vectors1) {
   DVector<double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -103,7 +103,7 @@ TEST(LinearAlgebraOuterProduct, different_vectors1) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraOuterProduct, different_vectors2) {
+TEST(LinAlgOuterProduct, different_vectors2) {
   DVector<double> a(3);
   a << 2.0, 3.0, 7.0;
 
@@ -124,7 +124,7 @@ TEST(LinearAlgebraOuterProduct, different_vectors2) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraOuterProduct, zero_vectors) {
+TEST(LinAlgOuterProduct, zero_vectors) {
   DVector<double> a(3);
   a << 0.0, 0.0, 0.0;
 
@@ -145,7 +145,7 @@ TEST(LinearAlgebraOuterProduct, zero_vectors) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraOuterProduct, scalar_vectors) {
+TEST(LinAlgOuterProduct, scalar_vectors) {
   DVector<double> a(1);
   a << 4.0;
 
@@ -162,7 +162,7 @@ TEST(LinearAlgebraOuterProduct, scalar_vectors) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraOuterSquare, generic) {
+TEST(LinAlgOuterSquare, generic) {
   DVector<double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -180,7 +180,7 @@ TEST(LinearAlgebraOuterSquare, generic) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraOuterSquare, generic2) {
+TEST(LinAlgOuterSquare, generic2) {
   DVector<double> a(3);
   a << 2.0, 3.0, 7.0;
 
@@ -198,7 +198,7 @@ TEST(LinearAlgebraOuterSquare, generic2) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraOuterSquare, zero_vector) {
+TEST(LinAlgOuterSquare, zero_vector) {
   DVector<double> a(3);
   a << 0.0, 0.0, 0.0;
 
@@ -216,7 +216,7 @@ TEST(LinearAlgebraOuterSquare, zero_vector) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, equal_vectors_unweighted) {
+TEST(LinAlgInnerProduct, equal_vectors_unweighted) {
   DVector<double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -235,7 +235,7 @@ TEST(LinearAlgebraInnerProduct, equal_vectors_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, equal_vectors_weighted) {
+TEST(LinAlgInnerProduct, equal_vectors_weighted) {
   DVector<double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -254,7 +254,7 @@ TEST(LinearAlgebraInnerProduct, equal_vectors_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, zero_vectors_unweighted) {
+TEST(LinAlgInnerProduct, zero_vectors_unweighted) {
   DVector<double> a(3);
   a << 0.0, 0.0, 0.0;
 
@@ -273,7 +273,7 @@ TEST(LinearAlgebraInnerProduct, zero_vectors_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, zero_vectors_weighted) {
+TEST(LinAlgInnerProduct, zero_vectors_weighted) {
   DVector<double> a(3);
   a << 0.0, 0.0, 0.0;
 
@@ -292,7 +292,7 @@ TEST(LinearAlgebraInnerProduct, zero_vectors_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, different_vectors_unweighted) {
+TEST(LinAlgInnerProduct, different_vectors_unweighted) {
   DVector<double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -311,7 +311,7 @@ TEST(LinearAlgebraInnerProduct, different_vectors_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, different_vectors_weighted) {
+TEST(LinAlgInnerProduct, different_vectors_weighted) {
   DVector<double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -330,7 +330,7 @@ TEST(LinearAlgebraInnerProduct, different_vectors_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, equal_matrices_unweighted) {
+TEST(LinAlgInnerProduct, equal_matrices_unweighted) {
   DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -362,7 +362,7 @@ TEST(LinearAlgebraInnerProduct, equal_matrices_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, equal_matrices_weighted) {
+TEST(LinAlgInnerProduct, equal_matrices_weighted) {
   DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -394,7 +394,7 @@ TEST(LinearAlgebraInnerProduct, equal_matrices_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, zero_matrices_unweighted) {
+TEST(LinAlgInnerProduct, zero_matrices_unweighted) {
   DMatrix<double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
@@ -426,7 +426,7 @@ TEST(LinearAlgebraInnerProduct, zero_matrices_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, zero_matrices_weighted) {
+TEST(LinAlgInnerProduct, zero_matrices_weighted) {
   DMatrix<double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
@@ -458,7 +458,7 @@ TEST(LinearAlgebraInnerProduct, zero_matrices_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, different_matrices_unweighted) {
+TEST(LinAlgInnerProduct, different_matrices_unweighted) {
   DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -490,7 +490,7 @@ TEST(LinearAlgebraInnerProduct, different_matrices_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerProduct, different_matrices_weighted) {
+TEST(LinAlgInnerProduct, different_matrices_weighted) {
   DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -522,7 +522,7 @@ TEST(LinearAlgebraInnerProduct, different_matrices_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerSquare, generic_unweighted) {
+TEST(LinAlgInnerSquare, generic_unweighted) {
   DVector<double> m(3);
   m << 1.0, 2.0, 6.0;
 
@@ -538,7 +538,7 @@ TEST(LinearAlgebraInnerSquare, generic_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerSquare, generic_weighted) {
+TEST(LinAlgInnerSquare, generic_weighted) {
   DVector<double> m(3);
   m << 1.0, 2.0, 6.0;
 
@@ -554,7 +554,7 @@ TEST(LinearAlgebraInnerSquare, generic_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerSquare, generic_matrix_unweighted) {
+TEST(LinAlgInnerSquare, generic_matrix_unweighted) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
@@ -580,7 +580,7 @@ TEST(LinearAlgebraInnerSquare, generic_matrix_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInnerSquare, generic_matrix_weighted) {
+TEST(LinAlgInnerSquare, generic_matrix_weighted) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
@@ -606,7 +606,7 @@ TEST(LinearAlgebraInnerSquare, generic_matrix_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraDeterminant, generic_positive_determinant) {
+TEST(LinAlgDeterminant, generic_positive_determinant) {
   DMatrix<double> m(3, 3);
   m <<
     6.0, 1.0, 4.0,
@@ -620,7 +620,7 @@ TEST(LinearAlgebraDeterminant, generic_positive_determinant) {
 }
 
 
-TEST(LinearAlgebraDeterminant, generic_negative_determinant) {
+TEST(LinAlgDeterminant, generic_negative_determinant) {
   DMatrix<double> m(3, 3);
   m <<
     6.0, 1.0, 4.0,
@@ -633,7 +633,7 @@ TEST(LinearAlgebraDeterminant, generic_negative_determinant) {
   ASSERT_DOUBLE_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraDeterminant, zero_matrix) {
+TEST(LinAlgDeterminant, zero_matrix) {
   DMatrix<double> m(3, 3);
   m <<
     0.0, 0.0, 0.0,
@@ -646,7 +646,7 @@ TEST(LinearAlgebraDeterminant, zero_matrix) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraDeterminant, singular_matrix) {
+TEST(LinAlgDeterminant, singular_matrix) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
@@ -659,7 +659,7 @@ TEST(LinearAlgebraDeterminant, singular_matrix) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInverse, zero_matrix) {
+TEST(LinAlgInverse, zero_matrix) {
   DMatrix<double> m(3, 3);
   m <<
     0, 0, 0,
@@ -669,7 +669,7 @@ TEST(LinearAlgebraInverse, zero_matrix) {
   ASSERT_THROW({ inverse(m); }, std::invalid_argument);
 }
 
-TEST(LinearAlgebraInverse, singular_matrix) {
+TEST(LinAlgInverse, singular_matrix) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 1.0, 6.0,
@@ -679,7 +679,7 @@ TEST(LinearAlgebraInverse, singular_matrix) {
   ASSERT_THROW({ inverse(m); }, std::invalid_argument);
 }
 
-TEST(LinearAlgebraInverse, identity) {
+TEST(LinAlgInverse, identity) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 0.0, 0.0,
@@ -699,7 +699,7 @@ TEST(LinearAlgebraInverse, identity) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinearAlgebraInverse, generic) {
+TEST(LinAlgInverse, generic) {
   DMatrix<double> m(3, 3);
   m <<
     0.0, 1.0, 2.0,
@@ -719,7 +719,7 @@ TEST(LinearAlgebraInverse, generic) {
   ASSERT_TRUE(expected.isApprox(actual));
 }
 
-TEST(LinearAlgebraEigen, identity) {
+TEST(LinAlgEigen, identity) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 0.0, 0.0,
@@ -749,7 +749,7 @@ TEST(LinearAlgebraEigen, identity) {
   ASSERT_EQ(expected_vectors, actual_vectors);
 }
 
-TEST(LinearAlgebraEigen, diagonal) {
+TEST(LinAlgEigen, diagonal) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 0.0, 0.0,
@@ -779,7 +779,7 @@ TEST(LinearAlgebraEigen, diagonal) {
   ASSERT_EQ(expected_vectors, actual_vectors);
 }
 
-TEST(LinearAlgebraEigen, symmetric_real_non_negative_eigenvalues) {
+TEST(LinAlgEigen, symmetric_real_non_negative_eigenvalues) {
   DMatrix<double> m(3, 3);
   m <<
     3.0, 1.0, 1.0,
@@ -815,7 +815,7 @@ TEST(LinearAlgebraEigen, symmetric_real_non_negative_eigenvalues) {
   ASSERT_TRUE(Mv.isApprox(Lv, 0.0001));
 }
 
-TEST(LinearAlgebraEigen, asymmetric_real_mixed_eigenvalues) {
+TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
   DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 3.0,

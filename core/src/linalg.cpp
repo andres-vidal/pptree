@@ -1,8 +1,8 @@
-#include "linear_algebra.hpp"
+#include "linalg.hpp"
 
 using namespace Eigen;
 
-namespace linear_algebra {
+namespace linalg {
 DVector<double> mean(
   DMatrix<double> data
   ) {

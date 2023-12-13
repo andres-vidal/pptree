@@ -1,6 +1,6 @@
 #include "stats.hpp"
 
-using namespace linear_algebra;
+using namespace linalg;
 
 namespace stats {
 DMatrix<double> select_group(

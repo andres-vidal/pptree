@@ -2,7 +2,7 @@
 
 #include "pp.hpp"
 
-using namespace linear_algebra;
+using namespace linalg;
 using namespace stats;
 using namespace Eigen;
 

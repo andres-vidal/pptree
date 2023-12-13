@@ -1,6 +1,6 @@
 #include "pp.hpp"
 
-using namespace linear_algebra;
+using namespace linalg;
 using namespace stats;
 using namespace Eigen;
 namespace pp {
@@ -11,7 +11,7 @@ DVector<double> lda_optimum_projector(
   DMatrix<double> W = within_groups_sum_of_squares(data, groups, group_count);
   DMatrix<double> B = between_groups_sum_of_squares(data, groups, group_count);
 
-  auto [eigen_val, eigen_vec] = eigen(linear_algebra::inverse(W + B) * B);
+  auto [eigen_val, eigen_vec] = eigen(linalg::inverse(W + B) * B);
 
   return eigen_vec(all, last);
 }

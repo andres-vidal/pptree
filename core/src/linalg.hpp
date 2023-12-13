@@ -1,6 +1,6 @@
 #include <Eigen/Dense>
 
-namespace linear_algebra {
+namespace linalg {
 template<typename T = double>
 using DMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 
