@@ -1,13 +1,14 @@
 #include "pp.hpp"
 
+using namespace pp;
 using namespace linalg;
 using namespace stats;
 using namespace Eigen;
 namespace pp {
-DVector<double> lda_optimum_projector(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count) {
+Projector<double> lda_optimum_projector(
+  Data<double>               data,
+  DataColumn<unsigned short> groups,
+  unsigned int               group_count) {
   DMatrix<double> W = within_groups_sum_of_squares(data, groups, group_count);
   DMatrix<double> B = between_groups_sum_of_squares(data, groups, group_count);
 
@@ -17,11 +18,11 @@ DVector<double> lda_optimum_projector(
 }
 
 double lda_index(
-  DMatrix<double>         data,
-  DMatrix<double>         projection_vector,
-  DVector<unsigned short> groups,
-  unsigned int            group_count) {
-  DMatrix<double> A = projection_vector;
+  Data<double>               data,
+  Projector<double>          projector,
+  DataColumn<unsigned short> groups,
+  unsigned int               group_count) {
+  DMatrix<double> A = projector;
 
   DMatrix<double> W = within_groups_sum_of_squares(data, groups, group_count);
   DMatrix<double> B = between_groups_sum_of_squares(data, groups, group_count);
@@ -33,5 +34,11 @@ double lda_index(
   }
 
   return 1 - determinant(inner_square(A, W)) / denominator;
+}
+
+DataColumn<double> project(
+  Data<double>      data,
+  Projector<double> projector) {
+  return data * projector;
 }
 }

@@ -9,14 +9,21 @@ using Threshold = T;
 template<typename T = double>
 using Data = linalg::DMatrix<T>;
 
-linalg::DVector<double> lda_optimum_projector(
-  linalg::DMatrix<double>         data,
-  linalg::DVector<unsigned short> groups,
-  unsigned int                    group_count);
+template<typename T = double>
+using DataColumn = linalg::DVector<T>;
+
+Projector<double> lda_optimum_projector(
+  Data<double>               data,
+  DataColumn<unsigned short> groups,
+  unsigned int               group_count);
 
 double lda_index(
-  linalg::DMatrix<double>         data,
-  linalg::DMatrix<double>         projection_vector,
-  linalg::DVector<unsigned short> groups,
-  unsigned int                    group_count);
+  Data<double>               data,
+  Projector<double>          projector,
+  DataColumn<unsigned short> groups,
+  unsigned int               group_count);
+
+DataColumn<double> project(
+  Data<double>      data,
+  Projector<double> projector);
 }
