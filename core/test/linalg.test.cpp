@@ -362,6 +362,34 @@ TEST(LinAlgInnerProduct, equal_matrices_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
+TEST(LinAlgInnerProduct, equal_matrices_unweighted_implicit) {
+  DMatrix<double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DMatrix<double> b(3, 3);
+  b <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+
+  DMatrix<double> actual = inner_product(a, b);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    14.0, 20.0, 44.0,
+    20.0, 29.0, 65.0,
+    44.0, 65.0, 149.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+
 TEST(LinAlgInnerProduct, equal_matrices_weighted) {
   DMatrix<double> a(3, 3);
   a <<

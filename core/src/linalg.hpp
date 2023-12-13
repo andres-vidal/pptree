@@ -31,6 +31,10 @@ DMatrix<double> inner_product(
   DMatrix<double> b,
   DMatrix<double> weights);
 
+DMatrix<double> inner_product(
+  DMatrix<double> a,
+  DMatrix<double> b);
+
 DMatrix<double> inner_square(
   DMatrix<double> m,
   DMatrix<double> weights);
