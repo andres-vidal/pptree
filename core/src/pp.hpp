@@ -1,16 +1,22 @@
 #include "stats.hpp"
-
-using namespace linear_algebra;
-using namespace stats;
 namespace pp {
-DVector<double> lda_optimum_projector(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count);
+template<typename T = double>
+using Projector = linear_algebra::DVector<T>;
+
+template<typename T = double>
+using Threshold = T;
+
+template<typename T = double>
+using Data = linear_algebra::DMatrix<T>;
+
+linear_algebra::DVector<double> lda_optimum_projector(
+  linear_algebra::DMatrix<double>         data,
+  linear_algebra::DVector<unsigned short> groups,
+  unsigned int                            group_count);
 
 double lda_index(
-  DMatrix<double>         data,
-  DMatrix<double>         projection_vector,
-  DVector<unsigned short> groups,
-  unsigned int            group_count);
+  linear_algebra::DMatrix<double>         data,
+  linear_algebra::DMatrix<double>         projection_vector,
+  linear_algebra::DVector<unsigned short> groups,
+  unsigned int                            group_count);
 }

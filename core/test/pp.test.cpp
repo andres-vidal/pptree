@@ -2,6 +2,11 @@
 
 #include "pp.hpp"
 
+using namespace linear_algebra;
+using namespace stats;
+using namespace Eigen;
+
+
 TEST(PPLDAOptimumProjector, two_groups) {
   DMatrix<double> data(10, 4);
   data <<

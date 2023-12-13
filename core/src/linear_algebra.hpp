@@ -1,13 +1,11 @@
 #include <Eigen/Dense>
 
 namespace linear_algebra {
-using namespace Eigen;
+template<typename T = double>
+using DMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 
 template<typename T = double>
-using DMatrix = Matrix<T, Dynamic, Dynamic>;
-
-template<typename T = double>
-using DVector = Matrix<T, Dynamic, 1>;
+using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
 DVector<double> mean(
   DMatrix<double> data);

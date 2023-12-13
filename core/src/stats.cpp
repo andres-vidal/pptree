@@ -1,5 +1,7 @@
 #include "stats.hpp"
 
+using namespace linear_algebra;
+
 namespace stats {
 DMatrix<double> select_group(
   DMatrix<double>         data,

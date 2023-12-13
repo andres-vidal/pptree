@@ -3,6 +3,8 @@
 #include "linear_algebra.hpp"
 
 using namespace linear_algebra;
+using namespace Eigen;
+
 
 TEST(LinearAlgebraMean, single_observation) {
   DMatrix<double> data(1, 3);

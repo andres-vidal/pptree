@@ -1,6 +1,8 @@
 #include "pp.hpp"
 
-
+using namespace linear_algebra;
+using namespace stats;
+using namespace Eigen;
 namespace pp {
 DVector<double> lda_optimum_projector(
   DMatrix<double>         data,

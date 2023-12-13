@@ -1,5 +1,7 @@
 #include "linear_algebra.hpp"
 
+using namespace Eigen;
+
 namespace linear_algebra {
 DVector<double> mean(
   DMatrix<double> data

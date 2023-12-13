@@ -1,20 +1,18 @@
 #include "linear_algebra.hpp"
 
-using namespace linear_algebra;
-
 namespace stats {
-DMatrix<double> select_group(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned short          group);
+linear_algebra::DMatrix<double> select_group(
+  linear_algebra::DMatrix<double>         data,
+  linear_algebra::DVector<unsigned short> groups,
+  unsigned short                          group);
 
-DMatrix<double> between_groups_sum_of_squares(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count);
+linear_algebra::DMatrix<double> between_groups_sum_of_squares(
+  linear_algebra::DMatrix<double>         data,
+  linear_algebra::DVector<unsigned short> groups,
+  unsigned int                            group_count);
 
-DMatrix<double> within_groups_sum_of_squares(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count);
+linear_algebra::DMatrix<double> within_groups_sum_of_squares(
+  linear_algebra::DMatrix<double>         data,
+  linear_algebra::DVector<unsigned short> groups,
+  unsigned int                            group_count);
 }

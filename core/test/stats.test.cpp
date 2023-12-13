@@ -2,7 +2,9 @@
 
 #include "stats.hpp"
 
+using namespace linear_algebra;
 using namespace stats;
+using namespace Eigen;
 
 
 TEST(StatsSelectGroup, single_group) {
