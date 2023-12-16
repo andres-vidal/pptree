@@ -106,6 +106,157 @@ TEST(StatsSelectGroup, empty_result) {
   ASSERT_EQ(0, actual.cols());
 }
 
+TEST(StatsRemoveGroup, single_group) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    1,
+    1,
+    1;
+
+  DMatrix<double> actual = remove_group(data, groups, 1, 1);
+
+  ASSERT_EQ(0, actual.size());
+  ASSERT_EQ(0, actual.rows());
+  ASSERT_EQ(0, actual.cols());
+}
+
+TEST(StatsRemoveGroup, multiple_groups_adjacent1) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    1,
+    1,
+    2;
+
+  DMatrix<double> actual = remove_group(data, groups, 2, 1);
+
+  DMatrix<double> expected(1, 3);
+  expected <<
+    3.0, 4.0, 8.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsRemoveGroup, multiple_groups_adjacent2) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    1,
+    1,
+    2;
+
+  DMatrix<double> actual = remove_group(data, groups, 2, 2);
+
+  DMatrix<double> expected(2, 3);
+  expected <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsRemoveGroup, multiple_mixed1) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    1,
+    2,
+    1;
+
+  DMatrix<double> actual = remove_group(data, groups, 2, 1);
+
+  DMatrix<double> expected(1, 3);
+  expected <<
+    2.0, 3.0, 7.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsRemoveGroup, multiple_mixed2) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    1,
+    2,
+    1;
+
+  DMatrix<double> actual = remove_group(data, groups, 2, 2);
+  DMatrix<double> expected(2, 3);
+  expected <<
+    1.0, 2.0, 6.0,
+    3.0, 4.0, 8.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+
+  actual = remove_group(data, groups, 2, 3);
+}
+
+TEST(StatsRemoveGroup, non_existent_group) {
+  DMatrix<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  DVector<unsigned short> groups(3);
+  groups <<
+    1,
+    2,
+    1;
+
+  DMatrix<double> actual = remove_group(data, groups, 2, 3);
+  DMatrix<double> expected(3, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+
+  actual = remove_group(data, groups, 2, 4);
+}
+
 TEST(StatsBetweenGroupsSumOfSquares, single_group) {
   DMatrix<double> data(3, 3);
   data <<

@@ -6,6 +6,12 @@ linalg::DMatrix<double> select_group(
   linalg::DVector<unsigned short> groups,
   unsigned short                  group);
 
+linalg::DMatrix<double> remove_group(
+  linalg::DMatrix<double>         data,
+  linalg::DVector<unsigned short> groups,
+  unsigned int                    group_count,
+  unsigned short                  group);
+
 linalg::DMatrix<double> between_groups_sum_of_squares(
   linalg::DMatrix<double>         data,
   linalg::DVector<unsigned short> groups,

@@ -23,6 +23,27 @@ DMatrix<double> select_group(
   return data(index, Eigen::all);
 }
 
+DMatrix<double> remove_group(
+  DMatrix<double>         data,
+  DVector<unsigned short> groups,
+  unsigned int            group_count,
+  unsigned short          group
+  ) {
+  std::vector<unsigned short> index;
+
+  for (unsigned short i = 0; i < groups.rows(); i++) {
+    if (groups(i) != group) {
+      index.push_back(i);
+    }
+  }
+
+  if (index.size() == 0) {
+    return DMatrix<double>(0, 0);
+  }
+
+  return data(index, Eigen::all);
+}
+
 DMatrix<double> between_groups_sum_of_squares(
   DMatrix<double>         data,
   DVector<unsigned short> groups,
