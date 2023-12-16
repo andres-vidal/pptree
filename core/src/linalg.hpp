@@ -1,10 +1,10 @@
 #include <Eigen/Dense>
 
 namespace linalg {
-template<typename T = double>
+template<typename T>
 using DMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 
-template<typename T = double>
+template<typename T>
 using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
 DVector<double> mean(
