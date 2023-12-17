@@ -3,58 +3,74 @@
 using namespace linalg;
 
 namespace stats {
-DMatrix<double> select_group(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned short          group
+template<typename T, typename G>
+Data<T> select_group(
+  Data<T>       data,
+  DataColumn<G> groups,
+  G             group
   ) {
-  std::vector<unsigned short> index;
+  std::vector<G> index;
 
-  for (unsigned short i = 0; i < groups.rows(); i++) {
+  for (G i = 0; i < groups.rows(); i++) {
     if (groups(i) == group) {
       index.push_back(i);
     }
   }
 
   if (index.size() == 0) {
-    return DMatrix<double>(0, 0);
+    return Data<T>(0, 0);
   }
 
   return data(index, Eigen::all);
 }
 
-DMatrix<double> remove_group(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count,
-  unsigned short          group
-  ) {
-  std::vector<unsigned short> index;
+template Data<double> select_group<double, int>(
+  Data<double>    data,
+  DataColumn<int> groups,
+  int             group);
 
-  for (unsigned short i = 0; i < groups.rows(); i++) {
+
+template<typename T, typename G>
+Data<T> remove_group(
+  Data<T>       data,
+  DataColumn<G> groups,
+  int           group_count,
+  G             group
+  ) {
+  std::vector<G> index;
+
+  for (G i = 0; i < groups.rows(); i++) {
     if (groups(i) != group) {
       index.push_back(i);
     }
   }
 
   if (index.size() == 0) {
-    return DMatrix<double>(0, 0);
+    return Data<T>(0, 0);
   }
 
   return data(index, Eigen::all);
 }
 
-DMatrix<double> between_groups_sum_of_squares(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count
-  ) {
-  DVector<double> global_mean = mean(data);
-  DMatrix<double> result = DMatrix<double>::Zero(data.cols(), data.cols());
+template Data<double> remove_group<double, int>(
+  Data<double>    data,
+  DataColumn<int> groups,
+  int             group_count,
+  int             group);
 
-  for (unsigned short g = 0; g < group_count; g++) {
-    DMatrix<double> group_data = select_group(data, groups, g);
-    DVector<double> group_mean = mean(group_data);
+
+template<typename T, typename G>
+Data<T> between_groups_sum_of_squares(
+  Data<T>       data,
+  DataColumn<G> groups,
+  int           group_count
+  ) {
+  DataColumn<T> global_mean = mean(data);
+  Data<T> result = Data<T>::Zero(data.cols(), data.cols());
+
+  for (G g = 0; g < group_count; g++) {
+    Data<T> group_data = select_group(data, groups, g);
+    DataColumn<T> group_mean = mean(group_data);
 
     result += group_data.rows() * outer_square(group_mean - global_mean);
   }
@@ -62,23 +78,35 @@ DMatrix<double> between_groups_sum_of_squares(
   return result;
 }
 
-DMatrix<double> within_groups_sum_of_squares(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count
+template Data<double> between_groups_sum_of_squares<double, int>(
+  Data<double>    data,
+  DataColumn<int> groups,
+  int             group_count);
+
+
+template<typename T, typename G>
+Data<T> within_groups_sum_of_squares(
+  Data<T>       data,
+  DataColumn<G> groups,
+  int           group_count
   ) {
-  DMatrix<double> result = DMatrix<double>::Zero(data.cols(), data.cols());
+  Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
-  for (unsigned short g = 0; g < group_count; g++) {
-    DMatrix<double> group_data = select_group(data, groups, g);
-    DVector<double> group_mean = mean(group_data);
-    DMatrix<double> centered_data = group_data.rowwise() - group_mean.transpose();
+  for (G g = 0; g < group_count; g++) {
+    Data<T> group_data = select_group(data, groups, g);
+    DataColumn<T> group_mean = mean(group_data);
+    Data<T> centered_data = group_data.rowwise() - group_mean.transpose();
 
-    for (unsigned int r = 0; r < centered_data.rows(); r++) {
+    for (int r = 0; r < centered_data.rows(); r++) {
       result += outer_square(centered_data.row(r));
     }
   }
 
   return result;
 }
-}
+
+template Data<double> within_groups_sum_of_squares<double, int>(
+  Data<double>    data,
+  DataColumn<int> groups,
+  int             group_count);
+};

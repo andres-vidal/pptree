@@ -2,27 +2,26 @@
 
 #include "stats.hpp"
 
-using namespace linalg;
 using namespace stats;
 using namespace Eigen;
 
 
 TEST(StatsSelectGroup, single_group) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     1,
     1;
 
-  DMatrix<double> actual = select_group(data, groups, 1);
+  Data<double> actual = select_group(data, groups, 1);
 
-  DMatrix<double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -35,21 +34,21 @@ TEST(StatsSelectGroup, single_group) {
 }
 
 TEST(StatsSelectGroup, multiple_groups_adjacent) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     1,
     2;
 
-  DMatrix<double> actual = select_group(data, groups, 1);
+  Data<double> actual = select_group(data, groups, 1);
 
-  DMatrix<double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0;
@@ -61,21 +60,21 @@ TEST(StatsSelectGroup, multiple_groups_adjacent) {
 }
 
 TEST(StatsSelectGroup, multiple_groups_mixed) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     2,
     1;
 
-  DMatrix<double> actual = select_group(data, groups, 1);
+  Data<double> actual = select_group(data, groups, 1);
 
-  DMatrix<double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 6.0,
     3.0, 4.0, 8.0;
@@ -87,19 +86,19 @@ TEST(StatsSelectGroup, multiple_groups_mixed) {
 }
 
 TEST(StatsSelectGroup, empty_result) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     1,
     1;
 
-  DMatrix<double> actual = select_group(data, groups, 2);
+  Data<double> actual = select_group(data, groups, 2);
 
   ASSERT_EQ(0, actual.size());
   ASSERT_EQ(0, actual.rows());
@@ -107,19 +106,19 @@ TEST(StatsSelectGroup, empty_result) {
 }
 
 TEST(StatsRemoveGroup, single_group) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     1,
     1;
 
-  DMatrix<double> actual = remove_group(data, groups, 1, 1);
+  Data<double> actual = remove_group(data, groups, 1, 1);
 
   ASSERT_EQ(0, actual.size());
   ASSERT_EQ(0, actual.rows());
@@ -127,21 +126,21 @@ TEST(StatsRemoveGroup, single_group) {
 }
 
 TEST(StatsRemoveGroup, multiple_groups_adjacent1) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     1,
     2;
 
-  DMatrix<double> actual = remove_group(data, groups, 2, 1);
+  Data<double> actual = remove_group(data, groups, 2, 1);
 
-  DMatrix<double> expected(1, 3);
+  Data<double> expected(1, 3);
   expected <<
     3.0, 4.0, 8.0;
 
@@ -152,21 +151,21 @@ TEST(StatsRemoveGroup, multiple_groups_adjacent1) {
 }
 
 TEST(StatsRemoveGroup, multiple_groups_adjacent2) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     1,
     2;
 
-  DMatrix<double> actual = remove_group(data, groups, 2, 2);
+  Data<double> actual = remove_group(data, groups, 2, 2);
 
-  DMatrix<double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0;
@@ -178,21 +177,21 @@ TEST(StatsRemoveGroup, multiple_groups_adjacent2) {
 }
 
 TEST(StatsRemoveGroup, multiple_mixed1) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     2,
     1;
 
-  DMatrix<double> actual = remove_group(data, groups, 2, 1);
+  Data<double> actual = remove_group(data, groups, 2, 1);
 
-  DMatrix<double> expected(1, 3);
+  Data<double> expected(1, 3);
   expected <<
     2.0, 3.0, 7.0;
 
@@ -203,20 +202,20 @@ TEST(StatsRemoveGroup, multiple_mixed1) {
 }
 
 TEST(StatsRemoveGroup, multiple_mixed2) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     2,
     1;
 
-  DMatrix<double> actual = remove_group(data, groups, 2, 2);
-  DMatrix<double> expected(2, 3);
+  Data<double> actual = remove_group(data, groups, 2, 2);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 6.0,
     3.0, 4.0, 8.0;
@@ -225,25 +224,23 @@ TEST(StatsRemoveGroup, multiple_mixed2) {
   ASSERT_EQ(expected.rows(), actual.rows());
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
-
-  actual = remove_group(data, groups, 2, 3);
 }
 
 TEST(StatsRemoveGroup, non_existent_group) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     1,
     2,
     1;
 
-  DMatrix<double> actual = remove_group(data, groups, 2, 3);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = remove_group(data, groups, 2, 3);
+  Data<double> expected(3, 3);
   expected <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -253,25 +250,23 @@ TEST(StatsRemoveGroup, non_existent_group) {
   ASSERT_EQ(expected.rows(), actual.rows());
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
-
-  actual = remove_group(data, groups, 2, 4);
 }
 
 TEST(StatsBetweenGroupsSumOfSquares, single_group) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     0,
     0,
     0;
 
-  DMatrix<double> actual = between_groups_sum_of_squares(data, groups, 1);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, 1);
+  Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -284,7 +279,7 @@ TEST(StatsBetweenGroupsSumOfSquares, single_group) {
 }
 
 TEST(StatsBetweenGroupsSumOfSquares, two_equal_groups) {
-  DMatrix<double> data(6, 3);
+  Data<double> data(6, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -293,7 +288,7 @@ TEST(StatsBetweenGroupsSumOfSquares, two_equal_groups) {
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<unsigned short> groups(6);
+  DataColumn<int> groups(6);
   groups <<
     0,
     0,
@@ -302,8 +297,8 @@ TEST(StatsBetweenGroupsSumOfSquares, two_equal_groups) {
     1,
     1;
 
-  DMatrix<double> actual = between_groups_sum_of_squares(data, groups, 2);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, 2);
+  Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -317,7 +312,7 @@ TEST(StatsBetweenGroupsSumOfSquares, two_equal_groups) {
 }
 
 TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate) {
-  DMatrix<double> data(8, 1);
+  Data<double> data(8, 1);
   data <<
     23.0,
     25.0,
@@ -328,7 +323,7 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate) {
     35.0,
     17.0;
 
-  DVector<unsigned short> groups(8);
+  DataColumn<int> groups(8);
   groups <<
     0,
     0,
@@ -339,8 +334,8 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate) {
     2,
     2;
 
-  DMatrix<double> actual = between_groups_sum_of_squares(data, groups, 3);
-  DMatrix<double> expected(1, 1);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, 3);
+  Data<double> expected(1, 1);
   expected <<
     19.875;
 
@@ -351,7 +346,7 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate) {
 }
 
 TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
-  DMatrix<double> data(8, 3);
+  Data<double> data(8, 3);
   data <<
     23.0, 1.0, 1.0,
     25.0, 1.0, 1.0,
@@ -362,7 +357,7 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
     35.0, 1.0, 1.0,
     17.0, 1.0, 1.0;
 
-  DVector<unsigned short> groups(8);
+  DataColumn<int> groups(8);
   groups <<
     0,
     0,
@@ -373,8 +368,8 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
     2,
     2;
 
-  DMatrix<double> actual = between_groups_sum_of_squares(data, groups, 3);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, 3);
+  Data<double> expected(3, 3);
   expected <<
     19.875, 0.0, 0.0,
     0.0,    0.0, 0.0,
@@ -387,20 +382,20 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
 }
 
 TEST(StatsWithinGroupsSumOfSquares, single_group_no_variance) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 1.0, 1.0,
     1.0, 1.0, 1.0,
     1.0, 1.0, 1.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     0,
     0,
     0;
 
-  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 1);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, 1);
+  Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -413,20 +408,20 @@ TEST(StatsWithinGroupsSumOfSquares, single_group_no_variance) {
 }
 
 TEST(StatsWithinGroupsSumOfSquares, single_group_with_variance) {
-  DMatrix<double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
     3.0, 3.0, 3.0;
 
-  DVector<unsigned short> groups(3);
+  DataColumn<int> groups(3);
   groups <<
     0,
     0,
     0;
 
-  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 1);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, 1);
+  Data<double> expected(3, 3);
   expected <<
     2.0, 2.0, 2.0,
     2.0, 2.0, 2.0,
@@ -439,7 +434,7 @@ TEST(StatsWithinGroupsSumOfSquares, single_group_with_variance) {
 }
 
 TEST(StatsWithinGroupsSumOfSquares, two_equal_groups) {
-  DMatrix<double> data(6, 3);
+  Data<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -448,7 +443,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_equal_groups) {
     2.0, 2.0, 2.0,
     3.0, 3.0, 3.0;
 
-  DVector<unsigned short> groups(6);
+  DataColumn<int> groups(6);
   groups <<
     0,
     0,
@@ -457,8 +452,8 @@ TEST(StatsWithinGroupsSumOfSquares, two_equal_groups) {
     1,
     1;
 
-  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 2);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  Data<double> expected(3, 3);
   expected <<
     4.0, 4.0, 4.0,
     4.0, 4.0, 4.0,
@@ -471,7 +466,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_equal_groups) {
 }
 
 TEST(StatsWithinGroupsSumOfSquares, two_groups_same_variance) {
-  DMatrix<double> data(6, 3);
+  Data<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -480,7 +475,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_groups_same_variance) {
     5.0, 5.0, 5.0,
     6.0, 6.0, 6.0;
 
-  DVector<unsigned short> groups(6);
+  DataColumn<int> groups(6);
   groups <<
     0,
     0,
@@ -489,8 +484,8 @@ TEST(StatsWithinGroupsSumOfSquares, two_groups_same_variance) {
     1,
     1;
 
-  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 2);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  Data<double> expected(3, 3);
   expected <<
     4.0, 4.0, 4.0,
     4.0, 4.0, 4.0,
@@ -503,7 +498,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_groups_same_variance) {
 }
 
 TEST(StatsWithinGroupsSumOfSquares, two_groups_different_variance) {
-  DMatrix<double> data(6, 3);
+  Data<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -512,7 +507,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_groups_different_variance) {
     5.0, 5.0, 5.0,
     6.0, 6.0, 6.0;
 
-  DVector<unsigned short> groups(6);
+  DataColumn<int> groups(6);
   groups <<
     0,
     0,
@@ -521,8 +516,8 @@ TEST(StatsWithinGroupsSumOfSquares, two_groups_different_variance) {
     1,
     1;
 
-  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 2);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  Data<double> expected(3, 3);
   expected <<
     16.0, 16.0, 16.0,
     16.0, 16.0, 16.0,
@@ -535,7 +530,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_groups_different_variance) {
 }
 
 TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
-  DMatrix<double> data(8, 3);
+  Data<double> data(8, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -546,7 +541,7 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
     9.0, 8.0, 7.0,
     6.0, 5.0, 4.0;
 
-  DVector<unsigned short> groups(8);
+  DataColumn<int> groups(8);
   groups <<
     0,
     0,
@@ -557,8 +552,8 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
     2,
     2;
 
-  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 3);
-  DMatrix<double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, 3);
+  Data<double> expected(3, 3);
   expected <<
     24.5, 24.5, 24.5,
     24.5, 24.5, 24.5,
@@ -571,7 +566,7 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
 }
 
 TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
-  DMatrix<double> data(8, 4);
+  Data<double> data(8, 4);
   data <<
     1.0, 2.0, 3.0, 0.0,
     4.0, 5.0, 6.0, 0.0,
@@ -582,7 +577,7 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
     9.0, 8.0, 7.0, 0.0,
     6.0, 5.0, 4.0, 0.0;
 
-  DVector<unsigned short> groups(8);
+  DataColumn<int> groups(8);
   groups <<
     0,
     0,
@@ -593,8 +588,8 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
     2,
     2;
 
-  DMatrix<double> actual = within_groups_sum_of_squares(data, groups, 3);
-  DMatrix<double> expected(4, 4);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, 3);
+  Data<double> expected(4, 4);
   expected <<
     24.5, 24.5, 24.5, 0.0,
     24.5, 24.5, 24.5, 0.0,

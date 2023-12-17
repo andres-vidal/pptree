@@ -1,29 +1,26 @@
 #include "stats.hpp"
 namespace pp {
-template<typename T = double>
+template<typename T>
 using Projector = linalg::DVector<T>;
 
-template<typename T = double>
-using Threshold = T;
+template<typename T>
+using Projection = stats::DataColumn<T>;
 
-template<typename T = double>
-using Data = linalg::DMatrix<T>;
+template<typename T, typename G>
+Projector<T> lda_optimum_projector(
+  stats::Data<T>       data,
+  stats::DataColumn<G> groups,
+  int                  group_count);
 
-template<typename T = double>
-using DataColumn = linalg::DVector<T>;
+template<typename T, typename G>
+T lda_index(
+  stats::Data<T>       data,
+  Projector<T>         projector,
+  stats::DataColumn<G> groups,
+  int                  group_count);
 
-Projector<double> lda_optimum_projector(
-  Data<double>               data,
-  DataColumn<unsigned short> groups,
-  unsigned int               group_count);
-
-double lda_index(
-  Data<double>               data,
-  Projector<double>          projector,
-  DataColumn<unsigned short> groups,
-  unsigned int               group_count);
-
-DataColumn<double> project(
-  Data<double>      data,
-  Projector<double> projector);
+template<typename T>
+Projection<T> project(
+  stats::Data<T> data,
+  Projector<T>   projector);
 }

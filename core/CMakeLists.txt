@@ -8,15 +8,16 @@ set(CMAKE_CSS_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 add_library(pptree
   src/pptree.cpp
-  src/stats.cpp
   src/linalg.cpp
+  src/stats.cpp
   src/pp.cpp)
 
 find_package(Eigen3 REQUIRED)
 
 target_include_directories(pptree
-  PUBLIC include)
-
+  PUBLIC include
+  PUBLIC src)
+  
 target_link_libraries(pptree
   Eigen3::Eigen)
 

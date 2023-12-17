@@ -1,33 +1,40 @@
 #include "pp.hpp"
 
 using namespace pp;
-using namespace linalg;
 using namespace stats;
-using namespace Eigen;
+using namespace linalg;
+
 namespace pp {
-Projector<double> lda_optimum_projector(
-  Data<double>               data,
-  DataColumn<unsigned short> groups,
-  unsigned int               group_count) {
-  DMatrix<double> W = within_groups_sum_of_squares(data, groups, group_count);
-  DMatrix<double> B = between_groups_sum_of_squares(data, groups, group_count);
+template<typename T, typename G>
+Projector<T> lda_optimum_projector(
+  Data<T>       data,
+  DataColumn<G> groups,
+  int           group_count) {
+  Data<T> W = within_groups_sum_of_squares(data, groups, group_count);
+  Data<T> B = between_groups_sum_of_squares(data, groups, group_count);
 
-  auto [eigen_val, eigen_vec] = eigen(linalg::inverse(W + B) * B);
+  auto [eigen_val, eigen_vec] = linalg::eigen(linalg::inverse(W + B) * B);
 
-  return eigen_vec(all, last);
+  return eigen_vec(Eigen::all, Eigen::last);
 }
 
-double lda_index(
-  Data<double>               data,
-  Projector<double>          projector,
-  DataColumn<unsigned short> groups,
-  unsigned int               group_count) {
-  DMatrix<double> A = projector;
+template Projector<double> lda_optimum_projector<double, int>(
+  Data<double>    data,
+  DataColumn<int> groups,
+  int             group_count);
 
-  DMatrix<double> W = within_groups_sum_of_squares(data, groups, group_count);
-  DMatrix<double> B = between_groups_sum_of_squares(data, groups, group_count);
+template<typename T, typename G>
+T lda_index(
+  Data<T>       data,
+  Projector<T>  projector,
+  DataColumn<G> groups,
+  int           group_count) {
+  Data<T> A = projector;
 
-  double denominator = determinant(inner_square(A, W + B));
+  Data<T> W = within_groups_sum_of_squares(data, groups, group_count);
+  Data<T> B = between_groups_sum_of_squares(data, groups, group_count);
+
+  T denominator = linalg::determinant(linalg::inner_square(A, W + B));
 
   if (denominator == 0) {
     return 0;
@@ -36,9 +43,20 @@ double lda_index(
   return 1 - determinant(inner_square(A, W)) / denominator;
 }
 
-DataColumn<double> project(
+template double lda_index<double, int>(
   Data<double>      data,
-  Projector<double> projector) {
+  Projector<double> projector,
+  DataColumn<int>   groups,
+  int               group_count);
+
+template<typename T>
+Projection<T> project(
+  Data<T>      data,
+  Projector<T> projector) {
   return data * projector;
 }
+
+template Projection<double> project<double>(
+  Data<double>      data,
+  Projector<double> projector);
 }

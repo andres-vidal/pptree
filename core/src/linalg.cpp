@@ -82,7 +82,7 @@ std::tuple<DVector<double>, DMatrix<double> > sort_eigen(
   DVector<double> values,
   DMatrix<double> vectors
   ) {
-  DVector<unsigned int> idx = DVector<unsigned int>::Zero(values.size());
+  DVector<int> idx = DVector<int>::Zero(values.size());
 
   for (int i = 0; i < values.size(); ++i) {
     idx[i] = i;

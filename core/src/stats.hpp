@@ -1,24 +1,35 @@
 #include "linalg.hpp"
 
 namespace stats {
-linalg::DMatrix<double> select_group(
-  linalg::DMatrix<double>         data,
-  linalg::DVector<unsigned short> groups,
-  unsigned short                  group);
+template<typename T>
+using Data = linalg::DMatrix<T>;
 
-linalg::DMatrix<double> remove_group(
-  linalg::DMatrix<double>         data,
-  linalg::DVector<unsigned short> groups,
-  unsigned int                    group_count,
-  unsigned short                  group);
+template<typename T>
+using DataColumn = linalg::DVector<T>;
 
-linalg::DMatrix<double> between_groups_sum_of_squares(
-  linalg::DMatrix<double>         data,
-  linalg::DVector<unsigned short> groups,
-  unsigned int                    group_count);
+template<typename T, typename G>
+Data<T> select_group(
+  Data<T>       data,
+  DataColumn<G> groups,
+  G             group);
 
-linalg::DMatrix<double> within_groups_sum_of_squares(
-  linalg::DMatrix<double>         data,
-  linalg::DVector<unsigned short> groups,
-  unsigned int                    group_count);
+template<typename T, typename G>
+Data<T> remove_group(
+  Data<T>       data,
+  DataColumn<G> groups,
+  int           group_count,
+  G             group);
+
+template<typename T, typename G>
+Data<T> between_groups_sum_of_squares(
+  Data<T>       data,
+  DataColumn<G> groups,
+  int           group_count);
+
+
+template<typename T, typename G>
+Data<T> within_groups_sum_of_squares(
+  Data<T>       data,
+  DataColumn<G> groups,
+  int           group_count);
 }
