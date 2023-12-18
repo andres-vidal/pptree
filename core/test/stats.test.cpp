@@ -265,7 +265,7 @@ TEST(StatsBetweenGroupsSumOfSquares, single_group) {
     0,
     0;
 
-  Data<double> actual = between_groups_sum_of_squares(data, groups, 1);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 0 });
   Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
@@ -297,7 +297,7 @@ TEST(StatsBetweenGroupsSumOfSquares, two_equal_groups) {
     1,
     1;
 
-  Data<double> actual = between_groups_sum_of_squares(data, groups, 2);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 0, 1 });
   Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
@@ -334,7 +334,7 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate) {
     2,
     2;
 
-  Data<double> actual = between_groups_sum_of_squares(data, groups, 3);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 0, 1, 2 });
   Data<double> expected(1, 1);
   expected <<
     19.875;
@@ -368,7 +368,7 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
     2,
     2;
 
-  Data<double> actual = between_groups_sum_of_squares(data, groups, 3);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 0, 1, 2 });
   Data<double> expected(3, 3);
   expected <<
     19.875, 0.0, 0.0,
@@ -394,7 +394,7 @@ TEST(StatsWithinGroupsSumOfSquares, single_group_no_variance) {
     0,
     0;
 
-  Data<double> actual = within_groups_sum_of_squares(data, groups, 1);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0 });
   Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
@@ -420,7 +420,7 @@ TEST(StatsWithinGroupsSumOfSquares, single_group_with_variance) {
     0,
     0;
 
-  Data<double> actual = within_groups_sum_of_squares(data, groups, 1);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0 });
   Data<double> expected(3, 3);
   expected <<
     2.0, 2.0, 2.0,
@@ -452,7 +452,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_equal_groups) {
     1,
     1;
 
-  Data<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
   Data<double> expected(3, 3);
   expected <<
     4.0, 4.0, 4.0,
@@ -484,7 +484,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_groups_same_variance) {
     1,
     1;
 
-  Data<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
   Data<double> expected(3, 3);
   expected <<
     4.0, 4.0, 4.0,
@@ -516,7 +516,7 @@ TEST(StatsWithinGroupsSumOfSquares, two_groups_different_variance) {
     1,
     1;
 
-  Data<double> actual = within_groups_sum_of_squares(data, groups, 2);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
   Data<double> expected(3, 3);
   expected <<
     16.0, 16.0, 16.0,
@@ -552,7 +552,7 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate1) {
     2,
     2;
 
-  Data<double> actual = within_groups_sum_of_squares(data, groups, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1, 2 });
   Data<double> expected(3, 3);
   expected <<
     24.5, 24.5, 24.5,
@@ -588,7 +588,7 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
     2,
     2;
 
-  Data<double> actual = within_groups_sum_of_squares(data, groups, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1, 2 });
   Data<double> expected(4, 4);
   expected <<
     24.5, 24.5, 24.5, 0.0,

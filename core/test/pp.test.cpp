@@ -35,7 +35,7 @@ TEST(PPLDAOptimumProjector, two_groups) {
     1,
     1;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, 2);
+  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1 });
 
   DVector<double> expected(4);
   expected <<
@@ -72,7 +72,7 @@ TEST(PPLDAOptimumProjector, two_groups2) {
     1,
     1;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, 2);
+  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1 });
 
   DVector<double> expected(4);
   expected <<
@@ -110,7 +110,7 @@ TEST(PPLDAOptimumProjector, two_groups3) {
     1,
     1;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, 2);
+  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1 });
 
   DVector<double> expected(4);
   expected <<
@@ -146,7 +146,7 @@ TEST(PPLDAOptimumProjector, two_groups4) {
     1,
     1;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, 2);
+  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1 });
 
   DVector<double> expected(4);
   expected <<
@@ -222,7 +222,7 @@ TEST(PPLDAOptimumProjector, three_groups) {
     2,
     2;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, 3);
+  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1, 2 });
 
   DVector<double> expected1(5);
   expected1 <<
@@ -261,7 +261,7 @@ TEST(PPLDAIndex, zero_return) {
   projector <<
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
-  double actual = lda_index(data, projector, groups, 2);
+  double actual = lda_index(data, projector, groups, { 0, 1 });
 
   ASSERT_EQ(0.0, actual);
 }
@@ -337,7 +337,7 @@ TEST(PPLDAIndex, optimal) {
   projector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
-  double actual = lda_index(data, projector, groups, 3);
+  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -414,7 +414,7 @@ TEST(PPLDAIndex, optimal2) {
   projector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
 
-  double actual = lda_index(data, projector, groups, 3);
+  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -491,7 +491,7 @@ TEST(PPLDAIndex, optimal3) {
   projector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
 
-  double actual = lda_index(data, projector, groups, 3);
+  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -568,7 +568,7 @@ TEST(PPLDAIndex, suboptimal) {
   projector <<
     0, 0, 1, 1, 1;
 
-  double actual = lda_index(data, projector, groups, 3);
+  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_NEAR(0.134985, actual, 0.00001);
 }
@@ -645,7 +645,7 @@ TEST(PPLDAIndex, suboptimal2) {
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double actual = lda_index(data, projector, groups, 3);
+  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }

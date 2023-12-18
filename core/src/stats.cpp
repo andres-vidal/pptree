@@ -59,14 +59,14 @@ template Data<double> remove_group<double, int>(
 
 template<typename T, typename G>
 Data<T> between_groups_sum_of_squares(
-  Data<T>       data,
-  DataColumn<G> groups,
-  int           group_count
+  Data<T>        data,
+  DataColumn<G>  groups,
+  std::vector<G> unique_groups
   ) {
   DataColumn<T> global_mean = mean(data);
   Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
-  for (G g = 0; g < group_count; g++) {
+  for (G g = 0; g < unique_groups.size(); g++) {
     Data<T> group_data = select_group(data, groups, g);
     DataColumn<T> group_mean = mean(group_data);
 
@@ -77,20 +77,20 @@ Data<T> between_groups_sum_of_squares(
 }
 
 template Data<double> between_groups_sum_of_squares<double, int>(
-  Data<double>    data,
-  DataColumn<int> groups,
-  int             group_count);
+  Data<double>     data,
+  DataColumn<int>  groups,
+  std::vector<int> unique_groups);
 
 
 template<typename T, typename G>
 Data<T> within_groups_sum_of_squares(
-  Data<T>       data,
-  DataColumn<G> groups,
-  int           group_count
+  Data<T>        data,
+  DataColumn<G>  groups,
+  std::vector<G> unique_groups
   ) {
   Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
-  for (G g = 0; g < group_count; g++) {
+  for (G g = 0; g < unique_groups.size(); g++) {
     Data<T> group_data = select_group(data, groups, g);
     DataColumn<T> group_mean = mean(group_data);
     Data<T> centered_data = group_data.rowwise() - group_mean.transpose();
@@ -104,7 +104,7 @@ Data<T> within_groups_sum_of_squares(
 }
 
 template Data<double> within_groups_sum_of_squares<double, int>(
-  Data<double>    data,
-  DataColumn<int> groups,
-  int             group_count);
+  Data<double>     data,
+  DataColumn<int>  groups,
+  std::vector<int> unique_groups);
 };

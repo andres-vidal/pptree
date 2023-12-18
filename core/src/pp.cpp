@@ -7,11 +7,11 @@ using namespace linalg;
 namespace pp {
 template<typename T, typename G>
 Projector<T> lda_optimum_projector(
-  Data<T>       data,
-  DataColumn<G> groups,
-  int           group_count) {
-  Data<T> W = within_groups_sum_of_squares(data, groups, group_count);
-  Data<T> B = between_groups_sum_of_squares(data, groups, group_count);
+  Data<T>        data,
+  DataColumn<G>  groups,
+  std::vector<G> unique_groups) {
+  Data<T> W = within_groups_sum_of_squares(data, groups, unique_groups);
+  Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
 
   auto [eigen_val, eigen_vec] = linalg::eigen(linalg::inverse(W + B) * B);
 
@@ -19,20 +19,20 @@ Projector<T> lda_optimum_projector(
 }
 
 template Projector<double> lda_optimum_projector<double, int>(
-  Data<double>    data,
-  DataColumn<int> groups,
-  int             group_count);
+  Data<double>     data,
+  DataColumn<int>  groups,
+  std::vector<int> unique_groups);
 
 template<typename T, typename G>
 T lda_index(
-  Data<T>       data,
-  Projector<T>  projector,
-  DataColumn<G> groups,
-  int           group_count) {
+  Data<T>        data,
+  Projector<T>   projector,
+  DataColumn<G>  groups,
+  std::vector<G> unique_groups) {
   Data<T> A = projector;
 
-  Data<T> W = within_groups_sum_of_squares(data, groups, group_count);
-  Data<T> B = between_groups_sum_of_squares(data, groups, group_count);
+  Data<T> W = within_groups_sum_of_squares(data, groups, unique_groups);
+  Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
 
   T denominator = linalg::determinant(linalg::inner_square(A, W + B));
 
@@ -47,7 +47,7 @@ template double lda_index<double, int>(
   Data<double>      data,
   Projector<double> projector,
   DataColumn<int>   groups,
-  int               group_count);
+  std::vector<int>  unique_groups);
 
 template<typename T>
 Projection<T> project(

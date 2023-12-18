@@ -21,14 +21,14 @@ Data<T> remove_group(
 
 template<typename T, typename G>
 Data<T> between_groups_sum_of_squares(
-  Data<T>       data,
-  DataColumn<G> groups,
-  int           group_count);
+  Data<T>        data,
+  DataColumn<G>  groups,
+  std::vector<G> unique_groups);
 
 
 template<typename T, typename G>
 Data<T> within_groups_sum_of_squares(
-  Data<T>       data,
-  DataColumn<G> groups,
-  int           group_count);
+  Data<T>        data,
+  DataColumn<G>  groups,
+  std::vector<G> unique_groups);
 }
