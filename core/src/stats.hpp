@@ -17,7 +17,6 @@ template<typename T, typename G>
 Data<T> remove_group(
   Data<T>       data,
   DataColumn<G> groups,
-  int           group_count,
   G             group);
 
 template<typename T, typename G>

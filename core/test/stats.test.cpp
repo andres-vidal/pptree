@@ -118,7 +118,7 @@ TEST(StatsRemoveGroup, single_group) {
     1,
     1;
 
-  Data<double> actual = remove_group(data, groups, 1, 1);
+  Data<double> actual = remove_group(data, groups, 1);
 
   ASSERT_EQ(0, actual.size());
   ASSERT_EQ(0, actual.rows());
@@ -138,7 +138,7 @@ TEST(StatsRemoveGroup, multiple_groups_adjacent1) {
     1,
     2;
 
-  Data<double> actual = remove_group(data, groups, 2, 1);
+  Data<double> actual = remove_group(data, groups, 1);
 
   Data<double> expected(1, 3);
   expected <<
@@ -163,7 +163,7 @@ TEST(StatsRemoveGroup, multiple_groups_adjacent2) {
     1,
     2;
 
-  Data<double> actual = remove_group(data, groups, 2, 2);
+  Data<double> actual = remove_group(data, groups, 2);
 
   Data<double> expected(2, 3);
   expected <<
@@ -189,7 +189,7 @@ TEST(StatsRemoveGroup, multiple_mixed1) {
     2,
     1;
 
-  Data<double> actual = remove_group(data, groups, 2, 1);
+  Data<double> actual = remove_group(data, groups, 1);
 
   Data<double> expected(1, 3);
   expected <<
@@ -214,7 +214,7 @@ TEST(StatsRemoveGroup, multiple_mixed2) {
     2,
     1;
 
-  Data<double> actual = remove_group(data, groups, 2, 2);
+  Data<double> actual = remove_group(data, groups, 2);
   Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 6.0,
@@ -239,7 +239,7 @@ TEST(StatsRemoveGroup, non_existent_group) {
     2,
     1;
 
-  Data<double> actual = remove_group(data, groups, 2, 3);
+  Data<double> actual = remove_group(data, groups, 3);
   Data<double> expected(3, 3);
   expected <<
     1.0, 2.0, 3.0,

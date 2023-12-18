@@ -34,7 +34,6 @@ template<typename T, typename G>
 Data<T> remove_group(
   Data<T>       data,
   DataColumn<G> groups,
-  int           group_count,
   G             group
   ) {
   std::vector<G> index;
@@ -55,7 +54,6 @@ Data<T> remove_group(
 template Data<double> remove_group<double, int>(
   Data<double>    data,
   DataColumn<int> groups,
-  int             group_count,
   int             group);
 
 
