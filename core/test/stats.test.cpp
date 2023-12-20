@@ -105,6 +105,275 @@ TEST(StatsSelectGroup, empty_result) {
   ASSERT_EQ(0, actual.cols());
 }
 
+TEST(StatsSelectGroups, single_on_single) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    1;
+
+  Data<double> actual = select_groups(data, groups, { 1 });
+
+  Data<double> expected(3, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroups, single_on_single_empty) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    1;
+
+  Data<double> actual = select_groups(data, groups, { 2 });
+
+  ASSERT_EQ(0, actual.size());
+  ASSERT_EQ(0, actual.rows());
+  ASSERT_EQ(0, actual.cols());
+}
+
+TEST(StatsSelectGroups, single_on_multiple_adjacent) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    2;
+
+  Data<double> actual = select_groups(data, groups, { 1 });
+
+  Data<double> expected(2, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroups, single_on_multiple_mixed) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    2,
+    1;
+
+  Data<double> actual = select_groups(data, groups, { 1 });
+
+  Data<double> expected(2, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroups, multiple_on_multiple) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    2,
+    1;
+
+  Data<double> actual = select_groups(data, groups, { 1, 2 });
+
+  Data<double> expected(3, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroups, multiple_on_multiple_empty) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    2,
+    1;
+
+  Data<double> actual = select_groups(data, groups, { 3, 4 });
+
+  ASSERT_EQ(0, actual.size());
+  ASSERT_EQ(0, actual.rows());
+  ASSERT_EQ(0, actual.cols());
+}
+
+TEST(StatsSelectGroups, multiple_on_single) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    1;
+
+  Data<double> actual = select_groups(data, groups, { 1, 2 });
+
+  Data<double> expected(3, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroups, multiple_on_single_empty) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    1;
+
+  Data<double> actual = select_groups(data, groups, { 3, 4 });
+
+  ASSERT_EQ(0, actual.size());
+  ASSERT_EQ(0, actual.rows());
+  ASSERT_EQ(0, actual.cols());
+}
+
+TEST(StatsSelectGroups, multiple_on_multiple_adjacent) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    2;
+
+  Data<double> actual = select_groups(data, groups, { 1, 2 });
+
+  Data<double> expected(3, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroup, multiple_on_multiple2) {
+  // Use a matrix with 15 rows
+  Data<double> data(15, 3);
+  data <<
+    1.0,  2.0,  3.0,
+    4.0,  5.0,  6.0,
+    7.0,  8.0,  9.0,
+    10.0, 11.0, 12.0,
+    13.0, 14.0, 15.0,
+    16.0, 17.0, 18.0,
+    19.0, 20.0, 21.0,
+    22.0, 23.0, 24.0,
+    25.0, 26.0, 27.0,
+    28.0, 29.0, 30.0,
+    31.0, 32.0, 33.0,
+    34.0, 35.0, 36.0,
+    37.0, 38.0, 39.0,
+    40.0, 41.0, 42.0,
+    43.0, 44.0, 45.0;
+
+  DataColumn<int> groups(15);
+  groups <<
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    5,
+    5,
+    5;
+
+  Data<double> actual = select_groups(data, groups, { 1, 2, 4 });
+
+  Data<double> expected(9, 3);
+  expected <<
+    1.0,  2.0,  3.0,
+    4.0,  5.0,  6.0,
+    7.0,  8.0,  9.0,
+    10.0, 11.0, 12.0,
+    13.0, 14.0, 15.0,
+    16.0, 17.0, 18.0,
+    28.0, 29.0, 30.0,
+    31.0, 32.0, 33.0,
+    34.0, 35.0, 36.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
 TEST(StatsRemoveGroup, single_group) {
   Data<double> data(3, 3);
   data <<

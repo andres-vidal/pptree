@@ -30,6 +30,30 @@ template Data<double> select_group<double, int>(
   DataColumn<int> groups,
   int             group);
 
+template<typename T, typename G>
+Data<T> select_groups(
+  Data<T>       data,
+  DataColumn<G> data_groups,
+  std::set<G>   groups) {
+  std::vector<G> index;
+
+  for (G i = 0; i < data_groups.rows(); i++) {
+    if (groups.contains(data_groups(i))) {
+      index.push_back(i);
+    }
+  }
+
+  if (index.size() == 0) {
+    return Data<T>(0, 0);
+  }
+
+  return data(index, Eigen::all);
+}
+
+template Data<double> select_groups<double, int>(
+  Data<double>    data,
+  DataColumn<int> data_groups,
+  std::set<int>   groups);
 
 template<typename T, typename G>
 Data<T> remove_group(

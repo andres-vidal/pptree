@@ -16,6 +16,12 @@ Data<T> select_group(
   G             group);
 
 template<typename T, typename G>
+Data<T> select_groups(
+  Data<T>       data,
+  DataColumn<G> data_groups,
+  std::set<G>   groups);
+
+template<typename T, typename G>
 Data<T> remove_group(
   Data<T>       data,
   DataColumn<G> groups,
