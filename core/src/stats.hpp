@@ -1,4 +1,6 @@
 #include "linalg.hpp"
+#include <set>
+
 
 namespace stats {
 template<typename T>
@@ -21,20 +23,20 @@ Data<T> remove_group(
 
 template<typename T, typename G>
 DataColumn<G> binary_regroup(
-  Data<T>        data,
-  DataColumn<G>  groups,
-  std::vector<G> unique_groups);
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups);
 
 template<typename T, typename G>
 Data<T> between_groups_sum_of_squares(
-  Data<T>        data,
-  DataColumn<G>  groups,
-  std::vector<G> unique_groups);
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups);
 
 
 template<typename T, typename G>
 Data<T> within_groups_sum_of_squares(
-  Data<T>        data,
-  DataColumn<G>  groups,
-  std::vector<G> unique_groups);
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups);
 }

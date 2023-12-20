@@ -59,9 +59,9 @@ template Data<double> remove_group<double, int>(
 
 template<typename T, typename G>
 DataColumn<G> binary_regroup(
-  Data<T>        data,
-  DataColumn<G>  data_groups,
-  std::vector<G> unique_groups) {
+  Data<T>       data,
+  DataColumn<G> data_groups,
+  std::set<G>   unique_groups) {
   struct Group {
     G indx;
     T mean;
@@ -116,15 +116,15 @@ DataColumn<G> binary_regroup(
 }
 
 template DataColumn<int> binary_regroup<double, int>(
-  Data<double>     data,
-  DataColumn<int>  data_groups,
-  std::vector<int> unique_groups);
+  Data<double>    data,
+  DataColumn<int> data_groups,
+  std::set<int>   unique_groups);
 
 template<typename T, typename G>
 Data<T> between_groups_sum_of_squares(
-  Data<T>        data,
-  DataColumn<G>  groups,
-  std::vector<G> unique_groups
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups
   ) {
   DataColumn<T> global_mean = mean(data);
   Data<T> result = Data<T>::Zero(data.cols(), data.cols());
@@ -140,16 +140,16 @@ Data<T> between_groups_sum_of_squares(
 }
 
 template Data<double> between_groups_sum_of_squares<double, int>(
-  Data<double>     data,
-  DataColumn<int>  groups,
-  std::vector<int> unique_groups);
+  Data<double>    data,
+  DataColumn<int> groups,
+  std::set<int>   unique_groups);
 
 
 template<typename T, typename G>
 Data<T> within_groups_sum_of_squares(
-  Data<T>        data,
-  DataColumn<G>  groups,
-  std::vector<G> unique_groups
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups
   ) {
   Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
@@ -167,7 +167,7 @@ Data<T> within_groups_sum_of_squares(
 }
 
 template Data<double> within_groups_sum_of_squares<double, int>(
-  Data<double>     data,
-  DataColumn<int>  groups,
-  std::vector<int> unique_groups);
+  Data<double>    data,
+  DataColumn<int> groups,
+  std::set<int>   unique_groups);
 };
