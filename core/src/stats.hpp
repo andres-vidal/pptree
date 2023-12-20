@@ -20,6 +20,12 @@ Data<T> remove_group(
   G             group);
 
 template<typename T, typename G>
+DataColumn<G> binary_regroup(
+  Data<T>        data,
+  DataColumn<G>  groups,
+  std::vector<G> unique_groups);
+
+template<typename T, typename G>
 Data<T> between_groups_sum_of_squares(
   Data<T>        data,
   DataColumn<G>  groups,
