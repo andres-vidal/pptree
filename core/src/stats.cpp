@@ -120,6 +120,19 @@ template DataColumn<int> binary_regroup<double, int>(
   DataColumn<int> data_groups,
   std::set<int>   unique_groups);
 
+template<typename N>
+std::set<N> unique(DataColumn<N> column) {
+  std::set<N> unique_values;
+
+  for (int i = 0; i < column.rows(); i++) {
+    unique_values.insert(column(i));
+  }
+
+  return unique_values;
+}
+
+template std::set<int> unique<int>(DataColumn<int> column);
+
 template<typename T, typename G>
 Data<T> between_groups_sum_of_squares(
   Data<T>       data,

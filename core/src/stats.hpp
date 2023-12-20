@@ -27,6 +27,9 @@ DataColumn<G> binary_regroup(
   DataColumn<G> groups,
   std::set<G>   unique_groups);
 
+template<typename N>
+std::set<N> unique(DataColumn<N> column);
+
 template<typename T, typename G>
 Data<T> between_groups_sum_of_squares(
   Data<T>       data,

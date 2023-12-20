@@ -252,6 +252,66 @@ TEST(StatsRemoveGroup, non_existent_group) {
   ASSERT_EQ(expected, actual);
 }
 
+
+TEST(StatsUnique, empty_result) {
+  DataColumn<int> column(0);
+  std::set<int> actual = unique(column);
+  std::set<int> expected;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsUnique, single_value) {
+  DataColumn<int> column(1);
+  column << 1;
+  std::set<int> actual = unique(column);
+  std::set<int> expected = { 1 };
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsUnique, single_value_repeated) {
+  DataColumn<int> column(3);
+  column <<
+    1,
+    1,
+    1;
+  std::set<int> actual = unique(column);
+  std::set<int> expected = { 1 };
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsUnique, multiple_values) {
+  DataColumn<int> column(3);
+  column <<
+    1,
+    2,
+    3;
+  std::set<int> actual = unique(column);
+  std::set<int> expected = { 1, 2, 3 };
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsUnique, multiple_values_repeated) {
+  DataColumn<int> column(3);
+  column <<
+    1,
+    2,
+    1;
+  std::set<int> actual = unique(column);
+  std::set<int> expected = { 1, 2 };
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+
 TEST(StatsBetweenGroupsSumOfSquares, single_group) {
   Data<double> data(3, 3);
   data <<
