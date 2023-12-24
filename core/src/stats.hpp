@@ -29,7 +29,7 @@ Data<T> remove_group(
   G             group);
 
 template<typename T, typename G>
-std::tuple < DataColumn<G>, std::set<int>, std::map<int, std::set<G> > >binary_regroup(
+std::tuple<DataColumn<G>, std::set<int>, std::map<int, std::set<G> > >binary_regroup(
   Data<T>       data,
   DataColumn<G> groups,
   std::set<G>   unique_groups);

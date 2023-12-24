@@ -59,4 +59,19 @@ Projection<T> project(
 template Projection<double> project<double>(
   Data<double>      data,
   Projector<double> projector);
+
+
+template<typename T, typename G>
+PPStrategyReturn<T> lda_strategy(
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups) {
+  Projector<T> projector = lda_optimum_projector(data, groups, unique_groups);
+  return std::make_tuple(projector, project(data, projector));
+}
+
+template PPStrategyReturn<double> lda_strategy<double, int>(
+  Data<double>    data,
+  DataColumn<int> groups,
+  std::set<int>   unique_groups);
 }
