@@ -1,6 +1,8 @@
 #include "stats.hpp"
 #include <vector>
 
+#include <iostream>
+
 using namespace linalg;
 
 namespace stats {
@@ -81,53 +83,86 @@ template Data<double> remove_group<double, int>(
   DataColumn<int> groups,
   int             group);
 
+
 template<typename T, typename G>
-DataColumn<G> binary_regroup(
+struct Group {
+  G id;
+  T mean;
+  T diff;
+};
+
+template<typename T, typename G>
+std::vector<Group<T, G> > summarize_groups(
   Data<T>       data,
   DataColumn<G> data_groups,
   std::set<G>   unique_groups) {
-  struct Group {
-    G indx;
-    T mean;
-    T diff;
-  };
+  std::vector<Group<T, G> > groups(unique_groups.size());
+  int i = 0;
 
-  auto cmp_indx_ascending = [](Group a, Group b) {
-      return a.indx < b.indx;
-    };
+  for ( auto g : unique_groups) {
+    groups[i].id = g;
+    groups[i].mean = mean(select_group(data, data_groups, g)).value();
+    i++;
+  }
 
-  auto cmp_mean_ascending = [](Group a, Group b) {
+  return groups;
+}
+
+template<typename T, typename G>
+Group<T, G>get_edge_group(
+  std::vector<Group<T, G> > groups) {
+  auto cmp_mean_ascending = [](Group<T, G> a, Group<T, G> b) {
       return a.mean < b.mean;
     };
 
-  auto cmp_diff_ascending = [](Group a, Group b) {
+  auto cmp_diff_ascending = [](Group<T, G> a, Group<T, G> b) {
       return a.diff < b.diff;
     };
 
-  std::vector<Group> wrappers(unique_groups.size());
+  std::sort(groups.begin(), groups.end(), cmp_mean_ascending);
 
-  for (G g = 0; g < wrappers.size(); g++) {
-    wrappers[g].indx = g;
-    wrappers[g].mean = mean(select_group(data, data_groups, g))(0, 0);
-  }
-
-  std::sort(wrappers.begin(), wrappers.end(), cmp_mean_ascending);
-
-  for (G g = 0; g < wrappers.size(); g++) {
-    if (g ==  wrappers.size() - 1) {
-      wrappers[g].diff = 0;
+  for (G g = 0; g < groups.size(); g++) {
+    if (g ==  groups.size() - 1) {
+      groups[g].diff = 0;
     } else {
-      wrappers[g].diff = wrappers[g + 1].mean - wrappers[g].mean;
+      groups[g].diff = groups[g + 1].mean - groups[g].mean;
     }
   }
 
-  Group edge_group = *std::max_element(wrappers.begin(), wrappers.end(), cmp_diff_ascending);
-  std::sort(wrappers.begin(), wrappers.end(), cmp_indx_ascending);
+  return *std::max_element(groups.begin(), groups.end(), cmp_diff_ascending);
+}
+
+template<typename T, typename G>
+Group<T, G> get_group_by_id(
+  std::vector<Group<T, G> > groups,
+  G                         id) {
+  auto matches_id = [id](Group<T, G> g) {
+      return g.id == id;
+    };
+
+  return *std::find_if(groups.begin(), groups.end(), matches_id);
+}
+
+template<typename T, typename G>
+std::tuple<DataColumn<G>, std::set<int> > binary_regroup(
+  Data<T>       data,
+  DataColumn<G> data_groups,
+  std::set<G>   unique_groups) {
+  if (unique_groups.size() <= 2) {
+    throw std::invalid_argument("Must have more than 2 groups to binary regroup");
+  }
+
+  if (data.cols() != 1) {
+    throw std::invalid_argument("Data must be unidimensional to binary regroup");
+  }
+
+  std::vector<Group<T, G> > groups = summarize_groups(data, data_groups, unique_groups);
+  Group<T, G> edge_group = get_edge_group(groups);
 
   DataColumn<G> new_data_groups(data_groups.rows());
 
   for (int i = 0; i < new_data_groups.rows(); i++) {
-    Group group = wrappers[data_groups(i)];
+    Group group = get_group_by_id(groups, data_groups(i));
 
     if (group.mean <= edge_group.mean) {
       new_data_groups(i) = 0;
@@ -136,10 +171,12 @@ DataColumn<G> binary_regroup(
     }
   }
 
-  return new_data_groups;
+  std::set<G> new_unique_groups = { 0, 1 };
+
+  return std::make_tuple(new_data_groups, new_unique_groups);
 }
 
-template DataColumn<int> binary_regroup<double, int>(
+template std::tuple<DataColumn<int>, std::set<int> > binary_regroup<double, int>(
   Data<double>    data,
   DataColumn<int> data_groups,
   std::set<int>   unique_groups);

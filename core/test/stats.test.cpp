@@ -521,6 +521,170 @@ TEST(StatsRemoveGroup, non_existent_group) {
   ASSERT_EQ(expected, actual);
 }
 
+TEST(StatsBinaryRegroup, single_group) {
+  Data<double> data(3, 1);
+  data <<
+    1.0,
+    4.0,
+    7.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    1;
+
+  ASSERT_THROW({ binary_regroup(data, groups, { 1 }); }, std::invalid_argument);
+}
+
+TEST(StatsBinaryRegroup, two_groups) {
+  Data<double> data(3, 1);
+  data <<
+    1.0,
+    4.0,
+    7.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    2;
+
+  ASSERT_THROW({ binary_regroup(data, groups, { 1, 2 }); }, std::invalid_argument);
+}
+
+TEST(StatsBinaryRegroup, multidimensional) {
+  Data<double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    2,
+    3;
+
+  ASSERT_THROW({ binary_regroup(data, groups, { 1, 2, 3 }); }, std::invalid_argument);
+}
+
+TEST(StatsBinaryGroup, single_observation_per_group) {
+  Data<double> data(3, 1);
+  data <<
+    1.0,
+    2.0,
+    7.0;
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    2,
+    3;
+
+  auto [actual_new_groups, actual_new_unique_groups] = binary_regroup(data, groups, { 1, 2, 3 });
+
+  DataColumn<int> expected_new_groups(3);
+  expected_new_groups <<
+    0,
+    0,
+    1;
+
+  std::set<int> expected_new_unique_groups = { 0, 1 };
+
+  ASSERT_EQ(expected_new_unique_groups, actual_new_unique_groups);
+  ASSERT_EQ(expected_new_groups.size(), actual_new_groups.size());
+  ASSERT_EQ(expected_new_groups.rows(), actual_new_groups.rows());
+  ASSERT_EQ(expected_new_groups.cols(), actual_new_groups.cols());
+  ASSERT_EQ(expected_new_groups, actual_new_groups);
+}
+
+TEST(StatsBinaryGroup, multiple_observations_per_group_adjacent) {
+  Data<double> data(8, 1);
+  data <<
+    1.0,
+    2.0,
+    3.0,
+    7.0,
+    8.0,
+    9.0,
+    11.0,
+    12.0;
+
+  DataColumn<int> groups(8);
+  groups <<
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    3,
+    3;
+
+  auto [actual_new_groups, actual_new_unique_groups] = binary_regroup(data, groups, { 1, 2, 3 });
+
+  DataColumn<int> expected_new_groups(8);
+  expected_new_groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  std::set<int> expected_new_unique_groups = { 0, 1 };
+
+  ASSERT_EQ(expected_new_unique_groups, actual_new_unique_groups);
+  ASSERT_EQ(expected_new_groups.size(), actual_new_groups.size());
+  ASSERT_EQ(expected_new_groups.rows(), actual_new_groups.rows());
+  ASSERT_EQ(expected_new_groups.cols(), actual_new_groups.cols());
+  ASSERT_EQ(expected_new_groups, actual_new_groups);
+}
+
+TEST(StatsBinaryGroup, multiple_observations_per_group_mixed) {
+  Data<double> data(8, 1);
+  data <<
+    7.0,
+    1.0,
+    12.0,
+    8.0,
+    2.0,
+    9.0,
+    11.0,
+    3.0;
+
+  DataColumn<int> groups(8);
+  groups <<
+    2,
+    1,
+    3,
+    2,
+    1,
+    2,
+    3,
+    1;
+
+  auto [actual_new_groups, actual_new_unique_groups] = binary_regroup(data, groups, { 1, 2, 3 });
+
+  DataColumn<int> expected_new_groups(8);
+  expected_new_groups <<
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0;
+
+  std::set<int> expected_new_unique_groups = { 0, 1 };
+
+  ASSERT_EQ(expected_new_unique_groups, actual_new_unique_groups);
+  ASSERT_EQ(expected_new_groups.size(), actual_new_groups.size());
+  ASSERT_EQ(expected_new_groups.rows(), actual_new_groups.rows());
+  ASSERT_EQ(expected_new_groups.cols(), actual_new_groups.cols());
+  ASSERT_EQ(expected_new_groups, actual_new_groups);
+}
+
 
 TEST(StatsUnique, empty_result) {
   DataColumn<int> column(0);
