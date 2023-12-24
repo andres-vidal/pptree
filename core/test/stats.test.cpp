@@ -578,7 +578,7 @@ TEST(StatsBinaryGroup, single_observation_per_group) {
     2,
     3;
 
-  auto [actual_new_groups, actual_new_unique_groups] = binary_regroup(data, groups, { 1, 2, 3 });
+  auto [actual_new_groups, actual_new_unique_groups, mapping] = binary_regroup(data, groups, { 1, 2, 3 });
 
   DataColumn<int> expected_new_groups(3);
   expected_new_groups <<
@@ -587,7 +587,11 @@ TEST(StatsBinaryGroup, single_observation_per_group) {
     1;
 
   std::set<int> expected_new_unique_groups = { 0, 1 };
+  std::set<int> expected_0_mapping = { 1, 2 };
+  std::set<int> expected_1_mapping = { 3 };
 
+  ASSERT_EQ(expected_0_mapping, mapping[0]);
+  ASSERT_EQ(expected_1_mapping, mapping[1]);
   ASSERT_EQ(expected_new_unique_groups, actual_new_unique_groups);
   ASSERT_EQ(expected_new_groups.size(), actual_new_groups.size());
   ASSERT_EQ(expected_new_groups.rows(), actual_new_groups.rows());
@@ -618,7 +622,7 @@ TEST(StatsBinaryGroup, multiple_observations_per_group_adjacent) {
     3,
     3;
 
-  auto [actual_new_groups, actual_new_unique_groups] = binary_regroup(data, groups, { 1, 2, 3 });
+  auto [actual_new_groups, actual_new_unique_groups, mapping] = binary_regroup(data, groups, { 1, 2, 3 });
 
   DataColumn<int> expected_new_groups(8);
   expected_new_groups <<
@@ -632,7 +636,11 @@ TEST(StatsBinaryGroup, multiple_observations_per_group_adjacent) {
     1;
 
   std::set<int> expected_new_unique_groups = { 0, 1 };
+  std::set<int> expected_0_mapping = { 1 };
+  std::set<int> expected_1_mapping = { 2, 3 };
 
+  ASSERT_EQ(expected_0_mapping, mapping[0]);
+  ASSERT_EQ(expected_1_mapping, mapping[1]);
   ASSERT_EQ(expected_new_unique_groups, actual_new_unique_groups);
   ASSERT_EQ(expected_new_groups.size(), actual_new_groups.size());
   ASSERT_EQ(expected_new_groups.rows(), actual_new_groups.rows());
@@ -663,7 +671,7 @@ TEST(StatsBinaryGroup, multiple_observations_per_group_mixed) {
     3,
     1;
 
-  auto [actual_new_groups, actual_new_unique_groups] = binary_regroup(data, groups, { 1, 2, 3 });
+  auto [actual_new_groups, actual_new_unique_groups, mapping] = binary_regroup(data, groups, { 1, 2, 3 });
 
   DataColumn<int> expected_new_groups(8);
   expected_new_groups <<
@@ -677,7 +685,11 @@ TEST(StatsBinaryGroup, multiple_observations_per_group_mixed) {
     0;
 
   std::set<int> expected_new_unique_groups = { 0, 1 };
+  std::set<int> expected_0_mapping = { 1 };
+  std::set<int> expected_1_mapping = { 2, 3 };
 
+  ASSERT_EQ(expected_0_mapping, mapping[0]);
+  ASSERT_EQ(expected_1_mapping, mapping[1]);
   ASSERT_EQ(expected_new_unique_groups, actual_new_unique_groups);
   ASSERT_EQ(expected_new_groups.size(), actual_new_groups.size());
   ASSERT_EQ(expected_new_groups.rows(), actual_new_groups.rows());

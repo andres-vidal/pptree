@@ -144,7 +144,7 @@ Group<T, G> get_group_by_id(
 }
 
 template<typename T, typename G>
-std::tuple<DataColumn<G>, std::set<int> > binary_regroup(
+std::tuple<DataColumn<G>, std::set<int>, std::map<int, std::set<G> > > binary_regroup(
   Data<T>       data,
   DataColumn<G> data_groups,
   std::set<G>   unique_groups) {
@@ -161,22 +161,26 @@ std::tuple<DataColumn<G>, std::set<int> > binary_regroup(
 
   DataColumn<G> new_data_groups(data_groups.rows());
 
+  std::map<int, std::set<G> > group_mapping;
+
   for (int i = 0; i < new_data_groups.rows(); i++) {
     Group group = get_group_by_id(groups, data_groups(i));
 
     if (group.mean <= edge_group.mean) {
       new_data_groups(i) = 0;
+      group_mapping[0].insert(group.id);
     } else {
       new_data_groups(i) = 1;
+      group_mapping[1].insert(group.id);
     }
   }
 
   std::set<G> new_unique_groups = { 0, 1 };
 
-  return std::make_tuple(new_data_groups, new_unique_groups);
+  return std::make_tuple(new_data_groups, new_unique_groups, group_mapping);
 }
 
-template std::tuple<DataColumn<int>, std::set<int> > binary_regroup<double, int>(
+template std::tuple < DataColumn<int>, std::set<int>, std::map<int, std::set<int> > > binary_regroup<double, int>(
   Data<double>    data,
   DataColumn<int> data_groups,
   std::set<int>   unique_groups);
