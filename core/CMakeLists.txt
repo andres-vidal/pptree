@@ -2,12 +2,15 @@ cmake_minimum_required(VERSION 3.5)
  
 project(pptree VERSION 0.0.0)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CSS_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 add_library(pptree
   src/pptree.cpp
-  src/stat.cpp)
+  src/stats.cpp
+  src/linear_algebra.cpp
+  src/pp.cpp)
 
 find_package(Eigen3 REQUIRED)
 
@@ -22,7 +25,9 @@ target_link_libraries(pptree
 enable_testing()
 
 add_executable(pptree-test
-  test/stat.test.cpp)
+  test/stats.test.cpp
+  test/linear_algebra.test.cpp
+  test/pp.test.cpp)
 
 find_package(GTest REQUIRED)
 
