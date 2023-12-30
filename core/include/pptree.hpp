@@ -23,4 +23,15 @@ Tree<T, R> train(
   stats::Data<T>       data,
   stats::DataColumn<R> groups,
   pp::PPStrategy<T, R> pp_strategy);
+
+
+template<typename T, typename R>
+R predict(
+  stats::DataColumn<T> data,
+  Tree<T, R>           tree);
+
+template<typename T, typename R>
+stats::DataColumn<R> predict(
+  stats::Data<T> data,
+  Tree<T, R>     tree);
 }

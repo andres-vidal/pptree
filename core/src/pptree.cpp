@@ -207,4 +207,54 @@ template Tree<double, int> train(
   Data<double>            data,
   DataColumn<int>         groups,
   PPStrategy<double, int> pp_strategy);
+
+
+template <typename T, typename R>
+R predict(
+  DataColumn<T> data,
+  Node<T, R>    node) {
+  if (node.left == nullptr && node.right == nullptr) {
+    return node.response;
+  }
+
+  T projected_data = project((Data<T>)data, node.projector).value();
+
+  if (projected_data < node.threshold) {
+    return predict(data, *node.left);
+  } else {
+    return predict(data, *node.right);
+  }
+}
+
+template int predict(
+  DataColumn<double> data,
+  Node<double, int>  node);
+
+template <typename T, typename R>
+R predict(
+  DataColumn<T> data,
+  Tree<T, R>    tree) {
+  return predict(data, tree.root);
+}
+
+template int predict(
+  DataColumn<double> data,
+  Tree<double, int>  tree);
+
+template <typename T, typename R>
+DataColumn<R> predict(
+  Data<T>    data,
+  Tree<T, R> tree) {
+  DataColumn<R> predictions(data.rows());
+
+  for (int i = 0; i < data.rows(); i++) {
+    predictions(i) = predict((DataColumn<T>)data.row(i), tree);
+  }
+
+  return predictions;
+}
+
+template DataColumn<int> predict(
+  Data<double>      data,
+  Tree<double, int> tree);
 }
