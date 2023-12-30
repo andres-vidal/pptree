@@ -1,13 +1,11 @@
 #include <Eigen/Dense>
 
-namespace linear_algebra {
-using namespace Eigen;
+namespace linalg {
+template<typename T>
+using DMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 
-template<typename T = double>
-using DMatrix = Matrix<T, Dynamic, Dynamic>;
-
-template<typename T = double>
-using DVector = Matrix<T, Dynamic, 1>;
+template<typename T>
+using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
 DVector<double> mean(
   DMatrix<double> data);
@@ -32,6 +30,10 @@ DMatrix<double> inner_product(
   DMatrix<double> a,
   DMatrix<double> b,
   DMatrix<double> weights);
+
+DMatrix<double> inner_product(
+  DMatrix<double> a,
+  DMatrix<double> b);
 
 DMatrix<double> inner_square(
   DMatrix<double> m,
