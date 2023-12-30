@@ -7,17 +7,22 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(pptree
   src/pptree.cpp
-  src/linear_algebra.cpp)
+  src/stat.cpp)
+
+find_package(Eigen3 REQUIRED)
 
 target_include_directories(pptree
   PUBLIC include)
+
+target_link_libraries(pptree
+  Eigen3::Eigen)
 
 
 # Test runner
 enable_testing()
 
 add_executable(pptree-test
-  test/linear_algebra.test.cpp)
+  test/stat.test.cpp)
 
 find_package(GTest REQUIRED)
 
@@ -30,15 +35,4 @@ target_include_directories(pptree-test
 
 include(GoogleTest)
 gtest_discover_tests(pptree-test)
-
-# Executable (temporary)
-
-add_executable(pptree-cli 
-  main.cpp)
-
-target_link_libraries(pptree-cli
-  pptree)
-
-target_include_directories(pptree-cli
-  PUBLIC include)
 

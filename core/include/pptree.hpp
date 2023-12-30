@@ -1,1 +1,1 @@
-void fit();
+namespace pptree {}
