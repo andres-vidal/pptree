@@ -1,0 +1,2 @@
+useDynLib(PPTree)
+importFrom(Rcpp, evalCpp)
