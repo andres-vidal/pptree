@@ -1,0 +1,12 @@
+Package: PPTree
+Type: Package
+Title: High performant assembled Projection Pursuit (PP) decision trees
+Version: 0.0.0
+Date: 2023-12-31
+Author: Andres Vidal, Natalia da Silva
+Maintainer: Andres Vidal <mantainer@pptree.com>
+Description: PPtree constructs decision trees by splitting on linear combinations of randomly chosen variables. Projection Pursuit (PP) is used to choose a projection of the variables that best separates the classes. Using linear combinations of variables to separate classes takes the correlation between variables into account which allows PPTree to outperform a traditional random forest when separations between groups occurs in combinations of variables.
+License: MIT + file LICENSE
+Imports: Rcpp (>= 1.0.11)
+LinkingTo: Rcpp, RcppEigen
+SystemRequirements: C++20
