@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.5)
  
 project(pptree VERSION 0.0.0)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CSS_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 add_library(pptree
   src/pptree.cpp
@@ -20,7 +20,6 @@ target_include_directories(pptree
   
 target_link_libraries(pptree
   Eigen3::Eigen)
-
 
 # Test runner
 enable_testing()
@@ -41,4 +40,6 @@ target_include_directories(pptree-test
 
 include(GoogleTest)
 gtest_discover_tests(pptree-test)
+
+
 
