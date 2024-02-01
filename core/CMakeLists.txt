@@ -11,8 +11,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options(-ffloat-store)
 endif()
 
-add_compile_options(-fsanitize=address)
-add_link_options(-fsanitize=address)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  add_compile_options(-fsanitize=address)
+  add_link_options(-fsanitize=address)
+endif()
 
 add_library(pptree
   src/pptree.cpp

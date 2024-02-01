@@ -153,8 +153,6 @@ namespace pptree {
     stats::Data<T>       data,
     stats::DataColumn<R> groups);
 
-
-
   template<typename T, typename R>
   Response<T, R> * as_response(Node<T, R> *node) {
     if (Response<T, R> *response = dynamic_cast<Response<T, R> *>(node)) {
