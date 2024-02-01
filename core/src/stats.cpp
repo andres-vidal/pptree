@@ -40,7 +40,7 @@ namespace stats {
     std::vector<G> index;
 
     for (G i = 0; i < data_groups.rows(); i++) {
-      if (groups.contains(data_groups(i))) {
+      if (groups.find(data_groups(i)) != groups.end()) {
         index.push_back(i);
       }
     }

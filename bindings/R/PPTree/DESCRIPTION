@@ -9,4 +9,4 @@ Description: PPtree constructs decision trees by splitting on linear combination
 License: MIT + file LICENSE
 Imports: Rcpp (>= 1.0.11)
 LinkingTo: Rcpp, RcppEigen
-SystemRequirements: C++20
+SystemRequirements: C++17
