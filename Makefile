@@ -6,6 +6,8 @@ CORE_DIR=core
 CORE_FILES=$(shell find $(CORE_DIR) -type f -name '*.cpp' -o -name '*.hpp')
 BUILD_DIR=_build
 
+R_PACKAGE_DIR=bindings/R/PPTree
+
 install:
 	@conan install . --output-folder=$(CONAN_DIR) --build=missing && pre-commit install
 
@@ -56,3 +58,15 @@ run:
 
 test: build-all
 	@cd ./$(BUILD_DIR) && ctest --output-on-failure
+
+r-build-deps: build-all
+	mkdir -p $(R_PACKAGE_DIR)/inst/lib && cp ./$(BUILD_DIR)/libpptree.a $(R_PACKAGE_DIR)/inst/lib/libpptree.a
+
+r-check: r-build-deps
+	R CMD check $(R_PACKAGE_DIR) --no-manual
+
+r-clean:
+	rm -f $(R_PACKAGE_DIR)/src/*.o $(R_PACKAGE_DIR)/src/*.so $(R_PACKAGE_DIR)/src/*.rds $(R_PACKAGE_DIR)/inst/lib/*.a
+
+r-install: r-build-deps
+	R CMD INSTALL $(R_PACKAGE_DIR)
