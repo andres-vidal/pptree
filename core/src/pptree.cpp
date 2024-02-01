@@ -208,6 +208,16 @@ namespace pptree {
     DataColumn<int>         groups,
     PPStrategy<double, int> pp_strategy);
 
+  template<typename T, typename R>
+  Tree<T, R> train_lda(
+    Data<T>       data,
+    DataColumn<R> groups) {
+    return train(data, groups, (PPStrategy<T, R>)lda_strategy<T, R>);
+  }
+
+  template Tree<double, int> train_lda(
+    Data<double>    data,
+    DataColumn<int> groups);
 
   template <typename T, typename R>
   R predict(

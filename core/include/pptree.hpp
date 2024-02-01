@@ -26,6 +26,11 @@ namespace pptree {
 
 
   template<typename T, typename R>
+  Tree<T, R> train_lda(
+    stats::Data<T>       data,
+    stats::DataColumn<R> groups);
+
+  template<typename T, typename R>
   R predict(
     stats::DataColumn<T> data,
     Tree<T, R>           tree);
