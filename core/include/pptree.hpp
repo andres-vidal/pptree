@@ -1,6 +1,8 @@
 #include "pp.hpp"
 
 namespace pptree {
+  inline namespace pp { using namespace ::pp; }
+  inline namespace stats { using namespace ::stats; }
   template<typename T>
   using Threshold = T;
 
