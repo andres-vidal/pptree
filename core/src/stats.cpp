@@ -32,6 +32,11 @@ namespace stats {
     DataColumn<int> groups,
     int             group);
 
+  template Data<int> select_group<int, int>(
+    Data<int>       data,
+    DataColumn<int> groups,
+    int             group);
+
   template<typename T, typename G>
   Data<T> select_groups(
     Data<T>       data,
