@@ -148,6 +148,11 @@ namespace pptree {
     const stats::DataColumn<R> &groups,
     const pp::PPStrategy<T, R> &pp_strategy);
 
+  template<typename T, typename R>
+  Tree<T, R> train_lda(
+    stats::Data<T>       data,
+    stats::DataColumn<R> groups);
+
 
 
   template<typename T, typename R>

@@ -180,7 +180,7 @@ TEST(TreeEquals, false_case) {
   ASSERT_FALSE(t1 == t2);
 }
 
-TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
+TEST(PPTreeTrainLDA, univariate_two_groups) {
   Data<long double> data(10, 1);
   data <<
     1, 1, 1, 1, 1,
@@ -191,10 +191,9 @@ TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<long double, int> result = pptree::train(
+  Tree<long double, int> result = pptree::train_lda(
     data,
-    groups,
-    (PPStrategy<long double, int>)lda_strategy<long double, int>);
+    groups);
 
   Tree<long double, int> expect = Tree<long double, int>(
     new Condition<long double, int>(
@@ -206,7 +205,7 @@ TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
+TEST(PPTreeTrainLDA, univariate_three_groups) {
   Data<long double> data(15, 1);
   data <<
     1, 1, 1, 1, 1,
@@ -219,10 +218,9 @@ TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
     1, 1, 1, 1, 1,
     2, 2, 2, 2, 2;
 
-  Tree<long double, int> result = pptree::train(
+  Tree<long double, int> result = pptree::train_lda(
     data,
-    groups,
-    (PPStrategy<long double, int>)lda_strategy<long double, int>);
+    groups);
 
   Tree<long double, int> expect = Tree<long double, int>(
     new Condition<long double, int>(
@@ -239,7 +237,7 @@ TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
+TEST(PPTreeTrainLDA, multivariate_two_groups) {
   Data<long double> data(10, 4);
   data <<
     1, 0, 1, 1,
@@ -266,10 +264,9 @@ TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
     1,
     1;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = train_lda(
     data,
-    groups,
-    (PPStrategy<long double, int>)lda_strategy<long double, int>);
+    groups);
 
   Tree<long double, int> expect = Tree<long double, int>(
     new Condition<long double, int>(
@@ -280,11 +277,10 @@ TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
       )
     );
 
-
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
+TEST(PPTreeTrainLDA, multivariate_three_groups) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -351,10 +347,9 @@ TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
     2,
     2;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = train_lda(
     data,
-    groups,
-    (PPStrategy<long double, int>)lda_strategy<long double, int>);
+    groups);
 
   Tree<long double, int> expect = Tree<long double, int>(
     new Condition<long double, int>(
