@@ -27,7 +27,8 @@ enable_testing()
 add_executable(pptree-test
   test/stats.test.cpp
   test/linalg.test.cpp
-  test/pp.test.cpp)
+  test/pp.test.cpp
+  test/pptree.test.cpp)
 
 find_package(GTest REQUIRED)
 
