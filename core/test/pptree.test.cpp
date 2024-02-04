@@ -21,7 +21,11 @@ TEST(PPTreeTrain, lda_strategy_unidimensional_data) {
     groups,
     (PPStrategy<double, int>)lda_strategy<double, int>);
 
+  Projector<double> expected_projector(1);
+  expected_projector << 1.0;
+
+  ASSERT_EQ(result.root.projector, expected_projector);
   ASSERT_EQ(result.root.threshold, 1.5);
-  ASSERT_EQ(result.root.left->response, 0);
-  ASSERT_EQ(result.root.right->response, 1);
+  ASSERT_EQ(result.root.lower->response(), 0);
+  ASSERT_EQ(result.root.upper->response(), 1);
 }

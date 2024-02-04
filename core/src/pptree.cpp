@@ -2,6 +2,8 @@
 #include <vector>
 #include <set>
 
+#include <iostream>
+
 using namespace pp;
 using namespace stats;
 using namespace Eigen;
@@ -17,12 +19,6 @@ namespace pptree {
     return binary_regroup((Data<T>)projected, groups, unique_groups);
   }
 
-  template std::tuple<DataColumn<int>, std::set<int>, std::map<int, std::set<int> > >as_binary_problem(
-    Data<double>            data,
-    DataColumn<int>         groups,
-    std::set<int>           unique_groups,
-    PPStrategy<double, int> pp_strategy);
-
   template<typename T, typename R >
   Threshold<T> get_threshold(
     DataColumn<T> projected_data,
@@ -34,12 +30,6 @@ namespace pptree {
 
     return (mean_1 + mean_2) / 2;
   };
-
-  template Threshold<double> get_threshold(
-    DataColumn<double> projected_data,
-    DataColumn<int>    groups,
-    int                group_1,
-    int                group_2);
 
   template<typename T, typename R >
   std::tuple<R, R> sort_groups_by_threshold(
@@ -76,16 +66,22 @@ namespace pptree {
     return std::make_tuple(group_1, group_2);
   }
 
-  template std::tuple<int, int> sort_groups_by_threshold(
-    Data<double>      data,
-    DataColumn<int>   groups,
-    int               group_1,
-    int               group_2,
-    Projector<double> projector,
-    Threshold<double> threshold);
+  template<typename T, typename R >
+  struct FinalCondition : Condition<T, R> {
+    Response<T, R> *lower = nullptr;
+    Response<T, R> *upper = nullptr;
+
+    FinalCondition(
+      Projector<T>   projector,
+      Threshold<T>   threshold,
+      Response<T, R> *lower,
+      Response<T, R> *upper)
+      : Condition<T, R>(projector, threshold, lower, upper), lower(lower), upper(upper) {
+    }
+  };
 
   template<typename T, typename R >
-  Node<T, R> binary_step(
+  FinalCondition<T, R> binary_step(
     Data<T>          data,
     DataColumn<R>    original_groups,
     R                group_1,
@@ -98,7 +94,7 @@ namespace pptree {
 
     T threshold = get_threshold(projected, original_groups, group_1, group_2);
 
-    auto [l_group, r_group] = sort_groups_by_threshold(
+    auto [lower_group, upper_group] = sort_groups_by_threshold(
       data,
       original_groups,
       group_1,
@@ -106,33 +102,23 @@ namespace pptree {
       projector,
       threshold);
 
-    Node<T, R> l_node = { .response = l_group };
-    Node<T, R> r_node = { .response = r_group };
+    Response<T, R> lower_response = Response<T, R>(lower_group);
+    Response<T, R> upper_response = Response<T, R>(upper_group);
 
-    Node<T, R> node = {};
-    node.projector = projector;
-    node.threshold = threshold;
-    node.left = &l_node;
-    node.right = &r_node;
-    return node;
+    return FinalCondition<T, R>(
+      projector,
+      threshold,
+      &lower_response,
+      &upper_response);
   }
-
-  template Node<double, int> binary_step(
-    Data<double>            data,
-    DataColumn<int>         original_groups,
-    int                     group_1,
-    int                     group_2,
-    PPStrategy<double, int> pp_strategy);
 
   template<typename R >
   std::tuple<R, R> take_two(std::set<R> group_set) {
     return std::make_tuple(*group_set.begin(), *group_set.end());
   }
 
-  template std::tuple<int, int> take_two(std::set<int> group_set);
-
   template<typename T, typename R >
-  Node<T, R> step(
+  Condition<T, R> step(
     Data<T>          data,
     DataColumn<R>    original_groups,
     std::set<R>      unique_groups,
@@ -156,40 +142,34 @@ namespace pptree {
 
     auto [group_1, group_2] = take_two(new_unique_groups);
 
-    Node<T, R> temp_node = binary_step(
+    FinalCondition<T, R> temp_node = binary_step(
       data,
       new_groups,
       group_1,
       group_2,
       pp_strategy);
 
-    Node<T, R> node = {};
-    node.projector = temp_node.projector;
-    node.threshold = temp_node.threshold;
+    R lower_group = temp_node.lower->value;
+    R upper_group = temp_node.upper->value;
 
-    R l_group = temp_node.left->response;
-    R r_group = temp_node.right->response;
-
-    *node.left = step(
-      select_group(data, new_groups, l_group),
-      (DataColumn<R>)select_group((Data<R>)original_groups, new_groups, l_group),
-      group_mapping[l_group],
+    Condition<T, R> lower_condition = step(
+      select_group(data, new_groups, lower_group),
+      (DataColumn<R>)select_group((Data<R>)original_groups, new_groups, lower_group),
+      group_mapping[lower_group],
       pp_strategy);
 
-    *node.right = step(
-      select_group(data, new_groups, r_group),
-      (DataColumn<R>)select_group((Data<R>)original_groups, new_groups, r_group),
-      group_mapping[r_group],
+    Condition<T, R> upper_condition = step(
+      select_group(data, new_groups, upper_group),
+      (DataColumn<R>)select_group((Data<R>)original_groups, new_groups, upper_group),
+      group_mapping[upper_group],
       pp_strategy);
 
-    return node;
+    return Condition<T, R>(
+      temp_node.projector,
+      temp_node.threshold,
+      &lower_condition,
+      &upper_condition);
   };
-
-  template Node<double, int> step(
-    Data<double>            data,
-    DataColumn<int>         original_groups,
-    std::set<int>           unique_groups,
-    PPStrategy<double, int> pp_strategy);
 
   template<typename T, typename R >
   Tree<T, R> train(
@@ -198,63 +178,11 @@ namespace pptree {
     PPStrategy<T, R> pp_strategy) {
     std::set<R> unique_groups = unique(groups);
 
-    Tree<T, R> tree;
-    tree.root = step(data, groups, unique_groups, pp_strategy);
-    return tree;
+    return Tree(step(data, groups, unique_groups, pp_strategy));
   }
 
   template Tree<double, int> train(
     Data<double>            data,
     DataColumn<int>         groups,
     PPStrategy<double, int> pp_strategy);
-
-
-  template <typename T, typename R>
-  R predict(
-    DataColumn<T> data,
-    Node<T, R>    node) {
-    if (node.left == nullptr && node.right == nullptr) {
-      return node.response;
-    }
-
-    T projected_data = project((Data<T>)data, node.projector).value();
-
-    if (projected_data < node.threshold) {
-      return predict(data, *node.left);
-    } else {
-      return predict(data, *node.right);
-    }
-  }
-
-  template int predict(
-    DataColumn<double> data,
-    Node<double, int>  node);
-
-  template <typename T, typename R>
-  R predict(
-    DataColumn<T> data,
-    Tree<T, R>    tree) {
-    return predict(data, tree.root);
-  }
-
-  template int predict(
-    DataColumn<double> data,
-    Tree<double, int>  tree);
-
-  template <typename T, typename R>
-  DataColumn<R> predict(
-    Data<T>    data,
-    Tree<T, R> tree) {
-    DataColumn<R> predictions(data.rows());
-
-    for (int i = 0; i < data.rows(); i++) {
-      predictions(i) = predict((DataColumn<T>)data.row(i), tree);
-    }
-
-    return predictions;
-  }
-
-  template DataColumn<int> predict(
-    Data<double>      data,
-    Tree<double, int> tree);
 }
