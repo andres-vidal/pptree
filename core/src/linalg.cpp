@@ -1,6 +1,9 @@
-#include "linear_algebra.hpp"
+#include "linalg.hpp"
 
-namespace linear_algebra {
+using namespace Eigen;
+using namespace linalg;
+
+namespace linalg {
 DVector<double> mean(
   DMatrix<double> data
   ) {
@@ -41,6 +44,13 @@ DMatrix<double> inner_product(
   return (a.transpose() * weights * b);
 }
 
+DMatrix<double> inner_product(
+  DMatrix<double> a,
+  DMatrix<double> b
+  ) {
+  return inner_product(a, b, DMatrix<double>::Identity(a.size(), b.size()));
+}
+
 DMatrix<double> inner_square(
   DMatrix<double> m,
   DMatrix<double> weights
@@ -72,7 +82,7 @@ std::tuple<DVector<double>, DMatrix<double> > sort_eigen(
   DVector<double> values,
   DMatrix<double> vectors
   ) {
-  DVector<unsigned int> idx = DVector<unsigned int>::Zero(values.size());
+  DVector<int> idx = DVector<int>::Zero(values.size());
 
   for (int i = 0; i < values.size(); ++i) {
     idx[i] = i;

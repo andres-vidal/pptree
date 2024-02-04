@@ -1,20 +1,52 @@
-#include "linear_algebra.hpp"
+#include "linalg.hpp"
+#include <set>
+#include <map>
 
-using namespace linear_algebra;
 
 namespace stats {
-DMatrix<double> select_group(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned short          group);
+template<typename T>
+using Data = linalg::DMatrix<T>;
 
-DMatrix<double> between_groups_sum_of_squares(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count);
+template<typename T>
+using DataColumn = linalg::DVector<T>;
 
-DMatrix<double> within_groups_sum_of_squares(
-  DMatrix<double>         data,
-  DVector<unsigned short> groups,
-  unsigned int            group_count);
+template<typename T, typename G>
+Data<T> select_group(
+  Data<T>       data,
+  DataColumn<G> groups,
+  G             group);
+
+template<typename T, typename G>
+Data<T> select_groups(
+  Data<T>       data,
+  DataColumn<G> data_groups,
+  std::set<G>   groups);
+
+template<typename T, typename G>
+Data<T> remove_group(
+  Data<T>       data,
+  DataColumn<G> groups,
+  G             group);
+
+template<typename T, typename G>
+std::tuple<DataColumn<G>, std::set<int>, std::map<int, std::set<G> > >binary_regroup(
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups);
+
+template<typename N>
+std::set<N> unique(DataColumn<N> column);
+
+template<typename T, typename G>
+Data<T> between_groups_sum_of_squares(
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups);
+
+
+template<typename T, typename G>
+Data<T> within_groups_sum_of_squares(
+  Data<T>       data,
+  DataColumn<G> groups,
+  std::set<G>   unique_groups);
 }
