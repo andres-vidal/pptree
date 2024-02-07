@@ -5,6 +5,7 @@ uncrustify/0.77.1
 
 [requires]
 eigen/3.4.0
+nlohmann_json/3.11.3
 
 [test_requires]
 gtest/1.12.1

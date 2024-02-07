@@ -13,13 +13,15 @@ add_library(pptree
   src/pp.cpp)
 
 find_package(Eigen3 REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 target_include_directories(pptree
   PUBLIC include
   PUBLIC src)
   
 target_link_libraries(pptree
-  Eigen3::Eigen)
+  Eigen3::Eigen
+  nlohmann_json::nlohmann_json)
 
 # Test runner
 enable_testing()

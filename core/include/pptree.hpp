@@ -1,10 +1,12 @@
 #include "pp.hpp"
+#include <nlohmann/json.hpp>
 
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
   inline namespace stats { using namespace ::stats; }
   template<typename T>
   using Threshold = T;
+  using json = nlohmann::json;
 
   template<typename T, typename R >
   struct Node {
@@ -116,21 +118,25 @@ namespace pptree {
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Tree<T, R>& tree) {
-    return ostream << tree.to_string();
+    json json_tree = json::parse(tree.to_string());
+    return ostream << json_tree.dump(2, ' ', true);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Node<T, R>& node) {
-    return ostream << node.to_string();
+    json json_node = json::parse(node.to_string());
+    return ostream << json_node.dump(2, ' ', true);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Condition<T, R>& condition) {
-    return ostream << condition.to_string();
+    json json_condition = json::parse(condition.to_string());
+    return ostream << json_condition.dump(2, ' ', true);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Response<T, R>& response) {
-    return ostream << response.to_string();
+    json json_response = json::parse(response.to_string());
+    return ostream << json_response.dump(2, ' ', true);
   }
 }
