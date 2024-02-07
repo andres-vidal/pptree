@@ -5,6 +5,42 @@
 
 using namespace pptree;
 
+TEST(PPTreeResponseToString, returns_json) {
+  Response<double, int> response(1);
+  ASSERT_EQ(response.to_string(), "{\"value\":1}");
+}
+
+TEST(PPTreeConditionToString, returns_json) {
+  Projector<double> projector(2);
+  projector << 1, 2;
+
+  Condition<double, int> condition(
+    projector,
+    1.5,
+    new Response<double, int>(0),
+    new Response<double, int>(1));
+
+  ASSERT_EQ(
+    condition.to_string(),
+    "{\"projector\":[1,2],\"threshold\":1.5,\"lower\":{\"value\":0},\"upper\":{\"value\":1}}");
+}
+
+TEST(PPTreeTreeToString, returns_json) {
+  Projector<double> projector(2);
+  projector << 1, 2;
+
+  Tree<double, int> tree(
+    Condition<double, int>(
+      projector,
+      1.5,
+      new Response<double, int>(0),
+      new Response<double, int>(1)));
+
+  ASSERT_EQ(
+    tree.to_string(),
+    "{\"root\":{\"projector\":[1,2],\"threshold\":1.5,\"lower\":{\"value\":0},\"upper\":{\"value\":1}}}");
+}
+
 TEST(PPTreeTrain, lda_strategy_unidimensional_data) {
   Data<double> data(10, 1);
   data <<

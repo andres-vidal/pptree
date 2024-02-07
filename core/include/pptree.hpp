@@ -11,6 +11,7 @@ namespace pptree {
     virtual ~Node() = default;
     virtual R response() const = 0;
     virtual R predict(DataColumn<T> data) const = 0;
+    virtual std::string to_string() const = 0;
   };
 
   template<typename T, typename R >
@@ -41,6 +42,19 @@ namespace pptree {
         return upper->predict(data);
       }
     }
+
+    std::string to_string() const override {
+      const Eigen::IOFormat fmt(Eigen::StreamPrecision, 0, ",", "\n");
+
+      std::stringstream stream;
+      stream << "{"
+             << "\"projector\":[" << projector.transpose().format(fmt) << "],"
+             << "\"threshold\":" << threshold << ","
+             << "\"lower\":" << lower->to_string() << ","
+             << "\"upper\":" << upper->to_string()
+             << "}";
+      return stream.str();
+    }
   };
 
   template<typename T, typename R >
@@ -56,6 +70,12 @@ namespace pptree {
 
     R predict(DataColumn<T> data) const override {
       return response();
+    }
+
+    std::string to_string() const override {
+      std::stringstream stream;
+      stream << "{\"value\":" << value << "}";
+      return stream.str();
     }
   };
 
@@ -79,6 +99,12 @@ namespace pptree {
 
       return predictions;
     }
+
+    std::string to_string() const {
+      std::stringstream stream;
+      stream << "{\"root\":" << root.to_string() << "}";
+      return stream.str();
+    }
   };
 
   template<typename T, typename R>
@@ -86,4 +112,25 @@ namespace pptree {
     stats::Data<T>       data,
     stats::DataColumn<R> groups,
     pp::PPStrategy<T, R> pp_strategy);
+
+
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const Tree<T, R>& tree) {
+    return ostream << tree.to_string();
+  }
+
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const Node<T, R>& node) {
+    return ostream << node.to_string();
+  }
+
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const Condition<T, R>& condition) {
+    return ostream << condition.to_string();
+  }
+
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const Response<T, R>& response) {
+    return ostream << response.to_string();
+  }
 }
