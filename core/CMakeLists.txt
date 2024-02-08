@@ -5,6 +5,10 @@ project(pptree VERSION 0.0.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
+
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
 
 add_library(pptree
   src/pptree.cpp

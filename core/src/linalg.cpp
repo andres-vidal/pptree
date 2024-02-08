@@ -48,7 +48,7 @@ namespace linalg {
     DMatrix<double> a,
     DMatrix<double> b
     ) {
-    return inner_product(a, b, DMatrix<double>::Identity(a.size(), b.size()));
+    return inner_product(a, b, DMatrix<double>::Identity(a.rows(), b.cols()));
   }
 
   DMatrix<double> inner_square(

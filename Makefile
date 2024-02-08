@@ -43,6 +43,19 @@ build-cmake:
 
 build-all: build-cmake build
 
+install-debug:
+	@conan install . --output-folder=$(CONAN_DIR) --build=missing --settings=build_type=Debug && pre-commit install
+
+build-cmake-debug:
+	@cmake \
+		-DCMAKE_TOOLCHAIN_FILE=../$(CONAN_DIR)/conan_toolchain.cmake \
+		-DCMAKE_BUILD_TYPE=Debug \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+		-S=$(CORE_DIR) \
+		-B=$(BUILD_DIR)
+
+build-all-debug: build-cmake-debug build
+
 clean:
 	rm -rf _build
 
@@ -54,5 +67,9 @@ clean-all: clean clean-env
 run:
 	@./$(BUILD_DIR)/pptree-cli
 
-test: build-all
+test: build-all-debug
 	@cd ./$(BUILD_DIR) && ctest --output-on-failure
+
+
+test-debug: build-all-debug
+	@cd ./$(BUILD_DIR) && lldb pptree-test

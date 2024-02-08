@@ -114,7 +114,13 @@ namespace pptree {
 
   template<typename R >
   std::tuple<R, R> take_two(std::set<R> group_set) {
-    return std::make_tuple(*group_set.begin(), *group_set.end());
+    if (group_set.size() < 2) {
+      throw std::runtime_error("The set does not contain enough elements.");
+    }
+
+    auto first = *group_set.begin();
+    auto last = *std::prev(group_set.end());
+    return std::make_tuple(first, last);
   }
 
   template<typename T, typename R >
