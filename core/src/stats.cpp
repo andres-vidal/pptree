@@ -212,8 +212,8 @@ namespace stats {
     DataColumn<T> global_mean = mean(data);
     Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
-    for (G g = 0; g < unique_groups.size(); g++) {
-      Data<T> group_data = select_group(data, groups, g);
+    for (const G& group : unique_groups) {
+      Data<T> group_data = select_group(data, groups, group);
       DataColumn<T> group_mean = mean(group_data);
 
       result += group_data.rows() * outer_square(group_mean - global_mean);
@@ -236,8 +236,8 @@ namespace stats {
     ) {
     Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
-    for (G g = 0; g < unique_groups.size(); g++) {
-      Data<T> group_data = select_group(data, groups, g);
+    for (const G& group : unique_groups) {
+      Data<T> group_data = select_group(data, groups, group);
       DataColumn<T> group_mean = mean(group_data);
       Data<T> centered_data = group_data.rowwise() - group_mean.transpose();
 

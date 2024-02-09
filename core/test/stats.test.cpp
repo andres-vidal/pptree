@@ -850,6 +850,41 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate) {
   ASSERT_EQ(expected, actual);
 }
 
+TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate_non_sequential_group_ids) {
+  Data<double> data(8, 1);
+  data <<
+    23.0,
+    25.0,
+    18.0,
+    29.0,
+    19.0,
+    21.0,
+    35.0,
+    17.0;
+
+  DataColumn<int> groups(8);
+  groups <<
+    1,
+    1,
+    1,
+    7,
+    7,
+    7,
+    3,
+    3;
+
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 1, 7, 3 });
+  Data<double> expected(1, 1);
+  expected <<
+    19.875;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+
 TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
   Data<double> data(8, 3);
   data <<
