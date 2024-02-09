@@ -31,6 +31,11 @@ namespace pptree {
       : projector(projector), threshold(threshold), lower(lower), upper(upper) {
     }
 
+    ~Condition() {
+      delete lower;
+      delete upper;
+    }
+
     R response() const override {
       throw std::runtime_error("Condition response is undefined.");
     }
@@ -83,13 +88,17 @@ namespace pptree {
 
   template<typename T, typename R >
   struct Tree {
-    Condition<T, R> root;
+    Condition<T, R> *root;
 
-    Tree(Condition<T, R> root) : root(root) {
+    Tree(Condition<T, R> *root) : root(root) {
+    }
+
+    ~Tree() {
+      delete root;
     }
 
     R predict(DataColumn<T> data) const {
-      return root.predict(data);
+      return root->predict(data);
     }
 
     DataColumn<R> predict(Data<T> data) const {
@@ -104,7 +113,7 @@ namespace pptree {
 
     std::string to_string() const {
       std::stringstream stream;
-      stream << "{\"root\":" << root.to_string() << "}";
+      stream << "{\"root\":" << root->to_string() << "}";
       return stream.str();
     }
   };

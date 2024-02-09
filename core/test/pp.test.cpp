@@ -232,8 +232,6 @@ TEST(PPLDAOptimumProjector, three_groups) {
   expected2 <<
     0.64183, -0.76684, 0, 0, 0;
 
-  std::cout << actual << std::endl;
-
   ASSERT_TRUE(
     actual.isApprox(expected1, 0.0001) ||
     actual.isApprox(-expected1, 0.0001) ||
@@ -723,8 +721,6 @@ TEST(PPProject, zero_projector) {
 
   DataColumn<double> actual = project(data, projector);
   DataColumn<double> expected = DataColumn<double>::Zero(30);
-
-  std::cout << actual << std::endl;
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());

@@ -14,6 +14,52 @@ namespace pptree {
     Data<T>          data,
     DataColumn<R>    groups,
     std::set<R>      unique_groups,
+    PPStrategy<T, R> pp_strategy);
+  template<typename T, typename R >
+  Threshold<T> get_threshold(
+    DataColumn<T> projected_data,
+    DataColumn<R> groups,
+    R             group_1,
+    R             group_2);
+  template<typename T, typename R >
+  std::tuple<R, R> sort_groups_by_threshold(
+    Data<T>       data,
+    DataColumn<R> groups,
+    R             group_1,
+    R             group_2,
+    Projector<T>  projector,
+    Threshold<T>  threshold);
+  template<typename T, typename R >
+  Condition<T, R> * binary_step(
+    Data<T>          data,
+    DataColumn<R>    groups,
+    R                group_1,
+    R                group_2,
+    PPStrategy<T, R> pp_strategy);
+  template<typename R >
+  std::tuple<R, R> take_two(std::set<R> group_set);
+  template<typename T, typename R >
+  Node<T, R> * build_branch(
+    Data<T>                     data,
+    DataColumn<R>               groups,
+    DataColumn<R>               binary_groups,
+    R                           binary_group,
+    std::map<int, std::set<R> > binary_group_mapping,
+    PPStrategy<T, R>            pp_strategy);
+  template<typename T, typename R >
+  Condition<T, R> * step(
+    Data<T>          data,
+    DataColumn<R>    groups,
+    std::set<R>      unique_groups,
+    PPStrategy<T, R> pp_strategy);
+
+
+
+  template<typename T, typename R >
+  std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
+    Data<T>          data,
+    DataColumn<R>    groups,
+    std::set<R>      unique_groups,
     PPStrategy<T, R> pp_strategy) {
     auto [projector, projected] = pp_strategy(data, groups, unique_groups);
     return binary_regroup((Data<T>)projected, groups, unique_groups);
@@ -67,49 +113,34 @@ namespace pptree {
   }
 
   template<typename T, typename R >
-  struct FinalCondition : Condition<T, R> {
-    Response<T, R> *lower = nullptr;
-    Response<T, R> *upper = nullptr;
-
-    FinalCondition(
-      Projector<T>   projector,
-      Threshold<T>   threshold,
-      Response<T, R> *lower,
-      Response<T, R> *upper)
-      : Condition<T, R>(projector, threshold, lower, upper), lower(lower), upper(upper) {
-    }
-  };
-
-  template<typename T, typename R >
-  FinalCondition<T, R> binary_step(
+  Condition<T, R> * binary_step(
     Data<T>          data,
-    DataColumn<R>    original_groups,
+    DataColumn<R>    groups,
     R                group_1,
     R                group_2,
-    PPStrategy<T, R> pp_strategy
-    ) {
+    PPStrategy<T, R> pp_strategy) {
     std::set<R> unique_groups = { group_1, group_2 };
 
-    auto [projector, projected] = pp_strategy(data, original_groups, unique_groups);
+    auto [projector, projected] = pp_strategy(data, groups, unique_groups);
 
-    T threshold = get_threshold(projected, original_groups, group_1, group_2);
+    T threshold = get_threshold(projected, groups, group_1, group_2);
 
     auto [lower_group, upper_group] = sort_groups_by_threshold(
       data,
-      original_groups,
+      groups,
       group_1,
       group_2,
       projector,
       threshold);
 
-    Response<T, R> lower_response = Response<T, R>(lower_group);
-    Response<T, R> upper_response = Response<T, R>(upper_group);
+    Response<T, R> *lower_response = new Response<T, R>(lower_group);
+    Response<T, R> *upper_response = new Response<T, R>(upper_group);
 
-    return FinalCondition<T, R>(
+    return new Condition<T, R>(
       projector,
       threshold,
-      &lower_response,
-      &upper_response);
+      lower_response,
+      upper_response);
   }
 
   template<typename R >
@@ -124,9 +155,33 @@ namespace pptree {
   }
 
   template<typename T, typename R >
-  Condition<T, R> step(
+  Node<T, R> * build_branch(
+    Data<T>                     data,
+    DataColumn<R>               groups,
+    DataColumn<R>               binary_groups,
+    R                           binary_group,
+    std::map<int, std::set<R> > binary_group_mapping,
+    PPStrategy<T, R>            pp_strategy) {
+    Node<T, R> *branch;
+    std::set<R> unique_groups = binary_group_mapping[binary_group];
+
+    if (unique_groups.size() == 1) {
+      branch = new Response<T, R>(*unique_groups.begin());
+    } else {
+      branch = step(
+        select_group(data, binary_groups, binary_group),
+        (DataColumn<R>)select_group((Data<R>)groups, binary_groups, binary_group),
+        unique_groups,
+        pp_strategy);
+    }
+
+    return branch;
+  }
+
+  template<typename T, typename R >
+  Condition<T, R> * step(
     Data<T>          data,
-    DataColumn<R>    original_groups,
+    DataColumn<R>    groups,
     std::set<R>      unique_groups,
     PPStrategy<T, R> pp_strategy) {
     if (unique_groups.size() == 2) {
@@ -134,47 +189,55 @@ namespace pptree {
 
       return binary_step(
         data,
-        original_groups,
+        groups,
         group_1,
         group_2,
         pp_strategy);
     }
 
-    auto [new_groups, new_unique_groups, group_mapping] = as_binary_problem(
+    auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
       data,
-      original_groups,
+      groups,
       unique_groups,
       pp_strategy);
 
-    auto [group_1, group_2] = take_two(new_unique_groups);
+    auto [group_1, group_2] = take_two(binary_unique_groups);
 
-    FinalCondition<T, R> temp_node = binary_step(
+    Condition<T, R> *temp_node = binary_step(
       data,
-      new_groups,
+      binary_groups,
       group_1,
       group_2,
       pp_strategy);
 
-    R lower_group = temp_node.lower->value;
-    R upper_group = temp_node.upper->value;
+    R binary_lower_group = temp_node->lower->response();
+    R binary_upper_group = temp_node->upper->response();
 
-    Condition<T, R> lower_condition = step(
-      select_group(data, new_groups, lower_group),
-      (DataColumn<R>)select_group((Data<R>)original_groups, new_groups, lower_group),
-      group_mapping[lower_group],
+    Node<T, R> *lower_branch = build_branch(
+      data,
+      groups,
+      binary_groups,
+      binary_lower_group,
+      binary_group_mapping,
       pp_strategy);
 
-    Condition<T, R> upper_condition = step(
-      select_group(data, new_groups, upper_group),
-      (DataColumn<R>)select_group((Data<R>)original_groups, new_groups, upper_group),
-      group_mapping[upper_group],
+    Node<T, R> *upper_branch = build_branch(
+      data,
+      groups,
+      binary_groups,
+      binary_upper_group,
+      binary_group_mapping,
       pp_strategy);
 
-    return Condition<T, R>(
-      temp_node.projector,
-      temp_node.threshold,
-      &lower_condition,
-      &upper_condition);
+    Condition<T, R> *condition = new Condition<T, R>(
+      temp_node->projector,
+      temp_node->threshold,
+      lower_branch,
+      upper_branch);
+
+    delete temp_node;
+
+    return condition;
   };
 
   template<typename T, typename R >
