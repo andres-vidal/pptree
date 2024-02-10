@@ -648,7 +648,7 @@ TEST(PPLDAIndex, suboptimal2) {
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
 
-TEST(PPProject, zero_projector) {
+TEST(PPProjectData, zero_projector) {
   Data<double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
@@ -681,39 +681,6 @@ TEST(PPProject, zero_projector) {
     9, 8, 0, 1, 2,
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
-
-  DataColumn<int> groups(30);
-  groups <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
 
   Projector<double> projector(5);
   projector <<
@@ -728,7 +695,7 @@ TEST(PPProject, zero_projector) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(PPProject, generic_projector) {
+TEST(PPProjectData, generic_projector) {
   Data<double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
@@ -761,39 +728,6 @@ TEST(PPProject, generic_projector) {
     9, 8, 0, 1, 2,
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
-
-  DataColumn<int> groups(30);
-  groups <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
 
   Projector<double> projector(5);
   projector <<
@@ -837,4 +771,32 @@ TEST(PPProject, generic_projector) {
   ASSERT_EQ(expected.rows(), actual.rows());
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_TRUE(expected.isApprox(actual, 0.00001));
+}
+
+TEST(PPPProjectDataColumn, zero_projector) {
+  DataColumn<double> data(5);
+  data <<
+    1.0, 2.0, 3.0, 4.0, 5.0;
+
+  Projector<double> projector(5);
+  projector <<
+    0.0, 0.0, 0.0, 0.0, 0.0;
+
+  double result = project(data, projector);
+
+  ASSERT_EQ(0, result);
+}
+
+TEST(PPPProjectDataColumn, generic_projector) {
+  DataColumn<double> data(5);
+  data <<
+    1.0, 2.0, 3.0, 4.0, 5.0;
+
+  Projector<double> projector(5);
+  projector <<
+    -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
+
+  double result = project(data, projector);
+
+  ASSERT_NEAR(-6.58606, result, 0.00001);
 }

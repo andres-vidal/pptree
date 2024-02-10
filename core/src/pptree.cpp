@@ -87,11 +87,11 @@ namespace pptree {
     Threshold<T>  threshold) {
     R l_group, r_group;
 
-    Data<T> mean_1 = linalg::mean(select_group(data, groups, group_1));
-    Data<T> mean_2 = linalg::mean(select_group(data, groups, group_2));
+    DataColumn<T> mean_1 = linalg::mean(select_group(data, groups, group_1));
+    DataColumn<T> mean_2 = linalg::mean(select_group(data, groups, group_2));
 
-    T projected_mean_1 = project(mean_1, projector).value();
-    T projected_mean_2 = project(mean_2, projector).value();
+    T projected_mean_1 = project(mean_1, projector);
+    T projected_mean_2 = project(mean_2, projector);
 
     if (std::max(projected_mean_1, projected_mean_2) < threshold) {
       throw std::invalid_argument("Threshold is greater than the two groups means");

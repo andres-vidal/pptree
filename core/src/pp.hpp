@@ -30,6 +30,11 @@ namespace pp {
     stats::Data<T> data,
     Projector<T>   projector);
 
+  template<typename T>
+  T project(
+    stats::DataColumn<T> data,
+    Projector<T>         projector);
+
   template<typename T, typename G>
   PPStrategyReturn<T> lda_strategy(
     stats::Data<T>       data,

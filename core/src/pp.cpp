@@ -60,6 +60,18 @@ namespace pp {
     Data<double>      data,
     Projector<double> projector);
 
+  template<typename T>
+  T project(
+    DataColumn<T> data,
+    Projector<T>  projector) {
+    return (data.transpose() * projector).value();
+  }
+
+  template double project<double>(
+    DataColumn<double> data,
+    Projector<double>  projector);
+
+
 
   template<typename T, typename G>
   PPStrategyReturn<T> lda_strategy(
