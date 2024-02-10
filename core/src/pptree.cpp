@@ -210,8 +210,8 @@ namespace pptree {
       group_2,
       pp_strategy);
 
-    R binary_lower_group = temp_node->lower->response();
-    R binary_upper_group = temp_node->upper->response();
+    R binary_lower_group = as_response(temp_node->lower)->value;
+    R binary_upper_group = as_response(temp_node->upper)->value;
 
     Node<T, R> *lower_branch = build_branch(
       data,

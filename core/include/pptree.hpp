@@ -11,7 +11,6 @@ namespace pptree {
   template<typename T, typename R >
   struct Node {
     virtual ~Node() = default;
-    virtual R response() const = 0;
     virtual R predict(DataColumn<T> data) const = 0;
     virtual std::string to_string() const = 0;
   };
@@ -34,10 +33,6 @@ namespace pptree {
     ~Condition() {
       delete lower;
       delete upper;
-    }
-
-    R response() const override {
-      throw std::runtime_error("Condition response is undefined.");
     }
 
     R predict(DataColumn<T> data) const override {
@@ -71,12 +66,8 @@ namespace pptree {
     Response(R value) : value(value) {
     }
 
-    R response() const override {
-      return value;
-    }
-
     R predict(DataColumn<T> data) const override {
-      return response();
+      return value;
     }
 
     std::string to_string() const override {
@@ -147,5 +138,27 @@ namespace pptree {
   std::ostream& operator<<(std::ostream & ostream, const Response<T, R>& response) {
     json json_response = json::parse(response.to_string());
     return ostream << json_response.dump(2, ' ', true);
+  }
+
+  template<typename T, typename R>
+  Response<T, R> * as_response(Node<T, R> *node) {
+    if (Response<T, R> *response = dynamic_cast<Response<T, R> *>(node)) {
+      return response;
+    }
+
+    std::stringstream message;
+    message << "Node is not a response: " << *node;
+    throw std::runtime_error(message.str());
+  }
+
+  template<typename T, typename R>
+  Condition<T, R> * as_condition(Node<T, R> *node) {
+    if (Condition<T, R> *condition = dynamic_cast<Condition<T, R> *>(node)) {
+      return condition;
+    }
+
+    std::stringstream message;
+    message << "Node is not a condition: " << *node;
+    throw std::runtime_error(message.str());
   }
 }

@@ -58,13 +58,14 @@ TEST(PPTreeTrain, lda_strategy_unidimensional_data_two_groups) {
     groups,
     (PPStrategy<double, int>)lda_strategy<double, int>);
 
-  Projector<double> expected_projector(1);
-  expected_projector << 1.0;
+  Tree<double, int> expected = Tree<double, int>(
+    new Condition<double, int>(
+      as_projector<double>({ 1.0 }),
+      1.5,
+      new Response<double, int>(0),
+      new Response<double, int>(1)));
 
-  ASSERT_EQ(result.root->projector, expected_projector);
-  ASSERT_EQ(result.root->threshold, 1.5);
-  ASSERT_EQ(result.root->lower->response(), 0);
-  ASSERT_EQ(result.root->upper->response(), 1);
+  ASSERT_STREQ(result.to_string().c_str(), expected.to_string().c_str());
 }
 
 TEST(PPTreeTrain, lda_strategy_unidimensional_data_three_groups) {
@@ -85,11 +86,17 @@ TEST(PPTreeTrain, lda_strategy_unidimensional_data_three_groups) {
     groups,
     (PPStrategy<double, int>)lda_strategy<double, int>);
 
-  std::cout << result.to_string() << std::endl;
+  Tree<double, int> expected = Tree<double, int>(
+    new Condition<double, int>(
+      as_projector<double>({ 1.0 }),
+      1.75,
+      new Response<double, int>(0),
+      new Condition<double, int>(
+        as_projector<double>({ 1.0 }),
+        2.5,
+        new Response<double, int>(1),
+        new Response<double, int>(2))));
 
-  Projector<double> expected_projector(1);
-  expected_projector << 1.0;
 
-  ASSERT_EQ(result.root->projector, expected_projector);
-  ASSERT_EQ(result.root->threshold, 1.75);
+  ASSERT_STREQ(result.to_string().c_str(), expected.to_string().c_str());
 }

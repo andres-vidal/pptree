@@ -35,4 +35,10 @@ namespace pp {
     stats::Data<T>       data,
     stats::DataColumn<G> groups,
     std::set<G>          unique_groups);
+
+  template<typename T>
+  Projector<T> as_projector(std::vector<T> vector) {
+    Eigen::Map<Projector<T> > projector(vector.data(), vector.size());
+    return projector;
+  }
 }
