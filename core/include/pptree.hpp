@@ -1,18 +1,17 @@
 #include "pp.hpp"
-#include <nlohmann/json.hpp>
 
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
   inline namespace stats { using namespace ::stats; }
   template<typename T>
   using Threshold = T;
-  using json = nlohmann::json;
 
   template<typename T, typename R >
   struct Node {
     virtual ~Node() = default;
     virtual R predict(DataColumn<T> data) const = 0;
-    virtual std::string to_string() const = 0;
+    virtual bool is_response() const = 0;
+    virtual bool is_condition() const = 0;
   };
 
   template<typename T, typename R >
@@ -45,17 +44,12 @@ namespace pptree {
       }
     }
 
-    std::string to_string() const override {
-      const Eigen::IOFormat fmt(Eigen::StreamPrecision, 0, ",", "\n");
+    bool is_response() const override {
+      return false;
+    }
 
-      std::stringstream stream;
-      stream << "{"
-             << "\"projector\":[" << projector.transpose().format(fmt) << "],"
-             << "\"threshold\":" << threshold << ","
-             << "\"lower\":" << lower->to_string() << ","
-             << "\"upper\":" << upper->to_string()
-             << "}";
-      return stream.str();
+    bool is_condition() const override {
+      return true;
     }
   };
 
@@ -70,10 +64,12 @@ namespace pptree {
       return value;
     }
 
-    std::string to_string() const override {
-      std::stringstream stream;
-      stream << "{\"value\":" << value << "}";
-      return stream.str();
+    bool is_response() const override {
+      return true;
+    }
+
+    bool is_condition() const override {
+      return false;
     }
   };
 
@@ -88,6 +84,7 @@ namespace pptree {
       delete root;
     }
 
+
     R predict(DataColumn<T> data) const {
       return root->predict(data);
     }
@@ -101,12 +98,6 @@ namespace pptree {
 
       return predictions;
     }
-
-    std::string to_string() const {
-      std::stringstream stream;
-      stream << "{\"root\":" << root->to_string() << "}";
-      return stream.str();
-    }
   };
 
   template<typename T, typename R>
@@ -116,29 +107,6 @@ namespace pptree {
     pp::PPStrategy<T, R> pp_strategy);
 
 
-  template<typename T, typename R>
-  std::ostream& operator<<(std::ostream & ostream, const Tree<T, R>& tree) {
-    json json_tree = json::parse(tree.to_string());
-    return ostream << json_tree.dump(2, ' ', true);
-  }
-
-  template<typename T, typename R>
-  std::ostream& operator<<(std::ostream & ostream, const Node<T, R>& node) {
-    json json_node = json::parse(node.to_string());
-    return ostream << json_node.dump(2, ' ', true);
-  }
-
-  template<typename T, typename R>
-  std::ostream& operator<<(std::ostream & ostream, const Condition<T, R>& condition) {
-    json json_condition = json::parse(condition.to_string());
-    return ostream << json_condition.dump(2, ' ', true);
-  }
-
-  template<typename T, typename R>
-  std::ostream& operator<<(std::ostream & ostream, const Response<T, R>& response) {
-    json json_response = json::parse(response.to_string());
-    return ostream << json_response.dump(2, ' ', true);
-  }
 
   template<typename T, typename R>
   Response<T, R> * as_response(Node<T, R> *node) {
@@ -146,9 +114,12 @@ namespace pptree {
       return response;
     }
 
-    std::stringstream message;
-    message << "Node is not a response: " << *node;
-    throw std::runtime_error(message.str());
+    throw std::runtime_error("Node is not a response.");
+  }
+
+  template<typename T, typename R>
+  Response<T, R>const & as_response(Node<T, R> const&node) {
+    return dynamic_cast<Response<T, R>const &>(node);
   }
 
   template<typename T, typename R>
@@ -157,8 +128,11 @@ namespace pptree {
       return condition;
     }
 
-    std::stringstream message;
-    message << "Node is not a condition: " << *node;
-    throw std::runtime_error(message.str());
+    throw std::runtime_error("Node is not a condition.");
+  }
+
+  template<typename T, typename R>
+  Condition<T, R>const & as_condition(Node<T, R>const &node) {
+    return dynamic_cast<Condition<T, R> const &>(node);
   }
 }
