@@ -97,13 +97,8 @@ namespace pptree {
     T projected_mean_1 = project(mean_1, projector);
     T projected_mean_2 = project(mean_2, projector);
 
-    if (std::max(projected_mean_1, projected_mean_2) < threshold) {
-      throw std::invalid_argument("Threshold is greater than the two groups means");
-    }
-
-    if (std::min(projected_mean_1, projected_mean_2) > threshold) {
-      throw std::invalid_argument("Threshold is lower than the two groups means");
-    }
+    assert(std::max(projected_mean_1, projected_mean_2) > threshold && "Threshold is greater than the two groups means");
+    assert(std::min(projected_mean_1, projected_mean_2) < threshold && "Threshold is lower than the two groups means");
 
     if (projected_mean_1 < projected_mean_2) {
       l_group = group_1;
@@ -153,9 +148,7 @@ namespace pptree {
 
   template<typename R >
   std::tuple<R, R> take_two(std::set<R> group_set) {
-    if (group_set.size() < 2) {
-      throw std::runtime_error("The set does not contain enough elements.");
-    }
+    assert(group_set.size() >= 2 && "The set does not contain enough elements.");
 
     auto first = *group_set.begin();
     auto last = *std::prev(group_set.end());

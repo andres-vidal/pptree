@@ -153,13 +153,8 @@ namespace stats {
     Data<T>       data,
     DataColumn<G> data_groups,
     std::set<G>   unique_groups) {
-    if (unique_groups.size() <= 2) {
-      throw std::invalid_argument("Must have more than 2 groups to binary regroup");
-    }
-
-    if (data.cols() != 1) {
-      throw std::invalid_argument("Data must be unidimensional to binary regroup");
-    }
+    assert(unique_groups.size() > 2 && "Must have more than 2 groups to binary regroup");
+    assert(data.cols() == 1 && "Data must be unidimensional to binary regroup");
 
     std::vector<Group<T, G> > groups = summarize_groups(data, data_groups, unique_groups);
     Group<T, G> edge_group = get_edge_group(groups);

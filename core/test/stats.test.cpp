@@ -533,7 +533,7 @@ TEST(StatsBinaryRegroup, single_group) {
     1,
     1;
 
-  ASSERT_THROW({ binary_regroup(data, groups, { 1 }); }, std::invalid_argument);
+  ASSERT_DEATH({ binary_regroup(data, groups, { 1 }); }, "Must have more than 2 groups to binary regroup");
 }
 
 TEST(StatsBinaryRegroup, two_groups) {
@@ -548,7 +548,7 @@ TEST(StatsBinaryRegroup, two_groups) {
     1,
     2;
 
-  ASSERT_THROW({ binary_regroup(data, groups, { 1, 2 }); }, std::invalid_argument);
+  ASSERT_DEATH({ binary_regroup(data, groups, { 1, 2 }); }, "Must have more than 2 groups to binary regroup");
 }
 
 TEST(StatsBinaryRegroup, multidimensional) {
@@ -563,7 +563,7 @@ TEST(StatsBinaryRegroup, multidimensional) {
     2,
     3;
 
-  ASSERT_THROW({ binary_regroup(data, groups, { 1, 2, 3 }); }, std::invalid_argument);
+  ASSERT_DEATH({ binary_regroup(data, groups, { 1, 2, 3 }); }, "Data must be unidimensional to binary regroup");
 }
 
 TEST(StatsBinaryGroup, single_observation_per_group) {
