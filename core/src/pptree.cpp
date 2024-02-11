@@ -1,11 +1,10 @@
 #include "pptree.hpp"
+#include "pptreeio.hpp"
 #include <vector>
 #include <set>
 
-#include <iostream>
 
-using namespace pp;
-using namespace stats;
+using namespace pptree;
 using namespace Eigen;
 
 namespace pptree {
@@ -61,8 +60,13 @@ namespace pptree {
     DataColumn<R>    groups,
     std::set<R>      unique_groups,
     PPStrategy<T, R> pp_strategy) {
+    LOG_INFO << "Redefining a " << unique_groups.size() << " group problem as binary:" << std::endl;
+
     auto [projector, projected] = pp_strategy(data, groups, unique_groups);
-    return binary_regroup((Data<T>)projected, groups, unique_groups);
+    auto [binary_groups, binary_unique_groups, binary_group_mapping] = binary_regroup((Data<T>)projected, groups, unique_groups);
+
+    LOG_INFO << "Mapping: " << binary_group_mapping << std::endl;
+    return std::make_tuple(binary_groups, binary_unique_groups, binary_group_mapping);
   }
 
   template<typename T, typename R >
@@ -120,6 +124,7 @@ namespace pptree {
     R                group_2,
     PPStrategy<T, R> pp_strategy) {
     std::set<R> unique_groups = { group_1, group_2 };
+    LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << unique_groups << std::endl;
 
     auto [projector, projected] = pp_strategy(data, groups, unique_groups);
 
@@ -136,11 +141,14 @@ namespace pptree {
     Response<T, R> *lower_response = new Response<T, R>(lower_group);
     Response<T, R> *upper_response = new Response<T, R>(upper_group);
 
-    return new Condition<T, R>(
+    Condition<T, R> *condition = new Condition<T, R>(
       projector,
       threshold,
       lower_response,
       upper_response);
+
+    LOG_INFO << "Condition: " << *condition << std::endl;
+    return condition;
   }
 
   template<typename R >
@@ -166,8 +174,11 @@ namespace pptree {
     std::set<R> unique_groups = binary_group_mapping[binary_group];
 
     if (unique_groups.size() == 1) {
-      branch = new Response<T, R>(*unique_groups.begin());
+      R group = *unique_groups.begin();
+      LOG_INFO << "Branch is a Response for group " << group << std::endl;
+      branch = new Response<T, R>(group);
     } else {
+      LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
       branch = step(
         select_group(data, binary_groups, binary_group),
         (DataColumn<R>)select_group((Data<R>)groups, binary_groups, binary_group),
@@ -184,6 +195,9 @@ namespace pptree {
     DataColumn<R>    groups,
     std::set<R>      unique_groups,
     PPStrategy<T, R> pp_strategy) {
+    LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
+    LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
+
     if (unique_groups.size() == 2) {
       auto [group_1, group_2] = take_two(unique_groups);
 
@@ -213,6 +227,7 @@ namespace pptree {
     R binary_lower_group = as_response(temp_node->lower)->value;
     R binary_upper_group = as_response(temp_node->upper)->value;
 
+    LOG_INFO << "Build lower branch" << std::endl;
     Node<T, R> *lower_branch = build_branch(
       data,
       groups,
@@ -221,6 +236,7 @@ namespace pptree {
       binary_group_mapping,
       pp_strategy);
 
+    LOG_INFO << "Build upper branch" << std::endl;
     Node<T, R> *upper_branch = build_branch(
       data,
       groups,
@@ -237,6 +253,7 @@ namespace pptree {
 
     delete temp_node;
 
+    LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
   };
 
@@ -247,7 +264,10 @@ namespace pptree {
     PPStrategy<T, R> pp_strategy) {
     std::set<R> unique_groups = unique(groups);
 
-    return Tree(step(data, groups, unique_groups, pp_strategy));
+    LOG_INFO << "Project-Pursuit Tree training." << std::endl;
+    Tree<T, R> tree = Tree(step(data, groups, unique_groups, pp_strategy));
+    LOG_INFO << "Tree: " << tree << std::endl;
+    return tree;
   }
 
   template Tree<double, int> train(

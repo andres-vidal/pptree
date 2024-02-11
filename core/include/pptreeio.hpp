@@ -1,7 +1,16 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#define LOG_INFO  std::cout << "[INFO]" << "[" << __FUNCTION__ << "] "
+#define LOG_DEBUG std::cout << "[DEBUG]" << "[" << __FUNCTION__ << "] "
+
 using json = nlohmann::json;
+
+template<typename V, typename C1, typename C2>
+std::ostream& operator<<(std::ostream& ostream, const std::set<V, C1, C2> &set) {
+  json json_set(set);
+  return ostream << json_set.dump();
+}
 
 namespace pptree {
   template<typename T, typename R >
@@ -10,6 +19,13 @@ namespace pptree {
   struct Node;
   template<typename T, typename R >
   struct Response;
+  template<typename T, typename R >
+  struct Condition;
+
+  template<typename T, typename R >
+  Response<T, R> const& as_response(Node<T, R> const& node);
+  template<typename T, typename R >
+  Condition<T, R> const& as_condition(Node<T, R> const& node);
 
   template<typename T, typename R >
   void to_json(json& j, const Condition<T, R>& condition);
@@ -54,31 +70,37 @@ namespace pptree {
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Tree<T, R>& tree) {
     json json_tree(tree);
-    return ostream << json_tree;
+    return ostream << json_tree.dump(2, ' ', false);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Node<T, R> &node) {
     json json_node(node);
-    return ostream << json_node;
+    return ostream << json_node.dump(2, ' ', false);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Condition<T, R>& condition) {
     json json_condition(condition);
-    return ostream << json_condition;
+    return ostream << json_condition.dump(2, ' ', false);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Response<T, R>& response) {
     json json_response(response);
-    return ostream << json_response;
+    return ostream << json_response.dump(2, ' ', false);
   }
 
   template<typename V>
   std::ostream& operator<<(std::ostream& ostream, const std::vector<V> &vec) {
     json json_vector(vec);
     return ostream << json_vector.dump();
+  }
+
+  template<typename V, typename C1, typename C2>
+  std::ostream& operator<<(std::ostream& ostream, const std::set<V, C1, C2> &set) {
+    json json_set(set);
+    return ostream << json_set.dump();
   }
 
   template<typename K, typename V>

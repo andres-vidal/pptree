@@ -1,4 +1,6 @@
+#include "pptreeio.hpp"
 #include "pp.hpp"
+
 
 using namespace pp;
 using namespace stats;
@@ -10,11 +12,20 @@ namespace pp {
     Data<T>       data,
     DataColumn<G> groups,
     std::set<G>   unique_groups) {
+    LOG_INFO << "Calculating LDA optimum projector for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
+    LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
+
     Data<T> W = within_groups_sum_of_squares(data, groups, unique_groups);
     Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
 
+    LOG_INFO << "WGSS:" << std::endl << W << std::endl;
+    LOG_INFO << "BGSS:" << std::endl << B << std::endl;
+
     auto [eigen_val, eigen_vec] = linalg::eigen(linalg::inverse(W + B) * B);
 
+    Projector<T> projector = eigen_vec(Eigen::all, Eigen::last);
+
+    LOG_INFO << "Projector:" << std::endl << projector << std::endl;
     return eigen_vec(Eigen::all, Eigen::last);
   }
 
