@@ -68,13 +68,7 @@ namespace linalg {
     DMatrix<double> m
     ) {
     DMatrix<double> inverse = m.inverse();
-
-    if (!inverse.allFinite()) {
-      std::stringstream message;
-      message << "Matrix is not invertible:" << std::endl << m << std::endl;
-      throw std::invalid_argument(message.str());
-    }
-
+    assert(inverse.allFinite() && "Given matrix is not invertible");
     return inverse;
   }
 

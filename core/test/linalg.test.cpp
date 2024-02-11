@@ -694,7 +694,7 @@ TEST(LinAlgInverse, zero_matrix) {
     0, 0, 0,
     0, 0, 0;
 
-  ASSERT_THROW({ inverse(m); }, std::invalid_argument);
+  ASSERT_DEATH({ inverse(m); }, "Given matrix is not invertible");
 }
 
 TEST(LinAlgInverse, singular_matrix) {
@@ -704,7 +704,7 @@ TEST(LinAlgInverse, singular_matrix) {
     2.0, 2.0, 7.0,
     3.0, 3.0, 8.0;
 
-  ASSERT_THROW({ inverse(m); }, std::invalid_argument);
+  ASSERT_DEATH({ inverse(m); }, "Given matrix is not invertible");
 }
 
 TEST(LinAlgInverse, identity) {
