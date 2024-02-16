@@ -20,12 +20,16 @@ namespace pp {
 
     LOG_INFO << "WGSS:" << std::endl << W << std::endl;
     LOG_INFO << "BGSS:" << std::endl << B << std::endl;
-    LOG_INFO << "W + B:" << std::endl << W + B << std::endl;
-    LOG_INFO << "(W + B)^-1" << std::endl << linalg::inverse(W + B) << std::endl;
 
-    LOG_INFO << "(W + B)^-1 * B:" << std::endl << linalg::inverse(W + B) * B << std::endl;
+    Data<T> WpB = W + B;
+    Data<T> WpBInv = linalg::inverse(WpB);
+    Data<T> WpBInvB = WpBInv * B;
 
-    auto [eigen_val, eigen_vec] = linalg::eigen(linalg::inverse(W + B) * B);
+    LOG_INFO << "W + B:" << std::endl << WpB << std::endl;
+    LOG_INFO << "(W + B)^-1" << std::endl << WpBInv << std::endl;
+    LOG_INFO << "(W + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
+
+    auto [eigen_val, eigen_vec] = linalg::eigen(WpBInvB);
 
     LOG_INFO << "Eigenvalues:" << std::endl << eigen_val << std::endl;
     LOG_INFO << "Eigenvectors:" << std::endl << eigen_vec << std::endl;
