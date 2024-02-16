@@ -20,6 +20,8 @@ namespace pp {
 
     LOG_INFO << "WGSS:" << std::endl << W << std::endl;
     LOG_INFO << "BGSS:" << std::endl << B << std::endl;
+    LOG_INFO << "W + B:" << std::endl << W + B << std::endl;
+    LOG_INFO << "(W + B)^-1" << std::endl << linalg::inverse(W + B) << std::endl;
 
     LOG_INFO << "(W + B)^-1 * B:" << std::endl << linalg::inverse(W + B) * B << std::endl;
 
