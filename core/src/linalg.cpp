@@ -30,6 +30,13 @@ namespace linalg {
     return a.transpose() * weights * b;
   }
 
+  double inner_product(
+    DVector<double> a,
+    DVector<double> b
+    ) {
+    return inner_product(a, b, DMatrix<double>::Identity(a.size(), b.size()));
+  }
+
   double inner_square(
     DVector<double> a,
     DMatrix<double> weights
@@ -106,5 +113,10 @@ namespace linalg {
     DMatrix<double> vectors = solver.eigenvectors().real();
 
     return std::make_tuple(values, vectors);
+  }
+
+  bool collinear(DVector<double> a, DVector<double> b) {
+    double tolerance = 0.0001;
+    return abs(inner_product(a, b) / (a.norm() * b.norm()) - 1.0) < tolerance;
   }
 }

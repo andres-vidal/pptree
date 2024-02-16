@@ -22,6 +22,10 @@ namespace linalg {
     DVector<double>  b,
     DMatrix <double> weights);
 
+  double inner_product(
+    DVector<double> a,
+    DVector<double> b);
+
   double inner_square(
     DVector<double> a,
     DMatrix<double> weights);
@@ -47,4 +51,6 @@ namespace linalg {
 
   std::tuple<DVector<double>, DMatrix<double> > eigen(
     DMatrix<double> m);
+
+  bool collinear(DVector<double> a, DVector<double> b);
 }

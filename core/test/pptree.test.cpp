@@ -6,6 +6,179 @@
 
 using namespace pptree;
 
+TEST(ResponseEquals, true_case) {
+  Response<double, int> r1(1);
+  Response<double, int> r2(1);
+
+  ASSERT_TRUE(r1 == r2);
+}
+
+TEST(ResponseEquals, false_case) {
+  Response<double, int> r1(1);
+  Response<double, int> r2(2);
+
+  ASSERT_FALSE(r1 == r2);
+}
+
+TEST(ConditionEquals, true_case) {
+  Condition<double, int> c1(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  Condition<double, int> c2(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  ASSERT_TRUE(c1 == c2);
+}
+
+TEST(ConditionEquals, true_case_collinear_projectors) {
+  Condition<double, int> c1(
+    as_projector<double>({ 1.0, 1.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  Condition<double, int> c2(
+    as_projector<double>({ 2.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  ASSERT_TRUE(c1 == c2);
+}
+
+TEST(ConditionEquals, true_case_approximate_thresholds) {
+  Condition<double, int> c1(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  Condition<double, int> c2(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.000000000000001,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  ASSERT_TRUE(c1 == c2);
+}
+
+TEST(ConditionEquals, false_case_non_collinear_projectors) {
+  Condition<double, int> c1(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  Condition<double, int> c2(
+    as_projector<double>({ 2.0, 3.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  ASSERT_FALSE(c1 == c2);
+}
+
+TEST(ConditionEquals, false_case_different_thresholds) {
+  Condition<double, int> c1(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  Condition<double, int> c2(
+    as_projector<double>({ 1.0, 2.0 }),
+    4.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  ASSERT_FALSE(c1 == c2);
+}
+
+TEST(ConditionEquals, false_case_different_responses) {
+  Condition<double, int> c1(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  Condition<double, int> c2(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(3));
+
+  ASSERT_FALSE(c1 == c2);
+}
+
+TEST(ConditionEquals, false_case_different_structures) {
+  Condition<double, int> c1(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Response<double, int>(2));
+
+  Condition<double, int> c2(
+    as_projector<double>({ 1.0, 2.0 }),
+    3.0,
+    new Response<double, int>(1),
+    new Condition<double, int>(
+      as_projector<double>({ 1.0, 2.0 }),
+      3.0,
+      new Response<double, int>(1),
+      new Response<double, int>(2)));
+
+  ASSERT_FALSE(c1 == c2);
+}
+
+TEST(TreeEquals, true_case) {
+  Tree<double, int> t1(
+    new Condition<double, int>(
+      as_projector<double>({ 1.0, 2.0 }),
+      3.0,
+      new Response<double, int>(1),
+      new Condition<double, int>(
+        as_projector<double>({ 1.0, 2.0 }),
+        3.0,
+        new Response<double, int>(1),
+        new Response<double, int>(2))));
+
+  Tree<double, int> t2(
+    new Condition<double, int>(
+      as_projector<double>({ 1.0, 2.0 }),
+      3.0,
+      new Response<double, int>(1),
+      new Condition<double, int>(
+        as_projector<double>({ 1.0, 2.0 }),
+        3.0,
+        new Response<double, int>(1),
+        new Response<double, int>(2))));
+
+  ASSERT_TRUE(t1 == t2);
+}
+
+TEST(TreeEquals, false_case) {
+  Tree<double, int> t1(
+    new Condition<double, int>(
+      as_projector<double>({ 1.0, 2.0 }),
+      3.0,
+      new Response<double, int>(1),
+      new Response<double, int>(2)));
+
+  Tree<double, int> t2(
+    new Condition<double, int>(
+      as_projector<double>({ 1.0, 2.0 }),
+      3.0,
+      new Response<double, int>(1),
+      new Response<double, int>(3)));
+
+  ASSERT_FALSE(t1 == t2);
+}
 
 TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
   Data<double> data(10, 1);
@@ -30,10 +203,7 @@ TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
       new Response<double, int>(0),
       new Response<double, int>(1)));
 
-  json json_result(result);
-  json json_expect(expect);
-
-  ASSERT_STREQ(json_expect.dump().c_str(), json_result.dump().c_str());
+  ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
@@ -66,10 +236,7 @@ TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
         new Response<double, int>(2))));
 
 
-  json json_result(result);
-  json json_expect(expect);
-
-  ASSERT_STREQ(json_expect.dump().c_str(), json_result.dump().c_str());
+  ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
@@ -106,15 +273,12 @@ TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
 
   Tree<double, int> expect = Tree<double, int>(
     new Condition<double, int>(
-      as_projector<double>({ -1.0, 1.1437956370464563e-16, 1.380154307539727e-16, 1.957183583530815e-16 }),
+      as_projector<double>({ -1.0, 1.1437956e-16, 1.3801543e-16, 1.9571836e-16 }),
       -2.5,
       new Response<double, int>(0),
       new Response<double, int>(1)));
 
-  json json_result(result);
-  json json_expect(expect);
-
-  ASSERT_STREQ(json_expect.dump().c_str(), json_result.dump().c_str());
+  ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
@@ -191,19 +355,17 @@ TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
 
   Tree<double, int> expect = Tree<double, int>(
     new Condition<double, int>(
-      as_projector<double>({ -0.9805806756909201, 0.19611613513818413, -1.785038044022064e-16, -2.166446927983865e-16, -1.1805805462575629e-15 }),
+      as_projector<double>({ -0.9805807, 0.1961161, -1.7850380e-16, -2.1664469e-16, -1.18058054e-15 }),
       -4.1184388379018655,
       new Response<double, int>(2),
       new Condition<double, int>(
-        as_projector<double>({ 0.09067218080194704, 0.08680156784964843, -2.983848690645762e-17, 1.2586932655869611e-17, -8.088390290592397e-17 }),
+        as_projector<double>({ 0.0906722, 0.0868016, -2.98384873e-17, 1.2586933e-17, -8.0883903e-17 }),
         0.3530121908270415,
         new Response<double, int>(0),
         new Response<double, int>(1))));
 
-  json json_result(result);
-  json json_expect(expect);
 
-  ASSERT_STREQ(json_expect.dump().c_str(), json_result.dump().c_str());
+  ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreePredictDataColumn, univariate_two_groups) {

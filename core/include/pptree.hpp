@@ -6,12 +6,39 @@ namespace pptree {
   template<typename T>
   using Threshold = T;
 
+  template<typename T, typename R>
+  struct Node;
+  template<typename T, typename R>
+  struct Condition;
+  template<typename T, typename R>
+  struct Response;
+
+  template<typename T, typename R>
+  Response<T, R> * as_response(Node<T, R> *node);
+  template<typename T, typename R>
+  Response<T, R>const & as_response(Node<T, R> const&node);
+  template<typename T, typename R>
+  Condition<T, R> * as_condition(Node<T, R> *node);
+  template<typename T, typename R>
+  Condition<T, R>const & as_condition(Node<T, R>const &node);
+
+
   template<typename T, typename R >
   struct Node {
     virtual ~Node() = default;
     virtual R predict(DataColumn<T> data) const = 0;
     virtual bool is_response() const = 0;
     virtual bool is_condition() const = 0;
+
+    bool operator==(const Node<T, R> &other) const {
+      if (this->is_condition() && other.is_condition()) {
+        return as_condition(*this) == as_condition(other);
+      } else if (this->is_response() && other.is_response()) {
+        return as_response(*this) == as_response(other);
+      } else {
+        return false;
+      }
+    }
   };
 
   template<typename T, typename R >
@@ -51,6 +78,15 @@ namespace pptree {
     bool is_condition() const override {
       return true;
     }
+
+    bool operator==(const Condition<T, R> &other) const {
+      T tolerance = 0.00001;
+
+      return linalg::collinear(projector, other.projector)
+      && abs(threshold - other.threshold) < tolerance
+      && *lower == *other.lower
+      && *upper == *other.upper;
+    }
   };
 
   template<typename T, typename R >
@@ -70,6 +106,10 @@ namespace pptree {
 
     bool is_condition() const override {
       return false;
+    }
+
+    bool operator==(const Response<T, R> &other) const {
+      return value == other.value;
     }
   };
 
@@ -97,6 +137,10 @@ namespace pptree {
       }
 
       return predictions;
+    }
+
+    bool operator==(const Tree<T, R> &other) const {
+      return *root == *other.root;
     }
   };
 
