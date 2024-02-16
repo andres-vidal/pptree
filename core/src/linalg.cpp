@@ -1,4 +1,5 @@
 #include "linalg.hpp"
+#include "pptreeio.hpp"
 
 using namespace Eigen;
 using namespace linalg;
@@ -101,12 +102,16 @@ namespace linalg {
     DMatrix<double> m
     ) {
     if (!m.isApprox(m.transpose())) {
+      LOG_INFO << "Non-symmetric matrix detected, using general eigenvalue solver" << std::endl;
+
       EigenSolver<DMatrix<double> > solver(m);
       DVector<double> values = solver.eigenvalues().real();
       DMatrix<double> vectors = solver.eigenvectors().real();
 
       return sort_eigen(values, vectors);
     }
+
+    LOG_INFO << "Symmetric matrix detected, using self-adjoint eigenvalue solver" << std::endl;
 
     SelfAdjointEigenSolver<DMatrix<double> > solver(m);
     DVector<double> values = solver.eigenvalues().real();
