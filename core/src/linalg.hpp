@@ -8,49 +8,51 @@ namespace linalg {
   using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
   DVector<double> mean(
-    DMatrix<double> data);
+    const DMatrix<double> &data);
 
   DMatrix<double> outer_product(
-    DVector<double> a,
-    DVector<double> b);
+    const DVector<double> &a,
+    const DVector<double> &b);
 
   DMatrix<double> outer_square(
-    DVector<double> a);
+    const DVector<double> &a);
 
   double inner_product(
-    DVector<double>  a,
-    DVector<double>  b,
-    DMatrix <double> weights);
+    const DVector<double> &a,
+    const DVector<double> &b,
+    const DMatrix<double> &weights);
 
   double inner_product(
-    DVector<double> a,
-    DVector<double> b);
+    const DVector<double> &a,
+    const DVector<double> &b);
 
   double inner_square(
-    DVector<double> a,
-    DMatrix<double> weights);
+    const DVector<double> &a,
+    const DMatrix<double> &weights);
 
   DMatrix<double> inner_product(
-    DMatrix<double> a,
-    DMatrix<double> b,
-    DMatrix<double> weights);
+    const DMatrix<double> &a,
+    const DMatrix<double> &b,
+    const DMatrix<double> &weights);
 
   DMatrix<double> inner_product(
-    DMatrix<double> a,
-    DMatrix<double> b);
+    const DMatrix<double> &a,
+    const DMatrix<double> &b);
 
   DMatrix<double> inner_square(
-    DMatrix<double> m,
-    DMatrix<double> weights);
+    const DMatrix<double> &m,
+    const DMatrix<double> &weights);
 
   double determinant(
-    DMatrix<double> m);
+    const DMatrix<double> &m);
 
   DMatrix<double> inverse(
-    DMatrix<double> m);
+    const DMatrix<double> &m);
 
   std::tuple<DVector<double>, DMatrix<double> > eigen(
-    DMatrix<double> m);
+    const DMatrix<double> &m);
 
-  bool collinear(DVector<double> a, DVector<double> b);
+  bool collinear(
+    const DVector<double> &a,
+    const DVector<double> &b);
 }
