@@ -18,8 +18,8 @@ namespace pp {
     Data<T> W = within_groups_sum_of_squares(data, groups, unique_groups);
     Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
 
-    LOG_INFO << "WGSS:" << std::endl << W << std::endl;
-    LOG_INFO << "BGSS:" << std::endl << B << std::endl;
+    LOG_INFO << "W:" << std::endl << W << std::endl;
+    LOG_INFO << "B:" << std::endl << B << std::endl;
 
     Data<T> WpB = W + B;
     Data<T> WpBInv = linalg::inverse(WpB);
