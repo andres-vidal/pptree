@@ -263,8 +263,8 @@ namespace pptree {
     return tree;
   }
 
-  template Tree<double, int> train(
-    const Data<double> &           data,
-    const DataColumn<int> &        groups,
-    const PPStrategy<double, int> &pp_strategy);
+  template Tree<long double, int> train(
+    const Data<long double> &           data,
+    const DataColumn<int> &             groups,
+    const PPStrategy<long double, int> &pp_strategy);
 }

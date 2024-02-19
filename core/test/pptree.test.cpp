@@ -7,181 +7,181 @@
 using namespace pptree;
 
 TEST(ResponseEquals, true_case) {
-  Response<double, int> r1(1);
-  Response<double, int> r2(1);
+  Response<long double, int> r1(1);
+  Response<long double, int> r2(1);
 
   ASSERT_TRUE(r1 == r2);
 }
 
 TEST(ResponseEquals, false_case) {
-  Response<double, int> r1(1);
-  Response<double, int> r2(2);
+  Response<long double, int> r1(1);
+  Response<long double, int> r2(2);
 
   ASSERT_FALSE(r1 == r2);
 }
 
 TEST(ConditionEquals, true_case) {
-  Condition<double, int> c1(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c1(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
-  Condition<double, int> c2(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c2(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
 TEST(ConditionEquals, true_case_collinear_projectors) {
-  Condition<double, int> c1(
-    as_projector<double>({ 1.0, 1.0 }),
+  Condition<long double, int> c1(
+    as_projector<long double>({ 1.0, 1.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
-  Condition<double, int> c2(
-    as_projector<double>({ 2.0, 2.0 }),
+  Condition<long double, int> c2(
+    as_projector<long double>({ 2.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
 TEST(ConditionEquals, true_case_approximate_thresholds) {
-  Condition<double, int> c1(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c1(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
-  Condition<double, int> c2(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c2(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.000000000000001,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
 TEST(ConditionEquals, false_case_non_collinear_projectors) {
-  Condition<double, int> c1(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c1(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
-  Condition<double, int> c2(
-    as_projector<double>({ 2.0, 3.0 }),
+  Condition<long double, int> c2(
+    as_projector<long double>({ 2.0, 3.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(ConditionEquals, false_case_different_thresholds) {
-  Condition<double, int> c1(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c1(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
-  Condition<double, int> c2(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c2(
+    as_projector<long double>({ 1.0, 2.0 }),
     4.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(ConditionEquals, false_case_different_responses) {
-  Condition<double, int> c1(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c1(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
-  Condition<double, int> c2(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c2(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(3));
+    new Response<long double, int>(1),
+    new Response<long double, int>(3));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(ConditionEquals, false_case_different_structures) {
-  Condition<double, int> c1(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c1(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Response<double, int>(2));
+    new Response<long double, int>(1),
+    new Response<long double, int>(2));
 
-  Condition<double, int> c2(
-    as_projector<double>({ 1.0, 2.0 }),
+  Condition<long double, int> c2(
+    as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<double, int>(1),
-    new Condition<double, int>(
-      as_projector<double>({ 1.0, 2.0 }),
+    new Response<long double, int>(1),
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<double, int>(1),
-      new Response<double, int>(2)));
+      new Response<long double, int>(1),
+      new Response<long double, int>(2)));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(TreeEquals, true_case) {
-  Tree<double, int> t1(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0, 2.0 }),
+  Tree<long double, int> t1(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<double, int>(1),
-      new Condition<double, int>(
-        as_projector<double>({ 1.0, 2.0 }),
+      new Response<long double, int>(1),
+      new Condition<long double, int>(
+        as_projector<long double>({ 1.0, 2.0 }),
         3.0,
-        new Response<double, int>(1),
-        new Response<double, int>(2))));
+        new Response<long double, int>(1),
+        new Response<long double, int>(2))));
 
-  Tree<double, int> t2(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0, 2.0 }),
+  Tree<long double, int> t2(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<double, int>(1),
-      new Condition<double, int>(
-        as_projector<double>({ 1.0, 2.0 }),
+      new Response<long double, int>(1),
+      new Condition<long double, int>(
+        as_projector<long double>({ 1.0, 2.0 }),
         3.0,
-        new Response<double, int>(1),
-        new Response<double, int>(2))));
+        new Response<long double, int>(1),
+        new Response<long double, int>(2))));
 
   ASSERT_TRUE(t1 == t2);
 }
 
 TEST(TreeEquals, false_case) {
-  Tree<double, int> t1(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0, 2.0 }),
+  Tree<long double, int> t1(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<double, int>(1),
-      new Response<double, int>(2)));
+      new Response<long double, int>(1),
+      new Response<long double, int>(2)));
 
-  Tree<double, int> t2(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0, 2.0 }),
+  Tree<long double, int> t2(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<double, int>(1),
-      new Response<double, int>(3)));
+      new Response<long double, int>(1),
+      new Response<long double, int>(3)));
 
   ASSERT_FALSE(t1 == t2);
 }
 
 TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
-  Data<double> data(10, 1);
+  Data<long double> data(10, 1);
   data <<
     1, 1, 1, 1, 1,
     2, 2, 2, 2, 2;
@@ -191,23 +191,23 @@ TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<double, int> result = pptree::train(
+  Tree<long double, int> result = pptree::train(
     data,
     groups,
-    (PPStrategy<double, int>)lda_strategy<double, int>);
+    (PPStrategy<long double, int>)lda_strategy<long double, int>);
 
-  Tree<double, int> expect = Tree<double, int>(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0 }),
+  Tree<long double, int> expect = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0 }),
       1.5,
-      new Response<double, int>(0),
-      new Response<double, int>(1)));
+      new Response<long double, int>(0),
+      new Response<long double, int>(1)));
 
   ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
-  Data<double> data(15, 1);
+  Data<long double> data(15, 1);
   data <<
     1, 1, 1, 1, 1,
     2, 2, 2, 2, 2,
@@ -219,28 +219,28 @@ TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
     1, 1, 1, 1, 1,
     2, 2, 2, 2, 2;
 
-  Tree<double, int> result = pptree::train(
+  Tree<long double, int> result = pptree::train(
     data,
     groups,
-    (PPStrategy<double, int>)lda_strategy<double, int>);
+    (PPStrategy<long double, int>)lda_strategy<long double, int>);
 
-  Tree<double, int> expect = Tree<double, int>(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0 }),
+  Tree<long double, int> expect = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0 }),
       1.75,
-      new Response<double, int>(0),
-      new Condition<double, int>(
-        as_projector<double>({ 1.0 }),
+      new Response<long double, int>(0),
+      new Condition<long double, int>(
+        as_projector<long double>({ 1.0 }),
         2.5,
-        new Response<double, int>(1),
-        new Response<double, int>(2))));
+        new Response<long double, int>(1),
+        new Response<long double, int>(2))));
 
 
   ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
-  Data<double> data(10, 4);
+  Data<long double> data(10, 4);
   data <<
     1, 0, 1, 1,
     1, 1, 0, 0,
@@ -266,23 +266,23 @@ TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
     1,
     1;
 
-  Tree<double, int> result = train(
+  Tree<long double, int> result = train(
     data,
     groups,
-    (PPStrategy<double, int>)lda_strategy<double, int>);
+    (PPStrategy<long double, int>)lda_strategy<long double, int>);
 
-  Tree<double, int> expect = Tree<double, int>(
-    new Condition<double, int>(
-      as_projector<double>({ -1.0, 1.1437956e-16, 1.3801543e-16, 1.9571836e-16 }),
+  Tree<long double, int> expect = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ -1.0, 1.1437956e-16, 1.3801543e-16, 1.9571836e-16 }),
       -2.5,
-      new Response<double, int>(0),
-      new Response<double, int>(1)));
+      new Response<long double, int>(0),
+      new Response<long double, int>(1)));
 
   ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
-  Data<double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -348,36 +348,36 @@ TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
     2,
     2;
 
-  Tree<double, int> result = train(
+  Tree<long double, int> result = train(
     data,
     groups,
-    (PPStrategy<double, int>)lda_strategy<double, int>);
+    (PPStrategy<long double, int>)lda_strategy<long double, int>);
 
-  Tree<double, int> expect = Tree<double, int>(
-    new Condition<double, int>(
-      as_projector<double>({ -0.9805807, 0.1961161, -1.7850380e-16, -2.1664469e-16, -1.18058054e-15 }),
-      -4.1184388379018655,
-      new Response<double, int>(2),
-      new Condition<double, int>(
-        as_projector<double>({ 0.0906722, 0.0868016, -2.98384873e-17, 1.2586933e-17, -8.0883903e-17 }),
-        0.3530121908270415,
-        new Response<double, int>(0),
-        new Response<double, int>(1))));
+  Tree<long double, int> expect = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ -0.9805806756909202, 0.19611613513818374, -2.0140270007609215e-16, -7.07631108375459e-17, -8.2738406517746e-16 }),
+      -4.118438837901868,
+      new Response<long double, int>(2),
+      new Condition<long double, int>(
+        as_projector<long double>({ 0.8272093794337335, -0.5618938000875766, -1.8590644939116864e-16, 3.718128987823358e-17, 2.974503190258699e-16 }),
+        -0.16392043106834114,
+        new Response<long double, int>(0),
+        new Response<long double, int>(1))));
 
 
   ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreePredictDataColumn, univariate_two_groups) {
-  Tree<double, int> tree = Tree<double, int>(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0 }),
+  Tree<long double, int> tree = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0 }),
       1.5,
-      new Response<double, int>(0),
-      new Response<double, int>(1)));
+      new Response<long double, int>(0),
+      new Response<long double, int>(1)));
 
 
-  DataColumn<double> input(1);
+  DataColumn<long double> input(1);
   input << 1.0;
   ASSERT_EQ(tree.predict(input), 0);
 
@@ -386,18 +386,18 @@ TEST(PPTreePredictDataColumn, univariate_two_groups) {
 }
 
 TEST(PPTreePredictDataColumn, univariate_three_groups) {
-  Tree<double, int> tree = Tree<double, int>(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0 }),
+  Tree<long double, int> tree = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0 }),
       1.75,
-      new Response<double, int>(0),
-      new Condition<double, int>(
-        as_projector<double>({ 1.0 }),
+      new Response<long double, int>(0),
+      new Condition<long double, int>(
+        as_projector<long double>({ 1.0 }),
         2.5,
-        new Response<double, int>(1),
-        new Response<double, int>(2))));
+        new Response<long double, int>(1),
+        new Response<long double, int>(2))));
 
-  DataColumn<double> input(1);
+  DataColumn<long double> input(1);
   input << 1.0;
   ASSERT_EQ(tree.predict(input), 0);
 
@@ -409,14 +409,14 @@ TEST(PPTreePredictDataColumn, univariate_three_groups) {
 }
 
 TEST(PPTreePredictData, univariate_two_groups) {
-  Tree<double, int> tree = Tree<double, int>(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0 }),
+  Tree<long double, int> tree = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0 }),
       1.5,
-      new Response<double, int>(0),
-      new Response<double, int>(1)));
+      new Response<long double, int>(0),
+      new Response<long double, int>(1)));
 
-  Data<double> input(2, 1);
+  Data<long double> input(2, 1);
   input << 1.0,  2.0;
 
   DataColumn<int> result = tree.predict(input);
@@ -428,18 +428,18 @@ TEST(PPTreePredictData, univariate_two_groups) {
 }
 
 TEST(PPTreePredictData, univariate_three_groups) {
-  Tree<double, int> tree = Tree<double, int>(
-    new Condition<double, int>(
-      as_projector<double>({ 1.0 }),
+  Tree<long double, int> tree = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0 }),
       1.75,
-      new Response<double, int>(0),
-      new Condition<double, int>(
-        as_projector<double>({ 1.0 }),
+      new Response<long double, int>(0),
+      new Condition<long double, int>(
+        as_projector<long double>({ 1.0 }),
         2.5,
-        new Response<double, int>(1),
-        new Response<double, int>(2))));
+        new Response<long double, int>(1),
+        new Response<long double, int>(2))));
 
-  Data<double> input(3, 1);
+  Data<long double> input(3, 1);
   input << 1.0, 2.0, 3.0;
 
   DataColumn<int> result = tree.predict(input);

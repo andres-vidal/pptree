@@ -7,52 +7,52 @@ namespace linalg {
   template<typename T>
   using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
-  DVector<double> mean(
-    const DMatrix<double> &data);
+  DVector<long double> mean(
+    const DMatrix<long double> &data);
 
-  DMatrix<double> outer_product(
-    const DVector<double> &a,
-    const DVector<double> &b);
+  DMatrix<long double> outer_product(
+    const DVector<long double> &a,
+    const DVector<long double> &b);
 
-  DMatrix<double> outer_square(
-    const DVector<double> &a);
+  DMatrix<long double> outer_square(
+    const DVector<long double> &a);
 
-  double inner_product(
-    const DVector<double> &a,
-    const DVector<double> &b,
-    const DMatrix<double> &weights);
+  long double inner_product(
+    const DVector<long double> &a,
+    const DVector<long double> &b,
+    const DMatrix<long double> &weights);
 
-  double inner_product(
-    const DVector<double> &a,
-    const DVector<double> &b);
+  long double inner_product(
+    const DVector<long double> &a,
+    const DVector<long double> &b);
 
-  double inner_square(
-    const DVector<double> &a,
-    const DMatrix<double> &weights);
+  long double inner_square(
+    const DVector<long double> &a,
+    const DMatrix<long double> &weights);
 
-  DMatrix<double> inner_product(
-    const DMatrix<double> &a,
-    const DMatrix<double> &b,
-    const DMatrix<double> &weights);
+  DMatrix<long double> inner_product(
+    const DMatrix<long double> &a,
+    const DMatrix<long double> &b,
+    const DMatrix<long double> &weights);
 
-  DMatrix<double> inner_product(
-    const DMatrix<double> &a,
-    const DMatrix<double> &b);
+  DMatrix<long double> inner_product(
+    const DMatrix<long double> &a,
+    const DMatrix<long double> &b);
 
-  DMatrix<double> inner_square(
-    const DMatrix<double> &m,
-    const DMatrix<double> &weights);
+  DMatrix<long double> inner_square(
+    const DMatrix<long double> &m,
+    const DMatrix<long double> &weights);
 
-  double determinant(
-    const DMatrix<double> &m);
+  long double determinant(
+    const DMatrix<long double> &m);
 
-  DMatrix<double> inverse(
-    const DMatrix<double> &m);
+  DMatrix<long double> inverse(
+    const DMatrix<long double> &m);
 
-  std::tuple<DVector<double>, DMatrix<double> > eigen(
-    const DMatrix<double> &m);
+  std::tuple<DVector<long double>, DMatrix<long double> > eigen(
+    const DMatrix<long double> &m);
 
   bool collinear(
-    const DVector<double> &a,
-    const DVector<double> &b);
+    const DVector<long double> &a,
+    const DVector<long double> &b);
 }

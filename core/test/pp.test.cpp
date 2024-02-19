@@ -11,7 +11,7 @@ using namespace Eigen;
 
 
 TEST(PPLDAOptimumProjector, two_groups) {
-  DMatrix<double> data(10, 4);
+  DMatrix<long double> data(10, 4);
   data <<
     1, 0, 1, 1,
     1, 1, 0, 0,
@@ -37,9 +37,9 @@ TEST(PPLDAOptimumProjector, two_groups) {
     1,
     1;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1 });
+  DVector<long double> actual = lda_optimum_projector(data, groups, { 0, 1 });
 
-  DVector<double> expected(4);
+  DVector<long double> expected(4);
   expected <<
     -1, 0, 0, 0;
 
@@ -47,7 +47,7 @@ TEST(PPLDAOptimumProjector, two_groups) {
 }
 
 TEST(PPLDAOptimumProjector, two_groups2) {
-  DMatrix<double> data(10, 4);
+  DMatrix<long double> data(10, 4);
   data <<
     0, 1, 1, 1,
     1, 1, 0, 0,
@@ -74,9 +74,9 @@ TEST(PPLDAOptimumProjector, two_groups2) {
     1,
     1;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1 });
+  DVector<long double> actual = lda_optimum_projector(data, groups, { 0, 1 });
 
-  DVector<double> expected(4);
+  DVector<long double> expected(4);
   expected <<
     0, 1, 0, 0;
 
@@ -85,7 +85,7 @@ TEST(PPLDAOptimumProjector, two_groups2) {
 }
 
 TEST(PPLDAOptimumProjector, two_groups3) {
-  DMatrix<double> data(10, 4);
+  DMatrix<long double> data(10, 4);
   data <<
     0, 1, 1, 1,
     1, 0, 1, 0,
@@ -112,9 +112,9 @@ TEST(PPLDAOptimumProjector, two_groups3) {
     1,
     1;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1 });
+  DVector<long double> actual = lda_optimum_projector(data, groups, { 0, 1 });
 
-  DVector<double> expected(4);
+  DVector<long double> expected(4);
   expected <<
     0, 0, -1, 0;
 
@@ -122,7 +122,7 @@ TEST(PPLDAOptimumProjector, two_groups3) {
 }
 
 TEST(PPLDAOptimumProjector, two_groups4) {
-  DMatrix<double> data(10, 4);
+  DMatrix<long double> data(10, 4);
   data <<
     0, 1, 1, 1,
     1, 0, 0, 1,
@@ -148,17 +148,20 @@ TEST(PPLDAOptimumProjector, two_groups4) {
     1,
     1;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1 });
+  DVector<long double> actual = lda_optimum_projector(data, groups, { 0, 1 });
 
-  DVector<double> expected(4);
+  DVector<long double> expected(4);
   expected <<
-    0, 0, 0, -1;
+    2.0965219514666735e-15,
+    4.4408920985006262e-16,
+    -2.4980018054066002e-16,
+    1;
 
   ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(PPLDAOptimumProjector, three_groups) {
-  DMatrix<double> data(30, 5);
+  DMatrix<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -224,17 +227,21 @@ TEST(PPLDAOptimumProjector, three_groups) {
     2,
     2;
 
-  DVector<double> actual = lda_optimum_projector(data, groups, { 0, 1, 2 });
+  DVector<long double> actual = lda_optimum_projector(data, groups, { 0, 1, 2 });
 
-  DVector<double> expected(5);
+  DVector<long double> expected(5);
   expected <<
-    -0.12823, -0.99174, 0, 0, 0;
+    0.64183869804582372,
+    -0.76683967404591291,
+    -3.3128283818149138e-16,
+    -1.5792276346804761e-16,
+    6.9344029885377537e-16;
 
   ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(PPLDAIndex, zero_return) {
-  DMatrix<double> data(4, 12);
+  DMatrix<long double> data(4, 12);
   data <<
     1, 0, 1, 1, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 0, 0, 1, 0, 1, 2, 3, 4, 5,
@@ -248,17 +255,17 @@ TEST(PPLDAIndex, zero_return) {
     1,
     1;
 
-  DVector<double> projector(12);
+  DVector<long double> projector(12);
   projector <<
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
-  double actual = lda_index(data, projector, groups, { 0, 1 });
+  long double actual = lda_index(data, projector, groups, { 0, 1 });
 
   ASSERT_EQ(0.0, actual);
 }
 
 TEST(PPLDAIndex, optimal) {
-  DMatrix<double> data(30, 5);
+  DMatrix<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -324,17 +331,17 @@ TEST(PPLDAIndex, optimal) {
     2,
     2;
 
-  DVector<double> projector(5);
+  DVector<long double> projector(5);
   projector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
-  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
+  long double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(PPLDAIndex, optimal2) {
-  DMatrix<double> data(30, 5);
+  DMatrix<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -400,18 +407,18 @@ TEST(PPLDAIndex, optimal2) {
     2,
     2;
 
-  DVector<double> projector(5);
+  DVector<long double> projector(5);
 
   projector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
 
-  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
+  long double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(PPLDAIndex, optimal3) {
-  DMatrix<double> data(30, 5);
+  DMatrix<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -477,18 +484,18 @@ TEST(PPLDAIndex, optimal3) {
     2,
     2;
 
-  DVector<double> projector(5);
+  DVector<long double> projector(5);
 
   projector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
 
-  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
+  long double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(PPLDAIndex, suboptimal) {
-  DMatrix<double> data(30, 5);
+  DMatrix<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -554,18 +561,18 @@ TEST(PPLDAIndex, suboptimal) {
     2,
     2;
 
-  DVector<double> projector(5);
+  DVector<long double> projector(5);
 
   projector <<
     0, 0, 1, 1, 1;
 
-  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
+  long double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_NEAR(0.134985, actual, 0.00001);
 }
 
 TEST(PPLDAIndex, suboptimal2) {
-  DMatrix<double> data(30, 5);
+  DMatrix<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -631,18 +638,18 @@ TEST(PPLDAIndex, suboptimal2) {
     2,
     2;
 
-  DVector<double> projector(5);
+  DVector<long double> projector(5);
 
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double actual = lda_index(data, projector, groups, { 0, 1, 2 });
+  long double actual = lda_index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
 
 TEST(PPProjectData, zero_projector) {
-  Data<double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -675,12 +682,12 @@ TEST(PPProjectData, zero_projector) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  Projector<double> projector(5);
+  Projector<long double> projector(5);
   projector <<
     0.0, 0.0, 0.0, 0.0, 0.0;
 
-  DataColumn<double> actual = project(data, projector);
-  DataColumn<double> expected = DataColumn<double>::Zero(30);
+  DataColumn<long double> actual = project(data, projector);
+  DataColumn<long double> expected = DataColumn<long double>::Zero(30);
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
@@ -689,7 +696,7 @@ TEST(PPProjectData, zero_projector) {
 }
 
 TEST(PPProjectData, generic_projector) {
-  Data<double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -722,12 +729,12 @@ TEST(PPProjectData, generic_projector) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  Projector<double> projector(5);
+  Projector<long double> projector(5);
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  DataColumn<double> actual = project(data, projector);
-  DataColumn<double> expected(30);
+  DataColumn<long double> actual = project(data, projector);
+  DataColumn<long double> expected(30);
   expected <<
     -1.30946,
     -0.27208,
@@ -767,29 +774,29 @@ TEST(PPProjectData, generic_projector) {
 }
 
 TEST(PPPProjectDataColumn, zero_projector) {
-  DataColumn<double> data(5);
+  DataColumn<long double> data(5);
   data <<
     1.0, 2.0, 3.0, 4.0, 5.0;
 
-  Projector<double> projector(5);
+  Projector<long double> projector(5);
   projector <<
     0.0, 0.0, 0.0, 0.0, 0.0;
 
-  double result = project(data, projector);
+  long double result = project(data, projector);
 
   ASSERT_EQ(0, result);
 }
 
 TEST(PPPProjectDataColumn, generic_projector) {
-  DataColumn<double> data(5);
+  DataColumn<long double> data(5);
   data <<
     1.0, 2.0, 3.0, 4.0, 5.0;
 
-  Projector<double> projector(5);
+  Projector<long double> projector(5);
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double result = project(data, projector);
+  long double result = project(data, projector);
 
   ASSERT_NEAR(-6.58606, result, 0.00001);
 }

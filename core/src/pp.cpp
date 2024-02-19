@@ -40,10 +40,10 @@ namespace pp {
     return eigen_vec(Eigen::all, Eigen::last);
   }
 
-  template Projector<double> lda_optimum_projector<double, int>(
-    const Data<double> &   data,
-    const DataColumn<int> &groups,
-    const std::set<int> &  unique_groups);
+  template Projector<long double> lda_optimum_projector<long double, int>(
+    const Data<long double> & data,
+    const DataColumn<int> &   groups,
+    const std::set<int> &     unique_groups);
 
   template<typename T, typename G>
   T lda_index(
@@ -65,11 +65,11 @@ namespace pp {
     return 1 - determinant(inner_square(A, W)) / denominator;
   }
 
-  template double lda_index<double, int>(
-    const Data<double> &     data,
-    const Projector<double> &projector,
-    const DataColumn<int> &  groups,
-    const std::set<int> &    unique_groups);
+  template long double lda_index<long double, int>(
+    const Data<long double> &     data,
+    const Projector<long double> &projector,
+    const DataColumn<int> &       groups,
+    const std::set<int> &         unique_groups);
 
   template<typename T>
   Projection<T> project(
@@ -78,9 +78,9 @@ namespace pp {
     return data * projector;
   }
 
-  template Projection<double> project<double>(
-    const Data<double> &     data,
-    const Projector<double> &projector);
+  template Projection<long double> project<long double>(
+    const Data<long double> &     data,
+    const Projector<long double> &projector);
 
   template<typename T>
   T project(
@@ -89,9 +89,9 @@ namespace pp {
     return (data.transpose() * projector).value();
   }
 
-  template double project<double>(
-    const DataColumn<double> &data,
-    const Projector<double> & projector);
+  template long double project<long double>(
+    const DataColumn<long double> &data,
+    const Projector<long double> & projector);
 
   template<typename T, typename G>
   PPStrategyReturn<T> lda_strategy(
@@ -102,8 +102,8 @@ namespace pp {
     return std::make_tuple(projector, project(data, projector));
   }
 
-  template PPStrategyReturn<double> lda_strategy<double, int>(
-    const Data<double> &   data,
-    const DataColumn<int> &groups,
-    const std::set<int> &  unique_groups);
+  template PPStrategyReturn<long double> lda_strategy<long double, int>(
+    const Data<long double> & data,
+    const DataColumn<int> &   groups,
+    const std::set<int> &     unique_groups);
 }
