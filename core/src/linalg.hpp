@@ -55,4 +55,8 @@ namespace linalg {
   bool collinear(
     const DVector<long double> &a,
     const DVector<long double> &b);
+
+  bool collinear(
+    const DMatrix<long double> &a,
+    const DMatrix<long double> &b);
 }

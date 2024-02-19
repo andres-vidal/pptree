@@ -127,4 +127,19 @@ namespace linalg {
 
     return fabs(fabs(inner_product(a, b) / (a.norm() * b.norm())) - 1.0) < tolerance;
   }
+
+  bool collinear(
+    const DMatrix<long double> &a,
+    const DMatrix<long double> &b) {
+    for (int i = 0; i < a.cols(); i++) {
+      DVector<long double> a_col = a.col(i);
+      DVector<long double> b_col = b.col(i);
+
+      if (!collinear(a_col, b_col)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }

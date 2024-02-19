@@ -5,8 +5,8 @@
 using namespace linalg;
 using namespace Eigen;
 
-#define ASSERT_APPROX(a, b) ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
-
+#define ASSERT_APPROX(a, b)    ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
+#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
 
 TEST(LinAlgMean, single_observation) {
   DMatrix<long double> data(1, 3);
@@ -925,7 +925,7 @@ TEST(LinAlgEigen, symmetric_real_non_negative_eigenvalues) {
   ASSERT_EQ(expected_vectors.size(), actual_vectors.size());
   ASSERT_EQ(expected_vectors.rows(), actual_vectors.rows());
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
-  ASSERT_APPROX(expected_vectors, actual_vectors);
+  ASSERT_COLLINEAR(expected_vectors, actual_vectors);
 
   DiagonalMatrix<long double, 3> DL;
   DL.diagonal() = actual_values;
@@ -961,7 +961,7 @@ TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
   ASSERT_EQ(expected_vectors.size(), actual_vectors.size());
   ASSERT_EQ(expected_vectors.rows(), actual_vectors.rows());
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
-  ASSERT_APPROX(expected_vectors, actual_vectors);
+  ASSERT_COLLINEAR(expected_vectors, actual_vectors);
 
   DiagonalMatrix<long double, 3> DL;
   DL.diagonal() = actual_values;
@@ -970,7 +970,7 @@ TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
   ASSERT_APPROX(Mv, Lv);
 }
 
-TEST(LinAlgCollinear, collinear_true_same_direction) {
+TEST(LinAlgCollinear, collinear_vectors_same_direction) {
   DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -980,7 +980,7 @@ TEST(LinAlgCollinear, collinear_true_same_direction) {
   ASSERT_TRUE(collinear(a, b));
 }
 
-TEST(LinalCollinear, collinear_false_opposite_direction) {
+TEST(LinalCollinear, collinear_vectors_opposite_direction) {
   DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
@@ -990,12 +990,92 @@ TEST(LinalCollinear, collinear_false_opposite_direction) {
   ASSERT_TRUE(collinear(a, b));
 }
 
-TEST(LinAlgCollinear, collinear_false) {
+TEST(LinAlgCollinear, non_collinear_vectors) {
   DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
   DVector<long double> b(3);
   b << 2.0, 3.0, 7.0;
+
+  ASSERT_FALSE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, collinear_matrices_all_same_direction) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    2.0, 4.0, 12.0,
+    4.0, 8.0, 24.0,
+    12.0, 24.0, 72.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, collinear_matrices_all_opposite_direction) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    -1.0, -2.0, -6.0,
+    -2.0, -4.0, -12.0,
+    -6.0, -12.0, -36.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, collinear_matrices_some_opposite_direction) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    1.0, 2.0, -6.0,
+    2.0, 4.0, -12.0,
+    6.0, 12.0, -36.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, matrices_all_columns_non_collinear) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  ASSERT_FALSE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, matrices_some_columns_non_collinear) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    7.0, 12.0, 36.0;
 
   ASSERT_FALSE(collinear(a, b));
 }
