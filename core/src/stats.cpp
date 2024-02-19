@@ -8,9 +8,9 @@ using namespace linalg;
 namespace stats {
   template<typename T, typename G>
   Data<T> select_group(
-    Data<T>       data,
-    DataColumn<G> groups,
-    G             group
+    const Data<T> &      data,
+    const DataColumn<G> &groups,
+    const G &            group
     ) {
     std::vector<G> index;
 
@@ -28,20 +28,20 @@ namespace stats {
   }
 
   template Data<double> select_group<double, int>(
-    Data<double>    data,
-    DataColumn<int> groups,
-    int             group);
+    const Data<double> &   data,
+    const DataColumn<int> &groups,
+    const int &            group);
 
   template Data<int> select_group<int, int>(
-    Data<int>       data,
-    DataColumn<int> groups,
-    int             group);
+    const Data<int> &      data,
+    const DataColumn<int> &groups,
+    const int &            group);
 
   template<typename T, typename G>
   Data<T> select_groups(
-    Data<T>       data,
-    DataColumn<G> data_groups,
-    std::set<G>   groups) {
+    const Data<T> &      data,
+    const DataColumn<G> &data_groups,
+    const std::set<G> &  groups) {
     std::vector<G> index;
 
     for (G i = 0; i < data_groups.rows(); i++) {
@@ -58,15 +58,15 @@ namespace stats {
   }
 
   template Data<double> select_groups<double, int>(
-    Data<double>    data,
-    DataColumn<int> data_groups,
-    std::set<int>   groups);
+    const Data<double> &   data,
+    const DataColumn<int> &data_groups,
+    const std::set<int> &  groups);
 
   template<typename T, typename G>
   Data<T> remove_group(
-    Data<T>       data,
-    DataColumn<G> groups,
-    G             group
+    const Data<T> &      data,
+    const DataColumn<G> &groups,
+    const G &            group
     ) {
     std::vector<G> index;
 
@@ -84,9 +84,9 @@ namespace stats {
   }
 
   template Data<double> remove_group<double, int>(
-    Data<double>    data,
-    DataColumn<int> groups,
-    int             group);
+    const Data<double> &   data,
+    const DataColumn<int> &groups,
+    const int &            group);
 
 
   template<typename T, typename G>
@@ -98,9 +98,9 @@ namespace stats {
 
   template<typename T, typename G>
   std::vector<Group<T, G> > summarize_groups(
-    Data<T>       data,
-    DataColumn<G> data_groups,
-    std::set<G>   unique_groups) {
+    const Data<T> &      data,
+    const DataColumn<G> &data_groups,
+    const std::set<G> &  unique_groups) {
     std::vector<Group<T, G> > groups(unique_groups.size());
     int i = 0;
 
@@ -139,8 +139,8 @@ namespace stats {
 
   template<typename T, typename G>
   Group<T, G> get_group_by_id(
-    std::vector<Group<T, G> > groups,
-    G                         id) {
+    const std::vector<Group<T, G> > &groups,
+    const G &                        id) {
     auto matches_id = [id](Group<T, G> g) {
         return g.id == id;
       };
@@ -150,9 +150,9 @@ namespace stats {
 
   template<typename T, typename G>
   std::tuple<DataColumn<G>, std::set<int>, std::map<int, std::set<G> > > binary_regroup(
-    Data<T>       data,
-    DataColumn<G> data_groups,
-    std::set<G>   unique_groups) {
+    const Data<T> &      data,
+    const DataColumn<G> &data_groups,
+    const std::set<G> &  unique_groups) {
     assert(unique_groups.size() > 2 && "Must have more than 2 groups to binary regroup");
     assert(data.cols() == 1 && "Data must be unidimensional to binary regroup");
 
@@ -181,12 +181,12 @@ namespace stats {
   }
 
   template std::tuple < DataColumn<int>, std::set<int>, std::map<int, std::set<int> > > binary_regroup<double, int>(
-    Data<double>    data,
-    DataColumn<int> data_groups,
-    std::set<int>   unique_groups);
+    const Data<double> &   data,
+    const DataColumn<int> &data_groups,
+    const std::set<int> &  unique_groups);
 
   template<typename N>
-  std::set<N> unique(DataColumn<N> column) {
+  std::set<N> unique(const DataColumn<N> &column) {
     std::set<N> unique_values;
 
     for (int i = 0; i < column.rows(); i++) {
@@ -196,13 +196,13 @@ namespace stats {
     return unique_values;
   }
 
-  template std::set<int> unique<int>(DataColumn<int> column);
+  template std::set<int> unique<int>(const DataColumn<int> &column);
 
   template<typename T, typename G>
   Data<T> between_groups_sum_of_squares(
-    Data<T>       data,
-    DataColumn<G> groups,
-    std::set<G>   unique_groups
+    const Data<T> &      data,
+    const DataColumn<G> &groups,
+    const std::set<G> &  unique_groups
     ) {
     DataColumn<T> global_mean = mean(data);
     Data<T> result = Data<T>::Zero(data.cols(), data.cols());
@@ -218,16 +218,16 @@ namespace stats {
   }
 
   template Data<double> between_groups_sum_of_squares<double, int>(
-    Data<double>    data,
-    DataColumn<int> groups,
-    std::set<int>   unique_groups);
+    const Data<double> &   data,
+    const DataColumn<int> &groups,
+    const std::set<int> &  unique_groups);
 
 
   template<typename T, typename G>
   Data<T> within_groups_sum_of_squares(
-    Data<T>       data,
-    DataColumn<G> groups,
-    std::set<G>   unique_groups
+    const Data<T> &      data,
+    const DataColumn<G> &groups,
+    const std::set<G> &  unique_groups
     ) {
     Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
@@ -245,7 +245,7 @@ namespace stats {
   }
 
   template Data<double> within_groups_sum_of_squares<double, int>(
-    Data<double>    data,
-    DataColumn<int> groups,
-    std::set<int>   unique_groups);
+    const Data<double> &   data,
+    const DataColumn<int>& groups,
+    const std::set<int> &  unique_groups);
 };
