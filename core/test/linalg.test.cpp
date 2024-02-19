@@ -968,12 +968,22 @@ TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
   ASSERT_TRUE(Mv.isApprox(Lv, 0.0001));
 }
 
-TEST(LinAlgCollinear, collinear_true) {
+TEST(LinAlgCollinear, collinear_true_same_direction) {
   DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
   DVector<long double> b(3);
   b << 2.0, 4.0, 12.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinalCollinear, collinear_false_opposite_direction) {
+  DVector<long double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<long double> b(3);
+  b << -1.0, -2.0, -6.0;
 
   ASSERT_TRUE(collinear(a, b));
 }
