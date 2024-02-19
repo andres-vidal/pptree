@@ -26,14 +26,14 @@ namespace pptree {
   struct Condition;
 
   template<typename T, typename R >
-  Response<T, R> const& as_response(Node<T, R> const& node);
+  const Response<T, R>& as_response(const Node<T, R> &node);
   template<typename T, typename R >
-  Condition<T, R> const& as_condition(Node<T, R> const& node);
+  const Condition<T, R>& as_condition(const Node<T, R> &node);
 
   template<typename T, typename R >
-  void to_json(json& j, const Condition<T, R>& condition);
+  void to_json(json& j, const Condition<T, R> &condition);
   template<typename T, typename R >
-  void to_json(json& j, const Response<T, R>& response);
+  void to_json(json& j, const Response<T, R> &response);
   template<typename T, typename R >
   void to_json(json& j, const Node<T, R> &node);
 
@@ -116,7 +116,7 @@ namespace pptree {
   std::ostream& operator<<(std::ostream& ostream, const std::map<int, V> &map) {
     std::map<std::string, V> string_map;
 
-    for (auto const& [key, val] : map) {
+    for (const auto& [key, val] : map) {
       string_map[std::to_string(key)] = val;
     }
 

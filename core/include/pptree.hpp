@@ -16,11 +16,11 @@ namespace pptree {
   template<typename T, typename R>
   Response<T, R> * as_response(Node<T, R> *node);
   template<typename T, typename R>
-  Response<T, R>const & as_response(Node<T, R> const&node);
+  const Response<T, R>& as_response(const Node<T, R> &node);
   template<typename T, typename R>
   Condition<T, R> * as_condition(Node<T, R> *node);
   template<typename T, typename R>
-  Condition<T, R>const & as_condition(Node<T, R>const &node);
+  const Condition<T, R> & as_condition(const Node<T, R> &node);
 
 
   template<typename T, typename R >
@@ -162,8 +162,8 @@ namespace pptree {
   }
 
   template<typename T, typename R>
-  Response<T, R>const & as_response(Node<T, R> const&node) {
-    return dynamic_cast<Response<T, R>const &>(node);
+  const Response<T, R>& as_response(const Node<T, R> &node) {
+    return dynamic_cast<const Response<T, R> &>(node);
   }
 
   template<typename T, typename R>
@@ -176,7 +176,7 @@ namespace pptree {
   }
 
   template<typename T, typename R>
-  Condition<T, R>const & as_condition(Node<T, R>const &node) {
-    return dynamic_cast<Condition<T, R> const &>(node);
+  const Condition<T, R>& as_condition(const Node<T, R> &node) {
+    return dynamic_cast<const Condition<T, R> &>(node);
   }
 }
