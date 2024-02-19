@@ -9,9 +9,9 @@ using namespace linalg;
 namespace pp {
   template<typename T, typename G>
   Projector<T> lda_optimum_projector(
-    Data<T>       data,
-    DataColumn<G> groups,
-    std::set<G>   unique_groups) {
+    const Data<T> &      data,
+    const DataColumn<G> &groups,
+    const std::set<G> &  unique_groups) {
     LOG_INFO << "Calculating LDA optimum projector for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
@@ -41,16 +41,16 @@ namespace pp {
   }
 
   template Projector<double> lda_optimum_projector<double, int>(
-    Data<double>    data,
-    DataColumn<int> groups,
-    std::set<int>   unique_groups);
+    const Data<double> &   data,
+    const DataColumn<int> &groups,
+    const std::set<int> &  unique_groups);
 
   template<typename T, typename G>
   T lda_index(
-    Data<T>       data,
-    Projector<T>  projector,
-    DataColumn<G> groups,
-    std::set<G>   unique_groups) {
+    const Data<T> &      data,
+    const Projector<T> & projector,
+    const DataColumn<G> &groups,
+    const std::set<G> &  unique_groups) {
     Data<T> A = projector;
 
     Data<T> W = within_groups_sum_of_squares(data, groups, unique_groups);
@@ -66,46 +66,44 @@ namespace pp {
   }
 
   template double lda_index<double, int>(
-    Data<double>      data,
-    Projector<double> projector,
-    DataColumn<int>   groups,
-    std::set<int>     unique_groups);
+    const Data<double> &     data,
+    const Projector<double> &projector,
+    const DataColumn<int> &  groups,
+    const std::set<int> &    unique_groups);
 
   template<typename T>
   Projection<T> project(
-    Data<T>      data,
-    Projector<T> projector) {
+    const Data<T> &     data,
+    const Projector<T> &projector) {
     return data * projector;
   }
 
   template Projection<double> project<double>(
-    Data<double>      data,
-    Projector<double> projector);
+    const Data<double> &     data,
+    const Projector<double> &projector);
 
   template<typename T>
   T project(
-    DataColumn<T> data,
-    Projector<T>  projector) {
+    const DataColumn<T> &data,
+    const Projector<T> & projector) {
     return (data.transpose() * projector).value();
   }
 
   template double project<double>(
-    DataColumn<double> data,
-    Projector<double>  projector);
-
-
+    const DataColumn<double> &data,
+    const Projector<double> & projector);
 
   template<typename T, typename G>
   PPStrategyReturn<T> lda_strategy(
-    Data<T>       data,
-    DataColumn<G> groups,
-    std::set<G>   unique_groups) {
+    const Data<T> &      data,
+    const DataColumn<G> &groups,
+    const std::set<G> &  unique_groups) {
     Projector<T> projector = lda_optimum_projector(data, groups, unique_groups);
     return std::make_tuple(projector, project(data, projector));
   }
 
   template PPStrategyReturn<double> lda_strategy<double, int>(
-    Data<double>    data,
-    DataColumn<int> groups,
-    std::set<int>   unique_groups);
+    const Data<double> &   data,
+    const DataColumn<int> &groups,
+    const std::set<int> &  unique_groups);
 }
