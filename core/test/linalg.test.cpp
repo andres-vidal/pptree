@@ -5,6 +5,8 @@
 using namespace linalg;
 using namespace Eigen;
 
+#define ASSERT_APPROX(a, b) ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
+
 
 TEST(LinAlgMean, single_observation) {
   DMatrix<long double> data(1, 3);
@@ -833,7 +835,7 @@ TEST(LinAlgInverse, generic) {
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
   ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_TRUE(expected.isApprox(actual));
+  ASSERT_APPROX(expected, actual);
 }
 
 TEST(LinAlgEigen, identity) {
@@ -918,18 +920,18 @@ TEST(LinAlgEigen, symmetric_real_non_negative_eigenvalues) {
   ASSERT_EQ(expected_values.size(), actual_values.size());
   ASSERT_EQ(expected_values.rows(), actual_values.rows());
   ASSERT_EQ(expected_values.cols(), actual_values.cols());
-  ASSERT_TRUE(expected_values.isApprox(actual_values));
+  ASSERT_APPROX(expected_values, actual_values);
 
   ASSERT_EQ(expected_vectors.size(), actual_vectors.size());
   ASSERT_EQ(expected_vectors.rows(), actual_vectors.rows());
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
-  ASSERT_TRUE(expected_vectors.isApprox(actual_vectors, 0.0001));
+  ASSERT_APPROX(expected_vectors, actual_vectors);
 
   DiagonalMatrix<long double, 3> DL;
   DL.diagonal() = actual_values;
   DMatrix<long double> Mv = m * actual_vectors;
   DMatrix<long double> Lv =  actual_vectors * DL;
-  ASSERT_TRUE(Mv.isApprox(Lv, 0.0001));
+  ASSERT_APPROX(Mv, Lv);
 }
 
 TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
@@ -954,18 +956,18 @@ TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
   ASSERT_EQ(expected_values.size(), actual_values.size());
   ASSERT_EQ(expected_values.rows(), actual_values.rows());
   ASSERT_EQ(expected_values.cols(), actual_values.cols());
-  ASSERT_TRUE(expected_values.isApprox(actual_values, 0.0005));
+  ASSERT_APPROX(expected_values, actual_values);
 
   ASSERT_EQ(expected_vectors.size(), actual_vectors.size());
   ASSERT_EQ(expected_vectors.rows(), actual_vectors.rows());
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
-  ASSERT_TRUE(expected_vectors.isApprox(actual_vectors, 0.0001));
+  ASSERT_APPROX(expected_vectors, actual_vectors);
 
   DiagonalMatrix<long double, 3> DL;
   DL.diagonal() = actual_values;
   DMatrix<long double> Mv = m * actual_vectors;
   DMatrix<long double> Lv =  actual_vectors * DL;
-  ASSERT_TRUE(Mv.isApprox(Lv, 0.0001));
+  ASSERT_APPROX(Mv, Lv);
 }
 
 TEST(LinAlgCollinear, collinear_true_same_direction) {
