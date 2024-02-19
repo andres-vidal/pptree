@@ -10,56 +10,56 @@ using namespace Eigen;
 namespace pptree {
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
-    Data<T>          data,
-    DataColumn<R>    groups,
-    std::set<R>      unique_groups,
-    PPStrategy<T, R> pp_strategy);
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const std::set<R> &     unique_groups,
+    const PPStrategy<T, R> &pp_strategy);
   template<typename T, typename R >
   Threshold<T> get_threshold(
-    DataColumn<T> projected_data,
-    DataColumn<R> groups,
-    R             group_1,
-    R             group_2);
+    const DataColumn<T> &projected_data,
+    const DataColumn<R> &groups,
+    const R &            group_1,
+    const R &            group_2);
   template<typename T, typename R >
   std::tuple<R, R> sort_groups_by_threshold(
-    Data<T>       data,
-    DataColumn<R> groups,
-    R             group_1,
-    R             group_2,
-    Projector<T>  projector,
-    Threshold<T>  threshold);
+    const Data<T> &      data,
+    const DataColumn<R> &groups,
+    const R &            group_1,
+    const R &            group_2,
+    const Projector<T> & projector,
+    const Threshold<T> & threshold);
   template<typename T, typename R >
   Condition<T, R> * binary_step(
-    Data<T>          data,
-    DataColumn<R>    groups,
-    R                group_1,
-    R                group_2,
-    PPStrategy<T, R> pp_strategy);
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const R &               group_1,
+    const R &               group_2,
+    const PPStrategy<T, R>& pp_strategy);
   template<typename R >
-  std::tuple<R, R> take_two(std::set<R> group_set);
+  std::tuple<R, R> take_two(const std::set<R> &group_set);
   template<typename T, typename R >
   Node<T, R> * build_branch(
-    Data<T>                     data,
-    DataColumn<R>               groups,
-    DataColumn<R>               binary_groups,
-    R                           binary_group,
-    std::map<int, std::set<R> > binary_group_mapping,
-    PPStrategy<T, R>            pp_strategy);
+    const Data<T> &                    data,
+    const DataColumn<R> &              groups,
+    const DataColumn<R> &              binary_groups,
+    const R &                          binary_group,
+    const std::map<int, std::set<R> > &binary_group_mapping,
+    const PPStrategy<T, R> &           pp_strategy);
   template<typename T, typename R >
   Condition<T, R> * step(
-    Data<T>          data,
-    DataColumn<R>    groups,
-    std::set<R>      unique_groups,
-    PPStrategy<T, R> pp_strategy);
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const std::set<R> &     unique_groups,
+    const PPStrategy<T, R> &pp_strategy);
 
 
 
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
-    Data<T>          data,
-    DataColumn<R>    groups,
-    std::set<R>      unique_groups,
-    PPStrategy<T, R> pp_strategy) {
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const std::set<R> &     unique_groups,
+    const PPStrategy<T, R> &pp_strategy) {
     LOG_INFO << "Redefining a " << unique_groups.size() << " group problem as binary:" << std::endl;
 
     auto [projector, projected] = pp_strategy(data, groups, unique_groups);
@@ -71,10 +71,10 @@ namespace pptree {
 
   template<typename T, typename R >
   Threshold<T> get_threshold(
-    DataColumn<T> projected_data,
-    DataColumn<R> groups,
-    R             group_1,
-    R             group_2) {
+    const DataColumn<T> &projected_data,
+    const DataColumn<R> &groups,
+    const R &            group_1,
+    const R &            group_2) {
     T mean_1 = linalg::mean(select_group((Data<T>)projected_data, groups, group_1)).value();
     T mean_2 = linalg::mean(select_group((Data<T>)projected_data, groups, group_2)).value();
 
@@ -83,12 +83,12 @@ namespace pptree {
 
   template<typename T, typename R >
   std::tuple<R, R> sort_groups_by_threshold(
-    Data<T>       data,
-    DataColumn<R> groups,
-    R             group_1,
-    R             group_2,
-    Projector<T>  projector,
-    Threshold<T>  threshold) {
+    const Data<T> &      data,
+    const DataColumn<R> &groups,
+    const R &            group_1,
+    const R &            group_2,
+    const Projector<T> & projector,
+    const Threshold<T> & threshold) {
     R l_group, r_group;
 
     DataColumn<T> mean_1 = linalg::mean(select_group(data, groups, group_1));
@@ -113,11 +113,11 @@ namespace pptree {
 
   template<typename T, typename R >
   Condition<T, R> * binary_step(
-    Data<T>          data,
-    DataColumn<R>    groups,
-    R                group_1,
-    R                group_2,
-    PPStrategy<T, R> pp_strategy) {
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const R &               group_1,
+    const R &               group_2,
+    const PPStrategy<T, R> &pp_strategy) {
     std::set<R> unique_groups = { group_1, group_2 };
     LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << unique_groups << std::endl;
 
@@ -147,7 +147,7 @@ namespace pptree {
   }
 
   template<typename R >
-  std::tuple<R, R> take_two(std::set<R> group_set) {
+  std::tuple<R, R> take_two(const std::set<R> &group_set) {
     assert(group_set.size() >= 2 && "The set does not contain enough elements.");
 
     auto first = *group_set.begin();
@@ -157,14 +157,14 @@ namespace pptree {
 
   template<typename T, typename R >
   Node<T, R> * build_branch(
-    Data<T>                     data,
-    DataColumn<R>               groups,
-    DataColumn<R>               binary_groups,
-    R                           binary_group,
-    std::map<int, std::set<R> > binary_group_mapping,
-    PPStrategy<T, R>            pp_strategy) {
+    const Data<T> &                    data,
+    const DataColumn<R> &              groups,
+    const DataColumn<R> &              binary_groups,
+    const R &                          binary_group,
+    const std::map<int, std::set<R> >& binary_group_mapping,
+    const PPStrategy<T, R> &           pp_strategy) {
     Node<T, R> *branch;
-    std::set<R> unique_groups = binary_group_mapping[binary_group];
+    std::set<R> unique_groups = binary_group_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
       R group = *unique_groups.begin();
@@ -184,10 +184,10 @@ namespace pptree {
 
   template<typename T, typename R >
   Condition<T, R> * step(
-    Data<T>          data,
-    DataColumn<R>    groups,
-    std::set<R>      unique_groups,
-    PPStrategy<T, R> pp_strategy) {
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const std::set<R> &     unique_groups,
+    const PPStrategy<T, R> &pp_strategy) {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
@@ -252,9 +252,9 @@ namespace pptree {
 
   template<typename T, typename R >
   Tree<T, R> train(
-    Data<T>          data,
-    DataColumn<R>    groups,
-    PPStrategy<T, R> pp_strategy) {
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const PPStrategy<T, R> &pp_strategy) {
     std::set<R> unique_groups = unique(groups);
 
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
@@ -264,7 +264,7 @@ namespace pptree {
   }
 
   template Tree<double, int> train(
-    Data<double>            data,
-    DataColumn<int>         groups,
-    PPStrategy<double, int> pp_strategy);
+    const Data<double> &           data,
+    const DataColumn<int> &        groups,
+    const PPStrategy<double, int> &pp_strategy);
 }

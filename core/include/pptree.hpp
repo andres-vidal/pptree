@@ -26,7 +26,7 @@ namespace pptree {
   template<typename T, typename R >
   struct Node {
     virtual ~Node() = default;
-    virtual R predict(DataColumn<T> data) const = 0;
+    virtual R predict(const DataColumn<T> &data) const = 0;
     virtual bool is_response() const = 0;
     virtual bool is_condition() const = 0;
 
@@ -61,7 +61,7 @@ namespace pptree {
       delete upper;
     }
 
-    R predict(DataColumn<T> data) const override {
+    R predict(const DataColumn<T> &data) const override {
       T projected_data = project((Data<T>)data, projector).value();
 
       if (projected_data < threshold) {
@@ -96,7 +96,7 @@ namespace pptree {
     Response(R value) : value(value) {
     }
 
-    R predict(DataColumn<T> data) const override {
+    R predict(const DataColumn<T> &data) const override {
       return value;
     }
 
@@ -125,11 +125,11 @@ namespace pptree {
     }
 
 
-    R predict(DataColumn<T> data) const {
+    R predict(const DataColumn<T> &data) const {
       return root->predict(data);
     }
 
-    DataColumn<R> predict(Data<T> data) const {
+    DataColumn<R> predict(const Data<T> &data) const {
       DataColumn<R> predictions(data.rows());
 
       for (int i = 0; i < data.rows(); i++) {
@@ -146,9 +146,9 @@ namespace pptree {
 
   template<typename T, typename R>
   Tree<T, R> train(
-    stats::Data<T>       data,
-    stats::DataColumn<R> groups,
-    pp::PPStrategy<T, R> pp_strategy);
+    const stats::Data<T>       &data,
+    const stats::DataColumn<R> &groups,
+    const pp::PPStrategy<T, R> &pp_strategy);
 
 
 
