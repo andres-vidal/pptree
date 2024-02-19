@@ -7,6 +7,8 @@ using namespace linalg;
 using namespace stats;
 using namespace Eigen;
 
+#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << std::endl << "Expected vectors to be collinear: [" << a.transpose() << "] [" << b.transpose() << "]" << std::endl
+
 
 TEST(PPLDAOptimumProjector, two_groups) {
   DMatrix<double> data(10, 4);
@@ -41,7 +43,7 @@ TEST(PPLDAOptimumProjector, two_groups) {
   expected <<
     -1, 0, 0, 0;
 
-  ASSERT_TRUE(collinear(expected, actual));
+  ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(PPLDAOptimumProjector, two_groups2) {
@@ -79,7 +81,7 @@ TEST(PPLDAOptimumProjector, two_groups2) {
     0, 1, 0, 0;
 
 
-  ASSERT_TRUE(collinear(expected, actual));
+  ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(PPLDAOptimumProjector, two_groups3) {
@@ -116,7 +118,7 @@ TEST(PPLDAOptimumProjector, two_groups3) {
   expected <<
     0, 0, -1, 0;
 
-  ASSERT_TRUE(collinear(expected, actual));
+  ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(PPLDAOptimumProjector, two_groups4) {
@@ -152,7 +154,7 @@ TEST(PPLDAOptimumProjector, two_groups4) {
   expected <<
     0, 0, 0, -1;
 
-  ASSERT_TRUE(collinear(expected, actual));
+  ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(PPLDAOptimumProjector, three_groups) {
@@ -228,7 +230,7 @@ TEST(PPLDAOptimumProjector, three_groups) {
   expected <<
     -0.12823, -0.99174, 0, 0, 0;
 
-  ASSERT_TRUE(collinear(expected, actual));
+  ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(PPLDAIndex, zero_return) {
