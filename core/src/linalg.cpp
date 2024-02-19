@@ -124,6 +124,7 @@ namespace linalg {
     const DVector<double> &a,
     const DVector<double> &b) {
     double tolerance = 0.0001;
-    return abs(inner_product(a, b) / (a.norm() * b.norm()) - 1.0) < tolerance;
+
+    return fabs(inner_product(a, b) / (a.norm() * b.norm()) - 1.0) < tolerance;
   }
 }
