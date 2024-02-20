@@ -5,15 +5,17 @@
 using namespace linalg;
 using namespace Eigen;
 
+#define ASSERT_APPROX(a, b)    ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
+#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
 
 TEST(LinAlgMean, single_observation) {
-  DMatrix<double> data(1, 3);
+  DMatrix<long double> data(1, 3);
   data <<
     1.0, 2.0, 6.0;
 
-  DVector<double> actual = mean(data);
+  DVector<long double> actual = mean(data);
 
-  DVector<double> expected(3);
+  DVector<long double> expected(3);
   expected <<
     1.0, 2.0, 6.0;
 
@@ -24,15 +26,15 @@ TEST(LinAlgMean, single_observation) {
 }
 
 TEST(LinAlgMean, multiple_equal_observations) {
-  DMatrix<double> data(3, 3);
+  DMatrix<long double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0;
 
-  DVector<double> actual = mean(data);
+  DVector<long double> actual = mean(data);
 
-  DVector<double> expected(3);
+  DVector<long double> expected(3);
   expected <<
     1.0, 2.0, 6.0;
 
@@ -43,15 +45,15 @@ TEST(LinAlgMean, multiple_equal_observations) {
 }
 
 TEST(LinAlgMean, multiple_different_observations) {
-  DMatrix<double> data(3, 3);
+  DMatrix<long double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DVector<double> actual = mean(data);
+  DVector<long double> actual = mean(data);
 
-  DVector<double> expected(3);
+  DVector<long double> expected(3);
   expected <<
     2.0, 3.0, 7.0;
 
@@ -62,15 +64,15 @@ TEST(LinAlgMean, multiple_different_observations) {
 }
 
 TEST(LinAlgOuterProduct, equal_vectors) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 1.0, 2.0, 6.0;
 
-  DMatrix<double> actual = outer_product(a, b);
+  DMatrix<long double> actual = outer_product(a, b);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> expected(3, 3);
   expected <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
@@ -83,15 +85,15 @@ TEST(LinAlgOuterProduct, equal_vectors) {
 }
 
 TEST(LinAlgOuterProduct, different_vectors1) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 2.0, 3.0, 7.0;
 
-  DMatrix<double> actual = outer_product(a, b);
+  DMatrix<long double> actual = outer_product(a, b);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> expected(3, 3);
   expected <<
     2.0,  3.0,  7.0,
     4.0,  6.0,  14.0,
@@ -104,15 +106,15 @@ TEST(LinAlgOuterProduct, different_vectors1) {
 }
 
 TEST(LinAlgOuterProduct, different_vectors2) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 2.0, 3.0, 7.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 1.0, 2.0, 6.0;
 
-  DMatrix<double> actual = outer_product(a, b);
+  DMatrix<long double> actual = outer_product(a, b);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> expected(3, 3);
   expected <<
     2.0,  4.0,  12.0,
     3.0,  6.0,  18.0,
@@ -125,15 +127,15 @@ TEST(LinAlgOuterProduct, different_vectors2) {
 }
 
 TEST(LinAlgOuterProduct, zero_vectors) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 0.0, 0.0, 0.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 0.0, 0.0, 0.0;
 
-  DMatrix<double> actual = outer_product(a, b);
+  DMatrix<long double> actual = outer_product(a, b);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -146,14 +148,14 @@ TEST(LinAlgOuterProduct, zero_vectors) {
 }
 
 TEST(LinAlgOuterProduct, scalar_vectors) {
-  DVector<double> a(1);
+  DVector<long double> a(1);
   a << 4.0;
 
-  DVector<double> b(1);
+  DVector<long double> b(1);
   b << 3.0;
 
-  DMatrix<double> actual = outer_product(a, b);
-  DMatrix<double> expected(1, 1);
+  DMatrix<long double> actual = outer_product(a, b);
+  DMatrix<long double> expected(1, 1);
   expected << 12.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -163,12 +165,12 @@ TEST(LinAlgOuterProduct, scalar_vectors) {
 }
 
 TEST(LinAlgOuterSquare, generic) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DMatrix<double> actual = outer_square(a);
+  DMatrix<long double> actual = outer_square(a);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> expected(3, 3);
   expected <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
@@ -181,12 +183,12 @@ TEST(LinAlgOuterSquare, generic) {
 }
 
 TEST(LinAlgOuterSquare, generic2) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 2.0, 3.0, 7.0;
 
-  DMatrix<double> actual = outer_square(a);
+  DMatrix<long double> actual = outer_square(a);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> expected(3, 3);
   expected <<
     4.0,  6.0,  14.0,
     6.0,  9.0,  21.0,
@@ -199,12 +201,12 @@ TEST(LinAlgOuterSquare, generic2) {
 }
 
 TEST(LinAlgOuterSquare, zero_vector) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 0.0, 0.0, 0.0;
 
-  DMatrix<double> actual = outer_square(a);
+  DMatrix<long double> actual = outer_square(a);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -217,140 +219,179 @@ TEST(LinAlgOuterSquare, zero_vector) {
 }
 
 TEST(LinAlgInnerProduct, equal_vectors_unweighted) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 1.0, 2.0, 6.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  double actual = inner_product(a, b, weights);
-  double expected = 41;
+  long double actual = inner_product(a, b, weights);
+  long double expected = 41;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgInnerProduct, equal_vectors_unweighted_implicit) {
+  DVector<long double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<long double> b(3);
+  b << 1.0, 2.0, 6.0;
+
+  long double actual = inner_product(a, b);
+  long double expected = 41;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInnerProduct, equal_vectors_weighted) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 1.0, 2.0, 6.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  double actual = inner_product(a, b, weights);
-  double expected = 1681;
+  long double actual = inner_product(a, b, weights);
+  long double expected = 1681;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInnerProduct, zero_vectors_unweighted) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 0.0, 0.0, 0.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 0.0, 0.0, 0.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  double actual = inner_product(a, b, weights);
-  double expected = 0.0;
+  long double actual = inner_product(a, b, weights);
+  long double expected = 0.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgInnerProduct, zero_vectors_unweighted_implicit) {
+  DVector<long double> a(3);
+  a << 0.0, 0.0, 0.0;
+
+  DVector<long double> b(3);
+  b << 0.0, 0.0, 0.0;
+
+  long double actual = inner_product(a, b);
+  long double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInnerProduct, zero_vectors_weighted) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 0.0, 0.0, 0.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 0.0, 0.0, 0.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  double actual = inner_product(a, b, weights);
-  double expected = 0.0;
+  long double actual = inner_product(a, b, weights);
+  long double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInnerProduct, different_vectors_unweighted) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 2.0, 3.0, 7.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  double actual = inner_product(a, b, weights);
-  double expected = 50;
+  long double actual = inner_product(a, b, weights);
+  long double expected = 50;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgInnerProduct, different_vectors_unweighted_implicit) {
+  DVector<long double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<long double> b(3);
+  b << 2.0, 3.0, 7.0;
+
+  long double actual = inner_product(a, b);
+  long double expected = 50;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInnerProduct, different_vectors_weighted) {
-  DVector<double> a(3);
+  DVector<long double> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<long double> b(3);
   b << 2.0, 3.0, 7.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  double actual = inner_product(a, b, weights);
-  double expected = 2050;
+  long double actual = inner_product(a, b, weights);
+  long double expected = 2050;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInnerProduct, equal_matrices_unweighted) {
-  DMatrix<double> a(3, 3);
+  DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> b(3, 3);
+  DMatrix<long double> b(3, 3);
   b <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_product(a, b, weights);
+  DMatrix<long double> expected(3, 3);
   expected <<
     14.0, 20.0, 44.0,
     20.0, 29.0, 65.0,
@@ -363,21 +404,21 @@ TEST(LinAlgInnerProduct, equal_matrices_unweighted) {
 }
 
 TEST(LinAlgInnerProduct, equal_matrices_unweighted_implicit) {
-  DMatrix<double> a(3, 3);
+  DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> b(3, 3);
+  DMatrix<long double> b(3, 3);
   b <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
 
-  DMatrix<double> actual = inner_product(a, b);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_product(a, b);
+  DMatrix<long double> expected(3, 3);
   expected <<
     14.0, 20.0, 44.0,
     20.0, 29.0, 65.0,
@@ -389,28 +430,27 @@ TEST(LinAlgInnerProduct, equal_matrices_unweighted_implicit) {
   ASSERT_EQ(expected, actual);
 }
 
-
 TEST(LinAlgInnerProduct, equal_matrices_weighted) {
-  DMatrix<double> a(3, 3);
+  DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> b(3, 3);
+  DMatrix<long double> b(3, 3);
   b <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_product(a, b, weights);
+  DMatrix<long double> expected(3, 3);
   expected <<
     529.0,  736.0,  1564.0,
     736.0,  1024.0, 2176.0,
@@ -423,26 +463,52 @@ TEST(LinAlgInnerProduct, equal_matrices_weighted) {
 }
 
 TEST(LinAlgInnerProduct, zero_matrices_unweighted) {
-  DMatrix<double> a(3, 3);
+  DMatrix<long double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<double> b(3, 3);
+  DMatrix<long double> b(3, 3);
   b <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_product(a, b, weights);
+  DMatrix<long double> expected(3, 3);
+  expected <<
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgInnerProduct, zero_matrices_unweighted_implicit) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0;
+
+  DMatrix<long double> actual = inner_product(a, b);
+  DMatrix<long double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -455,26 +521,26 @@ TEST(LinAlgInnerProduct, zero_matrices_unweighted) {
 }
 
 TEST(LinAlgInnerProduct, zero_matrices_weighted) {
-  DMatrix<double> a(3, 3);
+  DMatrix<long double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<double> b(3, 3);
+  DMatrix<long double> b(3, 3);
   b <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_product(a, b, weights);
+  DMatrix<long double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -487,26 +553,52 @@ TEST(LinAlgInnerProduct, zero_matrices_weighted) {
 }
 
 TEST(LinAlgInnerProduct, different_matrices_unweighted) {
-  DMatrix<double> a(3, 3);
+  DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> b(3, 3);
+  DMatrix<long double> b(3, 3);
   b <<
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0,
     4.0, 5.0, 9.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_product(a, b, weights);
+  DMatrix<long double> expected(3, 3);
+  expected <<
+    20.0, 26.0, 50.0,
+    29.0, 38.0, 74.0,
+    65.0, 86.0, 170.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgInnerProduct, different_matrices_unweighted_implicit) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0,
+    4.0, 5.0, 9.0;
+
+  DMatrix<long double> actual = inner_product(a, b);
+  DMatrix<long double> expected(3, 3);
   expected <<
     20.0, 26.0, 50.0,
     29.0, 38.0, 74.0,
@@ -519,26 +611,26 @@ TEST(LinAlgInnerProduct, different_matrices_unweighted) {
 }
 
 TEST(LinAlgInnerProduct, different_matrices_weighted) {
-  DMatrix<double> a(3, 3);
+  DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> b(3, 3);
+  DMatrix<long double> b(3, 3);
   b <<
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0,
     4.0, 5.0, 9.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<double> actual = inner_product(a, b, weights);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_product(a, b, weights);
+  DMatrix<long double> expected(3, 3);
   expected <<
     736.0,  943.0,  1771.0,
     1024.0, 1312.0, 2464.0,
@@ -551,52 +643,52 @@ TEST(LinAlgInnerProduct, different_matrices_weighted) {
 }
 
 TEST(LinAlgInnerSquare, generic_unweighted) {
-  DVector<double> m(3);
+  DVector<long double> m(3);
   m << 1.0, 2.0, 6.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  double actual = inner_square(m, weights);
-  double expected = 41;
+  long double actual = inner_square(m, weights);
+  long double expected = 41;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInnerSquare, generic_weighted) {
-  DVector<double> m(3);
+  DVector<long double> m(3);
   m << 1.0, 2.0, 6.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  double actual = inner_square(m, weights);
-  double expected = 1681;
+  long double actual = inner_square(m, weights);
+  long double expected = 1681;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInnerSquare, generic_matrix_unweighted) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<double> actual = inner_square(m, weights);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_square(m, weights);
+  DMatrix<long double> expected(3, 3);
   expected <<
     14.0, 20.0, 44.0,
     20.0, 29.0, 65.0,
@@ -609,20 +701,20 @@ TEST(LinAlgInnerSquare, generic_matrix_unweighted) {
 }
 
 TEST(LinAlgInnerSquare, generic_matrix_weighted) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<double> weights(3, 3);
+  DMatrix<long double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<double> actual = inner_square(m, weights);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inner_square(m, weights);
+  DMatrix<long double> expected(3, 3);
   expected <<
     529.0,  736.0,  1564.0,
     736.0,  1024.0, 2176.0,
@@ -635,87 +727,86 @@ TEST(LinAlgInnerSquare, generic_matrix_weighted) {
 }
 
 TEST(LinAlgDeterminant, generic_positive_determinant) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     6.0, 1.0, 4.0,
     4.0, 8.0, 4.0,
     6.0, 3.0, 5.0;
 
-  double actual = determinant(m);
-  double expected = 28.0;
+  long double actual = determinant(m);
+  long double expected = 28.0;
 
   ASSERT_DOUBLE_EQ(expected, actual);
 }
 
-
 TEST(LinAlgDeterminant, generic_negative_determinant) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     6.0, 1.0, 4.0,
     4.0, 8.0, 4.0,
     8.0, 3.0, 5.0;
 
-  double actual = determinant(m);
-  double expected = -28.0;
+  long double actual = determinant(m);
+  long double expected = -28.0;
 
   ASSERT_DOUBLE_EQ(expected, actual);
 }
 
 TEST(LinAlgDeterminant, zero_matrix) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  double actual = determinant(m);
-  double expected = 0.0;
+  long double actual = determinant(m);
+  long double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgDeterminant, singular_matrix) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 7.0,
     3.0, 6.0, 8.0;
 
-  double actual = determinant(m);
-  double expected = 0.0;
+  long double actual = determinant(m);
+  long double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(LinAlgInverse, zero_matrix) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  ASSERT_THROW({ inverse(m); }, std::invalid_argument);
+  ASSERT_DEATH({ inverse(m); }, "Given matrix is not invertible");
 }
 
 TEST(LinAlgInverse, singular_matrix) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     1.0, 1.0, 6.0,
     2.0, 2.0, 7.0,
     3.0, 3.0, 8.0;
 
-  ASSERT_THROW({ inverse(m); }, std::invalid_argument);
+  ASSERT_DEATH({ inverse(m); }, "Given matrix is not invertible");
 }
 
 TEST(LinAlgInverse, identity) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<double> actual = inverse(m);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inverse(m);
+  DMatrix<long double> expected(3, 3);
   expected <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
@@ -728,14 +819,14 @@ TEST(LinAlgInverse, identity) {
 }
 
 TEST(LinAlgInverse, generic) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     0.0, 1.0, 2.0,
     1.0, 2.0, 3.0,
     3.0, 1.0, 1.0;
 
-  DMatrix<double> actual = inverse(m);
-  DMatrix<double> expected(3, 3);
+  DMatrix<long double> actual = inverse(m);
+  DMatrix<long double> expected(3, 3);
   expected <<
     0.5,  -0.5,   0.5,
     -4.0,  3.0,  -1.0,
@@ -744,11 +835,11 @@ TEST(LinAlgInverse, generic) {
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
   ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_TRUE(expected.isApprox(actual));
+  ASSERT_APPROX(expected, actual);
 }
 
 TEST(LinAlgEigen, identity) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
@@ -756,11 +847,11 @@ TEST(LinAlgEigen, identity) {
 
   auto [actual_values, actual_vectors] = eigen(m);
 
-  DVector<double> expected_values(3);
+  DVector<long double> expected_values(3);
   expected_values <<
     1.0, 1.0, 1.0;
 
-  DMatrix<double> expected_vectors(3, 3);
+  DMatrix<long double> expected_vectors(3, 3);
   expected_vectors <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
@@ -778,7 +869,7 @@ TEST(LinAlgEigen, identity) {
 }
 
 TEST(LinAlgEigen, diagonal) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     1.0, 0.0, 0.0,
     0.0, 2.0, 0.0,
@@ -786,11 +877,11 @@ TEST(LinAlgEigen, diagonal) {
 
   auto [actual_values, actual_vectors] = eigen(m);
 
-  DVector<double> expected_values(3);
+  DVector<long double> expected_values(3);
   expected_values <<
     1.0, 2.0, 3.0;
 
-  DMatrix<double> expected_vectors(3, 3);
+  DMatrix<long double> expected_vectors(3, 3);
   expected_vectors <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
@@ -808,7 +899,7 @@ TEST(LinAlgEigen, diagonal) {
 }
 
 TEST(LinAlgEigen, symmetric_real_non_negative_eigenvalues) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     3.0, 1.0, 1.0,
     1.0, 2.0, 2.0,
@@ -816,11 +907,11 @@ TEST(LinAlgEigen, symmetric_real_non_negative_eigenvalues) {
 
   auto [actual_values, actual_vectors] = eigen(m);
 
-  DVector<double> expected_values(3);
+  DVector<long double> expected_values(3);
   expected_values <<
     0.0, 2.0, 5.0;
 
-  DMatrix<double> expected_vectors(3, 3);
+  DMatrix<long double> expected_vectors(3, 3);
   expected_vectors <<
     00.000000, -0.816497, 0.57735,
     -0.707107,  0.408248, 0.57735,
@@ -829,22 +920,22 @@ TEST(LinAlgEigen, symmetric_real_non_negative_eigenvalues) {
   ASSERT_EQ(expected_values.size(), actual_values.size());
   ASSERT_EQ(expected_values.rows(), actual_values.rows());
   ASSERT_EQ(expected_values.cols(), actual_values.cols());
-  ASSERT_TRUE(expected_values.isApprox(actual_values));
+  ASSERT_APPROX(expected_values, actual_values);
 
   ASSERT_EQ(expected_vectors.size(), actual_vectors.size());
   ASSERT_EQ(expected_vectors.rows(), actual_vectors.rows());
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
-  ASSERT_TRUE(expected_vectors.isApprox(actual_vectors, 0.0001));
+  ASSERT_COLLINEAR(expected_vectors, actual_vectors);
 
-  DiagonalMatrix<double, 3> DL;
+  DiagonalMatrix<long double, 3> DL;
   DL.diagonal() = actual_values;
-  DMatrix<double> Mv = m * actual_vectors;
-  DMatrix<double> Lv =  actual_vectors * DL;
-  ASSERT_TRUE(Mv.isApprox(Lv, 0.0001));
+  DMatrix<long double> Mv = m * actual_vectors;
+  DMatrix<long double> Lv =  actual_vectors * DL;
+  ASSERT_APPROX(Mv, Lv);
 }
 
 TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
-  DMatrix<double> m(3, 3);
+  DMatrix<long double> m(3, 3);
   m <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -852,11 +943,11 @@ TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
 
   auto [actual_values, actual_vectors] = eigen(m);
 
-  DVector<double> expected_values(3);
+  DVector<long double> expected_values(3);
   expected_values <<
     0.0, -1.11684, 16.11684;
 
-  DMatrix<double> expected_vectors(3, 3);
+  DMatrix<long double> expected_vectors(3, 3);
   expected_vectors <<
     00.408248,  0.7858302, 0.2319707,
     -0.816497,  0.0867513, 0.5253221,
@@ -865,16 +956,126 @@ TEST(LinAlgEigen, asymmetric_real_mixed_eigenvalues) {
   ASSERT_EQ(expected_values.size(), actual_values.size());
   ASSERT_EQ(expected_values.rows(), actual_values.rows());
   ASSERT_EQ(expected_values.cols(), actual_values.cols());
-  ASSERT_TRUE(expected_values.isApprox(actual_values, 0.0005));
+  ASSERT_APPROX(expected_values, actual_values);
 
   ASSERT_EQ(expected_vectors.size(), actual_vectors.size());
   ASSERT_EQ(expected_vectors.rows(), actual_vectors.rows());
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
-  ASSERT_TRUE(expected_vectors.isApprox(actual_vectors, 0.0001));
+  ASSERT_COLLINEAR(expected_vectors, actual_vectors);
 
-  DiagonalMatrix<double, 3> DL;
+  DiagonalMatrix<long double, 3> DL;
   DL.diagonal() = actual_values;
-  DMatrix<double> Mv = m * actual_vectors;
-  DMatrix<double> Lv =  actual_vectors * DL;
-  ASSERT_TRUE(Mv.isApprox(Lv, 0.0001));
+  DMatrix<long double> Mv = m * actual_vectors;
+  DMatrix<long double> Lv =  actual_vectors * DL;
+  ASSERT_APPROX(Mv, Lv);
+}
+
+TEST(LinAlgCollinear, collinear_vectors_same_direction) {
+  DVector<long double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<long double> b(3);
+  b << 2.0, 4.0, 12.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinalCollinear, collinear_vectors_opposite_direction) {
+  DVector<long double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<long double> b(3);
+  b << -1.0, -2.0, -6.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, non_collinear_vectors) {
+  DVector<long double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<long double> b(3);
+  b << 2.0, 3.0, 7.0;
+
+  ASSERT_FALSE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, collinear_matrices_all_same_direction) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    2.0, 4.0, 12.0,
+    4.0, 8.0, 24.0,
+    12.0, 24.0, 72.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, collinear_matrices_all_opposite_direction) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    -1.0, -2.0, -6.0,
+    -2.0, -4.0, -12.0,
+    -6.0, -12.0, -36.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, collinear_matrices_some_opposite_direction) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    1.0, 2.0, -6.0,
+    2.0, 4.0, -12.0,
+    6.0, 12.0, -36.0;
+
+  ASSERT_TRUE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, matrices_all_columns_non_collinear) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  ASSERT_FALSE(collinear(a, b));
+}
+
+TEST(LinAlgCollinear, matrices_some_columns_non_collinear) {
+  DMatrix<long double> a(3, 3);
+  a <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    6.0, 12.0, 36.0;
+
+  DMatrix<long double> b(3, 3);
+  b <<
+    1.0, 2.0, 6.0,
+    2.0, 4.0, 12.0,
+    7.0, 12.0, 36.0;
+
+  ASSERT_FALSE(collinear(a, b));
 }
