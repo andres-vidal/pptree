@@ -89,6 +89,9 @@ namespace pptree {
     const R &            group_2,
     const Projector<T> & projector,
     const Threshold<T> & threshold) {
+    LOG_INFO << "Sorting groups by threshold:" << std::endl;
+    LOG_INFO << "Threshold: " << threshold << std::endl;
+
     R l_group, r_group;
 
     DataColumn<T> mean_1 = linalg::mean(select_group(data, groups, group_1));
@@ -96,6 +99,9 @@ namespace pptree {
 
     T projected_mean_1 = project(mean_1, projector);
     T projected_mean_2 = project(mean_2, projector);
+
+    LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
+    LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
 
     assert(std::max(projected_mean_1, projected_mean_2) > threshold && "Threshold is greater than the two groups means");
     assert(std::min(projected_mean_1, projected_mean_2) < threshold && "Threshold is lower than the two groups means");
@@ -107,6 +113,9 @@ namespace pptree {
       l_group = group_2;
       r_group = group_1;
     }
+
+    LOG_INFO << "Lower group: " << l_group << std::endl;
+    LOG_INFO << "Upper group: " << r_group << std::endl;
 
     return std::make_tuple(group_1, group_2);
   }

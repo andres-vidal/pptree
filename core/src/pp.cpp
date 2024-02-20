@@ -8,9 +8,23 @@ using namespace linalg;
 
 namespace pp {
   template<typename T>
+  T truncate_op(T value) {
+    return fabs(value) < 1e-15 ? 0 : value;
+  }
+
+  template<typename T>
   Projector<T> get_projector(Data<T> eigen_vec) {
     Projector<T> last = eigen_vec.col(eigen_vec.cols() - 1);
-    return (last(0) < 0 ? -1 : 1) * last;
+    Projector<T> truncated = last.unaryExpr((T (*)(T)) & truncate_op);
+
+    int i = 0;
+
+    while (i < truncated.rows() && is_approx(truncated(i), 0))
+      i++;
+
+    std::cout << "i: " << i << std::endl;
+
+    return (truncated(i) < 0 ? -1 : 1) * truncated;
   }
 
   template<typename T, typename G>
@@ -33,16 +47,13 @@ namespace pp {
     Data<T> WpB = W + B;
     Data<T> WpBInvB = WpB.fullPivLu().solve(B);
 
-    Data<T> roundedWpBInvB = WpBInvB.unaryExpr(
-      [](long double elem) {
-      return fabs(elem) < 1e-15 ? 0 : elem;
-    });
+    Data<T> truncatedWpBInvB = WpBInvB.unaryExpr((T (*)(T)) & truncate_op);
 
     LOG_INFO << "W + B:" << std::endl << WpB << std::endl;
     LOG_INFO << "(W + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
-    LOG_INFO << "(W + B)^-1 * B (truncated):" << std::endl << roundedWpBInvB << std::endl;
+    LOG_INFO << "(W + B)^-1 * B (truncated):" << std::endl << truncatedWpBInvB << std::endl;
 
-    auto [eigen_val, eigen_vec] = linalg::eigen(roundedWpBInvB);
+    auto [eigen_val, eigen_vec] = linalg::eigen(truncatedWpBInvB);
 
     LOG_INFO << "Eigenvalues:" << std::endl << eigen_val << std::endl;
     LOG_INFO << "Eigenvectors:" << std::endl << eigen_vec << std::endl;

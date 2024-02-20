@@ -361,8 +361,8 @@ TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
       as_projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
       4.118438837901864,
       new Condition<long double, int>(
-        as_projector<long double>({ 2.721658109136383e-17, -1.0, 0.0, 0.0, 0.0 }),
-        -2.5,
+        as_projector<long double>({ 0, 1.0, 0.0, 0.0, 0.0 }),
+        2.5,
         new Response<long double, int>(0),
         new Response<long double, int>(1)),
       new Response<long double, int>(2)));
@@ -410,6 +410,45 @@ TEST(PPTreePredictDataColumn, univariate_three_groups) {
   ASSERT_EQ(tree.predict(input), 2);
 }
 
+TEST(PPTreePredictDataColumn, multivariate_two_groups) {
+  Tree<long double, int> tree = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      2.5,
+      new Response<long double, int>(0),
+      new Response<long double, int>(1)));
+
+  DataColumn<long double> input(4);
+  input << 1, 0, 1, 1;
+  ASSERT_EQ(tree.predict(input), 0);
+
+  input << 4, 0, 0, 1;
+  ASSERT_EQ(tree.predict(input), 1);
+}
+
+TEST(PPTreePredictDataColumn, multivariate_three_groups) {
+  Tree<long double, int> tree = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
+      4.118438837901864,
+      new Condition<long double, int>(
+        as_projector<long double>({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
+        2.5,
+        new Response<long double, int>(0),
+        new Response<long double, int>(1)),
+      new Response<long double, int>(2)));
+
+  DataColumn<long double> input(5);
+  input << 1, 0, 0, 1, 1;
+  ASSERT_EQ(tree.predict(input), 0);
+
+  input << 2, 5, 0, 0, 1;
+  ASSERT_EQ(tree.predict(input), 1);
+
+  input << 9, 8, 0, 0, 1;
+  ASSERT_EQ(tree.predict(input), 2);
+}
+
 TEST(PPTreePredictData, univariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
     new Condition<long double, int>(
@@ -443,6 +482,53 @@ TEST(PPTreePredictData, univariate_three_groups) {
 
   Data<long double> input(3, 1);
   input << 1.0, 2.0, 3.0;
+
+  DataColumn<int> result = tree.predict(input);
+
+  DataColumn<int> expected(3);
+  expected << 0, 1, 2;
+
+  ASSERT_EQ(result, expected);
+}
+
+TEST(PPTreePredictData, multivariate_two_groups) {
+  Tree<long double, int> tree = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      2.5,
+      new Response<long double, int>(0),
+      new Response<long double, int>(1)));
+
+  Data<long double> input(2, 4);
+  input <<
+    1, 0, 1, 1,
+    4, 0, 0, 1;
+
+  DataColumn<int> result = tree.predict(input);
+
+  DataColumn<int> expected(2);
+  expected << 0, 1;
+
+  ASSERT_EQ(result, expected);
+}
+
+TEST(PPTreePredictData, multivariate_three_groups) {
+  Tree<long double, int> tree = Tree<long double, int>(
+    new Condition<long double, int>(
+      as_projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
+      4.118438837901864,
+      new Condition<long double, int>(
+        as_projector<long double>({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
+        2.5,
+        new Response<long double, int>(0),
+        new Response<long double, int>(1)),
+      new Response<long double, int>(2)));
+
+  Data<long double> input(3, 5);
+  input <<
+    1, 0, 0, 1, 1,
+    2, 5, 0, 0, 1,
+    9, 8, 0, 0, 1;
 
   DataColumn<int> result = tree.predict(input);
 

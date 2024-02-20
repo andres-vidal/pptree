@@ -62,7 +62,7 @@ namespace pptree {
     }
 
     R predict(const DataColumn<T> &data) const override {
-      T projected_data = project((Data<T>)data, projector).value();
+      T projected_data = project(data, projector);
 
       if (projected_data < threshold) {
         return lower->predict(data);
