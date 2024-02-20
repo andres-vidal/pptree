@@ -92,7 +92,7 @@ namespace linalg {
 
     std::sort(idx.data(), idx.data() + idx.size(), [&values](long double a, long double b)
     {
-      return abs(values.row(a).value()) < abs(values.row(b).value());
+      return fabs(values.row(a).value()) < fabs(values.row(b).value());
     });
 
     return std::make_tuple(values(idx), vectors(all, idx));

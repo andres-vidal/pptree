@@ -83,7 +83,7 @@ namespace pptree {
       T tolerance = 0.00001;
 
       return linalg::collinear(projector, other.projector)
-      && abs(threshold - other.threshold) < tolerance
+      && fabs(threshold - other.threshold) < tolerance
       && *lower == *other.lower
       && *upper == *other.upper;
     }
