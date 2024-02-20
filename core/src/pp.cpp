@@ -7,13 +7,22 @@ using namespace stats;
 using namespace linalg;
 
 namespace pp {
+  template<typename T>
+  Projector<T> get_projector(Data<T> eigen_vec) {
+    Projector<T> last = eigen_vec.col(eigen_vec.cols() - 1);
+    return (last(0) < 0 ? -1 : 1) * last;
+  }
+
   template<typename T, typename G>
   Projector<T> lda_optimum_projector(
     const Data<T> &      data,
     const DataColumn<G> &groups,
     const std::set<G> &  unique_groups) {
     LOG_INFO << "Calculating LDA optimum projector for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
-    LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
+    LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables:" << std::endl;
+    LOG_INFO << std::endl << data << std::endl;
+    LOG_INFO << "Groups:" << std::endl;
+    LOG_INFO << std::endl << groups << std::endl;
 
     Data<T> W = within_groups_sum_of_squares(data, groups, unique_groups);
     Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
@@ -22,22 +31,26 @@ namespace pp {
     LOG_INFO << "B:" << std::endl << B << std::endl;
 
     Data<T> WpB = W + B;
-    Data<T> WpBInv = linalg::inverse(WpB);
-    Data<T> WpBInvB = WpBInv * B;
+    Data<T> WpBInvB = WpB.fullPivLu().solve(B);
+
+    Data<T> roundedWpBInvB = WpBInvB.unaryExpr(
+      [](long double elem) {
+      return fabs(elem) < 1e-15 ? 0 : elem;
+    });
 
     LOG_INFO << "W + B:" << std::endl << WpB << std::endl;
-    LOG_INFO << "(W + B)^-1" << std::endl << WpBInv << std::endl;
     LOG_INFO << "(W + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
+    LOG_INFO << "(W + B)^-1 * B (truncated):" << std::endl << roundedWpBInvB << std::endl;
 
-    auto [eigen_val, eigen_vec] = linalg::eigen(WpBInvB);
+    auto [eigen_val, eigen_vec] = linalg::eigen(roundedWpBInvB);
 
     LOG_INFO << "Eigenvalues:" << std::endl << eigen_val << std::endl;
     LOG_INFO << "Eigenvectors:" << std::endl << eigen_vec << std::endl;
 
-    Projector<T> projector = eigen_vec(Eigen::all, Eigen::last);
+    Projector<T> projector = get_projector(eigen_vec);
 
     LOG_INFO << "Projector:" << std::endl << projector << std::endl;
-    return eigen_vec(Eigen::all, Eigen::last);
+    return projector;
   }
 
   template Projector<long double> lda_optimum_projector<long double, int>(

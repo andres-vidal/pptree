@@ -80,10 +80,8 @@ namespace pptree {
     }
 
     bool operator==(const Condition<T, R> &other) const {
-      T tolerance = 0.00001;
-
       return linalg::collinear(projector, other.projector)
-      && fabs(threshold - other.threshold) < tolerance
+      && linalg::is_approx(threshold, other.threshold)
       && *lower == *other.lower
       && *upper == *other.upper;
     }

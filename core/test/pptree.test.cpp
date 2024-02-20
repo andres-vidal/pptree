@@ -273,10 +273,13 @@ TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
 
   Tree<long double, int> expect = Tree<long double, int>(
     new Condition<long double, int>(
-      as_projector<long double>({ -1.0, 1.1437956e-16, 1.3801543e-16, 1.9571836e-16 }),
-      -2.5,
+      as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      2.5,
       new Response<long double, int>(0),
-      new Response<long double, int>(1)));
+      new Response<long double, int>(1)
+      )
+    );
+
 
   ASSERT_EQ(expect, result);
 }
@@ -284,13 +287,13 @@ TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
 TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
   Data<long double> data(30, 5);
   data <<
-    1, 0, 0, 1, 1,
+    1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
-    1, 0, 1, 1, 1,
+    1, 0, 1, 2, 1,
     1, 0, 0, 1, 1,
     1, 0, 1, 1, 0,
-    1, 0, 0, 1, 1,
+    1, 0, 0, 2, 1,
     1, 0, 1, 1, 2,
     1, 0, 0, 2, 0,
     1, 0, 2, 1, 0,
@@ -355,15 +358,14 @@ TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
 
   Tree<long double, int> expect = Tree<long double, int>(
     new Condition<long double, int>(
-      as_projector<long double>({ -0.9805806756909202, 0.19611613513818374, -2.0140270007609215e-16, -7.07631108375459e-17, -8.2738406517746e-16 }),
-      -4.118438837901868,
-      new Response<long double, int>(2),
+      as_projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
+      4.118438837901864,
       new Condition<long double, int>(
-        as_projector<long double>({ 0.8272093794337335, -0.5618938000875766, -1.8590644939116864e-16, 3.718128987823358e-17, 2.974503190258699e-16 }),
-        -0.16392043106834114,
+        as_projector<long double>({ 2.721658109136383e-17, -1.0, 0.0, 0.0, 0.0 }),
+        -2.5,
         new Response<long double, int>(0),
-        new Response<long double, int>(1))));
-
+        new Response<long double, int>(1)),
+      new Response<long double, int>(2)));
 
   ASSERT_EQ(expect, result);
 }

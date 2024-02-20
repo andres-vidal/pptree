@@ -1,4 +1,4 @@
-FROM arm64v8/ubuntu
+FROM amd64/ubuntu
 
 WORKDIR /pptree
 

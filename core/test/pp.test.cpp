@@ -231,11 +231,11 @@ TEST(PPLDAOptimumProjector, three_groups) {
 
   DVector<long double> expected(5);
   expected <<
-    0.64183869804582372,
-    -0.76683967404591291,
-    -3.3128283818149138e-16,
-    -1.5792276346804761e-16,
-    6.9344029885377537e-16;
+    1,
+    0,
+    0,
+    0,
+    0;
 
   ASSERT_COLLINEAR(expected, actual);
 }

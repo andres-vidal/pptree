@@ -5,6 +5,14 @@ using namespace Eigen;
 using namespace linalg;
 
 namespace linalg {
+  bool is_approx(long double a, long double b) {
+    return fabs(a - b) < 0.00001;
+  }
+
+  bool is_module_approx(long double a, long double b) {
+    return is_approx(fabs(a), fabs(b));
+  }
+
   DVector<long double> mean(
     const DMatrix<long double> &data
     ) {
@@ -75,9 +83,10 @@ namespace linalg {
   DMatrix<long double> inverse(
     const DMatrix<long double> &m
     ) {
-    DMatrix<long double> inverse = m.inverse();
-    assert(inverse.allFinite() && "Given matrix is not invertible");
-    return inverse;
+    Eigen::FullPivLU<DMatrix<long double> > lu(m);
+
+    assert(lu.isInvertible() && "Given matrix is not invertible");
+    return lu.inverse();
   }
 
   std::tuple<DVector<long double>, DMatrix<long double> > sort_eigen(
@@ -90,10 +99,25 @@ namespace linalg {
       idx[i] = i;
     }
 
-    std::sort(idx.data(), idx.data() + idx.size(), [&values](long double a, long double b)
+    std::sort(idx.data(), idx.data() + idx.size(), [&values, &vectors](int idx1, int idx2)
     {
-      return fabs(values.row(a).value()) < fabs(values.row(b).value());
+      long double value1_mod = fabs(values.row(idx1).value());
+      long double value2_mod = fabs(values.row(idx2).value());
+
+      if (is_approx(value1_mod, value2_mod)) {
+        DVector<long double> vector1 = vectors.col(idx1);
+        DVector<long double> vector2 = vectors.col(idx2);
+
+        for (int i = 0; i < vector1.size(); ++i) {
+          if (!is_module_approx(vector1[i], vector2[i]) ) {
+            return vector1[i] < vector2[i];
+          }
+        }
+      }
+
+      return value1_mod < value2_mod;
     });
+
 
     return std::make_tuple(values(idx), vectors(all, idx));
   }
@@ -123,9 +147,7 @@ namespace linalg {
   bool collinear(
     const DVector<long double> &a,
     const DVector<long double> &b) {
-    long double tolerance = 0.0001;
-
-    return fabs(fabs(inner_product(a, b) / (a.norm() * b.norm())) - 1.0) < tolerance;
+    return is_module_approx(inner_product(a, b) / (a.norm() * b.norm()), 1.0);
   }
 
   bool collinear(

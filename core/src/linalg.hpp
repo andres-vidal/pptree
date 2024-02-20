@@ -7,6 +7,9 @@ namespace linalg {
   template<typename T>
   using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
+  bool is_approx(long double a, long double b);
+  bool is_module_approx(long double a, long double b);
+
   DVector<long double> mean(
     const DMatrix<long double> &data);
 
