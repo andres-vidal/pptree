@@ -1,4 +1,5 @@
 #include "pp.hpp"
+#include <memory>
 
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
@@ -13,28 +14,20 @@ namespace pptree {
   template<typename T, typename R>
   struct Response;
 
-  template<typename T, typename R>
-  Response<T, R> * as_response(Node<T, R> *node);
-  template<typename T, typename R>
-  const Response<T, R>& as_response(const Node<T, R> &node);
-  template<typename T, typename R>
-  Condition<T, R> * as_condition(Node<T, R> *node);
-  template<typename T, typename R>
-  const Condition<T, R> & as_condition(const Node<T, R> &node);
-
-
   template<typename T, typename R >
   struct Node {
     virtual ~Node() = default;
     virtual R predict(const DataColumn<T> &data) const = 0;
     virtual bool is_response() const = 0;
     virtual bool is_condition() const = 0;
+    virtual const Condition<T, R>& as_condition() const = 0;
+    virtual const Response<T, R>& as_response() const = 0;
 
     bool operator==(const Node<T, R> &other) const {
       if (this->is_condition() && other.is_condition()) {
-        return as_condition(*this) == as_condition(other);
+        return this->as_condition() == other.as_condition();
       } else if (this->is_response() && other.is_response()) {
-        return as_response(*this) == as_response(other);
+        return this->as_response() == other.as_response();
       } else {
         return false;
       }
@@ -79,6 +72,14 @@ namespace pptree {
       return true;
     }
 
+    const Condition<T, R>& as_condition() const override {
+      return *this;
+    }
+
+    const Response<T, R>& as_response() const override {
+      throw std::runtime_error("Cannot cast condition to response");
+    }
+
     bool operator==(const Condition<T, R> &other) const {
       return linalg::collinear(projector, other.projector)
       && linalg::is_approx(threshold, other.threshold)
@@ -104,6 +105,14 @@ namespace pptree {
 
     bool is_condition() const override {
       return false;
+    }
+
+    const Condition<T, R>& as_condition() const override {
+      throw std::runtime_error("Cannot cast response to condition");
+    }
+
+    const Response<T, R>& as_response() const override {
+      return *this;
     }
 
     bool operator==(const Response<T, R> &other) const {
@@ -152,32 +161,4 @@ namespace pptree {
   Tree<T, R> train_lda(
     stats::Data<T>       data,
     stats::DataColumn<R> groups);
-
-  template<typename T, typename R>
-  Response<T, R> * as_response(Node<T, R> *node) {
-    if (Response<T, R> *response = dynamic_cast<Response<T, R> *>(node)) {
-      return response;
-    }
-
-    throw std::runtime_error("Node is not a response.");
-  }
-
-  template<typename T, typename R>
-  const Response<T, R>& as_response(const Node<T, R> &node) {
-    return dynamic_cast<const Response<T, R> &>(node);
-  }
-
-  template<typename T, typename R>
-  Condition<T, R> * as_condition(Node<T, R> *node) {
-    if (Condition<T, R> *condition = dynamic_cast<Condition<T, R> *>(node)) {
-      return condition;
-    }
-
-    throw std::runtime_error("Node is not a condition.");
-  }
-
-  template<typename T, typename R>
-  const Condition<T, R>& as_condition(const Node<T, R> &node) {
-    return dynamic_cast<const Condition<T, R> &>(node);
-  }
 }

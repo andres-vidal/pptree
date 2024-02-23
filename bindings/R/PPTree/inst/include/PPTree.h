@@ -21,9 +21,9 @@ namespace Rcpp::traits {
 namespace Rcpp {
   SEXP wrap(const pptree::Node<long double, int>& node) {
     if (node.is_response()) {
-      return wrap(pptree::as_response(node));
+      return wrap(node.as_response());
     } else {
-      return wrap(pptree::as_condition(node));
+      return wrap(node.as_condition());
     }
   }
 
