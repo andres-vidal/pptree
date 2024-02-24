@@ -4,10 +4,10 @@
 #include <RcppCommon.h>
 
 namespace Rcpp {
-  SEXP wrap(const pptree::Node<long double, int>& node);
-  SEXP wrap(const pptree::Tree<long double, int> tree);
-  SEXP wrap(const pptree::Response<long double, int> node);
-  SEXP wrap(const pptree::Condition<long double, int> node);
+  SEXP wrap(const pptree::Node<long double, int> &node);
+  SEXP wrap(const pptree::Tree<long double, int> &tree);
+  SEXP wrap(const pptree::Response<long double, int> &node);
+  SEXP wrap(const pptree::Condition<long double, int> &node);
 }
 
 namespace Rcpp::traits {
@@ -59,16 +59,17 @@ namespace Rcpp::traits {
         auto threshold = Rcpp::as<pptree::Threshold<long double> >(rnode["threshold"]);
 
         auto lower_exporter = Exporter<pptree::Condition<long double, int> >(rnode["upper"]);
-        auto lower_node = lower_exporter.get();
+        auto lower_node = std::make_unique<pptree::Condition<long double, int> >(lower_exporter.get());
+
 
         auto upper_exporter = Exporter<pptree::Condition<long double, int> >(rnode["lower"]);
-        auto upper_node = upper_exporter.get();
+        auto upper_node = std::make_unique<pptree::Condition<long double, int> >(upper_exporter.get());
 
         return pptree::Condition<long double, int>(
           projector,
           threshold,
-          &lower_node,
-          &upper_node);
+          std::move(lower_node),
+          std::move(upper_node));
       };
   };
 
@@ -94,8 +95,9 @@ namespace Rcpp::traits {
 
       pptree::Tree<long double, int> get() {
         auto root_exporter = Exporter<pptree::Condition<long double, int> >(rtree["root"]);
-        auto root_node = root_exporter.get();
-        return pptree::Tree<long double, int>(&root_node);
+        auto root_node = std::make_unique<pptree::Condition<long double, int> >(root_exporter.get());
+
+        return pptree::Tree<long double, int>(std::move(root_node));
       }
   };
 }

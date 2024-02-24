@@ -9,50 +9,11 @@ using namespace Eigen;
 
 namespace pptree {
   template<typename T, typename R >
-  std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
+  std::unique_ptr<Condition<T, R> > step(
     const Data<T> &         data,
     const DataColumn<R> &   groups,
     const std::set<R> &     unique_groups,
     const PPStrategy<T, R> &pp_strategy);
-  template<typename T, typename R >
-  Threshold<T> get_threshold(
-    const DataColumn<T> &projected_data,
-    const DataColumn<R> &groups,
-    const R &            group_1,
-    const R &            group_2);
-  template<typename T, typename R >
-  std::tuple<R, R> sort_groups_by_threshold(
-    const Data<T> &      data,
-    const DataColumn<R> &groups,
-    const R &            group_1,
-    const R &            group_2,
-    const Projector<T> & projector,
-    const Threshold<T> & threshold);
-  template<typename T, typename R >
-  Condition<T, R> * binary_step(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const R &               group_1,
-    const R &               group_2,
-    const PPStrategy<T, R>& pp_strategy);
-  template<typename R >
-  std::tuple<R, R> take_two(const std::set<R> &group_set);
-  template<typename T, typename R >
-  Node<T, R> * build_branch(
-    const Data<T> &                    data,
-    const DataColumn<R> &              groups,
-    const DataColumn<R> &              binary_groups,
-    const R &                          binary_group,
-    const std::map<int, std::set<R> > &binary_group_mapping,
-    const PPStrategy<T, R> &           pp_strategy);
-  template<typename T, typename R >
-  Condition<T, R> * step(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const std::set<R> &     unique_groups,
-    const PPStrategy<T, R> &pp_strategy);
-
-
 
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
@@ -121,7 +82,7 @@ namespace pptree {
   }
 
   template<typename T, typename R >
-  Condition<T, R> * binary_step(
+  std::unique_ptr<Condition<T, R> > binary_step(
     const Data<T> &         data,
     const DataColumn<R> &   groups,
     const R &               group_1,
@@ -142,17 +103,17 @@ namespace pptree {
       projector,
       threshold);
 
-    Response<T, R> *lower_response = new Response<T, R>(lower_group);
-    Response<T, R> *upper_response = new Response<T, R>(upper_group);
+    std::unique_ptr<Node<T, R> >lower_response = std::make_unique<Response<T, R> >(lower_group);
+    std::unique_ptr<Node<T, R> >upper_response = std::make_unique<Response<T, R> >(upper_group);
 
-    Condition<T, R> *condition = new Condition<T, R>(
+    std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       projector,
       threshold,
-      lower_response,
-      upper_response);
+      std::move(lower_response),
+      std::move(upper_response));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
-    return condition;
+    return std::move(condition);
   }
 
   template<typename R >
@@ -165,34 +126,32 @@ namespace pptree {
   }
 
   template<typename T, typename R >
-  Node<T, R> * build_branch(
+  std::unique_ptr<Node<T, R> > build_branch(
     const Data<T> &                    data,
     const DataColumn<R> &              groups,
     const DataColumn<R> &              binary_groups,
     const R &                          binary_group,
     const std::map<int, std::set<R> >& binary_group_mapping,
     const PPStrategy<T, R> &           pp_strategy) {
-    Node<T, R> *branch;
     std::set<R> unique_groups = binary_group_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
       R group = *unique_groups.begin();
       LOG_INFO << "Branch is a Response for group " << group << std::endl;
-      branch = new Response<T, R>(group);
-    } else {
-      LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
-      branch = step(
+      return std::move(std::make_unique<Response<T, R> >(group));
+    }
+
+    LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
+    return std::move(
+      step(
         select_group(data, binary_groups, binary_group),
         (DataColumn<R>)select_group((Data<R>)groups, binary_groups, binary_group),
         unique_groups,
-        pp_strategy);
-    }
-
-    return branch;
+        pp_strategy));
   }
 
   template<typename T, typename R >
-  Condition<T, R> * step(
+  std::unique_ptr< Condition<T, R> >  step(
     const Data<T> &         data,
     const DataColumn<R> &   groups,
     const std::set<R> &     unique_groups,
@@ -219,7 +178,7 @@ namespace pptree {
 
     auto [group_1, group_2] = take_two(binary_unique_groups);
 
-    Condition<T, R> *temp_node = binary_step(
+    std::unique_ptr<Condition<T, R> > temp_node = binary_step(
       data,
       binary_groups,
       group_1,
@@ -230,7 +189,7 @@ namespace pptree {
     R binary_upper_group = temp_node->upper->as_response().value;
 
     LOG_INFO << "Build lower branch" << std::endl;
-    Node<T, R> *lower_branch = build_branch(
+    std::unique_ptr<Node<T, R> > lower_branch = build_branch(
       data,
       groups,
       binary_groups,
@@ -239,7 +198,7 @@ namespace pptree {
       pp_strategy);
 
     LOG_INFO << "Build upper branch" << std::endl;
-    Node<T, R> *upper_branch = build_branch(
+    std::unique_ptr<Node<T, R> > upper_branch = build_branch(
       data,
       groups,
       binary_groups,
@@ -247,16 +206,14 @@ namespace pptree {
       binary_group_mapping,
       pp_strategy);
 
-    Condition<T, R> *condition = new Condition<T, R>(
+    std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,
       temp_node->threshold,
-      lower_branch,
-      upper_branch);
-
-    delete temp_node;
+      std::move(lower_branch),
+      std::move(upper_branch));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
-    return condition;
+    return std::move(condition);
   };
 
   template<typename T, typename R >

@@ -1,5 +1,6 @@
 #include "pp.hpp"
 #include <memory>
+#include <stdexcept>
 
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
@@ -14,7 +15,7 @@ namespace pptree {
   template<typename T, typename R>
   struct Response;
 
-  template<typename T, typename R >
+  template<typename T, typename R>
   struct Node {
     virtual ~Node() = default;
     virtual R predict(const DataColumn<T> &data) const = 0;
@@ -34,24 +35,19 @@ namespace pptree {
     }
   };
 
-  template<typename T, typename R >
+  template<typename T, typename R>
   struct Condition : public Node<T, R> {
     Projector<T> projector;
     Threshold<T> threshold;
-    Node<T, R> *lower = nullptr;
-    Node<T, R> *upper = nullptr;
+    std::unique_ptr<Node<T, R> > lower;
+    std::unique_ptr<Node<T, R> > upper;
 
     Condition(
       Projector<T> projector,
       Threshold<T> threshold,
-      Node<T, R> *lower,
-      Node<T, R> *upper)
-      : projector(projector), threshold(threshold), lower(lower), upper(upper) {
-    }
-
-    ~Condition() {
-      delete lower;
-      delete upper;
+      std::unique_ptr<Node<T, R> > lower,
+      std::unique_ptr<Node<T, R> > upper)
+      : projector(projector), threshold(threshold), lower(std::move(lower)), upper(std::move(upper)) {
     }
 
     R predict(const DataColumn<T> &data) const override {
@@ -88,7 +84,7 @@ namespace pptree {
     }
   };
 
-  template<typename T, typename R >
+  template<typename T, typename R>
   struct Response : public Node<T, R> {
     R value;
 
@@ -120,17 +116,12 @@ namespace pptree {
     }
   };
 
-  template<typename T, typename R >
+  template<typename T, typename R>
   struct Tree {
-    Condition<T, R> *root;
+    std::unique_ptr<Condition<T, R> > root;
 
-    Tree(Condition<T, R> *root) : root(root) {
+    Tree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
     }
-
-    ~Tree() {
-      delete root;
-    }
-
 
     R predict(const DataColumn<T> &data) const {
       return root->predict(data);
