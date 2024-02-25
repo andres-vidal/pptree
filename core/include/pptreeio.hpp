@@ -4,8 +4,13 @@
 #include <map>
 #include <nlohmann/json.hpp>
 
-#define LOG_INFO  std::cout << "[INFO]" << "[" << __FUNCTION__ << "] "
-#define LOG_DEBUG std::cout << "[DEBUG]" << "[" << __FUNCTION__ << "] "
+#ifdef NDEBUG
+  #define LOG_INFO  if (false) std::cout
+  #define LOG_DEBUG if (false) std::cout
+#else
+  #define LOG_INFO  std::cout << "[INFO]" << "[" << __FUNCTION__ << "] "
+  #define LOG_DEBUG std::cout << "[DEBUG]" << "[" << __FUNCTION__ << "] "
+#endif
 
 using json = nlohmann::json;
 

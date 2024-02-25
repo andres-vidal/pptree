@@ -22,8 +22,6 @@ namespace pp {
     while (i < truncated.rows() && is_approx(truncated(i), 0))
       i++;
 
-    std::cout << "i: " << i << std::endl;
-
     return (truncated(i) < 0 ? -1 : 1) * truncated;
   }
 
