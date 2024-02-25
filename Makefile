@@ -70,7 +70,7 @@ run:
 	@./$(BUILD_DIR)/pptree-cli
 
 test: build-all-debug
-	@cd ./$(BUILD_DIR) && ctest --output-on-failure
+	@cd ./$(BUILD_DIR) && ./pptree-test
 
 
 test-debug: build-all-debug
