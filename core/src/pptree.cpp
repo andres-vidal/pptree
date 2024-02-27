@@ -78,7 +78,7 @@ namespace pptree {
     LOG_INFO << "Lower group: " << l_group << std::endl;
     LOG_INFO << "Upper group: " << r_group << std::endl;
 
-    return std::make_tuple(group_1, group_2);
+    return std::make_tuple(l_group, r_group);
   }
 
   template<typename T, typename R >
