@@ -4,9 +4,13 @@
 \alias{PPTree}
 \title{Trains a Project-Pursuit oblique decision tree.}
 \usage{
-PPTree(x, y)
+PPTree(formula = NULL, data = NULL, x = NULL, y = NULL)
 }
 \arguments{
+\item{formula}{A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.}
+
+\item{data}{A data frame containing the variables in the formula.}
+
 \item{x}{A matrix containing the features for each observation.}
 
 \item{y}{A matrix containing the labels for each observation.}
@@ -15,15 +19,21 @@ PPTree(x, y)
 A PPTree model trained on \code{x} and \code{y}.
 }
 \description{
-Trains a Project-Pursuit oblique decision tree.
+This function trains a Project-Pursuit oblique decision tree (PPTree) using either a formula and data frame interface or a matrix-based interface. When using the formula interface, specify the model formula and the data frame containing the variables. For the matrix-based interface, provide matrices for the features and labels directly.
 }
 \examples{
-# Example 1: with the `iris` dataset
+# Example 1: matrix interface with the `iris` dataset
 PPTree(x = iris[, 1:4], y = iris[, 5])
 
-# Example 2: with the `crabs` dataset
+# Example 2: formula interface with the `iris` dataset
+PPTree(Species ~ ., data = iris)
+
+# Example 3: matrix interface with the `crabs` dataset
 x <- crabs[, c(2, 4:8)]
 x$sex <- as.numeric(as.factor(x$sex))
 PPTree(x = x, y = crabs[, 1])
+
+# Example 4: formula interface with the `crabs` dataset
+PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 
 }

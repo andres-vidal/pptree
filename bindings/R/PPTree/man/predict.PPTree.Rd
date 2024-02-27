@@ -19,13 +19,11 @@ Predicts the labels of a set of observations using a PPTree model.
 }
 \examples{
 # Example 1: with the `iris` dataset
-model <- PPTree(iris[, 1:4], iris[, 5])
-predict(model, iris[, 1:4])
+model <- PPTree(Species ~ ., data = iris)
+predict(model, iris)
 
 # Example 2: with the `crabs` dataset
-x <- crabs[, c(2, 4:8)]
-x$sex <- as.numeric(as.factor(x$sex))
-model <- PPTree(x = x, y = crabs[, 1])
-predict(model, x)
+model <- PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+predict(model, crabs)
 
 }
