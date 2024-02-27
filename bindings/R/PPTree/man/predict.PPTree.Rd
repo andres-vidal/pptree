@@ -18,18 +18,14 @@ A matrix containing the predicted labels for each observation.
 Predicts the labels of a set of observations using a PPTree model.
 }
 \examples{
-# Example 1: with the preprocessed `iris` dataset
-library(PPTree)
-x <- as.matrix(PPTreeIris[, 1:4])
-y <- as.matrix(PPTreeIris[, 5])
-model <- PPTree(x, y)
-predict(model, x)
+# Example 1: with the `iris` dataset
+model <- PPTree(iris[, 1:4], iris[, 5])
+predict(model, iris[, 1:4])
 
-# Example 2: with the preprocessed `crabs` dataset
-library(PPTree)
-x <- as.matrix(PPTreeCrabs[, 2:7])
-y <- as.matrix(PPTreeCrabs[, 1])
-model <- PPTree(x, y)
+# Example 2: with the `crabs` dataset
+x <- crabs[, c(2, 4:8)]
+x$sex <- as.numeric(as.factor(x$sex))
+model <- PPTree(x = x, y = crabs[, 1])
 predict(model, x)
 
 }

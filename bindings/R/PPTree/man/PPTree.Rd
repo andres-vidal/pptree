@@ -18,16 +18,12 @@ A PPTree model trained on \code{x} and \code{y}.
 Trains a Project-Pursuit oblique decision tree.
 }
 \examples{
-# Example 1: with the preprocessed `iris` dataset
-library(PPTree)
-x <- as.matrix(PPTreeIris[, 1:4])
-y <- as.matrix(PPTreeIris[, 5])
-PPTree(x, y)
+# Example 1: with the `iris` dataset
+PPTree(x = iris[, 1:4], y = iris[, 5])
 
-# Example 2: with the preprocessed `crabs` dataset
-library(PPTree)
-x <- as.matrix(PPTreeCrabs[, 2:7])
-y <- as.matrix(PPTreeCrabs[, 1])
-PPTree(x, y)
+# Example 2: with the `crabs` dataset
+x <- crabs[, c(2, 4:8)]
+x$sex <- as.numeric(as.factor(x$sex))
+PPTree(x = x, y = crabs[, 1])
 
 }
