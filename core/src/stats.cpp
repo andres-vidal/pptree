@@ -195,7 +195,7 @@ namespace stats {
 
     std::set<G> new_unique_groups = { 0, 1 };
 
-    return std::make_tuple(new_data_groups, new_unique_groups, group_mapping);
+    return { new_data_groups, new_unique_groups, group_mapping };
   }
 
   template std::tuple < DataColumn<int>, std::set<int>, std::map<int, std::set<int> > > binary_regroup<long double, int>(

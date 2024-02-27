@@ -119,7 +119,7 @@ namespace linalg {
     });
 
 
-    return std::make_tuple(values(idx), vectors(all, idx));
+    return { values(idx), vectors(all, idx) };
   }
 
   std::tuple<DVector<long double>, DMatrix<long double> > eigen(
@@ -141,7 +141,7 @@ namespace linalg {
     DVector<long double> values = solver.eigenvalues().real();
     DMatrix<long double> vectors = solver.eigenvectors().real();
 
-    return std::make_tuple(values, vectors);
+    return { values, vectors };
   }
 
   bool collinear(

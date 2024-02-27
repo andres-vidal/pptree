@@ -27,7 +27,7 @@ namespace pptree {
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = binary_regroup((Data<T>)projected, groups, unique_groups);
 
     LOG_INFO << "Mapping: " << binary_group_mapping << std::endl;
-    return std::make_tuple(binary_groups, binary_unique_groups, binary_group_mapping);
+    return { binary_groups, binary_unique_groups, binary_group_mapping };
   }
 
   template<typename T, typename R >
@@ -78,7 +78,7 @@ namespace pptree {
     LOG_INFO << "Lower group: " << l_group << std::endl;
     LOG_INFO << "Upper group: " << r_group << std::endl;
 
-    return std::make_tuple(l_group, r_group);
+    return { l_group, r_group };
   }
 
   template<typename T, typename R >
@@ -122,7 +122,7 @@ namespace pptree {
 
     auto first = *group_set.begin();
     auto last = *std::prev(group_set.end());
-    return std::make_tuple(first, last);
+    return { first, last };
   }
 
   template<typename T, typename R >
