@@ -10,43 +10,36 @@ NULL
 #' @examples
 #' # Example 1: with the preprocessed `iris` dataset
 #' library(PPTree)
-#' x <- as.matrix(PPTreeIris[, 1:4])
-#' y <- as.matrix(PPTreeIris[, 5])
-#' PPTree(x, y)
+#' PPTree(x = PPTreeIris[, 1:4], y = PPTreeIris[, 5])
 #'
 #' # Example 2: with the preprocessed `crabs` dataset
 #' library(PPTree)
-#' x <- as.matrix(PPTreeCrabs[, 2:7])
-#' y <- as.matrix(PPTreeCrabs[, 1])
-#' PPTree(x, y)
+#' PPTree(x = PPTreeCrabs[, 2:7], y = PPTreeCrabs[, 1])
 #'
 #' @export
 PPTree <- function(x, y) {
-  tree <- pptree_train_lda(x, y)
-  class(tree) <- "PPTree"
-  tree
+  model <- pptree_train_lda(as.matrix(x), as.matrix(y))
+  class(model) <- "PPTree"
+  model
 }
 
 #' Predicts the labels of a set of observations using a PPTree model.
+#' 
 #' @param model A PPTree model.
 #' @param x A matrix containing the features for each new observation.
 #' @return A matrix containing the predicted labels for each observation.
 #' @examples
 #' # Example 1: with the preprocessed `iris` dataset
 #' library(PPTree)
-#' x <- as.matrix(PPTreeIris[, 1:4])
-#' y <- as.matrix(PPTreeIris[, 5])
-#' model <- PPTree(x, y)
-#' predict(model, x)
+#' model <- PPTree(PPTreeIris[, 1:4], PPTreeIris[, 5])
+#' predict(model, PPTreeIris[, 1:4])
 #'
 #' # Example 2: with the preprocessed `crabs` dataset
 #' library(PPTree)
-#' x <- as.matrix(PPTreeCrabs[, 2:7])
-#' y <- as.matrix(PPTreeCrabs[, 1])
-#' model <- PPTree(x, y)
-#' predict(model, x)
+#' model <- PPTree(PPTreeCrabs[, 2:7], PPTreeCrabs[, 1])
+#' predict(model, PPTreeCrabs[, 2:7])
 #'
 #' @export
 predict.PPTree <- function(model, x) {
-  pptree_predict(model, x)
+  pptree_predict(model, as.matrix(x))
 }
