@@ -17,6 +17,12 @@ namespace stats {
     const G &            group);
 
   template<typename T, typename G>
+  DataColumn<T> select_group(
+    const DataColumn<T> &data,
+    const DataColumn<G> &groups,
+    const G &            group);
+
+  template<typename T, typename G>
   Data<T> select_groups(
     const Data<T> &      data,
     const DataColumn<G> &data_groups,

@@ -38,6 +38,24 @@ namespace stats {
     const int &            group);
 
   template<typename T, typename G>
+  DataColumn<T> select_group(
+    const DataColumn<T> &data,
+    const DataColumn<G> &groups,
+    const G &            group) {
+    return (DataColumn<T>)select_group((Data<T>)data, groups, group);
+  }
+
+  template DataColumn<long double> select_group<long double, int>(
+    const DataColumn<long double> &data,
+    const DataColumn<int> &        groups,
+    const int &                    group);
+
+  template DataColumn<int> select_group<int, int>(
+    const DataColumn<int> &data,
+    const DataColumn<int> &groups,
+    const int &            group);
+
+  template<typename T, typename G>
   Data<T> select_groups(
     const Data<T> &      data,
     const DataColumn<G> &data_groups,
