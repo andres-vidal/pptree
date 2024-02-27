@@ -57,6 +57,8 @@ PPTree <- function(formula = NULL, data = NULL, x = NULL, y = NULL) {
   class(model) <- "PPTree"
   model$classes <- levels(y)
   model$formula <- formula
+  model$x <- x
+  model$y <- y
 
   model
 }
@@ -95,4 +97,55 @@ predict.PPTree <- function(model, x) {
 #' @export
 formula.PPTree <- function(model) {
   model$formula
+}
+
+print_node <- function(model, node, depth = 0) {
+  indent <- paste(rep(" ", depth), collapse = "")
+
+  if (!is.null(node$value)) {
+    cat(indent, "Predict:", model$classes[node$value], "\n")
+  } else {
+    projection_str <- paste(
+      "[", paste(round(node$projector, 2), collapse = " "), "] * x",
+      collapse = ""
+    )
+
+    cat(
+      indent,
+      "If (", projection_str, ") < ", node$threshold, ":\n",
+      sep = ""
+    )
+
+    if (!is.null(node$lower)) {
+      print_node(model, node$lower, depth + 1)
+    }
+
+    cat(indent, "Else:\n", sep = "")
+    if (!is.null(node$upper)) {
+      print_node(model, node$upper, depth + 1)
+    }
+  }
+}
+
+#' Prints a PPTree model.
+#' @param model A PPTree model.
+#' @examples
+#' model <- PPTree(Species ~ ., data = iris)
+#' print(model)
+#'
+#' @export
+print.PPTree <- function(model) {
+  cat("\n")
+  cat("Project-Pursuit Oblique Decision Tree\n")
+  cat("-------------------------------------\n")
+  cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
+  cat("Features:\n", paste(colnames(model$x), collapse = "\n "), "\n")
+  cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
+  if (!is.null(model$formula)) {
+    cat("Formula:\n", deparse(model$formula), "\n")
+  }
+  cat("-------------------------------------\n")
+  cat("Structure:\n")
+  print_node(model, model$root)
+  cat("\n")
 }

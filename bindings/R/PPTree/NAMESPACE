@@ -2,6 +2,7 @@
 
 S3method(formula,PPTree)
 S3method(predict,PPTree)
+S3method(print,PPTree)
 export(PPTree)
 importFrom(Rcpp,evalCpp)
 importFrom(stats,model.frame)
