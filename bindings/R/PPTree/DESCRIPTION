@@ -10,3 +10,6 @@ License: MIT + file LICENSE
 Imports: Rcpp (>= 1.0.11)
 LinkingTo: Rcpp, RcppEigen
 SystemRequirements: C++17
+Depends: 
+    R (>= 2.10)
+LazyData: true
