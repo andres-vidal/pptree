@@ -24,14 +24,14 @@ TEST(ConditionEquals, true_case) {
   Condition<long double, int> c1(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   ASSERT_TRUE(c1 == c2);
 }
@@ -40,14 +40,14 @@ TEST(ConditionEquals, true_case_collinear_projectors) {
   Condition<long double, int> c1(
     as_projector<long double>({ 1.0, 1.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
     as_projector<long double>({ 2.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   ASSERT_TRUE(c1 == c2);
 }
@@ -56,14 +56,14 @@ TEST(ConditionEquals, true_case_approximate_thresholds) {
   Condition<long double, int> c1(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
     as_projector<long double>({ 1.0, 2.0 }),
     3.000000000000001,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   ASSERT_TRUE(c1 == c2);
 }
@@ -72,14 +72,14 @@ TEST(ConditionEquals, false_case_non_collinear_projectors) {
   Condition<long double, int> c1(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
     as_projector<long double>({ 2.0, 3.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   ASSERT_FALSE(c1 == c2);
 }
@@ -88,14 +88,14 @@ TEST(ConditionEquals, false_case_different_thresholds) {
   Condition<long double, int> c1(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
     as_projector<long double>({ 1.0, 2.0 }),
     4.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   ASSERT_FALSE(c1 == c2);
 }
@@ -104,14 +104,14 @@ TEST(ConditionEquals, false_case_different_responses) {
   Condition<long double, int> c1(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(3));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(3));
 
   ASSERT_FALSE(c1 == c2);
 }
@@ -120,67 +120,67 @@ TEST(ConditionEquals, false_case_different_structures) {
   Condition<long double, int> c1(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Response<long double, int>(2));
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
     as_projector<long double>({ 1.0, 2.0 }),
     3.0,
-    new Response<long double, int>(1),
-    new Condition<long double, int>(
+    std::make_unique<Response<long double, int> >(1),
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<long double, int>(1),
-      new Response<long double, int>(2)));
+      std::make_unique<Response<long double, int> >(1),
+      std::make_unique<Response<long double, int> >(2)));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(TreeEquals, true_case) {
   Tree<long double, int> t1(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<long double, int>(1),
-      new Condition<long double, int>(
+      std::make_unique<Response<long double, int> >(1),
+      std::make_unique<Condition<long double, int> >(
         as_projector<long double>({ 1.0, 2.0 }),
         3.0,
-        new Response<long double, int>(1),
-        new Response<long double, int>(2))));
+        std::make_unique<Response<long double, int> >(1),
+        std::make_unique<Response<long double, int> >(2))));
 
   Tree<long double, int> t2(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<long double, int>(1),
-      new Condition<long double, int>(
+      std::make_unique<Response<long double, int> >(1),
+      std::make_unique<Condition<long double, int> >(
         as_projector<long double>({ 1.0, 2.0 }),
         3.0,
-        new Response<long double, int>(1),
-        new Response<long double, int>(2))));
+        std::make_unique<Response<long double, int> >(1),
+        std::make_unique<Response<long double, int> >(2))));
 
   ASSERT_TRUE(t1 == t2);
 }
 
 TEST(TreeEquals, false_case) {
   Tree<long double, int> t1(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<long double, int>(1),
-      new Response<long double, int>(2)));
+      std::make_unique<Response<long double, int> >(1),
+      std::make_unique<Response<long double, int> >(2)));
 
   Tree<long double, int> t2(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 2.0 }),
       3.0,
-      new Response<long double, int>(1),
-      new Response<long double, int>(3)));
+      std::make_unique<Response<long double, int> >(1),
+      std::make_unique<Response<long double, int> >(3)));
 
   ASSERT_FALSE(t1 == t2);
 }
 
-TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
+TEST(PPTreeTrainLDA, univariate_two_groups) {
   Data<long double> data(10, 1);
   data <<
     1, 1, 1, 1, 1,
@@ -191,22 +191,21 @@ TEST(PPTreeTrain, lda_strategy_univariate_two_groups) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<long double, int> result = pptree::train(
+  Tree<long double, int> result = pptree::train_lda(
     data,
-    groups,
-    (PPStrategy<long double, int>)lda_strategy<long double, int>);
+    groups);
 
   Tree<long double, int> expect = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0 }),
       1.5,
-      new Response<long double, int>(0),
-      new Response<long double, int>(1)));
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)));
 
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
+TEST(PPTreeTrainLDA, univariate_three_groups) {
   Data<long double> data(15, 1);
   data <<
     1, 1, 1, 1, 1,
@@ -219,27 +218,26 @@ TEST(PPTreeTrain, lda_strategy_univariate_three_groups) {
     1, 1, 1, 1, 1,
     2, 2, 2, 2, 2;
 
-  Tree<long double, int> result = pptree::train(
+  Tree<long double, int> result = pptree::train_lda(
     data,
-    groups,
-    (PPStrategy<long double, int>)lda_strategy<long double, int>);
+    groups);
 
   Tree<long double, int> expect = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0 }),
       1.75,
-      new Response<long double, int>(0),
-      new Condition<long double, int>(
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Condition<long double, int> >(
         as_projector<long double>({ 1.0 }),
         2.5,
-        new Response<long double, int>(1),
-        new Response<long double, int>(2))));
+        std::make_unique<Response<long double, int> >(1),
+        std::make_unique<Response<long double, int> >(2))));
 
 
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
+TEST(PPTreeTrainLDA, multivariate_two_groups) {
   Data<long double> data(10, 4);
   data <<
     1, 0, 1, 1,
@@ -266,25 +264,23 @@ TEST(PPTreeTrain, lda_strategy_multivariate_two_groups) {
     1,
     1;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = train_lda(
     data,
-    groups,
-    (PPStrategy<long double, int>)lda_strategy<long double, int>);
+    groups);
 
   Tree<long double, int> expect = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
-      new Response<long double, int>(0),
-      new Response<long double, int>(1)
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)
       )
     );
-
 
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
+TEST(PPTreeTrainLDA, multivariate_three_groups) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -351,32 +347,31 @@ TEST(PPTreeTrain, lda_strategy_multivariate_three_groups) {
     2,
     2;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = train_lda(
     data,
-    groups,
-    (PPStrategy<long double, int>)lda_strategy<long double, int>);
+    groups);
 
   Tree<long double, int> expect = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
       4.118438837901864,
-      new Condition<long double, int>(
+      std::make_unique<Condition<long double, int> >(
         as_projector<long double>({ 0, 1.0, 0.0, 0.0, 0.0 }),
         2.5,
-        new Response<long double, int>(0),
-        new Response<long double, int>(1)),
-      new Response<long double, int>(2)));
+        std::make_unique<Response<long double, int> >(0),
+        std::make_unique<Response<long double, int> >(1)),
+      std::make_unique<Response<long double, int> >(2)));
 
   ASSERT_EQ(expect, result);
 }
 
 TEST(PPTreePredictDataColumn, univariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0 }),
       1.5,
-      new Response<long double, int>(0),
-      new Response<long double, int>(1)));
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)));
 
 
   DataColumn<long double> input(1);
@@ -389,15 +384,15 @@ TEST(PPTreePredictDataColumn, univariate_two_groups) {
 
 TEST(PPTreePredictDataColumn, univariate_three_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0 }),
       1.75,
-      new Response<long double, int>(0),
-      new Condition<long double, int>(
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Condition<long double, int> >(
         as_projector<long double>({ 1.0 }),
         2.5,
-        new Response<long double, int>(1),
-        new Response<long double, int>(2))));
+        std::make_unique<Response<long double, int> >(1),
+        std::make_unique<Response<long double, int> >(2))));
 
   DataColumn<long double> input(1);
   input << 1.0;
@@ -412,11 +407,11 @@ TEST(PPTreePredictDataColumn, univariate_three_groups) {
 
 TEST(PPTreePredictDataColumn, multivariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
-      new Response<long double, int>(0),
-      new Response<long double, int>(1)));
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)));
 
   DataColumn<long double> input(4);
   input << 1, 0, 1, 1;
@@ -428,15 +423,15 @@ TEST(PPTreePredictDataColumn, multivariate_two_groups) {
 
 TEST(PPTreePredictDataColumn, multivariate_three_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
       4.118438837901864,
-      new Condition<long double, int>(
+      std::make_unique<Condition<long double, int> >(
         as_projector<long double>({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
         2.5,
-        new Response<long double, int>(0),
-        new Response<long double, int>(1)),
-      new Response<long double, int>(2)));
+        std::make_unique<Response<long double, int> >(0),
+        std::make_unique<Response<long double, int> >(1)),
+      std::make_unique<Response<long double, int> >(2)));
 
   DataColumn<long double> input(5);
   input << 1, 0, 0, 1, 1;
@@ -451,11 +446,11 @@ TEST(PPTreePredictDataColumn, multivariate_three_groups) {
 
 TEST(PPTreePredictData, univariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0 }),
       1.5,
-      new Response<long double, int>(0),
-      new Response<long double, int>(1)));
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)));
 
   Data<long double> input(2, 1);
   input << 1.0,  2.0;
@@ -470,15 +465,15 @@ TEST(PPTreePredictData, univariate_two_groups) {
 
 TEST(PPTreePredictData, univariate_three_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0 }),
       1.75,
-      new Response<long double, int>(0),
-      new Condition<long double, int>(
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Condition<long double, int> >(
         as_projector<long double>({ 1.0 }),
         2.5,
-        new Response<long double, int>(1),
-        new Response<long double, int>(2))));
+        std::make_unique<Response<long double, int> >(1),
+        std::make_unique<Response<long double, int> >(2))));
 
   Data<long double> input(3, 1);
   input << 1.0, 2.0, 3.0;
@@ -493,11 +488,11 @@ TEST(PPTreePredictData, univariate_three_groups) {
 
 TEST(PPTreePredictData, multivariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
-      new Response<long double, int>(0),
-      new Response<long double, int>(1)));
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)));
 
   Data<long double> input(2, 4);
   input <<
@@ -514,15 +509,15 @@ TEST(PPTreePredictData, multivariate_two_groups) {
 
 TEST(PPTreePredictData, multivariate_three_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
-    new Condition<long double, int>(
+    std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
       4.118438837901864,
-      new Condition<long double, int>(
+      std::make_unique<Condition<long double, int> >(
         as_projector<long double>({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
         2.5,
-        new Response<long double, int>(0),
-        new Response<long double, int>(1)),
-      new Response<long double, int>(2)));
+        std::make_unique<Response<long double, int> >(0),
+        std::make_unique<Response<long double, int> >(1)),
+      std::make_unique<Response<long double, int> >(2)));
 
   Data<long double> input(3, 5);
   input <<

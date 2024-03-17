@@ -1,0 +1,5 @@
+useDynLib(PPTree)
+importFrom(Rcpp, evalCpp)
+
+export(train)
+export(predict)

@@ -4,8 +4,13 @@
 #include <map>
 #include <nlohmann/json.hpp>
 
-#define LOG_INFO  std::cout << "[INFO]" << "[" << __FUNCTION__ << "] "
-#define LOG_DEBUG std::cout << "[DEBUG]" << "[" << __FUNCTION__ << "] "
+#ifdef NDEBUG
+  #define LOG_INFO  if (false) std::cout
+  #define LOG_DEBUG if (false) std::cout
+#else
+  #define LOG_INFO  std::cout << "[INFO]" << "[" << __FUNCTION__ << "] "
+  #define LOG_DEBUG std::cout << "[DEBUG]" << "[" << __FUNCTION__ << "] "
+#endif
 
 using json = nlohmann::json;
 
@@ -24,11 +29,6 @@ namespace pptree {
   struct Response;
   template<typename T, typename R >
   struct Condition;
-
-  template<typename T, typename R >
-  const Response<T, R>& as_response(const Node<T, R> &node);
-  template<typename T, typename R >
-  const Condition<T, R>& as_condition(const Node<T, R> &node);
 
   template<typename T, typename R >
   void to_json(json& j, const Condition<T, R> &condition);
@@ -57,9 +57,9 @@ namespace pptree {
   template<typename T, typename R >
   void to_json(json& j, const Node<T, R>& node) {
     if (node.is_response()) {
-      to_json(j, as_response<T, R>(node));
+      to_json(j, node.as_response());
     } else {
-      to_json(j, as_condition<T, R>(node));
+      to_json(j, node.as_condition());
     }
   }
 

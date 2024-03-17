@@ -1,4 +1,6 @@
 #include "pp.hpp"
+#include <memory>
+#include <stdexcept>
 
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
@@ -14,51 +16,38 @@ namespace pptree {
   struct Response;
 
   template<typename T, typename R>
-  Response<T, R> * as_response(Node<T, R> *node);
-  template<typename T, typename R>
-  const Response<T, R>& as_response(const Node<T, R> &node);
-  template<typename T, typename R>
-  Condition<T, R> * as_condition(Node<T, R> *node);
-  template<typename T, typename R>
-  const Condition<T, R> & as_condition(const Node<T, R> &node);
-
-
-  template<typename T, typename R >
   struct Node {
     virtual ~Node() = default;
     virtual R predict(const DataColumn<T> &data) const = 0;
     virtual bool is_response() const = 0;
     virtual bool is_condition() const = 0;
+    virtual const Condition<T, R>& as_condition() const = 0;
+    virtual const Response<T, R>& as_response() const = 0;
 
     bool operator==(const Node<T, R> &other) const {
       if (this->is_condition() && other.is_condition()) {
-        return as_condition(*this) == as_condition(other);
+        return this->as_condition() == other.as_condition();
       } else if (this->is_response() && other.is_response()) {
-        return as_response(*this) == as_response(other);
+        return this->as_response() == other.as_response();
       } else {
         return false;
       }
     }
   };
 
-  template<typename T, typename R >
+  template<typename T, typename R>
   struct Condition : public Node<T, R> {
     Projector<T> projector;
     Threshold<T> threshold;
-    Node<T, R> *lower = nullptr;
-    Node<T, R> *upper = nullptr;
+    std::unique_ptr<Node<T, R> > lower;
+    std::unique_ptr<Node<T, R> > upper;
 
     Condition(
       Projector<T> projector,
       Threshold<T> threshold,
-      Node<T, R> *lower,
-      Node<T, R> *upper)
-      : projector(projector), threshold(threshold), lower(lower), upper(upper) {
-    }
-
-    ~Condition() {
-      delete lower;
-      delete upper;
+      std::unique_ptr<Node<T, R> > lower,
+      std::unique_ptr<Node<T, R> > upper)
+      : projector(projector), threshold(threshold), lower(std::move(lower)), upper(std::move(upper)) {
     }
 
     R predict(const DataColumn<T> &data) const override {
@@ -79,6 +68,14 @@ namespace pptree {
       return true;
     }
 
+    const Condition<T, R>& as_condition() const override {
+      return *this;
+    }
+
+    const Response<T, R>& as_response() const override {
+      throw std::runtime_error("Cannot cast condition to response");
+    }
+
     bool operator==(const Condition<T, R> &other) const {
       return linalg::collinear(projector, other.projector)
       && linalg::is_approx(threshold, other.threshold)
@@ -87,7 +84,7 @@ namespace pptree {
     }
   };
 
-  template<typename T, typename R >
+  template<typename T, typename R>
   struct Response : public Node<T, R> {
     R value;
 
@@ -106,22 +103,25 @@ namespace pptree {
       return false;
     }
 
+    const Condition<T, R>& as_condition() const override {
+      throw std::runtime_error("Cannot cast response to condition");
+    }
+
+    const Response<T, R>& as_response() const override {
+      return *this;
+    }
+
     bool operator==(const Response<T, R> &other) const {
       return value == other.value;
     }
   };
 
-  template<typename T, typename R >
+  template<typename T, typename R>
   struct Tree {
-    Condition<T, R> *root;
+    std::unique_ptr<Condition<T, R> > root;
 
-    Tree(Condition<T, R> *root) : root(root) {
+    Tree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
     }
-
-    ~Tree() {
-      delete root;
-    }
-
 
     R predict(const DataColumn<T> &data) const {
       return root->predict(data);
@@ -148,33 +148,8 @@ namespace pptree {
     const stats::DataColumn<R> &groups,
     const pp::PPStrategy<T, R> &pp_strategy);
 
-
-
   template<typename T, typename R>
-  Response<T, R> * as_response(Node<T, R> *node) {
-    if (Response<T, R> *response = dynamic_cast<Response<T, R> *>(node)) {
-      return response;
-    }
-
-    throw std::runtime_error("Node is not a response.");
-  }
-
-  template<typename T, typename R>
-  const Response<T, R>& as_response(const Node<T, R> &node) {
-    return dynamic_cast<const Response<T, R> &>(node);
-  }
-
-  template<typename T, typename R>
-  Condition<T, R> * as_condition(Node<T, R> *node) {
-    if (Condition<T, R> *condition = dynamic_cast<Condition<T, R> *>(node)) {
-      return condition;
-    }
-
-    throw std::runtime_error("Node is not a condition.");
-  }
-
-  template<typename T, typename R>
-  const Condition<T, R>& as_condition(const Node<T, R> &node) {
-    return dynamic_cast<const Condition<T, R> &>(node);
-  }
+  Tree<T, R> train_lda(
+    stats::Data<T>       data,
+    stats::DataColumn<R> groups);
 }
