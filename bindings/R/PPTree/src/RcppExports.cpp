@@ -12,34 +12,34 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// train
-pptree::Tree<long double, int> train(pptree::Data<long double> data, pptree::DataColumn<int> groups);
-RcppExport SEXP _PPTree_train(SEXP dataSEXP, SEXP groupsSEXP) {
+// pptree_train_lda
+pptree::Tree<long double, int> pptree_train_lda(pptree::Data<long double> data, pptree::DataColumn<int> groups);
+RcppExport SEXP _PPTree_pptree_train_lda(SEXP dataSEXP, SEXP groupsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< pptree::Data<long double> >::type data(dataSEXP);
     Rcpp::traits::input_parameter< pptree::DataColumn<int> >::type groups(groupsSEXP);
-    rcpp_result_gen = Rcpp::wrap(train(data, groups));
+    rcpp_result_gen = Rcpp::wrap(pptree_train_lda(data, groups));
     return rcpp_result_gen;
 END_RCPP
 }
-// predict
-pptree::DataColumn<int> predict(pptree::Data<long double> data, pptree::Tree<long double, int> tree);
-RcppExport SEXP _PPTree_predict(SEXP dataSEXP, SEXP treeSEXP) {
+// pptree_predict
+pptree::DataColumn<int> pptree_predict(pptree::Tree<long double, int> tree, pptree::Data<long double> data);
+RcppExport SEXP _PPTree_pptree_predict(SEXP treeSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< pptree::Data<long double> >::type data(dataSEXP);
     Rcpp::traits::input_parameter< pptree::Tree<long double, int> >::type tree(treeSEXP);
-    rcpp_result_gen = Rcpp::wrap(predict(data, tree));
+    Rcpp::traits::input_parameter< pptree::Data<long double> >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_predict(tree, data));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_PPTree_train", (DL_FUNC) &_PPTree_train, 2},
-    {"_PPTree_predict", (DL_FUNC) &_PPTree_predict, 2},
+    {"_PPTree_pptree_train_lda", (DL_FUNC) &_PPTree_pptree_train_lda, 2},
+    {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
     {NULL, NULL, 0}
 };
 
