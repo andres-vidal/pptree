@@ -27,7 +27,7 @@ namespace pptree {
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = binary_regroup((Data<T>)projected, groups, unique_groups);
 
     LOG_INFO << "Mapping: " << binary_group_mapping << std::endl;
-    return std::make_tuple(binary_groups, binary_unique_groups, binary_group_mapping);
+    return { binary_groups, binary_unique_groups, binary_group_mapping };
   }
 
   template<typename T, typename R >
@@ -36,8 +36,8 @@ namespace pptree {
     const DataColumn<R> &groups,
     const R &            group_1,
     const R &            group_2) {
-    T mean_1 = linalg::mean(select_group((Data<T>)projected_data, groups, group_1)).value();
-    T mean_2 = linalg::mean(select_group((Data<T>)projected_data, groups, group_2)).value();
+    T mean_1 = linalg::mean(select_group(projected_data, groups, group_1)).value();
+    T mean_2 = linalg::mean(select_group(projected_data, groups, group_2)).value();
 
     return (mean_1 + mean_2) / 2;
   };
@@ -78,7 +78,7 @@ namespace pptree {
     LOG_INFO << "Lower group: " << l_group << std::endl;
     LOG_INFO << "Upper group: " << r_group << std::endl;
 
-    return std::make_tuple(group_1, group_2);
+    return { l_group, r_group };
   }
 
   template<typename T, typename R >
@@ -122,7 +122,7 @@ namespace pptree {
 
     auto first = *group_set.begin();
     auto last = *std::prev(group_set.end());
-    return std::make_tuple(first, last);
+    return { first, last };
   }
 
   template<typename T, typename R >
@@ -142,12 +142,14 @@ namespace pptree {
     }
 
     LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
-    return std::move(
-      step(
-        select_group(data, binary_groups, binary_group),
-        (DataColumn<R>)select_group((Data<R>)groups, binary_groups, binary_group),
-        unique_groups,
-        pp_strategy));
+
+    std::unique_ptr<Condition<T, R> > condition = step(
+      select_group(data, binary_groups, binary_group),
+      select_group(groups, binary_groups, binary_group),
+      unique_groups,
+      pp_strategy);
+
+    return std::move(condition);
   }
 
   template<typename T, typename R >

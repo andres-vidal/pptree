@@ -121,7 +121,7 @@ namespace pp {
     const DataColumn<G> &groups,
     const std::set<G> &  unique_groups) {
     Projector<T> projector = lda_optimum_projector(data, groups, unique_groups);
-    return std::make_tuple(projector, project(data, projector));
+    return { projector, project(data, projector) };
   }
 
   template PPStrategyReturn<long double> lda_strategy<long double, int>(
