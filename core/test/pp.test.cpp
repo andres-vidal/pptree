@@ -648,6 +648,260 @@ TEST(PPLDAIndex, suboptimal2) {
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
 
+TEST(PPPDAOptimumProjector, lambda_0_two_groups) {
+  DMatrix<long double> data(10, 4);
+  data <<
+    1, 0, 1, 1,
+    1, 1, 0, 0,
+    1, 0, 0, 1,
+    1, 1, 1, 1,
+    4, 0, 0, 1,
+    4, 0, 0, 2,
+    4, 0, 0, 3,
+    4, 1, 0, 1,
+    4, 0, 1, 1,
+    4, 0, 1, 2;
+
+  DVector<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  DVector<long double> actual = pda_optimum_projector(data, groups, { 0, 1 }, 0);
+
+  DVector<long double> expected(4);
+  expected <<
+    -1, 0, 0, 0;
+
+  ASSERT_COLLINEAR(expected, actual);
+}
+
+TEST(PPPDAOptimumProjector, lambda_0_two_groups2) {
+  DMatrix<long double> data(10, 4);
+  data <<
+    0, 1, 1, 1,
+    1, 1, 0, 0,
+    0, 1, 0, 1,
+    1, 1, 1, 1,
+    0, 4, 0, 1,
+    0, 4, 0, 2,
+    0, 4, 0, 3,
+    1, 4, 0, 1,
+    0, 4, 1, 1,
+    0, 4, 1, 2;
+
+
+  DVector<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  DVector<long double> actual = pda_optimum_projector(data, groups, { 0, 1 }, 0);
+
+  DVector<long double> expected(4);
+  expected <<
+    0, 1, 0, 0;
+
+
+  ASSERT_COLLINEAR(expected, actual);
+}
+
+TEST(PPPDAOptimumProjector, lambda_0_two_groups3) {
+  DMatrix<long double> data(10, 4);
+  data <<
+    0, 1, 1, 1,
+    1, 0, 1, 0,
+    0, 0, 1, 1,
+    1, 1, 1, 1,
+    0, 0, 4, 1,
+    0, 0, 4, 2,
+    0, 0, 4, 3,
+    1, 0, 4, 1,
+    0, 1, 4, 1,
+    0, 1, 4, 2;
+
+
+  DVector<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  DVector<long double> actual = pda_optimum_projector(data, groups, { 0, 1 }, 0);
+
+  DVector<long double> expected(4);
+  expected <<
+    0, 0, -1, 0;
+
+  ASSERT_COLLINEAR(expected, actual);
+}
+
+TEST(PPPDAOptimumProjector, lambda_0_two_groups4) {
+  DMatrix<long double> data(10, 4);
+  data <<
+    0, 1, 1, 1,
+    1, 0, 0, 1,
+    0, 0, 1, 1,
+    1, 1, 1, 1,
+    0, 0, 1, 4,
+    0, 0, 2, 4,
+    0, 0, 3, 4,
+    1, 0, 1, 4,
+    0, 1, 1, 4,
+    0, 1, 2, 4;
+
+  DVector<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  DVector<long double> actual = pda_optimum_projector(data, groups, { 0, 1 }, 0);
+
+  DVector<long double> expected(4);
+  expected <<
+    2.0965219514666735e-15,
+    4.4408920985006262e-16,
+    -2.4980018054066002e-16,
+    1;
+
+  ASSERT_COLLINEAR(expected, actual);
+}
+
+TEST(PPPDAOptimumProjector, lambda_0_three_groups) {
+  DMatrix<long double> data(30, 5);
+  data <<
+    1, 0, 0, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 1, 1,
+    1, 0, 0, 1, 1,
+    1, 0, 1, 1, 0,
+    1, 0, 0, 1, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 8, 0, 0, 1,
+    2, 8, 0, 0, 2,
+    2, 8, 1, 0, 2,
+    2, 8, 1, 0, 1,
+    2, 8, 0, 1, 1,
+    2, 8, 0, 1, 2,
+    2, 8, 2, 1, 1,
+    2, 8, 1, 1, 1,
+    2, 8, 1, 1, 2,
+    2, 8, 2, 1, 2,
+    2, 8, 1, 2, 1,
+    2, 8, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DVector<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DVector<long double> actual = pda_optimum_projector(data, groups, { 0, 1, 2 }, 0);
+
+  DVector<long double> expected(5);
+  expected <<
+    1,
+    0,
+    0,
+    0,
+    0;
+
+  ASSERT_COLLINEAR(expected, actual);
+}
+
+TEST(PPPDAOptimumProjector, lambda_onehalf_two_groups) {
+  DMatrix<long double> data(4, 6);
+  data <<
+    1, 0, 1, 1, 1, 4,
+    2, 1, 0, 0, 0, 4,
+    3, 0, 1, 1, 1, 4,
+    4, 0, 1, 2, 2, 4;
+
+  DVector<int> groups(4);
+  groups <<
+    0,
+    0,
+    1,
+    1;
+
+  DVector<long double> actual = pda_optimum_projector(data, groups, { 0, 1 }, 0.5);
+
+  DVector<long double> expected(6);
+  expected <<
+    0.79, -0.42, 0.42, 0.05, 0.05, 0;
+
+  ASSERT_COLLINEAR(expected, actual);
+}
+
 TEST(PPProjectData, zero_projector) {
   Data<long double> data(30, 5);
   data <<

@@ -11,24 +11,40 @@ NULL
 #' @param data A data frame containing the variables in the formula.
 #' @param x A matrix containing the features for each observation.
 #' @param y A matrix containing the labels for each observation.
+#' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
 #' @return A PPTree model trained on \code{x} and \code{y}.
 #' @examples
-#' # Example 1: matrix interface with the `iris` dataset
-#' PPTree(x = iris[, 1:4], y = iris[, 5])
 #'
-#' # Example 2: formula interface with the `iris` dataset
+#' # Example 1: formula interface with the `iris` dataset
 #' PPTree(Species ~ ., data = iris)
 #'
-#' # Example 3: matrix interface with the `crabs` dataset
+#' # Example 2: formula interface with the `iris` dataset with regularization
+#' PPTree(Species ~ ., data = iris, lambda = 0.5)
+#'
+#' # Example 3: matrix interface with the `iris` dataset
+#' PPTree(x = iris[, 1:4], y = iris[, 5])
+#'
+#' # Example 4: matrix interface with the `iris` dataset with regularization
+#' PPTree(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
+#'
+#' # Example 5: formula interface with the `crabs` dataset
+#' PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+#'
+#' # Example 6: formula interface with the `crabs` dataset with regularization
+#' PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
+#'
+#' # Example 7: matrix interface with the `crabs` dataset
 #' x <- crabs[, c(2, 4:8)]
 #' x$sex <- as.numeric(as.factor(x$sex))
 #' PPTree(x = x, y = crabs[, 1])
 #'
-#' # Example 4: formula interface with the `crabs` dataset
-#' PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+#' # Example 8: matrix interface with the `crabs` dataset with regulartion
+#' x <- crabs[, c(2, 4:8)]
+#' x$sex <- as.numeric(as.factor(x$sex))
+#' PPTree(x = x, y = crabs[, 1], lambda = 0.5)
 #'
 #' @export
-PPTree <- function(formula = NULL, data = NULL, x = NULL, y = NULL) {
+PPTree <- function(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0) {
   if (!is.null(formula) && !is.null(data)) {
     if (!inherits(formula, "formula")) {
       stop("`formula` must be a formula object.")
@@ -53,12 +69,18 @@ PPTree <- function(formula = NULL, data = NULL, x = NULL, y = NULL) {
     y <- factor(y)
   }
 
-  model <- pptree_train_lda(as.matrix(x), as.matrix(as.numeric(y)))
+  if (lambda == 0) {
+    model <- pptree_train_lda(as.matrix(x), as.matrix(as.numeric(y)))
+  } else {
+    model <- pptree_train_pda(as.matrix(x), as.matrix(as.numeric(y)), lambda)
+  }
+
   class(model) <- "PPTree"
   model$classes <- levels(y)
   model$formula <- formula
   model$x <- x
   model$y <- y
+  model$lambda <- lambda
 
   model
 }
@@ -128,17 +150,20 @@ print_node <- function(model, node, depth = 0) {
 }
 
 #' Prints a PPTree model.
-#' @param model A PPTree model.
+#' @param x A PPTree model.
+#' @param ... (unused) other parameters tipically passed to print
 #' @examples
 #' model <- PPTree(Species ~ ., data = iris)
 #' print(model)
 #'
 #' @export
-print.PPTree <- function(model) {
+print.PPTree <- function(x, ...) {
+  model <- x
   cat("\n")
   cat("Project-Pursuit Oblique Decision Tree\n")
   cat("-------------------------------------\n")
   cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
+  cat("Regularization parameter:", model$lambda, "\n")
   cat("Features:\n", paste(colnames(model$x), collapse = "\n "), "\n")
   cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
   if (!is.null(model$formula)) {
