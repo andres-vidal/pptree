@@ -883,8 +883,8 @@ TEST(PPPDAOptimumProjector, lambda_onehalf_two_groups) {
   data <<
     1, 0, 1, 1, 1, 4,
     2, 1, 0, 0, 0, 4,
-    3, 0, 1, 1, 1, 4,
-    4, 0, 1, 2, 2, 4;
+    3, 0, 1, 1, 1, 1,
+    4, 0, 1, 2, 2, 1;
 
   DVector<int> groups(4);
   groups <<
@@ -897,7 +897,7 @@ TEST(PPPDAOptimumProjector, lambda_onehalf_two_groups) {
 
   DVector<long double> expected(6);
   expected <<
-    0.79, -0.42, 0.42, 0.05, 0.05, 0;
+    0, 0, 0, 0, 0, 1;
 
   ASSERT_COLLINEAR(expected, actual);
 }

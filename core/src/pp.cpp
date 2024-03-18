@@ -38,16 +38,15 @@ namespace pp {
 
     Data<T> W = within_groups_sum_of_squares(data, groups, unique_groups);
     Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
+    Data<T> WpB = W + B;
 
     LOG_INFO << "W:" << std::endl << W << std::endl;
     LOG_INFO << "B:" << std::endl << B << std::endl;
+    LOG_INFO << "W + B:" << std::endl << WpB << std::endl;
 
-    Data<T> WpB = W + B;
-    Data<T> WpBInvB = WpB.fullPivLu().solve(B);
-
+    Data<T> WpBInvB = solve(WpB, B);
     Data<T> truncatedWpBInvB = WpBInvB.unaryExpr((T (*)(T)) & truncate_op);
 
-    LOG_INFO << "W + B:" << std::endl << WpB << std::endl;
     LOG_INFO << "(W + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
     LOG_INFO << "(W + B)^-1 * B (truncated):" << std::endl << truncatedWpBInvB << std::endl;
 
@@ -124,17 +123,16 @@ namespace pp {
     Data<T> W_diag = W.diagonal().asDiagonal();
     Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
     Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
+    Data<T> WpB = W_pda + B;
 
     LOG_INFO << "W:" << std::endl << W << std::endl;
     LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
     LOG_INFO << "B:" << std::endl << B << std::endl;
+    LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
-    Data<T> WpB = W_pda + B;
-    Data<T> WpBInvB = WpB.fullPivLu().solve(B);
-
+    Data<T> WpBInvB = solve(WpB, B);
     Data<T> truncatedWpBInvB = WpBInvB.unaryExpr((T (*)(T)) & truncate_op);
 
-    LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
     LOG_INFO << "(W_pda + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
     LOG_INFO << "(W_pda + B)^-1 * B (truncated):" << std::endl << truncatedWpBInvB << std::endl;
 
