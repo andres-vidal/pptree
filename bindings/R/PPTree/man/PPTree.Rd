@@ -4,7 +4,7 @@
 \alias{PPTree}
 \title{Trains a Project-Pursuit oblique decision tree.}
 \usage{
-PPTree(formula = NULL, data = NULL, x = NULL, y = NULL)
+PPTree(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0)
 }
 \arguments{
 \item{formula}{A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.}
@@ -14,6 +14,8 @@ PPTree(formula = NULL, data = NULL, x = NULL, y = NULL)
 \item{x}{A matrix containing the features for each observation.}
 
 \item{y}{A matrix containing the labels for each observation.}
+
+\item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).}
 }
 \value{
 A PPTree model trained on \code{x} and \code{y}.
@@ -22,18 +24,33 @@ A PPTree model trained on \code{x} and \code{y}.
 This function trains a Project-Pursuit oblique decision tree (PPTree) using either a formula and data frame interface or a matrix-based interface. When using the formula interface, specify the model formula and the data frame containing the variables. For the matrix-based interface, provide matrices for the features and labels directly.
 }
 \examples{
-# Example 1: matrix interface with the `iris` dataset
-PPTree(x = iris[, 1:4], y = iris[, 5])
 
-# Example 2: formula interface with the `iris` dataset
+# Example 1: formula interface with the `iris` dataset
 PPTree(Species ~ ., data = iris)
 
-# Example 3: matrix interface with the `crabs` dataset
+# Example 2: formula interface with the `iris` dataset with regularization
+PPTree(Species ~ ., data = iris, lambda = 0.5)
+
+# Example 3: matrix interface with the `iris` dataset
+PPTree(x = iris[, 1:4], y = iris[, 5])
+
+# Example 4: matrix interface with the `iris` dataset with regularization
+PPTree(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
+
+# Example 5: formula interface with the `crabs` dataset
+PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+
+# Example 6: formula interface with the `crabs` dataset with regularization
+PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
+
+# Example 7: matrix interface with the `crabs` dataset
 x <- crabs[, c(2, 4:8)]
 x$sex <- as.numeric(as.factor(x$sex))
 PPTree(x = x, y = crabs[, 1])
 
-# Example 4: formula interface with the `crabs` dataset
-PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+# Example 8: matrix interface with the `crabs` dataset with regulartion
+x <- crabs[, c(2, 4:8)]
+x$sex <- as.numeric(as.factor(x$sex))
+PPTree(x = x, y = crabs[, 1], lambda = 0.5)
 
 }

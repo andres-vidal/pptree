@@ -52,6 +52,10 @@ namespace linalg {
   DMatrix<long double> inverse(
     const DMatrix<long double> &m);
 
+  DMatrix<long double> solve(
+    const DMatrix<long double> &l,
+    const DMatrix<long double> &r);
+
   std::tuple<DVector<long double>, DMatrix<long double> > eigen(
     const DMatrix<long double> &m);
 

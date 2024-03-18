@@ -838,6 +838,91 @@ TEST(LinAlgInverse, generic) {
   ASSERT_APPROX(expected, actual);
 }
 
+TEST(LinAlgSolve, zero_matrix_identity) {
+  DMatrix<long double> l(3, 3);
+  l <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  DMatrix<long double> r(3, 3);
+  r <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  ASSERT_DEATH({ solve(l, r); }, "Given matrix is not invertible");
+}
+
+TEST(LinAlgSolve, singular_matrix_identity) {
+  DMatrix<long double> l(3, 3);
+  l <<
+    1.0, 1.0, 6.0,
+    2.0, 2.0, 7.0,
+    3.0, 3.0, 8.0;
+
+  DMatrix<long double> r(3, 3);
+  r <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  ASSERT_DEATH({ solve(l, r); }, "Given matrix is not invertible");
+}
+
+TEST(LinAlgSolve, identity_identity) {
+  DMatrix<long double> l(3, 3);
+  l <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  DMatrix<long double> r(3, 3);
+  r <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  DMatrix<long double> actual = solve(l, r);
+  DMatrix<long double> expected(3, 3);
+  expected <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgSolve, generic_identity) {
+  DMatrix<long double> l(3, 3);
+  l <<
+    0.0, 1.0, 2.0,
+    1.0, 2.0, 3.0,
+    3.0, 1.0, 1.0;
+
+  DMatrix<long double> r(3, 3);
+  r <<
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0;
+
+  DMatrix<long double> actual = solve(l, r);
+  DMatrix<long double> expected(3, 3);
+  expected <<
+    0.5,  -0.5,   0.5,
+    -4.0,  3.0,  -1.0,
+    2.5,  -1.5,   0.5;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_APPROX(expected, actual);
+}
+
+
 TEST(LinAlgEigen, identity) {
   DMatrix<long double> m(3, 3);
   m <<

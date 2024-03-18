@@ -288,14 +288,14 @@ TEST(PPTreeTrainLDA, multivariate_three_groups) {
     1, 0, 0, 0, 1,
     1, 0, 1, 2, 1,
     1, 0, 0, 1, 1,
-    1, 0, 1, 1, 0,
+    1, 1, 1, 1, 0,
     1, 0, 0, 2, 1,
     1, 0, 1, 1, 2,
     1, 0, 0, 2, 0,
     1, 0, 2, 1, 0,
     2, 5, 0, 0, 1,
     2, 5, 0, 0, 2,
-    2, 5, 1, 0, 2,
+    3, 5, 1, 0, 2,
     2, 5, 1, 0, 1,
     2, 5, 0, 1, 1,
     2, 5, 0, 1, 2,
@@ -353,17 +353,277 @@ TEST(PPTreeTrainLDA, multivariate_three_groups) {
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      as_projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
-      4.118438837901864,
+      as_projector<long double>({ 0.9753647250984685, -0.19102490285203763, -0.02603961769477166, 0.06033431306913992, -0.08862758318234709 }),
+      4.0505145097205055,
       std::make_unique<Condition<long double, int> >(
-        as_projector<long double>({ 0, 1.0, 0.0, 0.0, 0.0 }),
-        2.5,
+        as_projector<long double>({ 0.15075268856227853, 0.9830270463921728, -0.013280681282024458, 0.023289310653985006, 0.10105782733996031 }),
+        2.8568896254203113,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
       std::make_unique<Response<long double, int> >(2)));
 
   ASSERT_EQ(expect, result);
 }
+
+TEST(PPTreeTrainPDA, lambda_0_univariate_two_groups) {
+  Data<long double> data(10, 1);
+  data <<
+    1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10, 1);
+  groups <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1;
+
+  Tree<long double, int> result = pptree::train_pda(
+    data,
+    groups,
+    0);
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 1.0 }),
+      1.5,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)));
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreeTrainPDA, lambda_0_univariate_three_groups) {
+  Data<long double> data(15, 1);
+  data <<
+    1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2,
+    3, 3, 3, 3, 3;
+
+  DataColumn<int> groups(15, 1);
+  groups <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2;
+
+  Tree<long double, int> result = pptree::train_pda(
+    data,
+    groups,
+    0);
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 1.0 }),
+      1.75,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Condition<long double, int> >(
+        as_projector<long double>({ 1.0 }),
+        2.5,
+        std::make_unique<Response<long double, int> >(1),
+        std::make_unique<Response<long double, int> >(2))));
+
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreeTrainPDA, lambda_0_multivariate_two_groups) {
+  Data<long double> data(10, 4);
+  data <<
+    1, 0, 1, 1,
+    1, 1, 0, 0,
+    1, 0, 0, 1,
+    1, 1, 1, 1,
+    4, 0, 0, 1,
+    4, 0, 0, 2,
+    4, 0, 0, 3,
+    4, 1, 0, 1,
+    4, 0, 1, 1,
+    4, 0, 1, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> result = pptree::train_pda(
+    data,
+    groups,
+    0);
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      2.5,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)
+      )
+    );
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreeTrainPDA, lambda_0_multivariate_three_groups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> result = pptree::train_pda(
+    data,
+    groups,
+    0);
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 0.9753647250984685, -0.19102490285203763, -0.02603961769477166, 0.06033431306913992, -0.08862758318234709 }),
+      4.0505145097205055,
+      std::make_unique<Condition<long double, int> >(
+        as_projector<long double>({ 0.15075268856227853, 0.9830270463921728, -0.013280681282024458, 0.023289310653985006, 0.10105782733996031 }),
+        2.8568896254203113,
+        std::make_unique<Response<long double, int> >(0),
+        std::make_unique<Response<long double, int> >(1)),
+      std::make_unique<Response<long double, int> >(2)));
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreeTrainPDA, lambda_onehalf_univariate_two_groups) {
+  Data<long double> data(10, 1);
+  data <<
+    1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10, 1);
+  groups <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1;
+
+  Tree<long double, int> result = pptree::train_pda(
+    data,
+    groups,
+    0.5);
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 1.0 }),
+      1.5,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)));
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreeTrainPDA, lambda_onehalf_multivariate_two_groups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> result = pptree::train_pda(
+    data,
+    groups,
+    0.5);
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 0.9969498534721803, -0.00784130658079787, 0.053487283057874875, -0.05254780467349118, -0.007135670500966689, -0.007135670500966691, -0.007135670500966693, -0.007135670500966691, -0.007135670500966698, -0.007135670500966698, -0.007135670500966696, -0.007135670500966696 }),
+      2.4440,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)
+      )
+    );
+
+  ASSERT_EQ(expect, result);
+}
+
 
 TEST(PPTreePredictDataColumn, univariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(

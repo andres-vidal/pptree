@@ -13,14 +13,27 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // pptree_train_lda
-pptree::Tree<long double, int> pptree_train_lda(pptree::Data<long double> data, pptree::DataColumn<int> groups);
+pptree::Tree<long double, int> pptree_train_lda(pptree::Data<long double>& data, pptree::DataColumn<int>& groups);
 RcppExport SEXP _PPTree_pptree_train_lda(SEXP dataSEXP, SEXP groupsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< pptree::Data<long double> >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< pptree::DataColumn<int> >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< pptree::Data<long double>& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< pptree::DataColumn<int>& >::type groups(groupsSEXP);
     rcpp_result_gen = Rcpp::wrap(pptree_train_lda(data, groups));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_train_pda
+pptree::Tree<long double, int> pptree_train_pda(pptree::Data<long double>& data, pptree::DataColumn<int>& groups, double lambda);
+RcppExport SEXP _PPTree_pptree_train_pda(SEXP dataSEXP, SEXP groupsSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< pptree::Data<long double>& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< pptree::DataColumn<int>& >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_train_pda(data, groups, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -39,6 +52,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_lda", (DL_FUNC) &_PPTree_pptree_train_lda, 2},
+    {"_PPTree_pptree_train_pda", (DL_FUNC) &_PPTree_pptree_train_pda, 3},
     {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
     {NULL, NULL, 0}
 };

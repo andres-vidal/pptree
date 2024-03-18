@@ -9,9 +9,17 @@ using namespace RcppEigen;
 
 // [[Rcpp::export]]
 pptree::Tree<long double, int> pptree_train_lda(
-  pptree::Data<long double> data,
-  pptree::DataColumn<int>   groups) {
+  pptree::Data<long double> &data,
+  pptree::DataColumn<int> &  groups) {
   return pptree::train_lda(data, groups);
+}
+
+// [[Rcpp::export]]
+pptree::Tree<long double, int> pptree_train_pda(
+  pptree::Data<long double> &data,
+  pptree::DataColumn<int> &  groups,
+  double                     lambda) {
+  return pptree::train_pda(data, groups, lambda);
 }
 
 // [[Rcpp::export]]

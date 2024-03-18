@@ -150,6 +150,12 @@ namespace pptree {
 
   template<typename T, typename R>
   Tree<T, R> train_lda(
-    stats::Data<T>       data,
-    stats::DataColumn<R> groups);
+    const stats::Data<T>       &data,
+    const stats::DataColumn<R> &groups);
+
+  template<typename T, typename R>
+  Tree<T, R> train_pda(
+    const stats::Data<T>       &data,
+    const stats::DataColumn<R> &groups,
+    const double lambda);
 }
