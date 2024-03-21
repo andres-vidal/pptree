@@ -149,12 +149,7 @@ namespace pptree {
     const pp::PPStrategy<T, R> &pp_strategy);
 
   template<typename T, typename R>
-  Tree<T, R> train_lda(
-    const stats::Data<T>       &data,
-    const stats::DataColumn<R> &groups);
-
-  template<typename T, typename R>
-  Tree<T, R> train_pda(
+  Tree<T, R> train_glda(
     const stats::Data<T>       &data,
     const stats::DataColumn<R> &groups,
     const double lambda);

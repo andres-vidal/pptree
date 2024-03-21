@@ -69,11 +69,7 @@ PPTree <- function(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0) 
     y <- factor(y)
   }
 
-  if (lambda == 0) {
-    model <- pptree_train_lda(as.matrix(x), as.matrix(as.numeric(y)))
-  } else {
-    model <- pptree_train_pda(as.matrix(x), as.matrix(as.numeric(y)), lambda)
-  }
+  model <- pptree_train_glda(as.matrix(x), as.matrix(as.numeric(y)), lambda)
 
   class(model) <- "PPTree"
   model$classes <- levels(y)
