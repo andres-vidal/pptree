@@ -13,26 +13,7 @@ namespace pp {
   using PPStrategy = std::function<PPStrategyReturn<T>(const stats::Data<T>&, const stats::DataColumn<G>&, const std::set<G>&)>;
 
   template<typename T, typename G>
-  Projector<T> lda_optimum_projector(
-    const stats::Data<T> &      data,
-    const stats::DataColumn<G> &groups,
-    const std::set<G> &         unique_groups);
-
-  template<typename T, typename G>
-  T lda_index(
-    const stats::Data<T> &      data,
-    const Projector<T> &        projector,
-    const stats::DataColumn<G> &groups,
-    const std::set<G> &         unique_groups);
-
-  template<typename T, typename G>
-  PPStrategyReturn<T> lda_strategy(
-    const stats::Data<T> &      data,
-    const stats::DataColumn<G> &groups,
-    const std::set<G> &         unique_groups);
-
-  template<typename T, typename G>
-  Projector<T> pda_optimum_projector(
+  Projector<T> glda_optimum_projector(
     const stats::Data<T> &      data,
     const stats::DataColumn<G> &groups,
     const std::set<G> &         unique_groups,
@@ -40,7 +21,7 @@ namespace pp {
 
 
   template<typename T, typename G>
-  T pda_index(
+  T glda_index(
     const stats::Data<T> &      data,
     const Projector<T> &        projector,
     const stats::DataColumn<G> &groups,
@@ -48,7 +29,7 @@ namespace pp {
     const double                lambda);
 
   template<typename T, typename G>
-  PPStrategy<T, G> pda_strategy(
+  PPStrategy<T, G> glda_strategy(
     const double lambda);
 
   template<typename T>
