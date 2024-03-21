@@ -1,6 +1,4 @@
 #include "stats.hpp"
-#include <vector>
-
 #include <iostream>
 
 using namespace linalg;
@@ -266,4 +264,94 @@ namespace stats {
     const Data<long double> & data,
     const DataColumn<int>&    groups,
     const std::set<int> &     unique_groups);
+
+
+  template<typename T>
+  Data<T> sample(const Data<T>& data, int size, std::mt19937 gen) {
+    assert(size > 0 && "Sample size must be greater than 0.");
+    assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
+
+
+    std::vector<int> indices(data.rows());
+    std::iota(indices.begin(), indices.end(), 0);
+
+    Data<T> result(size, data.cols());
+
+    for (int i = 0; i < size; ++i) {
+      int sampled_index;
+      std::sample(indices.begin(), indices.end(), &sampled_index, 1, gen);
+      result.row(i) = data.row(sampled_index);
+    }
+
+    return result;
+  }
+
+  template Data<long double> sample<long double>(
+    const Data<long double> &data,
+    int                      size,
+    std::mt19937             gen);
+
+
+  template<typename T, typename G>
+  std::tuple<Data<T>, DataColumn<G> > stratified_sample(
+    const Data<T> &        data,
+    const DataColumn<G> &  groups,
+    const std::map<G, int> sizes,
+    std::mt19937           gen) {
+    int total_size = 0;
+
+    for (const auto& [group, size] : sizes) {
+      total_size += size;
+    }
+
+    Data<T> sample_data(total_size, data.cols());
+    DataColumn<G> sample_groups(total_size);
+
+    int acc = 0;
+
+    for ( const auto& [group, size] : sizes) {
+      Data<T> group_sample = sample(select_group(data, groups, group), size, gen);
+
+      for (int i = 0; i < size; i++) {
+        sample_data.row(i + acc) = group_sample.row(i);
+        sample_groups(i + acc) = group;
+      }
+
+      acc += size;
+    }
+
+    return { sample_data, sample_groups };
+  }
+
+  template std::tuple<Data<long double>, DataColumn<int> > stratified_sample(
+    const Data<long double> & data,
+    const DataColumn<int> &   groups,
+    const std::map<int, int>  sizes,
+    std::mt19937              gen);
+
+  template<typename T, typename G>
+  std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(
+    const Data<T> &       data,
+    const DataColumn<G> & groups,
+    const std::set<G> &   unique_groups,
+    const int             size,
+    std::mt19937          gen) {
+    assert(size > 0 && "Sample size must be greater than 0.");
+    assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
+
+    std::map<G, int> sizes;
+
+    for (const G& group : unique_groups) {
+      sizes[group] = round(size * select_group(data, groups, group).rows() / (double)data.rows());
+    }
+
+    return stratified_sample(data, groups, sizes, gen);
+  }
+
+  template std::tuple<Data<long double>, DataColumn<int> > stratified_proportional_sample(
+    const Data<long double> & data,
+    const DataColumn<int> &   groups,
+    const std::set<int> &     unique_groups,
+    const int                 size,
+    std::mt19937              gen);
 };

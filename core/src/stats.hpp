@@ -1,6 +1,9 @@
 #include "linalg.hpp"
 #include <set>
 #include <map>
+#include <random>
+#include <algorithm>
+#include <vector>
 
 
 namespace stats {
@@ -55,4 +58,25 @@ namespace stats {
     const Data<T> &      data,
     const DataColumn<G> &groups,
     const std::set<G> &  unique_groups);
+
+  template<typename T>
+  Data<T> sample(
+    const Data<T> &data,
+    int            size,
+    std::mt19937   gen);
+
+  template<typename T, typename G>
+  std::tuple<Data<T>, DataColumn<G> > stratified_sample(
+    const Data<T> &        data,
+    const DataColumn<G> &  groups,
+    const std::map<G, int> sizes,
+    std::mt19937           gen);
+
+  template<typename T, typename G>
+  std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(
+    const Data<T> &       data,
+    const DataColumn<G> & groups,
+    const std::set<G> &   unique_groups,
+    const int             size,
+    std::mt19937          gen);
 }
