@@ -231,32 +231,15 @@ namespace pptree {
     return tree;
   }
 
-  template Tree<long double, int> train(
-    const Data<long double> &           data,
-    const DataColumn<int> &             groups,
-    const PPStrategy<long double, int> &pp_strategy);
-
   template<typename T, typename R>
-  Tree<T, R> train_lda(
-    const Data<T> &      data,
-    const DataColumn<R> &groups) {
-    return train(data, groups, (PPStrategy<T, R>)glda_strategy<T, R>(0));
-  }
-
-  template Tree<long double, int> train_lda(
-    const Data<long double> &data,
-    const DataColumn<int> &  groups);
-
-
-  template<typename T, typename R>
-  Tree<T, R> train_pda(
+  Tree<T, R> train_glda(
     const Data<T> &      data,
     const DataColumn<R> &groups,
     const double         lambda) {
     return train(data, groups, (PPStrategy<T, R>)glda_strategy<T, R>(lambda));
   }
 
-  template Tree<long double, int> train_pda(
+  template Tree<long double, int> train_glda(
     const Data<long double> &data,
     const DataColumn<int> &  groups,
     const double             lambda);
