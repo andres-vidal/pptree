@@ -53,7 +53,7 @@ namespace pptree {
     LOG_INFO << "Sorting groups by threshold:" << std::endl;
     LOG_INFO << "Threshold: " << threshold << std::endl;
 
-    R l_group, r_group;
+    R l_group, u_group;
 
     DataColumn<T> mean_1 = linalg::mean(select_group(data, groups, group_1));
     DataColumn<T> mean_2 = linalg::mean(select_group(data, groups, group_2));
@@ -69,16 +69,16 @@ namespace pptree {
 
     if (projected_mean_1 < projected_mean_2) {
       l_group = group_1;
-      r_group = group_2;
+      u_group = group_2;
     } else {
       l_group = group_2;
-      r_group = group_1;
+      u_group = group_1;
     }
 
     LOG_INFO << "Lower group: " << l_group << std::endl;
-    LOG_INFO << "Upper group: " << r_group << std::endl;
+    LOG_INFO << "Upper group: " << u_group << std::endl;
 
-    return { l_group, r_group };
+    return { l_group, u_group };
   }
 
   template<typename T, typename R >
