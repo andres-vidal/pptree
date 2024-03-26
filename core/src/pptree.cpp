@@ -7,12 +7,27 @@ using namespace pptree;
 using namespace Eigen;
 
 namespace pptree {
-  template<typename T >
+  template<typename T>
   using DimensionalityReductionStrategy = std::function<const Data<T> & (const Data<T>&)>;
 
-  template<typename T >
-  const Data<T> & select_all_variables(const Data<T> &data) {
-    return data;
+  template<typename T>
+  DimensionalityReductionStrategy<T> select_all_variables() {
+    return [](const Data<T> &data) -> const Data<T> & {
+             return data;
+    };
+  }
+
+  template<typename T>
+  DimensionalityReductionStrategy<T> select_variables_uniformly(const int n_vars, const std::mt19937 gen) {
+    return [n_vars, gen](const Data<T> &data) -> const Data<T> & {
+             std::vector<int> var_indices(data.cols());
+             std::iota(var_indices.begin(), var_indices.end(), 0);
+
+             std::vector<int> var_mask(n_vars);
+             std::sample(var_indices.begin(), var_indices.end(), var_mask.begin(), n_vars, gen);
+
+             return data(Eigen::all, var_mask);
+    };
   }
 
   template<typename T, typename R >
@@ -77,6 +92,7 @@ namespace pptree {
 
     if (projected_mean_1 < projected_mean_2) {
       l_group = group_1;
+
       u_group = group_2;
     } else {
       l_group = group_2;
@@ -241,7 +257,7 @@ namespace pptree {
     std::set<R> unique_groups = unique(groups);
 
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
-    Tree<T, R> tree = Tree(step(data, groups, unique_groups, pp_strategy, (DimensionalityReductionStrategy<T>)select_all_variables<T>));
+    Tree<T, R> tree = Tree(step(data, groups, unique_groups, pp_strategy, select_all_variables<T>()));
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
@@ -251,11 +267,37 @@ namespace pptree {
     const Data<T> &      data,
     const DataColumn<R> &groups,
     const double         lambda) {
-    return train(data, groups, (PPStrategy<T, R>)glda_strategy<T, R>(lambda));
+    return train(data, groups, glda_strategy<T, R>(lambda));
   }
 
   template Tree<long double, int> train_glda(
     const Data<long double> &data,
     const DataColumn<int> &  groups,
     const double             lambda);
+
+
+  template<typename T, typename R >
+  Tree<T, R> train_random(
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const PPStrategy<T, R> &pp_strategy,
+    const int               n_vars,
+    const std::mt19937      gen) {
+    std::set<R> unique_groups = unique(groups);
+
+    LOG_INFO << "Project-Pursuit Tree training with uniform variable selection." << std::endl;
+    Tree<T, R> tree = Tree(step(data, groups, unique_groups, pp_strategy, select_variables_uniformly<T>(n_vars, gen)));
+    LOG_INFO << "Tree: " << tree << std::endl;
+    return tree;
+  }
+
+  template<typename T, typename R>
+  Tree<T, R> train_rglda(
+    const Data<T> &      data,
+    const DataColumn<R> &groups,
+    const double         lambda,
+    const int            n_vars,
+    const std::mt19937   gen) {
+    return train_random(data, groups, glda_strategy<T, R>(lambda), n_vars, gen);
+  }
 }
