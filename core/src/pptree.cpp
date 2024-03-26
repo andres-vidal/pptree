@@ -3,17 +3,25 @@
 #include <vector>
 #include <set>
 
-
 using namespace pptree;
 using namespace Eigen;
 
 namespace pptree {
+  template<typename T >
+  using DimensionalityReductionStrategy = std::function<const Data<T> & (const Data<T>&)>;
+
+  template<typename T >
+  const Data<T> & select_all_variables(const Data<T> &data) {
+    return data;
+  }
+
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > step(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const std::set<R> &     unique_groups,
-    const PPStrategy<T, R> &pp_strategy);
+    const Data<T> &                           data,
+    const DataColumn<R> &                     groups,
+    const std::set<R> &                       unique_groups,
+    const PPStrategy<T, R> &                  pp_strategy,
+    const DimensionalityReductionStrategy<T> &reduce_dimensions);
 
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
@@ -127,12 +135,13 @@ namespace pptree {
 
   template<typename T, typename R >
   std::unique_ptr<Node<T, R> > build_branch(
-    const Data<T> &                    data,
-    const DataColumn<R> &              groups,
-    const DataColumn<R> &              binary_groups,
-    const R &                          binary_group,
-    const std::map<int, std::set<R> >& binary_group_mapping,
-    const PPStrategy<T, R> &           pp_strategy) {
+    const Data<T> &                           data,
+    const DataColumn<R> &                     groups,
+    const DataColumn<R> &                     binary_groups,
+    const R &                                 binary_group,
+    const std::map<int, std::set<R> >&        binary_group_mapping,
+    const PPStrategy<T, R> &                  pp_strategy,
+    const DimensionalityReductionStrategy<T> &reduce_dimensions) {
     std::set<R> unique_groups = binary_group_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
@@ -147,25 +156,29 @@ namespace pptree {
       select_group(data, binary_groups, binary_group),
       select_group(groups, binary_groups, binary_group),
       unique_groups,
-      pp_strategy);
+      pp_strategy,
+      reduce_dimensions);
 
     return std::move(condition);
   }
 
   template<typename T, typename R >
   std::unique_ptr< Condition<T, R> >  step(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const std::set<R> &     unique_groups,
-    const PPStrategy<T, R> &pp_strategy) {
+    const Data<T> &                            data,
+    const DataColumn<R> &                      groups,
+    const std::set<R> &                        unique_groups,
+    const PPStrategy<T, R> &                   pp_strategy,
+    const DimensionalityReductionStrategy<T> & reduce_dimensions) {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
+
+    Data<T> reduced_data = reduce_dimensions(data);
 
     if (unique_groups.size() == 2) {
       auto [group_1, group_2] = take_two(unique_groups);
 
       return binary_step(
-        data,
+        reduced_data,
         groups,
         group_1,
         group_2,
@@ -173,7 +186,7 @@ namespace pptree {
     }
 
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
-      data,
+      reduced_data,
       groups,
       unique_groups,
       pp_strategy);
@@ -181,7 +194,7 @@ namespace pptree {
     auto [group_1, group_2] = take_two(binary_unique_groups);
 
     std::unique_ptr<Condition<T, R> > temp_node = binary_step(
-      data,
+      reduced_data,
       binary_groups,
       group_1,
       group_2,
@@ -197,7 +210,8 @@ namespace pptree {
       binary_groups,
       binary_lower_group,
       binary_group_mapping,
-      pp_strategy);
+      pp_strategy,
+      reduce_dimensions);
 
     LOG_INFO << "Build upper branch" << std::endl;
     std::unique_ptr<Node<T, R> > upper_branch = build_branch(
@@ -206,7 +220,8 @@ namespace pptree {
       binary_groups,
       binary_upper_group,
       binary_group_mapping,
-      pp_strategy);
+      pp_strategy,
+      reduce_dimensions);
 
     std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,
@@ -226,7 +241,7 @@ namespace pptree {
     std::set<R> unique_groups = unique(groups);
 
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
-    Tree<T, R> tree = Tree(step(data, groups, unique_groups, pp_strategy));
+    Tree<T, R> tree = Tree(step(data, groups, unique_groups, pp_strategy, (DimensionalityReductionStrategy<T>)select_all_variables<T>));
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
