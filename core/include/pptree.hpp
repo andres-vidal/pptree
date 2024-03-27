@@ -162,6 +162,42 @@ namespace pptree {
   struct Forest {
     std::vector<std::unique_ptr<Tree<T, R> > > trees;
 
+    R predict(const DataColumn<T> &data) const {
+      std::map<R, int> votes_per_group;
+
+      for (const auto &tree : trees) {
+        R prediction = tree->predict(data);
+
+        if (votes_per_group.find(prediction) == votes_per_group.end()) {
+          votes_per_group[prediction] = 1;
+        } else {
+          votes_per_group[prediction] += 1;
+        }
+      }
+
+      int most_voted_group_votes = 0;
+      R most_voted_group;
+
+      for (const auto &[key, votes] : votes_per_group) {
+        if (votes > most_voted_group_votes) {
+          most_voted_group = key;
+          most_voted_group_votes = votes;
+        }
+      }
+
+      return most_voted_group;
+    }
+
+    DataColumn<R> predict(const Data<T> &data) const {
+      DataColumn<R> predictions(data.rows());
+
+      for (int i = 0; i < data.rows(); i++) {
+        predictions(i) = predict((DataColumn<T>)data.row(i));
+      }
+
+      return predictions;
+    }
+
     void add_tree(std::unique_ptr<Tree<T, R> > tree) {
       trees.push_back(std::move(tree));
     }
