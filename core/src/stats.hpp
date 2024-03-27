@@ -63,14 +63,14 @@ namespace stats {
   Data<T> sample(
     const Data<T> &data,
     int            size,
-    std::mt19937   gen);
+    std::mt19937 & gen);
 
   template<typename T, typename G>
   std::tuple<Data<T>, DataColumn<G> > stratified_sample(
     const Data<T> &        data,
     const DataColumn<G> &  groups,
     const std::map<G, int> sizes,
-    std::mt19937           gen);
+    std::mt19937 &         gen);
 
   template<typename T, typename G>
   std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(
@@ -80,7 +80,6 @@ namespace stats {
     const int             size,
     std::mt19937 &        gen);
 
-
   template<typename T>
   std::tuple<std::vector<int>, std::vector<int> > mask_null_columns(
     const Data<T> &data);
@@ -89,4 +88,4 @@ namespace stats {
   DataColumn<T> expand(
     const DataColumn<T> &   data,
     const std::vector<int> &mask);
-}
+};
