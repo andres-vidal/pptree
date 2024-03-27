@@ -439,6 +439,417 @@ TEST(PPTreeTrainPDA, lambda_onehalf_multivariate_two_groups) {
   ASSERT_EQ(expect, result);
 }
 
+TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  std::mt19937 generator(1);
+
+  Forest<long double, int> result = pptree::train_forest_glda(
+    data,
+    groups,
+    4,
+    data.cols(),
+    0,
+    generator);
+
+  Forest<long double, int> expect;
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9631149682241399, -0.18918627608455488, -0.05737102823648358, 0.07944045935537511, -0.16436511022832137 }),
+          3.886824734352277,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.05662843789392038, 0.9390689214273856, -0.04305153782509235, 0.12364262413109396, 0.31273286910680315 }),
+            3.0140930896250215,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9603485139189338, -0.17496307094186994, -0.04225601427843259, 0.1507998001134798, -0.15030803426071773 }),
+          4.0485685231690995,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.09569190005776607, 0.9798250377436776, -0.010165041862385826, -0.05752095361036075, 0.1654508008249762 }),
+            2.8367314322123316,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9718365611401335, -0.19549983612592006, -0.041085639915505054, 0.060726386865359874, -0.10926018779532659 }),
+          3.9642503461040244,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.2092935388855266, 0.9560642461190949, -0.019346999921465723, 0.06730876793869753, 0.19295749590547875 }),
+            3.0587113947307247,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9752790469829162, -0.1928709522859401, -0.03773775720254776, 0.05783794961167642, -0.08283845451508612 }),
+          4.016492286925132,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.2749387669196902, 0.8939606152049122, 0.040183988430902706, 0.19516474299595846, 0.29247061916069805 }),
+            3.316983433613052,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  std::mt19937 generator(1);
+
+  Forest<long double, int> result = pptree::train_forest_glda(
+    data,
+    groups,
+    4,
+    2,
+    0,
+    generator);
+
+  Forest<long double, int> expect;
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.0, 0.0, 0.0, 0.5982325379690726, -0.8013225508589422 }),
+          -0.3483987096124312,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.999534397402818, 0.0, -0.030512102657559676, 0.0, 0.0 }),
+            5.55339996020167,
+            std::make_unique<Response<long double, int> >(1),
+            std::make_unique<Response<long double, int> >(2)
+            ),
+          std::make_unique<Response<long double, int> >(0)
+          )
+        )
+      )
+    );
+
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9998222455113714, 0.0, -0.018854107791118468, 0.0, 0.0 }),
+          5.300417766337716,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.9989543519613864, 0.0, 0.0, 0.0457187346435417, 0.0 }),
+            1.6094899541803496,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9741975531020036, -0.2256969816591904, 0.0, 0.0, 0.0 }),
+          3.9550147456664178,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.0, 0.9995561292785718, -0.029791683766431428, 0.0, 0.0 }),
+            2.6217629631670403,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9615748657636985, 0.0, 0.0, 0.0, -0.2745428519038971 }),
+          4.734758305714628,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.0, 0.0, 0.3772334858435029, 0.0, -0.926118187467647 }),
+            -0.8315603229605784,
+            std::make_unique<Response<long double, int> >(1),
+            std::make_unique<Response<long double, int> >(0)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+
+
+  ASSERT_EQ(expect, result);
+}
+
+
+TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  std::mt19937 generator(0);
+
+  Forest<long double, int> result = pptree::train_forest_glda(
+    data,
+    groups,
+    4,
+    data.cols(),
+    0.1,
+    generator);
+
+  Forest<long double, int> expect;
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }),
+          2.5,
+          std::make_unique<Response<long double, int> >(0),
+          std::make_unique<Response<long double, int> >(1)
+          )
+        )
+      )
+    );
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.930054052413662, 0.045822537426335075, 0.2513198292993562, -0.24141500684671008, -0.03784324993126796, -0.03784324993126797, -0.03784324993126797, -0.03784324993126796, -0.03784324993126759, -0.037843249931267586, -0.037843249931267586, -0.03784324993126759 }),
+          1.8089387215062656,
+          std::make_unique<Response<long double, int> >(0),
+          std::make_unique<Response<long double, int> >(1)
+          )
+        )
+      )
+    );
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }),
+          2.5,
+          std::make_unique<Response<long double, int> >(0),
+          std::make_unique<Response<long double, int> >(1)
+          )
+        )
+      )
+    );
+
+  expect.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.941548245944998, 0.13544597103198155, 0.06283022647715046, 0.060289643232506254, -0.10461764373710465, -0.10461764373710344, -0.10461764373710347, -0.10461764373710342, -0.10461764373710364, -0.10461764373710364, -0.10461764373710364, -0.10461764373710362 }),
+          1.2795964320491389,
+          std::make_unique<Response<long double, int> >(0),
+          std::make_unique<Response<long double, int> >(1)
+          )
+        )
+      )
+    );
+
+
+  ASSERT_EQ(expect, result);
+}
+
+
+
 
 TEST(PPTreePredictDataColumn, univariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
