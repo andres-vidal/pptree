@@ -37,15 +37,28 @@ namespace pp {
     LOG_INFO << "Groups:" << std::endl;
     LOG_INFO << std::endl << groups << std::endl;
 
-    Data<T> W = within_groups_sum_of_squares(data, groups, unique_groups);
+    Data<T> complete_B = between_groups_sum_of_squares(data, groups, unique_groups);
+    Data<T> complete_W = within_groups_sum_of_squares(data, groups, unique_groups);
+
+    LOG_INFO << "BGSS:" << std::endl << complete_B << std::endl;
+    LOG_INFO << "WGSS:" << std::endl << complete_W << std::endl;
+
+    auto [var_mask, var_index] = mask_null_columns(complete_B);
+
+    LOG_INFO << "Considered variables after filtering out constant ones: " << var_index << std::endl;
+
+    Data<T> B = complete_B(var_index, var_index);
+    Data<T> W = complete_W(var_index, var_index);
+
+    LOG_INFO << "B:" << std::endl << B << std::endl;
+    LOG_INFO << "W:" << std::endl << W << std::endl;
+
     Data<T> W_diag = W.diagonal().asDiagonal();
     Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
-    Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
     Data<T> WpB = W_pda + B;
 
-    LOG_INFO << "W:" << std::endl << W << std::endl;
+
     LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
-    LOG_INFO << "B:" << std::endl << B << std::endl;
     LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
     Data<T> WpBInvB = solve(WpB, B);
@@ -59,7 +72,7 @@ namespace pp {
     LOG_INFO << "Eigenvalues:" << std::endl << eigen_val << std::endl;
     LOG_INFO << "Eigenvectors:" << std::endl << eigen_vec << std::endl;
 
-    Projector<T> projector = get_projector(eigen_vec);
+    Projector<T> projector = expand(get_projector(eigen_vec), var_mask);
 
     LOG_INFO << "Projector:" << std::endl << projector << std::endl;
     return projector;
@@ -105,6 +118,12 @@ namespace pp {
   template<typename T, typename G>
   PPStrategy<T, G> glda_strategy(
     const double lambda) {
+    if (lambda == 0) {
+      LOG_INFO << "Chosen Projection-Pursuit Strategy is LDA" << std::endl;
+    } else {
+      LOG_INFO << "Chosen Projection-Pursuit Strategy is PDA(lambda = " << lambda << ")" << std::endl;
+    }
+
     return [lambda](const Data<T>& data, const DataColumn<G>& groups, const std::set<G>& unique_groups) -> PPStrategyReturn<T> {
              auto projector = glda_optimum_projector(data, groups, unique_groups, lambda);
              return (PPStrategyReturn<T>) { projector, project(data, projector) };
