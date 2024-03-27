@@ -848,7 +848,243 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
   ASSERT_EQ(expect, result);
 }
 
+TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
+  Forest<long double, int> forest;
 
+  forest.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.0, 0.0, 0.0, 0.5982325379690726, -0.8013225508589422 }),
+          -0.3483987096124312,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.999534397402818, 0.0, -0.030512102657559676, 0.0, 0.0 }),
+            5.55339996020167,
+            std::make_unique<Response<long double, int> >(1),
+            std::make_unique<Response<long double, int> >(2)
+            ),
+          std::make_unique<Response<long double, int> >(0)
+          )
+        )
+      )
+    );
+
+
+  forest.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9998222455113714, 0.0, -0.018854107791118468, 0.0, 0.0 }),
+          5.300417766337716,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.9989543519613864, 0.0, 0.0, 0.0457187346435417, 0.0 }),
+            1.6094899541803496,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+
+  forest.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9741975531020036, -0.2256969816591904, 0.0, 0.0, 0.0 }),
+          3.9550147456664178,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.0, 0.9995561292785718, -0.029791683766431428, 0.0, 0.0 }),
+            2.6217629631670403,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+
+  forest.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9615748657636985, 0.0, 0.0, 0.0, -0.2745428519038971 }),
+          4.734758305714628,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.0, 0.0, 0.3772334858435029, 0.0, -0.926118187467647 }),
+            -0.8315603229605784,
+            std::make_unique<Response<long double, int> >(1),
+            std::make_unique<Response<long double, int> >(0)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+  DataColumn<long double> data(5);
+  data << 9, 8, 1, 1, 1;
+
+  int result = forest.predict(data);
+
+  ASSERT_EQ(2, result);
+}
+
+TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
+  Forest<long double, int> forest;
+
+  forest.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.0, 0.0, 0.0, 0.5982325379690726, -0.8013225508589422 }),
+          -0.3483987096124312,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.999534397402818, 0.0, -0.030512102657559676, 0.0, 0.0 }),
+            5.55339996020167,
+            std::make_unique<Response<long double, int> >(1),
+            std::make_unique<Response<long double, int> >(2)
+            ),
+          std::make_unique<Response<long double, int> >(0)
+          )
+        )
+      )
+    );
+
+
+  forest.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9998222455113714, 0.0, -0.018854107791118468, 0.0, 0.0 }),
+          5.300417766337716,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.9989543519613864, 0.0, 0.0, 0.0457187346435417, 0.0 }),
+            1.6094899541803496,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+
+  forest.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9741975531020036, -0.2256969816591904, 0.0, 0.0, 0.0 }),
+          3.9550147456664178,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.0, 0.9995561292785718, -0.029791683766431428, 0.0, 0.0 }),
+            2.6217629631670403,
+            std::make_unique<Response<long double, int> >(0),
+            std::make_unique<Response<long double, int> >(1)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+
+  forest.add_tree(
+    std::make_unique<Tree<long double, int> >(
+      Tree<long double, int>(
+        std::make_unique<Condition<long double, int> >(
+          as_projector<long double>({ 0.9615748657636985, 0.0, 0.0, 0.0, -0.2745428519038971 }),
+          4.734758305714628,
+          std::make_unique<Condition<long double, int> >(
+            as_projector<long double>({ 0.0, 0.0, 0.3772334858435029, 0.0, -0.926118187467647 }),
+            -0.8315603229605784,
+            std::make_unique<Response<long double, int> >(1),
+            std::make_unique<Response<long double, int> >(0)
+            ),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        )
+      )
+    );
+
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataColumn<int> result = forest.predict(data);
+
+  ASSERT_EQ(groups.size(), result.size());
+  ASSERT_EQ(groups.cols(), result.cols());
+  ASSERT_EQ(groups.rows(), result.rows());
+  ASSERT_EQ(groups, result);
+}
 
 
 TEST(PPTreePredictDataColumn, univariate_two_groups) {
