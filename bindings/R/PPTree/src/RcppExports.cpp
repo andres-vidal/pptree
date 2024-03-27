@@ -25,6 +25,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pptree_train_forest_glda
+pptree::Forest<long double, int> pptree_train_forest_glda(const pptree::Data<long double>& data, const pptree::DataColumn<int>& groups, const int size, const int n_vars, const double lambda);
+RcppExport SEXP _PPTree_pptree_train_forest_glda(SEXP dataSEXP, SEXP groupsSEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const pptree::Data<long double>& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< const pptree::DataColumn<int>& >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< const int >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_vars(n_varsSEXP);
+    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_train_forest_glda(data, groups, size, n_vars, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pptree_predict
 pptree::DataColumn<int> pptree_predict(pptree::Tree<long double, int> tree, pptree::Data<long double> data);
 RcppExport SEXP _PPTree_pptree_predict(SEXP treeSEXP, SEXP dataSEXP) {
@@ -37,10 +52,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pptree_predict_forest
+pptree::DataColumn<int> pptree_predict_forest(pptree::Forest<long double, int> forest, pptree::Data<long double> data);
+RcppExport SEXP _PPTree_pptree_predict_forest(SEXP forestSEXP, SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< pptree::Forest<long double, int> >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< pptree::Data<long double> >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_predict_forest(forest, data));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_glda", (DL_FUNC) &_PPTree_pptree_train_glda, 3},
+    {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 5},
     {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
+    {"_PPTree_pptree_predict_forest", (DL_FUNC) &_PPTree_pptree_predict_forest, 2},
     {NULL, NULL, 0}
 };
 

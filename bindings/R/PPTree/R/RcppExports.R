@@ -5,7 +5,15 @@ pptree_train_glda <- function(data, groups, lambda) {
     .Call('_PPTree_pptree_train_glda', PACKAGE = 'PPTree', data, groups, lambda)
 }
 
+pptree_train_forest_glda <- function(data, groups, size, n_vars, lambda) {
+    .Call('_PPTree_pptree_train_forest_glda', PACKAGE = 'PPTree', data, groups, size, n_vars, lambda)
+}
+
 pptree_predict <- function(tree, data) {
     .Call('_PPTree_pptree_predict', PACKAGE = 'PPTree', tree, data)
+}
+
+pptree_predict_forest <- function(forest, data) {
+    .Call('_PPTree_pptree_predict_forest', PACKAGE = 'PPTree', forest, data)
 }
 
