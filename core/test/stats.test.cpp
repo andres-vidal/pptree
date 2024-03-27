@@ -1,10 +1,15 @@
 #include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
 
 #include "stats.hpp"
+
 
 using namespace stats;
 using namespace Eigen;
 
+//use json
+#define ASSERT_VEC_EQ(expected, actual) \
+        ASSERT_EQ(nlohmann::json(expected).dump(), nlohmann::json(actual).dump())
 
 TEST(StatsSelectGroup, single_group) {
   Data<long double> data(3, 3);
@@ -1720,4 +1725,93 @@ TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_odd) {
 
     ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
   }
+}
+
+TEST(StatsMaskNullColumns, zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0;
+
+  auto [mask, indx] = mask_null_columns(data);
+
+  std::vector<int> expected_mask { 0, 0, 0 };
+  std::vector<int> expected_indx {  };
+
+  ASSERT_EQ(expected_mask.size(), mask.size());
+  ASSERT_EQ(expected_indx.size(), indx.size());
+
+  ASSERT_VEC_EQ(expected_mask, mask);
+  ASSERT_VEC_EQ(expected_indx, indx);
+}
+
+TEST(StatsMaskNullColumns, no_null_columns) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  auto [mask, indx] = mask_null_columns(data);
+
+  std::vector<int> expected_mask { 1, 1, 1 };
+  std::vector<int> expected_indx { 0, 1, 2 };
+
+  ASSERT_EQ(expected_mask.size(), mask.size());
+  ASSERT_EQ(expected_indx.size(), indx.size());
+
+  ASSERT_VEC_EQ(expected_mask, mask);
+  ASSERT_VEC_EQ(expected_indx, indx);
+}
+
+TEST(StatsMaskNullColumns, some_null_columns) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 0.0, 3.0,
+    4.0, 0.0, 6.0,
+    7.0, 0.0, 9.0;
+
+  auto [mask, indx] = mask_null_columns(data);
+
+  std::vector<int> expected_mask { 1, 0, 1 };
+  std::vector<int> expected_indx { 0, 2 };
+
+  ASSERT_EQ(expected_mask.size(), mask.size());
+  ASSERT_EQ(expected_indx.size(), indx.size());
+
+  ASSERT_VEC_EQ(expected_mask, mask);
+  ASSERT_VEC_EQ(expected_indx, indx);
+}
+
+TEST(StatsExpandDataColumn, idempotent) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::vector<int> mask { 1, 1, 1 };
+
+  Data<long double> actual = expand(data, mask);
+
+  ASSERT_EQ(data.size(), actual.size());
+  ASSERT_EQ(data.rows(), actual.rows());
+  ASSERT_EQ(data.cols(), actual.cols());
+  ASSERT_EQ(data, actual);
+}
+
+TEST(StatsExpandDataColumn, generic) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::vector<int> mask { 1, 0, 1, 0, 1 };
+
+  DataColumn<long double> actual = expand(data, mask);
+
+  DataColumn<long double> expected(5);
+  expected <<
+    1.0, 0.0, 2.0, 0.0, 3.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
 }

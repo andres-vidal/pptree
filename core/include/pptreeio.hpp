@@ -20,6 +20,12 @@ std::ostream& operator<<(std::ostream& ostream, const std::set<V, C1, C2> &set) 
   return ostream << json_set.dump();
 }
 
+template<typename V>
+std::ostream& operator<<(std::ostream& ostream, const std::vector<V> &vec) {
+  json json_vector(vec);
+  return ostream << json_vector.dump();
+}
+
 namespace pptree {
   template<typename T, typename R >
   struct Tree;

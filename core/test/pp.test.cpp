@@ -672,6 +672,31 @@ TEST(PPPDAOptimumProjector, lambda_onehalf_two_groups) {
   ASSERT_COLLINEAR(expected, actual);
 }
 
+TEST(PPGLDAOptimumProjector, zero_column) {
+  DMatrix<long double> data(4, 7);
+  data <<
+    1, 0, 1, 1, 1, 4, 0,
+    2, 1, 0, 0, 0, 4, 0,
+    3, 0, 1, 1, 1, 1, 0,
+    4, 0, 1, 2, 2, 1, 0;
+
+  DVector<int> groups(4);
+  groups <<
+    0,
+    0,
+    1,
+    1;
+
+  DVector<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0.1);
+
+  DVector<long double> expected(7);
+  expected <<
+    0, 0, 0, 0, 0, 1, 0;
+
+  ASSERT_COLLINEAR(expected, actual);
+}
+
+
 TEST(PPPDAIndex, lambda_onehalf_zero_return) {
   DMatrix<long double> data(4, 12);
   data <<

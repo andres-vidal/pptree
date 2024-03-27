@@ -78,5 +78,15 @@ namespace stats {
     const DataColumn<G> & groups,
     const std::set<G> &   unique_groups,
     const int             size,
-    std::mt19937          gen);
+    std::mt19937 &        gen);
+
+
+  template<typename T>
+  std::tuple<std::vector<int>, std::vector<int> > mask_null_columns(
+    const Data<T> &data);
+
+  template<typename T>
+  DataColumn<T> expand(
+    const DataColumn<T> &   data,
+    const std::vector<int> &mask);
 }

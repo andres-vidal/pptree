@@ -353,5 +353,48 @@ namespace stats {
     const DataColumn<int> &   groups,
     const std::set<int> &     unique_groups,
     const int                 size,
-    std::mt19937              gen);
-};
+    std::mt19937 &            gen);
+
+
+  template<typename T>
+  std::tuple<std::vector<int>, std::vector<int> > mask_null_columns(const Data<T> &data) {
+    std::vector<int> mask(data.cols());
+    std::vector<int> index;
+
+    for (int i = 0; i < data.cols(); i++) {
+      if (data.col(i).minCoeff() == 0 && data.col(i).maxCoeff() == 0) {
+        mask[i] = 0;
+      } else {
+        mask[i] = 1;
+        index.push_back(i);
+      }
+    }
+
+    return { mask, index };
+  }
+
+  template std::tuple<std::vector<int>, std::vector<int> > mask_null_columns<long double>(
+    const Data<long double> &data);
+
+  template<typename T>
+  DataColumn<T> expand(
+    const DataColumn<T> &   data,
+    const std::vector<int> &mask) {
+    DataColumn<T> expanded = DataColumn<T>::Zero(mask.size());
+
+    int j = 0;
+
+    for (int i = 0; i < mask.size(); i++) {
+      if (mask[i] == 1) {
+        expanded.row(i) = data.row(j);
+        j++;
+      }
+    }
+
+    return expanded;
+  }
+
+  template DataColumn<long double> expand<long double>(
+    const DataColumn<long double> &data,
+    const std::vector<int> &       mask);
+}
