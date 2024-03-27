@@ -33,6 +33,10 @@ namespace pptree {
         return false;
       }
     }
+
+    bool operator!=(const Node<T, R> &other) const {
+      return !(*this == other);
+    }
   };
 
   template<typename T, typename R>
@@ -82,6 +86,10 @@ namespace pptree {
       && *lower == *other.lower
       && *upper == *other.upper;
     }
+
+    bool operator!=(const Condition<T, R> &other) const {
+      return !(*this == other);
+    }
   };
 
   template<typename T, typename R>
@@ -114,6 +122,10 @@ namespace pptree {
     bool operator==(const Response<T, R> &other) const {
       return value == other.value;
     }
+
+    bool operator!=(const Response<T, R> &other) const {
+      return !(*this == other);
+    }
   };
 
   template<typename T, typename R>
@@ -140,17 +152,57 @@ namespace pptree {
     bool operator==(const Tree<T, R> &other) const {
       return *root == *other.root;
     }
+
+    bool operator!=(const Tree<T, R> &other) const {
+      return !(*this == other);
+    }
+  };
+
+  template<typename T, typename R>
+  struct Forest {
+    std::vector<std::unique_ptr<Tree<T, R> > > trees;
+
+    void add_tree(std::unique_ptr<Tree<T, R> > tree) {
+      trees.push_back(std::move(tree));
+    }
+
+    bool operator==(const Forest<T, R> &other) const {
+      if (trees.size() != other.trees.size()) {
+        return false;
+      }
+
+      for (int i = 0; i < trees.size(); i++) {
+        if (*trees[i] != *other.trees[i]) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    bool operator!=(const Forest<T, R> &other) const {
+      return !(*this == other);
+    }
   };
 
   template<typename T, typename R>
   Tree<T, R> train(
-    const stats::Data<T>       &data,
+    const stats::Data<T> &      data,
     const stats::DataColumn<R> &groups,
     const pp::PPStrategy<T, R> &pp_strategy);
 
   template<typename T, typename R>
   Tree<T, R> train_glda(
-    const stats::Data<T>       &data,
+    const stats::Data<T> &      data,
     const stats::DataColumn<R> &groups,
     const double lambda);
+
+  template<typename T, typename R>
+  Forest<T, R> train_forest_glda(
+    const Data<T> &         data,
+    const DataColumn<R> &   groups,
+    const int size,
+    const int n_vars,
+    const double lambda,
+    std::mt19937 &gen);
 }

@@ -267,7 +267,7 @@ namespace stats {
 
 
   template<typename T>
-  Data<T> sample(const Data<T>& data, int size, std::mt19937 gen) {
+  Data<T> sample(const Data<T>& data, int size, std::mt19937 &gen) {
     assert(size > 0 && "Sample size must be greater than 0.");
     assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
 
@@ -289,7 +289,7 @@ namespace stats {
   template Data<long double> sample<long double>(
     const Data<long double> &data,
     int                      size,
-    std::mt19937             gen);
+    std::mt19937 &           gen);
 
 
   template<typename T, typename G>
@@ -297,7 +297,7 @@ namespace stats {
     const Data<T> &        data,
     const DataColumn<G> &  groups,
     const std::map<G, int> sizes,
-    std::mt19937           gen) {
+    std::mt19937 &         gen) {
     int total_size = 0;
 
     for (const auto& [group, size] : sizes) {
@@ -310,7 +310,7 @@ namespace stats {
     int acc = 0;
 
     for ( const auto& [group, size] : sizes) {
-      Data<T> group_sample = sample(select_group(data, groups, group), size, gen);
+      Data<T> group_sample = stats::sample(select_group(data, groups, group), size, gen);
 
       for (int i = 0; i < size; i++) {
         sample_data.row(i + acc) = group_sample.row(i);
@@ -327,7 +327,7 @@ namespace stats {
     const Data<long double> & data,
     const DataColumn<int> &   groups,
     const std::map<int, int>  sizes,
-    std::mt19937              gen);
+    std::mt19937 &            gen);
 
   template<typename T, typename G>
   std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(
@@ -335,7 +335,7 @@ namespace stats {
     const DataColumn<G> & groups,
     const std::set<G> &   unique_groups,
     const int             size,
-    std::mt19937          gen) {
+    std::mt19937 &        gen) {
     assert(size > 0 && "Sample size must be greater than 0.");
     assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
 
@@ -397,4 +397,4 @@ namespace stats {
   template DataColumn<long double> expand<long double>(
     const DataColumn<long double> &data,
     const std::vector<int> &       mask);
-}
+};
