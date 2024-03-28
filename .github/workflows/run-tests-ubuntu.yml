@@ -1,0 +1,13 @@
+name: Run Tests (Ubuntu)
+on: push
+jobs:
+  GoogleTest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install asdf & tools
+        uses: asdf-vm/actions/install@v2
+      - run: conan profile detect
+      - run: make install-debug
+      - run: source _conan/conanbuild.sh
+      - run: make test

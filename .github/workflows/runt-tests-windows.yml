@@ -1,0 +1,12 @@
+name: Run Tests (Windows)
+on: push
+jobs:
+  GoogleTest:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: turtlebrowser/get-conan@main
+      - run: conan profile detect
+      - run: make install-debug
+      - run: source _conan/conanbuild.sh
+      - run: make test
