@@ -1,8 +1,21 @@
 name: Run Test
 on: push
 jobs:
-  GoogleTest:
+  Ubuntu:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test
+  Mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test
+  Windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - run: make test
