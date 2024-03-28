@@ -7,6 +7,33 @@
 
 
 namespace stats {
+  class Uniform {
+    private:
+      int min;
+      int max;
+      uint64_t range;
+
+    public:
+      Uniform(int min, int max) : min(min), max(max), range(static_cast<uint64_t>(max) - min + 1) {
+      }
+
+      int operator()(std::mt19937 &gen) {
+        uint64_t random_number = gen() - gen.min();
+        return min + static_cast<int>(random_number % range);
+      }
+
+      std::vector<int> operator()(std::mt19937 &gen, int count) {
+        std::vector<int> result(count);
+
+        for (int i = 0; i < count; i++) {
+          result[i] = operator()(gen);
+        }
+
+        return result;
+      }
+  };
+
+
   template<typename T>
   using Data = linalg::DMatrix<T>;
 
