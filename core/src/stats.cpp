@@ -271,15 +271,11 @@ namespace stats {
     assert(size > 0 && "Sample size must be greater than 0.");
     assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
 
-
-    std::vector<int> indices(data.rows());
-    std::iota(indices.begin(), indices.end(), 0);
-
     Data<T> result(size, data.cols());
 
     for (int i = 0; i < size; ++i) {
-      int sampled_index;
-      std::sample(indices.begin(), indices.end(), &sampled_index, 1, gen);
+      Uniform unif(0, data.rows() - 1);
+      int sampled_index = unif(gen);
       result.row(i) = data.row(sampled_index);
     }
 

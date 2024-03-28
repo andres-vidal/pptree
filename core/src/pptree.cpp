@@ -27,11 +27,7 @@ namespace pptree {
 
              LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
 
-             std::vector<int> var_indices(data.cols());
-             std::iota(var_indices.begin(), var_indices.end(), 0);
-
-             std::vector<int> var_sampled_indices(n_vars);
-             std::sample(var_indices.begin(), var_indices.end(), var_sampled_indices.begin(), n_vars, gen);
+             std::vector<int> var_sampled_indices = stats::Uniform(0, data.cols() - 1)(gen, n_vars);
 
              LOG_INFO << "Selected variables: " << var_sampled_indices << std::endl;
 
