@@ -1,8 +1,8 @@
-name: Run Tests
+name: Run Tests (Windows)
 on: push
 jobs:
   GoogleTest:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install asdf & tools
