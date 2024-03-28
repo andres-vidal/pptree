@@ -5,8 +5,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install asdf & tools
-        uses: asdf-vm/actions/install@v2
+      - uses: turtlebrowser/get-conan@main
       - run: conan profile detect
       - run: make install-debug
       - run: source _conan/conanbuild.sh
