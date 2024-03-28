@@ -506,15 +506,13 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
     2,
     2;
 
-  std::mt19937 generator(0);
-
   Forest<long double, int> result = pptree::train_forest_glda(
     data,
     groups,
     4,
     data.cols(),
     0,
-    generator);
+    0);
 
   Forest<long double, int> expect;
 
@@ -664,15 +662,13 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
     2,
     2;
 
-  std::mt19937 generator(1);
-
   Forest<long double, int> result = pptree::train_forest_glda(
     data,
     groups,
     4,
     2,
     0,
-    generator);
+    1);
 
   Forest<long double, int> expect;
 
@@ -780,7 +776,6 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
     1,
     1;
 
-  std::mt19937 generator(0);
 
   Forest<long double, int> result = pptree::train_forest_glda(
     data,
@@ -788,7 +783,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
     4,
     data.cols(),
     0.1,
-    generator);
+    0);
 
   Forest<long double, int> expect;
 

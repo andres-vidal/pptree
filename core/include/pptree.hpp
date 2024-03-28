@@ -241,5 +241,5 @@ namespace pptree {
     const int size,
     const int n_vars,
     const double lambda,
-    std::mt19937 &gen);
+    const double seed);
 }

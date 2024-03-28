@@ -308,8 +308,11 @@ namespace pptree {
     const int             size,
     const int             n_vars,
     const double          lambda,
-    std::mt19937 &        gen) {
-    LOG_INFO << "Training a forest of " << size << " Project-Pursuit Trees." << std::endl;
+    const double          seed) {
+    LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
+    LOG_INFO << "The seed is: " << seed << std::endl;
+
+    std::mt19937 gen(seed);
 
     assert(size > 0 && "The forest size must be greater than 0.");
     std::set<R> unique_groups = unique(groups);
@@ -336,6 +339,8 @@ namespace pptree {
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
     }
 
+    LOG_INFO << "Forest: " << forest << std::endl;
+
     return forest;
   }
 
@@ -345,5 +350,5 @@ namespace pptree {
     const int                 size,
     const int                 n_vars,
     const double              lambda,
-    std::mt19937 &            gen);
+    const double              gen);
 }
