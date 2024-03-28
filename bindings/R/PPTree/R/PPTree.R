@@ -1,11 +1,12 @@
 #' @useDynLib PPTree
 #' @importFrom Rcpp evalCpp
-#' @importFrom stats model.frame model.matrix model.response
+#' @importFrom stats model.frame model.matrix model.response formula predict
 NULL
 
 #' Trains a Project-Pursuit oblique decision tree.
 #'
 #' This function trains a Project-Pursuit oblique decision tree (PPTree) using either a formula and data frame interface or a matrix-based interface. When using the formula interface, specify the model formula and the data frame containing the variables. For the matrix-based interface, provide matrices for the features and labels directly.
+#' If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
 #'
 #' @param formula A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.
 #' @param data A data frame containing the variables in the formula.
@@ -44,39 +45,22 @@ NULL
 #' PPTree(x = x, y = crabs[, 1], lambda = 0.5)
 #'
 #' @export
-PPTree <- function(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0) {
-  if (!is.null(formula) && !is.null(data)) {
-    if (!inherits(formula, "formula")) {
-      stop("`formula` must be a formula object.")
-    }
+PPTree <- function(
+    formula = NULL,
+    data = NULL,
+    x = NULL,
+    y = NULL,
+    lambda = 0) {
+  args <- process_model_arguments(formula, data, x, y)
 
-    if (!is.data.frame(data)) {
-      stop("`data` must be a data frame.")
-    }
+  x <- args$x
+  y <- args$y
+  classes <- args$classes
 
-    y <- model.response(model.frame(formula, data))
-    x <- model.matrix(formula, data, response = TRUE)
-  } else if (is.null(x) || is.null(y)) {
-    stop("For the matrix interface, both `x` and `y` must be provided.")
-  }
-
-
-  if (!all(sapply(x, is.numeric))) {
-    stop("All columns in `x` must be numeric")
-  }
-
-  if (!is.factor(y)) {
-    y <- factor(y)
-  }
-
-  if (lambda == 0) {
-    model <- pptree_train_lda(as.matrix(x), as.matrix(as.numeric(y)))
-  } else {
-    model <- pptree_train_pda(as.matrix(x), as.matrix(as.numeric(y)), lambda)
-  }
+  model <- pptree_train_glda(args$x, args$y, lambda)
 
   class(model) <- "PPTree"
-  model$classes <- levels(y)
+  model$classes <- classes
   model$formula <- formula
   model$x <- x
   model$y <- y
@@ -87,8 +71,8 @@ PPTree <- function(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0) 
 
 #' Predicts the labels of a set of observations using a PPTree model.
 #'
-#' @param model A PPTree model.
-#' @param x A matrix containing the features for each new observation.
+#' @param object A PPTree model.
+#' @param ... (unused) other parameters tipically passed to predict.
 #' @return A matrix containing the predicted labels for each observation.
 #' @examples
 #' # Example 1: with the `iris` dataset
@@ -100,25 +84,29 @@ PPTree <- function(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0) 
 #' predict(model, crabs)
 #'
 #' @export
-predict.PPTree <- function(model, x) {
-  if (!is.null(model$formula)) {
-    x <- model.matrix(model$formula, x)
+predict.PPTree <- function(object, ...) {
+  args <- list(...)
+  x <- args[[1]]
+
+  if (!is.null(object$formula)) {
+    x <- model.matrix(object$formula, x)
   }
 
-  y <- pptree_predict(model, as.matrix(x))
-  as.factor(model$classes[y])
+  y <- pptree_predict(object, as.matrix(x))
+  as.factor(object$classes[y])
 }
 
 #' Extracts the formula used to train a PPTree model.
 #'
-#' @param model A PPTree model.
+#' @param x A PPTree model.
+#' @param ... (unused) other parameters tipically passed to formula
 #' @return The formula used to train the model.
 #' @examples
 #' model <- PPTree(Species ~ ., data = iris)
 #' formula(model)
 #' @export
-formula.PPTree <- function(model) {
-  model$formula
+formula.PPTree <- function(x, ...) {
+  x$formula
 }
 
 print_node <- function(model, node, depth = 0) {
@@ -159,18 +147,21 @@ print_node <- function(model, node, depth = 0) {
 #' @export
 print.PPTree <- function(x, ...) {
   model <- x
-  cat("\n")
-  cat("Project-Pursuit Oblique Decision Tree\n")
-  cat("-------------------------------------\n")
-  cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
-  cat("Regularization parameter:", model$lambda, "\n")
-  cat("Features:\n", paste(colnames(model$x), collapse = "\n "), "\n")
-  cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
-  if (!is.null(model$formula)) {
-    cat("Formula:\n", deparse(model$formula), "\n")
+  if (!is.null(formula(x))) {
+    cat("\n")
+    cat("Project-Pursuit Oblique Decision Tree\n")
+    cat("-------------------------------------\n")
+    cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
+    cat("Regularization parameter:", model$lambda, "\n")
+    cat("Features:\n", paste(colnames(model$x), collapse = "\n "), "\n")
+    cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
+    if (!is.null(model$formula)) {
+      cat("Formula:\n", deparse(model$formula), "\n")
+    }
+    cat("-------------------------------------\n")
+    cat("Structure:\n")
   }
-  cat("-------------------------------------\n")
-  cat("Structure:\n")
+
   print_node(model, model$root)
   cat("\n")
 }

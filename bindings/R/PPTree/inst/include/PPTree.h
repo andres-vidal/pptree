@@ -8,11 +8,13 @@ namespace Rcpp {
   SEXP wrap(const pptree::Tree<long double, int> &tree);
   SEXP wrap(const pptree::Response<long double, int> &node);
   SEXP wrap(const pptree::Condition<long double, int> &node);
+  SEXP wrap(const pptree::Forest<long double, int> &forest);
 
   template<> std::unique_ptr<pptree::Node<long double, int> > as(SEXP);
   template<> pptree::Tree<long double, int> as(SEXP);
   template<> pptree::Response<long double, int> as(SEXP);
   template<> pptree::Condition<long double, int> as(SEXP);
+  template<> pptree::Forest<long double, int> as(SEXP);
 }
 
 
@@ -43,6 +45,17 @@ namespace Rcpp {
   SEXP wrap(const pptree::Tree<long double, int> &tree) {
     return Rcpp::List::create(
       Rcpp::Named("root") = Rcpp::wrap(*tree.root));
+  }
+
+  SEXP wrap(const pptree::Forest<long double, int> &forest) {
+    Rcpp::List trees(forest.trees.size());
+
+    for (size_t i = 0; i < forest.trees.size(); i++) {
+      trees[i] = wrap(*forest.trees[i]);
+    }
+
+    return Rcpp::List::create(
+      Rcpp::Named("trees") = trees);
   }
 
   template<> std::unique_ptr<pptree::Node<long double, int> > as(SEXP x) {
@@ -84,5 +97,20 @@ namespace Rcpp {
     auto root_ptr = std::make_unique<pptree::Condition<long double, int> >(std::move(root));
 
     return pptree::Tree<long double, int>(std::move(root_ptr));
+  }
+
+  template<> pptree::Forest<long double, int> as(SEXP x) {
+    Rcpp::List rforest(x);
+    Rcpp::List rtrees(rforest["trees"]);
+
+    pptree::Forest<long double, int> forest;
+
+    for (size_t i = 0; i < rtrees.size(); i++) {
+      auto tree = as<pptree::Tree<long double, int> >(rtrees[i]);
+      auto tree_ptr = std::make_unique<pptree::Tree<long double, int> >(std::move(tree));
+      forest.add_tree(std::move(tree_ptr));
+    }
+
+    return forest;
   }
 }

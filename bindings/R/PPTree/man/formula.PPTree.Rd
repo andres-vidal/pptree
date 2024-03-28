@@ -4,10 +4,12 @@
 \alias{formula.PPTree}
 \title{Extracts the formula used to train a PPTree model.}
 \usage{
-\method{formula}{PPTree}(model)
+\method{formula}{PPTree}(x, ...)
 }
 \arguments{
-\item{model}{A PPTree model.}
+\item{x}{A PPTree model.}
+
+\item{...}{(unused) other parameters tipically passed to formula}
 }
 \value{
 The formula used to train the model.

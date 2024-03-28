@@ -1,6 +1,6 @@
 source("stats.test.R")
 
-lda_optimum_projector <- function(x, y) {
+glda_optimum_projector <- function(x, y) {
   W <- wgss(x, y)
   B <- bgss(x, y)
 
@@ -14,7 +14,7 @@ lda_optimum_projector <- function(x, y) {
   return(eigen_vec[, which.max(abs(eigen_val))])
 }
 
-lda_index <- function(x, y, A) {
+glda_index <- function(x, y, A) {
   W <- wgss(x, y)
   B <- bgss(x, y)
 
@@ -27,7 +27,7 @@ lda_index <- function(x, y, A) {
   return(1 - det(t(A) %*% W %*% A) / denominator)
 }
 
-pda_optimum_projector <- function(x, y, lambda) {
+glda_optimum_projector <- function(x, y, lambda) {
   W <- wgss(x, y)
   B <- bgss(x, y)
 
@@ -43,7 +43,7 @@ pda_optimum_projector <- function(x, y, lambda) {
   return(eigen_vec[, which.max(abs(eigen_val))])
 }
 
-pda_index <- function(x, y, A) {
+glda_index <- function(x, y, A) {
   W <- wgss(x, y)
   B <- bgss(x, y)
 

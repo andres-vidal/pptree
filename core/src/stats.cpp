@@ -1,6 +1,4 @@
 #include "stats.hpp"
-#include <vector>
-
 #include <iostream>
 
 using namespace linalg;
@@ -266,4 +264,133 @@ namespace stats {
     const Data<long double> & data,
     const DataColumn<int>&    groups,
     const std::set<int> &     unique_groups);
+
+
+  template<typename T>
+  Data<T> sample(const Data<T>& data, int size, std::mt19937 &gen) {
+    assert(size > 0 && "Sample size must be greater than 0.");
+    assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
+
+    Data<T> result(size, data.cols());
+
+    for (int i = 0; i < size; ++i) {
+      Uniform unif(0, data.rows() - 1);
+      int sampled_index = unif(gen);
+      result.row(i) = data.row(sampled_index);
+    }
+
+    return result;
+  }
+
+  template Data<long double> sample<long double>(
+    const Data<long double> &data,
+    int                      size,
+    std::mt19937 &           gen);
+
+
+  template<typename T, typename G>
+  std::tuple<Data<T>, DataColumn<G> > stratified_sample(
+    const Data<T> &        data,
+    const DataColumn<G> &  groups,
+    const std::map<G, int> sizes,
+    std::mt19937 &         gen) {
+    int total_size = 0;
+
+    for (const auto& [group, size] : sizes) {
+      total_size += size;
+    }
+
+    Data<T> sample_data(total_size, data.cols());
+    DataColumn<G> sample_groups(total_size);
+
+    int acc = 0;
+
+    for ( const auto& [group, size] : sizes) {
+      Data<T> group_sample = stats::sample(select_group(data, groups, group), size, gen);
+
+      for (int i = 0; i < size; i++) {
+        sample_data.row(i + acc) = group_sample.row(i);
+        sample_groups(i + acc) = group;
+      }
+
+      acc += size;
+    }
+
+    return { sample_data, sample_groups };
+  }
+
+  template std::tuple<Data<long double>, DataColumn<int> > stratified_sample(
+    const Data<long double> & data,
+    const DataColumn<int> &   groups,
+    const std::map<int, int>  sizes,
+    std::mt19937 &            gen);
+
+  template<typename T, typename G>
+  std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(
+    const Data<T> &       data,
+    const DataColumn<G> & groups,
+    const std::set<G> &   unique_groups,
+    const int             size,
+    std::mt19937 &        gen) {
+    assert(size > 0 && "Sample size must be greater than 0.");
+    assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
+
+    std::map<G, int> sizes;
+
+    for (const G& group : unique_groups) {
+      sizes[group] = round(size * select_group(data, groups, group).rows() / (double)data.rows());
+    }
+
+    return stratified_sample(data, groups, sizes, gen);
+  }
+
+  template std::tuple<Data<long double>, DataColumn<int> > stratified_proportional_sample(
+    const Data<long double> & data,
+    const DataColumn<int> &   groups,
+    const std::set<int> &     unique_groups,
+    const int                 size,
+    std::mt19937 &            gen);
+
+
+  template<typename T>
+  std::tuple<std::vector<int>, std::vector<int> > mask_null_columns(const Data<T> &data) {
+    std::vector<int> mask(data.cols());
+    std::vector<int> index;
+
+    for (int i = 0; i < data.cols(); i++) {
+      if (data.col(i).minCoeff() == 0 && data.col(i).maxCoeff() == 0) {
+        mask[i] = 0;
+      } else {
+        mask[i] = 1;
+        index.push_back(i);
+      }
+    }
+
+    return { mask, index };
+  }
+
+  template std::tuple<std::vector<int>, std::vector<int> > mask_null_columns<long double>(
+    const Data<long double> &data);
+
+  template<typename T>
+  DataColumn<T> expand(
+    const DataColumn<T> &   data,
+    const std::vector<int> &mask) {
+    DataColumn<T> expanded = DataColumn<T>::Zero(mask.size());
+
+    int j = 0;
+
+    for (int i = 0; i < mask.size(); i++) {
+      if (mask[i] == 1) {
+        expanded.row(i) = data.row(j);
+        j++;
+      }
+    }
+
+    return expanded;
+  }
+
+  template DataColumn<long double> expand<long double>(
+    const DataColumn<long double> &data,
+    const std::vector<int> &       mask);
 };
