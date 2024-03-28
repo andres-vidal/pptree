@@ -506,17 +506,20 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
     2,
     2;
 
+  const int n_vars = data.cols();
+  const double lambda = 0;
   const double seed = 0;
+
 
   Forest<long double, int> result = pptree::train_forest_glda(
     data,
     groups,
     4,
-    data.cols(),
-    0,
+    n_vars,
+    lambda,
     seed);
 
-  Forest<long double, int> expect(seed);
+  Forest<long double, int> expect(n_vars, lambda, seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -664,17 +667,21 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
     2,
     2;
 
+
+  const int n_vars = 2;
+  const double lambda = 0;
   const double seed = 1;
+
 
   Forest<long double, int> result = pptree::train_forest_glda(
     data,
     groups,
     4,
-    2,
-    0,
+    n_vars,
+    lambda,
     seed);
 
-  Forest<long double, int> expect(seed);
+  Forest<long double, int> expect(n_vars, lambda, seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -780,17 +787,19 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
     1,
     1;
 
+  const int n_vars = data.cols();
+  const double lambda = 0.1;
   const double seed = 0;
 
   Forest<long double, int> result = pptree::train_forest_glda(
     data,
     groups,
     4,
-    data.cols(),
-    0.1,
+    n_vars,
+    lambda,
     seed);
 
-  Forest<long double, int> expect(seed);
+  Forest<long double, int> expect(n_vars, lambda, seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -848,7 +857,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
 }
 
 TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
-  Forest<long double, int> forest(1);
+  Forest<long double, int> forest(2, 0, 1);
 
   forest.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -934,7 +943,7 @@ TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
 }
 
 TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
-  Forest<long double, int> forest(1);
+  Forest<long double, int> forest(2, 0, 1);
 
   forest.add_tree(
     std::make_unique<Tree<long double, int> >(

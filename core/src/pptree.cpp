@@ -317,7 +317,7 @@ namespace pptree {
     assert(size > 0 && "The forest size must be greater than 0.");
     std::set<R> unique_groups = unique(groups);
 
-    Forest<T, R> forest(seed);
+    Forest<T, R> forest(n_vars, lambda, seed);
 
     for (int i = 0; i < size; i++) {
       auto [bootstrap_sample, boostrap_groups] = stats::stratified_proportional_sample(

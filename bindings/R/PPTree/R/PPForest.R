@@ -82,8 +82,6 @@ PPForest <- function(
   model$formula <- formula
   model$x <- x
   model$y <- y
-  model$lambda <- lambda
-  model$nvars <- nvars
   model$size <- size
 
   model
