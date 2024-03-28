@@ -4,12 +4,12 @@
 \alias{predict.PPTree}
 \title{Predicts the labels of a set of observations using a PPTree model.}
 \usage{
-\method{predict}{PPTree}(model, x)
+\method{predict}{PPTree}(object, ...)
 }
 \arguments{
-\item{model}{A PPTree model.}
+\item{object}{A PPTree model.}
 
-\item{x}{A matrix containing the features for each new observation.}
+\item{...}{(unused) other parameters tipically passed to predict.}
 }
 \value{
 A matrix containing the predicted labels for each observation.
