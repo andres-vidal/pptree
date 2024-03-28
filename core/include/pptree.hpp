@@ -162,6 +162,10 @@ namespace pptree {
   template<typename T, typename R>
   struct Forest {
     std::vector<std::unique_ptr<Tree<T, R> > > trees;
+    const double seed;
+
+    Forest(const double seed) : seed(seed) {
+    }
 
     R predict(const DataColumn<T> &data) const {
       std::map<R, int> votes_per_group;

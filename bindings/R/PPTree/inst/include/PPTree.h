@@ -55,6 +55,7 @@ namespace Rcpp {
     }
 
     return Rcpp::List::create(
+      Rcpp::Named("seed") = Rcpp::wrap(forest.seed),
       Rcpp::Named("trees") = trees);
   }
 
@@ -102,8 +103,9 @@ namespace Rcpp {
   template<> pptree::Forest<long double, int> as(SEXP x) {
     Rcpp::List rforest(x);
     Rcpp::List rtrees(rforest["trees"]);
+    const double seed = Rcpp::as<double>(rforest["seed"]);
 
-    pptree::Forest<long double, int> forest;
+    pptree::Forest<long double, int> forest(seed);
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree = as<pptree::Tree<long double, int> >(rtrees[i]);

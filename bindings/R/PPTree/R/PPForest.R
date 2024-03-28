@@ -142,6 +142,7 @@ print.PPForest <- function(x, ...) {
   cat("\n")
   cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
   cat("-------------------------------------\n")
+  cat("Random seed:", model$seed, "\n")
   cat("Number of trees:", model$size, "\n")
   cat("Number of variables in each split:", model$nvars, "\n")
   cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
