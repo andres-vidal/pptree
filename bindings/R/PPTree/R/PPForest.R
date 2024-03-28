@@ -82,7 +82,6 @@ PPForest <- function(
   model$formula <- formula
   model$x <- x
   model$y <- y
-  model$size <- size
 
   model
 }
@@ -141,10 +140,10 @@ print.PPForest <- function(x, ...) {
   cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
   cat("-------------------------------------\n")
   cat("Random seed:", model$seed, "\n")
-  cat("Number of trees:", model$size, "\n")
+  cat("Number of trees:", length(model$trees), "\n")
   cat("Number of variables in each split:", model$nvars, "\n")
+  cat("Lambda (Regularization Parameter):", model$lambda, "\n")
   cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
-  cat("Regularization parameter:", model$lambda, "\n")
   cat("Features:\n", paste(colnames(model$x), collapse = "\n "), "\n")
   cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
   if (!is.null(model$formula)) {
@@ -152,7 +151,7 @@ print.PPForest <- function(x, ...) {
   }
   cat("-------------------------------------\n")
   cat("Structure:\n")
-  for (i in 1:model$size) {
+  for (i in seq_along(model$trees)) {
     cat("Tree ", i, ":\n", sep = "")
     print(model$trees[[i]])
   }
