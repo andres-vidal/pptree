@@ -20,7 +20,8 @@ add_library(pptree
   src/pptree.cpp
   src/linalg.cpp
   src/stats.cpp
-  src/pp.cpp)
+  src/pp.cpp
+  src/dr.cpp)
 
 find_package(Eigen3 REQUIRED)
 find_package(nlohmann_json REQUIRED)

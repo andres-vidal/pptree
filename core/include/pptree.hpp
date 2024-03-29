@@ -1,10 +1,14 @@
 #include "pp.hpp"
+#include "dr.hpp"
 #include <memory>
 #include <stdexcept>
-
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
+  inline namespace dr { using namespace ::dr; }
+  inline namespace ppstrategy { using namespace ::pp::strategy; }
+  inline namespace drstrategy { using namespace ::dr::strategy; }
   inline namespace stats { using namespace ::stats; }
+
 
   template<typename T>
   using Threshold = T;
@@ -234,7 +238,8 @@ namespace pptree {
   Tree<T, R> train(
     const stats::Data<T> &      data,
     const stats::DataColumn<R> &groups,
-    const pp::PPStrategy<T, R> &pp_strategy);
+    const pp::strategy::PPStrategy<T, R> &pp_strategy,
+    const dr::strategy::DRStrategy<T> &   dr_strategy);
 
   template<typename T, typename R>
   Tree<T, R> train_glda(

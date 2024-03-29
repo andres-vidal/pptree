@@ -1,3 +1,5 @@
+#pragma once
+
 #include "linalg.hpp"
 #include <set>
 #include <map>
