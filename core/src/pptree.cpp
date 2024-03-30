@@ -235,17 +235,22 @@ namespace pptree {
   }
 
   template<typename T, typename R>
+  Tree<T, R> train(
+    const Data<T> &           data,
+    const DataColumn<R> &     groups,
+    const TrainingSpec<T, R> &training_spec) {
+    std::set<R> unique_groups = unique(groups);
+    return train(data, groups, unique_groups, training_spec);
+  }
+
+  template<typename T, typename R>
   Tree<T, R> train_glda(
     const Data<T> &      data,
     const DataColumn<R> &groups,
     const double         lambda) {
-    std::set<R> unique_groups = unique(groups);
-
-
     return train(
       data,
       groups,
-      unique_groups,
       TrainingSpec(
         glda_strategy<T, R>(lambda),
         select_all_variables<T>()));
