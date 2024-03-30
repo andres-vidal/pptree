@@ -11,12 +11,12 @@ namespace pptree {
 
   template<typename T, typename R>
   struct TrainingSpec {
-    const PPStrategy<T, R> &pp_strategy;
-    const DRStrategy<T> &dr_strategy;
+    const PPStrategy<T, R> pp_strategy;
+    const DRStrategy<T> dr_strategy;
 
     TrainingSpec(
-      const PPStrategy<T, R> &pp_strategy,
-      const DRStrategy<T> &dr_strategy)
+      const PPStrategy<T, R> pp_strategy,
+      const DRStrategy<T> dr_strategy)
       : pp_strategy(pp_strategy), dr_strategy(dr_strategy) {
     }
   };
