@@ -246,12 +246,6 @@ namespace pptree {
   };
 
   template<typename T, typename R>
-  Tree<T, R> train(
-    const stats::Data<T> &      data,
-    const stats::DataColumn<R> &groups,
-    const TrainingSpec<T, R> &  training_spec);
-
-  template<typename T, typename R>
   Tree<T, R> train_glda(
     const stats::Data<T> &      data,
     const stats::DataColumn<R> &groups,
