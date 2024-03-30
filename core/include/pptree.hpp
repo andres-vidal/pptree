@@ -2,6 +2,7 @@
 #include "dr.hpp"
 #include <memory>
 #include <stdexcept>
+#include <any>
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
   inline namespace dr { using namespace ::dr; }
@@ -13,11 +14,13 @@ namespace pptree {
   struct TrainingSpec {
     const PPStrategy<T, R> pp_strategy;
     const DRStrategy<T> dr_strategy;
+    const std::map<std::string, std::any> params;
 
     TrainingSpec(
       const PPStrategy<T, R> pp_strategy,
-      const DRStrategy<T> dr_strategy)
-      : pp_strategy(pp_strategy), dr_strategy(dr_strategy) {
+      const DRStrategy<T> dr_strategy,
+      const std::map<std::string, std::any> params)
+      : pp_strategy(pp_strategy), dr_strategy(dr_strategy), params(params) {
     }
   };
 

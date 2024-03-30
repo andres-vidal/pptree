@@ -253,7 +253,8 @@ namespace pptree {
       groups,
       TrainingSpec(
         pp::strategy::glda<T, R>(lambda),
-        dr::strategy::all<T>()));
+        dr::strategy::all<T>(),
+        { { "lambda", std::any_cast<double>(lambda) } }));
   }
 
   template Tree<long double, int> train_glda(
@@ -280,6 +281,14 @@ namespace pptree {
 
     Forest<T, R> forest(n_vars, lambda, seed);
 
+
+    TrainingSpec<T, R> training_spec(
+      pp::strategy::glda<T, R>(lambda),
+      dr::strategy::uniform<T>(n_vars, gen),
+      { { "n_vars", std::any_cast<int>(n_vars) },
+        { "lambda", std::any_cast<double>(lambda) },
+        { "seed", std::any_cast<double>(seed) } });
+
     for (int i = 0; i < size; i++) {
       auto [bootstrap_sample, boostrap_groups] = stats::stratified_proportional_sample(
         data,
@@ -292,10 +301,7 @@ namespace pptree {
         bootstrap_sample,
         boostrap_groups,
         unique_groups,
-        TrainingSpec(
-          pp::strategy::glda<T, R>(lambda),
-          dr::strategy::uniform<T>(n_vars, gen))
-        );
+        training_spec);
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
     }
