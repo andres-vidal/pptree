@@ -9,11 +9,10 @@ using namespace Eigen;
 namespace pptree {
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > step(
-    const Data<T> &          data,
-    const DataColumn<R> &    groups,
-    const std::set<R> &      unique_groups,
-    const PPStrategy<T, R> & pp_strategy,
-    const DRStrategy<T> &    dr_strategy);
+    const Data<T> &           data,
+    const DataColumn<R> &     groups,
+    const std::set<R> &       unique_groups,
+    const TrainingSpec<T, R> &training_spec);
 
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
@@ -133,8 +132,7 @@ namespace pptree {
     const DataColumn<R> &              binary_groups,
     const R &                          binary_group,
     const std::map<int, std::set<R> >& binary_group_mapping,
-    const PPStrategy<T, R> &           pp_strategy,
-    const DRStrategy<T> &              dr_strategy) {
+    const TrainingSpec<T, R> &         training_spec) {
     std::set<R> unique_groups = binary_group_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
@@ -149,23 +147,21 @@ namespace pptree {
       select_group(data, binary_groups, binary_group),
       select_group(groups, binary_groups, binary_group),
       unique_groups,
-      pp_strategy,
-      dr_strategy);
+      training_spec);
 
     return std::move(condition);
   }
 
   template<typename T, typename R >
   std::unique_ptr< Condition<T, R> >  step(
-    const Data<T> &          data,
-    const DataColumn<R> &    groups,
-    const std::set<R> &      unique_groups,
-    const PPStrategy<T, R> & pp_strategy,
-    const DRStrategy<T> &    dr_strategy) {
+    const Data<T> &            data,
+    const DataColumn<R> &      groups,
+    const std::set<R> &        unique_groups,
+    const TrainingSpec<T, R> & training_spec) {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
-    Data<T> reduced_data = dr_strategy(data);
+    Data<T> reduced_data = training_spec.dr_strategy(data);
 
     if (unique_groups.size() == 2) {
       auto [group_1, group_2] = take_two(unique_groups);
@@ -175,14 +171,14 @@ namespace pptree {
         groups,
         group_1,
         group_2,
-        pp_strategy);
+        training_spec.pp_strategy);
     }
 
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
       reduced_data,
       groups,
       unique_groups,
-      pp_strategy);
+      training_spec.pp_strategy);
 
     auto [group_1, group_2] = take_two(binary_unique_groups);
 
@@ -191,7 +187,7 @@ namespace pptree {
       binary_groups,
       group_1,
       group_2,
-      pp_strategy);
+      training_spec.pp_strategy);
 
     R binary_lower_group = temp_node->lower->as_response().value;
     R binary_upper_group = temp_node->upper->as_response().value;
@@ -203,8 +199,7 @@ namespace pptree {
       binary_groups,
       binary_lower_group,
       binary_group_mapping,
-      pp_strategy,
-      dr_strategy);
+      training_spec);
 
     LOG_INFO << "Build upper branch" << std::endl;
     std::unique_ptr<Node<T, R> > upper_branch = build_branch(
@@ -213,8 +208,7 @@ namespace pptree {
       binary_groups,
       binary_upper_group,
       binary_group_mapping,
-      pp_strategy,
-      dr_strategy);
+      training_spec);
 
     std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,
@@ -228,13 +222,14 @@ namespace pptree {
 
   template<typename T, typename R >
   Tree<T, R> train(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const std::set<R> &     unique_groups,
-    const PPStrategy<T, R> &pp_strategy,
-    const DRStrategy<T> &   dr_strategy) {
+    const Data<T> &           data,
+    const DataColumn<R> &     groups,
+    const std::set<R> &       unique_groups,
+    const TrainingSpec<T, R> &training_spec) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
-    Tree<T, R> tree = Tree(step(data, groups, unique_groups, pp_strategy, dr_strategy));
+
+    Tree<T, R> tree = Tree(step(data, groups, unique_groups, training_spec));
+
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
@@ -251,8 +246,9 @@ namespace pptree {
       data,
       groups,
       unique_groups,
-      glda_strategy<T, R>(lambda),
-      select_all_variables<T>());
+      TrainingSpec(
+        glda_strategy<T, R>(lambda),
+        select_all_variables<T>()));
   }
 
   template Tree<long double, int> train_glda(
@@ -291,9 +287,10 @@ namespace pptree {
         bootstrap_sample,
         boostrap_groups,
         unique_groups,
-        glda_strategy<T, R>(lambda),
-        select_variables_uniformly<T>(n_vars, gen));
-
+        TrainingSpec(
+          glda_strategy<T, R>(lambda),
+          select_variables_uniformly<T>(n_vars, gen))
+        );
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
     }

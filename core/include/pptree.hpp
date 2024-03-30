@@ -9,6 +9,17 @@ namespace pptree {
   inline namespace drstrategy { using namespace ::dr::strategy; }
   inline namespace stats { using namespace ::stats; }
 
+  template<typename T, typename R>
+  struct TrainingSpec {
+    const PPStrategy<T, R> &pp_strategy;
+    const DRStrategy<T> &dr_strategy;
+
+    TrainingSpec(
+      const PPStrategy<T, R> &pp_strategy,
+      const DRStrategy<T> &dr_strategy)
+      : pp_strategy(pp_strategy), dr_strategy(dr_strategy) {
+    }
+  };
 
   template<typename T>
   using Threshold = T;
@@ -238,8 +249,7 @@ namespace pptree {
   Tree<T, R> train(
     const stats::Data<T> &      data,
     const stats::DataColumn<R> &groups,
-    const pp::strategy::PPStrategy<T, R> &pp_strategy,
-    const dr::strategy::DRStrategy<T> &   dr_strategy);
+    const TrainingSpec<T, R> &  training_spec);
 
   template<typename T, typename R>
   Tree<T, R> train_glda(
