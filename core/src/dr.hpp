@@ -7,8 +7,8 @@ namespace dr::strategy {
   using DRStrategy = std::function<stats::Data<T>(const stats::Data<T>&)>;
 
   template<typename T>
-  DRStrategy<T> select_all_variables();
+  DRStrategy<T> all();
 
   template<typename T>
-  DRStrategy<T> select_variables_uniformly(int n_vars, std::mt19937 &gen);
+  DRStrategy<T> uniform(int n_vars, std::mt19937 &gen);
 }

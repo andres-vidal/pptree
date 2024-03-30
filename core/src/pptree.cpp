@@ -252,8 +252,8 @@ namespace pptree {
       data,
       groups,
       TrainingSpec(
-        glda_strategy<T, R>(lambda),
-        select_all_variables<T>()));
+        pp::strategy::glda<T, R>(lambda),
+        dr::strategy::all<T>()));
   }
 
   template Tree<long double, int> train_glda(
@@ -293,8 +293,8 @@ namespace pptree {
         boostrap_groups,
         unique_groups,
         TrainingSpec(
-          glda_strategy<T, R>(lambda),
-          select_variables_uniformly<T>(n_vars, gen))
+          pp::strategy::glda<T, R>(lambda),
+          dr::strategy::uniform<T>(n_vars, gen))
         );
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));

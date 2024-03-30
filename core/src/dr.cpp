@@ -7,16 +7,16 @@ using namespace stats;
 
 namespace dr::strategy {
   template<typename T>
-  DRStrategy<T> select_all_variables() {
+  DRStrategy<T> all() {
     return [](const Data<T> &data) -> Data<T> {
              return data;
     };
   }
 
-  template DRStrategy<long double> select_all_variables<long double>();
+  template DRStrategy<long double> all<long double>();
 
   template<typename T>
-  DRStrategy<T> select_variables_uniformly(int n_vars, std::mt19937 &gen) {
+  DRStrategy<T> uniform(int n_vars, std::mt19937 &gen) {
     return [n_vars, &gen](const Data<T> &data) -> Data<T> {
              assert(n_vars > 0 && "The number of variables must be greater than 0.");
              assert(n_vars <= data.cols() && "The number of variables must be less than or equal to the number of columns in the data.");
@@ -39,5 +39,5 @@ namespace dr::strategy {
     };
   }
 
-  template DRStrategy<long double> select_variables_uniformly<long double>(int, std::mt19937&);
+  template DRStrategy<long double> uniform<long double>(int, std::mt19937&);
 }

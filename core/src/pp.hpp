@@ -50,6 +50,6 @@ namespace pp::strategy {
 
 
   template<typename T, typename G>
-  PPStrategy<T, G> glda_strategy(
+  PPStrategy<T, G> glda(
     const double lambda);
 }

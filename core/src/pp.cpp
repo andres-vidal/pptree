@@ -140,7 +140,7 @@ namespace pp {
 
 namespace pp::strategy {
   template<typename T, typename G>
-  PPStrategy<T, G> glda_strategy(
+  PPStrategy<T, G> glda(
     const double lambda) {
     if (lambda == 0) {
       LOG_INFO << "Chosen Projection-Pursuit Strategy is LDA" << std::endl;
@@ -154,6 +154,6 @@ namespace pp::strategy {
     };
   }
 
-  template PPStrategy<long double, int> glda_strategy<long double, int>(
+  template PPStrategy<long double, int> glda<long double, int>(
     const double lambda);
 }
