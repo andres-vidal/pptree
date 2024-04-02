@@ -227,7 +227,7 @@ namespace pptree {
     const TrainingSpec<T, R> &training_spec) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
-    Tree<T, R> tree = Tree(step(data, groups, unique_groups, training_spec));
+    Tree<T, R> tree = Tree(step(data, groups, unique_groups, training_spec), training_spec.clone());
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;

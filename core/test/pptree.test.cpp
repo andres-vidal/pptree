@@ -146,7 +146,8 @@ TEST(TreeEquals, true_case) {
         as_projector<long double>({ 1.0, 2.0 }),
         3.0,
         std::make_unique<Response<long double, int> >(1),
-        std::make_unique<Response<long double, int> >(2))));
+        std::make_unique<Response<long double, int> >(2))),
+    TrainingSpec<long double, int>::lda());
 
   Tree<long double, int> t2(
     std::make_unique<Condition<long double, int> >(
@@ -157,7 +158,8 @@ TEST(TreeEquals, true_case) {
         as_projector<long double>({ 1.0, 2.0 }),
         3.0,
         std::make_unique<Response<long double, int> >(1),
-        std::make_unique<Response<long double, int> >(2))));
+        std::make_unique<Response<long double, int> >(2))),
+    TrainingSpec<long double, int>::lda());
 
   ASSERT_TRUE(t1 == t2);
 }
@@ -168,14 +170,16 @@ TEST(TreeEquals, false_case) {
       as_projector<long double>({ 1.0, 2.0 }),
       3.0,
       std::make_unique<Response<long double, int> >(1),
-      std::make_unique<Response<long double, int> >(2)));
+      std::make_unique<Response<long double, int> >(2)),
+    TrainingSpec<long double, int>::lda());
 
   Tree<long double, int> t2(
     std::make_unique<Condition<long double, int> >(
       as_projector<long double>({ 1.0, 2.0 }),
       3.0,
       std::make_unique<Response<long double, int> >(1),
-      std::make_unique<Response<long double, int> >(3)));
+      std::make_unique<Response<long double, int> >(3)),
+    TrainingSpec<long double, int>::lda());
 
   ASSERT_FALSE(t1 == t2);
 }
@@ -201,7 +205,8 @@ TEST(PPTreeTrainLDA, univariate_two_groups) {
       as_projector<long double>({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
-      std::make_unique<Response<long double, int> >(1)));
+      std::make_unique<Response<long double, int> >(1)),
+    TrainingSpec<long double, int>::lda());
 
   ASSERT_EQ(expect, result);
 }
@@ -233,7 +238,8 @@ TEST(PPTreeTrainLDA, univariate_three_groups) {
         as_projector<long double>({ 1.0 }),
         2.5,
         std::make_unique<Response<long double, int> >(1),
-        std::make_unique<Response<long double, int> >(2))));
+        std::make_unique<Response<long double, int> >(2))),
+    TrainingSpec<long double, int>::lda());
 
 
   ASSERT_EQ(expect, result);
@@ -277,7 +283,8 @@ TEST(PPTreeTrainLDA, multivariate_two_groups) {
       2.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
-      )
+      ),
+    TrainingSpec<long double, int>::lda()
     );
 
   ASSERT_EQ(expect, result);
@@ -364,7 +371,8 @@ TEST(PPTreeTrainLDA, multivariate_three_groups) {
         2.8568896254203113,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
-      std::make_unique<Response<long double, int> >(2)));
+      std::make_unique<Response<long double, int> >(2)),
+    TrainingSpec<long double, int>::lda());
 
   ASSERT_EQ(expect, result);
 }
@@ -390,7 +398,8 @@ TEST(PPTreeTrainPDA, lambda_onehalf_univariate_two_groups) {
       as_projector<long double>({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
-      std::make_unique<Response<long double, int> >(1)));
+      std::make_unique<Response<long double, int> >(1)),
+    TrainingSpec<long double, int>::lda());
 
   ASSERT_EQ(expect, result);
 }
@@ -433,7 +442,8 @@ TEST(PPTreeTrainPDA, lambda_onehalf_multivariate_two_groups) {
       2.4440,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
-      )
+      ),
+    TrainingSpec<long double, int>::lda()
     );
 
   ASSERT_EQ(expect, result);
@@ -536,7 +546,8 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(2)
             ),
           std::make_unique<Response<long double, int> >(0)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -554,7 +565,8 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -573,7 +585,8 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -592,7 +605,8 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -699,7 +713,8 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(2),
             std::make_unique<Response<long double, int> >(1)
             )
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -717,7 +732,8 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(2)
             ),
           std::make_unique<Response<long double, int> >(0)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -735,7 +751,8 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(0)
             ),
           std::make_unique<Response<long double, int> >(1)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -753,7 +770,8 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             ),
           std::make_unique<Response<long double, int> >(0)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -813,7 +831,8 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           1.66054084868256,
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -826,7 +845,8 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           2.5,
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -839,7 +859,8 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           1.9601144528047953,
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -852,7 +873,8 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           1.3347158081570496,
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -861,7 +883,11 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
 }
 
 TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
-  Forest<long double, int> forest(TrainingSpec<long double, int>::uniform_glda(2, 0, 1));
+  const int n_vars = 2;
+  const double lambda = 0;
+  const double seed = 1;
+
+  Forest<long double, int> forest(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed));
 
   forest.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -876,7 +902,8 @@ TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(2)
             ),
           std::make_unique<Response<long double, int> >(0)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -895,7 +922,8 @@ TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -914,7 +942,8 @@ TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -933,7 +962,8 @@ TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(0)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -947,7 +977,11 @@ TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
 }
 
 TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
-  Forest<long double, int> forest(TrainingSpec<long double, int>::uniform_glda(2, 0, 1));
+  const int n_vars = 2;
+  const double lambda = 0;
+  const double seed = 1;
+
+  Forest<long double, int> forest(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed));
 
   forest.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -962,7 +996,8 @@ TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(2)
             ),
           std::make_unique<Response<long double, int> >(0)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -981,7 +1016,8 @@ TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -1000,7 +1036,8 @@ TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -1019,7 +1056,8 @@ TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(0)
             ),
           std::make_unique<Response<long double, int> >(2)
-          )
+          ),
+        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)
         )
       )
     );
@@ -1105,7 +1143,8 @@ TEST(PPTreePredictDataColumn, univariate_two_groups) {
       as_projector<long double>({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
-      std::make_unique<Response<long double, int> >(1)));
+      std::make_unique<Response<long double, int> >(1)),
+    TrainingSpec<long double, int>::lda());
 
 
   DataColumn<long double> input(1);
@@ -1126,7 +1165,8 @@ TEST(PPTreePredictDataColumn, univariate_three_groups) {
         as_projector<long double>({ 1.0 }),
         2.5,
         std::make_unique<Response<long double, int> >(1),
-        std::make_unique<Response<long double, int> >(2))));
+        std::make_unique<Response<long double, int> >(2))),
+    TrainingSpec<long double, int>::lda());
 
   DataColumn<long double> input(1);
   input << 1.0;
@@ -1145,7 +1185,8 @@ TEST(PPTreePredictDataColumn, multivariate_two_groups) {
       as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       std::make_unique<Response<long double, int> >(0),
-      std::make_unique<Response<long double, int> >(1)));
+      std::make_unique<Response<long double, int> >(1)),
+    TrainingSpec<long double, int>::lda());
 
   DataColumn<long double> input(4);
   input << 1, 0, 1, 1;
@@ -1165,7 +1206,8 @@ TEST(PPTreePredictDataColumn, multivariate_three_groups) {
         2.5,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
-      std::make_unique<Response<long double, int> >(2)));
+      std::make_unique<Response<long double, int> >(2)),
+    TrainingSpec<long double, int>::lda());
 
   DataColumn<long double> input(5);
   input << 1, 0, 0, 1, 1;
@@ -1184,7 +1226,8 @@ TEST(PPTreePredictData, univariate_two_groups) {
       as_projector<long double>({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
-      std::make_unique<Response<long double, int> >(1)));
+      std::make_unique<Response<long double, int> >(1)),
+    TrainingSpec<long double, int>::lda());
 
   Data<long double> input(2, 1);
   input << 1.0,  2.0;
@@ -1207,7 +1250,8 @@ TEST(PPTreePredictData, univariate_three_groups) {
         as_projector<long double>({ 1.0 }),
         2.5,
         std::make_unique<Response<long double, int> >(1),
-        std::make_unique<Response<long double, int> >(2))));
+        std::make_unique<Response<long double, int> >(2))),
+    TrainingSpec<long double, int>::lda());
 
   Data<long double> input(3, 1);
   input << 1.0, 2.0, 3.0;
@@ -1226,7 +1270,8 @@ TEST(PPTreePredictData, multivariate_two_groups) {
       as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       std::make_unique<Response<long double, int> >(0),
-      std::make_unique<Response<long double, int> >(1)));
+      std::make_unique<Response<long double, int> >(1)),
+    TrainingSpec<long double, int>::lda());
 
   Data<long double> input(2, 4);
   input <<
@@ -1251,7 +1296,8 @@ TEST(PPTreePredictData, multivariate_three_groups) {
         2.5,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
-      std::make_unique<Response<long double, int> >(2)));
+      std::make_unique<Response<long double, int> >(2)),
+    TrainingSpec<long double, int>::lda());
 
   Data<long double> input(3, 5);
   input <<

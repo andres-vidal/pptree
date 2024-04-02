@@ -52,6 +52,7 @@ namespace Rcpp {
 
   SEXP wrap(const pptree::Tree<long double, int> &tree) {
     return Rcpp::List::create(
+      Rcpp::Named("spec") = Rcpp::wrap(*tree.spec),
       Rcpp::Named("root") = Rcpp::wrap(*tree.root));
   }
 
@@ -138,11 +139,12 @@ namespace Rcpp {
 
   template<> pptree::Tree<long double, int> as(SEXP x) {
     Rcpp::List rtree(x);
+    Rcpp::List rspec(rtree["spec"]);
 
     auto root = as<pptree::Condition<long double, int> >(rtree["root"]);
     auto root_ptr = std::make_unique<pptree::Condition<long double, int> >(std::move(root));
 
-    return pptree::Tree<long double, int>(std::move(root_ptr));
+    return pptree::Tree<long double, int>(std::move(root_ptr), as<std::unique_ptr<pptree::TrainingSpec<long double, int> > >(rspec));
   }
 
   template<> pptree::Forest<long double, int> as(SEXP x) {
