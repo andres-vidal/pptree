@@ -2,7 +2,8 @@
 #include "dr.hpp"
 #include <memory>
 #include <stdexcept>
-#include <any>
+#include <algorithm>
+
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
   inline namespace dr { using namespace ::dr; }
@@ -10,19 +11,86 @@ namespace pptree {
   inline namespace drstrategy { using namespace ::dr::strategy; }
   inline namespace stats { using namespace ::stats; }
 
+
+  struct ITrainingParam {
+    virtual ~ITrainingParam() = default;
+  };
+
+  template<typename T>
+  struct TrainingParam : public ITrainingParam {
+    T value;
+
+    TrainingParam(const T value) : value(value) {
+    }
+  };
+
+  template<typename T>
+  struct TrainingParamPointer : public ITrainingParam {
+    std::unique_ptr<T> ptr;
+
+    explicit TrainingParamPointer(std::unique_ptr<T> ptr) : ptr(std::move(ptr)) {
+    }
+  };
+
+
+  struct TrainingParams {
+    std::map<std::string, std::unique_ptr<ITrainingParam> > map;
+
+    TrainingParams() {
+    }
+
+    template<typename T>
+    void set(const std::string name, T param) {
+      map[name] = std::make_unique<TrainingParam<T> >(param);
+    }
+
+    template<typename T>
+    void set_ptr(const std::string name, std::unique_ptr<T> param_ptr) {
+      map[name] = std::make_unique<TrainingParamPointer<T> >(std::move(param_ptr));
+    }
+
+    template<typename T>
+    T at(const std::string name) const {
+      return dynamic_cast<TrainingParam<T> *>(map.at(name).get())->value;
+    }
+
+    template<typename T>
+    T & from_ptr_at(const std::string name) const {
+      return *dynamic_cast<TrainingParamPointer<T> *>(map.at(name).get())->ptr;
+    }
+  };
+
   template<typename T, typename R>
   struct TrainingSpec {
     const PPStrategy<T, R> pp_strategy;
     const DRStrategy<T> dr_strategy;
-    const std::map<std::string, std::any> params;
+
+    const std::unique_ptr<TrainingParams> params;
 
     TrainingSpec(
       const PPStrategy<T, R> pp_strategy,
-      const DRStrategy<T> dr_strategy,
-      const std::map<std::string, std::any> params)
-      : pp_strategy(pp_strategy), dr_strategy(dr_strategy), params(params) {
+      const DRStrategy<T> dr_strategy)
+      : pp_strategy(pp_strategy), dr_strategy(dr_strategy), params(std::make_unique<TrainingParams>()) {
+    }
+
+    static std::unique_ptr<TrainingSpec<T, R> > glda(const double lambda) {
+      auto spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
+
+      spec->params->set("lambda", lambda);
+      return spec;
+    }
+
+    static std::unique_ptr<TrainingSpec<T, R> > uniform_glda(const int n_vars, const double lambda, const double seed) {
+      auto rng =  std::make_unique<std::mt19937>(seed);
+      auto spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars, *rng));
+      spec->params->set("n_vars", n_vars);
+      spec->params->set("lambda", lambda);
+      spec->params->set("seed", seed);
+      spec->params->set_ptr("rng", std::move(rng));
+      return spec;
     }
   };
+
 
   template<typename T>
   using Threshold = T;
@@ -180,13 +248,9 @@ namespace pptree {
   template<typename T, typename R>
   struct Forest {
     std::vector<std::unique_ptr<Tree<T, R> > > trees;
-    const int n_vars;
-    const double seed;
-    const double lambda;
+    std::unique_ptr<TrainingSpec<T, R> > spec;
 
-
-    Forest(const int n_vars, const double lambda, const double seed)
-      : n_vars(n_vars),  lambda(lambda), seed(seed) {
+    Forest(std::unique_ptr<TrainingSpec<T, R> > && spec) : spec(std::move(spec)) {
     }
 
     R predict(const DataColumn<T> &data) const {

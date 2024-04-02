@@ -10,5 +10,5 @@ namespace dr::strategy {
   DRStrategy<T> all();
 
   template<typename T>
-  DRStrategy<T> uniform(int n_vars, std::mt19937 &gen);
+  DRStrategy<T> uniform(int n_vars, std::mt19937 &rng);
 }

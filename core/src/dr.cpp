@@ -16,8 +16,8 @@ namespace dr::strategy {
   template DRStrategy<long double> all<long double>();
 
   template<typename T>
-  DRStrategy<T> uniform(int n_vars, std::mt19937 &gen) {
-    return [n_vars, &gen](const Data<T> &data) -> Data<T> {
+  DRStrategy<T> uniform(int n_vars, std::mt19937 &rng) {
+    return [n_vars, &rng](const Data<T> &data) -> Data<T> {
              assert(n_vars > 0 && "The number of variables must be greater than 0.");
              assert(n_vars <= data.cols() && "The number of variables must be less than or equal to the number of columns in the data.");
 
@@ -25,7 +25,7 @@ namespace dr::strategy {
 
              LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
 
-             std::vector<int> var_sampled_indices = stats::Uniform(0, data.cols() - 1)(gen, n_vars);
+             std::vector<int> var_sampled_indices = stats::Uniform(0, data.cols() - 1)(rng, n_vars);
 
              LOG_INFO << "Selected variables: " << var_sampled_indices << std::endl;
 

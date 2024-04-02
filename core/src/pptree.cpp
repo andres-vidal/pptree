@@ -68,7 +68,6 @@ namespace pptree {
 
     if (projected_mean_1 < projected_mean_2) {
       l_group = group_1;
-
       u_group = group_2;
     } else {
       l_group = group_2;
@@ -248,13 +247,7 @@ namespace pptree {
     const Data<T> &      data,
     const DataColumn<R> &groups,
     const double         lambda) {
-    return train(
-      data,
-      groups,
-      TrainingSpec(
-        pp::strategy::glda<T, R>(lambda),
-        dr::strategy::all<T>(),
-        { { "lambda", std::any_cast<double>(lambda) } }));
+    return train(data, groups, *TrainingSpec<T, R>::glda(lambda));
   }
 
   template Tree<long double, int> train_glda(
@@ -274,34 +267,27 @@ namespace pptree {
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
     LOG_INFO << "The seed is: " << seed << std::endl;
 
-    std::mt19937 gen(seed);
-
     assert(size > 0 && "The forest size must be greater than 0.");
     std::set<R> unique_groups = unique(groups);
 
-    Forest<T, R> forest(n_vars, lambda, seed);
 
-
-    TrainingSpec<T, R> training_spec(
-      pp::strategy::glda<T, R>(lambda),
-      dr::strategy::uniform<T>(n_vars, gen),
-      { { "n_vars", std::any_cast<int>(n_vars) },
-        { "lambda", std::any_cast<double>(lambda) },
-        { "seed", std::any_cast<double>(seed) } });
+    Forest<T, R> forest(TrainingSpec<T, R>::uniform_glda(n_vars, lambda, seed));
 
     for (int i = 0; i < size; i++) {
+      std::mt19937& rng = forest.spec->params->template from_ptr_at<std::mt19937>("rng");
+
       auto [bootstrap_sample, boostrap_groups] = stats::stratified_proportional_sample(
         data,
         groups,
         unique_groups,
         data.rows(),
-        gen);
+        rng);
 
       Tree<T, R> tree = train(
         bootstrap_sample,
         boostrap_groups,
         unique_groups,
-        training_spec);
+        *forest.spec);
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
     }

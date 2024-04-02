@@ -10,11 +10,19 @@ namespace Rcpp {
   SEXP wrap(const pptree::Condition<long double, int> &node);
   SEXP wrap(const pptree::Forest<long double, int> &forest);
 
+  SEXP wrap(const pptree::TrainingSpec<long double, int> &spec);
+  SEXP wrap(const pptree::TrainingParams &params);
+  SEXP wrap(const pptree::ITrainingParam &param);
+  SEXP wrap(const pptree::TrainingParam<int> &param);
+  SEXP wrap(const pptree::TrainingParam<double> &param);
+
   template<> std::unique_ptr<pptree::Node<long double, int> > as(SEXP);
   template<> pptree::Tree<long double, int> as(SEXP);
   template<> pptree::Response<long double, int> as(SEXP);
   template<> pptree::Condition<long double, int> as(SEXP);
   template<> pptree::Forest<long double, int> as(SEXP);
+
+  template<> std::unique_ptr<pptree::TrainingSpec<long double, int> > as(SEXP);
 }
 
 
@@ -55,10 +63,44 @@ namespace Rcpp {
     }
 
     return Rcpp::List::create(
-      Rcpp::Named("nvars") = Rcpp::wrap(forest.n_vars),
-      Rcpp::Named("lambda") = Rcpp::wrap(forest.lambda),
-      Rcpp::Named("seed") = Rcpp::wrap(forest.seed),
+      Rcpp::Named("spec") = Rcpp::wrap(*forest.spec),
       Rcpp::Named("trees") = trees);
+  }
+
+  SEXP wrap(const pptree::TrainingSpec<long double, int> &spec) {
+    return Rcpp::wrap(*spec.params);
+  }
+
+  SEXP wrap(const pptree::TrainingParams &params) {
+    Rcpp::List rparams;
+
+    for (const auto &[key, value_ptr] : params.map) {
+      SEXP rvalue = wrap(*value_ptr);
+
+      if (rvalue != R_NilValue) {
+        rparams.push_back(wrap(*value_ptr), key);
+      }
+    }
+
+    return rparams;
+  }
+
+  SEXP wrap(const pptree::ITrainingParam &param) {
+    if (dynamic_cast<const pptree::TrainingParam<int> *>(&param)) {
+      return wrap(dynamic_cast<const pptree::TrainingParam<int>&>(param));
+    } else if (dynamic_cast<const pptree::TrainingParam<double> *>(&param)) {
+      return wrap(dynamic_cast<const pptree::TrainingParam<double>&>(param));
+    } else {
+      return R_NilValue;
+    }
+  }
+
+  SEXP wrap(const pptree::TrainingParam<int> &param) {
+    return wrap(param.value);
+  }
+
+  SEXP wrap(const pptree::TrainingParam<double> &param) {
+    return wrap(param.value);
   }
 
   template<> std::unique_ptr<pptree::Node<long double, int> > as(SEXP x) {
@@ -66,6 +108,7 @@ namespace Rcpp {
 
     if (rnode.containsElementNamed("value")) {
       auto resp = as<pptree::Response<long double, int> >(x);
+
       auto resp_ptr = std::make_unique<pptree::Response<long double, int> >(std::move(resp));
       return std::move(resp_ptr);
     }
@@ -105,12 +148,9 @@ namespace Rcpp {
   template<> pptree::Forest<long double, int> as(SEXP x) {
     Rcpp::List rforest(x);
     Rcpp::List rtrees(rforest["trees"]);
+    Rcpp::List rspec(rforest["spec"]);
 
-    const int n_vars = Rcpp::as<int>(rforest["nvars"]);
-    const double lambda = Rcpp::as<double>(rforest["lambda"]);
-    const double seed = Rcpp::as<double>(rforest["seed"]);
-
-    pptree::Forest<long double, int> forest(n_vars, lambda, seed);
+    pptree::Forest<long double, int> forest(as<std::unique_ptr<pptree::TrainingSpec<long double, int> > >(rspec));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree = as<pptree::Tree<long double, int> >(rtrees[i]);
@@ -119,5 +159,27 @@ namespace Rcpp {
     }
 
     return forest;
+  }
+
+  template<> std::unique_ptr<pptree::TrainingSpec<long double, int> > as(SEXP x) {
+    Rcpp::List rspec(x);
+
+    bool has_n_vars = rspec.containsElementNamed("n_vars");
+    bool has_seed = rspec.containsElementNamed("seed");
+    bool has_lambda = rspec.containsElementNamed("lambda");
+
+    if (has_n_vars && has_seed && has_lambda) {
+      return pptree::TrainingSpec<long double, int>::uniform_glda(
+        Rcpp::as<int>(rspec["n_vars"]),
+        Rcpp::as<double>(rspec["lambda"]),
+        Rcpp::as<double>(rspec["seed"]));
+    }
+
+    if (has_lambda) {
+      return pptree::TrainingSpec<long double, int>::glda(
+        Rcpp::as<double>(rspec["lambda"]));
+    }
+
+    Rcpp::stop("Invalid training spec");
   }
 }
