@@ -25,6 +25,32 @@ namespace pp {
     const stats::DataColumn<G> &groups,
     const std::set<G> &         unique_groups);
 
+  template<typename T, typename G>
+  PPStrategyReturn<T> lda_strategy(
+    const stats::Data<T> &      data,
+    const stats::DataColumn<G> &groups,
+    const std::set<G> &         unique_groups);
+
+  template<typename T, typename G>
+  Projector<T> pda_optimum_projector(
+    const stats::Data<T> &      data,
+    const stats::DataColumn<G> &groups,
+    const std::set<G> &         unique_groups,
+    const double                lambda);
+
+
+  template<typename T, typename G>
+  T pda_index(
+    const stats::Data<T> &      data,
+    const Projector<T> &        projector,
+    const stats::DataColumn<G> &groups,
+    const std::set<G> &         unique_groups,
+    const double                lambda);
+
+  template<typename T, typename G>
+  PPStrategy<T, G> pda_strategy(
+    const double lambda);
+
   template<typename T>
   Projection<T> project(
     const stats::Data<T> &data,
@@ -34,12 +60,6 @@ namespace pp {
   T project(
     const stats::DataColumn<T> &data,
     const Projector<T> &        projector);
-
-  template<typename T, typename G>
-  PPStrategyReturn<T> lda_strategy(
-    const stats::Data<T> &      data,
-    const stats::DataColumn<G> &groups,
-    const std::set<G> &         unique_groups);
 
   template<typename T>
   Projector<T> as_projector(std::vector<T> vector) {

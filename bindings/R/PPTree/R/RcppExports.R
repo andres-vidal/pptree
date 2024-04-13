@@ -5,6 +5,10 @@ pptree_train_lda <- function(data, groups) {
     .Call('_PPTree_pptree_train_lda', PACKAGE = 'PPTree', data, groups)
 }
 
+pptree_train_pda <- function(data, groups, lambda) {
+    .Call('_PPTree_pptree_train_pda', PACKAGE = 'PPTree', data, groups, lambda)
+}
+
 pptree_predict <- function(tree, data) {
     .Call('_PPTree_pptree_predict', PACKAGE = 'PPTree', tree, data)
 }

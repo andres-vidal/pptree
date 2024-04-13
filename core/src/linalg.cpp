@@ -89,6 +89,16 @@ namespace linalg {
     return lu.inverse();
   }
 
+  DMatrix<long double> solve(
+    const DMatrix<long double> &l,
+    const DMatrix<long double> &r
+    ) {
+    Eigen::FullPivLU<DMatrix<long double> > lu(l);
+
+    assert(lu.isInvertible() && "Given matrix is not invertible");
+    return lu.solve(r);
+  }
+
   std::tuple<DVector<long double>, DMatrix<long double> > sort_eigen(
     const DVector<long double> &values,
     const DMatrix<long double> &vectors

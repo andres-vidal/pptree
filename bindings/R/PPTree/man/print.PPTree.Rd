@@ -4,10 +4,12 @@
 \alias{print.PPTree}
 \title{Prints a PPTree model.}
 \usage{
-\method{print}{PPTree}(model)
+\method{print}{PPTree}(x, ...)
 }
 \arguments{
-\item{model}{A PPTree model.}
+\item{x}{A PPTree model.}
+
+\item{...}{(unused) other parameters tipically passed to print}
 }
 \description{
 Prints a PPTree model.
