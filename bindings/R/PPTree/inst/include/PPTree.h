@@ -10,7 +10,7 @@ namespace Rcpp {
   SEXP wrap(const pptree::Condition<long double, int> &node);
   SEXP wrap(const pptree::Forest<long double, int> &forest);
 
-  SEXP wrap(const pptree::TrainingSpec<long double, int> &spec);
+  SEXP wrap(const pptree::TrainingSpec<long double, int> &training_spec);
   SEXP wrap(const pptree::TrainingParams &params);
   SEXP wrap(const pptree::ITrainingParam &param);
   SEXP wrap(const pptree::TrainingParam<int> &param);
@@ -52,7 +52,7 @@ namespace Rcpp {
 
   SEXP wrap(const pptree::Tree<long double, int> &tree) {
     return Rcpp::List::create(
-      Rcpp::Named("spec") = Rcpp::wrap(*tree.spec),
+      Rcpp::Named("trainingSpec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("root") = Rcpp::wrap(*tree.root));
   }
 
@@ -64,12 +64,12 @@ namespace Rcpp {
     }
 
     return Rcpp::List::create(
-      Rcpp::Named("spec") = Rcpp::wrap(*forest.spec),
+      Rcpp::Named("trainingSpec") = Rcpp::wrap(*forest.training_spec),
       Rcpp::Named("trees") = trees);
   }
 
-  SEXP wrap(const pptree::TrainingSpec<long double, int> &spec) {
-    return Rcpp::wrap(*spec.params);
+  SEXP wrap(const pptree::TrainingSpec<long double, int> &training_spec) {
+    return Rcpp::wrap(*training_spec.params);
   }
 
   SEXP wrap(const pptree::TrainingParams &params) {
@@ -139,7 +139,7 @@ namespace Rcpp {
 
   template<> pptree::Tree<long double, int> as(SEXP x) {
     Rcpp::List rtree(x);
-    Rcpp::List rspec(rtree["spec"]);
+    Rcpp::List rspec(rtree["trainingSpec"]);
 
     auto root = as<pptree::Condition<long double, int> >(rtree["root"]);
     auto root_ptr = std::make_unique<pptree::Condition<long double, int> >(std::move(root));
@@ -150,9 +150,9 @@ namespace Rcpp {
   template<> pptree::Forest<long double, int> as(SEXP x) {
     Rcpp::List rforest(x);
     Rcpp::List rtrees(rforest["trees"]);
-    Rcpp::List rspec(rforest["spec"]);
+    Rcpp::List rtraining_spec(rforest["trainingSpec"]);
 
-    pptree::Forest<long double, int> forest(as<std::unique_ptr<pptree::TrainingSpec<long double, int> > >(rspec));
+    pptree::Forest<long double, int> forest(as<std::unique_ptr<pptree::TrainingSpec<long double, int> > >(rtraining_spec));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree = as<pptree::Tree<long double, int> >(rtrees[i]);

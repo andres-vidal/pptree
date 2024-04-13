@@ -97,10 +97,10 @@ namespace pptree {
     }
 
     static std::unique_ptr<TrainingSpec<T, R> > glda(const double lambda) {
-      auto spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
+      auto training_spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
 
-      spec->params->set("lambda", lambda);
-      return spec;
+      training_spec->params->set("lambda", lambda);
+      return training_spec;
     }
 
     static std::unique_ptr<TrainingSpec<T, R> > lda() {
@@ -110,12 +110,12 @@ namespace pptree {
 
     static std::unique_ptr<TrainingSpec<T, R> > uniform_glda(const int n_vars, const double lambda, const double seed) {
       auto rng =  std::make_shared<std::mt19937>(seed);
-      auto spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars, *rng));
-      spec->params->set("n_vars", n_vars);
-      spec->params->set("lambda", lambda);
-      spec->params->set("seed", seed);
-      spec->params->set_ptr("rng", rng);
-      return spec;
+      auto training_spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars, *rng));
+      training_spec->params->set("n_vars", n_vars);
+      training_spec->params->set("lambda", lambda);
+      training_spec->params->set("seed", seed);
+      training_spec->params->set_ptr("rng", rng);
+      return training_spec;
     }
   };
 
@@ -246,9 +246,9 @@ namespace pptree {
   template<typename T, typename R>
   struct Tree {
     std::unique_ptr<Condition<T, R> > root;
-    std::unique_ptr<TrainingSpec<T, R> > spec;
+    std::unique_ptr<TrainingSpec<T, R> > training_spec;
 
-    Tree(std::unique_ptr<Condition<T, R> > root,  std::unique_ptr<TrainingSpec<T, R> > spec) : root(std::move(root)), spec(std::move(spec)) {
+    Tree(std::unique_ptr<Condition<T, R> > root,  std::unique_ptr<TrainingSpec<T, R> > training_spec) : root(std::move(root)), training_spec(std::move(training_spec)) {
     }
 
     R predict(const DataColumn<T> &data) const {
@@ -277,9 +277,9 @@ namespace pptree {
   template<typename T, typename R>
   struct Forest {
     std::vector<std::unique_ptr<Tree<T, R> > > trees;
-    std::unique_ptr<TrainingSpec<T, R> > spec;
+    std::unique_ptr<TrainingSpec<T, R> > training_spec;
 
-    Forest(std::unique_ptr<TrainingSpec<T, R> > && spec) : spec(std::move(spec)) {
+    Forest(std::unique_ptr<TrainingSpec<T, R> > && training_spec) : training_spec(std::move(training_spec)) {
     }
 
     R predict(const DataColumn<T> &data) const {
