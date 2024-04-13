@@ -1296,3 +1296,267 @@ TEST(PPTreePredictData, multivariate_three_groups) {
 
   ASSERT_EQ(result, expected);
 }
+
+
+TEST(PPTreeLDARetrain, idempotent_in_same_data_spec) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
+
+  Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(data, groups));
+
+  ASSERT_EQ(tree, result);
+}
+
+TEST(PPTreeLDARetrain, generates_a_different_tree_with_different_data_spec) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
+
+  Data<long double> other_data(10, 4);
+  other_data <<
+    1, 0, 1, 1,
+    1, 1, 0, 0,
+    1, 0, 0, 1,
+    1, 1, 1, 1,
+    4, 0, 0, 1,
+    4, 0, 0, 2,
+    4, 0, 0, 3,
+    4, 1, 0, 1,
+    4, 0, 1, 1,
+    4, 0, 1, 2;
+
+  DataColumn<int> other_groups(10);
+  other_groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(other_data, other_groups));
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      2.5,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)
+      ),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreePDARetrain, idempotent_in_same_data_spec) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::glda(0.5),
+    DataSpec<long double, int>(data, groups));
+
+  Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(data, groups));
+
+  ASSERT_EQ(tree, result);
+}
+
+TEST(PPTreePDARetrain, generates_a_different_tree_with_different_data_spec) {
+  Data<long double> data(10, 1);
+  data <<
+    1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10, 1);
+  groups <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
+
+  Data<long double> other_data(10, 1);
+  other_data <<
+    1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2;
+
+  DataColumn<int> other_groups(10, 1);
+  other_groups <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1;
+
+  Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(other_data, other_groups));
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 1.0 }),
+      1.5,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
+
+  ASSERT_EQ(expect, result);
+}

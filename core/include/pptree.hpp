@@ -296,6 +296,10 @@ namespace pptree {
     bool operator!=(const Tree<T, R> &other) const {
       return !(*this == other);
     }
+
+    Tree<T, R> retrain(const DataSpec<T, R> &data) const {
+      return train(*training_spec, data);
+    }
   };
 
   template<typename T, typename R>
