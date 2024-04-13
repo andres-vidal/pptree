@@ -76,31 +76,6 @@ namespace pptree {
   };
 
   template<typename T, typename R>
-  struct DataSpec {
-    const Data<T>  &x;
-    const DataColumn<R>  &y;
-    const std::set<R>  classes;
-
-    DataSpec(
-      const Data<T> & x,
-      const DataColumn<R> & y,
-      const std::set<R> classes)
-      : x(x),
-        y(y),
-        classes(classes) {
-    }
-
-    DataSpec(
-      const Data<T> & x,
-      const DataColumn<R> & y)
-      : x(x),
-        y(y),
-        classes(stats::unique(y)) {
-    }
-  };
-
-
-  template<typename T, typename R>
   struct TrainingSpec {
     PPStrategy<T, R> pp_strategy;
     DRStrategy<T> dr_strategy;

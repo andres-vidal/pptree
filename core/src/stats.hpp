@@ -42,6 +42,33 @@ namespace stats {
   template<typename T>
   using DataColumn = linalg::DVector<T>;
 
+  template<typename N>
+  std::set<N> unique(const DataColumn<N> &column);
+
+  template<typename T, typename R>
+  struct DataSpec {
+    const Data<T>  &x;
+    const DataColumn<R>  &y;
+    const std::set<R>  classes;
+
+    DataSpec(
+      const Data<T> &       x,
+      const DataColumn<R> & y,
+      const std::set<R>     classes)
+      : x(x),
+      y(y),
+      classes(classes) {
+    }
+
+    DataSpec(
+      const Data<T> &       x,
+      const DataColumn<R> & y)
+      : x(x),
+      y(y),
+      classes(unique(y)) {
+    }
+  };
+
   template<typename T, typename G>
   Data<T> select_group(
     const Data<T> &      data,
@@ -71,9 +98,6 @@ namespace stats {
     const Data<T> &      data,
     const DataColumn<G> &groups,
     const std::set<G> &  unique_groups);
-
-  template<typename N>
-  std::set<N> unique(const DataColumn<N> &column);
 
   template<typename T, typename G>
   Data<T> between_groups_sum_of_squares(
