@@ -231,61 +231,45 @@ namespace pptree {
         training_data.y,
         training_data.classes,
         training_spec),
-      training_spec.clone(),
+      std::make_unique<TrainingSpec<T, R> >(training_spec),
       std::make_shared<DataSpec<T, R> >(training_data));
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
 
-  template<typename T, typename R>
-  Tree<T, R> train(
-    const Data<T> &           data,
-    const DataColumn<R> &     groups,
-    const TrainingSpec<T, R> &training_spec) {
-    return train(training_spec, DataSpec<T, R>(data, groups));
-  }
+  template Tree<long double, int> train(
+    const TrainingSpec<long double, int> &training_spec,
+    const DataSpec<long double, int> &    training_data);
 
-  template<typename T, typename R>
-  Tree<T, R> train_glda(
-    const Data<T> &      data,
-    const DataColumn<R> &groups,
-    const double         lambda) {
-    return train(data, groups, *TrainingSpec<T, R>::glda(lambda));
-  }
-
-  template Tree<long double, int> train_glda(
-    const Data<long double> &data,
-    const DataColumn<int> &  groups,
-    const double             lambda);
-
-
-  template<typename T, typename R>
-  Forest<T, R> train_forest_glda(
-    const Data<T> &       data,
-    const DataColumn<R> & groups,
-    const int             size,
-    const int             n_vars,
-    const double          lambda,
-    const double          seed) {
+  template<typename T, typename R >
+  Forest<T, R> train(
+    const TrainingSpec<T, R> &training_spec,
+    const DataSpec<T, R> &    training_data,
+    const int                 size) {
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
-    LOG_INFO << "The seed is: " << seed << std::endl;
 
     assert(size > 0 && "The forest size must be greater than 0.");
 
+    // TODO: this should be done safely, as seed and rng are requirements to train a forest
+    const double seed = training_spec.params->template at<double>("seed");
+    std::mt19937& rng = training_spec.params->template from_ptr_at<std::mt19937>("rng");
+
+    LOG_INFO << "The seed is: " << seed << std::endl;
+
     Forest<T, R> forest(
-      TrainingSpec<T, R>::uniform_glda(n_vars, lambda, seed),
-      std::make_shared<DataSpec<T, R> >(data, groups));
+      std::make_unique<TrainingSpec<T, R> >(training_spec),
+      std::make_shared<DataSpec<T, R> >(training_data));
 
     for (int i = 0; i < size; i++) {
-      std::mt19937& rng = forest.training_spec->params->template from_ptr_at<std::mt19937>("rng");
-
       DataSpec<T, R> sample_training_data = stats::stratified_proportional_sample(
-        *forest.training_data,
-        data.rows(),
+        training_data,
+        training_data.x.rows(),
         rng);
 
-      Tree<T, R> tree = train(*forest.training_spec, sample_training_data);
+      Tree<T, R> tree = train(
+        training_spec,
+        sample_training_data);
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
     }
@@ -295,11 +279,8 @@ namespace pptree {
     return forest;
   }
 
-  template Forest<long double, int> train_forest_glda(
-    const Data<long double> & data,
-    const DataColumn<int> &   groups,
-    const int                 size,
-    const int                 n_vars,
-    const double              lambda,
-    const double              seed);
+  template Forest<long double, int> train(
+    const TrainingSpec<long double, int> &training_spec,
+    const DataSpec<long double, int> &    training_data,
+    const int                             size);
 }

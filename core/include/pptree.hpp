@@ -66,12 +66,32 @@ namespace pptree {
 
     template<typename T>
     T at(const std::string name) const {
-      return dynamic_cast<TrainingParam<T> *>(map.at(name).get())->value;
+      if (map.find(name) == map.end()) {
+        throw std::runtime_error("Parameter " + name + " not found");
+      }
+
+      auto ptr = dynamic_cast<TrainingParam<T> *>(map.at(name).get());
+
+      if (ptr == nullptr) {
+        throw std::runtime_error("Parameter '" + name + "' is not of expected type");
+      }
+
+      return ptr->value;
     }
 
     template<typename T>
     T & from_ptr_at(const std::string name) const {
-      return *dynamic_cast<TrainingParamPointer<T> *>(map.at(name).get())->ptr;
+      if (map.find(name) == map.end()) {
+        throw std::runtime_error("Parameter " + name + " not found");
+      }
+
+      auto ptr = dynamic_cast<TrainingParamPointer<T> *>(map.at(name).get());
+
+      if (ptr == nullptr) {
+        throw std::runtime_error("Parameter '" + name + "' is not of expected type");
+      }
+
+      return *ptr->ptr;
     }
   };
 
@@ -84,37 +104,34 @@ namespace pptree {
     TrainingSpec(
       const PPStrategy<T, R> pp_strategy,
       const DRStrategy<T> dr_strategy)
-      : pp_strategy(pp_strategy), dr_strategy(dr_strategy), params(std::make_unique<TrainingParams>()) {
+      : pp_strategy(pp_strategy),
+        dr_strategy(dr_strategy),
+        params(std::make_unique<TrainingParams>()) {
     }
 
     TrainingSpec(const TrainingSpec& other)
-      : pp_strategy(other.pp_strategy), dr_strategy(other.dr_strategy),
+      : pp_strategy(other.pp_strategy),
+        dr_strategy(other.dr_strategy),
         params(new TrainingParams(*other.params)) {
     }
 
-    std::unique_ptr<TrainingSpec<T, R> > clone() const {
-      return std::make_unique<TrainingSpec<T, R> >(*this);
-    }
-
-    static std::unique_ptr<TrainingSpec<T, R> > glda(const double lambda) {
-      auto training_spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
-
-      training_spec->params->set("lambda", lambda);
+    static TrainingSpec<T, R> glda(const double lambda) {
+      auto training_spec = TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
+      training_spec.params->set("lambda", lambda);
       return training_spec;
     }
 
-    static std::unique_ptr<TrainingSpec<T, R> > lda() {
+    static TrainingSpec<T, R> lda() {
       return TrainingSpec<T, R>::glda(0.0);
     }
 
-
-    static std::unique_ptr<TrainingSpec<T, R> > uniform_glda(const int n_vars, const double lambda, const double seed) {
+    static TrainingSpec<T, R> uniform_glda(const int n_vars, const double lambda, const double seed) {
       auto rng =  std::make_shared<std::mt19937>(seed);
-      auto training_spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars, *rng));
-      training_spec->params->set("n_vars", n_vars);
-      training_spec->params->set("lambda", lambda);
-      training_spec->params->set("seed", seed);
-      training_spec->params->set_ptr("rng", rng);
+      auto training_spec = TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars, *rng));
+      training_spec.params->set("n_vars", n_vars);
+      training_spec.params->set("lambda", lambda);
+      training_spec.params->set("seed", seed);
+      training_spec.params->set_ptr("rng", rng);
       return training_spec;
     }
   };
@@ -359,18 +376,15 @@ namespace pptree {
     }
   };
 
-  template<typename T, typename R>
-  Tree<T, R> train_glda(
-    const stats::Data<T> &      data,
-    const stats::DataColumn<R> &groups,
-    const double lambda);
+  template<typename T, typename R >
+  Tree<T, R> train(
+    const TrainingSpec<T, R> &training_spec,
+    const DataSpec<T, R> &    training_data);
 
-  template<typename T, typename R>
-  Forest<T, R> train_forest_glda(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const int size,
-    const int n_vars,
-    const double lambda,
-    const double seed);
+
+  template<typename T, typename R >
+  Forest<T, R> train(
+    const TrainingSpec<T, R> &training_spec,
+    const DataSpec<T, R> &    training_data,
+    const int size);
 }
