@@ -47,8 +47,8 @@ namespace stats {
 
   template<typename T, typename R>
   struct DataSpec {
-    const Data<T>  &x;
-    const DataColumn<R>  &y;
+    const Data<T>  x;
+    const DataColumn<R>  y;
     const std::set<R>  classes;
 
     DataSpec(
@@ -130,6 +130,12 @@ namespace stats {
     const Data<T> &       data,
     const DataColumn<G> & groups,
     const std::set<G> &   unique_groups,
+    const int             size,
+    std::mt19937 &        rng);
+
+  template<typename T, typename G>
+  DataSpec<T, G> stratified_proportional_sample(
+    const DataSpec<T, G> &data,
     const int             size,
     std::mt19937 &        rng);
 

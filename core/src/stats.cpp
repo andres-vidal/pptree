@@ -344,13 +344,25 @@ namespace stats {
     return stratified_sample(data, groups, sizes, rng);
   }
 
-  template std::tuple<Data<long double>, DataColumn<int> > stratified_proportional_sample(
-    const Data<long double> & data,
-    const DataColumn<int> &   groups,
-    const std::set<int> &     unique_groups,
-    const int                 size,
-    std::mt19937 &            rng);
+  template<typename T, typename G>
+  DataSpec<T, G> stratified_proportional_sample(
+    const DataSpec<T, G> &data,
+    const int             size,
+    std::mt19937 &        rng) {
+    auto [sample, sample_groups] = stratified_proportional_sample(
+      data.x,
+      data.y,
+      data.classes,
+      size,
+      rng);
 
+    return DataSpec<T, G>(sample, sample_groups, data.classes);
+  }
+
+  template DataSpec<long double, int> stratified_proportional_sample(
+    const DataSpec<long double, int>& data,
+    const int                         size,
+    std::mt19937 &                    rng);
 
   template<typename T>
   std::tuple<std::vector<int>, std::vector<int> > mask_null_columns(const Data<T> &data) {

@@ -280,16 +280,12 @@ namespace pptree {
     for (int i = 0; i < size; i++) {
       std::mt19937& rng = forest.training_spec->params->template from_ptr_at<std::mt19937>("rng");
 
-      auto [bootstrap_sample, boostrap_groups] = stats::stratified_proportional_sample(
-        forest.training_data->x,
-        forest.training_data->y,
-        forest.training_data->classes,
+      DataSpec<T, R> sample_training_data = stats::stratified_proportional_sample(
+        *forest.training_data,
         data.rows(),
         rng);
 
-      Tree<T, R> tree = train(
-        *forest.training_spec,
-        DataSpec<T, R>(bootstrap_sample, boostrap_groups, forest.training_data->classes));
+      Tree<T, R> tree = train(*forest.training_spec, sample_training_data);
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
     }
