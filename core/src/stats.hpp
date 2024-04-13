@@ -1,9 +1,39 @@
 #include "linalg.hpp"
 #include <set>
 #include <map>
+#include <random>
+#include <algorithm>
+#include <vector>
 
 
 namespace stats {
+  class Uniform {
+    private:
+      int min;
+      int max;
+      uint64_t range;
+
+    public:
+      Uniform(int min, int max) : min(min), max(max), range(static_cast<uint64_t>(max) - min + 1) {
+      }
+
+      int operator()(std::mt19937 &gen) {
+        uint64_t random_number = gen() - gen.min();
+        return min + static_cast<int>(random_number % range);
+      }
+
+      std::vector<int> operator()(std::mt19937 &gen, int count) {
+        std::vector<int> result(count);
+
+        for (int i = 0; i < count; i++) {
+          result[i] = operator()(gen);
+        }
+
+        return result;
+      }
+  };
+
+
   template<typename T>
   using Data = linalg::DMatrix<T>;
 
@@ -55,4 +85,34 @@ namespace stats {
     const Data<T> &      data,
     const DataColumn<G> &groups,
     const std::set<G> &  unique_groups);
-}
+
+  template<typename T>
+  Data<T> sample(
+    const Data<T> &data,
+    int            size,
+    std::mt19937 & gen);
+
+  template<typename T, typename G>
+  std::tuple<Data<T>, DataColumn<G> > stratified_sample(
+    const Data<T> &        data,
+    const DataColumn<G> &  groups,
+    const std::map<G, int> sizes,
+    std::mt19937 &         gen);
+
+  template<typename T, typename G>
+  std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(
+    const Data<T> &       data,
+    const DataColumn<G> & groups,
+    const std::set<G> &   unique_groups,
+    const int             size,
+    std::mt19937 &        gen);
+
+  template<typename T>
+  std::tuple<std::vector<int>, std::vector<int> > mask_null_columns(
+    const Data<T> &data);
+
+  template<typename T>
+  DataColumn<T> expand(
+    const DataColumn<T> &   data,
+    const std::vector<int> &mask);
+};

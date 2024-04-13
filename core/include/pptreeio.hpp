@@ -20,6 +20,12 @@ std::ostream& operator<<(std::ostream& ostream, const std::set<V, C1, C2> &set) 
   return ostream << json_set.dump();
 }
 
+template<typename V>
+std::ostream& operator<<(std::ostream& ostream, const std::vector<V> &vec) {
+  json json_vector(vec);
+  return ostream << json_vector.dump();
+}
+
 namespace pptree {
   template<typename T, typename R >
   struct Tree;
@@ -29,6 +35,8 @@ namespace pptree {
   struct Response;
   template<typename T, typename R >
   struct Condition;
+  template<typename T, typename R >
+  struct Forest;
 
   template<typename T, typename R >
   void to_json(json& j, const Condition<T, R> &condition);
@@ -71,6 +79,19 @@ namespace pptree {
   }
 
   template<typename T, typename R>
+  void to_json(json& j, const Forest<T, R>& forest) {
+    std::vector<json> trees_json;
+
+    for (const auto& tree : forest.trees) {
+      json tree_json;
+      to_json(tree_json, *tree);
+      trees_json.push_back(tree_json);
+    }
+
+    j = json{ { "trees", trees_json } };
+  }
+
+  template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Tree<T, R>& tree) {
     json json_tree(tree);
     return ostream << json_tree.dump(2, ' ', false);
@@ -91,6 +112,12 @@ namespace pptree {
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Response<T, R>& response) {
     json json_response(response);
+    return ostream << json_response.dump(2, ' ', false);
+  }
+
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const Forest<T, R>& forest) {
+    json json_response(forest);
     return ostream << json_response.dump(2, ' ', false);
   }
 

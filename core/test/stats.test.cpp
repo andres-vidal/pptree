@@ -1,10 +1,15 @@
 #include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
 
 #include "stats.hpp"
+
 
 using namespace stats;
 using namespace Eigen;
 
+//use json
+#define ASSERT_VEC_EQ(expected, actual) \
+        ASSERT_EQ(nlohmann::json(expected).dump(), nlohmann::json(actual).dump())
 
 TEST(StatsSelectGroup, single_group) {
   Data<long double> data(3, 3);
@@ -697,7 +702,6 @@ TEST(StatsBinaryGroup, multiple_observations_per_group_mixed) {
   ASSERT_EQ(expected_new_groups, actual_new_groups);
 }
 
-
 TEST(StatsUnique, empty_result) {
   DataColumn<int> column(0);
   std::set<int> actual = unique(column);
@@ -755,7 +759,6 @@ TEST(StatsUnique, multiple_values_repeated) {
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected, actual);
 }
-
 
 TEST(StatsBetweenGroupsSumOfSquares, single_group) {
   Data<long double> data(3, 3);
@@ -883,7 +886,6 @@ TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_univariate_non_sequential_g
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
-
 
 TEST(StatsBetweenGroupsSumOfSquares, multiple_groups_multivariate) {
   Data<long double> data(8, 3);
@@ -1135,6 +1137,678 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
     24.5, 24.5, 24.5, 0.0,
     24.5, 24.5, 24.5, 0.0,
     0.0,  0.0,  0.0,  0.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSample, negative_sample_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(0, 0);
+
+  ASSERT_DEATH({ sample(data, -1, generator); }, "Sample size must be greater than 0.");
+}
+
+TEST(StatsSample, zero_sample_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(0, 0);
+
+  ASSERT_DEATH({ sample(data, 0, generator); }, "Sample size must be greater than 0.");
+}
+
+
+TEST(StatsSample, sample_size_larger_than_data_rows) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_DEATH({ sample(data, 4, generator); }, "Sample size cannot be larger than the number of rows in the data.");
+}
+
+TEST(StatsSample, sample_has_correct_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  Data<long double> actual = sample(data, 2, generator);
+
+  ASSERT_EQ(2, actual.rows());
+  ASSERT_EQ(3, actual.cols());
+}
+
+TEST(StatsSample, sample_is_subset_of_data) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  Data<long double> actual = sample(data, 2, generator);
+
+  for (int i = 0; i < actual.rows(); i++) {
+    bool found = false;
+
+    for (int j = 0; j < data.rows(); j++) {
+      if (actual.row(i) == data.row(j)) {
+        found = true;
+        break;
+      }
+    }
+
+    ASSERT_TRUE(found) << "Expected to find row [" << actual.row(i) << "] in the original data: " << std::endl << data << std::endl;
+  }
+}
+
+TEST(StatsStratifiedSample, negative_sample_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  std::map<int, int> sizes = { { 0, -1 }, { 1, 2 } };
+
+  ASSERT_DEATH({ stratified_sample(data, groups, sizes, generator); }, "Sample size must be greater than 0.");
+}
+
+TEST(StatsStratifiedSample, zero_sample_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  std::map<int, int> sizes = { { 0, 0 }, { 1, 2 } };
+
+  ASSERT_DEATH({ stratified_sample(data, groups, sizes, generator); }, "Sample size must be greater than 0.");
+}
+
+TEST(StatsStratifiedSample, sample_size_larger_than_group_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  std::map<int, int> sizes = { { 0, 4 }, { 1, 2 } };
+
+  ASSERT_DEATH({ stratified_sample(data, groups, sizes, generator); }, "Sample size cannot be larger than the number of rows in the data.");
+}
+
+TEST(StatsStratifiedSample, sample_has_correct_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  std::map<int, int> sizes = { { 0, 2 }, { 1, 2 } };
+
+  auto [result, result_groups] = stratified_sample(data, groups, sizes, generator);
+
+  ASSERT_EQ(4, result.rows());
+  ASSERT_EQ(3, result.cols());
+}
+
+TEST(StatsStratifiedSample, sample_has_correct_size_per_strata) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  std::map<int, int> sizes = { { 0, 2 }, { 1, 2 } };
+
+  auto [result, result_groups] = stratified_sample(data, groups, sizes, generator);
+
+  std::map<int, int> result_sizes;
+
+  for (int i = 0; i < result_groups.size(); i++) {
+    result_sizes[result_groups[i]]++;
+  }
+
+  ASSERT_EQ(2, result_sizes[0]);
+  ASSERT_EQ(2, result_sizes[1]);
+}
+
+TEST(StatsStratifiedSample, sample_is_subset_of_data_per_strata) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  std::map<int, int> sizes = { { 0, 2 }, { 1, 2 } };
+
+  auto [result, result_groups] = stratified_sample(data, groups, sizes, generator);
+
+  for (int i = 0; i < result.rows(); i++) {
+    bool found = false;
+
+    for (int j = 0; j < data.rows(); j++) {
+      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+        found = true;
+        break;
+      }
+    }
+
+    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+  }
+}
+
+TEST(StatsStratifiedProportionalSample, negative_sample_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  ASSERT_DEATH({ stratified_proportional_sample(data, groups, { 0, 1 }, -1, generator); }, "Sample size must be greater than 0.");
+}
+
+TEST(StatsStratifiedProportionalSample, zero_sample_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  ASSERT_DEATH({ stratified_proportional_sample(data, groups, { 0, 1 }, 0, generator); }, "Sample size must be greater than 0.");
+}
+
+TEST(StatsStratifiedProportionalSample, sample_size_larger_than_data_rows) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  ASSERT_DEATH({ stratified_proportional_sample(data, groups, { 0, 1 }, 7, generator); }, "Sample size cannot be larger than the number of rows in the data.");
+}
+
+TEST(StatsStratifiedProportionalSample, sample_has_correct_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+
+  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 4, generator);
+
+  ASSERT_EQ(4, result.rows());
+  ASSERT_EQ(3, result.cols());
+}
+
+TEST(StatsStratifiedProportionalSample, sample_has_correct_size_per_strata) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 1.0, 2.0,
+    6.0, 4.0, 5.0,
+    9.0, 7.0, 8.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 4, generator);
+
+  std::map<int, int> result_sizes;
+
+  for (int i = 0; i < result_groups.size(); i++) {
+    result_sizes[result_groups[i]]++;
+  }
+
+  ASSERT_EQ(2, result_sizes[0]);
+  ASSERT_EQ(2, result_sizes[1]);
+}
+
+TEST(StatsStratifiedProportionalSample, sample_is_subset_of_data_per_strata) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(6, 3);
+  data <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0,
+    4.0, 4.0, 4.0,
+    5.0, 5.0, 5.0,
+    6.0, 6.0, 6.0;
+
+  DataColumn<int> groups(6);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1;
+
+  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 4, generator);
+
+  for (int i = 0; i < result.rows(); i++) {
+    bool found = false;
+
+    for (int j = 0; j < data.rows(); j++) {
+      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+        found = true;
+        break;
+      }
+    }
+
+    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+  }
+}
+
+TEST(StatsStratifiedProportionalSample, three_groups_of_equal_size) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(9, 3);
+
+  data <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0,
+    4.0, 4.0, 4.0,
+    5.0, 5.0, 5.0,
+    6.0, 6.0, 6.0,
+    7.0, 7.0, 7.0,
+    8.0, 8.0, 8.0,
+    9.0, 9.0, 9.0;
+
+  DataColumn<int> groups(9);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2;
+
+  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1, 2 }, 6, generator);
+
+  std::map<int, int> result_sizes;
+
+  for (int i = 0; i < result_groups.size(); i++) {
+    result_sizes[result_groups[i]]++;
+  }
+
+  ASSERT_EQ(6, result.rows());
+  ASSERT_EQ(2, result_sizes[0]);
+  ASSERT_EQ(2, result_sizes[1]);
+  ASSERT_EQ(2, result_sizes[2]);
+
+  for (int i = 0; i < result.rows(); i++) {
+    bool found = false;
+
+    for (int j = 0; j < data.rows(); j++) {
+      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+        found = true;
+        break;
+      }
+    }
+
+    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+  }
+}
+
+TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_even) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(9, 3);
+
+  data <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0,
+    4.0, 4.0, 4.0,
+    5.0, 5.0, 5.0,
+    6.0, 6.0, 6.0,
+    7.0, 7.0, 7.0,
+    8.0, 8.0, 8.0,
+    9.0, 9.0, 9.0;
+
+  DataColumn<int> groups(9);
+  groups <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 6, generator);
+
+  std::map<int, int> result_sizes;
+
+  for (int i = 0; i < result_groups.size(); i++) {
+    result_sizes[result_groups[i]]++;
+  }
+
+  ASSERT_EQ(6, result.rows());
+  ASSERT_EQ(2, result_sizes[0]);
+  ASSERT_EQ(4, result_sizes[1]);
+
+  for (int i = 0; i < result.rows(); i++) {
+    bool found = false;
+
+    for (int j = 0; j < data.rows(); j++) {
+      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+        found = true;
+        break;
+      }
+    }
+
+    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+  }
+}
+
+TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_odd) {
+  std::mt19937 generator(0);
+
+  Data<long double> data(9, 3);
+
+  data <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0,
+    4.0, 4.0, 4.0,
+    5.0, 5.0, 5.0,
+    6.0, 6.0, 6.0,
+    7.0, 7.0, 7.0,
+    8.0, 8.0, 8.0,
+    9.0, 9.0, 9.0;
+
+  DataColumn<int> groups(9);
+  groups <<
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 5, generator);
+
+  std::map<int, int> result_sizes;
+
+  for (int i = 0; i < result_groups.size(); i++) {
+    result_sizes[result_groups[i]]++;
+  }
+
+  ASSERT_EQ(5, result.rows());
+  ASSERT_EQ(1, result_sizes[0]);
+  ASSERT_EQ(4, result_sizes[1]);
+
+  for (int i = 0; i < result.rows(); i++) {
+    bool found = false;
+
+    for (int j = 0; j < data.rows(); j++) {
+      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+        found = true;
+        break;
+      }
+    }
+
+    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+  }
+}
+
+TEST(StatsMaskNullColumns, zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0;
+
+  auto [mask, indx] = mask_null_columns(data);
+
+  std::vector<int> expected_mask { 0, 0, 0 };
+  std::vector<int> expected_indx {  };
+
+  ASSERT_EQ(expected_mask.size(), mask.size());
+  ASSERT_EQ(expected_indx.size(), indx.size());
+
+  ASSERT_VEC_EQ(expected_mask, mask);
+  ASSERT_VEC_EQ(expected_indx, indx);
+}
+
+TEST(StatsMaskNullColumns, no_null_columns) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  auto [mask, indx] = mask_null_columns(data);
+
+  std::vector<int> expected_mask { 1, 1, 1 };
+  std::vector<int> expected_indx { 0, 1, 2 };
+
+  ASSERT_EQ(expected_mask.size(), mask.size());
+  ASSERT_EQ(expected_indx.size(), indx.size());
+
+  ASSERT_VEC_EQ(expected_mask, mask);
+  ASSERT_VEC_EQ(expected_indx, indx);
+}
+
+TEST(StatsMaskNullColumns, some_null_columns) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 0.0, 3.0,
+    4.0, 0.0, 6.0,
+    7.0, 0.0, 9.0;
+
+  auto [mask, indx] = mask_null_columns(data);
+
+  std::vector<int> expected_mask { 1, 0, 1 };
+  std::vector<int> expected_indx { 0, 2 };
+
+  ASSERT_EQ(expected_mask.size(), mask.size());
+  ASSERT_EQ(expected_indx.size(), indx.size());
+
+  ASSERT_VEC_EQ(expected_mask, mask);
+  ASSERT_VEC_EQ(expected_indx, indx);
+}
+
+TEST(StatsExpandDataColumn, idempotent) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::vector<int> mask { 1, 1, 1 };
+
+  Data<long double> actual = expand(data, mask);
+
+  ASSERT_EQ(data.size(), actual.size());
+  ASSERT_EQ(data.rows(), actual.rows());
+  ASSERT_EQ(data.cols(), actual.cols());
+  ASSERT_EQ(data, actual);
+}
+
+TEST(StatsExpandDataColumn, generic) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::vector<int> mask { 1, 0, 1, 0, 1 };
+
+  DataColumn<long double> actual = expand(data, mask);
+
+  DataColumn<long double> expected(5);
+  expected <<
+    1.0, 0.0, 2.0, 0.0, 3.0;
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
