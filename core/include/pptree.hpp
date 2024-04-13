@@ -76,6 +76,31 @@ namespace pptree {
   };
 
   template<typename T, typename R>
+  struct DataSpec {
+    const Data<T>  &x;
+    const DataColumn<R>  &y;
+    const std::set<R>  classes;
+
+    DataSpec(
+      const Data<T> & x,
+      const DataColumn<R> & y,
+      const std::set<R> classes)
+      : x(x),
+        y(y),
+        classes(classes) {
+    }
+
+    DataSpec(
+      const Data<T> & x,
+      const DataColumn<R> & y)
+      : x(x),
+        y(y),
+        classes(stats::unique(y)) {
+    }
+  };
+
+
+  template<typename T, typename R>
   struct TrainingSpec {
     PPStrategy<T, R> pp_strategy;
     DRStrategy<T> dr_strategy;
@@ -247,8 +272,18 @@ namespace pptree {
   struct Tree {
     std::unique_ptr<Condition<T, R> > root;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
+    std::shared_ptr<DataSpec<T, R> > training_data;
 
-    Tree(std::unique_ptr<Condition<T, R> > root,  std::unique_ptr<TrainingSpec<T, R> > training_spec) : root(std::move(root)), training_spec(std::move(training_spec)) {
+    Tree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
+    }
+
+    Tree(
+      std::unique_ptr<Condition<T, R> > root,
+      std::unique_ptr<TrainingSpec<T, R> > training_spec,
+      std::shared_ptr<DataSpec<T, R> > training_data)
+      : root(std::move(root)),
+        training_spec(std::move(training_spec)),
+        training_data(training_data) {
     }
 
     R predict(const DataColumn<T> &data) const {
@@ -278,8 +313,16 @@ namespace pptree {
   struct Forest {
     std::vector<std::unique_ptr<Tree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
+    std::shared_ptr<DataSpec<T, R> > training_data;
 
-    Forest(std::unique_ptr<TrainingSpec<T, R> > && training_spec) : training_spec(std::move(training_spec)) {
+    Forest() {
+    }
+
+    Forest(
+      std::unique_ptr<TrainingSpec<T, R> > && training_spec,
+      std::shared_ptr<DataSpec<T, R> > && training_data)
+      : training_spec(std::move(training_spec)),
+        training_data(training_data) {
     }
 
     R predict(const DataColumn<T> &data) const {

@@ -221,13 +221,18 @@ namespace pptree {
 
   template<typename T, typename R >
   Tree<T, R> train(
-    const Data<T> &           data,
-    const DataColumn<R> &     groups,
-    const std::set<R> &       unique_groups,
-    const TrainingSpec<T, R> &training_spec) {
+    const TrainingSpec<T, R> &training_spec,
+    const DataSpec<T, R> &    training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
-    Tree<T, R> tree = Tree(step(data, groups, unique_groups, training_spec), training_spec.clone());
+    Tree<T, R> tree = Tree(
+      step(
+        training_data.x,
+        training_data.y,
+        training_data.classes,
+        training_spec),
+      training_spec.clone(),
+      std::make_shared<DataSpec<T, R> >(training_data));
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
@@ -238,8 +243,7 @@ namespace pptree {
     const Data<T> &           data,
     const DataColumn<R> &     groups,
     const TrainingSpec<T, R> &training_spec) {
-    std::set<R> unique_groups = unique(groups);
-    return train(data, groups, unique_groups, training_spec);
+    return train(training_spec, DataSpec<T, R>(data, groups));
   }
 
   template<typename T, typename R>
@@ -268,26 +272,24 @@ namespace pptree {
     LOG_INFO << "The seed is: " << seed << std::endl;
 
     assert(size > 0 && "The forest size must be greater than 0.");
-    std::set<R> unique_groups = unique(groups);
 
-
-    Forest<T, R> forest(TrainingSpec<T, R>::uniform_glda(n_vars, lambda, seed));
+    Forest<T, R> forest(
+      TrainingSpec<T, R>::uniform_glda(n_vars, lambda, seed),
+      std::make_shared<DataSpec<T, R> >(data, groups));
 
     for (int i = 0; i < size; i++) {
       std::mt19937& rng = forest.training_spec->params->template from_ptr_at<std::mt19937>("rng");
 
       auto [bootstrap_sample, boostrap_groups] = stats::stratified_proportional_sample(
-        data,
-        groups,
-        unique_groups,
+        forest.training_data->x,
+        forest.training_data->y,
+        forest.training_data->classes,
         data.rows(),
         rng);
 
       Tree<T, R> tree = train(
-        bootstrap_sample,
-        boostrap_groups,
-        unique_groups,
-        *forest.training_spec);
+        *forest.training_spec,
+        DataSpec<T, R>(bootstrap_sample, boostrap_groups, forest.training_data->classes));
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
     }
