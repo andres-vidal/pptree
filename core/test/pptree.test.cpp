@@ -520,13 +520,15 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
 
 
   Forest<long double, int> result = pptree::train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
-    4);
+    4,
+    seed);
 
   Forest<long double, int> expect(
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
-    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
+    seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -542,7 +544,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(0)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -561,7 +563,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(2)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -581,7 +583,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(2)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -601,7 +603,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(2)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -609,6 +611,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
 
 
   ASSERT_EQ(expect, result);
+  ASSERT_EQ(expect.seed, result.seed);
 }
 
 TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
@@ -684,13 +687,15 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
   const double seed = 1;
 
   Forest<long double, int> result = pptree::train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
-    4);
+    4,
+    seed);
 
   Forest<long double, int> expect(
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
-    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
+    seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -706,7 +711,7 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             )
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -725,7 +730,7 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(0)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -744,7 +749,7 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(1)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -763,13 +768,14 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(0)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
 
 
   ASSERT_EQ(expect, result);
+  ASSERT_EQ(expect.seed, result.seed);
 }
 
 
@@ -805,14 +811,16 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
   const double seed = 0;
 
   Forest<long double, int> result = pptree::train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
-    4);
+    4,
+    seed);
 
 
   Forest<long double, int> expect(
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
-    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
+    seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -823,7 +831,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }))
         )
       )
@@ -838,7 +846,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }))
         )
       )
@@ -853,7 +861,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }))
         )
       )
@@ -868,13 +876,14 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
           ),
-        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed)),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }))
         )
       )
     );
 
   ASSERT_EQ(expect, result);
+  ASSERT_EQ(expect.seed, result.seed);
 }
 
 TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {

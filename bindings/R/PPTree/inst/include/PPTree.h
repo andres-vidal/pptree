@@ -69,6 +69,7 @@ namespace Rcpp {
     return Rcpp::List::create(
       Rcpp::Named("trainingSpec") = Rcpp::wrap(*forest.training_spec),
       Rcpp::Named("trainingData") = Rcpp::wrap(*forest.training_data),
+      Rcpp::Named("seed") = Rcpp::wrap(forest.seed),
       Rcpp::Named("trees") = trees);
   }
 
@@ -170,7 +171,8 @@ namespace Rcpp {
 
     pptree::Forest<long double, int> forest(
       std::make_unique<pptree::TrainingSpec<long double, int> >(as<pptree::TrainingSpec<long double, int> >(rtraining_spec)),
-      std::make_shared<pptree::DataSpec<long double, int> >(as<pptree::DataSpec<long double, int> >(rtraining_data)));
+      std::make_shared<pptree::DataSpec<long double, int> >(as<pptree::DataSpec<long double, int> >(rtraining_data)),
+      Rcpp::as<double>(rforest["seed"]));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree = as<pptree::Tree<long double, int> >(rtrees[i]);
@@ -185,14 +187,12 @@ namespace Rcpp {
     Rcpp::List rspec(x);
 
     bool has_n_vars = rspec.containsElementNamed("n_vars");
-    bool has_seed = rspec.containsElementNamed("seed");
     bool has_lambda = rspec.containsElementNamed("lambda");
 
-    if (has_n_vars && has_seed && has_lambda) {
+    if (has_n_vars && has_lambda) {
       return pptree::TrainingSpec<long double, int>::uniform_glda(
         Rcpp::as<int>(rspec["n_vars"]),
-        Rcpp::as<double>(rspec["lambda"]),
-        Rcpp::as<double>(rspec["seed"]));
+        Rcpp::as<double>(rspec["lambda"]));
     }
 
     if (has_lambda) {

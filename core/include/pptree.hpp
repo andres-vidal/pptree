@@ -125,13 +125,10 @@ namespace pptree {
       return TrainingSpec<T, R>::glda(0.0);
     }
 
-    static TrainingSpec<T, R> uniform_glda(const int n_vars, const double lambda, const double seed) {
-      auto rng =  std::make_shared<std::mt19937>(seed);
-      auto training_spec = TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars, *rng));
+    static TrainingSpec<T, R> uniform_glda(const int n_vars, const double lambda) {
+      auto training_spec = TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars));
       training_spec.params->set("n_vars", n_vars);
       training_spec.params->set("lambda", lambda);
-      training_spec.params->set("seed", seed);
-      training_spec.params->set_ptr("rng", rng);
       return training_spec;
     }
   };
@@ -306,15 +303,18 @@ namespace pptree {
     std::vector<std::unique_ptr<Tree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<DataSpec<T, R> > training_data;
+    const double seed = 0.0;
 
     Forest() {
     }
 
     Forest(
       std::unique_ptr<TrainingSpec<T, R> > && training_spec,
-      std::shared_ptr<DataSpec<T, R> > && training_data)
+      std::shared_ptr<DataSpec<T, R> > && training_data,
+      const double seed)
       : training_spec(std::move(training_spec)),
-        training_data(training_data) {
+        training_data(training_data),
+        seed(seed) {
     }
 
     R predict(const DataColumn<T> &data) const {
@@ -386,5 +386,6 @@ namespace pptree {
   Forest<T, R> train(
     const TrainingSpec<T, R> &training_spec,
     const DataSpec<T, R> &    training_data,
-    const int size);
+    const int size,
+    const double seed);
 }

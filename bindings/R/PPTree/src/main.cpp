@@ -26,9 +26,10 @@ pptree::Forest<long double, int> pptree_train_forest_glda(
   const int                         n_vars,
   const double                      lambda) {
   return pptree::train(
-    pptree::TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, R::rnorm(0, 1)),
+    pptree::TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     pptree::DataSpec<long double, int>(data, groups),
-    4);
+    size,
+    R::rnorm(0, 1));
 }
 
 // [[Rcpp::export]]

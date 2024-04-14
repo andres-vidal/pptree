@@ -139,7 +139,7 @@ print.PPForest <- function(x, ...) {
   cat("\n")
   cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
   cat("-------------------------------------\n")
-  cat("Random seed:", model$trainingSpec$seed, "\n")
+  cat("Random seed:", model$seed, "\n")
   cat("Number of trees:", length(model$trees), "\n")
   cat("Number of variables in each split:", model$trainingSpec$nvars, "\n")
   cat("Lambda (Regularization Parameter):", model$trainingSpec$lambda, "\n")

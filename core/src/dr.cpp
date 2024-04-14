@@ -8,7 +8,7 @@ using namespace stats;
 namespace dr::strategy {
   template<typename T>
   DRStrategy<T> all() {
-    return [](const Data<T> &data) -> Data<T> {
+    return [](const Data<T> &data, std::mt19937 & rng) -> Data<T> {
              return data;
     };
   }
@@ -16,8 +16,8 @@ namespace dr::strategy {
   template DRStrategy<long double> all<long double>();
 
   template<typename T>
-  DRStrategy<T> uniform(int n_vars, std::mt19937 &rng) {
-    return [n_vars, &rng](const Data<T> &data) -> Data<T> {
+  DRStrategy<T> uniform(int n_vars) {
+    return [n_vars](const Data<T> &data, std::mt19937 & rng) -> Data<T> {
              assert(n_vars > 0 && "The number of variables must be greater than 0.");
              assert(n_vars <= data.cols() && "The number of variables must be less than or equal to the number of columns in the data.");
 
@@ -39,5 +39,5 @@ namespace dr::strategy {
     };
   }
 
-  template DRStrategy<long double> uniform<long double>(int, std::mt19937&);
+  template DRStrategy<long double> uniform<long double>(int);
 }

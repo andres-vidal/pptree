@@ -12,7 +12,8 @@ namespace pptree {
     const Data<T> &           data,
     const DataColumn<R> &     groups,
     const std::set<R> &       unique_groups,
-    const TrainingSpec<T, R> &training_spec);
+    const TrainingSpec<T, R> &training_spec,
+    std::mt19937 &            rng);
 
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
@@ -131,7 +132,8 @@ namespace pptree {
     const DataColumn<R> &              binary_groups,
     const R &                          binary_group,
     const std::map<int, std::set<R> >& binary_group_mapping,
-    const TrainingSpec<T, R> &         training_spec) {
+    const TrainingSpec<T, R> &         training_spec,
+    std::mt19937 &                     rng) {
     std::set<R> unique_groups = binary_group_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
@@ -146,7 +148,8 @@ namespace pptree {
       select_group(data, binary_groups, binary_group),
       select_group(groups, binary_groups, binary_group),
       unique_groups,
-      training_spec);
+      training_spec,
+      rng);
 
     return std::move(condition);
   }
@@ -156,11 +159,12 @@ namespace pptree {
     const Data<T> &            data,
     const DataColumn<R> &      groups,
     const std::set<R> &        unique_groups,
-    const TrainingSpec<T, R> & training_spec) {
+    const TrainingSpec<T, R> & training_spec,
+    std::mt19937 &             rng) {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
-    Data<T> reduced_data = training_spec.dr_strategy(data);
+    Data<T> reduced_data = training_spec.dr_strategy(data, rng);
 
     if (unique_groups.size() == 2) {
       auto [group_1, group_2] = take_two(unique_groups);
@@ -198,7 +202,8 @@ namespace pptree {
       binary_groups,
       binary_lower_group,
       binary_group_mapping,
-      training_spec);
+      training_spec,
+      rng);
 
     LOG_INFO << "Build upper branch" << std::endl;
     std::unique_ptr<Node<T, R> > upper_branch = build_branch(
@@ -207,7 +212,8 @@ namespace pptree {
       binary_groups,
       binary_upper_group,
       binary_group_mapping,
-      training_spec);
+      training_spec,
+      rng);
 
     std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,
@@ -222,7 +228,8 @@ namespace pptree {
   template<typename T, typename R >
   Tree<T, R> train(
     const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data) {
+    const DataSpec<T, R> &    training_data,
+    std::mt19937&             rng) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     Tree<T, R> tree = Tree(
@@ -230,12 +237,21 @@ namespace pptree {
         training_data.x,
         training_data.y,
         training_data.classes,
-        training_spec),
+        training_spec,
+        rng),
       std::make_unique<TrainingSpec<T, R> >(training_spec),
       std::make_shared<DataSpec<T, R> >(training_data));
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
+  }
+
+  template<typename T, typename R >
+  Tree<T, R> train(
+    const TrainingSpec<T, R> &training_spec,
+    const DataSpec<T, R> &    training_data) {
+    std::mt19937 rng(0);
+    return train(training_spec, training_data, rng);
   }
 
   template Tree<long double, int> train(
@@ -246,20 +262,19 @@ namespace pptree {
   Forest<T, R> train(
     const TrainingSpec<T, R> &training_spec,
     const DataSpec<T, R> &    training_data,
-    const int                 size) {
+    const int                 size,
+    const double              seed) {
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
+    LOG_INFO << "The seed is: " << seed << std::endl;
 
     assert(size > 0 && "The forest size must be greater than 0.");
 
-    // TODO: this should be done safely, as seed and rng are requirements to train a forest
-    const double seed = training_spec.params->template at<double>("seed");
-    std::mt19937& rng = training_spec.params->template from_ptr_at<std::mt19937>("rng");
-
-    LOG_INFO << "The seed is: " << seed << std::endl;
+    std::mt19937 rng(seed);
 
     Forest<T, R> forest(
       std::make_unique<TrainingSpec<T, R> >(training_spec),
-      std::make_shared<DataSpec<T, R> >(training_data));
+      std::make_shared<DataSpec<T, R> >(training_data),
+      seed);
 
     for (int i = 0; i < size; i++) {
       DataSpec<T, R> sample_training_data = stats::stratified_proportional_sample(
@@ -269,7 +284,8 @@ namespace pptree {
 
       Tree<T, R> tree = train(
         training_spec,
-        sample_training_data);
+        sample_training_data,
+        rng);
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
     }
@@ -282,5 +298,6 @@ namespace pptree {
   template Forest<long double, int> train(
     const TrainingSpec<long double, int> &training_spec,
     const DataSpec<long double, int> &    training_data,
-    const int                             size);
+    const int                             size,
+    const double                          seed);
 }
