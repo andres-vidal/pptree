@@ -36,8 +36,8 @@ namespace pptree {
     const DataColumn<R> &groups,
     const R &            group_1,
     const R &            group_2) {
-    T mean_1 = linalg::mean(select_group(projected_data, groups, group_1)).value();
-    T mean_2 = linalg::mean(select_group(projected_data, groups, group_2)).value();
+    T mean_1 = mean(select_group(projected_data, groups, group_1));
+    T mean_2 = mean(select_group(projected_data, groups, group_2));
 
     return (mean_1 + mean_2) / 2;
   };
@@ -55,8 +55,8 @@ namespace pptree {
 
     R l_group, u_group;
 
-    DataColumn<T> mean_1 = linalg::mean(select_group(data, groups, group_1));
-    DataColumn<T> mean_2 = linalg::mean(select_group(data, groups, group_2));
+    DataColumn<T> mean_1 = mean(select_group(data, groups, group_1));
+    DataColumn<T> mean_2 = mean(select_group(data, groups, group_2));
 
     T projected_mean_1 = project(mean_1, projector);
     T projected_mean_2 = project(mean_2, projector);

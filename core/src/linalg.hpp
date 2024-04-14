@@ -10,8 +10,8 @@ namespace linalg {
   bool is_approx(long double a, long double b);
   bool is_module_approx(long double a, long double b);
 
-  DVector<long double> mean(
-    const DMatrix<long double> &data);
+  DVector<long double> abs(
+    const DVector<long double> &v);
 
   DMatrix<long double> outer_product(
     const DVector<long double> &a,
@@ -32,6 +32,9 @@ namespace linalg {
   long double inner_square(
     const DVector<long double> &a,
     const DMatrix<long double> &weights);
+
+  long double inner_square(
+    const DVector<long double> &a);
 
   DMatrix<long double> inner_product(
     const DMatrix<long double> &a,

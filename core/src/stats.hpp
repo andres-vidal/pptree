@@ -147,4 +147,40 @@ namespace stats {
   DataColumn<T> expand(
     const DataColumn<T> &   data,
     const std::vector<int> &mask);
+
+  template<typename T>
+  DataColumn<T> mean(
+    const Data<T> &data);
+
+  template<typename T>
+  T mean(
+    const DataColumn<T> &data);
+
+  template<typename T>
+  Data<T> covariance(
+    const Data<T> &data);
+
+  template<typename T>
+  DataColumn<T> sd(
+    const Data<T> &data);
+
+  template<typename T>
+  T sd(
+    const DataColumn<T> &data);
+
+  template<typename T>
+  Data<T> center(
+    const Data<T> &data);
+
+  template<typename T>
+  DataColumn<T> center(
+    const DataColumn<T> &data);
+
+  template<typename T>
+  Data<T> descale(
+    const Data<T> &data);
+
+  template<typename T>
+  DataColumn<T> descale(
+    const DataColumn<T> &data);
 };
