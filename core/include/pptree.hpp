@@ -166,6 +166,8 @@ namespace pptree {
     bool operator!=(const Node<T, R> &other) const {
       return !(*this == other);
     }
+
+    virtual std::tuple<Projector<T>, std::set<R> > _variable_importance(const int nvars) const = 0;
   };
 
   template<typename T, typename R>
@@ -219,6 +221,19 @@ namespace pptree {
     bool operator!=(const Condition<T, R> &other) const {
       return !(*this == other);
     }
+
+    std::tuple<Projector<T>, std::set<R> > _variable_importance(const int nvars) const override {
+      auto [lower_importance, lower_classes] = lower->_variable_importance(nvars);
+      auto [upper_importance, upper_classes] = upper->_variable_importance(nvars);
+
+      std::set<R> classes;
+      classes.insert(lower_classes.begin(), lower_classes.end());
+      classes.insert(upper_classes.begin(), upper_classes.end());
+
+      Projector<T> importance = linalg::abs(projector) / classes.size();
+
+      return { importance + lower_importance + upper_importance, classes };
+    }
   };
 
   template<typename T, typename R>
@@ -254,6 +269,10 @@ namespace pptree {
 
     bool operator!=(const Response<T, R> &other) const {
       return !(*this == other);
+    }
+
+    std::tuple<Projector<T>, std::set<R> > _variable_importance(const int nvars) const override {
+      return { Projector<T>(nvars), { value } };
     }
   };
 
@@ -299,6 +318,15 @@ namespace pptree {
 
     Tree<T, R> retrain(const DataSpec<T, R> &data) const {
       return train(*training_spec, data);
+    }
+
+    Projector<T> variable_importance() const {
+      DataSpec<T, R> standardized_data = center(descale(*training_data));
+      Tree<T, R> standardized_tree = retrain(standardized_data);
+
+      auto [importance, _] = standardized_tree.root->_variable_importance(training_data->x.cols());
+
+      return importance;
     }
   };
 

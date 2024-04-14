@@ -1560,3 +1560,139 @@ TEST(PPTreePDARetrain, generates_a_different_tree_with_different_data_spec) {
 
   ASSERT_EQ(expect, result);
 }
+
+TEST(PPTreeLDAVariableImportance, multivariate_three_groups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> tree = pptree::train(TrainingSpec<long double, int>::lda(),
+                                              DataSpec<long double, int>(data, groups));
+
+  Projector<long double> result = tree.variable_importance();
+
+  Projector<long double> expected = as_projector<long double>(
+    {   0.408057,
+        0.553833,
+        0.00341304,
+        0.00643757,
+        0.0160685 });
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(PPTreePDAVariableImportante, multivariate_two_groups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::glda(0.5),
+    DataSpec<long double, int>(data, groups));
+
+
+  Projector<long double> result = tree.variable_importance();
+
+  Projector<long double> expected = as_projector<long double>({
+    0.499665,
+    0.00113766,
+    0.00831906,
+    0.0152932,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949 });
+
+  std::cout << expected << std::endl << "--" << std::endl;
+  std::cout << result << std::endl;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}

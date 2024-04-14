@@ -176,6 +176,10 @@ namespace stats {
   DataColumn<T> center(
     const DataColumn<T> &data);
 
+  template<typename T, typename R>
+  DataSpec<T, R> center(
+    const DataSpec<T, R> &data);
+
   template<typename T>
   Data<T> descale(
     const Data<T> &data);
@@ -183,4 +187,8 @@ namespace stats {
   template<typename T>
   DataColumn<T> descale(
     const DataColumn<T> &data);
+
+  template<typename T, typename R>
+  DataSpec<T, R> descale(
+    const DataSpec<T, R> &data);
 };
