@@ -778,7 +778,6 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
   ASSERT_EQ(expect.seed, result.seed);
 }
 
-
 TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
   Data<long double> data(10, 12);
   data <<
@@ -1128,7 +1127,6 @@ TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
   ASSERT_EQ(groups, result);
 }
 
-
 TEST(PPTreePredictDataColumn, univariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
@@ -1296,7 +1294,6 @@ TEST(PPTreePredictData, multivariate_three_groups) {
 
   ASSERT_EQ(result, expected);
 }
-
 
 TEST(PPTreeLDARetrain, idempotent_in_same_data_spec) {
   Data<long double> data(30, 5);
@@ -1693,6 +1690,152 @@ TEST(PPTreePDAVariableImportante, multivariate_two_groups) {
 
   std::cout << expected << std::endl << "--" << std::endl;
   std::cout << result << std::endl;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(PPTreeForestLDAVariableImportance, some_variables_multivariate_three_groups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+
+  const int n_vars = 2;
+  const double lambda = 0;
+  const double seed = 1;
+
+  Forest<long double, int> forest = pptree::train(
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  Projector<long double> result = forest.variable_importance();
+
+  Projector<long double> expected = as_projector<long double>({
+    0.499881,
+    -5.95579e-06,
+    -5.95579e-06,
+    0.00750706,
+    0.333327 });
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(PPTreeForestPDAVariableImportance, all_variables_multivariate_two_groups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  const int n_vars = data.cols();
+  const double lambda = 0.1;
+  const double seed = 0;
+
+  Forest<long double, int> forest = pptree::train(
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  Projector<long double> result = forest.variable_importance();
+
+  Projector<long double> expected = as_projector<long double>({
+    0.497305,
+    0.00889968,
+    0.0137289,
+    0.0177429,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566 });
 
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
 }

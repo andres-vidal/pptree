@@ -406,6 +406,16 @@ namespace pptree {
     bool operator!=(const Forest<T, R> &other) const {
       return !(*this == other);
     }
+
+    Projector<T> variable_importance() const {
+      Projector<T> importance(training_data->x.cols());
+
+      for (const auto &tree : trees) {
+        importance += tree->variable_importance();
+      }
+
+      return importance.array() / trees.size();
+    }
   };
 
   template<typename T, typename R >
