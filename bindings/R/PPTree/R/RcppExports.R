@@ -17,3 +17,7 @@ pptree_predict_forest <- function(forest, data) {
     .Call('_PPTree_pptree_predict_forest', PACKAGE = 'PPTree', forest, data)
 }
 
+pptree_variable_importance <- function(tree) {
+    .Call('_PPTree_pptree_variable_importance', PACKAGE = 'PPTree', tree)
+}
+

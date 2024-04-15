@@ -34,14 +34,20 @@ pptree::Forest<long double, int> pptree_train_forest_glda(
 
 // [[Rcpp::export]]
 pptree::DataColumn<int> pptree_predict(
-  pptree::Tree<long double, int> tree,
-  pptree::Data<long double>      data) {
+  pptree::Tree<long double, int> &tree,
+  pptree::Data<long double> &     data) {
   return tree.predict(data);
 }
 
 // [[Rcpp::export]]
 pptree::DataColumn<int> pptree_predict_forest(
-  pptree::Forest<long double, int> forest,
-  pptree::Data<long double>        data) {
+  pptree::Forest<long double, int> &forest,
+  pptree::Data<long double> &       data) {
   return forest.predict(data);
+}
+
+// [[Rcpp::export]]
+pptree::Projector<long double> pptree_variable_importance(
+  const pptree::Tree<long double, int> &tree) {
+  return tree.variable_importance();
 }
