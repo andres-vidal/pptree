@@ -139,21 +139,39 @@ print.PPForest <- function(x, ...) {
   cat("\n")
   cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
   cat("-------------------------------------\n")
-  cat("Random seed:", model$seed, "\n")
-  cat("Number of trees:", length(model$trees), "\n")
-  cat("Number of variables in each split:", model$trainingSpec$nvars, "\n")
-  cat("Lambda (Regularization Parameter):", model$trainingSpec$lambda, "\n")
-  cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
-  cat("Features:\n", paste(colnames(model$x), collapse = "\n "), "\n")
-  cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
-  if (!is.null(model$formula)) {
-    cat("Formula:\n", deparse(model$formula), "\n")
-  }
-  cat("-------------------------------------\n")
-  cat("Structure:\n")
   for (i in seq_along(model$trees)) {
     cat("Tree ", i, ":\n", sep = "")
     print(model$trees[[i]])
+  }
+  cat("\n")
+}
+
+#' Summarizes a PPForest model.
+#' @param object A PPForest model.
+#' @param ... (unused) other parameters tipically passed to print
+#' @examples
+#' model <- PPForest(Species ~ ., data = iris)
+#' summary(model)
+#'
+#' @export
+summary.PPForest <- function(object, ...) {
+  model <- object
+  model$variableImportance <- data.frame(Var.Importance = t(pptree_forest_variable_importance(model)))
+  colnames(model$variableImportance) <- colnames(model$x)
+
+
+  if (!is.null(formula(object))) {
+    cat("\n")
+    cat("Project-Pursuit Oblique Decision Tree\n")
+    cat("-------------------------------------\n")
+    cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
+    cat("Regularization parameter:", model$trainingSpec$lambda, "\n")
+    cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
+    if (!is.null(model$formula)) {
+      cat("Formula:\n", deparse(model$formula), "\n")
+    }
+    cat("-------------------------------------\n")
+    print(model$variableImportance)
   }
   cat("\n")
 }

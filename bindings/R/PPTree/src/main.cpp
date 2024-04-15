@@ -51,3 +51,9 @@ pptree::Projector<long double> pptree_variable_importance(
   const pptree::Tree<long double, int> &tree) {
   return tree.variable_importance();
 }
+
+// [[Rcpp::export]]
+pptree::Projector<long double> pptree_forest_variable_importance(
+  const pptree::Forest<long double, int> &forest) {
+  return forest.variable_importance();
+}

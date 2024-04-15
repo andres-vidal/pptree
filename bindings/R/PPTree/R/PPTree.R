@@ -149,7 +149,6 @@ print.PPTree <- function(x, ...) {
   if (!is.null(formula(x))) {
     cat("\n")
     cat("Project-Pursuit Oblique Decision Tree:\n")
-    cat("Structure:\n")
   }
 
   print_node(model, model$root)
