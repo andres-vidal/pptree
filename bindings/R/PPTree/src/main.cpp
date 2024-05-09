@@ -23,8 +23,7 @@ pptree::Forest<long double, int> pptree_train_forest_glda(
   const int                         size,
   const int                         n_vars,
   const double                      lambda) {
-  std::mt19937 gen(R::rnorm(0, 1));
-  return pptree::train_forest_glda(data, groups, size, n_vars, lambda, gen);
+  return pptree::train_forest_glda(data, groups, size, n_vars, lambda, R::rnorm(0, 1));
 }
 
 // [[Rcpp::export]]

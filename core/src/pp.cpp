@@ -115,24 +115,6 @@ namespace pp {
     const std::set<int> &         unique_groups,
     const double                  lambda);
 
-  template<typename T, typename G>
-  PPStrategy<T, G> glda_strategy(
-    const double lambda) {
-    if (lambda == 0) {
-      LOG_INFO << "Chosen Projection-Pursuit Strategy is LDA" << std::endl;
-    } else {
-      LOG_INFO << "Chosen Projection-Pursuit Strategy is PDA(lambda = " << lambda << ")" << std::endl;
-    }
-
-    return [lambda](const Data<T>& data, const DataColumn<G>& groups, const std::set<G>& unique_groups) -> PPStrategyReturn<T> {
-             auto projector = glda_optimum_projector(data, groups, unique_groups, lambda);
-             return (PPStrategyReturn<T>) { projector, project(data, projector) };
-    };
-  }
-
-  template PPStrategy<long double, int> glda_strategy<long double, int>(
-    const double lambda);
-
   template<typename T>
   Projection<T> project(
     const Data<T> &     data,
@@ -154,4 +136,24 @@ namespace pp {
   template long double project<long double>(
     const DataColumn<long double> &data,
     const Projector<long double> & projector);
+}
+
+namespace pp::strategy {
+  template<typename T, typename G>
+  PPStrategy<T, G> glda(
+    const double lambda) {
+    if (lambda == 0) {
+      LOG_INFO << "Chosen Projection-Pursuit Strategy is LDA" << std::endl;
+    } else {
+      LOG_INFO << "Chosen Projection-Pursuit Strategy is PDA(lambda = " << lambda << ")" << std::endl;
+    }
+
+    return [lambda](const Data<T>& data, const DataColumn<G>& groups, const std::set<G>& unique_groups) -> PPStrategyReturn<T> {
+             auto projector = glda_optimum_projector(data, groups, unique_groups, lambda);
+             return (PPStrategyReturn<T>) { projector, project(data, projector) };
+    };
+  }
+
+  template PPStrategy<long double, int> glda<long double, int>(
+    const double lambda);
 }

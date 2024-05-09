@@ -1,10 +1,124 @@
 #include "pp.hpp"
+#include "dr.hpp"
 #include <memory>
 #include <stdexcept>
+#include <algorithm>
 
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
+  inline namespace dr { using namespace ::dr; }
+  inline namespace ppstrategy { using namespace ::pp::strategy; }
+  inline namespace drstrategy { using namespace ::dr::strategy; }
   inline namespace stats { using namespace ::stats; }
+
+
+  struct ITrainingParam {
+    virtual ~ITrainingParam() = default;
+    virtual std::unique_ptr<ITrainingParam> clone() const = 0;
+  };
+
+  template<typename T>
+  struct TrainingParam : public ITrainingParam {
+    T value;
+
+    TrainingParam(const T value) : value(value) {
+    }
+
+    std::unique_ptr<ITrainingParam> clone() const override {
+      return std::make_unique<TrainingParam<T> >(value);
+    }
+  };
+
+  template<typename T>
+  struct TrainingParamPointer : public ITrainingParam {
+    std::shared_ptr<T> ptr;
+
+    explicit TrainingParamPointer(std::shared_ptr<T> ptr) : ptr(ptr) {
+    }
+
+    std::unique_ptr<ITrainingParam> clone() const override {
+      return std::make_unique<TrainingParamPointer<T> >(ptr);
+    }
+  };
+
+
+  struct TrainingParams {
+    std::map<std::string, std::unique_ptr<ITrainingParam> > map;
+
+    TrainingParams() {
+    }
+
+    TrainingParams(const TrainingParams& other) {
+      for (const auto& [key, value] : other.map) {
+        map[key] = value->clone();
+      }
+    }
+
+    template<typename T>
+    void set(const std::string name, T param) {
+      map[name] = std::make_unique<TrainingParam<T> >(param);
+    }
+
+    template<typename T>
+    void set_ptr(const std::string name, std::shared_ptr<T> param_ptr) {
+      map[name] = std::make_unique<TrainingParamPointer<T> >(param_ptr);
+    }
+
+    template<typename T>
+    T at(const std::string name) const {
+      return dynamic_cast<TrainingParam<T> *>(map.at(name).get())->value;
+    }
+
+    template<typename T>
+    T & from_ptr_at(const std::string name) const {
+      return *dynamic_cast<TrainingParamPointer<T> *>(map.at(name).get())->ptr;
+    }
+  };
+
+  template<typename T, typename R>
+  struct TrainingSpec {
+    PPStrategy<T, R> pp_strategy;
+    DRStrategy<T> dr_strategy;
+    std::unique_ptr<TrainingParams> params;
+
+    TrainingSpec(
+      const PPStrategy<T, R> pp_strategy,
+      const DRStrategy<T> dr_strategy)
+      : pp_strategy(pp_strategy), dr_strategy(dr_strategy), params(std::make_unique<TrainingParams>()) {
+    }
+
+    TrainingSpec(const TrainingSpec& other)
+      : pp_strategy(other.pp_strategy), dr_strategy(other.dr_strategy),
+        params(new TrainingParams(*other.params)) {
+    }
+
+    std::unique_ptr<TrainingSpec<T, R> > clone() const {
+      return std::make_unique<TrainingSpec<T, R> >(*this);
+    }
+
+    static std::unique_ptr<TrainingSpec<T, R> > glda(const double lambda) {
+      auto training_spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
+
+      training_spec->params->set("lambda", lambda);
+      return training_spec;
+    }
+
+    static std::unique_ptr<TrainingSpec<T, R> > lda() {
+      return TrainingSpec<T, R>::glda(0.0);
+    }
+
+
+    static std::unique_ptr<TrainingSpec<T, R> > uniform_glda(const int n_vars, const double lambda, const double seed) {
+      auto rng =  std::make_shared<std::mt19937>(seed);
+      auto training_spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars, *rng));
+      training_spec->params->set("n_vars", n_vars);
+      training_spec->params->set("lambda", lambda);
+      training_spec->params->set("seed", seed);
+      training_spec->params->set_ptr("rng", rng);
+      return training_spec;
+    }
+  };
+
 
   template<typename T>
   using Threshold = T;
@@ -132,8 +246,19 @@ namespace pptree {
   template<typename T, typename R>
   struct Tree {
     std::unique_ptr<Condition<T, R> > root;
+    std::unique_ptr<TrainingSpec<T, R> > training_spec;
+    std::shared_ptr<DataSpec<T, R> > training_data;
 
     Tree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
+    }
+
+    Tree(
+      std::unique_ptr<Condition<T, R> > root,
+      std::unique_ptr<TrainingSpec<T, R> > training_spec,
+      std::shared_ptr<DataSpec<T, R> > training_data)
+      : root(std::move(root)),
+        training_spec(std::move(training_spec)),
+        training_data(training_data) {
     }
 
     R predict(const DataColumn<T> &data) const {
@@ -162,6 +287,18 @@ namespace pptree {
   template<typename T, typename R>
   struct Forest {
     std::vector<std::unique_ptr<Tree<T, R> > > trees;
+    std::unique_ptr<TrainingSpec<T, R> > training_spec;
+    std::shared_ptr<DataSpec<T, R> > training_data;
+
+    Forest() {
+    }
+
+    Forest(
+      std::unique_ptr<TrainingSpec<T, R> > && training_spec,
+      std::shared_ptr<DataSpec<T, R> > && training_data)
+      : training_spec(std::move(training_spec)),
+        training_data(training_data) {
+    }
 
     R predict(const DataColumn<T> &data) const {
       std::map<R, int> votes_per_group;
@@ -223,12 +360,6 @@ namespace pptree {
   };
 
   template<typename T, typename R>
-  Tree<T, R> train(
-    const stats::Data<T> &      data,
-    const stats::DataColumn<R> &groups,
-    const pp::PPStrategy<T, R> &pp_strategy);
-
-  template<typename T, typename R>
   Tree<T, R> train_glda(
     const stats::Data<T> &      data,
     const stats::DataColumn<R> &groups,
@@ -241,5 +372,5 @@ namespace pptree {
     const int size,
     const int n_vars,
     const double lambda,
-    std::mt19937 &gen);
+    const double seed);
 }

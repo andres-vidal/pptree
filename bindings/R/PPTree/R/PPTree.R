@@ -64,7 +64,6 @@ PPTree <- function(
   model$formula <- formula
   model$x <- x
   model$y <- y
-  model$lambda <- lambda
 
   model
 }
@@ -152,7 +151,7 @@ print.PPTree <- function(x, ...) {
     cat("Project-Pursuit Oblique Decision Tree\n")
     cat("-------------------------------------\n")
     cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
-    cat("Regularization parameter:", model$lambda, "\n")
+    cat("Regularization parameter:", model$trainingSpec$lambda, "\n")
     cat("Features:\n", paste(colnames(model$x), collapse = "\n "), "\n")
     cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
     if (!is.null(model$formula)) {
