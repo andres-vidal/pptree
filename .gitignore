@@ -1,5 +1,6 @@
-_conan
-_build
+.build
+.debug
+.tools
 .vscode
 
 *.Rcheck

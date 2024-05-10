@@ -133,12 +133,12 @@ namespace stats {
   Group<T, G>get_edge_group(
     std::vector<Group<T, G> > groups) {
     auto cmp_mean_ascending = [](Group<T, G> a, Group<T, G> b) {
-        return a.mean < b.mean;
-      };
+       return a.mean < b.mean;
+     };
 
     auto cmp_diff_ascending = [](Group<T, G> a, Group<T, G> b) {
-        return a.diff < b.diff;
-      };
+       return a.diff < b.diff;
+     };
 
     std::sort(groups.begin(), groups.end(), cmp_mean_ascending);
 
@@ -158,8 +158,8 @@ namespace stats {
     const std::vector<Group<T, G> > &groups,
     const G &                        id) {
     auto matches_id = [id](Group<T, G> g) {
-        return g.id == id;
-      };
+       return g.id == id;
+     };
 
     return *std::find_if(groups.begin(), groups.end(), matches_id);
   }
@@ -385,6 +385,7 @@ namespace stats {
   template<typename T>
   DataColumn<T> expand(
     const DataColumn<T> &   data,
+
     const std::vector<int> &mask) {
     DataColumn<T> expanded = DataColumn<T>::Zero(mask.size());
 

@@ -1,5 +1,4 @@
 #include "pptree.hpp"
-#include <iostream>
 
 #include <RcppCommon.h>
 

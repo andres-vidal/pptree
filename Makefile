@@ -1,89 +1,71 @@
 MAKEFLAGS += --no-print-directory
 
-CONAN_DIR=_conan
-
-CORE_DIR=core
-CORE_FILES=$(shell find $(CORE_DIR) -type f -name '*.cpp' -o -name '*.hpp')
-BUILD_DIR=_build
-
-R_PACKAGE_DIR=bindings/R/PPTree
-
-install:
-	@conan install . --output-folder=$(CONAN_DIR) --build=missing && pre-commit install
-
-lint:
-ifeq (,$(CORE_FILES))
-	@echo "No files to lint"
-else
-	@cppcheck $(CORE_DIR)/**/*.cpp ./core/**/*.hpp
-endif
-
-format:
-ifeq (,$(CORE_FILES))
-	@echo "No files to format"
-else
-	@uncrustify $(CORE_DIR)/**/*.cpp ./core/**/*.hpp -c uncrustify.cfg --no-backup --replace
-endif
-
-format-dry:
-ifeq (,$(CORE_FILES))
-	@echo "No files to format"
-else
-	@uncrustify $(CORE_DIR)/**/*.cpp ./core/**/*.hpp -c uncrustify.cfg --check
-endif
-
-build:
-	@cd $(BUILD_DIR) && make
-
-build-cmake: 
-	@cmake \
-		-DCMAKE_TOOLCHAIN_FILE=../$(CONAN_DIR)/conan_toolchain.cmake \
-		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-		-S=$(CORE_DIR) \
-		-B=$(BUILD_DIR)
-
-build-all: build-cmake build
-
-install-debug:
-	@conan install . --output-folder=$(CONAN_DIR) --build=missing --settings=build_type=Debug && pre-commit install
-
-build-cmake-debug:
-	@cmake \
-		-DCMAKE_TOOLCHAIN_FILE=../$(CONAN_DIR)/conan_toolchain.cmake \
-		-DCMAKE_BUILD_TYPE=Debug \
-		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-		-S=$(CORE_DIR) \
-		-B=$(BUILD_DIR)
-
-build-all-debug: build-cmake-debug build
+BUILD_DIR = .build
+BUILD_DIR_DEBUG = .debug
 
 clean:
-	rm -rf _build
+	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG}
 
-clean-env:
-	rm -rf _conan
+build:
+	@mkdir -p ${BUILD_DIR}
+	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core && make
 
-clean-all: clean clean-env
+build-debug:
+	@mkdir -p ${BUILD_DIR_DEBUG}
+	@cd ${BUILD_DIR_DEBUG} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../core && make
 
-run:
-	@./$(BUILD_DIR)/pptree-cli
-
-test: build-all-debug
+test: build
 	@cd ./$(BUILD_DIR) && ./pptree-test
 
+test-debug: build-debug
+	@cd ./$(BUILD_DIR_DEBUG) && ./pptree-test
 
-test-debug: build-all-debug
-	@cd ./$(BUILD_DIR) && lldb pptree-test
-	
-r-build-deps: build-all
-	mkdir -p $(R_PACKAGE_DIR)/inst/lib && cp ./$(BUILD_DIR)/libpptree.a $(R_PACKAGE_DIR)/inst/lib/libpptree.a
+# Targets for the Dev tools
 
-r-check: r-clean r-build-deps
-	R CMD check $(R_PACKAGE_DIR) --no-manual
+TOOLS_DIR = .tools
+
+clean-tools:
+	@rm -rf ${TOOLS_DIR}
+
+install-tools:
+	@mkdir -p ${TOOLS_DIR}
+	@cd ${TOOLS_DIR} && cmake ../tools && make
+
+format:
+	@cd ${TOOLS_DIR} && make format
+
+format-dry:
+	@cd ${TOOLS_DIR} && make format-dry
+
+analyze:
+	@cd ${TOOLS_DIR} && make analyze
+
+# Targets for the R package
+
+R_PACKAGE_DIR = bindings/R/PPTree
+R_CRAN_MIRROR = http://cran.us.r-project.org
+
+r-install-deps:
+	@Rscript -e "install.packages('Rcpp', repos='${R_CRAN_MIRROR}')"
+	@Rscript -e "install.packages('RcppEigen', repos='${R_CRAN_MIRROR}')"
+	@Rscript -e "install.packages('devtools', repos='${R_CRAN_MIRROR}')"
 
 r-clean:
-	rm -f $(R_PACKAGE_DIR)/src/*.o $(R_PACKAGE_DIR)/src/*.so $(R_PACKAGE_DIR)/src/*.rds $(R_PACKAGE_DIR)/inst/lib/*.a
+	@rm -f ${R_PACKAGE_DIR}/src/*.o ${R_PACKAGE_DIR}/src/*.so ${R_PACKAGE_DIR}/src/*.rds ${R_PACKAGE_DIR}/inst/lib/*.a ${R_PACKAGE_DIR}/src/*.dll ${R_PACKAGE_DIR}/inst/lib/*.lib
 
-r-install: r-build-deps
-	R CMD INSTALL $(R_PACKAGE_DIR)
+r-build-deps: build r-clean
+	@mkdir -p $(R_PACKAGE_DIR)/inst/lib && cp ./$(BUILD_DIR)/libpptree.a $(R_PACKAGE_DIR)/inst/lib/libpptree.a
+
+
+r-document:
+	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
+
+r-build: r-build-deps
+	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
+
+r-check: r-clean r-build
+	@R CMD check ${R_PACKAGE_DIR} --no-manual
+
+r-install: r-clean r-build
+	@R CMD INSTALL ${R_PACKAGE_DIR}
+

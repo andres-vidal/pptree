@@ -150,7 +150,7 @@ namespace pp::strategy {
 
     return [lambda](const Data<T>& data, const DataColumn<G>& groups, const std::set<G>& unique_groups) -> PPStrategyReturn<T> {
              auto projector = glda_optimum_projector(data, groups, unique_groups, lambda);
-             return (PPStrategyReturn<T>) { projector, project(data, projector) };
+             return PPStrategyReturn<T> { projector, project(data, projector) };
     };
   }
 

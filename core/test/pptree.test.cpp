@@ -1626,7 +1626,7 @@ TEST(PPTreeLDAVariableImportance, multivariate_three_groups) {
     2;
 
   Tree<long double, int> tree = pptree::train(TrainingSpec<long double, int>::lda(),
-                                              DataSpec<long double, int>(data, groups));
+    DataSpec<long double, int>(data, groups));
 
   Projector<long double> result = tree.variable_importance();
 

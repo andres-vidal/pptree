@@ -5,7 +5,8 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - .:/pptree
-      - /pptree/_build
-      - /pptree/_conan
+      - /pptree/.build
+      - /pptree/.debug
+      - /pptree/.tools
     tty: true
     stdin_open: true

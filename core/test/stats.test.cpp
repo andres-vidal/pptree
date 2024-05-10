@@ -7,7 +7,6 @@
 using namespace stats;
 using namespace Eigen;
 
-//use json
 #define ASSERT_VEC_EQ(expected, actual) \
         ASSERT_EQ(nlohmann::json(expected).dump(), nlohmann::json(actual).dump())
 
@@ -526,6 +525,8 @@ TEST(StatsRemoveGroup, non_existent_group) {
   ASSERT_EQ(expected, actual);
 }
 
+#ifndef NDEBUG
+
 TEST(StatsBinaryRegroup, single_group) {
   Data<long double> data(3, 1);
   data <<
@@ -570,6 +571,8 @@ TEST(StatsBinaryRegroup, multidimensional) {
 
   ASSERT_DEATH({ binary_regroup(data, groups, { 1, 2, 3 }); }, "Data must be unidimensional to binary regroup");
 }
+
+#endif // NDEBUG
 
 TEST(StatsBinaryGroup, single_observation_per_group) {
   Data<long double> data(3, 1);
@@ -1144,6 +1147,8 @@ TEST(StatsWithinGroupsSumOfSquares, multiple_groups_multivariate2) {
   ASSERT_EQ(expected, actual);
 }
 
+#ifndef NDEBUG
+
 TEST(StatsSample, negative_sample_size) {
   std::mt19937 generator(0);
 
@@ -1172,6 +1177,8 @@ TEST(StatsSample, sample_size_larger_than_data_rows) {
 
   ASSERT_DEATH({ sample(data, 4, generator); }, "Sample size cannot be larger than the number of rows in the data.");
 }
+
+#endif // NDEBUG
 
 TEST(StatsSample, sample_has_correct_size) {
   std::mt19937 generator(0);
@@ -1212,6 +1219,8 @@ TEST(StatsSample, sample_is_subset_of_data) {
     ASSERT_TRUE(found) << "Expected to find row [" << actual.row(i) << "] in the original data: " << std::endl << data << std::endl;
   }
 }
+
+#ifndef NDEBUG
 
 TEST(StatsStratifiedSample, negative_sample_size) {
   std::mt19937 generator(0);
@@ -1290,6 +1299,8 @@ TEST(StatsStratifiedSample, sample_size_larger_than_group_size) {
 
   ASSERT_DEATH({ stratified_sample(data, groups, sizes, generator); }, "Sample size cannot be larger than the number of rows in the data.");
 }
+
+#endif // NDEBUG
 
 TEST(StatsStratifiedSample, sample_has_correct_size) {
   std::mt19937 generator(0);
@@ -1394,6 +1405,8 @@ TEST(StatsStratifiedSample, sample_is_subset_of_data_per_strata) {
   }
 }
 
+#ifndef NDEBUG
+
 TEST(StatsStratifiedProportionalSample, negative_sample_size) {
   std::mt19937 generator(0);
 
@@ -1465,6 +1478,8 @@ TEST(StatsStratifiedProportionalSample, sample_size_larger_than_data_rows) {
 
   ASSERT_DEATH({ stratified_proportional_sample(data, groups, { 0, 1 }, 7, generator); }, "Sample size cannot be larger than the number of rows in the data.");
 }
+
+#endif // NDEBUG
 
 TEST(StatsStratifiedProportionalSample, sample_has_correct_size) {
   std::mt19937 generator(0);

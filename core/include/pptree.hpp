@@ -272,7 +272,8 @@ namespace pptree {
     }
 
     std::tuple<Projector<T>, std::set<R> > _variable_importance(const int nvars) const override {
-      return { Projector<T>(nvars), { value } };
+      Projector<T> importance = Projector<T>::Zero(nvars);
+      return { importance, { value } };
     }
   };
 
@@ -408,7 +409,7 @@ namespace pptree {
     }
 
     Projector<T> variable_importance() const {
-      Projector<T> importance(training_data->x.cols());
+      Projector<T> importance = Projector<T>::Zero(training_data->x.cols());
 
       for (const auto &tree : trees) {
         importance += tree->variable_importance();

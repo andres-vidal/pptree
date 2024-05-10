@@ -1,0 +1,9 @@
+name: Run Format
+on: push
+jobs:
+  Uncrustify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make install-tools
+      - run: make format-dry

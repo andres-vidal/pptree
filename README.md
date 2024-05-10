@@ -16,81 +16,66 @@ core # C++ core library
  │        ├── ...
  │        └── ...
 bindings # Interfaces to other languages
+tools # development tools
 ```
 
-## Environment Setup
+## Environment Setup (Unix)
 
-Install the environment dependencies described in the `.tool-versions` file. The [asdf version manager](https://asdf-vm.com/) is recommended to do this if using UNIX based operative system (Linux or Mac). If using Windows, the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) and following UNIX-like instructions is recommended for development.
+Install project build dependencies:
 
-Install `asdf`:
+- `cmake` (Minimum version: 3.14)
+- `make`
 
-```
-brew install asdf
-```
+Install a `C/C++` compiler if lacking. In order to correctly run the `R` package, the compiler must be the one that `R` uses in your platform. Usually `gcc` in Linux and `clang` in Mac.
 
-Install `cmake`:
+Install `R` and make sure its binaries are in the system's PATH.
 
-```
-brew install cmake
-```
+Install the `R` package's dependencies running executing:
 
-### Using asdf version manager
+- `make r-install-deps`
 
-1. Install asdf following [the docs](https://asdf-vm.com/guide/getting-started.html)
-2. Install asdf conan plugin following [the docs](https://github.com/amrox/asdf-pyapp#compatible-python-applications)
+## Environment Setup (Windows)
 
-## Project Automation
+Install project build dependencies:
 
-Project automation is achieved via Make. Useful scripts are defined in the `Makefile`. The most important ones are:
+- `cmake` (Minimum version: 3.14)
+- `Rtools` for your `R` version
 
-| Command            | Description                                                                                                                                                                                                                                |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `make install`     | Install dependencies. Tools installed this way won't be available in the command line until the Conan environment is activated. See [Dependency Management](#dependency-management). Also installs [Pre-commit Hooks](#pre-commit-hooks)   |
-| `make build-cmake` | Runs the meta-build system (CMake) to generate build specifications and scripts. Is the first step to build the app. It's also necessary for the IDE to resolve include paths correctly. **Must be run when a CMakeLists.txt is changed.** |
-| `make build`       | Builds the library, effectively generating the relevant executables.                                                                                                                                                                       |
-| `make build-all`   | Runs `make build-cmake` and `make build` in sequence.                                                                                                                                                                                      |
-| `make clean`       | Removes the build files inside the `_build` directory. To be regenerated with `make build-all`                                                                                                                                             |
-| `make clean-env`   | Removes the conan files inside the `_conan` directory. To be regenerated with `make install`. Does not clear the environment from the termina.                                                                                             |
-| `make clean-all`   | Runs `make clean` and `make clean-env` in sequence.                                                                                                                                                                                        |
-| `make run`         | Runs the app's entry point, defined in `main.cpp`                                                                                                                                                                                          |
-| `make test`        | Builds the app (`make build-all`) and runs all tests using CTest.                                                                                                                                                                          |
-| `make format`      | Runs the formatter over every `.cpp` and `.hpp` file, making changes in files with format inconsistent with the definitions in `uncrustify.cfg`.                                                                                           |
-| `make lint`        | Runs the code analysis tool over every `.cpp` and `.hpp` file.                                                                                                                                                                             |
+Install a `MinGW` with `gcc` and `gfortran` suitable for your architecture. Ensure the `bin` directory of `MinGW` where `gcc.exe` and `gfortran.exe` are located is in the system's PATH.
 
-## Pre-commit hooks
+Install a unix-like terminal like `bash` to interact with the project. With `Rtools` in the path, `make` and the utilities needed to run the `Makefile` will be available from `cmd` and `PowerShell` without having to install `bash` or alike.
 
-This project has pre-commit hooks configured to run the formatter, the code analysis tool and the test when a new commit is added. Please ensure each commit leaves the code in a valid state. These hooks are installed during the execution of `make install`.
+Install `R` and make sure its binaries are in the system's PATH.
+
+Install the `R` package's dependencies running executing:
+
+- `make r-install-deps`
 
 ## Dependency Management
 
-Project dependencies are managed by `conan`. In order to use it, a default profile must be set before the first run, by executing the following command:
+Dependencies are downloaded automatically during the build process using CMake's `FetchContent`. These are defined in `core/CMakeLists.txt`. To build the project, and thus download dependencies, run one of the following `Makefile` targets:
 
-```bash
-conan profile detect --force
-```
+- `make build`
+- `make build-debug`
 
-The project's dependencies are listed in the `conanfile.txt` and must be installed by running the following command:
+## Development Tools
 
-```bash
-make install
-```
+The project comes with development tools configured via the `tools/CMakeLists.txt` file. Namely, `uncrustify` is used for code formatting and `cppcheck` for static analysis. These can be installed running the `make install-tools` command from the project's root, which will make their binaries available in the `.tools` folder. Configure your IDE to use the binaries in this folder, instead of globally installed ones. The tools can be run via command line using `Makefile` targets:
 
-In order to use the tools defined in the `tool_requires` section of the `conanfile.txt`, it's necessary to activate the Conan environment in the current terminal:
+- `make format`
+- `make format-dry`
+- `make analyze`
 
-```bash
-source _conan/conanbuild.sh
-```
+Install the development tools from the project's root executing:
 
-## Running Tests
+- `make install-tools`
 
-This project has tests configured with GoogleTest. They can be run using the following command from the project's root:
+Refer to the root's `Makefile` for other useful commands.
 
-```bash
-make test
-```
+## Runnings Tests
 
-## Troubleshooting
+Test can be run using one of the following `Makefile` targets:
 
-#### Header files downloaded with Conan not found in VSCode
+- `make test`
+- `make test-debug`
 
-Add Conan data directory to `includePath` in VSCode. The path is `~/.conan2/**`.

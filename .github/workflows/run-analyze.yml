@@ -1,0 +1,9 @@
+name: Run Analyze
+on: push
+jobs:
+  CppCheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make install-tools
+      - run: make analyze

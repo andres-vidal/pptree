@@ -1,20 +1,41 @@
-cmake_minimum_required(VERSION 3.5)
- 
+cmake_minimum_required(VERSION 3.14)
 project(pptree VERSION 0.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_options(-ffloat-store)
-endif()
-
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
   add_compile_options(-fsanitize=address)
   add_link_options(-fsanitize=address)
 endif()
+
+include(FetchContent)
+
+# Eigen
+FetchContent_Declare(
+  eigen
+  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+  GIT_TAG 3.4.0
+)
+FetchContent_MakeAvailable(eigen)
+
+# nlohmann_json
+FetchContent_Declare(
+  json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git
+  GIT_TAG v3.11.3
+)
+FetchContent_MakeAvailable(json)
+
+# Google Test
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.12.1
+)
+FetchContent_MakeAvailable(googletest)
 
 add_library(pptree
   src/pptree.cpp
@@ -23,13 +44,10 @@ add_library(pptree
   src/pp.cpp
   src/dr.cpp)
 
-find_package(Eigen3 REQUIRED)
-find_package(nlohmann_json REQUIRED)
-
 target_include_directories(pptree
   PUBLIC include
   PUBLIC src)
-  
+
 target_link_libraries(pptree
   Eigen3::Eigen
   nlohmann_json::nlohmann_json)
@@ -43,17 +61,15 @@ add_executable(pptree-test
   test/pp.test.cpp
   test/pptree.test.cpp)
 
-find_package(GTest REQUIRED)
-
 target_link_libraries(pptree-test
   pptree
-  gtest::gtest)
+  gtest_main
+  gtest)
 
 target_include_directories(pptree-test
-  PUBLIC src)
+  PUBLIC src
+  PUBLIC ${gtest_SOURCE_DIR}/include
+  PUBLIC ${gtest_SOURCE_DIR})
 
 include(GoogleTest)
 gtest_discover_tests(pptree-test)
-
-
-
