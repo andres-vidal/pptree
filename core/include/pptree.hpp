@@ -66,12 +66,32 @@ namespace pptree {
 
     template<typename T>
     T at(const std::string name) const {
-      return dynamic_cast<TrainingParam<T> *>(map.at(name).get())->value;
+      if (map.find(name) == map.end()) {
+        throw std::runtime_error("Parameter " + name + " not found");
+      }
+
+      auto ptr = dynamic_cast<TrainingParam<T> *>(map.at(name).get());
+
+      if (ptr == nullptr) {
+        throw std::runtime_error("Parameter '" + name + "' is not of expected type");
+      }
+
+      return ptr->value;
     }
 
     template<typename T>
     T & from_ptr_at(const std::string name) const {
-      return *dynamic_cast<TrainingParamPointer<T> *>(map.at(name).get())->ptr;
+      if (map.find(name) == map.end()) {
+        throw std::runtime_error("Parameter " + name + " not found");
+      }
+
+      auto ptr = dynamic_cast<TrainingParamPointer<T> *>(map.at(name).get());
+
+      if (ptr == nullptr) {
+        throw std::runtime_error("Parameter '" + name + "' is not of expected type");
+      }
+
+      return *ptr->ptr;
     }
   };
 
@@ -84,37 +104,31 @@ namespace pptree {
     TrainingSpec(
       const PPStrategy<T, R> pp_strategy,
       const DRStrategy<T> dr_strategy)
-      : pp_strategy(pp_strategy), dr_strategy(dr_strategy), params(std::make_unique<TrainingParams>()) {
+      : pp_strategy(pp_strategy),
+        dr_strategy(dr_strategy),
+        params(std::make_unique<TrainingParams>()) {
     }
 
     TrainingSpec(const TrainingSpec& other)
-      : pp_strategy(other.pp_strategy), dr_strategy(other.dr_strategy),
+      : pp_strategy(other.pp_strategy),
+        dr_strategy(other.dr_strategy),
         params(new TrainingParams(*other.params)) {
     }
 
-    std::unique_ptr<TrainingSpec<T, R> > clone() const {
-      return std::make_unique<TrainingSpec<T, R> >(*this);
-    }
-
-    static std::unique_ptr<TrainingSpec<T, R> > glda(const double lambda) {
-      auto training_spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
-
-      training_spec->params->set("lambda", lambda);
+    static TrainingSpec<T, R> glda(const double lambda) {
+      auto training_spec = TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
+      training_spec.params->set("lambda", lambda);
       return training_spec;
     }
 
-    static std::unique_ptr<TrainingSpec<T, R> > lda() {
+    static TrainingSpec<T, R> lda() {
       return TrainingSpec<T, R>::glda(0.0);
     }
 
-
-    static std::unique_ptr<TrainingSpec<T, R> > uniform_glda(const int n_vars, const double lambda, const double seed) {
-      auto rng =  std::make_shared<std::mt19937>(seed);
-      auto training_spec = std::make_unique<TrainingSpec<T, R> >(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars, *rng));
-      training_spec->params->set("n_vars", n_vars);
-      training_spec->params->set("lambda", lambda);
-      training_spec->params->set("seed", seed);
-      training_spec->params->set_ptr("rng", rng);
+    static TrainingSpec<T, R> uniform_glda(const int n_vars, const double lambda) {
+      auto training_spec = TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars));
+      training_spec.params->set("n_vars", n_vars);
+      training_spec.params->set("lambda", lambda);
       return training_spec;
     }
   };
@@ -152,6 +166,8 @@ namespace pptree {
     bool operator!=(const Node<T, R> &other) const {
       return !(*this == other);
     }
+
+    virtual std::tuple<Projector<T>, std::set<R> > _variable_importance(const int nvars) const = 0;
   };
 
   template<typename T, typename R>
@@ -205,6 +221,19 @@ namespace pptree {
     bool operator!=(const Condition<T, R> &other) const {
       return !(*this == other);
     }
+
+    std::tuple<Projector<T>, std::set<R> > _variable_importance(const int nvars) const override {
+      auto [lower_importance, lower_classes] = lower->_variable_importance(nvars);
+      auto [upper_importance, upper_classes] = upper->_variable_importance(nvars);
+
+      std::set<R> classes;
+      classes.insert(lower_classes.begin(), lower_classes.end());
+      classes.insert(upper_classes.begin(), upper_classes.end());
+
+      Projector<T> importance = linalg::abs(projector) / classes.size();
+
+      return { importance + lower_importance + upper_importance, classes };
+    }
   };
 
   template<typename T, typename R>
@@ -240,6 +269,10 @@ namespace pptree {
 
     bool operator!=(const Response<T, R> &other) const {
       return !(*this == other);
+    }
+
+    std::tuple<Projector<T>, std::set<R> > _variable_importance(const int nvars) const override {
+      return { Projector<T>(nvars), { value } };
     }
   };
 
@@ -282,6 +315,19 @@ namespace pptree {
     bool operator!=(const Tree<T, R> &other) const {
       return !(*this == other);
     }
+
+    Tree<T, R> retrain(const DataSpec<T, R> &data) const {
+      return train(*training_spec, data);
+    }
+
+    Projector<T> variable_importance() const {
+      DataSpec<T, R> standardized_data = center(descale(*training_data));
+      Tree<T, R> standardized_tree = retrain(standardized_data);
+
+      auto [importance, _] = standardized_tree.root->_variable_importance(training_data->x.cols());
+
+      return importance;
+    }
   };
 
   template<typename T, typename R>
@@ -289,15 +335,18 @@ namespace pptree {
     std::vector<std::unique_ptr<Tree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<DataSpec<T, R> > training_data;
+    const double seed = 0.0;
 
     Forest() {
     }
 
     Forest(
       std::unique_ptr<TrainingSpec<T, R> > && training_spec,
-      std::shared_ptr<DataSpec<T, R> > && training_data)
+      std::shared_ptr<DataSpec<T, R> > && training_data,
+      const double seed)
       : training_spec(std::move(training_spec)),
-        training_data(training_data) {
+        training_data(training_data),
+        seed(seed) {
     }
 
     R predict(const DataColumn<T> &data) const {
@@ -357,20 +406,28 @@ namespace pptree {
     bool operator!=(const Forest<T, R> &other) const {
       return !(*this == other);
     }
+
+    Projector<T> variable_importance() const {
+      Projector<T> importance(training_data->x.cols());
+
+      for (const auto &tree : trees) {
+        importance += tree->variable_importance();
+      }
+
+      return importance.array() / trees.size();
+    }
   };
 
-  template<typename T, typename R>
-  Tree<T, R> train_glda(
-    const stats::Data<T> &      data,
-    const stats::DataColumn<R> &groups,
-    const double lambda);
+  template<typename T, typename R >
+  Tree<T, R> train(
+    const TrainingSpec<T, R> &training_spec,
+    const DataSpec<T, R> &    training_data);
 
-  template<typename T, typename R>
-  Forest<T, R> train_forest_glda(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
+
+  template<typename T, typename R >
+  Forest<T, R> train(
+    const TrainingSpec<T, R> &training_spec,
+    const DataSpec<T, R> &    training_data,
     const int size,
-    const int n_vars,
-    const double lambda,
     const double seed);
 }

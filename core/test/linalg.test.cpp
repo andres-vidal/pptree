@@ -8,60 +8,6 @@ using namespace Eigen;
 #define ASSERT_APPROX(a, b)    ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
 #define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
 
-TEST(LinAlgMean, single_observation) {
-  DMatrix<long double> data(1, 3);
-  data <<
-    1.0, 2.0, 6.0;
-
-  DVector<long double> actual = mean(data);
-
-  DVector<long double> expected(3);
-  expected <<
-    1.0, 2.0, 6.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(LinAlgMean, multiple_equal_observations) {
-  DMatrix<long double> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    1.0, 2.0, 6.0,
-    1.0, 2.0, 6.0;
-
-  DVector<long double> actual = mean(data);
-
-  DVector<long double> expected(3);
-  expected <<
-    1.0, 2.0, 6.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(LinAlgMean, multiple_different_observations) {
-  DMatrix<long double> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DVector<long double> actual = mean(data);
-
-  DVector<long double> expected(3);
-  expected <<
-    2.0, 3.0, 7.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
 
 TEST(LinAlgOuterProduct, equal_vectors) {
   DVector<long double> a(3);
@@ -642,7 +588,17 @@ TEST(LinAlgInnerProduct, different_matrices_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(LinAlgInnerSquare, generic_unweighted) {
+TEST(LinAlgInnerSquare, generic_unwieghted) {
+  DVector<long double> m(3);
+  m << 1.0, 2.0, 6.0;
+
+  long double actual = inner_square(m);
+  long double expected = 41;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgInnerSquare, generic_weighted_identity) {
   DVector<long double> m(3);
   m << 1.0, 2.0, 6.0;
 
@@ -1163,4 +1119,47 @@ TEST(LinAlgCollinear, matrices_some_columns_non_collinear) {
     7.0, 12.0, 36.0;
 
   ASSERT_FALSE(collinear(a, b));
+}
+
+
+TEST(LinAlgAbs, idempotent_on_positive_vector) {
+  DVector<long double> a(3);
+  a << 1.0, 2.0, 6.0;
+
+  DVector<long double> actual = linalg::abs(a);
+  DVector<long double> expected(3);
+  expected << 1.0, 2.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgAbs, makes_negative_vector_positive) {
+  DVector<long double> a(3);
+  a << -1.0, -2.0, -6.0;
+
+  DVector<long double> actual = linalg::abs(a);
+  DVector<long double> expected(3);
+  expected << 1.0, 2.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(LinAlgAbs, makes_mixed_vector_positive) {
+  DVector<long double> a(3);
+  a << -1.0, 2.0, -6.0;
+
+  DVector<long double> actual = linalg::abs(a);
+  DVector<long double> expected(3);
+  expected << 1.0, 2.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
 }

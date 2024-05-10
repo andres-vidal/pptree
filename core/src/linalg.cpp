@@ -13,10 +13,10 @@ namespace linalg {
     return is_approx(fabs(a), fabs(b));
   }
 
-  DVector<long double> mean(
-    const DMatrix<long double> &data
+  DVector<long double> abs(
+    const DVector<long double> &v
     ) {
-    return data.colwise().mean();
+    return v.array().abs();
   }
 
   DMatrix<long double> outer_product(
@@ -51,6 +51,11 @@ namespace linalg {
     const DMatrix<long double> &weights
     ) {
     return inner_product(a, a, weights);
+  }
+
+  long double inner_square(
+    const DVector<long double> &a) {
+    return inner_square(a, DMatrix<long double>::Identity(a.size(), a.size()));
   }
 
   DMatrix<long double> inner_product(

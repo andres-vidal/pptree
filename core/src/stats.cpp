@@ -248,12 +248,10 @@ namespace stats {
     Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
     for (const G& group : unique_groups) {
-      Data<T> group_data = select_group(data, groups, group);
-      DataColumn<T> group_mean = mean(group_data);
-      Data<T> centered_data = group_data.rowwise() - group_mean.transpose();
+      Data<T> centered_group_data = center(select_group(data, groups, group));
 
-      for (int r = 0; r < centered_data.rows(); r++) {
-        result += outer_square(centered_data.row(r));
+      for (int r = 0; r < centered_group_data.rows(); r++) {
+        result += outer_square(centered_group_data.row(r));
       }
     }
 
@@ -405,4 +403,126 @@ namespace stats {
   template DataColumn<long double> expand<long double>(
     const DataColumn<long double> &data,
     const std::vector<int> &       mask);
+
+
+  template<typename T>
+  DataColumn<T> mean(
+    const Data<T> &data
+    ) {
+    return data.colwise().mean();
+  }
+
+  template DataColumn<long double> mean<long double>(
+    const Data<long double> &data);
+
+  template<typename T>
+  T mean(
+    const DataColumn<T> &data
+    ) {
+    return data.mean();
+  }
+
+  template long double mean(
+    const DataColumn<long double> &data);
+
+  template<typename T>
+  Data<T> covariance(
+    const Data<T> &data
+    ) {
+    Data<T> centered = center(data);
+
+    return (centered.transpose() * centered) / (data.rows() - 1);
+  }
+
+  template Data<long double> covariance<long double>(
+    const Data<long double> &data);
+
+  template<typename T>
+  DataColumn<T> sd(
+    const Data<T> &data
+    ) {
+    return covariance(data).diagonal().array().sqrt();
+  }
+
+  template DataColumn<long double> sd<long double>(
+    const Data<long double> &data);
+
+
+  template<typename T>
+  T sd(
+    const DataColumn<T> &data) {
+    return sqrt((inner_square(center(data))) / (data.rows() - 1));
+  }
+
+  template long double sd(
+    const DataColumn<long double> &data);
+
+  template<typename T>
+  Data<T> center(
+    const Data<T> &data) {
+    return data.rowwise() - mean(data).transpose();
+  }
+
+  template Data<long double> center<long double>(
+    const Data<long double> &data);
+
+  template<typename T>
+  DataColumn<T> center(
+    const DataColumn<T> &data) {
+    return data.array() - mean(data);
+  }
+
+  template DataColumn<long double> center<long double>(
+    const DataColumn<long double> &data);
+
+  template<typename T, typename R>
+  DataSpec<T, R> center(
+    const DataSpec<T, R> &data) {
+    return DataSpec<T, R>(center(data.x), data.y, data.classes);
+  }
+
+  template DataSpec<long double, int> center<long double, int>(
+    const DataSpec<long double, int> &data);
+
+  template<typename T>
+  Data<T> descale(
+    const Data<T> &data) {
+    DataColumn<T> scaling_factor = sd(data);
+
+    for (int i = 0; i < scaling_factor.rows(); i++) {
+      if (scaling_factor(i) == 0) {
+        scaling_factor(i) = 1;
+      }
+    }
+
+    return data.array().rowwise() / scaling_factor.transpose().array();
+  }
+
+  template Data<long double> descale<long double>(
+    const Data<long double> &data);
+
+  template<typename T>
+  DataColumn<T> descale(
+    const DataColumn<T> &data) {
+    T scaling_factor = sd(data);
+
+    if (scaling_factor == 0) {
+      scaling_factor = 1;
+    }
+
+    return data.array() / scaling_factor;
+  }
+
+  template DataColumn<long double> descale<long double>(
+    const DataColumn<long double> &data);
+
+
+  template<typename T, typename R>
+  DataSpec<T, R> descale(
+    const DataSpec<T, R> &data) {
+    return DataSpec<T, R>(descale(data.x), data.y, data.classes);
+  }
+
+  template DataSpec<long double, int> descale<long double, int>(
+    const DataSpec<long double, int> &data);
 };

@@ -1815,3 +1815,946 @@ TEST(StatsExpandDataColumn, generic) {
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
+
+TEST(StatsDataMean, single_observation) {
+  Data<long double> data(1, 3);
+  data <<
+    1.0, 2.0, 6.0;
+
+  DataColumn<long double> actual = mean(data);
+
+  DataColumn<long double> expected(3);
+  expected <<
+    1.0, 2.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDataMean, multiple_equal_observations) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    1.0, 2.0, 6.0,
+    1.0, 2.0, 6.0;
+
+  DataColumn<long double> actual = mean(data);
+
+  DataColumn<long double> expected(3);
+  expected <<
+    1.0, 2.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDataMean, multiple_different_observations) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DataColumn<long double> actual = mean(data);
+
+  DataColumn<long double> expected(3);
+  expected <<
+    2.0, 3.0, 7.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDataColumnMean, single_observation) {
+  DataColumn<long double> data(1);
+  data <<
+    1.0;
+
+  long double actual = mean(data);
+  long double expected = 1.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDataColumnMean, multiple_equal_observations) {
+  DataColumn<long double> data(3);
+  data <<
+    1.0,
+    1.0,
+    1.0;
+
+  long double actual = mean(data);
+  long double expected = 1.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDataColumnMean, multiple_different_observations) {
+  DataColumn<long double> data(3);
+  data <<
+    1.0,
+    2.0,
+    3.0;
+
+  long double actual = mean(data);
+  long double expected = 2.0;
+
+  ASSERT_EQ(expected, actual);
+}
+
+
+TEST(StatsCovariance, zero_matrix_results_in_zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  Data<long double> result = covariance(data);
+
+  ASSERT_EQ(data.size(), result.size());
+  ASSERT_EQ(data.rows(), result.rows());
+  ASSERT_EQ(data.cols(), result.cols());
+  ASSERT_EQ(data, result);
+}
+
+TEST(StatsCovariance, constant_matrix_results_in_zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  Data<long double> result = covariance(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(LingAlgCovariance, all_constant_columns_result_in_zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3;
+
+  Data<long double> result = covariance(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsCovariance, some_constant_columns_result_in_some_zero_columns) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    1, 3, 3,
+    1, 4, 3;
+
+  Data<long double> result = covariance(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    0, 0, 0,
+    0, 1, 0,
+    0, 0, 0;
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsCovariance, generic_1) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  Data<long double> result = covariance(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsCovariance, generic_2) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    1, 2, 3,
+    2, 3, 4;
+
+  Data<long double> result = covariance(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    0.33333, 0.33333, 0.33333,
+    0.33333, 0.33333, 0.33333,
+    0.33333, 0.33333, 0.33333;
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(StatsDataSd, zero_matrix_results_in_zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  DataColumn<long double> result = sd(data);
+
+  DataColumn<long double> expected = DataColumn<long double>::Zero(3);
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsDataSd, constant_matrix_results_in_zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  Data<long double> result = sd(data);
+
+  DataColumn<long double> expected = DataColumn<long double>::Zero(3);
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsDataSd, all_constant_columns_result_in_zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3;
+
+  Data<long double> result = sd(data);
+
+  DataColumn<long double> expected = DataColumn<long double>::Zero(3);
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsDataSd, some_constant_columns_result_in_some_zero_columns) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    1, 3, 3,
+    1, 4, 3;
+
+  Data<long double> result = sd(data);
+
+  DataColumn<long double> expected(3);
+  expected << 0, 1, 0;
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsDataSd, generic_1) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  Data<long double> result = sd(data);
+
+  DataColumn<long double> expected(3);
+  expected << 1, 1, 1;
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsDataSd, generic_2) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    1, 2, 3,
+    2, 3, 4;
+
+  Data<long double> result = sd(data);
+
+  DataColumn<long double> expected(3);
+  expected << 0.5773503, 0.5773503, 0.5773503;
+
+  ASSERT_EQ(expected.size(), result.size());
+  ASSERT_EQ(expected.rows(), result.rows());
+  ASSERT_EQ(expected.cols(), result.cols());
+  ASSERT_TRUE(expected.isApprox(result, 0.000001));
+}
+
+TEST(StatsDataColumnSd, zero_vector_results_in_zero) {
+  DataColumn<long double> data(3);
+  data <<
+    0,
+    0,
+    0;
+
+  long double result = sd(data);
+  long double expected = 0;
+
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsDataColumnSd, constant_vector_results_in_zero) {
+  DataColumn<long double> data(3);
+  data <<
+    1,
+    1,
+    1;
+
+  long double result = sd(data);
+  long double expected = 0;
+
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsDataColumnSd, generic_1) {
+  DataColumn<long double> data(3);
+  data <<
+    1,
+    2,
+    3;
+
+  long double result = sd(data);
+  long double expected = 1;
+
+  ASSERT_EQ(expected, result);
+}
+
+TEST(StatsDataColumnSd, generic_2) {
+  DataColumn<long double> data(3);
+  data <<
+    1,
+    1,
+    2;
+
+  long double result = sd(data);
+  long double expected = 0.5773503;
+
+  ASSERT_NEAR(expected, result, 0.00001);
+}
+
+TEST(StatsCenterData, single_observation) {
+  Data<long double> data(1, 3);
+  data <<
+    1.0, 2.0, 6.0;
+
+  Data<long double> actual = center(data);
+
+  Data<long double> expected = Data<long double>::Zero(1, 3);
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsCenterData, multiple_equal_observations) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    1.0, 2.0, 6.0,
+    1.0, 2.0, 6.0;
+
+  Data<long double> actual = center(data);
+
+  Data<long double> expected = Data<long double>::Zero(3, 3);
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsCenterData, multiple_different_observations) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  Data<long double> actual = center(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    -1.0, -1.0, -1.0,
+    0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsCenterDataSpec, single_observation) {
+  Data<long double> x(1, 3);
+  x <<
+    1.0, 2.0, 6.0;
+
+  DataColumn<int> y(3);
+  y <<
+    1,
+    2,
+    3;
+
+  DataSpec<long double, int> data(x, y);
+
+  DataSpec<long double, int> actual = center(data);
+
+  Data<long double> expectedX = Data<long double>::Zero(1, 3);
+
+  ASSERT_EQ(expectedX.size(), actual.x.size());
+  ASSERT_EQ(expectedX.rows(), actual.x.rows());
+  ASSERT_EQ(expectedX.cols(), actual.x.cols());
+  ASSERT_EQ(expectedX, actual.x);
+
+  ASSERT_EQ(data.y.size(), actual.y.size());
+  ASSERT_EQ(data.y.rows(), actual.y.rows());
+  ASSERT_EQ(data.y.cols(), actual.y.cols());
+  ASSERT_EQ(data.y, actual.y);
+
+  ASSERT_EQ(data.classes, actual.classes);
+}
+
+TEST(StatsCenterDataSpec, multiple_equal_observations) {
+  Data<long double> x(3, 3);
+  x <<
+    1.0, 2.0, 6.0,
+    1.0, 2.0, 6.0,
+    1.0, 2.0, 6.0;
+
+  DataColumn<int> y(3);
+  y <<
+    1,
+    2,
+    3;
+
+  DataSpec<long double, int> data(x, y);
+
+  DataSpec<long double, int> actual = center(data);
+
+  Data<long double> expectedX = Data<long double>::Zero(3, 3);
+
+  ASSERT_EQ(expectedX.size(), actual.x.size());
+  ASSERT_EQ(expectedX.rows(), actual.x.rows());
+  ASSERT_EQ(expectedX.cols(), actual.x.cols());
+  ASSERT_EQ(expectedX, actual.x);
+
+  ASSERT_EQ(data.y.size(), actual.y.size());
+  ASSERT_EQ(data.y.rows(), actual.y.rows());
+  ASSERT_EQ(data.y.cols(), actual.y.cols());
+  ASSERT_EQ(data.y, actual.y);
+
+  ASSERT_EQ(data.classes, actual.classes);
+}
+
+TEST(StatsCenterDataSpec, multiple_different_observations) {
+  Data<long double> x(3, 3);
+  x <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DataColumn<int> y(3);
+  y <<
+    1,
+    2,
+    3;
+
+  DataSpec<long double, int> data(x, y);
+
+  DataSpec<long double, int> actual = center(data);
+
+  Data<long double> expectedX(3, 3);
+  expectedX <<
+    -1.0, -1.0, -1.0,
+    0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0;
+
+  ASSERT_EQ(expectedX.size(), actual.x.size());
+  ASSERT_EQ(expectedX.rows(), actual.x.rows());
+  ASSERT_EQ(expectedX.cols(), actual.x.cols());
+  ASSERT_EQ(expectedX, actual.x);
+
+  ASSERT_EQ(data.y.size(), actual.y.size());
+  ASSERT_EQ(data.y.rows(), actual.y.rows());
+  ASSERT_EQ(data.y.cols(), actual.y.cols());
+  ASSERT_EQ(data.y, actual.y);
+
+  ASSERT_EQ(data.classes, actual.classes);
+}
+
+
+TEST(StatsCenterDataColumn, single_observation) {
+  DataColumn<long double> data(1);
+  data << 1.0;
+
+  DataColumn<long double> actual = center(data);
+
+  DataColumn<long double> expected = DataColumn<long double>::Zero(1);
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsCenterDataColumn, multiple_equal_observations) {
+  DataColumn<long double> data(3);
+  data <<
+    1.0,
+    1.0,
+    1.0;
+
+  DataColumn<long double> actual = center(data);
+
+  DataColumn<long double> expected = DataColumn<long double>::Zero(3);
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsCenterDataColumn, multiple_different_observations) {
+  DataColumn<long double> data(3);
+  data <<
+    1.0,
+    2.0,
+    3.0;
+
+  DataColumn<long double> actual = center(data);
+
+  DataColumn<long double> expected(3);
+  expected <<
+    -1.0,
+    0.0,
+    1.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleData, idempotent_in_zero_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  Data<long double> actual = descale(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleData, idempotent_in_constant_matrix) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  Data<long double> actual = descale(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleData, idempotent_in_descaled_data) {
+  Data<long double> data(3, 3);
+  data <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  Data<long double> actual = descale(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleData, descales_scaled_data) {
+  Data<long double> data(3, 3);
+  data <<
+    2, 4, 6,
+    4, 6, 8,
+    6, 8, 10;
+
+  Data<long double> actual = descale(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleData, descales_partially_scaled_data) {
+  Data<long double> data(3, 3);
+  data <<
+    2, 4, 3,
+    4, 6, 4,
+    6, 8, 5;
+
+  Data<long double> actual = descale(data);
+
+  Data<long double> expected(3, 3);
+  expected <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleDataColumn, idempotent_in_zero_vector) {
+  DataColumn<long double> data(3);
+  data <<
+    0,
+    0,
+    0;
+
+  DataColumn<long double> actual = descale(data);
+
+  DataColumn<long double> expected(3);
+  expected <<
+    0,
+    0,
+    0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleDataColumn, idempotent_in_constant_vector) {
+  DataColumn<long double> data(3);
+  data <<
+    1,
+    1,
+    1;
+
+  DataColumn<long double> actual = descale(data);
+
+  DataColumn<long double> expected(3);
+  expected <<
+    1,
+    1,
+    1;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleDataColumn, idempotent_in_descaled_data) {
+  DataColumn<long double> data(3);
+  data <<
+    1,
+    2,
+    3;
+
+  DataColumn<long double> actual = descale(data);
+
+  DataColumn<long double> expected(3);
+  expected <<
+    1,
+    2,
+    3;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleDataColumn, descales_scaled_data) {
+  DataColumn<long double> data(3);
+  data <<
+    2,
+    4,
+    6;
+
+  DataColumn<long double> actual = descale(data);
+
+  DataColumn<long double> expected(3);
+  expected <<
+    1,
+    2,
+    3;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsDescaleDataSpec, idempotent_in_zero_matrix) {
+  Data<long double> x(3, 3);
+  x <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  DataColumn<int> y(3);
+  y <<
+    1,
+    2,
+    3;
+
+  DataSpec<long double, int> data(x, y);
+
+  DataSpec<long double, int> actual = descale(data);
+
+  Data<long double> expectedX(3, 3);
+  expectedX <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  ASSERT_EQ(expectedX.size(), actual.x.size());
+  ASSERT_EQ(expectedX.rows(), actual.x.rows());
+  ASSERT_EQ(expectedX.cols(), actual.x.cols());
+  ASSERT_EQ(expectedX, actual.x);
+
+  ASSERT_EQ(data.y.size(), actual.y.size());
+  ASSERT_EQ(data.y.rows(), actual.y.rows());
+  ASSERT_EQ(data.y.cols(), actual.y.cols());
+  ASSERT_EQ(data.y, actual.y);
+
+  ASSERT_EQ(data.classes, actual.classes);
+}
+
+TEST(StatsDescaleDataSpec, idempotent_in_constant_matrix) {
+  Data<long double> x(3, 3);
+  x <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  DataColumn<int> y(3);
+  y <<
+    1,
+    2,
+    3;
+
+  DataSpec<long double, int> data(x, y);
+
+  DataSpec<long double, int> actual = descale(data);
+
+  Data<long double> expectedX(3, 3);
+  expectedX <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  ASSERT_EQ(expectedX.size(), actual.x.size());
+  ASSERT_EQ(expectedX.rows(), actual.x.rows());
+  ASSERT_EQ(expectedX.cols(), actual.x.cols());
+  ASSERT_EQ(expectedX, actual.x);
+
+  ASSERT_EQ(data.y.size(), actual.y.size());
+  ASSERT_EQ(data.y.rows(), actual.y.rows());
+  ASSERT_EQ(data.y.cols(), actual.y.cols());
+  ASSERT_EQ(data.y, actual.y);
+
+  ASSERT_EQ(data.classes, actual.classes);
+}
+
+TEST(StatsDescaleDataSpec, idempotent_in_descaled_data) {
+  Data<long double> x(3, 3);
+  x <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  DataColumn<int> y(3);
+  y <<
+    1,
+    2,
+    3;
+
+  DataSpec<long double, int> data(x, y);
+
+  DataSpec<long double, int> actual = descale(data);
+
+  Data<long double> expectedX(3, 3);
+  expectedX <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  ASSERT_EQ(expectedX.size(), actual.x.size());
+  ASSERT_EQ(expectedX.rows(), actual.x.rows());
+  ASSERT_EQ(expectedX.cols(), actual.x.cols());
+  ASSERT_EQ(expectedX, actual.x);
+
+  ASSERT_EQ(data.y.size(), actual.y.size());
+  ASSERT_EQ(data.y.rows(), actual.y.rows());
+  ASSERT_EQ(data.y.cols(), actual.y.cols());
+  ASSERT_EQ(data.y, actual.y);
+
+  ASSERT_EQ(data.classes, actual.classes);
+}
+
+TEST(StatsDescaleDataSpec, descales_scaled_data) {
+  Data<long double> x(3, 3);
+  x <<
+    2, 4, 6,
+    4, 6, 8,
+    6, 8, 10;
+
+  DataColumn<int> y(3);
+  y <<
+    1,
+    2,
+    3;
+
+  DataSpec<long double, int> data(x, y);
+
+  DataSpec<long double, int> actual = descale(data);
+
+  Data<long double> expectedX(3, 3);
+  expectedX <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  ASSERT_EQ(expectedX.size(), actual.x.size());
+  ASSERT_EQ(expectedX.rows(), actual.x.rows());
+  ASSERT_EQ(expectedX.cols(), actual.x.cols());
+  ASSERT_EQ(expectedX, actual.x);
+
+  ASSERT_EQ(data.y.size(), actual.y.size());
+  ASSERT_EQ(data.y.rows(), actual.y.rows());
+  ASSERT_EQ(data.y.cols(), actual.y.cols());
+  ASSERT_EQ(data.y, actual.y);
+
+  ASSERT_EQ(data.classes, actual.classes);
+}
+
+TEST(StatsDescaleDataSpec, descales_partially_scaled_data) {
+  Data<long double> x(3, 3);
+  x <<
+    2, 4, 3,
+    4, 6, 4,
+    6, 8, 5;
+
+  DataColumn<int> y(3);
+  y <<
+    1,
+    2,
+    3;
+
+  DataSpec<long double, int> data(x, y);
+
+  DataSpec<long double, int> actual = descale(data);
+
+  Data<long double> expectedX(3, 3);
+  expectedX <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5;
+
+  ASSERT_EQ(expectedX.size(), actual.x.size());
+  ASSERT_EQ(expectedX.rows(), actual.x.rows());
+  ASSERT_EQ(expectedX.cols(), actual.x.cols());
+  ASSERT_EQ(expectedX, actual.x);
+
+  ASSERT_EQ(data.y.size(), actual.y.size());
+  ASSERT_EQ(data.y.rows(), actual.y.rows());
+  ASSERT_EQ(data.y.cols(), actual.y.cols());
+  ASSERT_EQ(data.y, actual.y);
+
+  ASSERT_EQ(data.classes, actual.classes);
+}

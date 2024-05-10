@@ -148,19 +148,39 @@ print.PPTree <- function(x, ...) {
   model <- x
   if (!is.null(formula(x))) {
     cat("\n")
+    cat("Project-Pursuit Oblique Decision Tree:\n")
+  }
+
+  print_node(model, model$root)
+  cat("\n")
+}
+
+#' Summarizes a PPTree model.
+#' @param object A PPTree model.
+#' @param ... (unused) other parameters tipically passed to print
+#' @examples
+#' model <- PPTree(Species ~ ., data = iris)
+#' summary(model)
+#'
+#' @export
+summary.PPTree <- function(object, ...) {
+  model <- object
+  model$variableImportance <- data.frame(Var.Importance = t(pptree_variable_importance(model)))
+  colnames(model$variableImportance) <- colnames(model$x)
+
+
+  if (!is.null(formula(object))) {
+    cat("\n")
     cat("Project-Pursuit Oblique Decision Tree\n")
     cat("-------------------------------------\n")
     cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
     cat("Regularization parameter:", model$trainingSpec$lambda, "\n")
-    cat("Features:\n", paste(colnames(model$x), collapse = "\n "), "\n")
     cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
     if (!is.null(model$formula)) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
     cat("-------------------------------------\n")
-    cat("Structure:\n")
+    print(model$variableImportance)
   }
-
-  print_node(model, model$root)
   cat("\n")
 }

@@ -191,10 +191,12 @@ TEST(PPTreeTrainLDA, univariate_two_groups) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<long double, int> result = pptree::train_glda(
-    data,
-    groups,
-    0);
+
+
+
+  Tree<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
@@ -202,7 +204,7 @@ TEST(PPTreeTrainLDA, univariate_two_groups) {
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)),
-    TrainingSpec<long double, int>::lda(),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -221,10 +223,9 @@ TEST(PPTreeTrainLDA, univariate_three_groups) {
     1, 1, 1, 1, 1,
     2, 2, 2, 2, 2;
 
-  Tree<long double, int> result = pptree::train_glda(
-    data,
-    groups,
-    0);
+  Tree<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
@@ -236,7 +237,7 @@ TEST(PPTreeTrainLDA, univariate_three_groups) {
         2.5,
         std::make_unique<Response<long double, int> >(1),
         std::make_unique<Response<long double, int> >(2))),
-    TrainingSpec<long double, int>::lda(),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
 
 
@@ -270,10 +271,9 @@ TEST(PPTreeTrainLDA, multivariate_two_groups) {
     1,
     1;
 
-  Tree<long double, int> result = train_glda(
-    data,
-    groups,
-    0);
+  Tree<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
@@ -282,7 +282,7 @@ TEST(PPTreeTrainLDA, multivariate_two_groups) {
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
       ),
-    TrainingSpec<long double, int>::lda(),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -355,10 +355,9 @@ TEST(PPTreeTrainLDA, multivariate_three_groups) {
     2,
     2;
 
-  Tree<long double, int> result = train_glda(
-    data,
-    groups,
-    0);
+  Tree<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
@@ -370,7 +369,7 @@ TEST(PPTreeTrainLDA, multivariate_three_groups) {
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
       std::make_unique<Response<long double, int> >(2)),
-    TrainingSpec<long double, int>::lda(),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
 
   ASSERT_EQ(expect, result);
@@ -387,10 +386,9 @@ TEST(PPTreeTrainPDA, lambda_onehalf_univariate_two_groups) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<long double, int> result = pptree::train_glda(
-    data,
-    groups,
-    0.5);
+  Tree<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
@@ -398,7 +396,7 @@ TEST(PPTreeTrainPDA, lambda_onehalf_univariate_two_groups) {
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)),
-    TrainingSpec<long double, int>::lda(),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -431,10 +429,9 @@ TEST(PPTreeTrainPDA, lambda_onehalf_multivariate_two_groups) {
     1,
     1;
 
-  Tree<long double, int> result = pptree::train_glda(
-    data,
-    groups,
-    0.5);
+  Tree<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::glda(0.5),
+    DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
@@ -443,7 +440,7 @@ TEST(PPTreeTrainPDA, lambda_onehalf_multivariate_two_groups) {
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
       ),
-    TrainingSpec<long double, int>::lda(),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::glda(0.5)),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
 
@@ -522,19 +519,16 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
   const double seed = 0;
 
 
-  Forest<long double, int> result = pptree::train_forest_glda(
-    data,
-    groups,
+  Forest<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
     4,
-    n_vars,
-    lambda,
     seed);
 
-
-
   Forest<long double, int> expect(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
-    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
+    seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -550,7 +544,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(0)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -569,7 +563,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(2)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -589,7 +583,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(2)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -609,7 +603,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(2)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -617,6 +611,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
 
 
   ASSERT_EQ(expect, result);
+  ASSERT_EQ(expect.seed, result.seed);
 }
 
 TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
@@ -691,19 +686,16 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
   const double lambda = 0;
   const double seed = 1;
 
-
-  Forest<long double, int> result = pptree::train_forest_glda(
-    data,
-    groups,
+  Forest<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
     4,
-    n_vars,
-    lambda,
     seed);
 
-
   Forest<long double, int> expect(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
-    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
+    seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -719,7 +711,7 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             std::make_unique<Response<long double, int> >(1)
             )
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -738,7 +730,7 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(0)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -757,7 +749,7 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(1)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
@@ -776,15 +768,15 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
             ),
           std::make_unique<Response<long double, int> >(0)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })))
       )
     );
 
 
   ASSERT_EQ(expect, result);
+  ASSERT_EQ(expect.seed, result.seed);
 }
-
 
 TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
   Data<long double> data(10, 12);
@@ -817,18 +809,17 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
   const double lambda = 0.1;
   const double seed = 0;
 
-  Forest<long double, int> result = pptree::train_forest_glda(
-    data,
-    groups,
+  Forest<long double, int> result = pptree::train(
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
     4,
-    n_vars,
-    lambda,
     seed);
 
 
   Forest<long double, int> expect(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
-    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
+    seed);
 
   expect.add_tree(
     std::make_unique<Tree<long double, int> >(
@@ -839,7 +830,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }))
         )
       )
@@ -854,7 +845,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }))
         )
       )
@@ -869,7 +860,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }))
         )
       )
@@ -884,13 +875,14 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
           std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
           ),
-        TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, seed),
+        std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
         std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }))
         )
       )
     );
 
   ASSERT_EQ(expect, result);
+  ASSERT_EQ(expect.seed, result.seed);
 }
 
 TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
@@ -1135,7 +1127,6 @@ TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
   ASSERT_EQ(groups, result);
 }
 
-
 TEST(PPTreePredictDataColumn, univariate_two_groups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
@@ -1302,4 +1293,549 @@ TEST(PPTreePredictData, multivariate_three_groups) {
   expected << 0, 1, 2;
 
   ASSERT_EQ(result, expected);
+}
+
+TEST(PPTreeLDARetrain, idempotent_in_same_data_spec) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
+
+  Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(data, groups));
+
+  ASSERT_EQ(tree, result);
+}
+
+TEST(PPTreeLDARetrain, generates_a_different_tree_with_different_data_spec) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
+
+  Data<long double> other_data(10, 4);
+  other_data <<
+    1, 0, 1, 1,
+    1, 1, 0, 0,
+    1, 0, 0, 1,
+    1, 1, 1, 1,
+    4, 0, 0, 1,
+    4, 0, 0, 2,
+    4, 0, 0, 3,
+    4, 1, 0, 1,
+    4, 0, 1, 1,
+    4, 0, 1, 2;
+
+  DataColumn<int> other_groups(10);
+  other_groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(other_data, other_groups));
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      2.5,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)
+      ),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreePDARetrain, idempotent_in_same_data_spec) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::glda(0.5),
+    DataSpec<long double, int>(data, groups));
+
+  Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(data, groups));
+
+  ASSERT_EQ(tree, result);
+}
+
+TEST(PPTreePDARetrain, generates_a_different_tree_with_different_data_spec) {
+  Data<long double> data(10, 1);
+  data <<
+    1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10, 1);
+  groups <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
+
+  Data<long double> other_data(10, 1);
+  other_data <<
+    1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2;
+
+  DataColumn<int> other_groups(10, 1);
+  other_groups <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1;
+
+  Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(other_data, other_groups));
+
+  Tree<long double, int> expect = Tree<long double, int>(
+    std::make_unique<Condition<long double, int> >(
+      as_projector<long double>({ 1.0 }),
+      1.5,
+      std::make_unique<Response<long double, int> >(0),
+      std::make_unique<Response<long double, int> >(1)),
+    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(PPTreeLDAVariableImportance, multivariate_three_groups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> tree = pptree::train(TrainingSpec<long double, int>::lda(),
+                                              DataSpec<long double, int>(data, groups));
+
+  Projector<long double> result = tree.variable_importance();
+
+  Projector<long double> expected = as_projector<long double>(
+    {   0.408057,
+        0.553833,
+        0.00341304,
+        0.00643757,
+        0.0160685 });
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(PPTreePDAVariableImportante, multivariate_two_groups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> tree = pptree::train(
+    TrainingSpec<long double, int>::glda(0.5),
+    DataSpec<long double, int>(data, groups));
+
+
+  Projector<long double> result = tree.variable_importance();
+
+  Projector<long double> expected = as_projector<long double>({
+    0.499665,
+    0.00113766,
+    0.00831906,
+    0.0152932,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949,
+    0.00180949 });
+
+  std::cout << expected << std::endl << "--" << std::endl;
+  std::cout << result << std::endl;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(PPTreeForestLDAVariableImportance, some_variables_multivariate_three_groups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+
+  const int n_vars = 2;
+  const double lambda = 0;
+  const double seed = 1;
+
+  Forest<long double, int> forest = pptree::train(
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  Projector<long double> result = forest.variable_importance();
+
+  Projector<long double> expected = as_projector<long double>({
+    0.499881,
+    -5.95579e-06,
+    -5.95579e-06,
+    0.00750706,
+    0.333327 });
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(PPTreeForestPDAVariableImportance, all_variables_multivariate_two_groups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  const int n_vars = data.cols();
+  const double lambda = 0.1;
+  const double seed = 0;
+
+  Forest<long double, int> forest = pptree::train(
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  Projector<long double> result = forest.variable_importance();
+
+  Projector<long double> expected = as_projector<long double>({
+    0.497305,
+    0.00889968,
+    0.0137289,
+    0.0177429,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566 });
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001));
 }

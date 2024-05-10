@@ -23,8 +23,8 @@ namespace Rcpp {
   template<> pptree::Condition<long double, int> as(SEXP);
   template<> pptree::Forest<long double, int> as(SEXP);
 
-  template<> std::unique_ptr<pptree::TrainingSpec<long double, int> > as(SEXP);
-  template<> std::shared_ptr<pptree::DataSpec<long double, int> > as(SEXP);
+  template<> pptree::TrainingSpec<long double, int>  as(SEXP);
+  template<> pptree::DataSpec<long double, int>  as(SEXP);
 }
 
 
@@ -69,6 +69,7 @@ namespace Rcpp {
     return Rcpp::List::create(
       Rcpp::Named("trainingSpec") = Rcpp::wrap(*forest.training_spec),
       Rcpp::Named("trainingData") = Rcpp::wrap(*forest.training_data),
+      Rcpp::Named("seed") = Rcpp::wrap(forest.seed),
       Rcpp::Named("trees") = trees);
   }
 
@@ -158,8 +159,8 @@ namespace Rcpp {
 
     return pptree::Tree<long double, int>(
       std::move(root_ptr),
-      as<std::unique_ptr<pptree::TrainingSpec<long double, int> > >(rtraining_spec),
-      as<std::shared_ptr<pptree::DataSpec<long double, int> > >(rtraining_data));
+      std::make_unique<pptree::TrainingSpec<long double, int> >(as<pptree::TrainingSpec<long double, int> >(rtraining_spec)),
+      std::make_shared<pptree::DataSpec<long double, int> >(as<pptree::DataSpec<long double, int> >(rtraining_data)));
   }
 
   template<> pptree::Forest<long double, int> as(SEXP x) {
@@ -169,8 +170,9 @@ namespace Rcpp {
     Rcpp::List rtraining_data(rforest["trainingData"]);
 
     pptree::Forest<long double, int> forest(
-      as<std::unique_ptr<pptree::TrainingSpec<long double, int> > >(rtraining_spec),
-      as<std::shared_ptr<pptree::DataSpec<long double, int> > >(rtraining_data));
+      std::make_unique<pptree::TrainingSpec<long double, int> >(as<pptree::TrainingSpec<long double, int> >(rtraining_spec)),
+      std::make_shared<pptree::DataSpec<long double, int> >(as<pptree::DataSpec<long double, int> >(rtraining_data)),
+      Rcpp::as<double>(rforest["seed"]));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree = as<pptree::Tree<long double, int> >(rtrees[i]);
@@ -181,18 +183,16 @@ namespace Rcpp {
     return forest;
   }
 
-  template<> std::unique_ptr<pptree::TrainingSpec<long double, int> > as(SEXP x) {
+  template<> pptree::TrainingSpec<long double, int> as(SEXP x) {
     Rcpp::List rspec(x);
 
     bool has_n_vars = rspec.containsElementNamed("n_vars");
-    bool has_seed = rspec.containsElementNamed("seed");
     bool has_lambda = rspec.containsElementNamed("lambda");
 
-    if (has_n_vars && has_seed && has_lambda) {
+    if (has_n_vars && has_lambda) {
       return pptree::TrainingSpec<long double, int>::uniform_glda(
         Rcpp::as<int>(rspec["n_vars"]),
-        Rcpp::as<double>(rspec["lambda"]),
-        Rcpp::as<double>(rspec["seed"]));
+        Rcpp::as<double>(rspec["lambda"]));
     }
 
     if (has_lambda) {
@@ -203,12 +203,12 @@ namespace Rcpp {
     Rcpp::stop("Invalid training spec");
   }
 
-  template<> std::shared_ptr<pptree::DataSpec<long double, int> > as(SEXP x) {
+  template<> pptree::DataSpec<long double, int> as(SEXP x) {
     Rcpp::List rdata(x);
 
     std::vector<int> classes = Rcpp::as<std::vector<int> >(rdata["classes"]);
 
-    return std::make_shared<pptree::DataSpec<long double, int> >(
+    return pptree::DataSpec<long double, int>(
       Rcpp::as<pptree::Data<long double> >(rdata["x"]),
       Rcpp::as<pptree::DataColumn<int> >(rdata["y"]),
       std::set<int>(classes.begin(), classes.end()));

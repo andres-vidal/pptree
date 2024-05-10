@@ -41,26 +41,48 @@ BEGIN_RCPP
 END_RCPP
 }
 // pptree_predict
-pptree::DataColumn<int> pptree_predict(pptree::Tree<long double, int> tree, pptree::Data<long double> data);
+pptree::DataColumn<int> pptree_predict(pptree::Tree<long double, int>& tree, pptree::Data<long double>& data);
 RcppExport SEXP _PPTree_pptree_predict(SEXP treeSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< pptree::Tree<long double, int> >::type tree(treeSEXP);
-    Rcpp::traits::input_parameter< pptree::Data<long double> >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< pptree::Tree<long double, int>& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< pptree::Data<long double>& >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(pptree_predict(tree, data));
     return rcpp_result_gen;
 END_RCPP
 }
 // pptree_predict_forest
-pptree::DataColumn<int> pptree_predict_forest(pptree::Forest<long double, int> forest, pptree::Data<long double> data);
+pptree::DataColumn<int> pptree_predict_forest(pptree::Forest<long double, int>& forest, pptree::Data<long double>& data);
 RcppExport SEXP _PPTree_pptree_predict_forest(SEXP forestSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< pptree::Forest<long double, int> >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< pptree::Data<long double> >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< pptree::Forest<long double, int>& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< pptree::Data<long double>& >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(pptree_predict_forest(forest, data));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_variable_importance
+pptree::Projector<long double> pptree_variable_importance(const pptree::Tree<long double, int>& tree);
+RcppExport SEXP _PPTree_pptree_variable_importance(SEXP treeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const pptree::Tree<long double, int>& >::type tree(treeSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_variable_importance(tree));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_forest_variable_importance
+pptree::Projector<long double> pptree_forest_variable_importance(const pptree::Forest<long double, int>& forest);
+RcppExport SEXP _PPTree_pptree_forest_variable_importance(SEXP forestSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const pptree::Forest<long double, int>& >::type forest(forestSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_forest_variable_importance(forest));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -70,6 +92,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 5},
     {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
     {"_PPTree_pptree_predict_forest", (DL_FUNC) &_PPTree_pptree_predict_forest, 2},
+    {"_PPTree_pptree_variable_importance", (DL_FUNC) &_PPTree_pptree_variable_importance, 1},
+    {"_PPTree_pptree_forest_variable_importance", (DL_FUNC) &_PPTree_pptree_forest_variable_importance, 1},
     {NULL, NULL, 0}
 };
 
