@@ -288,10 +288,10 @@ namespace stats {
 
   template<typename T, typename G>
   std::tuple<Data<T>, DataColumn<G> > stratified_sample(
-    const Data<T> &        data,
-    const DataColumn<G> &  groups,
-    const std::map<G, int> sizes,
-    std::mt19937 &         rng) {
+    const Data<T> &         data,
+    const DataColumn<G> &   groups,
+    const std::map<G, int> &sizes,
+    std::mt19937 &          rng) {
     int total_size = 0;
 
     for (const auto& [group, size] : sizes) {
@@ -320,7 +320,7 @@ namespace stats {
   template std::tuple<Data<long double>, DataColumn<int> > stratified_sample(
     const Data<long double> & data,
     const DataColumn<int> &   groups,
-    const std::map<int, int>  sizes,
+    const std::map<int, int> &sizes,
     std::mt19937 &            rng);
 
   template<typename T, typename G>

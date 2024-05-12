@@ -13,13 +13,13 @@ namespace stats {
     private:
       int min;
       int max;
-      uint64_t range;
 
     public:
-      Uniform(int min, int max) : min(min), max(max), range(static_cast<uint64_t>(max) - min + 1) {
+      Uniform(int min, int max) : min(min), max(max) {
       }
 
       int operator()(std::mt19937 &rng) const {
+        uint64_t range = static_cast<uint64_t>(max) - min + 1;
         uint64_t random_number = rng() - rng.min();
         return min + static_cast<int>(random_number % range);
       }
@@ -54,7 +54,7 @@ namespace stats {
     DataSpec(
       const Data<T> &       x,
       const DataColumn<R> & y,
-      const std::set<R>     classes)
+      const std::set<R> &   classes)
       : x(x),
       y(y),
       classes(classes) {
@@ -120,10 +120,10 @@ namespace stats {
 
   template<typename T, typename G>
   std::tuple<Data<T>, DataColumn<G> > stratified_sample(
-    const Data<T> &        data,
-    const DataColumn<G> &  groups,
-    const std::map<G, int> sizes,
-    std::mt19937 &         rng);
+    const Data<T> &         data,
+    const DataColumn<G> &   groups,
+    const std::map<G, int> &sizes,
+    std::mt19937 &          rng);
 
   template<typename T, typename G>
   std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(

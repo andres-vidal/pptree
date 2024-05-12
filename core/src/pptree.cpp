@@ -113,7 +113,7 @@ namespace pptree {
       std::move(upper_response));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
-    return std::move(condition);
+    return condition;
   }
 
   template<typename R >
@@ -139,7 +139,7 @@ namespace pptree {
     if (unique_groups.size() == 1) {
       R group = *unique_groups.begin();
       LOG_INFO << "Branch is a Response for group " << group << std::endl;
-      return std::move(std::make_unique<Response<T, R> >(group));
+      return std::make_unique<Response<T, R> >(group);
     }
 
     LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
@@ -151,7 +151,7 @@ namespace pptree {
       training_spec,
       rng);
 
-    return std::move(condition);
+    return condition;
   }
 
   template<typename T, typename R >
@@ -222,7 +222,7 @@ namespace pptree {
       std::move(upper_branch));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
-    return std::move(condition);
+    return condition;
   };
 
   template<typename T, typename R >

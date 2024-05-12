@@ -15,7 +15,7 @@ namespace pp {
   template<typename T>
   Projector<T> get_projector(Data<T> eigen_vec) {
     Projector<T> last = eigen_vec.col(eigen_vec.cols() - 1);
-    Projector<T> truncated = last.unaryExpr((T (*)(T)) & truncate_op);
+    Projector<T> truncated = last.unaryExpr(reinterpret_cast<T (*)(T)>(&truncate_op<T>));
 
     int i = 0;
 
@@ -62,7 +62,7 @@ namespace pp {
     LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
     Data<T> WpBInvB = solve(WpB, B);
-    Data<T> truncatedWpBInvB = WpBInvB.unaryExpr((T (*)(T)) & truncate_op);
+    Data<T> truncatedWpBInvB = WpBInvB.unaryExpr(reinterpret_cast<T (*)(T)>(&truncate_op<T>));
 
     LOG_INFO << "(W_pda + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
     LOG_INFO << "(W_pda + B)^-1 * B (truncated):" << std::endl << truncatedWpBInvB << std::endl;

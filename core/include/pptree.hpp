@@ -21,7 +21,7 @@ namespace pptree {
   struct TrainingParam : public ITrainingParam {
     T value;
 
-    TrainingParam(const T value) : value(value) {
+    explicit TrainingParam(const T value) : value(value) {
     }
 
     std::unique_ptr<ITrainingParam> clone() const override {
@@ -37,7 +37,7 @@ namespace pptree {
     }
 
     std::unique_ptr<ITrainingParam> clone() const override {
-      return std::make_unique<TrainingParamPointer<T> >(ptr);
+      return ptr;
     }
   };
 
@@ -55,22 +55,22 @@ namespace pptree {
     }
 
     template<typename T>
-    void set(const std::string name, T param) {
+    void set(const std::string &name, T param) {
       map[name] = std::make_unique<TrainingParam<T> >(param);
     }
 
     template<typename T>
-    void set_ptr(const std::string name, std::shared_ptr<T> param_ptr) {
+    void set_ptr(const std::string &name, std::shared_ptr<T> param_ptr) {
       map[name] = std::make_unique<TrainingParamPointer<T> >(param_ptr);
     }
 
     template<typename T>
-    T at(const std::string name) const {
+    T at(const std::string &name) const {
       if (map.find(name) == map.end()) {
         throw std::runtime_error("Parameter " + name + " not found");
       }
 
-      auto ptr = dynamic_cast<TrainingParam<T> *>(map.at(name).get());
+      auto ptr = dynamic_cast<const TrainingParam<T> *>(map.at(name).get());
 
       if (ptr == nullptr) {
         throw std::runtime_error("Parameter '" + name + "' is not of expected type");
@@ -80,7 +80,7 @@ namespace pptree {
     }
 
     template<typename T>
-    T & from_ptr_at(const std::string name) const {
+    T & from_ptr_at(const std::string& name) const {
       if (map.find(name) == map.end()) {
         throw std::runtime_error("Parameter " + name + " not found");
       }
@@ -240,7 +240,7 @@ namespace pptree {
   struct Response : public Node<T, R> {
     R value;
 
-    Response(R value) : value(value) {
+    explicit Response(R value) : value(value) {
     }
 
     R predict(const DataColumn<T> &data) const override {
@@ -283,7 +283,7 @@ namespace pptree {
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<DataSpec<T, R> > training_data;
 
-    Tree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
+    explicit Tree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
     }
 
     Tree(
@@ -409,11 +409,18 @@ namespace pptree {
     }
 
     Projector<T> variable_importance() const {
-      Projector<T> importance = Projector<T>::Zero(training_data->x.cols());
+      struct TreeImportance {
+        Projector<T> operator()(Projector<T> acc, const std::unique_ptr<Tree<T, R> >& tree) {
+          return acc + tree->variable_importance();
+        }
+      };
 
-      for (const auto &tree : trees) {
-        importance += tree->variable_importance();
-      }
+
+      Projector<T> importance = std::accumulate(
+        trees.begin(),
+        trees.end(),
+        Projector<T>(Projector<T>::Zero(training_data->x.cols())),
+        TreeImportance());
 
       return importance.array() / trees.size();
     }
