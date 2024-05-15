@@ -1,0 +1,21 @@
+name: Run Test (Debug)
+on: push
+jobs:
+  Ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test-debug
+  Mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test-debug
+  Windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test-debug
