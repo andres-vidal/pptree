@@ -10,3 +10,7 @@
 *.a
 
 PPTree_*.tar.gz
+
+.DS_Store
+
+bindings/R/PPTree/src/core

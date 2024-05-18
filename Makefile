@@ -53,18 +53,30 @@ r-install-deps:
 	@Rscript -e "install.packages('devtools', repos='${R_CRAN_MIRROR}')"
 
 r-clean:
-	@rm -rf ${R_PACKAGE_DIR}/src/*.o ${R_PACKAGE_DIR}/src/*.so ${R_PACKAGE_DIR}/src/*.rds ${R_PACKAGE_DIR}/inst/lib/*.a ${R_PACKAGE_DIR}/src/*.dll ${R_PACKAGE_DIR}/inst/lib/*.lib PPTree_${R_PACKAGE_VERSION}.tar.gzm PPTree.Rcheck
+	@rm -rf \
+		${R_PACKAGE_DIR}/src/*.o \
+		${R_PACKAGE_DIR}/src/*.so \
+		${R_PACKAGE_DIR}/src/*.rds \
+		${R_PACKAGE_DIR}/inst/lib/*.a \
+		${R_PACKAGE_DIR}/src/*.dll \
+		${R_PACKAGE_DIR}/inst/lib/*.lib \
+		${R_PACKAGE_DIR}/src/core \
+		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
+		PPTree.Rcheck
 
 r-document:
 	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
 
 r-build: build r-clean
+	@mkdir -p ${R_PACKAGE_DIR}/inst/lib && cp .build/libpptree.a ${R_PACKAGE_DIR}/inst/lib/libpptree.a
+	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
 	@R CMD build ${R_PACKAGE_DIR}
+	@make r-clean
 
 r-check: r-build
 	@R CMD check ${R_PACKAGE_TARBALL} --no-manual
 
 r-install: r-build
-	@R CMD INSTALL ${R_PACKAGE_DIR}
+	@R CMD INSTALL ${R_PACKAGE_TARBALL}
 
