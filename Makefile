@@ -43,6 +43,8 @@ analyze:
 # Targets for the R package
 
 R_PACKAGE_DIR = bindings/R/PPTree
+R_PACKAGE_VERSION = 0.0.0
+R_PACKAGE_TARBALL = PPTree_${R_PACKAGE_VERSION}.tar.gz
 R_CRAN_MIRROR = http://cran.us.r-project.org
 
 r-install-deps:
@@ -51,21 +53,18 @@ r-install-deps:
 	@Rscript -e "install.packages('devtools', repos='${R_CRAN_MIRROR}')"
 
 r-clean:
-	@rm -f ${R_PACKAGE_DIR}/src/*.o ${R_PACKAGE_DIR}/src/*.so ${R_PACKAGE_DIR}/src/*.rds ${R_PACKAGE_DIR}/inst/lib/*.a ${R_PACKAGE_DIR}/src/*.dll ${R_PACKAGE_DIR}/inst/lib/*.lib
-
-r-build-deps: build r-clean
-	@mkdir -p $(R_PACKAGE_DIR)/inst/lib && cp ./$(BUILD_DIR)/libpptree.a $(R_PACKAGE_DIR)/inst/lib/libpptree.a
-
+	@rm -rf ${R_PACKAGE_DIR}/src/*.o ${R_PACKAGE_DIR}/src/*.so ${R_PACKAGE_DIR}/src/*.rds ${R_PACKAGE_DIR}/inst/lib/*.a ${R_PACKAGE_DIR}/src/*.dll ${R_PACKAGE_DIR}/inst/lib/*.lib PPTree_${R_PACKAGE_VERSION}.tar.gzm PPTree.Rcheck
 
 r-document:
 	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
 
-r-build: r-build-deps
+r-build: build r-clean
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
+	@R CMD build ${R_PACKAGE_DIR}
 
-r-check: r-clean r-build
-	@R CMD check ${R_PACKAGE_DIR} --no-manual
+r-check: r-build
+	@R CMD check ${R_PACKAGE_TARBALL} --no-manual
 
-r-install: r-clean r-build
+r-install: r-build
 	@R CMD INSTALL ${R_PACKAGE_DIR}
 
