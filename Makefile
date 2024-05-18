@@ -57,18 +57,16 @@ r-clean:
 		${R_PACKAGE_DIR}/src/*.o \
 		${R_PACKAGE_DIR}/src/*.so \
 		${R_PACKAGE_DIR}/src/*.rds \
-		${R_PACKAGE_DIR}/inst/lib/*.a \
 		${R_PACKAGE_DIR}/src/*.dll \
-		${R_PACKAGE_DIR}/inst/lib/*.lib \
 		${R_PACKAGE_DIR}/src/core \
+		${R_PACKAGE_DIR}/inst/lib \
 		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
 		PPTree.Rcheck
 
 r-document:
 	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
 
-r-build: build r-clean
-	@mkdir -p ${R_PACKAGE_DIR}/inst/lib && cp .build/libpptree.a ${R_PACKAGE_DIR}/inst/lib/libpptree.a
+r-build: r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
 	@R CMD build ${R_PACKAGE_DIR}
