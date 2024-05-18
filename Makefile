@@ -64,7 +64,9 @@ r-clean:
 		PPTree.Rcheck
 
 r-document:
+	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
+	@make r-clean
 
 r-build: r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
@@ -73,7 +75,7 @@ r-build: r-clean
 	@make r-clean
 
 r-check: r-build
-	@R CMD check ${R_PACKAGE_TARBALL} --no-manual
+	@R CMD check ${R_PACKAGE_TARBALL}
 
 r-install: r-build
 	@R CMD INSTALL ${R_PACKAGE_TARBALL}
