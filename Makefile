@@ -59,6 +59,7 @@ r-clean:
 		${R_PACKAGE_DIR}/src/*.rds \
 		${R_PACKAGE_DIR}/src/*.dll \
 		${R_PACKAGE_DIR}/src/core \
+		${R_PACKAGE_DIR}/src/.build \
 		${R_PACKAGE_DIR}/inst/lib \
 		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
 		PPTree.Rcheck
