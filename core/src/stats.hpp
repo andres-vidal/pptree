@@ -126,14 +126,6 @@ namespace stats {
     std::mt19937 &          rng);
 
   template<typename T, typename G>
-  std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(
-    const Data<T> &       data,
-    const DataColumn<G> & groups,
-    const std::set<G> &   unique_groups,
-    const int             size,
-    std::mt19937 &        rng);
-
-  template<typename T, typename G>
   DataSpec<T, G> stratified_proportional_sample(
     const DataSpec<T, G> &data,
     const int             size,

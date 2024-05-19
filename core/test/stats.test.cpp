@@ -1410,8 +1410,8 @@ TEST(StatsStratifiedSample, sample_is_subset_of_data_per_strata) {
 TEST(StatsStratifiedProportionalSample, negative_sample_size) {
   std::mt19937 generator(0);
 
-  Data<long double> data(6, 3);
-  data <<
+  Data<long double> x(6, 3);
+  x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0,
@@ -1419,8 +1419,8 @@ TEST(StatsStratifiedProportionalSample, negative_sample_size) {
     6.0, 4.0, 5.0,
     9.0, 7.0, 8.0;
 
-  DataColumn<int> groups(6);
-  groups <<
+  DataColumn<int> y(6);
+  y <<
     0,
     0,
     0,
@@ -1428,14 +1428,16 @@ TEST(StatsStratifiedProportionalSample, negative_sample_size) {
     1,
     1;
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, groups, { 0, 1 }, -1, generator); }, "Sample size must be greater than 0.");
+  DataSpec<long double, int> data(x, y, { 0, 1 });
+
+  ASSERT_DEATH({ stratified_proportional_sample(data, -1, generator); }, "Sample size must be greater than 0.");
 }
 
 TEST(StatsStratifiedProportionalSample, zero_sample_size) {
   std::mt19937 generator(0);
 
-  Data<long double> data(6, 3);
-  data <<
+  Data<long double> x(6, 3);
+  x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0,
@@ -1443,8 +1445,8 @@ TEST(StatsStratifiedProportionalSample, zero_sample_size) {
     6.0, 4.0, 5.0,
     9.0, 7.0, 8.0;
 
-  DataColumn<int> groups(6);
-  groups <<
+  DataColumn<int> y(6);
+  y <<
     0,
     0,
     0,
@@ -1452,14 +1454,16 @@ TEST(StatsStratifiedProportionalSample, zero_sample_size) {
     1,
     1;
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, groups, { 0, 1 }, 0, generator); }, "Sample size must be greater than 0.");
+  DataSpec<long double, int> data(x, y, { 0, 1 });
+
+  ASSERT_DEATH({ stratified_proportional_sample(data, 0, generator); }, "Sample size must be greater than 0.");
 }
 
 TEST(StatsStratifiedProportionalSample, sample_size_larger_than_data_rows) {
   std::mt19937 generator(0);
 
-  Data<long double> data(6, 3);
-  data <<
+  Data<long double> x(6, 3);
+  x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0,
@@ -1467,8 +1471,8 @@ TEST(StatsStratifiedProportionalSample, sample_size_larger_than_data_rows) {
     6.0, 4.0, 5.0,
     9.0, 7.0, 8.0;
 
-  DataColumn<int> groups(6);
-  groups <<
+  DataColumn<int> y(6);
+  y <<
     0,
     0,
     0,
@@ -1476,7 +1480,9 @@ TEST(StatsStratifiedProportionalSample, sample_size_larger_than_data_rows) {
     1,
     1;
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, groups, { 0, 1 }, 7, generator); }, "Sample size cannot be larger than the number of rows in the data.");
+  DataSpec<long double, int> data(x, y, { 0, 1 });
+
+  ASSERT_DEATH({ stratified_proportional_sample(data, 7, generator); }, "Sample size cannot be larger than the number of rows in the data.");
 }
 
 #endif // NDEBUG
@@ -1484,8 +1490,8 @@ TEST(StatsStratifiedProportionalSample, sample_size_larger_than_data_rows) {
 TEST(StatsStratifiedProportionalSample, sample_has_correct_size) {
   std::mt19937 generator(0);
 
-  Data<long double> data(6, 3);
-  data <<
+  Data<long double> x(6, 3);
+  x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0,
@@ -1493,8 +1499,8 @@ TEST(StatsStratifiedProportionalSample, sample_has_correct_size) {
     6.0, 4.0, 5.0,
     9.0, 7.0, 8.0;
 
-  DataColumn<int> groups(6);
-  groups <<
+  DataColumn<int> y(6);
+  y <<
     0,
     0,
     0,
@@ -1502,18 +1508,20 @@ TEST(StatsStratifiedProportionalSample, sample_has_correct_size) {
     1,
     1;
 
+  DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 4, generator);
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator);
 
-  ASSERT_EQ(4, result.rows());
-  ASSERT_EQ(3, result.cols());
+  ASSERT_EQ(4, result.x.rows());
+  ASSERT_EQ(3, result.x.cols());
+  ASSERT_EQ(4, result.y.size());
 }
 
 TEST(StatsStratifiedProportionalSample, sample_has_correct_size_per_strata) {
   std::mt19937 generator(0);
 
-  Data<long double> data(6, 3);
-  data <<
+  Data<long double> x(6, 3);
+  x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0,
@@ -1521,8 +1529,8 @@ TEST(StatsStratifiedProportionalSample, sample_has_correct_size_per_strata) {
     6.0, 4.0, 5.0,
     9.0, 7.0, 8.0;
 
-  DataColumn<int> groups(6);
-  groups <<
+  DataColumn<int> y(6);
+  y <<
     0,
     0,
     0,
@@ -1530,12 +1538,14 @@ TEST(StatsStratifiedProportionalSample, sample_has_correct_size_per_strata) {
     1,
     1;
 
-  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 4, generator);
+  DataSpec<long double, int> data(x, y, { 0, 1 });
+
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator);
 
   std::map<int, int> result_sizes;
 
-  for (int i = 0; i < result_groups.size(); i++) {
-    result_sizes[result_groups[i]]++;
+  for (int i = 0; i < result.y.size(); i++) {
+    result_sizes[result.y[i]]++;
   }
 
   ASSERT_EQ(2, result_sizes[0]);
@@ -1545,8 +1555,8 @@ TEST(StatsStratifiedProportionalSample, sample_has_correct_size_per_strata) {
 TEST(StatsStratifiedProportionalSample, sample_is_subset_of_data_per_strata) {
   std::mt19937 generator(0);
 
-  Data<long double> data(6, 3);
-  data <<
+  Data<long double> x(6, 3);
+  x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
     3.0, 3.0, 3.0,
@@ -1554,8 +1564,8 @@ TEST(StatsStratifiedProportionalSample, sample_is_subset_of_data_per_strata) {
     5.0, 5.0, 5.0,
     6.0, 6.0, 6.0;
 
-  DataColumn<int> groups(6);
-  groups <<
+  DataColumn<int> y(6);
+  y <<
     0,
     0,
     0,
@@ -1563,28 +1573,30 @@ TEST(StatsStratifiedProportionalSample, sample_is_subset_of_data_per_strata) {
     1,
     1;
 
-  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 4, generator);
+  DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  for (int i = 0; i < result.rows(); i++) {
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator);
+
+  for (int i = 0; i < result.x.rows(); i++) {
     bool found = false;
 
-    for (int j = 0; j < data.rows(); j++) {
-      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+    for (int j = 0; j < data.x.rows(); j++) {
+      if (result.x.row(i) == data.x.row(j) && result.y[i] == data.y[j]) {
         found = true;
         break;
       }
     }
 
-    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+    ASSERT_TRUE(found) << "Expected to find row [" << result.x.row(i) << "] in the original data: " << std::endl << data.x << std::endl;
   }
 }
 
 TEST(StatsStratifiedProportionalSample, three_groups_of_equal_size) {
   std::mt19937 generator(0);
 
-  Data<long double> data(9, 3);
+  Data<long double> x(9, 3);
 
-  data <<
+  x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
     3.0, 3.0, 3.0,
@@ -1595,8 +1607,8 @@ TEST(StatsStratifiedProportionalSample, three_groups_of_equal_size) {
     8.0, 8.0, 8.0,
     9.0, 9.0, 9.0;
 
-  DataColumn<int> groups(9);
-  groups <<
+  DataColumn<int> y(9);
+  y <<
     0,
     0,
     0,
@@ -1607,39 +1619,41 @@ TEST(StatsStratifiedProportionalSample, three_groups_of_equal_size) {
     2,
     2;
 
-  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1, 2 }, 6, generator);
+  DataSpec<long double, int> data(x, y, { 0, 1, 2 });
+
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 6, generator);
 
   std::map<int, int> result_sizes;
 
-  for (int i = 0; i < result_groups.size(); i++) {
-    result_sizes[result_groups[i]]++;
+  for (int i = 0; i < result.y.size(); i++) {
+    result_sizes[result.y[i]]++;
   }
 
-  ASSERT_EQ(6, result.rows());
+  ASSERT_EQ(6, result.x.rows());
   ASSERT_EQ(2, result_sizes[0]);
   ASSERT_EQ(2, result_sizes[1]);
   ASSERT_EQ(2, result_sizes[2]);
 
-  for (int i = 0; i < result.rows(); i++) {
+  for (int i = 0; i < result.x.rows(); i++) {
     bool found = false;
 
-    for (int j = 0; j < data.rows(); j++) {
-      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+    for (int j = 0; j < data.x.rows(); j++) {
+      if (result.x.row(i) == data.x.row(j) && result.y[i] == data.y[j]) {
         found = true;
         break;
       }
     }
 
-    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+    ASSERT_TRUE(found) << "Expected to find row [" << result.x.row(i) << "] in the original data: " << std::endl << data.x << std::endl;
   }
 }
 
 TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_even) {
   std::mt19937 generator(0);
 
-  Data<long double> data(9, 3);
+  Data<long double> x(9, 3);
 
-  data <<
+  x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
     3.0, 3.0, 3.0,
@@ -1650,8 +1664,8 @@ TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_even) {
     8.0, 8.0, 8.0,
     9.0, 9.0, 9.0;
 
-  DataColumn<int> groups(9);
-  groups <<
+  DataColumn<int> y(9);
+  y <<
     0,
     0,
     0,
@@ -1662,38 +1676,40 @@ TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_even) {
     1,
     1;
 
-  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 6, generator);
+  DataSpec<long double, int> data(x, y, { 0, 1 });
+
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 6, generator);
 
   std::map<int, int> result_sizes;
 
-  for (int i = 0; i < result_groups.size(); i++) {
-    result_sizes[result_groups[i]]++;
+  for (int i = 0; i < result.y.size(); i++) {
+    result_sizes[result.y[i]]++;
   }
 
-  ASSERT_EQ(6, result.rows());
+  ASSERT_EQ(6, result.x.rows());
   ASSERT_EQ(2, result_sizes[0]);
   ASSERT_EQ(4, result_sizes[1]);
 
-  for (int i = 0; i < result.rows(); i++) {
+  for (int i = 0; i < result.x.rows(); i++) {
     bool found = false;
 
-    for (int j = 0; j < data.rows(); j++) {
-      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+    for (int j = 0; j < data.x.rows(); j++) {
+      if (result.x.row(i) == data.x.row(j) && result.y[i] == data.y[j]) {
         found = true;
         break;
       }
     }
 
-    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+    ASSERT_TRUE(found) << "Expected to find row [" << result.x.row(i) << "] in the original data: " << std::endl << data.x << std::endl;
   }
 }
 
 TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_odd) {
   std::mt19937 generator(0);
 
-  Data<long double> data(9, 3);
+  Data<long double> x(9, 3);
 
-  data <<
+  x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
     3.0, 3.0, 3.0,
@@ -1704,8 +1720,8 @@ TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_odd) {
     8.0, 8.0, 8.0,
     9.0, 9.0, 9.0;
 
-  DataColumn<int> groups(9);
-  groups <<
+  DataColumn<int> y(9);
+  y <<
     0,
     0,
     1,
@@ -1716,29 +1732,31 @@ TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_odd) {
     1,
     1;
 
-  auto [result, result_groups] = stratified_proportional_sample(data, groups, { 0, 1 }, 5, generator);
+  DataSpec<long double, int> data(x, y, { 0, 1 });
+
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 5, generator);
 
   std::map<int, int> result_sizes;
 
-  for (int i = 0; i < result_groups.size(); i++) {
-    result_sizes[result_groups[i]]++;
+  for (int i = 0; i < result.y.size(); i++) {
+    result_sizes[result.y[i]]++;
   }
 
-  ASSERT_EQ(5, result.rows());
+  ASSERT_EQ(5, result.x.rows());
   ASSERT_EQ(1, result_sizes[0]);
   ASSERT_EQ(4, result_sizes[1]);
 
-  for (int i = 0; i < result.rows(); i++) {
+  for (int i = 0; i < result.x.rows(); i++) {
     bool found = false;
 
-    for (int j = 0; j < data.rows(); j++) {
-      if (result.row(i) == data.row(j) && result_groups[i] == groups[j]) {
+    for (int j = 0; j < data.x.rows(); j++) {
+      if (result.x.row(i) == data.x.row(j) && result.y[i] == data.y[j]) {
         found = true;
         break;
       }
     }
 
-    ASSERT_TRUE(found) << "Expected to find row [" << result.row(i) << "] in the original data: " << std::endl << data << std::endl;
+    ASSERT_TRUE(found) << "Expected to find row [" << result.x.row(i) << "] in the original data: " << std::endl << data.x << std::endl;
   }
 }
 

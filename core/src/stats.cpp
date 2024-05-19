@@ -1,5 +1,4 @@
 #include "stats.hpp"
-#include <iostream>
 
 using namespace linalg;
 
