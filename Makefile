@@ -78,6 +78,9 @@ r-build: r-clean
 r-check: r-build
 	@R CMD check ${R_PACKAGE_TARBALL}
 
+r-check-cran: r-build
+	@R CMD check ${R_PACKAGE_TARBALL} --as-cran
+
 r-install: r-build
 	@R CMD INSTALL ${R_PACKAGE_TARBALL}
 
