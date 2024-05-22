@@ -309,66 +309,6 @@ namespace stats {
     const DataColumn<int>&    groups,
     const std::set<int> &     unique_groups);
 
-
-  template<typename T>
-  Data<T> sample(const Data<T>& data, int size, std::mt19937 &rng) {
-    assert(size > 0 && "Sample size must be greater than 0.");
-    assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
-
-    Data<T> result(size, data.cols());
-
-    for (int i = 0; i < size; ++i) {
-      Uniform unif(0, data.rows() - 1);
-      int sampled_index = unif(rng);
-      result.row(i) = data.row(sampled_index);
-    }
-
-    return result;
-  }
-
-  template Data<long double> sample<long double>(
-    const Data<long double> &data,
-    int                      size,
-    std::mt19937 &           rng);
-
-
-  template<typename T, typename G>
-  std::tuple<Data<T>, DataColumn<G> > stratified_sample(
-    const Data<T> &         data,
-    const DataColumn<G> &   groups,
-    const std::map<G, int> &sizes,
-    std::mt19937 &          rng) {
-    int total_size = 0;
-
-    for (const auto& [group, size] : sizes) {
-      total_size += size;
-    }
-
-    Data<T> sample_data(total_size, data.cols());
-    DataColumn<G> sample_groups(total_size);
-
-    int acc = 0;
-
-    for ( const auto& [group, size] : sizes) {
-      Data<T> group_sample = stats::sample(select_group(data, groups, group), size, rng);
-
-      for (int i = 0; i < size; i++) {
-        sample_data.row(i + acc) = group_sample.row(i);
-        sample_groups(i + acc) = group;
-      }
-
-      acc += size;
-    }
-
-    return { sample_data, sample_groups };
-  }
-
-  template std::tuple<Data<long double>, DataColumn<int> > stratified_sample(
-    const Data<long double> & data,
-    const DataColumn<int> &   groups,
-    const std::map<int, int> &sizes,
-    std::mt19937 &            rng);
-
   template<typename T, typename G>
   BootstrapDataSpec<T, G> stratified_proportional_sample(
     const DataSpec<T, G> &data,
