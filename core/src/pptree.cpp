@@ -277,14 +277,14 @@ namespace pptree {
       seed);
 
     for (int i = 0; i < size; i++) {
-      DataSpec<T, R> sample_training_data = stats::stratified_proportional_sample(
+      BootstrapDataSpec<T, R> sample_training_data = stats::stratified_proportional_sample(
         training_data,
         training_data.x.rows(),
         rng);
 
       Tree<T, R> tree = train(
         training_spec,
-        sample_training_data,
+        sample_training_data.get_sample(),
         rng);
 
       forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));

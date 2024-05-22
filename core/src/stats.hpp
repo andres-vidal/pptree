@@ -35,7 +35,6 @@ namespace stats {
       }
   };
 
-
   template<typename T>
   using Data = linalg::DMatrix<T>;
 
@@ -45,16 +44,25 @@ namespace stats {
   template<typename N>
   std::set<N> unique(const DataColumn<N> &column);
 
-  template<typename T, typename R>
+  template<typename T>
+  Data<T> select_rows(
+    const Data<T> &         data,
+    const std::vector<int> &indices);
+
+  template<typename T>
+  DataColumn<T> select_rows(
+    const DataColumn<T> &   data,
+    const std::vector<int> &indices);
+  template<typename T, typename G>
   struct DataSpec {
     const Data<T>  x;
-    const DataColumn<R>  y;
-    const std::set<R>  classes;
+    const DataColumn<G>  y;
+    const std::set<G>  classes;
 
     DataSpec(
       const Data<T> &       x,
-      const DataColumn<R> & y,
-      const std::set<R> &   classes)
+      const DataColumn<G> & y,
+      const std::set<G> &   classes)
       : x(x),
       y(y),
       classes(classes) {
@@ -62,12 +70,46 @@ namespace stats {
 
     DataSpec(
       const Data<T> &       x,
-      const DataColumn<R> & y)
+      const DataColumn<G> & y)
       : x(x),
       y(y),
       classes(unique(y)) {
     }
   };
+
+  template<typename T, typename G>
+  struct BootstrapDataSpec : DataSpec<T, G> {
+    const std::vector<int> indices;
+
+    BootstrapDataSpec(
+      const Data<T> &         x,
+      const DataColumn<G> &   y,
+      const std::set<G> &     classes,
+      const std::vector<int> &indices)
+      : DataSpec<T, G>(x, y, classes),
+      indices(indices) {
+    }
+
+    BootstrapDataSpec(
+      const Data<T> &         x,
+      const DataColumn<G> &   y,
+      const std::vector<int> &indices)
+      : DataSpec<T, G>(x, y),
+      indices(indices) {
+    }
+
+    DataSpec<T, G> get_sample() const {
+      return DataSpec<T, G>(
+        select_rows(this->x, this->indices),
+        select_rows(this->y, this->indices),
+        this->classes);
+    }
+  };
+
+  template<typename G>
+  std::vector<G> select_group(
+    const DataColumn<G> &groups,
+    const G &            group);
 
   template<typename T, typename G>
   Data<T> select_group(
@@ -126,7 +168,7 @@ namespace stats {
     std::mt19937 &          rng);
 
   template<typename T, typename G>
-  DataSpec<T, G> stratified_proportional_sample(
+  BootstrapDataSpec<T, G> stratified_proportional_sample(
     const DataSpec<T, G> &data,
     const int             size,
     std::mt19937 &        rng);
@@ -168,9 +210,9 @@ namespace stats {
   DataColumn<T> center(
     const DataColumn<T> &data);
 
-  template<typename T, typename R>
-  DataSpec<T, R> center(
-    const DataSpec<T, R> &data);
+  template<typename T, typename G>
+  DataSpec<T, G> center(
+    const DataSpec<T, G> &data);
 
   template<typename T>
   Data<T> descale(
@@ -180,7 +222,7 @@ namespace stats {
   DataColumn<T> descale(
     const DataColumn<T> &data);
 
-  template<typename T, typename R>
-  DataSpec<T, R> descale(
-    const DataSpec<T, R> &data);
+  template<typename T, typename G>
+  DataSpec<T, G> descale(
+    const DataSpec<T, G> &data);
 };

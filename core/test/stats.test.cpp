@@ -10,6 +10,187 @@ using namespace Eigen;
 #define ASSERT_VEC_EQ(expected, actual) \
         ASSERT_EQ(nlohmann::json(expected).dump(), nlohmann::json(actual).dump())
 
+
+TEST(StatsSelectDataRows, single_row) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  std::vector<int> indices = { 1 };
+  Data<long double> actual = select_rows(data, indices);
+
+  Data<long double> expected(1, 3);
+  expected <<
+    4.0, 5.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataRows, multiple_rows_non_adjacent) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  std::vector<int> indices = { 0, 2 };
+  Data<long double> actual = select_rows(data, indices);
+
+  Data<long double> expected(2, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataRows, multiple_rows_adjacent) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  std::vector<int> indices = { 0, 1 };
+  Data<long double> actual = select_rows(data, indices);
+
+  Data<long double> expected(2, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataColumnRows, single_row) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::vector<int> indices = { 1 };
+  DataColumn<long double> actual = select_rows(data, indices);
+
+  DataColumn<long double> expected(1);
+  expected << 2.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataColumnRows, multiple_rows_non_adjacent) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::vector<int> indices = { 0, 2 };
+  DataColumn<long double> actual = select_rows(data, indices);
+
+  DataColumn<long double> expected(2);
+  expected << 1.0, 3.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataColumnRows, multiple_rows_adjacent) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::vector<int> indices = { 0, 1 };
+  DataColumn<long double> actual = select_rows(data, indices);
+
+  DataColumn<long double> expected(2);
+  expected << 1.0, 2.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroupIndices, single_group) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    1;
+
+  std::vector<int> actual = select_group(groups, 1);
+  std::vector<int> expected = { 0, 1, 2 };
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroupIndices, multiple_groups_adjacent) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    2;
+
+  std::vector<int> actual = select_group(groups, 1);
+  std::vector<int> expected = { 0, 1 };
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroupIndices, multiple_groups_mixed) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    2,
+    1;
+
+  std::vector<int> actual = select_group(groups, 1);
+  std::vector<int> expected = { 0, 2 };
+
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectGroupIndices, empty_result) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DataColumn<int> groups(3);
+  groups <<
+    1,
+    1,
+    1;
+
+  std::vector<int> actual = select_group(groups, 2);
+  std::vector<int> expected = {};
+
+  ASSERT_EQ(expected, actual);
+}
+
 TEST(StatsSelectGroup, single_group) {
   Data<long double> data(3, 3);
   data <<
@@ -320,8 +501,7 @@ TEST(StatsSelectGroups, multiple_on_multiple_adjacent) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatsSelectGroup, multiple_on_multiple2) {
-  // Use a matrix with 15 rows
+TEST(StatsSelectGroups, multiple_on_multiple2) {
   Data<long double> data(15, 3);
   data <<
     1.0,  2.0,  3.0,
@@ -1510,7 +1690,7 @@ TEST(StatsStratifiedProportionalSample, sample_has_correct_size) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator);
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator).get_sample();
 
   ASSERT_EQ(4, result.x.rows());
   ASSERT_EQ(3, result.x.cols());
@@ -1540,7 +1720,7 @@ TEST(StatsStratifiedProportionalSample, sample_has_correct_size_per_strata) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator);
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -1575,7 +1755,7 @@ TEST(StatsStratifiedProportionalSample, sample_is_subset_of_data_per_strata) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator);
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator).get_sample();
 
   for (int i = 0; i < result.x.rows(); i++) {
     bool found = false;
@@ -1621,7 +1801,7 @@ TEST(StatsStratifiedProportionalSample, three_groups_of_equal_size) {
 
   DataSpec<long double, int> data(x, y, { 0, 1, 2 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 6, generator);
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 6, generator).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -1678,7 +1858,7 @@ TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_even) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 6, generator);
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 6, generator).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -1734,7 +1914,7 @@ TEST(StatsStratifiedProportionalSample, two_groups_of_different_size_odd) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 5, generator);
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 5, generator).get_sample();
 
   std::map<int, int> result_sizes;
 

@@ -2,8 +2,6 @@
 #include "pptreeio.hpp"
 #include <gtest/gtest.h>
 
-#include <iostream>
-
 using namespace pptree;
 
 TEST(ResponseEquals, true_case) {
@@ -1679,9 +1677,6 @@ TEST(PPTreePDAVariableImportante, multivariate_two_groups) {
     0.00180949,
     0.00180949,
     0.00180949 });
-
-  std::cout << expected << std::endl << "--" << std::endl;
-  std::cout << result << std::endl;
 
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
 }

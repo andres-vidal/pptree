@@ -3,25 +3,72 @@
 using namespace linalg;
 
 namespace stats {
+  template<typename T>
+  Data<T> select_rows(
+    const Data<T> &         data,
+    const std::vector<int> &indices) {
+    Data<T> result(indices.size(), data.cols());
+
+    for (int i = 0; i < indices.size(); i++) {
+      result.row(i) = data.row(indices[i]);
+    }
+
+    return result;
+  }
+
+  template Data<long double> select_rows<long double>(
+    const Data<long double> & data,
+    const std::vector<int> &  indices);
+
+  template<typename T>
+  DataColumn<T> select_rows(
+    const DataColumn<T> &   data,
+    const std::vector<int> &indices) {
+    DataColumn<T> result(indices.size());
+
+    for (int i = 0; i < indices.size(); i++) {
+      result(i) = data(indices[i]);
+    }
+
+    return result;
+  }
+
+  template DataColumn<int> select_rows<int>(
+    const DataColumn<int> &  data,
+    const std::vector<int> & indices);
+
+  template DataColumn<long double> select_rows<long double>(
+    const DataColumn<long double> & data,
+    const std::vector<int> &        indices);
+
+  template<typename G>
+  std::vector<G> select_group(
+    const DataColumn<G> &groups,
+    const G &            group) {
+    std::vector<G> indices;
+
+    for (int i = 0; i < groups.rows(); i++) {
+      if (groups(i) == group) {
+        indices.push_back(i);
+      }
+    }
+
+    return indices;
+  }
+
   template<typename T, typename G>
   Data<T> select_group(
     const Data<T> &      data,
     const DataColumn<G> &groups,
     const G &            group
     ) {
-    std::vector<G> index;
+    std::vector<G> indices = select_group(groups, group);
 
-    for (G i = 0; i < groups.rows(); i++) {
-      if (groups(i) == group) {
-        index.push_back(i);
-      }
-    }
-
-    if (index.size() == 0) {
+    if (indices.size() == 0) {
       return Data<T>(0, 0);
     }
 
-    return data(index, Eigen::all);
+    return data(indices, Eigen::all);
   }
 
   template Data<long double> select_group<long double, int>(
@@ -323,40 +370,34 @@ namespace stats {
     std::mt19937 &            rng);
 
   template<typename T, typename G>
-  std::tuple<Data<T>, DataColumn<G> > stratified_proportional_sample(
-    const Data<T> &       data,
-    const DataColumn<G> & groups,
-    const std::set<G> &   unique_groups,
-    const int             size,
-    std::mt19937 &        rng) {
-    assert(size > 0 && "Sample size must be greater than 0.");
-    assert(size <= data.rows() && "Sample size cannot be larger than the number of rows in the data.");
-
-    std::map<G, int> sizes;
-
-    for (const G& group : unique_groups) {
-      sizes[group] = round(size * select_group(data, groups, group).rows() / (double)data.rows());
-    }
-
-    return stratified_sample(data, groups, sizes, rng);
-  }
-
-  template<typename T, typename G>
-  DataSpec<T, G> stratified_proportional_sample(
+  BootstrapDataSpec<T, G> stratified_proportional_sample(
     const DataSpec<T, G> &data,
     const int             size,
     std::mt19937 &        rng) {
-    auto [sample, sample_groups] = stratified_proportional_sample(
-      data.x,
-      data.y,
-      data.classes,
-      size,
-      rng);
+    assert(size > 0 && "Sample size must be greater than 0.");
+    assert(size <= data.y.rows() && "Sample size cannot be larger than the number of rows in the data.");
 
-    return DataSpec<T, G>(sample, sample_groups, data.classes);
+    const int data_size = data.y.rows();
+
+    std::vector<int> sample_indices;
+
+    for (const G& group : data.classes) {
+      const std::vector<int> group_indices = select_group(data.y, group);
+
+      const int group_size = group_indices.size();
+      const int group_sample_size = std::round(group_size / (double)data_size * size);
+
+      for (int i = 0; i < group_sample_size; i++) {
+        const Uniform unif(0, group_indices.size() - 1);
+        const int sampled_index = group_indices[unif(rng)];
+        sample_indices.push_back(sampled_index);
+      }
+    }
+
+    return BootstrapDataSpec<T, G>(data.x, data.y, data.classes, sample_indices);
   }
 
-  template DataSpec<long double, int> stratified_proportional_sample(
+  template BootstrapDataSpec<long double, int> stratified_proportional_sample(
     const DataSpec<long double, int>& data,
     const int                         size,
     std::mt19937 &                    rng);
