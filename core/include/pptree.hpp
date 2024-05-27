@@ -67,13 +67,13 @@ namespace pptree {
     template<typename T>
     T at(const std::string &name) const {
       if (map.find(name) == map.end()) {
-        throw std::runtime_error("Parameter " + name + " not found");
+        throw std::out_of_range("Parameter " + name + " not found");
       }
 
       auto ptr = dynamic_cast<const TrainingParam<T> *>(map.at(name).get());
 
       if (ptr == nullptr) {
-        throw std::runtime_error("Parameter '" + name + "' is not of expected type");
+        throw std::out_of_range("Parameter '" + name + "' is not of expected type");
       }
 
       return ptr->value;
@@ -82,13 +82,13 @@ namespace pptree {
     template<typename T>
     T & from_ptr_at(const std::string& name) const {
       if (map.find(name) == map.end()) {
-        throw std::runtime_error("Parameter " + name + " not found");
+        throw std::out_of_range("Parameter " + name + " not found");
       }
 
       auto ptr = dynamic_cast<TrainingParamPointer<T> *>(map.at(name).get());
 
       if (ptr == nullptr) {
-        throw std::runtime_error("Parameter '" + name + "' is not of expected type");
+        throw std::out_of_range("Parameter '" + name + "' is not of expected type");
       }
 
       return *ptr->ptr;
@@ -322,11 +322,9 @@ namespace pptree {
     }
 
     Projector<T> variable_importance() const {
-      D standardized_data = center(descale(*training_data));
+      Tree<T, R, D> std_tree = retrain(center(descale(*training_data)));
 
-      Tree<T, R, D> standardized_tree = retrain(standardized_data);
-
-      auto [importance, _] = standardized_tree.root->_variable_importance(training_data->x.cols());
+      auto [importance, _] = std_tree.root->_variable_importance(training_data->x.cols());
 
       return importance;
     }
@@ -413,6 +411,14 @@ namespace pptree {
       return !(*this == other);
     }
 
+    Forest<T, R> retrain(const DataSpec<T, R> &data) const {
+      return train(
+        *training_spec,
+        data,
+        trees.size(),
+        seed);
+    }
+
     Projector<T> variable_importance() const {
       struct TreeImportance {
         Projector<T> operator()(Projector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) {
@@ -420,13 +426,16 @@ namespace pptree {
         }
       };
 
+      Forest<T, R> std_forest = retrain(center(descale(*training_data)));
+
       Projector<T> importance = std::accumulate(
-        trees.begin(),
-        trees.end(),
+        std_forest.trees.begin(),
+        std_forest.trees.end(),
         Projector<T>(Projector<T>::Zero(training_data->x.cols())),
         TreeImportance());
 
-      return importance.array() / trees.size();
+
+      return importance.array() / std_forest.trees.size();
     }
   };
 

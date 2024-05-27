@@ -1705,13 +1705,13 @@ TEST(PPTreeForestLDAVariableImportance, some_variables_multivariate_three_groups
   Projector<long double> result = forest.variable_importance();
 
   Projector<long double> expected = as_projector<long double>({
-    0.499881,
-    -5.95579e-06,
-    -5.95579e-06,
-    0.00750706,
-    0.333327 });
+    0.499742,
+    0.000000,
+    0.333333,
+    0.000000,
+    0.003474 });
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01));
+  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }
 
 TEST(PPTreeForestPDAVariableImportance, all_variables_multivariate_two_groups) {
