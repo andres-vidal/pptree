@@ -75,6 +75,10 @@ namespace stats {
       y(y),
       classes(unique(y)) {
     }
+
+    virtual std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const {
+      return std::make_tuple(x, y, classes);
+    }
   };
 
   template<typename T, typename G>
@@ -101,8 +105,11 @@ namespace stats {
     DataSpec<T, G> get_sample() const {
       return DataSpec<T, G>(
         select_rows(this->x, this->indices),
-        select_rows(this->y, this->indices),
-        this->classes);
+        select_rows(this->y, this->indices));
+    }
+
+    std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const override {
+      return this->get_sample().unwrap();
     }
   };
 
@@ -201,6 +208,10 @@ namespace stats {
   DataSpec<T, G> center(
     const DataSpec<T, G> &data);
 
+  template<typename T, typename G>
+  BootstrapDataSpec<T, G> center(
+    const BootstrapDataSpec<T, G> &data);
+
   template<typename T>
   Data<T> descale(
     const Data<T> &data);
@@ -212,4 +223,8 @@ namespace stats {
   template<typename T, typename G>
   DataSpec<T, G> descale(
     const DataSpec<T, G> &data);
+
+  template<typename T, typename G>
+  BootstrapDataSpec<T, G> descale(
+    const BootstrapDataSpec<T, G> &data);
 };

@@ -277,11 +277,11 @@ namespace pptree {
     }
   };
 
-  template<typename T, typename R>
+  template<typename T, typename R, typename D = DataSpec<T, R> >
   struct Tree {
     std::unique_ptr<Condition<T, R> > root;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
-    std::shared_ptr<DataSpec<T, R> > training_data;
+    std::shared_ptr<D> training_data;
 
     explicit Tree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
     }
@@ -289,7 +289,7 @@ namespace pptree {
     Tree(
       std::unique_ptr<Condition<T, R> > root,
       std::unique_ptr<TrainingSpec<T, R> > training_spec,
-      std::shared_ptr<DataSpec<T, R> > training_data)
+      std::shared_ptr<D > training_data)
       : root(std::move(root)),
         training_spec(std::move(training_spec)),
         training_data(training_data) {
@@ -309,21 +309,22 @@ namespace pptree {
       return predictions;
     }
 
-    bool operator==(const Tree<T, R> &other) const {
+    bool operator==(const Tree<T, R, D> &other) const {
       return *root == *other.root;
     }
 
-    bool operator!=(const Tree<T, R> &other) const {
+    bool operator!=(const Tree<T, R, D> &other) const {
       return !(*this == other);
     }
 
-    Tree<T, R> retrain(const DataSpec<T, R> &data) const {
+    Tree<T, R, D > retrain(const D &data) const {
       return train(*training_spec, data);
     }
 
     Projector<T> variable_importance() const {
-      DataSpec<T, R> standardized_data = center(descale(*training_data));
-      Tree<T, R> standardized_tree = retrain(standardized_data);
+      D standardized_data = center(descale(*training_data));
+
+      Tree<T, R, D> standardized_tree = retrain(standardized_data);
 
       auto [importance, _] = standardized_tree.root->_variable_importance(training_data->x.cols());
 
@@ -332,8 +333,12 @@ namespace pptree {
   };
 
   template<typename T, typename R>
+  using BootstrapTree = Tree<T, R, BootstrapDataSpec<T, R> >;
+
+
+  template<typename T, typename R>
   struct Forest {
-    std::vector<std::unique_ptr<Tree<T, R> > > trees;
+    std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<DataSpec<T, R> > training_data;
     const double seed = 0.0;
@@ -386,7 +391,7 @@ namespace pptree {
       return predictions;
     }
 
-    void add_tree(std::unique_ptr<Tree<T, R> > tree) {
+    void add_tree(std::unique_ptr<BootstrapTree<T, R> > tree) {
       trees.push_back(std::move(tree));
     }
 
@@ -410,11 +415,10 @@ namespace pptree {
 
     Projector<T> variable_importance() const {
       struct TreeImportance {
-        Projector<T> operator()(Projector<T> acc, const std::unique_ptr<Tree<T, R> >& tree) {
+        Projector<T> operator()(Projector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) {
           return acc + tree->variable_importance();
         }
       };
-
 
       Projector<T> importance = std::accumulate(
         trees.begin(),
@@ -426,11 +430,10 @@ namespace pptree {
     }
   };
 
-  template<typename T, typename R >
-  Tree<T, R> train(
+  template<typename T, typename R, typename D >
+  Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data);
-
+    const D &    training_data);
 
   template<typename T, typename R >
   Forest<T, R> train(

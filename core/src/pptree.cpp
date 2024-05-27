@@ -225,38 +225,44 @@ namespace pptree {
     return condition;
   };
 
-  template<typename T, typename R >
-  Tree<T, R> train(
+  template<typename T, typename R, typename D>
+  Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data,
+    const D &                 training_data,
     std::mt19937&             rng) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
-    Tree<T, R> tree = Tree(
+    auto [x, y, classes] = training_data.unwrap();
+
+    Tree<T, R, D> tree(
       step(
-        training_data.x,
-        training_data.y,
-        training_data.classes,
+        x,
+        y,
+        classes,
         training_spec,
         rng),
       std::make_unique<TrainingSpec<T, R> >(training_spec),
-      std::make_shared<DataSpec<T, R> >(training_data));
+      std::make_shared<D >(training_data));
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
 
-  template<typename T, typename R >
-  Tree<T, R> train(
+  template<typename T, typename R, typename D>
+  Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data) {
+    const D &                 training_data) {
     std::mt19937 rng(0);
     return train(training_spec, training_data, rng);
   }
 
-  template Tree<long double, int> train(
+  template Tree<long double, int, DataSpec<long double, int> > train(
     const TrainingSpec<long double, int> &training_spec,
     const DataSpec<long double, int> &    training_data);
+
+  template Tree<long double, int, BootstrapDataSpec<long double, int> > train(
+    const TrainingSpec<long double, int> &      training_spec,
+    const BootstrapDataSpec<long double, int> & training_data);
 
   template<typename T, typename R >
   Forest<T, R> train(
@@ -282,12 +288,12 @@ namespace pptree {
         training_data.x.rows(),
         rng);
 
-      Tree<T, R> tree = train(
+      BootstrapTree<T, R> tree = train(
         training_spec,
-        sample_training_data.get_sample(),
+        sample_training_data,
         rng);
 
-      forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
+      forest.add_tree(std::make_unique<BootstrapTree<T, R> >(std::move(tree)));
     }
 
     LOG_INFO << "Forest: " << forest << std::endl;

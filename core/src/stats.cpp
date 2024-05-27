@@ -465,6 +465,15 @@ namespace stats {
   template DataSpec<long double, int> center<long double, int>(
     const DataSpec<long double, int> &data);
 
+  template<typename T, typename G>
+  BootstrapDataSpec<T, G> center(
+    const BootstrapDataSpec<T, G> &data) {
+    return BootstrapDataSpec<T, G>(center(data.x), data.y, data.classes, data.indices);
+  }
+
+  template BootstrapDataSpec<long double, int> center<long double, int>(
+    const BootstrapDataSpec<long double, int> &data);
+
   template<typename T>
   Data<T> descale(
     const Data<T> &data) {
@@ -506,4 +515,13 @@ namespace stats {
 
   template DataSpec<long double, int> descale<long double, int>(
     const DataSpec<long double, int> &data);
+
+  template<typename T, typename R>
+  BootstrapDataSpec<T, R> descale(
+    const BootstrapDataSpec<T, R> &data) {
+    return BootstrapDataSpec<T, R>(descale(data.x), data.y, data.classes, data.indices);
+  }
+
+  template BootstrapDataSpec<long double, int> descale<long double, int>(
+    const BootstrapDataSpec<long double, int> &data);
 };

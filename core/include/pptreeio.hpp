@@ -29,9 +29,9 @@ std::ostream& operator<<(std::ostream& ostream, const std::vector<V> &vec) {
 }
 
 namespace pptree {
-  template<typename T, typename R >
+  template<typename T, typename R, typename D >
   struct Tree;
-  template<typename T, typename R >
+  template <typename T, typename R>
   struct Node;
   template<typename T, typename R >
   struct Response;
@@ -73,8 +73,8 @@ namespace pptree {
     }
   }
 
-  template<typename T, typename R>
-  void to_json(json& j, const Tree<T, R>& tree) {
+  template<typename T, typename R, typename D>
+  void to_json(json& j, const Tree<T, R, D>& tree) {
     j = json{
       { "root", *tree.root }
     };
@@ -93,8 +93,8 @@ namespace pptree {
     j = json{ { "trees", trees_json } };
   }
 
-  template<typename T, typename R>
-  std::ostream& operator<<(std::ostream & ostream, const Tree<T, R>& tree) {
+  template<typename T, typename R, typename D>
+  std::ostream& operator<<(std::ostream & ostream, const Tree<T, R, D>& tree) {
     json json_tree(tree);
     return ostream << json_tree.dump(2, ' ', false);
   }

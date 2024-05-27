@@ -4,7 +4,8 @@
 
 namespace Rcpp {
   SEXP wrap(const pptree::Node<long double, int> &node);
-  SEXP wrap(const pptree::Tree<long double, int> &tree);
+  SEXP wrap(const pptree::Tree<long double, int, pptree::DataSpec<long double, int> > &tree);
+  SEXP wrap(const pptree::Tree<long double, int, pptree::BootstrapDataSpec<long double, int> > &tree);
   SEXP wrap(const pptree::Response<long double, int> &node);
   SEXP wrap(const pptree::Condition<long double, int> &node);
   SEXP wrap(const pptree::Forest<long double, int> &forest);
@@ -15,15 +16,18 @@ namespace Rcpp {
   SEXP wrap(const pptree::TrainingParam<int> &param);
   SEXP wrap(const pptree::TrainingParam<double> &param);
   SEXP wrap(const pptree::DataSpec<long double, int> &data);
+  SEXP wrap(const pptree::BootstrapDataSpec<long double, int> &data);
 
   template<> std::unique_ptr<pptree::Node<long double, int> > as(SEXP);
-  template<> pptree::Tree<long double, int> as(SEXP);
+  template<> pptree::Tree<long double, int, pptree::DataSpec<long double, int> > as(SEXP);
+  template<> pptree::Tree<long double, int, pptree::BootstrapDataSpec<long double, int> > as(SEXP);
   template<> pptree::Response<long double, int> as(SEXP);
   template<> pptree::Condition<long double, int> as(SEXP);
   template<> pptree::Forest<long double, int> as(SEXP);
 
   template<> pptree::TrainingSpec<long double, int>  as(SEXP);
   template<> pptree::DataSpec<long double, int>  as(SEXP);
+  template<> pptree::BootstrapDataSpec<long double, int> as(SEXP);
 }
 
 
@@ -51,7 +55,14 @@ namespace Rcpp {
       Rcpp::Named("upper") = Rcpp::wrap(*node.upper));
   }
 
-  SEXP wrap(const pptree::Tree<long double, int> &tree) {
+  SEXP wrap(const pptree::Tree<long double, int, pptree::DataSpec<long double, int> > &tree) {
+    return Rcpp::List::create(
+      Rcpp::Named("trainingSpec") = Rcpp::wrap(*tree.training_spec),
+      Rcpp::Named("trainingData") = Rcpp::wrap(*tree.training_data),
+      Rcpp::Named("root") = Rcpp::wrap(*tree.root));
+  }
+
+  SEXP wrap(const pptree::Tree<long double, int, pptree::BootstrapDataSpec<long double, int> > &tree) {
     return Rcpp::List::create(
       Rcpp::Named("trainingSpec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("trainingData") = Rcpp::wrap(*tree.training_data),
@@ -115,6 +126,14 @@ namespace Rcpp {
       Rcpp::Named("classes") = Rcpp::wrap(data.classes));
   }
 
+  SEXP wrap(const pptree::BootstrapDataSpec<long double, int> &data) {
+    return Rcpp::List::create(
+      Rcpp::Named("x") = Rcpp::wrap(data.x),
+      Rcpp::Named("y") = Rcpp::wrap(data.y),
+      Rcpp::Named("classes") = Rcpp::wrap(data.classes),
+      Rcpp::Named("indices") = Rcpp::wrap(data.indices));
+  }
+
   template<> std::unique_ptr<pptree::Node<long double, int> > as(SEXP x) {
     Rcpp::List rnode(x);
 
@@ -148,7 +167,7 @@ namespace Rcpp {
       std::move(upper));
   }
 
-  template<> pptree::Tree<long double, int> as(SEXP x) {
+  template<> pptree::Tree<long double, int, pptree::DataSpec<long double, int> > as(SEXP x) {
     Rcpp::List rtree(x);
     Rcpp::List rtraining_spec(rtree["trainingSpec"]);
     Rcpp::List rtraining_data(rtree["trainingData"]);
@@ -156,10 +175,24 @@ namespace Rcpp {
     auto root = as<pptree::Condition<long double, int> >(rtree["root"]);
     auto root_ptr = std::make_unique<pptree::Condition<long double, int> >(std::move(root));
 
-    return pptree::Tree<long double, int>(
+    return pptree::Tree<long double, int, pptree::DataSpec<long double, int> >(
       std::move(root_ptr),
       std::make_unique<pptree::TrainingSpec<long double, int> >(as<pptree::TrainingSpec<long double, int> >(rtraining_spec)),
       std::make_shared<pptree::DataSpec<long double, int> >(as<pptree::DataSpec<long double, int> >(rtraining_data)));
+  }
+
+  template<> pptree::Tree<long double, int, pptree::BootstrapDataSpec<long double, int> > as(SEXP x) {
+    Rcpp::List rtree(x);
+    Rcpp::List rtraining_spec(rtree["trainingSpec"]);
+    Rcpp::List rtraining_data(rtree["trainingData"]);
+
+    auto root = as<pptree::Condition<long double, int> >(rtree["root"]);
+    auto root_ptr = std::make_unique<pptree::Condition<long double, int> >(std::move(root));
+
+    return pptree::Tree<long double, int, pptree::BootstrapDataSpec<long double, int> >(
+      std::move(root_ptr),
+      std::make_unique<pptree::TrainingSpec<long double, int> >(as<pptree::TrainingSpec<long double, int> >(rtraining_spec)),
+      std::make_shared<pptree::BootstrapDataSpec<long double, int> >(as<pptree::BootstrapDataSpec<long double, int> >(rtraining_data)));
   }
 
   template<> pptree::Forest<long double, int> as(SEXP x) {
@@ -174,8 +207,8 @@ namespace Rcpp {
       Rcpp::as<double>(rforest["seed"]));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
-      auto tree = as<pptree::Tree<long double, int> >(rtrees[i]);
-      auto tree_ptr = std::make_unique<pptree::Tree<long double, int> >(std::move(tree));
+      auto tree = as<pptree::Tree<long double, int, pptree::BootstrapDataSpec<long double, int> > >(rtrees[i]);
+      auto tree_ptr = std::make_unique<pptree::Tree<long double, int, pptree::BootstrapDataSpec<long double, int> > >(std::move(tree));
       forest.add_tree(std::move(tree_ptr));
     }
 
@@ -211,5 +244,18 @@ namespace Rcpp {
       Rcpp::as<pptree::Data<long double> >(rdata["x"]),
       Rcpp::as<pptree::DataColumn<int> >(rdata["y"]),
       std::set<int>(classes.begin(), classes.end()));
+  }
+
+  template<> pptree::BootstrapDataSpec<long double, int> as(SEXP x) {
+    Rcpp::List rdata(x);
+
+    std::vector<int> classes = Rcpp::as<std::vector<int> >(rdata["classes"]);
+    std::vector<int> indices = Rcpp::as<std::vector<int> >(rdata["indices"]);
+
+    return pptree::BootstrapDataSpec<long double, int>(
+      Rcpp::as<pptree::Data<long double> >(rdata["x"]),
+      Rcpp::as<pptree::DataColumn<int> >(rdata["y"]),
+      std::set<int>(classes.begin(), classes.end()),
+      indices);
   }
 }
