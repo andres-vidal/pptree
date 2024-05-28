@@ -53,6 +53,17 @@ namespace stats {
   DataColumn<T> select_rows(
     const DataColumn<T> &   data,
     const std::vector<int> &indices);
+
+  template<typename T>
+  Data<T> select_rows(
+    const Data<T> &      data,
+    const std::set<int> &indices);
+
+  template<typename T>
+  DataColumn<T> select_rows(
+    const DataColumn<T> & data,
+    const std::set<int> & indices);
+
   template<typename T, typename G>
   struct DataSpec {
     const Data<T>  x;
@@ -84,6 +95,7 @@ namespace stats {
   template<typename T, typename G>
   struct BootstrapDataSpec : DataSpec<T, G> {
     const std::vector<int> sample_indices;
+    const std::set<int> oob_indices;
 
     BootstrapDataSpec(
       const Data<T> &         x,
@@ -91,7 +103,8 @@ namespace stats {
       const std::set<G> &     classes,
       const std::vector<int> &sample_indices)
       : DataSpec<T, G>(x, y, classes),
-      sample_indices(sample_indices) {
+      sample_indices(sample_indices),
+      oob_indices(init_oob_indices(x, sample_indices)) {
     }
 
     BootstrapDataSpec(
@@ -99,7 +112,8 @@ namespace stats {
       const DataColumn<G> &   y,
       const std::vector<int> &sample_indices)
       : DataSpec<T, G>(x, y),
-      sample_indices(sample_indices) {
+      sample_indices(sample_indices),
+      oob_indices(init_oob_indices(x, sample_indices)) {
     }
 
     DataSpec<T, G> get_sample() const {
@@ -108,9 +122,36 @@ namespace stats {
         select_rows(this->y, this->sample_indices));
     }
 
+    DataSpec<T, G> get_oob() const {
+      return DataSpec<T, G>(
+        select_rows(this->x, this->oob_indices),
+        select_rows(this->y, this->oob_indices));
+    }
+
     std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const override {
       return this->get_sample().unwrap();
     }
+
+    private:
+
+      static std::set<int> init_oob_indices(const Data<T> &data, const std::vector<int> &sample_indices) {
+        std::set<int> all_indices;
+
+        for (int i = 0; i < data.rows(); i++) {
+          all_indices.insert(i);
+        }
+
+        std::set<int> iob_indices(sample_indices.begin(), sample_indices.end());
+        std::set<int> oob_indices;
+        std::set_difference(
+          all_indices.begin(),
+          all_indices.end(),
+          iob_indices.begin(),
+          iob_indices.end(),
+          std::inserter(oob_indices, oob_indices.end()));
+
+        return oob_indices;
+      }
   };
 
   template<typename G>

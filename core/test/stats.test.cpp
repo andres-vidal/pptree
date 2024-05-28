@@ -11,7 +11,7 @@ using namespace Eigen;
         ASSERT_EQ(nlohmann::json(expected).dump(), nlohmann::json(actual).dump())
 
 
-TEST(StatsSelectDataRows, single_row) {
+TEST(StatsSelectDataRows, vector_single_row) {
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
@@ -31,7 +31,7 @@ TEST(StatsSelectDataRows, single_row) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatsSelectDataRows, multiple_rows_non_adjacent) {
+TEST(StatsSelectDataRows, vector_multiple_rows_non_adjacent) {
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
@@ -52,7 +52,7 @@ TEST(StatsSelectDataRows, multiple_rows_non_adjacent) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatsSelectDataRows, multiple_rows_adjacent) {
+TEST(StatsSelectDataRows, vector_multiple_rows_adjacent) {
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
@@ -73,7 +73,7 @@ TEST(StatsSelectDataRows, multiple_rows_adjacent) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatsSelectDataColumnRows, single_row) {
+TEST(StatsSelectDataColumnRows, vector_single_row) {
   DataColumn<long double> data(3);
   data << 1.0, 2.0, 3.0;
 
@@ -87,7 +87,7 @@ TEST(StatsSelectDataColumnRows, single_row) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatsSelectDataColumnRows, multiple_rows_non_adjacent) {
+TEST(StatsSelectDataColumnRows, vector_multiple_rows_non_adjacent) {
   DataColumn<long double> data(3);
   data << 1.0, 2.0, 3.0;
 
@@ -101,7 +101,7 @@ TEST(StatsSelectDataColumnRows, multiple_rows_non_adjacent) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(StatsSelectDataColumnRows, multiple_rows_adjacent) {
+TEST(StatsSelectDataColumnRows, vector_multiple_rows_adjacent) {
   DataColumn<long double> data(3);
   data << 1.0, 2.0, 3.0;
 
@@ -114,6 +114,111 @@ TEST(StatsSelectDataColumnRows, multiple_rows_adjacent) {
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected, actual);
 }
+
+TEST(StatsSelectDataRows, set_single_row) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  std::set<int> indices = { 1 };
+  Data<long double> actual = select_rows(data, indices);
+
+  Data<long double> expected(1, 3);
+  expected <<
+    4.0, 5.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataRows, set_multiple_rows_non_adjacent) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  std::set<int> indices = { 0, 2 };
+  Data<long double> actual = select_rows(data, indices);
+
+  Data<long double> expected(2, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    7.0, 8.0, 9.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataRows, set_multiple_rows_adjacent) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0;
+
+  std::set<int> indices = { 0, 1 };
+  Data<long double> actual = select_rows(data, indices);
+
+  Data<long double> expected(2, 3);
+  expected <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataColumnRows, set_single_row) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::set<int> indices = { 1 };
+  DataColumn<long double> actual = select_rows(data, indices);
+
+  DataColumn<long double> expected(1);
+  expected << 2.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataColumnRows, set_multiple_rows_non_adjacent) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::set<int> indices = { 0, 2 };
+  DataColumn<long double> actual = select_rows(data, indices);
+
+  DataColumn<long double> expected(2);
+  expected << 1.0, 3.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(StatsSelectDataColumnRows, set_multiple_rows_adjacent) {
+  DataColumn<long double> data(3);
+  data << 1.0, 2.0, 3.0;
+
+  std::set<int> indices = { 0, 1 };
+  DataColumn<long double> actual = select_rows(data, indices);
+
+  DataColumn<long double> expected(2);
+  expected << 1.0, 2.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected, actual);
+}
+
 
 TEST(StatsSelectGroupIndices, single_group) {
   Data<long double> data(3, 3);
@@ -3176,4 +3281,72 @@ TEST(BootstrapDataSpecUnwrap, repeats_data_rows_for_repeated_indices) {
 
   ASSERT_EQ(expected_classes.size(), unwrapped_classes.size());
   ASSERT_EQ(expected_classes, unwrapped_classes);
+}
+
+TEST(BootstrapDataSpecOOBIndices, oob_indices_are_complement_of_sampled_indices) {
+  Data<long double> x(4, 3);
+  x <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5,
+    4, 5, 6;
+
+  DataColumn<int> y(4);
+  y <<
+    1,
+    2,
+    2,
+    3;
+
+  BootstrapDataSpec<long double, int> data(x, y, { 1, 2, 2 });
+
+  std::set<int> expected_oob_indices = { 0, 3 };
+
+  ASSERT_EQ(data.oob_indices.size(), expected_oob_indices.size());
+  ASSERT_EQ(data.oob_indices, expected_oob_indices);
+}
+
+TEST(BootstrapDataSpecGetOOB, oob_data_is_complement_of_sampled_data) {
+  Data<long double> x(4, 3);
+  x <<
+    1, 2, 3,
+    2, 3, 4,
+    3, 4, 5,
+    4, 5, 6;
+
+  DataColumn<int> y(4);
+  y <<
+    1,
+    2,
+    2,
+    3;
+
+  BootstrapDataSpec<long double, int> data(x, y, { 1, 2, 2 });
+
+  DataSpec<long double, int> oob = data.get_oob();
+
+  Data<long double> expected_x(2, 3);
+  expected_x <<
+    1, 2, 3,
+    4, 5, 6;
+
+  DataColumn<int> expected_y(2);
+  expected_y <<
+    1,
+    3;
+
+  std::set<int> expected_classes = { 1, 3 };
+
+  ASSERT_EQ(expected_x.size(), oob.x.size());
+  ASSERT_EQ(expected_x.rows(), oob.x.rows());
+  ASSERT_EQ(expected_x.cols(), oob.x.cols());
+  ASSERT_EQ(expected_x, oob.x);
+
+  ASSERT_EQ(expected_y.size(), oob.y.size());
+  ASSERT_EQ(expected_y.rows(), oob.y.rows());
+  ASSERT_EQ(expected_y.cols(), oob.y.cols());
+  ASSERT_EQ(expected_y, oob.y);
+
+  ASSERT_EQ(expected_classes.size(), oob.classes.size());
+  ASSERT_EQ(expected_classes, oob.classes);
 }

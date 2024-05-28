@@ -21,16 +21,21 @@ namespace stats {
     const std::vector<int> &  indices);
 
   template<typename T>
+  Data<T> select_rows(
+    const Data<T> &      data,
+    const std::set<int> &indices) {
+    return select_rows(data, std::vector<int>(indices.begin(), indices.end()));
+  }
+
+  template Data<long double> select_rows<long double>(
+    const Data<long double> & data,
+    const std::set<int> &     indices);
+
+  template<typename T>
   DataColumn<T> select_rows(
     const DataColumn<T> &   data,
     const std::vector<int> &indices) {
-    DataColumn<T> result(indices.size());
-
-    for (int i = 0; i < indices.size(); i++) {
-      result(i) = data(indices[i]);
-    }
-
-    return result;
+    return select_rows((Data<T>)data, indices).col(0);
   }
 
   template DataColumn<int> select_rows<int>(
@@ -40,6 +45,21 @@ namespace stats {
   template DataColumn<long double> select_rows<long double>(
     const DataColumn<long double> & data,
     const std::vector<int> &        indices);
+
+  template<typename T>
+  DataColumn<T> select_rows(
+    const DataColumn<T> & data,
+    const std::set<int> & indices) {
+    return select_rows((Data<T>)data, indices).col(0);
+  }
+
+  template DataColumn<int> select_rows<int>(
+    const DataColumn<int> & data,
+    const std::set<int> &   indices);
+
+  template DataColumn<long double> select_rows<long double>(
+    const DataColumn<long double> & data,
+    const std::set<int> &           indices);
 
   template<typename G>
   std::vector<G> select_group(
