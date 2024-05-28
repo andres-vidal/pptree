@@ -131,7 +131,7 @@ namespace Rcpp {
       Rcpp::Named("x") = Rcpp::wrap(data.x),
       Rcpp::Named("y") = Rcpp::wrap(data.y),
       Rcpp::Named("classes") = Rcpp::wrap(data.classes),
-      Rcpp::Named("indices") = Rcpp::wrap(data.indices));
+      Rcpp::Named("sampleIndices") = Rcpp::wrap(data.sample_indices));
   }
 
   template<> std::unique_ptr<pptree::Node<long double, int> > as(SEXP x) {
@@ -250,12 +250,12 @@ namespace Rcpp {
     Rcpp::List rdata(x);
 
     std::vector<int> classes = Rcpp::as<std::vector<int> >(rdata["classes"]);
-    std::vector<int> indices = Rcpp::as<std::vector<int> >(rdata["indices"]);
+    std::vector<int> sample_indices = Rcpp::as<std::vector<int> >(rdata["sampleIndices"]);
 
     return pptree::BootstrapDataSpec<long double, int>(
       Rcpp::as<pptree::Data<long double> >(rdata["x"]),
       Rcpp::as<pptree::DataColumn<int> >(rdata["y"]),
       std::set<int>(classes.begin(), classes.end()),
-      indices);
+      sample_indices);
   }
 }

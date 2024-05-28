@@ -2319,7 +2319,7 @@ TEST(StatsCenterBootstrapDataSpec, single_observation) {
   ASSERT_EQ(data.y.cols(), actual.y.cols());
   ASSERT_EQ(data.y, actual.y);
 
-  ASSERT_EQ(data.indices, actual.indices);
+  ASSERT_EQ(data.sample_indices, actual.sample_indices);
   ASSERT_EQ(data.classes, actual.classes);
 }
 
@@ -2352,7 +2352,7 @@ TEST(StatsCenterBootstrapDataSpec, multiple_equal_observations) {
   ASSERT_EQ(data.y.cols(), actual.y.cols());
   ASSERT_EQ(data.y, actual.y);
 
-  ASSERT_EQ(data.indices, actual.indices);
+  ASSERT_EQ(data.sample_indices, actual.sample_indices);
   ASSERT_EQ(data.classes, actual.classes);
 }
 
@@ -2389,7 +2389,7 @@ TEST(StatsCenterBootstrapDataSpec, multiple_different_observations) {
   ASSERT_EQ(data.y.cols(), actual.y.cols());
   ASSERT_EQ(data.y, actual.y);
 
-  ASSERT_EQ(data.indices, actual.indices);
+  ASSERT_EQ(data.sample_indices, actual.sample_indices);
   ASSERT_EQ(data.classes, actual.classes);
 }
 
@@ -2847,7 +2847,7 @@ TEST(StatsDescaleBootstrapDataSpec, idempotent_in_zero_matrix) {
   ASSERT_EQ(data.y.cols(), actual.y.cols());
   ASSERT_EQ(data.y, actual.y);
 
-  ASSERT_EQ(data.indices, actual.indices);
+  ASSERT_EQ(data.sample_indices, actual.sample_indices);
   ASSERT_EQ(data.classes, actual.classes);
 }
 
@@ -2884,7 +2884,7 @@ TEST(StatsDescaleBootstrapDataSpec, idempotent_in_constant_matrix) {
   ASSERT_EQ(data.y.cols(), actual.y.cols());
   ASSERT_EQ(data.y, actual.y);
 
-  ASSERT_EQ(data.indices, actual.indices);
+  ASSERT_EQ(data.sample_indices, actual.sample_indices);
   ASSERT_EQ(data.classes, actual.classes);
 }
 
@@ -2921,7 +2921,7 @@ TEST(StatsDescaleBootstrapDataSpec, idempotent_in_descaled_data) {
   ASSERT_EQ(data.y.cols(), actual.y.cols());
   ASSERT_EQ(data.y, actual.y);
 
-  ASSERT_EQ(data.indices, actual.indices);
+  ASSERT_EQ(data.sample_indices, actual.sample_indices);
   ASSERT_EQ(data.classes, actual.classes);
 }
 
@@ -2958,7 +2958,7 @@ TEST(StatsDescaleBootstrapDataSpec, descales_scaled_data) {
   ASSERT_EQ(data.y.cols(), actual.y.cols());
   ASSERT_EQ(data.y, actual.y);
 
-  ASSERT_EQ(data.indices, actual.indices);
+  ASSERT_EQ(data.sample_indices, actual.sample_indices);
   ASSERT_EQ(data.classes, actual.classes);
 }
 
@@ -2995,7 +2995,7 @@ TEST(StatsDescaleBootstrapDataSpec, descales_partially_scaled_data) {
   ASSERT_EQ(data.y.cols(), actual.y.cols());
   ASSERT_EQ(data.y, actual.y);
 
-  ASSERT_EQ(data.indices, actual.indices);
+  ASSERT_EQ(data.sample_indices, actual.sample_indices);
   ASSERT_EQ(data.classes, actual.classes);
 }
 

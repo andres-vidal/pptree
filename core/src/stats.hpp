@@ -83,29 +83,29 @@ namespace stats {
 
   template<typename T, typename G>
   struct BootstrapDataSpec : DataSpec<T, G> {
-    const std::vector<int> indices;
+    const std::vector<int> sample_indices;
 
     BootstrapDataSpec(
       const Data<T> &         x,
       const DataColumn<G> &   y,
       const std::set<G> &     classes,
-      const std::vector<int> &indices)
+      const std::vector<int> &sample_indices)
       : DataSpec<T, G>(x, y, classes),
-      indices(indices) {
+      sample_indices(sample_indices) {
     }
 
     BootstrapDataSpec(
       const Data<T> &         x,
       const DataColumn<G> &   y,
-      const std::vector<int> &indices)
+      const std::vector<int> &sample_indices)
       : DataSpec<T, G>(x, y),
-      indices(indices) {
+      sample_indices(sample_indices) {
     }
 
     DataSpec<T, G> get_sample() const {
       return DataSpec<T, G>(
-        select_rows(this->x, this->indices),
-        select_rows(this->y, this->indices));
+        select_rows(this->x, this->sample_indices),
+        select_rows(this->y, this->sample_indices));
     }
 
     std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const override {
