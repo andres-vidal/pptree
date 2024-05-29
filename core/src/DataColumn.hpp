@@ -1,12 +1,11 @@
 #pragma once
 
-#include "linalg.hpp"
+#include "DVector.hpp"
+
 #include <set>
 
-using namespace linalg;
-
 template<typename T>
-using DataColumn = linalg::DVector<T>;
+using DataColumn = DVector<T>;
 
 template<typename N>
 std::set<N> unique(const DataColumn<N> &column) {

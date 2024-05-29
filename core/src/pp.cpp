@@ -1,9 +1,10 @@
 #include "pptreeio.hpp"
 #include "pp.hpp"
 
+#include "Math.hpp"
+
 
 using namespace pp;
-using namespace linalg;
 
 namespace pp {
   template<typename T>
@@ -66,7 +67,7 @@ namespace pp {
     LOG_INFO << "(W_pda + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
     LOG_INFO << "(W_pda + B)^-1 * B (truncated):" << std::endl << truncatedWpBInvB << std::endl;
 
-    auto [eigen_val, eigen_vec] = linalg::eigen(truncatedWpBInvB);
+    auto [eigen_val, eigen_vec] = eigen(truncatedWpBInvB);
 
     LOG_INFO << "Eigenvalues:" << std::endl << eigen_val << std::endl;
     LOG_INFO << "Eigenvectors:" << std::endl << eigen_vec << std::endl;
@@ -97,8 +98,9 @@ namespace pp {
     Data<T> W_diag = W.diagonal().asDiagonal();
     Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
     Data<T> B = between_groups_sum_of_squares(data, groups, unique_groups);
+    Data<T> WpB = W_pda + B;
 
-    T denominator = determinant(inner_square(A, W_pda + B));
+    T denominator = determinant(inner_square(A, WpB));
 
     if (denominator == 0) {
       return 0;

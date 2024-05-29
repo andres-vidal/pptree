@@ -1,13 +1,13 @@
+#include "BootstrapDataSpec.hpp"
+#include "DataSpec.hpp"
+#include "Group.hpp"
+#include "Math.hpp"
 #include "pp.hpp"
 #include "dr.hpp"
+
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
-
-#include "Group.hpp"
-#include "DataSpec.hpp"
-#include "BootstrapDataSpec.hpp"
-
 
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
@@ -216,8 +216,8 @@ namespace pptree {
     }
 
     bool operator==(const Condition<T, R> &other) const {
-      return linalg::collinear(projector, other.projector)
-      && linalg::is_approx(threshold, other.threshold)
+      return collinear(projector, other.projector)
+      && is_approx(threshold, other.threshold)
       && *lower == *other.lower
       && *upper == *other.upper;
     }
@@ -234,7 +234,7 @@ namespace pptree {
       classes.insert(lower_classes.begin(), lower_classes.end());
       classes.insert(upper_classes.begin(), upper_classes.end());
 
-      Projector<T> importance = linalg::abs(projector) / classes.size();
+      Projector<T> importance = abs(projector) / classes.size();
 
       return { importance + lower_importance + upper_importance, classes };
     }

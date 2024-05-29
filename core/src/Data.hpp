@@ -1,12 +1,10 @@
 #pragma once
 
-#include "linalg.hpp"
+#include "DMatrix.hpp"
 #include "DataColumn.hpp"
 
 #include <map>
 #include <random>
-
-using namespace linalg;
 
 template<typename T>
 using Data = DMatrix<T>;
@@ -109,8 +107,9 @@ Data<T> between_groups_sum_of_squares(
   for (const G& group : unique_groups) {
     Data<T> group_data = select_group(data, groups, group);
     DataColumn<T> group_mean = mean(group_data);
+    DataColumn<T> centered_mean = group_mean - global_mean;
 
-    result += group_data.rows() * outer_square(group_mean - global_mean);
+    result += group_data.rows() * outer_square(centered_mean);
   }
 
   return result;
@@ -128,7 +127,9 @@ Data<T> within_groups_sum_of_squares(
     Data<T> centered_group_data = center(select_group(data, groups, group));
 
     for (int r = 0; r < centered_group_data.rows(); r++) {
-      result += outer_square(centered_group_data.row(r));
+      DataColumn<T> row = centered_group_data.row(r);
+
+      result += outer_square(row);
     }
   }
 

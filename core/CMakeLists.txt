@@ -41,9 +41,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_library(pptree
+  src/DMatrix.cpp
   src/Group.cpp
   src/pptree.cpp
-  src/linalg.cpp
   src/pp.cpp
   src/dr.cpp)
 
@@ -63,8 +63,9 @@ add_executable(pptree-test
   src/Data.test.cpp
   src/DataColumn.test.cpp
   src/DataSpec.test.cpp
+  src/DMatrix.test.cpp
+  src/DVector.test.cpp
   src/Group.test.cpp
-  test/linalg.test.cpp
   test/pp.test.cpp
   test/pptree.test.cpp)
 

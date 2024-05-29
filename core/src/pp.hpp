@@ -1,9 +1,10 @@
 #include "Data.hpp"
 #include "DataColumn.hpp"
+#include "DVector.hpp"
 
 namespace pp {
   template<typename T>
-  using Projector = linalg::DVector<T>;
+  using Projector = DVector<T>;
 
   template<typename T>
   using Projection = DataColumn<T>;
