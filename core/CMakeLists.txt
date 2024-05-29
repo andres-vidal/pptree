@@ -43,8 +43,8 @@ FetchContent_MakeAvailable(googletest)
 add_library(pptree
   src/DMatrix.cpp
   src/Group.cpp
+  src/PPStrategy.cpp
   src/pptree.cpp
-  src/pp.cpp
   src/dr.cpp)
 
 target_include_directories(pptree
@@ -66,7 +66,8 @@ add_executable(pptree-test
   src/DMatrix.test.cpp
   src/DVector.test.cpp
   src/Group.test.cpp
-  test/pp.test.cpp
+  src/Projector.test.cpp
+  src/PPStrategy.test.cpp
   test/pptree.test.cpp)
 
 target_link_libraries(pptree-test

@@ -9,3 +9,8 @@ inline bool is_approx(long double a, long double b) {
 inline bool is_module_approx(long double a, long double b) {
   return is_approx(fabs(a), fabs(b));
 }
+
+template<typename T>
+inline T truncate_op(T value) {
+  return fabs(value) < 1e-15 ? 0 : value;
+}

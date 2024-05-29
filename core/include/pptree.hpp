@@ -2,7 +2,8 @@
 #include "DataSpec.hpp"
 #include "Group.hpp"
 #include "Math.hpp"
-#include "pp.hpp"
+#include "Projector.hpp"
+#include "PPStrategy.hpp"
 #include "dr.hpp"
 
 #include <memory>
@@ -10,9 +11,7 @@
 #include <algorithm>
 
 namespace pptree {
-  inline namespace pp { using namespace ::pp; }
   inline namespace dr { using namespace ::dr; }
-  inline namespace ppstrategy { using namespace ::pp::strategy; }
   inline namespace drstrategy { using namespace ::dr::strategy; }
 
 
@@ -120,7 +119,7 @@ namespace pptree {
     }
 
     static TrainingSpec<T, R> glda(const double lambda) {
-      auto training_spec = TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::all<T>());
+      auto training_spec = TrainingSpec<T, R>(::glda<T, R>(lambda), dr::strategy::all<T>());
       training_spec.params->set("lambda", lambda);
       return training_spec;
     }
@@ -130,7 +129,7 @@ namespace pptree {
     }
 
     static TrainingSpec<T, R> uniform_glda(const int n_vars, const double lambda) {
-      auto training_spec = TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars));
+      auto training_spec = TrainingSpec<T, R>(::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars));
       training_spec.params->set("n_vars", n_vars);
       training_spec.params->set("lambda", lambda);
       return training_spec;
