@@ -41,9 +41,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_library(pptree
+  src/Group.cpp
   src/pptree.cpp
   src/linalg.cpp
-  src/stats.cpp
   src/pp.cpp
   src/dr.cpp)
 
@@ -59,7 +59,11 @@ target_link_libraries(pptree
 enable_testing()
 
 add_executable(pptree-test
-  test/stats.test.cpp
+  src/BootstrapDataSpec.test.cpp 
+  src/Data.test.cpp
+  src/DataColumn.test.cpp
+  src/DataSpec.test.cpp
+  src/Group.test.cpp
   test/linalg.test.cpp
   test/pp.test.cpp
   test/pptree.test.cpp)

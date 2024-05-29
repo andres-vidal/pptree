@@ -4,7 +4,6 @@
 
 using namespace pp;
 using namespace linalg;
-using namespace stats;
 using namespace Eigen;
 
 #define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << std::endl << "Expected vectors to be collinear: [" << a.transpose() << "] [" << b.transpose() << "]" << std::endl

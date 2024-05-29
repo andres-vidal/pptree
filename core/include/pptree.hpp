@@ -4,12 +4,16 @@
 #include <stdexcept>
 #include <algorithm>
 
+#include "Group.hpp"
+#include "DataSpec.hpp"
+#include "BootstrapDataSpec.hpp"
+
+
 namespace pptree {
   inline namespace pp { using namespace ::pp; }
   inline namespace dr { using namespace ::dr; }
   inline namespace ppstrategy { using namespace ::pp::strategy; }
   inline namespace drstrategy { using namespace ::dr::strategy; }
-  inline namespace stats { using namespace ::stats; }
 
 
   struct ITrainingParam {

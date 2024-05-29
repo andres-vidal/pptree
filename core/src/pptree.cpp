@@ -290,7 +290,7 @@ namespace pptree {
       seed);
 
     for (int i = 0; i < size; i++) {
-      BootstrapDataSpec<T, R> sample_training_data = stats::stratified_proportional_sample(
+      BootstrapDataSpec<T, R> sample_training_data = stratified_proportional_sample(
         training_data,
         training_data.x.rows(),
         rng);

@@ -3,8 +3,6 @@
 #include <cassert>
 #include <vector>
 
-using namespace stats;
-
 namespace dr::strategy {
   template<typename T>
   DRStrategy<T> all() {
@@ -25,7 +23,7 @@ namespace dr::strategy {
 
              LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
 
-             std::vector<int> var_sampled_indices = stats::Uniform(0, data.cols() - 1)(rng, n_vars);
+             std::vector<int> var_sampled_indices = Uniform(0, data.cols() - 1)(rng, n_vars);
 
              LOG_INFO << "Selected variables: " << var_sampled_indices << std::endl;
 

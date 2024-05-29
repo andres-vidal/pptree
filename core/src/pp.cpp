@@ -3,7 +3,6 @@
 
 
 using namespace pp;
-using namespace stats;
 using namespace linalg;
 
 namespace pp {
