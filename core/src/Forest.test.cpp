@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include "Forest.hpp"
-#include "pptreeio.hpp"
 
 static Projector<long double> as_projector(std::vector<long double> vector) {
   Eigen::Map<Projector<long double> > projector(vector.data(), vector.size());

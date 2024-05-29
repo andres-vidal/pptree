@@ -4,6 +4,10 @@
 #include "TrainingSpec.hpp"
 #include "Projector.hpp"
 
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
 template<typename T>
 using Threshold = T;
 
@@ -210,3 +214,68 @@ template<typename T, typename R, typename D >
 Tree<T, R, D> train(
   const TrainingSpec<T, R> &training_spec,
   const D &                 training_data);
+
+
+template<typename T, typename R >
+void to_json(json& j, const Condition<T, R> &condition);
+template<typename T, typename R >
+void to_json(json& j, const Response<T, R> &response);
+template<typename T, typename R >
+void to_json(json& j, const Node<T, R> &node);
+
+template<typename T, typename R >
+void to_json(json& j, const Condition<T, R>& condition) {
+  j = json{
+    { "projector", condition.projector },
+    { "threshold", condition.threshold },
+    { "lower", *condition.lower },
+    { "upper", *condition.upper }
+  };
+}
+
+template<typename T, typename R >
+void to_json(json& j, const Response<T, R>& response) {
+  j = json{
+    { "value", response.value }
+  };
+}
+
+template<typename T, typename R >
+void to_json(json& j, const Node<T, R>& node) {
+  if (node.is_response()) {
+    to_json(j, node.as_response());
+  } else {
+    to_json(j, node.as_condition());
+  }
+}
+
+template<typename T, typename R, typename D>
+void to_json(json& j, const Tree<T, R, D>& tree) {
+  j = json{
+    { "root", *tree.root }
+  };
+}
+
+template<typename T, typename R, typename D>
+std::ostream& operator<<(std::ostream & ostream, const Tree<T, R, D>& tree) {
+  json json_tree(tree);
+  return ostream << json_tree.dump(2, ' ', false);
+}
+
+template<typename T, typename R>
+std::ostream& operator<<(std::ostream & ostream, const Node<T, R> &node) {
+  json json_node(node);
+  return ostream << json_node.dump(2, ' ', false);
+}
+
+template<typename T, typename R>
+std::ostream& operator<<(std::ostream & ostream, const Condition<T, R>& condition) {
+  json json_condition(condition);
+  return ostream << json_condition.dump(2, ' ', false);
+}
+
+template<typename T, typename R>
+std::ostream& operator<<(std::ostream & ostream, const Response<T, R>& response) {
+  json json_response(response);
+  return ostream << json_response.dump(2, ' ', false);
+}

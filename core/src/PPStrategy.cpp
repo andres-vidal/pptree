@@ -1,5 +1,4 @@
 #include "PPStrategy.hpp"
-#include "pptreeio.hpp"
 
 template<typename T>
 Projector<T> get_projector(Data<T> eigen_vec) {

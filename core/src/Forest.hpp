@@ -3,9 +3,12 @@
 #include "BootstrapDataSpec.hpp"
 #include "Tree.hpp"
 
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
 template<typename T, typename R>
 using BootstrapTree = Tree<T, R, BootstrapDataSpec<T, R> >;
-
 
 template<typename T, typename R>
 struct Forest {
@@ -118,3 +121,23 @@ Forest<T, R> train(
   const DataSpec<T, R> &    training_data,
   const int                 size,
   const double              seed);
+
+
+template<typename T, typename R>
+void to_json(json& j, const Forest<T, R>& forest) {
+  std::vector<json> trees_json;
+
+  for (const auto& tree : forest.trees) {
+    json tree_json;
+    to_json(tree_json, *tree);
+    trees_json.push_back(tree_json);
+  }
+
+  j = json{ { "trees", trees_json } };
+}
+
+template<typename T, typename R>
+std::ostream& operator<<(std::ostream & ostream, const Forest<T, R>& forest) {
+  json json_response(forest);
+  return ostream << json_response.dump(2, ' ', false);
+}
