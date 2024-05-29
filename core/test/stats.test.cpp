@@ -3350,3 +3350,63 @@ TEST(BootstrapDataSpecGetOOB, oob_data_is_complement_of_sampled_data) {
   ASSERT_EQ(expected_classes.size(), oob.classes.size());
   ASSERT_EQ(expected_classes, oob.classes);
 }
+
+TEST(StatsShuffleColumnOfData, shuffles_first_column) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  std::mt19937 rng(0);
+
+  Data<long double> shuffled = shuffle_column(data, 0, rng);
+
+  ASSERT_EQ(data.size(), shuffled.size());
+  ASSERT_EQ(data.rows(), shuffled.rows());
+  ASSERT_EQ(data.cols(), shuffled.cols());
+  ASSERT_EQ(data.col(1), shuffled.col(1));
+  ASSERT_EQ(data.col(2), shuffled.col(2));
+
+  ASSERT_NE(data.col(0), shuffled.col(0));
+}
+
+TEST(StatsShuffleColumnOfData, shuffles_middle_column) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  std::mt19937 rng(0);
+
+  Data<long double> shuffled = shuffle_column(data, 1, rng);
+
+  ASSERT_EQ(data.size(), shuffled.size());
+  ASSERT_EQ(data.rows(), shuffled.rows());
+  ASSERT_EQ(data.cols(), shuffled.cols());
+  ASSERT_EQ(data.col(0), shuffled.col(0));
+  ASSERT_EQ(data.col(2), shuffled.col(2));
+
+  ASSERT_NE(data.col(1), shuffled.col(1));
+}
+
+TEST(StatsShuffleColumnOfData, shuffles_last_column) {
+  Data<long double> data(3, 3);
+  data <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  std::mt19937 rng(0);
+
+  Data<long double> shuffled = shuffle_column(data, 2, rng);
+
+  ASSERT_EQ(data.size(), shuffled.size());
+  ASSERT_EQ(data.rows(), shuffled.rows());
+  ASSERT_EQ(data.cols(), shuffled.cols());
+  ASSERT_EQ(data.col(0), shuffled.col(0));
+  ASSERT_EQ(data.col(1), shuffled.col(1));
+
+  ASSERT_NE(data.col(2), shuffled.col(2));
+}

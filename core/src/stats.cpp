@@ -544,4 +544,27 @@ namespace stats {
 
   template BootstrapDataSpec<long double, int> descale<long double, int>(
     const BootstrapDataSpec<long double, int> &data);
+
+  template<typename T>
+  Data<T> shuffle_column(
+    const Data<T> &data,
+    const int      column,
+    std::mt19937 & rng) {
+    Data<T> shuffled = data;
+
+    std::vector<int> indices(data.rows());
+    std::iota(indices.begin(), indices.end(), 0);
+    std::shuffle(indices.begin(), indices.end(), rng);
+
+    for (int i = 0; i < data.rows(); i++) {
+      shuffled(i, column) = data(indices[i], column);
+    }
+
+    return shuffled;
+  }
+
+  template Data<long double> shuffle_column<long double>(
+    const Data<long double> &data,
+    const int                column,
+    std::mt19937 &           rng);
 };

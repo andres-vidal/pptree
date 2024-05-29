@@ -268,4 +268,10 @@ namespace stats {
   template<typename T, typename G>
   BootstrapDataSpec<T, G> descale(
     const BootstrapDataSpec<T, G> &data);
+
+  template<typename T>
+  Data<T> shuffle_column(
+    const Data<T> &data,
+    const int      column,
+    std::mt19937 & rng);
 };
