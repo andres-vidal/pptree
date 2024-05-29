@@ -4,17 +4,13 @@
 #include "Math.hpp"
 #include "Projector.hpp"
 #include "PPStrategy.hpp"
-#include "dr.hpp"
+#include "DRStrategy.hpp"
 
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
 
 namespace pptree {
-  inline namespace dr { using namespace ::dr; }
-  inline namespace drstrategy { using namespace ::dr::strategy; }
-
-
   struct ITrainingParam {
     virtual ~ITrainingParam() = default;
     virtual std::unique_ptr<ITrainingParam> clone() const = 0;
@@ -106,20 +102,20 @@ namespace pptree {
 
     TrainingSpec(
       const PPStrategy<T, R> pp_strategy,
-      const DRStrategy<T> dr_strategy)
+      const DRStrategy<T>    dr_strategy)
       : pp_strategy(pp_strategy),
-        dr_strategy(dr_strategy),
-        params(std::make_unique<TrainingParams>()) {
+      dr_strategy(dr_strategy),
+      params(std::make_unique<TrainingParams>()) {
     }
 
     TrainingSpec(const TrainingSpec& other)
       : pp_strategy(other.pp_strategy),
-        dr_strategy(other.dr_strategy),
-        params(new TrainingParams(*other.params)) {
+      dr_strategy(other.dr_strategy),
+      params(new TrainingParams(*other.params)) {
     }
 
     static TrainingSpec<T, R> glda(const double lambda) {
-      auto training_spec = TrainingSpec<T, R>(::glda<T, R>(lambda), dr::strategy::all<T>());
+      auto training_spec = TrainingSpec<T, R>(::glda<T, R>(lambda), all<T>());
       training_spec.params->set("lambda", lambda);
       return training_spec;
     }
@@ -129,7 +125,7 @@ namespace pptree {
     }
 
     static TrainingSpec<T, R> uniform_glda(const int n_vars, const double lambda) {
-      auto training_spec = TrainingSpec<T, R>(::glda<T, R>(lambda), dr::strategy::uniform<T>(n_vars));
+      auto training_spec = TrainingSpec<T, R>(::glda<T, R>(lambda), uniform<T>(n_vars));
       training_spec.params->set("n_vars", n_vars);
       training_spec.params->set("lambda", lambda);
       return training_spec;
@@ -181,8 +177,8 @@ namespace pptree {
     std::unique_ptr<Node<T, R> > upper;
 
     Condition(
-      Projector<T> projector,
-      Threshold<T> threshold,
+      Projector<T>                 projector,
+      Threshold<T>                 threshold,
       std::unique_ptr<Node<T, R> > lower,
       std::unique_ptr<Node<T, R> > upper)
       : projector(projector), threshold(threshold), lower(std::move(lower)), upper(std::move(upper)) {
@@ -216,9 +212,9 @@ namespace pptree {
 
     bool operator==(const Condition<T, R> &other) const {
       return collinear(projector, other.projector)
-      && is_approx(threshold, other.threshold)
-      && *lower == *other.lower
-      && *upper == *other.upper;
+             && is_approx(threshold, other.threshold)
+             && *lower == *other.lower
+             && *upper == *other.upper;
     }
 
     bool operator!=(const Condition<T, R> &other) const {
@@ -290,12 +286,12 @@ namespace pptree {
     }
 
     Tree(
-      std::unique_ptr<Condition<T, R> > root,
+      std::unique_ptr<Condition<T, R> >    root,
       std::unique_ptr<TrainingSpec<T, R> > training_spec,
-      std::shared_ptr<D > training_data)
+      std::shared_ptr<D >                  training_data)
       : root(std::move(root)),
-        training_spec(std::move(training_spec)),
-        training_data(training_data) {
+      training_spec(std::move(training_spec)),
+      training_data(training_data) {
     }
 
     R predict(const DataColumn<T> &data) const {
@@ -349,11 +345,11 @@ namespace pptree {
 
     Forest(
       std::unique_ptr<TrainingSpec<T, R> > && training_spec,
-      std::shared_ptr<DataSpec<T, R> > && training_data,
-      const double seed)
+      std::shared_ptr<DataSpec<T, R> > &&     training_data,
+      const double                            seed)
       : training_spec(std::move(training_spec)),
-        training_data(training_data),
-        seed(seed) {
+      training_data(training_data),
+      seed(seed) {
     }
 
     R predict(const DataColumn<T> &data) const {
@@ -445,12 +441,12 @@ namespace pptree {
   template<typename T, typename R, typename D >
   Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
-    const D &    training_data);
+    const D &                 training_data);
 
   template<typename T, typename R >
   Forest<T, R> train(
     const TrainingSpec<T, R> &training_spec,
     const DataSpec<T, R> &    training_data,
-    const int size,
-    const double seed);
+    const int                 size,
+    const double              seed);
 }

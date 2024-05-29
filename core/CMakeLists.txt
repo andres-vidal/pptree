@@ -45,7 +45,7 @@ add_library(pptree
   src/Group.cpp
   src/PPStrategy.cpp
   src/pptree.cpp
-  src/dr.cpp)
+  src/DRStrategy.cpp)
 
 target_include_directories(pptree
   PUBLIC include
