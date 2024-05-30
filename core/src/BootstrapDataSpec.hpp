@@ -1,6 +1,6 @@
 #include "DataSpec.hpp"
 #include "Uniform.hpp"
-namespace pptree::stats {
+namespace models::stats {
   template<typename T, typename G>
   struct BootstrapDataSpec : DataSpec<T, G> {
     const std::vector<int> sample_indices;

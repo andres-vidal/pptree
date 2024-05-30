@@ -6,7 +6,7 @@
 #include <memory>
 #include <map>
 
-namespace pptree {
+namespace models {
   struct ITrainingParam {
     virtual ~ITrainingParam() = default;
     virtual std::unique_ptr<ITrainingParam> clone() const = 0;

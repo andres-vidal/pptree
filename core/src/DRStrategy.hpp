@@ -4,7 +4,7 @@
 #include "Data.hpp"
 #include "Uniform.hpp"
 
-namespace pptree::dr::strategy {
+namespace models::dr::strategy {
   template<typename T>
   using DRStrategy = std::function<stats::Data<T>(const stats::Data<T>, std::mt19937 &rng)>;
 

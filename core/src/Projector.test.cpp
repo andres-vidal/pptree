@@ -2,8 +2,8 @@
 
 #include "Projector.hpp"
 
-using namespace pptree::pp;
-using namespace pptree::stats;
+using namespace models::pp;
+using namespace models::stats;
 
 TEST(Projector, ProjectDataZeroProjector) {
   Data<long double> data(30, 5);

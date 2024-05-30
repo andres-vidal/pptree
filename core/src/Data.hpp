@@ -6,7 +6,7 @@
 #include <map>
 #include <random>
 
-namespace pptree::stats {
+namespace models::stats {
   template<typename T>
   using Data = math::DMatrix<T>;
 

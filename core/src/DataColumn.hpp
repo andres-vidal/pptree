@@ -4,7 +4,7 @@
 
 #include <set>
 
-namespace pptree::stats {
+namespace models::stats {
   template<typename T>
   using DataColumn = math::DVector<T>;
 

@@ -1,7 +1,7 @@
 #include "Group.hpp"
 
 #include <vector>
-namespace pptree::stats {
+namespace models::stats {
   template<typename T, typename G>
   struct Group {
     G id;

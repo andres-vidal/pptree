@@ -6,7 +6,7 @@
 #include <set>
 #include <vector>
 
-namespace pptree::stats {
+namespace models::stats {
   template<typename T, typename G>
   struct DataSpec {
     const Data<T>  x;

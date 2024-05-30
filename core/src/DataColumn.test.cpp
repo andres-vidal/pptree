@@ -2,7 +2,7 @@
 
 #include "DataColumn.hpp"
 
-using namespace pptree::stats;
+using namespace models::stats;
 
 TEST(DataColumn, SelectRowsVectorSingleRow) {
   DataColumn<long double> data(3);

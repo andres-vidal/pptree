@@ -4,7 +4,7 @@
 
 #include <set>
 
-namespace pptree::pp::strategy {
+namespace models::pp::strategy {
   template<typename T>
   using PPStrategyReturn = std::tuple<Projector<T>, Projection<T> >;
   template<typename T, typename G>

@@ -1,9 +1,9 @@
 #include "PPStrategy.hpp"
 
-using namespace pptree::stats;
-using namespace pptree::math;
+using namespace models::stats;
+using namespace models::math;
 
-namespace pptree::pp::strategy {
+namespace models::pp::strategy {
   template<typename T>
   Projector<T> get_projector(Data<T> eigen_vec) {
     Projector<T> last = eigen_vec.col(eigen_vec.cols() - 1);

@@ -5,7 +5,7 @@
 
 #include <Eigen/Dense>
 
-namespace pptree::math {
+namespace models::math {
   template<typename T>
   using DMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 

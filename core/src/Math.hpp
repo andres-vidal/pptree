@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace pptree::math {
+namespace models::math {
   inline bool is_approx(long double a, long double b) {
     return fabs(a - b) < 0.00001;
   }

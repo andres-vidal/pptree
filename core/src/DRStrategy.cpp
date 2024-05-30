@@ -4,9 +4,9 @@
 #include <vector>
 
 
-using namespace pptree::stats;
+using namespace models::stats;
 
-namespace pptree::dr::strategy {
+namespace models::dr::strategy {
   template<typename T>
   DRStrategy<T> all() {
     return [](const Data<T> &data, const std::mt19937 & rng) -> Data<T> {

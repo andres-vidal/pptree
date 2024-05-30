@@ -18,7 +18,7 @@ using json = nlohmann::json;
   #define LOG_WARNING std::cout << "[WARNING]" << "[" << __FUNCTION__ << "] "
 #endif
 
-namespace pptree {
+namespace models {
   template<typename V>
   std::ostream& operator<<(std::ostream& ostream, const std::vector<V> &vec) {
     json json_vector(vec);

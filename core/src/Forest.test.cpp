@@ -2,9 +2,9 @@
 
 #include "Forest.hpp"
 
-using namespace pptree;
-using namespace pptree::stats;
-using namespace pptree::pp;
+using namespace models;
+using namespace models::stats;
+using namespace models::pp;
 
 static Projector<long double> as_projector(std::vector<long double> vector) {
   Eigen::Map<Projector<long double> > projector(vector.data(), vector.size());

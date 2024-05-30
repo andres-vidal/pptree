@@ -1,7 +1,7 @@
 #pragma once
 
 #include <random>
-namespace pptree::stats {
+namespace models::stats {
   class Uniform {
     private:
       int min;

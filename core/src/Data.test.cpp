@@ -2,7 +2,7 @@
 
 #include "Data.hpp"
 
-using namespace pptree::stats;
+using namespace models::stats;
 
 TEST(Data, SelectRowsVectorSingleRow) {
   Data<long double> data(3, 3);

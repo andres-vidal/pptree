@@ -1,7 +1,7 @@
 #include "DMatrix.hpp"
 #include "Math.hpp"
 
-namespace pptree::math {
+namespace models::math {
   template<typename T>
   std::tuple<DVector<T>, DMatrix<T> > sort_eigen(
     const DVector<T> & values,

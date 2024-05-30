@@ -5,7 +5,7 @@
 
 #include <set>
 
-namespace pptree::stats {
+namespace models::stats {
   template<typename T, typename G>
   std::tuple<DataColumn<G>, std::set<int>, std::map<int, std::set<G> > > binary_regroup(
     const Data<T> &      data,

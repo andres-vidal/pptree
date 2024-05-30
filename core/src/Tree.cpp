@@ -3,11 +3,11 @@
 #include "Group.hpp"
 #include "Logger.hpp"
 
-using namespace pptree::pp;
-using namespace pptree::pp::strategy;
-using namespace pptree::stats;
+using namespace models::pp;
+using namespace models::pp::strategy;
+using namespace models::stats;
 
-namespace pptree {
+namespace models {
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > step(
     const Data<T> &           data,

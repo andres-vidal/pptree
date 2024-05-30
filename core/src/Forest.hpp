@@ -7,7 +7,7 @@
 
 using json = nlohmann::json;
 
-namespace pptree {
+namespace models {
   template<typename T, typename R>
   using BootstrapTree = Tree<T, R, stats::BootstrapDataSpec<T, R> >;
 
@@ -119,7 +119,7 @@ namespace pptree {
   template<typename T, typename R >
   Forest<T, R> train(
     const TrainingSpec<T, R> &            training_spec,
-    const pptree::stats::DataSpec<T, R> & training_data,
+    const models::stats::DataSpec<T, R> & training_data,
     const int                             size,
     const double                          seed);
 

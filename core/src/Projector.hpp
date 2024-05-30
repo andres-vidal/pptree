@@ -4,7 +4,7 @@
 #include "DataColumn.hpp"
 #include "DVector.hpp"
 
-namespace pptree::pp {
+namespace models::pp {
   template<typename T>
   using Projector = math::DVector<T>;
 

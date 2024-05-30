@@ -6,7 +6,7 @@
 
 #include <nlohmann/json.hpp>
 
-namespace pptree {
+namespace models {
   using json = nlohmann::json;
 
   template<typename T>

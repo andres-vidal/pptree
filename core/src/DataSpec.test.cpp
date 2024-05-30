@@ -2,7 +2,7 @@
 
 #include "DataSpec.hpp"
 
-using namespace pptree::stats;
+using namespace models::stats;
 
 TEST(DataSpec, CenterSingleObservation) {
   Data<long double> x(1, 3);

@@ -2,7 +2,7 @@
 
 #include "BootstrapDataSpec.hpp"
 
-using namespace pptree::stats;
+using namespace models::stats;
 
 #ifndef NDEBUG
 

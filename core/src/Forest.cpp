@@ -1,8 +1,8 @@
 #include "Forest.hpp"
 
-using namespace pptree::stats;
+using namespace models::stats;
 
-namespace pptree {
+namespace models {
   template<typename T, typename R >
   Forest<T, R> train(
     const TrainingSpec<T, R> &training_spec,
