@@ -2,6 +2,8 @@
 
 #include "DataColumn.hpp"
 
+using namespace pptree::stats;
+
 TEST(DataColumn, SelectRowsVectorSingleRow) {
   DataColumn<long double> data(3);
   data << 1.0, 2.0, 3.0;

@@ -2,7 +2,7 @@
 
 #include "DMatrix.hpp"
 
-using namespace Eigen;
+using namespace pptree::math;
 
 #define ASSERT_APPROX(a, b)    ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
 #define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
@@ -623,7 +623,7 @@ TEST(DMatrix, EigenSymmetricRealNonNegativeEigenvalues) {
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
   ASSERT_COLLINEAR(expected_vectors, actual_vectors);
 
-  DiagonalMatrix<long double, 3> DL;
+  Eigen::DiagonalMatrix<long double, 3> DL;
   DL.diagonal() = actual_values;
   DMatrix<long double> Mv = m * actual_vectors;
   DMatrix<long double> Lv =  actual_vectors * DL;
@@ -659,7 +659,7 @@ TEST(DMatrix, EigenAsymmetricRealNixedEigenvalues) {
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
   ASSERT_COLLINEAR(expected_vectors, actual_vectors);
 
-  DiagonalMatrix<long double, 3> DL;
+  Eigen::DiagonalMatrix<long double, 3> DL;
   DL.diagonal() = actual_values;
   DMatrix<long double> Mv = m * actual_vectors;
   DMatrix<long double> Lv =  actual_vectors * DL;

@@ -2,6 +2,9 @@
 
 #include "Tree.hpp"
 
+using namespace pptree;
+using namespace pptree::pp;
+using namespace pptree::stats;
 
 static Projector<long double> as_projector(std::vector<long double> vector) {
   Eigen::Map<Projector<long double> > projector(vector.data(), vector.size());

@@ -2,6 +2,9 @@
 
 #include "Projector.hpp"
 
+using namespace pptree::pp;
+using namespace pptree::stats;
+
 TEST(Projector, ProjectDataZeroProjector) {
   Data<long double> data(30, 5);
   data <<

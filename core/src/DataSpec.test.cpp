@@ -2,6 +2,8 @@
 
 #include "DataSpec.hpp"
 
+using namespace pptree::stats;
+
 TEST(DataSpec, CenterSingleObservation) {
   Data<long double> x(1, 3);
   x <<

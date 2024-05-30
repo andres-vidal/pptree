@@ -2,10 +2,13 @@
 
 #include "PPStrategy.hpp"
 
-#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << std::endl << "Expected vectors to be collinear: [" << a.transpose() << "] [" << b.transpose() << "]" << std::endl
+using namespace pptree::pp::strategy;
+using namespace pptree::stats;
+
+#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(pptree::math::collinear(a, b)) << std::endl << "Expected vectors to be collinear: [" << a.transpose() << "] [" << b.transpose() << "]" << std::endl
 
 TEST(Projector, LDAOptimumProjectorTwoGroups1) {
-  DMatrix<long double> data(10, 4);
+  Data<long double> data(10, 4);
   data <<
     1, 0, 1, 1,
     1, 1, 0, 0,
@@ -18,7 +21,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
     4, 0, 1, 1,
     4, 0, 1, 2;
 
-  DVector<int> groups(10);
+  DataColumn<int> groups(10);
   groups <<
     0,
     0,
@@ -31,9 +34,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
     1,
     1;
 
-  DVector<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
+  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
 
-  DVector<long double> expected(4);
+  DataColumn<long double> expected(4);
   expected <<
     -1, 0, 0, 0;
 
@@ -41,7 +44,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups2) {
-  DMatrix<long double> data(10, 4);
+  Data<long double> data(10, 4);
   data <<
     0, 1, 1, 1,
     1, 1, 0, 0,
@@ -55,7 +58,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
     0, 4, 1, 2;
 
 
-  DVector<int> groups(10);
+  DataColumn<int> groups(10);
   groups <<
     0,
     0,
@@ -68,9 +71,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
     1,
     1;
 
-  DVector<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
+  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
 
-  DVector<long double> expected(4);
+  DataColumn<long double> expected(4);
   expected <<
     0, 1, 0, 0;
 
@@ -79,7 +82,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups3) {
-  DMatrix<long double> data(10, 4);
+  Data<long double> data(10, 4);
   data <<
     0, 1, 1, 1,
     1, 0, 1, 0,
@@ -93,7 +96,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
     0, 1, 4, 2;
 
 
-  DVector<int> groups(10);
+  DataColumn<int> groups(10);
   groups <<
     0,
     0,
@@ -106,9 +109,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
     1,
     1;
 
-  DVector<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
+  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
 
-  DVector<long double> expected(4);
+  DataColumn<long double> expected(4);
   expected <<
     0, 0, -1, 0;
 
@@ -116,7 +119,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups4) {
-  DMatrix<long double> data(10, 4);
+  Data<long double> data(10, 4);
   data <<
     0, 1, 1, 1,
     1, 0, 0, 1,
@@ -129,7 +132,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
     0, 1, 1, 4,
     0, 1, 2, 4;
 
-  DVector<int> groups(10);
+  DataColumn<int> groups(10);
   groups <<
     0,
     0,
@@ -142,9 +145,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
     1,
     1;
 
-  DVector<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
+  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
 
-  DVector<long double> expected(4);
+  DataColumn<long double> expected(4);
   expected <<
     2.0965219514666735e-15,
     4.4408920985006262e-16,
@@ -155,7 +158,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
 }
 
 TEST(Projector, LDAOptimumProjectorThreeGroups1) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -188,7 +191,7 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -221,9 +224,9 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
     2,
     2;
 
-  DVector<long double> actual = glda_optimum_projector(data, groups, { 0, 1, 2 }, 0);
+  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1, 2 }, 0);
 
-  DVector<long double> expected(5);
+  DataColumn<long double> expected(5);
   expected <<
     1,
     0,
@@ -235,21 +238,21 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
 }
 
 TEST(Projector, LDAIndexZeroReturn) {
-  DMatrix<long double> data(4, 12);
+  Data<long double> data(4, 12);
   data <<
     1, 0, 1, 1, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 0, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 1, 1, 0, 1, 0, 2, 3, 4, 5,
     1, 0, 1, 1, 1, 0, 1, 0, 2, 3, 4, 5;
 
-  DVector<int> groups(4);
+  DataColumn<int> groups(4);
   groups <<
     0,
     0,
     1,
     1;
 
-  DVector<long double> projector(12);
+  DataColumn<long double> projector(12);
   projector <<
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
@@ -259,7 +262,7 @@ TEST(Projector, LDAIndexZeroReturn) {
 }
 
 TEST(Projector, LDAIndexOptimal1) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -292,7 +295,7 @@ TEST(Projector, LDAIndexOptimal1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -325,7 +328,7 @@ TEST(Projector, LDAIndexOptimal1) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
   projector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
@@ -335,7 +338,7 @@ TEST(Projector, LDAIndexOptimal1) {
 }
 
 TEST(Projector, LDAIndexOptimal2) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -368,7 +371,7 @@ TEST(Projector, LDAIndexOptimal2) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -401,7 +404,7 @@ TEST(Projector, LDAIndexOptimal2) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
 
   projector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
@@ -412,7 +415,7 @@ TEST(Projector, LDAIndexOptimal2) {
 }
 
 TEST(Projector, LDAIndexOptimal3) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -445,7 +448,7 @@ TEST(Projector, LDAIndexOptimal3) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -478,7 +481,7 @@ TEST(Projector, LDAIndexOptimal3) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
 
   projector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
@@ -489,7 +492,7 @@ TEST(Projector, LDAIndexOptimal3) {
 }
 
 TEST(Projector, LDAIndexSuboptimal1) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -522,7 +525,7 @@ TEST(Projector, LDAIndexSuboptimal1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -555,7 +558,7 @@ TEST(Projector, LDAIndexSuboptimal1) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
 
   projector <<
     0, 0, 1, 1, 1;
@@ -566,7 +569,7 @@ TEST(Projector, LDAIndexSuboptimal1) {
 }
 
 TEST(Projector, LDAIndexSuboptimal2) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -599,7 +602,7 @@ TEST(Projector, LDAIndexSuboptimal2) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -632,7 +635,7 @@ TEST(Projector, LDAIndexSuboptimal2) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
 
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
@@ -643,23 +646,23 @@ TEST(Projector, LDAIndexSuboptimal2) {
 }
 
 TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
-  DMatrix<long double> data(4, 6);
+  Data<long double> data(4, 6);
   data <<
     1, 0, 1, 1, 1, 4,
     2, 1, 0, 0, 0, 4,
     3, 0, 1, 1, 1, 1,
     4, 0, 1, 2, 2, 1;
 
-  DVector<int> groups(4);
+  DataColumn<int> groups(4);
   groups <<
     0,
     0,
     1,
     1;
 
-  DVector<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0.5);
+  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0.5);
 
-  DVector<long double> expected(6);
+  DataColumn<long double> expected(6);
   expected <<
     0, 0, 0, 0, 0, 1;
 
@@ -667,23 +670,23 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
 }
 
 TEST(Projector, GLDAOptimumProjectorZeroColumn) {
-  DMatrix<long double> data(4, 7);
+  Data<long double> data(4, 7);
   data <<
     1, 0, 1, 1, 1, 4, 0,
     2, 1, 0, 0, 0, 4, 0,
     3, 0, 1, 1, 1, 1, 0,
     4, 0, 1, 2, 2, 1, 0;
 
-  DVector<int> groups(4);
+  DataColumn<int> groups(4);
   groups <<
     0,
     0,
     1,
     1;
 
-  DVector<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0.1);
+  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0.1);
 
-  DVector<long double> expected(7);
+  DataColumn<long double> expected(7);
   expected <<
     0, 0, 0, 0, 0, 1, 0;
 
@@ -691,21 +694,21 @@ TEST(Projector, GLDAOptimumProjectorZeroColumn) {
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
-  DMatrix<long double> data(4, 12);
+  Data<long double> data(4, 12);
   data <<
     1, 0, 1, 1, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 0, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 1, 1, 0, 1, 0, 2, 3, 4, 5,
     1, 0, 1, 1, 1, 0, 1, 0, 2, 3, 4, 5;
 
-  DVector<int> groups(4);
+  DataColumn<int> groups(4);
   groups <<
     0,
     0,
     1,
     1;
 
-  DVector<long double> projector(12);
+  DataColumn<long double> projector(12);
   projector <<
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
@@ -715,7 +718,7 @@ TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -748,7 +751,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -781,7 +784,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
   projector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
@@ -791,7 +794,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -824,7 +827,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -857,7 +860,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
 
   projector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
@@ -868,7 +871,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -901,7 +904,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -934,7 +937,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
 
   projector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
@@ -945,7 +948,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -978,7 +981,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -1011,7 +1014,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
 
   projector <<
     0, 0, 1, 1, 1;
@@ -1022,7 +1025,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
-  DMatrix<long double> data(30, 5);
+  Data<long double> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -1055,7 +1058,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DVector<int> groups(30);
+  DataColumn<int> groups(30);
   groups <<
     0,
     0,
@@ -1088,7 +1091,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
     2,
     2;
 
-  DVector<long double> projector(5);
+  DataColumn<long double> projector(5);
 
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;

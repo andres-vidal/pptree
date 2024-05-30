@@ -2,6 +2,8 @@
 
 #include "Group.hpp"
 
+using namespace pptree::stats;
+
 #ifndef NDEBUG
 
 TEST(Group, BinaryRegroupSingleGroup) {

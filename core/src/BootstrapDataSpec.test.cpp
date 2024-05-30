@@ -2,6 +2,8 @@
 
 #include "BootstrapDataSpec.hpp"
 
+using namespace pptree::stats;
+
 #ifndef NDEBUG
 
 TEST(StratifiedProportionalSample, NegativeSampleSize) {
