@@ -47,7 +47,7 @@ analyze:
 R_PACKAGE_DIR = bindings/R/PPTree
 R_PACKAGE_VERSION = 0.0.0
 R_PACKAGE_TARBALL = PPTree_${R_PACKAGE_VERSION}.tar.gz
-R_CRAN_MIRROR = http://cran.us.r-project.org
+R_CRAN_MIRROR = https://cran.rstudio.com/
 
 r-install-deps:
 	@Rscript -e "install.packages('Rcpp', repos='${R_CRAN_MIRROR}')"
