@@ -1,16 +1,12 @@
 #pragma once
 
-#include "BootstrapDataSpec.hpp"
-#include "Tree.hpp"
+#include "BootstrapTree.hpp"
 
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
 namespace models {
-  template<typename T, typename R>
-  using BootstrapTree = Tree<T, R, stats::BootstrapDataSpec<T, R> >;
-
   template<typename T, typename R>
   struct Forest {
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
