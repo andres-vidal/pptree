@@ -22,5 +22,13 @@ namespace models {
       std::shared_ptr<stats::BootstrapDataSpec<T, R> > training_data)
       : Tree<T, R, stats::BootstrapDataSpec<T, R> >(std::move(root), std::move(training_spec), training_data) {
     }
+
+    double error_rate(const stats::DataSpec<T, R> &data) const override {
+      return Tree<T, R, stats::BootstrapDataSpec<T, R> >::error_rate(data);
+    }
+
+    double error_rate() const {
+      return error_rate(this->training_data->get_oob());
+    }
   };
 }

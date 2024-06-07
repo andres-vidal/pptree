@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "Tree.hpp"
+#include "BootstrapDataSpec.hpp"
 
 using namespace models;
 using namespace models::pp;
@@ -11,21 +12,21 @@ static Projector<long double> as_projector(std::vector<long double> vector) {
   return projector;
 }
 
-TEST(ResponseEquals, true_case) {
+TEST(Response, EqualsEqualResponses) {
   Response<long double, int> r1(1);
   Response<long double, int> r2(1);
 
   ASSERT_TRUE(r1 == r2);
 }
 
-TEST(ResponseEquals, false_case) {
+TEST(Response, EqualsDifferentResponses) {
   Response<long double, int> r1(1);
   Response<long double, int> r2(2);
 
   ASSERT_FALSE(r1 == r2);
 }
 
-TEST(ConditionEquals, true_case) {
+TEST(Condition, EqualsEqualConditions) {
   Condition<long double, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
@@ -41,7 +42,7 @@ TEST(ConditionEquals, true_case) {
   ASSERT_TRUE(c1 == c2);
 }
 
-TEST(ConditionEquals, true_case_collinear_projectors) {
+TEST(Condition, EqualsCollinearProjectors) {
   Condition<long double, int> c1(
     as_projector({ 1.0, 1.0 }),
     3.0,
@@ -57,7 +58,7 @@ TEST(ConditionEquals, true_case_collinear_projectors) {
   ASSERT_TRUE(c1 == c2);
 }
 
-TEST(ConditionEquals, true_case_approximate_thresholds) {
+TEST(Condition, EqualsApproximateThresholds) {
   Condition<long double, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
@@ -73,7 +74,7 @@ TEST(ConditionEquals, true_case_approximate_thresholds) {
   ASSERT_TRUE(c1 == c2);
 }
 
-TEST(ConditionEquals, false_case_non_collinear_projectors) {
+TEST(Condition, EqualsNonCollinearProjectors) {
   Condition<long double, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
@@ -89,7 +90,7 @@ TEST(ConditionEquals, false_case_non_collinear_projectors) {
   ASSERT_FALSE(c1 == c2);
 }
 
-TEST(ConditionEquals, false_case_different_thresholds) {
+TEST(Condition, EqualsDifferentThresholds) {
   Condition<long double, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
@@ -105,7 +106,7 @@ TEST(ConditionEquals, false_case_different_thresholds) {
   ASSERT_FALSE(c1 == c2);
 }
 
-TEST(ConditionEquals, false_case_different_responses) {
+TEST(Condition, EqualsDifferentResponses) {
   Condition<long double, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
@@ -121,7 +122,7 @@ TEST(ConditionEquals, false_case_different_responses) {
   ASSERT_FALSE(c1 == c2);
 }
 
-TEST(ConditionEquals, false_case_different_structures) {
+TEST(Condition, EqualsDifferentStructures) {
   Condition<long double, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
@@ -141,7 +142,7 @@ TEST(ConditionEquals, false_case_different_structures) {
   ASSERT_FALSE(c1 == c2);
 }
 
-TEST(TreeEquals, true_case) {
+TEST(Tree, EqualTrees) {
   Tree<long double, int> t1(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0, 2.0 }),
@@ -167,7 +168,7 @@ TEST(TreeEquals, true_case) {
   ASSERT_TRUE(t1 == t2);
 }
 
-TEST(TreeEquals, false_case) {
+TEST(Tree, DifferentTrees) {
   Tree<long double, int> t1(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0, 2.0 }),
@@ -185,7 +186,7 @@ TEST(TreeEquals, false_case) {
   ASSERT_FALSE(t1 == t2);
 }
 
-TEST(PPTreeTrainLDA, univariate_two_groups) {
+TEST(Tree, TrainLDAUnivariateTwoGroups) {
   Data<long double> data(10, 1);
   data <<
     1, 1, 1, 1, 1,
@@ -215,7 +216,7 @@ TEST(PPTreeTrainLDA, univariate_two_groups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrainLDA, univariate_three_groups) {
+TEST(Tree, TrainLDAUnivariateThreeGroups) {
   Data<long double> data(15, 1);
   data <<
     1, 1, 1, 1, 1,
@@ -249,7 +250,7 @@ TEST(PPTreeTrainLDA, univariate_three_groups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrainLDA, multivariate_two_groups) {
+TEST(Tree, TrainLDAMultivariateTwoGroups) {
   Data<long double> data(10, 4);
   data <<
     1, 0, 1, 1,
@@ -293,7 +294,7 @@ TEST(PPTreeTrainLDA, multivariate_two_groups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrainLDA, multivariate_three_groups) {
+TEST(Tree, TrainLDAMultivariateThreeGroups) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -380,7 +381,7 @@ TEST(PPTreeTrainLDA, multivariate_three_groups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrainPDA, lambda_onehalf_univariate_two_groups) {
+TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
   Data<long double> data(10, 1);
   data <<
     1, 1, 1, 1, 1,
@@ -407,7 +408,7 @@ TEST(PPTreeTrainPDA, lambda_onehalf_univariate_two_groups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeTrainPDA, lambda_onehalf_multivariate_two_groups) {
+TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
   Data<long double> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -452,7 +453,7 @@ TEST(PPTreeTrainPDA, lambda_onehalf_multivariate_two_groups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreePredictDataColumn, univariate_two_groups) {
+TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0 }),
@@ -469,7 +470,7 @@ TEST(PPTreePredictDataColumn, univariate_two_groups) {
   ASSERT_EQ(tree.predict(input), 1);
 }
 
-TEST(PPTreePredictDataColumn, univariate_three_groups) {
+TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0 }),
@@ -492,7 +493,7 @@ TEST(PPTreePredictDataColumn, univariate_three_groups) {
   ASSERT_EQ(tree.predict(input), 2);
 }
 
-TEST(PPTreePredictDataColumn, multivariate_two_groups) {
+TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
@@ -508,7 +509,7 @@ TEST(PPTreePredictDataColumn, multivariate_two_groups) {
   ASSERT_EQ(tree.predict(input), 1);
 }
 
-TEST(PPTreePredictDataColumn, multivariate_three_groups) {
+TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
@@ -531,7 +532,7 @@ TEST(PPTreePredictDataColumn, multivariate_three_groups) {
   ASSERT_EQ(tree.predict(input), 2);
 }
 
-TEST(PPTreePredictData, univariate_two_groups) {
+TEST(Tree, PredictDataUnivariateTwoGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0 }),
@@ -550,7 +551,7 @@ TEST(PPTreePredictData, univariate_two_groups) {
   ASSERT_EQ(result, expected);
 }
 
-TEST(PPTreePredictData, univariate_three_groups) {
+TEST(Tree, PredictDataUnivariateThreeGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0 }),
@@ -573,7 +574,7 @@ TEST(PPTreePredictData, univariate_three_groups) {
   ASSERT_EQ(result, expected);
 }
 
-TEST(PPTreePredictData, multivariate_two_groups) {
+TEST(Tree, PredictDataMultivariateTwoGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
@@ -594,7 +595,7 @@ TEST(PPTreePredictData, multivariate_two_groups) {
   ASSERT_EQ(result, expected);
 }
 
-TEST(PPTreePredictData, multivariate_three_groups) {
+TEST(Tree, PredictDataMultivariateThreeGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
@@ -620,7 +621,7 @@ TEST(PPTreePredictData, multivariate_three_groups) {
   ASSERT_EQ(result, expected);
 }
 
-TEST(PPTreeLDARetrain, idempotent_in_same_data_spec) {
+TEST(Tree, RetrainLDASameDataSpec) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -696,7 +697,7 @@ TEST(PPTreeLDARetrain, idempotent_in_same_data_spec) {
   ASSERT_EQ(tree, result);
 }
 
-TEST(PPTreeLDARetrain, generates_a_different_tree_with_different_data_spec) {
+TEST(Tree, RetrainLDADifferentDataSpec) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -808,7 +809,7 @@ TEST(PPTreeLDARetrain, generates_a_different_tree_with_different_data_spec) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreePDARetrain, idempotent_in_same_data_spec) {
+TEST(Tree, RetrainPDASameDataSpec) {
   Data<long double> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -844,7 +845,7 @@ TEST(PPTreePDARetrain, idempotent_in_same_data_spec) {
   ASSERT_EQ(tree, result);
 }
 
-TEST(PPTreePDARetrain, generates_a_different_tree_with_different_data_spec) {
+TEST(Tree, RetrainPDADifferentDataSpec) {
   Data<long double> data(10, 1);
   data <<
     1, 1, 1, 1, 1,
@@ -883,7 +884,7 @@ TEST(PPTreePDARetrain, generates_a_different_tree_with_different_data_spec) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(PPTreeLDAVariableImportance, multivariate_three_groups) {
+TEST(Tree, VariableImportanceLDAMultivariateThreeGroups) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -965,7 +966,7 @@ TEST(PPTreeLDAVariableImportance, multivariate_three_groups) {
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
 }
 
-TEST(PPTreePDAVariableImportante, multivariate_two_groups) {
+TEST(Tree, VariableImportantePDAMultivariateTwoGroups) {
   Data<long double> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -1014,4 +1015,470 @@ TEST(PPTreePDAVariableImportante, multivariate_two_groups) {
     0.00180949 });
 
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(Tree, ErrorRateDataSpecMin) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  DataColumn<int> actual_y = tree.predict(data.x);
+
+  double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
+
+  ASSERT_DOUBLE_EQ(0.0, result);
+}
+
+TEST(Tree, ErrorRateDataSpecMax) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  DataColumn<int> actual_y = DataColumn<int>::Constant(30, 3);
+
+  double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
+
+  ASSERT_DOUBLE_EQ(1.0, result);
+}
+
+TEST(Tree, ErrorRateDataSpecGeneric) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  DataColumn<int> actual_y = DataColumn<int>::Zero(30);
+
+  double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
+
+  ASSERT_NEAR(0.666, result, 0.1);
+}
+
+TEST(Tree, ErrorRateBootstrapDataSpecMin) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  DataColumn<int> actual_y = tree.predict(data.x);
+
+  std::vector<int> sample_indices(10);
+  std::iota(sample_indices.begin(), sample_indices.end(), 0);
+
+  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
+
+  ASSERT_DOUBLE_EQ(0.0, result);
+}
+
+TEST(Tree, ErrorRateBootstrapDataSpecMax) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  DataColumn<int> actual_y = DataColumn<int>::Constant(30, 1);
+
+  std::vector<int> sample_indices(10);
+  std::iota(sample_indices.begin(), sample_indices.end(), 0);
+
+  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
+
+  ASSERT_DOUBLE_EQ(1.0, result);
+}
+
+TEST(Tree, ErrorRateBootstrapDataSpecGeneric) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  DataColumn<int> actual_y = DataColumn<int>::Zero(30);
+
+  std::vector<int> sample_indices(20);
+  std::iota(sample_indices.begin(), sample_indices.end(), 0);
+
+  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
+
+
+  ASSERT_NEAR(0.5, result, 0.1);
 }

@@ -11,7 +11,7 @@ static Projector<long double> as_projector(std::vector<long double> vector) {
   return projector;
 }
 
-TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
+TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -172,7 +172,7 @@ TEST(PPTreeTrainForestLDA, all_variables_multivariate_three_groups) {
   ASSERT_EQ(expect.seed, result.seed);
 }
 
-TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
+TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -331,7 +331,7 @@ TEST(PPTreeTrainForestLDA, some_variables_multivariate_three_groups) {
   ASSERT_EQ(expect.seed, result.seed);
 }
 
-TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
+TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
   Data<long double> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -423,7 +423,7 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
   ASSERT_EQ(expect.seed, result.seed);
 }
 
-TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
+TEST(Forest, PredictDataColumnSomeVariablesMultivariateThreeGroups) {
   Forest<long double, int> forest;
 
   forest.add_tree(
@@ -490,7 +490,7 @@ TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
   ASSERT_EQ(2, result);
 }
 
-TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
+TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
   Forest<long double, int> forest;
 
   forest.add_tree(
@@ -626,7 +626,7 @@ TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
   ASSERT_EQ(groups, result);
 }
 
-TEST(PPTreeForestLDAVariableImportance, some_variables_multivariate_three_groups) {
+TEST(Forest, VariableImportanceLDASomeVariablesMultivariateThreeGroups) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -716,7 +716,7 @@ TEST(PPTreeForestLDAVariableImportance, some_variables_multivariate_three_groups
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }
 
-TEST(PPTreeForestPDAVariableImportance, all_variables_multivariate_two_groups) {
+TEST(Forest, VariableImportancePDAAllVariablesMultivariateTwoGroups) {
   Data<long double> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -770,4 +770,558 @@ TEST(PPTreeForestPDAVariableImportance, all_variables_multivariate_two_groups) {
     0.0126566 });
 
   ASSERT_TRUE(expected.isApprox(result, 0.01));
+}
+
+TEST(Forest, ErrorRateDataSpecMin) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+
+  const double seed = 0;
+  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  DataColumn<int> predictions = forest.predict(data.x);
+
+  double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
+
+  ASSERT_DOUBLE_EQ(0.0, result);
+}
+
+TEST(Forest, ErrorRateDataSpecMax) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+
+  const double seed = 0;
+  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
+
+  double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
+
+  ASSERT_DOUBLE_EQ(1.0, result);
+}
+
+TEST(Forest, ErrorRateDataSpecGeneric) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+
+  const double seed = 0;
+  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  DataColumn<int> predictions = DataColumn<int>::Zero(30);
+
+  double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
+
+  ASSERT_NEAR(0.666, result, 0.1);
+}
+
+TEST(Forest, ErrorRateBootstrapDataSpecMin) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+
+  const double seed = 0;
+  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  DataColumn<int> predictions = forest.predict(data.x);
+
+  std::vector<int> sample_indices(10);
+  std::iota(sample_indices.begin(), sample_indices.end(), 0);
+
+  double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
+
+  ASSERT_DOUBLE_EQ(0.0, result);
+}
+
+TEST(Forest, ErrorRateBootstrapDataSpecMax) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+
+  const double seed = 0;
+  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
+
+  std::vector<int> sample_indices(10);
+  std::iota(sample_indices.begin(), sample_indices.end(), 0);
+
+  double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
+
+  ASSERT_DOUBLE_EQ(1.0, result);
+}
+
+TEST(Forest, ErrorRateBootstrapDataSpecGeneric) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+
+  const double seed = 0;
+  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  DataColumn<int> predictions = DataColumn<int>::Zero(30);
+
+  std::vector<int> sample_indices(20);
+  std::iota(sample_indices.begin(), sample_indices.end(), 0);
+
+  double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
+
+  ASSERT_NEAR(0.5, result, 0.1);
+}
+
+TEST(Forest, ErrorRate) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  DataSpec<long double, int> data(x, y);
+
+  const double seed = 0;
+  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+
+  double result = forest.error_rate();
+
+  ASSERT_NEAR(0.0, result, 0.1);
 }

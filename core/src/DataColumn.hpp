@@ -113,4 +113,30 @@ namespace models::stats {
 
     return data.array() / scaling_factor;
   }
+
+  template<typename T>
+  double accuracy(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
+    if (predictions.rows() != actual.rows()) {
+      throw std::invalid_argument("predictions and actual must have the same number of rows");
+    }
+
+    int correct = 0;
+
+    for (int i = 0; i < predictions.rows(); i++) {
+      if (predictions(i) == actual(i)) {
+        correct++;
+      }
+    }
+
+    return (double)correct / predictions.rows();
+  }
+
+  template<typename T>
+  double error_rate(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
+    if (predictions.rows() != actual.rows()) {
+      throw std::invalid_argument("predictions and actual must have the same number of rows");
+    }
+
+    return 1 - accuracy(predictions, actual);
+  }
 }

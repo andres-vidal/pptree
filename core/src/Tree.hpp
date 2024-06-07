@@ -203,6 +203,11 @@ namespace models {
 
       return importance;
     }
+
+    virtual double error_rate(const stats::DataSpec<T, R> &data) const {
+      auto [x, y, _classes] = data.unwrap();
+      return stats::error_rate(predict(x), y);
+    }
   };
 
   template<typename T, typename R, typename D>

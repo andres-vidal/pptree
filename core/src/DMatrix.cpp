@@ -14,23 +14,23 @@ namespace models::math {
     }
 
     std::sort(idx.data(), idx.data() + idx.size(), [&values, &vectors](int idx1, int idx2)
-    {
-      long double value1_mod = fabs(values.row(idx1).value());
-      long double value2_mod = fabs(values.row(idx2).value());
+     {
+       long double value1_mod = fabs(values.row(idx1).value());
+       long double value2_mod = fabs(values.row(idx2).value());
 
-      if (is_approx(value1_mod, value2_mod)) {
-        DVector<T> vector1 = vectors.col(idx1);
-        DVector<T> vector2 = vectors.col(idx2);
+       if (is_approx(value1_mod, value2_mod)) {
+         DVector<T> vector1 = vectors.col(idx1);
+         DVector<T> vector2 = vectors.col(idx2);
 
-        for (int i = 0; i < vector1.size(); ++i) {
-          if (!is_module_approx(vector1[i], vector2[i]) ) {
-            return vector1[i] < vector2[i];
-          }
-        }
-      }
+         for (int i = 0; i < vector1.size(); ++i) {
+           if (!is_module_approx(vector1[i], vector2[i]) ) {
+             return vector1[i] < vector2[i];
+           }
+         }
+       }
 
-      return value1_mod < value2_mod;
-    });
+       return value1_mod < value2_mod;
+     });
 
 
     return { values(idx), vectors(Eigen::all, idx) };
