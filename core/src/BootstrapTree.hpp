@@ -30,5 +30,13 @@ namespace models {
     double error_rate() const {
       return error_rate(this->training_data->get_oob());
     }
+
+    stats::ConfusionMatrix confusion_matrix(const stats::DataSpec<T, R> &data) const override {
+      return Tree<T, R, stats::BootstrapDataSpec<T, R> >::confusion_matrix(data);
+    }
+
+    stats::ConfusionMatrix confusion_matrix() const {
+      return confusion_matrix(this->training_data->get_oob());
+    }
   };
 }

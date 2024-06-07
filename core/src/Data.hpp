@@ -4,6 +4,7 @@
 #include "DataColumn.hpp"
 
 #include <map>
+#include <set>
 #include <random>
 
 namespace models::stats {

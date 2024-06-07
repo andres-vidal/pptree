@@ -3,6 +3,8 @@
 #include "DataSpec.hpp"
 #include "TrainingSpec.hpp"
 #include "Projector.hpp"
+#include "ConfusionMatrix.hpp"
+
 
 #include <nlohmann/json.hpp>
 
@@ -207,6 +209,11 @@ namespace models {
     virtual double error_rate(const stats::DataSpec<T, R> &data) const {
       auto [x, y, _classes] = data.unwrap();
       return stats::error_rate(predict(x), y);
+    }
+
+    virtual stats::ConfusionMatrix confusion_matrix(const stats::DataSpec<T, R> &data) const {
+      auto [x, y, _classes] = data.unwrap();
+      return stats::ConfusionMatrix(predict(x), y);
     }
   };
 

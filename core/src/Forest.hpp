@@ -111,6 +111,18 @@ namespace models {
       return stats::error_rate(oob_predictions, oob_y);
     }
 
+    virtual stats::ConfusionMatrix confusion_matrix(const stats::DataSpec<T, R> &data) const {
+      auto [x, y, _classes] = data.unwrap();
+      return stats::ConfusionMatrix(predict(x), y);
+    }
+
+    virtual stats::ConfusionMatrix confusion_matrix() const {
+      std::set<int> oob_indices = get_oob_indices();
+      stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
+      stats::DataColumn<R> oob_y = stats::select_rows(training_data->y, oob_indices);
+      return stats::ConfusionMatrix(oob_predictions, oob_y);
+    }
+
     private:
 
       R predict(
