@@ -46,21 +46,12 @@ namespace models::math {
   }
 
   template<typename T>
-  DMatrix<T> inverse(const DMatrix<T> &m) {
-    Eigen::FullPivLU<DMatrix<T> > lu(m);
-
-    assert(lu.isInvertible() && "Given matrix is not invertible");
-    return lu.inverse();
-  }
-
-  template<typename T>
   DMatrix<T> solve(
     const DMatrix<T> &l,
     const DMatrix<T> &r
     ) {
     Eigen::FullPivLU<DMatrix<T> > lu(l);
 
-    assert(lu.isInvertible() && "Given matrix is not invertible");
     return lu.solve(r);
   }
 
