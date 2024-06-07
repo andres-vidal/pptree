@@ -16,5 +16,19 @@ namespace models::stats {
         this->values(actual(i), predictions(i))++;
       }
     }
+
+    DataColumn<double> class_errors() {
+      Data<int> error_matrix = values;
+      error_matrix.diagonal().setZero();
+
+      DataColumn<int> row_sums = values.rowwise().sum();
+      DataColumn<int> row_errors = error_matrix.rowwise().sum();
+
+      return row_errors.array().cast<double>() / row_sums.array().cast<double>();
+    }
+
+    double error() {
+      return 1 - math::trace(values) / (double)math::sum(values);
+    }
   };
 }

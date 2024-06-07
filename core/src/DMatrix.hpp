@@ -82,4 +82,15 @@ namespace models::math {
 
   template<typename T>
   std::tuple<DVector<T>, DMatrix<T> > eigen(const DMatrix<T> &m);
+
+
+  template<typename T>
+  T trace(const DMatrix<T> &m) {
+    return m.trace();
+  }
+
+  template<typename T>
+  T sum(const DMatrix<T> &m) {
+    return m.rowwise().sum().colwise().sum().value();
+  }
 }

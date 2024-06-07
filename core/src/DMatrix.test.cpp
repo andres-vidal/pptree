@@ -745,3 +745,99 @@ TEST(DMatrix, CollinearSomeColumnsNonCollinear) {
 
   ASSERT_FALSE(collinear(a, b));
 }
+
+TEST(DMatrix, SumZero) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  long double actual = sum(m);
+
+  ASSERT_EQ(0, actual);
+}
+
+TEST(DMatrix, SumIdentity) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1;
+
+  long double actual = sum(m);
+
+  ASSERT_EQ(3, actual);
+}
+
+TEST(DMatrix, SumOnes) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  long double actual = sum(m);
+
+  ASSERT_EQ(9, actual);
+}
+
+TEST(DMatrix, SumGeneric) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 2, 3,
+    4, 5, 6,
+    7, 8, 9;
+
+  long double actual = sum(m);
+
+  ASSERT_EQ(45, actual);
+}
+
+TEST(DMatrix, TraceZero) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  long double actual = trace(m);
+
+  ASSERT_EQ(0, actual);
+}
+
+TEST(DMatrix, TraceIdentity) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1;
+
+  long double actual = trace(m);
+
+  ASSERT_EQ(3, actual);
+}
+
+TEST(DMatrix, TraceZeroDiagonal) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    0, 1, 1,
+    1, 0, 1,
+    1, 1, 0;
+
+  long double actual = trace(m);
+
+  ASSERT_EQ(0, actual);
+}
+
+TEST(DMatrix, TraceGeneric) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 2, 3,
+    4, 5, 6,
+    7, 8, 9;
+
+  long double actual = trace(m);
+
+  ASSERT_EQ(15, actual);
+}
