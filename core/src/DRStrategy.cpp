@@ -1,11 +1,12 @@
-#include "dr.hpp"
-#include "pptreeio.hpp"
+#include "DRStrategy.hpp"
+
 #include <cassert>
 #include <vector>
 
-using namespace stats;
 
-namespace dr::strategy {
+using namespace models::stats;
+
+namespace models::dr::strategy {
   template<typename T>
   DRStrategy<T> all() {
     return [](const Data<T> &data, const std::mt19937 & rng) -> Data<T> {
@@ -25,7 +26,7 @@ namespace dr::strategy {
 
              LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
 
-             std::vector<int> var_sampled_indices = stats::Uniform(0, data.cols() - 1)(rng, n_vars);
+             std::vector<int> var_sampled_indices = Uniform(0, data.cols() - 1)(rng, n_vars);
 
              LOG_INFO << "Selected variables: " << var_sampled_indices << std::endl;
 

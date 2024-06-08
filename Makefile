@@ -3,6 +3,8 @@ MAKEFLAGS += --no-print-directory
 BUILD_DIR = .build
 BUILD_DIR_DEBUG = .debug
 
+NLHOMANN_JSON_HEADERS_PATH = ${BUILD_DIR}/_deps/json-src/include
+
 clean:
 	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG}
 
@@ -45,7 +47,7 @@ analyze:
 R_PACKAGE_DIR = bindings/R/PPTree
 R_PACKAGE_VERSION = 0.0.0
 R_PACKAGE_TARBALL = PPTree_${R_PACKAGE_VERSION}.tar.gz
-R_CRAN_MIRROR = http://cran.us.r-project.org
+R_CRAN_MIRROR = https://cran.rstudio.com/
 
 r-install-deps:
 	@Rscript -e "install.packages('Rcpp', repos='${R_CRAN_MIRROR}')"
@@ -61,16 +63,19 @@ r-clean:
 		${R_PACKAGE_DIR}/src/core \
 		${R_PACKAGE_DIR}/src/.build \
 		${R_PACKAGE_DIR}/inst/lib \
+		${R_PACKAGE_DIR}/inst/include/nlohmann \
 		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
 		PPTree.Rcheck
 
 r-document:
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
+	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
 	@make r-clean
 
-r-build: r-clean
+r-build: build r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
+	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
 	@R CMD build ${R_PACKAGE_DIR}
 	@make r-clean

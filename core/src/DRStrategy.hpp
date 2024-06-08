@@ -1,8 +1,10 @@
 #pragma once
 #include <algorithm>
-#include "stats.hpp"
 
-namespace dr::strategy {
+#include "Data.hpp"
+#include "Uniform.hpp"
+
+namespace models::dr::strategy {
   template<typename T>
   using DRStrategy = std::function<stats::Data<T>(const stats::Data<T>, std::mt19937 &rng)>;
 

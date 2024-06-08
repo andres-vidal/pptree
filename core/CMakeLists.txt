@@ -40,12 +40,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-add_library(pptree
-  src/pptree.cpp
-  src/linalg.cpp
-  src/stats.cpp
-  src/pp.cpp
-  src/dr.cpp)
+# Collect all .cpp files from the specified directories
+file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
+
+# Collect all .cpp files that are not test files
+set(NON_TEST_CPP_FILES "")
+foreach(file ${ALL_CPP_FILES})
+  if (NOT file MATCHES "\\.test\\.cpp$")
+    list(APPEND NON_TEST_CPP_FILES ${file})
+  endif()
+endforeach()
+
+# Add library with all non-test files
+add_library(pptree ${NON_TEST_CPP_FILES})
 
 target_include_directories(pptree
   PUBLIC include
@@ -58,11 +65,11 @@ target_link_libraries(pptree
 # Test runner
 enable_testing()
 
-add_executable(pptree-test
-  test/stats.test.cpp
-  test/linalg.test.cpp
-  test/pp.test.cpp
-  test/pptree.test.cpp)
+# Collect all .test.cpp
+file(GLOB_RECURSE TEST_SOURCES ./**/*.test.cpp)
+
+# Add executable for the tests
+add_executable(pptree-test ${TEST_SOURCES})
 
 target_link_libraries(pptree-test
   pptree

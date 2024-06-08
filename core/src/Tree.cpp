@@ -1,12 +1,13 @@
-#include "pptree.hpp"
-#include "pptreeio.hpp"
-#include <vector>
-#include <set>
+#include "Tree.hpp"
+#include "BootstrapDataSpec.hpp"
+#include "Group.hpp"
+#include "Logger.hpp"
 
-using namespace pptree;
-using namespace Eigen;
+using namespace models::pp;
+using namespace models::pp::strategy;
+using namespace models::stats;
 
-namespace pptree {
+namespace models {
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > step(
     const Data<T> &           data,
@@ -225,79 +226,49 @@ namespace pptree {
     return condition;
   };
 
-  template<typename T, typename R >
-  Tree<T, R> train(
+  template<typename T, typename R, typename D>
+  Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data,
+    const D &                 training_data,
     std::mt19937&             rng) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
-    Tree<T, R> tree = Tree(
+    auto [x, y, classes] = training_data.unwrap();
+
+    Tree<T, R, D> tree(
       step(
-        training_data.x,
-        training_data.y,
-        training_data.classes,
+        x,
+        y,
+        classes,
         training_spec,
         rng),
       std::make_unique<TrainingSpec<T, R> >(training_spec),
-      std::make_shared<DataSpec<T, R> >(training_data));
+      std::make_shared<D >(training_data));
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
 
-  template<typename T, typename R >
-  Tree<T, R> train(
+  template<typename T, typename R, typename D>
+  Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data) {
-    std::mt19937 rng(0);
+    const D &                 training_data) {
+    std::mt19937 rng;
+
+    try {
+      const double seed = training_spec.params->template at<const double>("seed");
+      rng.seed(seed);
+    } catch (const std::out_of_range &e) {
+      LOG_WARNING << "No seed is set in training spec. Training may be non-deterministic." << std::endl;
+    }
     return train(training_spec, training_data, rng);
   }
 
-  template Tree<long double, int> train(
+  template Tree<long double, int, DataSpec<long double, int> > train(
     const TrainingSpec<long double, int> &training_spec,
     const DataSpec<long double, int> &    training_data);
 
-  template<typename T, typename R >
-  Forest<T, R> train(
-    const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data,
-    const int                 size,
-    const double              seed) {
-    LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
-    LOG_INFO << "The seed is: " << seed << std::endl;
-
-    assert(size > 0 && "The forest size must be greater than 0.");
-
-    std::mt19937 rng(seed);
-
-    Forest<T, R> forest(
-      std::make_unique<TrainingSpec<T, R> >(training_spec),
-      std::make_shared<DataSpec<T, R> >(training_data),
-      seed);
-
-    for (int i = 0; i < size; i++) {
-      DataSpec<T, R> sample_training_data = stats::stratified_proportional_sample(
-        training_data,
-        training_data.x.rows(),
-        rng);
-
-      Tree<T, R> tree = train(
-        training_spec,
-        sample_training_data,
-        rng);
-
-      forest.add_tree(std::make_unique<Tree<T, R> >(std::move(tree)));
-    }
-
-    LOG_INFO << "Forest: " << forest << std::endl;
-
-    return forest;
-  }
-
-  template Forest<long double, int> train(
-    const TrainingSpec<long double, int> &training_spec,
-    const DataSpec<long double, int> &    training_data,
-    const int                             size,
-    const double                          seed);
+  template Tree<long double, int, BootstrapDataSpec<long double, int> > train(
+    const TrainingSpec<long double, int> &      training_spec,
+    const BootstrapDataSpec<long double, int> & training_data);
 }
