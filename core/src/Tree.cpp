@@ -5,6 +5,7 @@
 
 using namespace models::pp;
 using namespace models::pp::strategy;
+using namespace models::dr::strategy;
 using namespace models::stats;
 namespace models {
   template<typename T, typename R >
@@ -165,8 +166,9 @@ namespace models {
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
     PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+    DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
 
-    Data<T> reduced_data = training_spec.dr_strategy(data, rng);
+    Data<T> reduced_data = dr_strategy(data, rng);
 
     if (unique_groups.size() == 2) {
       auto [group_1, group_2] = take_two(unique_groups);
