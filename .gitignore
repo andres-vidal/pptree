@@ -1,5 +1,6 @@
-_conan
-_build
+.build
+.debug
+.tools
 .vscode
 
 *.Rcheck
@@ -7,3 +8,9 @@ _build
 *.o
 *.so
 *.a
+
+PPTree_*.tar.gz
+
+.DS_Store
+
+bindings/R/PPTree/src/core

@@ -1,5 +1,4 @@
 #include "pptree.hpp"
-#include <iostream>
 
 #include <RcppCommon.h>
 
@@ -123,12 +122,12 @@ namespace Rcpp {
       auto resp = as<pptree::Response<long double, int> >(x);
 
       auto resp_ptr = std::make_unique<pptree::Response<long double, int> >(std::move(resp));
-      return std::move(resp_ptr);
+      return resp_ptr;
     }
 
     auto cond = as<pptree::Condition<long double, int> >(x);
     auto cond_ptr = std::make_unique<pptree::Condition<long double, int> >(std::move(cond));
-    return std::move(cond_ptr);
+    return cond_ptr;
   }
 
   template<> pptree::Response<long double, int> as(SEXP x) {

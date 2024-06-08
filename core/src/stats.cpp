@@ -133,12 +133,12 @@ namespace stats {
   Group<T, G>get_edge_group(
     std::vector<Group<T, G> > groups) {
     auto cmp_mean_ascending = [](Group<T, G> a, Group<T, G> b) {
-        return a.mean < b.mean;
-      };
+       return a.mean < b.mean;
+     };
 
     auto cmp_diff_ascending = [](Group<T, G> a, Group<T, G> b) {
-        return a.diff < b.diff;
-      };
+       return a.diff < b.diff;
+     };
 
     std::sort(groups.begin(), groups.end(), cmp_mean_ascending);
 
@@ -158,8 +158,8 @@ namespace stats {
     const std::vector<Group<T, G> > &groups,
     const G &                        id) {
     auto matches_id = [id](Group<T, G> g) {
-        return g.id == id;
-      };
+       return g.id == id;
+     };
 
     return *std::find_if(groups.begin(), groups.end(), matches_id);
   }
@@ -288,10 +288,10 @@ namespace stats {
 
   template<typename T, typename G>
   std::tuple<Data<T>, DataColumn<G> > stratified_sample(
-    const Data<T> &        data,
-    const DataColumn<G> &  groups,
-    const std::map<G, int> sizes,
-    std::mt19937 &         rng) {
+    const Data<T> &         data,
+    const DataColumn<G> &   groups,
+    const std::map<G, int> &sizes,
+    std::mt19937 &          rng) {
     int total_size = 0;
 
     for (const auto& [group, size] : sizes) {
@@ -320,7 +320,7 @@ namespace stats {
   template std::tuple<Data<long double>, DataColumn<int> > stratified_sample(
     const Data<long double> & data,
     const DataColumn<int> &   groups,
-    const std::map<int, int>  sizes,
+    const std::map<int, int> &sizes,
     std::mt19937 &            rng);
 
   template<typename T, typename G>
@@ -385,6 +385,7 @@ namespace stats {
   template<typename T>
   DataColumn<T> expand(
     const DataColumn<T> &   data,
+
     const std::vector<int> &mask) {
     DataColumn<T> expanded = DataColumn<T>::Zero(mask.size());
 

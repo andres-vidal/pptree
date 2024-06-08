@@ -1,3 +1,12 @@
 PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) -L../inst/lib -lpptree
-PKG_CPPFLAGS = -I../inst/include -I../../../../core/include -I../../../../core/src -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
-CXX_STD = CXX17
+PKG_CPPFLAGS = -I../inst/include -Icore/include -Icore/src -DNDEBUG -DEIGEN_NO_DEBUG -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
+
+BUILD_DIR = .build
+
+all: pptree $(SHLIB)
+ 
+pptree:
+	mkdir -p $(BUILD_DIR) ../inst/lib
+	cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core && make
+	cp $(BUILD_DIR)/libpptree.a ../inst/lib
+	rm -rf $(BUILD_DIR)

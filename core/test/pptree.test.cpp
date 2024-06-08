@@ -886,10 +886,6 @@ TEST(PPTreeTrainForestPDA, all_variables_multivariate_two_groups) {
 }
 
 TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
-  const int n_vars = 2;
-  const double lambda = 0;
-  const double seed = 1;
-
   Forest<long double, int> forest;
 
   forest.add_tree(
@@ -972,10 +968,6 @@ TEST(PPTreeForestPredictDataColumn, some_variables_multivariate_three_groups) {
 }
 
 TEST(PPTreeForestPredictData, some_variables_multivariate_three_groups) {
-  const int n_vars = 2;
-  const double lambda = 0;
-  const double seed = 1;
-
   Forest<long double, int> forest;
 
   forest.add_tree(
@@ -1626,7 +1618,7 @@ TEST(PPTreeLDAVariableImportance, multivariate_three_groups) {
     2;
 
   Tree<long double, int> tree = pptree::train(TrainingSpec<long double, int>::lda(),
-                                              DataSpec<long double, int>(data, groups));
+    DataSpec<long double, int>(data, groups));
 
   Projector<long double> result = tree.variable_importance();
 

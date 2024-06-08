@@ -16,81 +16,79 @@ core # C++ core library
  │        ├── ...
  │        └── ...
 bindings # Interfaces to other languages
+tools # development tools
 ```
 
-## Environment Setup
+## Environment Setup (Unix)
 
-Install the environment dependencies described in the `.tool-versions` file. The [asdf version manager](https://asdf-vm.com/) is recommended to do this if using UNIX based operative system (Linux or Mac). If using Windows, the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) and following UNIX-like instructions is recommended for development.
+Install project build dependencies:
 
-Install `asdf`:
+- `cmake` (Minimum version: 3.14)
+- `make`
 
-```
-brew install asdf
-```
+Install a `C/C++` compiler if lacking. In order to correctly run the `R` package, the compiler must be the one that `R` uses in your platform. Usually `gcc` in Linux and `clang` in Mac.
 
-Install `cmake`:
+## Environment Setup (Windows)
 
-```
-brew install cmake
-```
+Install project build dependencies:
 
-### Using asdf version manager
+- `cmake` (Minimum version: 3.14)
+- `make`
 
-1. Install asdf following [the docs](https://asdf-vm.com/guide/getting-started.html)
-2. Install asdf conan plugin following [the docs](https://github.com/amrox/asdf-pyapp#compatible-python-applications)
+Install a `MinGW` with `gcc` and `gfortran` suitable for your architecture. Ensure the `bin` directory of `MinGW` where `gcc.exe` and `gfortran.exe` are located is in the system's PATH. The compiler must be `gcc` in order to build the `R` package. Microsoft Visual Studio can be used to compile the core library, but it will not be linkable to the `R` package.
 
-## Project Automation
-
-Project automation is achieved via Make. Useful scripts are defined in the `Makefile`. The most important ones are:
-
-| Command            | Description                                                                                                                                                                                                                                |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `make install`     | Install dependencies. Tools installed this way won't be available in the command line until the Conan environment is activated. See [Dependency Management](#dependency-management). Also installs [Pre-commit Hooks](#pre-commit-hooks)   |
-| `make build-cmake` | Runs the meta-build system (CMake) to generate build specifications and scripts. Is the first step to build the app. It's also necessary for the IDE to resolve include paths correctly. **Must be run when a CMakeLists.txt is changed.** |
-| `make build`       | Builds the library, effectively generating the relevant executables.                                                                                                                                                                       |
-| `make build-all`   | Runs `make build-cmake` and `make build` in sequence.                                                                                                                                                                                      |
-| `make clean`       | Removes the build files inside the `_build` directory. To be regenerated with `make build-all`                                                                                                                                             |
-| `make clean-env`   | Removes the conan files inside the `_conan` directory. To be regenerated with `make install`. Does not clear the environment from the termina.                                                                                             |
-| `make clean-all`   | Runs `make clean` and `make clean-env` in sequence.                                                                                                                                                                                        |
-| `make run`         | Runs the app's entry point, defined in `main.cpp`                                                                                                                                                                                          |
-| `make test`        | Builds the app (`make build-all`) and runs all tests using CTest.                                                                                                                                                                          |
-| `make format`      | Runs the formatter over every `.cpp` and `.hpp` file, making changes in files with format inconsistent with the definitions in `uncrustify.cfg`.                                                                                           |
-| `make lint`        | Runs the code analysis tool over every `.cpp` and `.hpp` file.                                                                                                                                                                             |
-
-## Pre-commit hooks
-
-This project has pre-commit hooks configured to run the formatter, the code analysis tool and the test when a new commit is added. Please ensure each commit leaves the code in a valid state. These hooks are installed during the execution of `make install`.
+Install a unix-like terminal like `bash` to interact with the project. With `Rtools` in the path, `make` and the utilities needed to run the `Makefile` will be available from `cmd` and `PowerShell` without having to install `bash` or alike.
 
 ## Dependency Management
 
-Project dependencies are managed by `conan`. In order to use it, a default profile must be set before the first run, by executing the following command:
+Dependencies are downloaded automatically during the build process using CMake's `FetchContent`. These are defined in `core/CMakeLists.txt`. To build the project, and thus download dependencies, run one of the following `Makefile` targets:
 
-```bash
-conan profile detect --force
-```
+- `make build`
+- `make build-debug`
 
-The project's dependencies are listed in the `conanfile.txt` and must be installed by running the following command:
+## Development Tools
 
-```bash
-make install
-```
+The project comes with development tools configured via the `tools/CMakeLists.txt` file. Namely, `uncrustify` is used for code formatting and `cppcheck` for static analysis. These can be installed running the `make install-tools` command from the project's root, which will make their binaries available in the `.tools` folder. Configure your IDE to use the binaries in this folder, instead of globally installed ones. The tools can be run via command line using `Makefile` targets:
 
-In order to use the tools defined in the `tool_requires` section of the `conanfile.txt`, it's necessary to activate the Conan environment in the current terminal:
+- `make format`
+- `make format-dry`
+- `make analyze`
 
-```bash
-source _conan/conanbuild.sh
-```
+Install the development tools from the project's root executing:
 
-## Running Tests
+- `make install-tools`
 
-This project has tests configured with GoogleTest. They can be run using the following command from the project's root:
+Refer to the root's `Makefile` for other useful commands.
 
-```bash
-make test
-```
+# R package management
 
-## Troubleshooting
+Install project build dependencies:
 
-#### Header files downloaded with Conan not found in VSCode
+- `R`
+- `Rtools` for your `R` version (Windows Only)
+- `TinyTex`, or other `TeX` distribution with `collection-fontsrecommended` and `psnfss` packages`
 
-Add Conan data directory to `includePath` in VSCode. The path is `~/.conan2/**`.
+Ensure `R` and `Rtools` are in the system's PATH, as well as `pdflatex` provided by your `TeX` distribution. 
+
+Install the `R` package's dependencies running executing:
+
+- `make r-install-deps`
+
+The `Makefile` defines useful targets to build, check and install the R package from the project's root:
+
+- `make r-build` prepares the source code and runs `R CMD build`
+- `make r-check` runs `R CMD check` on the built tarball
+- `make r-install` runs `R CMD build` on the built tarball
+- `make r-clean` removes compilation byproducts from the R package
+- `make r-document` updates the documentation based on source files
+
+**Do not check or install the package from the raw source files. Always run `make r-build` and use the generated tarball.** This is important, because that target copies the core library's code to the package so it can be compiled on install.
+
+
+## Runnings Tests
+
+Test can be run using one of the following `Makefile` targets:
+
+- `make test`
+- `make test-debug`
+

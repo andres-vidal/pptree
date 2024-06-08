@@ -8,7 +8,7 @@ using namespace stats;
 namespace dr::strategy {
   template<typename T>
   DRStrategy<T> all() {
-    return [](const Data<T> &data, std::mt19937 & rng) -> Data<T> {
+    return [](const Data<T> &data, const std::mt19937 & rng) -> Data<T> {
              return data;
     };
   }

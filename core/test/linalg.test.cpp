@@ -734,6 +734,8 @@ TEST(LinAlgDeterminant, singular_matrix) {
   ASSERT_EQ(expected, actual);
 }
 
+#ifndef NDEBUG
+
 TEST(LinAlgInverse, zero_matrix) {
   DMatrix<long double> m(3, 3);
   m <<
@@ -753,6 +755,8 @@ TEST(LinAlgInverse, singular_matrix) {
 
   ASSERT_DEATH({ inverse(m); }, "Given matrix is not invertible");
 }
+
+#endif // ifndef NDEBUG
 
 TEST(LinAlgInverse, identity) {
   DMatrix<long double> m(3, 3);
@@ -794,6 +798,8 @@ TEST(LinAlgInverse, generic) {
   ASSERT_APPROX(expected, actual);
 }
 
+#ifndef NDEBUG
+
 TEST(LinAlgSolve, zero_matrix_identity) {
   DMatrix<long double> l(3, 3);
   l <<
@@ -825,6 +831,8 @@ TEST(LinAlgSolve, singular_matrix_identity) {
 
   ASSERT_DEATH({ solve(l, r); }, "Given matrix is not invertible");
 }
+
+#endif // ifndef NDEBUG
 
 TEST(LinAlgSolve, identity_identity) {
   DMatrix<long double> l(3, 3);
