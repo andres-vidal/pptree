@@ -44,7 +44,9 @@ namespace models {
       return !(*this == other);
     }
 
-    virtual std::tuple<pp::Projector<T>, std::set<R> > _variable_importance(const int nvars) const = 0;
+    virtual std::set<int> classes() const = 0;
+
+    virtual pp::Projector<T> variable_importance() const = 0;
   };
 
   template<typename T, typename R>
@@ -99,17 +101,26 @@ namespace models {
       return !(*this == other);
     }
 
-    std::tuple<pp::Projector<T>, std::set<R> > _variable_importance(const int nvars) const override {
-      auto [lower_importance, lower_classes] = lower->_variable_importance(nvars);
-      auto [upper_importance, upper_classes] = upper->_variable_importance(nvars);
-
-      std::set<R> classes;
+    std::set<int> classes() const override {
+      std::set<int> classes;
+      auto [lower_classes, upper_classes] = std::make_tuple(lower->classes(), upper->classes());
       classes.insert(lower_classes.begin(), lower_classes.end());
       classes.insert(upper_classes.begin(), upper_classes.end());
+      return classes;
+    }
 
-      pp::Projector<T> importance = math::abs(projector) / classes.size();
+    pp::Projector<T> variable_importance() const override {
+      pp::Projector<T> importance = math::abs(projector) / classes().size();
 
-      return { importance + lower_importance + upper_importance, classes };
+      if (lower->is_condition()) {
+        importance += lower->variable_importance();
+      }
+
+      if (upper->is_condition()) {
+        importance += upper->variable_importance();
+      }
+
+      return importance;
     }
   };
 
@@ -148,9 +159,12 @@ namespace models {
       return !(*this == other);
     }
 
-    std::tuple<pp::Projector<T>, std::set<R> > _variable_importance(const int nvars) const override {
-      pp::Projector<T> importance = pp::Projector<T>::Zero(nvars);
-      return { importance, { value } };
+    std::set<int> classes() const override {
+      return { value };
+    }
+
+    pp::Projector<T> variable_importance() const override {
+      throw std::runtime_error("Cannot compute variable importance for response node");
     }
   };
 
@@ -200,10 +214,7 @@ namespace models {
 
     pp::Projector<T> variable_importance() const {
       Tree<T, R, D> std_tree = retrain(center(descale(*training_data)));
-
-      auto [importance, _] = std_tree.root->_variable_importance(training_data->x.cols());
-
-      return importance;
+      return std_tree.root->variable_importance();
     }
 
     virtual double error_rate(const stats::DataSpec<T, R> &data) const {

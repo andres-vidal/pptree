@@ -6,7 +6,6 @@
 using namespace models::pp;
 using namespace models::pp::strategy;
 using namespace models::stats;
-
 namespace models {
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > step(
