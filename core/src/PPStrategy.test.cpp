@@ -34,7 +34,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
     1,
     1;
 
-  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
 
   DataColumn<long double> expected(4);
   expected <<
@@ -71,7 +71,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
     1,
     1;
 
-  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
 
   DataColumn<long double> expected(4);
   expected <<
@@ -109,7 +109,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
     1,
     1;
 
-  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
 
   DataColumn<long double> expected(4);
   expected <<
@@ -145,7 +145,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
     1,
     1;
 
-  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0);
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
 
   DataColumn<long double> expected(4);
   expected <<
@@ -224,7 +224,7 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
     2,
     2;
 
-  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1, 2 }, 0);
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1, 2 });
 
   DataColumn<long double> expected(5);
   expected <<
@@ -256,7 +256,7 @@ TEST(Projector, LDAIndexZeroReturn) {
   projector <<
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1 }, 0);
+  long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1 });
 
   ASSERT_EQ(0.0, actual);
 }
@@ -332,7 +332,7 @@ TEST(Projector, LDAIndexOptimal1) {
   projector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0);
+  long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -409,7 +409,7 @@ TEST(Projector, LDAIndexOptimal2) {
   projector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0);
+  long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -486,7 +486,7 @@ TEST(Projector, LDAIndexOptimal3) {
   projector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0);
+  long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -563,7 +563,7 @@ TEST(Projector, LDAIndexSuboptimal1) {
   projector <<
     0, 0, 1, 1, 1;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0);
+  long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_NEAR(0.134985, actual, 0.00001);
 }
@@ -640,7 +640,7 @@ TEST(Projector, LDAIndexSuboptimal2) {
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0);
+  long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
@@ -660,7 +660,7 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
     1,
     1;
 
-  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0.5);
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0.5).optimize(data, groups, { 0, 1 });
 
   DataColumn<long double> expected(6);
   expected <<
@@ -684,7 +684,7 @@ TEST(Projector, GLDAOptimumProjectorZeroColumn) {
     1,
     1;
 
-  DataColumn<long double> actual = glda_optimum_projector(data, groups, { 0, 1 }, 0.1);
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0.1).optimize(data, groups, { 0, 1 });
 
   DataColumn<long double> expected(7);
   expected <<
@@ -712,7 +712,7 @@ TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
   projector <<
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1 }, 0.5);
+  long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1 });
 
   ASSERT_EQ(0.0, actual);
 }
@@ -788,7 +788,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
   projector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0.5);
+  long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -865,7 +865,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
   projector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0.5);
+  long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -942,7 +942,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
   projector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0.5);
+  long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -1019,7 +1019,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
   projector <<
     0, 0, 1, 1, 1;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0.5);
+  long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_NEAR(0.12597, actual, 0.00001);
 }
@@ -1096,7 +1096,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  long double actual = glda_index(data, projector, groups, { 0, 1, 2 }, 0.5);
+  long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }

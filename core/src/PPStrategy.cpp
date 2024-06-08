@@ -18,11 +18,10 @@ namespace models::pp::strategy {
   }
 
   template<typename T, typename G>
-  Projector<T> glda_optimum_projector(
+  Projector<T> GLDAStrategy<T, G>::optimize(
     const Data<T> &      data,
     const DataColumn<G> &groups,
-    const std::set<G> &  unique_groups,
-    const double         lambda) {
+    const std::set<G> &  unique_groups) const {
     LOG_INFO << "Calculating PDA optimum projector for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables:" << std::endl;
     LOG_INFO << std::endl << data << std::endl;
@@ -70,9 +69,8 @@ namespace models::pp::strategy {
     return projector;
   }
 
-  template Projector<long double> glda_optimum_projector(
+  template Projector<long double> GLDAStrategy<long double, int>::optimize(
     const Data<long double> & data,
     const DataColumn<int> &   groups,
-    const std::set<int> &     unique_groups,
-    const double              lambda);
+    const std::set<int> &     unique_groups) const;
 }

@@ -92,13 +92,14 @@ namespace models {
 
   template<typename T, typename R>
   struct TrainingSpec {
-    pp::strategy::PPStrategy<T, R> pp_strategy;
     dr::strategy::DRStrategy<T> dr_strategy;
+
+    std::shared_ptr<pp::strategy::PPStrategy<T, R> >  pp_strategy;
     std::unique_ptr<TrainingParams> params;
 
     TrainingSpec(
-      const pp::strategy::PPStrategy<T, R> pp_strategy,
-      const dr::strategy::DRStrategy<T>    dr_strategy)
+      const std::shared_ptr<pp::strategy::PPStrategy<T, R> > pp_strategy,
+      const dr::strategy::DRStrategy<T>                      dr_strategy)
       : pp_strategy(pp_strategy),
       dr_strategy(dr_strategy),
       params(std::make_unique<TrainingParams>()) {

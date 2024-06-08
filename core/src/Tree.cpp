@@ -164,6 +164,8 @@ namespace models {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
+    PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+
     Data<T> reduced_data = training_spec.dr_strategy(data, rng);
 
     if (unique_groups.size() == 2) {
@@ -174,14 +176,14 @@ namespace models {
         groups,
         group_1,
         group_2,
-        training_spec.pp_strategy);
+        pp_strategy);
     }
 
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
       reduced_data,
       groups,
       unique_groups,
-      training_spec.pp_strategy);
+      pp_strategy);
 
     auto [group_1, group_2] = take_two(binary_unique_groups);
 
@@ -190,7 +192,7 @@ namespace models {
       binary_groups,
       group_1,
       group_2,
-      training_spec.pp_strategy);
+      pp_strategy);
 
     R binary_lower_group = temp_node->lower->as_response().value;
     R binary_upper_group = temp_node->upper->as_response().value;

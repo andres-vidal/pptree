@@ -5,59 +5,73 @@
 #include <set>
 
 namespace models::pp::strategy {
-  template<typename T>
-  using PPStrategyReturn = std::tuple<Projector<T>, Projection<T> >;
   template<typename T, typename G>
-  using PPStrategy = std::function<PPStrategyReturn<T>(const stats::Data<T>&, const stats::DataColumn<G>&, const std::set<G>&)>;
-
-  template<typename T, typename G>
-  Projector<T> glda_optimum_projector(
-    const stats::Data<T> &       data,
-    const stats::DataColumn<G> & groups,
-    const std::set<G> &          unique_groups,
-    const double                 lambda);
-
-
-  template<typename T, typename G>
-  T glda_index(
-    const stats::Data<T> &      data,
-    const Projector<T> &        projector,
-    const stats::DataColumn<G> &groups,
-    const std::set<G> &         unique_groups,
-    const double                lambda) {
-    stats::Data<T> A = projector;
-
-    stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
-    stats::Data<T> W_diag = W.diagonal().asDiagonal();
-    stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
-    stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
-    stats::Data<T> WpB = W_pda + B;
-
-    T denominator = math::determinant(math::inner_square(A, WpB));
-
-    if (denominator == 0) {
-      return 0;
-    }
-
-    return 1 - math::determinant(math::inner_square(A, W_pda)) / denominator;
-  }
-
-  template<typename T, typename G>
-  PPStrategy<T, G> glda(
-    const double lambda) {
-    if (lambda == 0) {
-      LOG_INFO << "Chosen Projection-Pursuit Strategy is LDA" << std::endl;
-    } else {
-      LOG_INFO << "Chosen Projection-Pursuit Strategy is PDA(lambda = " << lambda << ")" << std::endl;
-    }
-
-    return [lambda](
-      const stats::Data<T>& data,
+  struct PPStrategy {
+    virtual T index(
+      const stats::Data<T>&       data,
+      const Projector<T>&         projector,
       const stats::DataColumn<G>& groups,
-      const std::set<G>& unique_groups)
-           -> PPStrategyReturn<T> {
-             auto projector = glda_optimum_projector(data, groups, unique_groups, lambda);
-             return PPStrategyReturn<T> { projector, project(data, projector) };
-           };
+      const std::set<G>&          unique_groups) const = 0;
+
+    virtual Projector<T> optimize(
+      const stats::Data<T>&       data,
+      const stats::DataColumn<G>& groups,
+      const std::set<G>&          unique_groups) const = 0;
+
+    std::tuple<Projector<T>, Projection<T> > operator()(
+      const stats::Data<T>&       data,
+      const stats::DataColumn<G>& groups,
+      const std::set<G>&          unique_groups
+      ) const {
+      Projector<T> projector = optimize(data, groups, unique_groups);
+      Projection<T> projection = project(data, projector);
+      return { projector, projection };
+    }
+  };
+
+  template<typename T, typename G>
+  struct GLDAStrategy : public PPStrategy<T, G> {
+    const double lambda;
+
+    explicit GLDAStrategy(const double lambda) : lambda(lambda) {
+      if (lambda == 0) {
+        LOG_INFO << "Chosen Projection-Pursuit Strategy is LDA" << std::endl;
+      } else {
+        LOG_INFO << "Chosen Projection-Pursuit Strategy is PDA(lambda = " << lambda << ")" << std::endl;
+      }
+    }
+
+    T index(
+      const stats::Data<T>&       data,
+      const Projector<T>&         projector,
+      const stats::DataColumn<G>& groups,
+      const std::set<G>&          unique_groups) const override {
+      stats::Data<T> A = projector;
+
+      stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
+      stats::Data<T> W_diag = W.diagonal().asDiagonal();
+      stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
+      stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
+      stats::Data<T> WpB = W_pda + B;
+
+      T denominator = math::determinant(math::inner_square(A, WpB));
+
+      if (denominator == 0) {
+        return 0;
+      }
+
+      return 1 - math::determinant(math::inner_square(A, W_pda)) / denominator;
+    }
+
+    Projector<T> optimize(
+      const stats::Data<T>&       data,
+      const stats::DataColumn<G>& groups,
+      const std::set<G>&          unique_groups) const override;
+  };
+
+
+  template<typename T, typename G>
+  std::shared_ptr<PPStrategy<T, G> > glda(const double lambda) {
+    return std::make_shared<GLDAStrategy<T, G> >(lambda);
   }
 }
