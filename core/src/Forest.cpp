@@ -17,7 +17,7 @@ namespace models {
     std::mt19937 rng(seed);
 
     Forest<T, R> forest(
-      std::make_unique<TrainingSpec<T, R> >(training_spec),
+      training_spec.clone(),
       std::make_shared<DataSpec<T, R> >(training_data),
       seed);
 

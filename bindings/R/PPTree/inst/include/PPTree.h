@@ -5,20 +5,19 @@
 using namespace pptree;
 
 namespace Rcpp {
-  SEXP wrap(const Node<long double, int> &node);
-  SEXP wrap(const Tree<long double, int, DataSpec<long double, int> > &tree);
-  SEXP wrap(const BootstrapTree<long double, int> &tree);
-  SEXP wrap(const Response<long double, int> &node);
-  SEXP wrap(const Condition<long double, int> &node);
-  SEXP wrap(const Forest<long double, int> &forest);
+  SEXP wrap(const Node<long double, int> &);
+  SEXP wrap(const Tree<long double, int, DataSpec<long double, int> > &);
+  SEXP wrap(const BootstrapTree<long double, int> &);
+  SEXP wrap(const Response<long double, int> &);
+  SEXP wrap(const Condition<long double, int> &);
+  SEXP wrap(const Forest<long double, int> &);
 
-  SEXP wrap(const TrainingSpec<long double, int> &training_spec);
-  SEXP wrap(const TrainingParams &params);
-  SEXP wrap(const ITrainingParam &param);
-  SEXP wrap(const TrainingParam<int> &param);
-  SEXP wrap(const TrainingParam<double> &param);
-  SEXP wrap(const DataSpec<long double, int> &data);
-  SEXP wrap(const BootstrapDataSpec<long double, int> &data);
+  SEXP wrap(const TrainingSpec<long double, int> &);
+  SEXP wrap(const GLDATrainingSpec<long double, int> &);
+  SEXP wrap(const UniformGLDATrainingSpec<long double, int> &);
+
+  SEXP wrap(const DataSpec<long double, int> &);
+  SEXP wrap(const BootstrapDataSpec<long double, int> &);
 
   template<> std::unique_ptr<Node<long double, int> > as(SEXP);
   template<> Tree<long double, int, DataSpec<long double, int> > as(SEXP);
@@ -27,7 +26,8 @@ namespace Rcpp {
   template<> Condition<long double, int> as(SEXP);
   template<> Forest<long double, int> as(SEXP);
 
-  template<> TrainingSpec<long double, int>  as(SEXP);
+  template<> std::unique_ptr<TrainingSpec<long double, int> > as(SEXP);
+
   template<> DataSpec<long double, int>  as(SEXP);
   template<> BootstrapDataSpec<long double, int> as(SEXP);
 }
@@ -85,40 +85,35 @@ namespace Rcpp {
       Rcpp::Named("trees") = trees);
   }
 
-  SEXP wrap(const TrainingSpec<long double, int> &training_spec) {
-    return Rcpp::wrap(*training_spec.params);
-  }
+  SEXP wrap(const TrainingSpec<long double, int> &spec) {
+    struct TrainingSpecWrapper : public TrainingSpecVisitor<long double, int> {
+      Rcpp::List result;
 
-  SEXP wrap(const TrainingParams &params) {
-    Rcpp::List rparams;
-
-    for (const auto &[key, value_ptr] : params.map) {
-      SEXP rvalue = wrap(*value_ptr);
-
-      if (rvalue != R_NilValue) {
-        rparams.push_back(wrap(*value_ptr), key);
+      void visit(const GLDATrainingSpec<long double, int> &spec) {
+        result = Rcpp::wrap(spec);
       }
-    }
 
-    return rparams;
+      void visit(const UniformGLDATrainingSpec<long double, int> &spec) {
+        result = Rcpp::wrap(spec);
+      }
+    };
+
+    TrainingSpecWrapper wrapper;
+    spec.accept(wrapper);
+    return wrapper.result;
   }
 
-  SEXP wrap(const ITrainingParam &param) {
-    if (dynamic_cast<const TrainingParam<int> *>(&param)) {
-      return wrap(dynamic_cast<const TrainingParam<int>&>(param));
-    } else if (dynamic_cast<const TrainingParam<double> *>(&param)) {
-      return wrap(dynamic_cast<const TrainingParam<double>&>(param));
-    } else {
-      return R_NilValue;
-    }
+  SEXP wrap(const GLDATrainingSpec<long double, int> &spec) {
+    return Rcpp::List::create(
+      Rcpp::Named("strategy") = "glda",
+      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
   }
 
-  SEXP wrap(const TrainingParam<int> &param) {
-    return wrap(param.value);
-  }
-
-  SEXP wrap(const TrainingParam<double> &param) {
-    return wrap(param.value);
+  SEXP wrap(const UniformGLDATrainingSpec<long double, int> &spec) {
+    return Rcpp::List::create(
+      Rcpp::Named("strategy") = "uniform_glda",
+      Rcpp::Named("n_vars") = Rcpp::wrap(spec.n_vars),
+      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
   }
 
   SEXP wrap(const DataSpec<long double, int> &data) {
@@ -176,10 +171,11 @@ namespace Rcpp {
 
     auto root = as<Condition<long double, int> >(rtree["root"]);
     auto root_ptr = std::make_unique<Condition<long double, int> >(std::move(root));
+    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<long double, int> > >(rtraining_spec);
 
     return Tree<long double, int, DataSpec<long double, int> >(
       std::move(root_ptr),
-      std::make_unique<TrainingSpec<long double, int> >(as<TrainingSpec<long double, int> >(rtraining_spec)),
+      std::move(training_spec_ptr),
       std::make_shared<DataSpec<long double, int> >(as<DataSpec<long double, int> >(rtraining_data)));
   }
 
@@ -191,9 +187,11 @@ namespace Rcpp {
     auto root = as<Condition<long double, int> >(rtree["root"]);
     auto root_ptr = std::make_unique<Condition<long double, int> >(std::move(root));
 
+    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<long double, int> > >(rtraining_spec);
+
     return BootstrapTree<long double, int>(
       std::move(root_ptr),
-      std::make_unique<TrainingSpec<long double, int> >(as<TrainingSpec<long double, int> >(rtraining_spec)),
+      std::move(training_spec_ptr),
       std::make_shared<BootstrapDataSpec<long double, int> >(as<BootstrapDataSpec<long double, int> >(rtraining_data)));
   }
 
@@ -203,8 +201,10 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rforest["trainingSpec"]);
     Rcpp::List rtraining_data(rforest["trainingData"]);
 
+    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<long double, int> > >(rtraining_spec);
+
     Forest<long double, int> forest(
-      std::make_unique<TrainingSpec<long double, int> >(as<TrainingSpec<long double, int> >(rtraining_spec)),
+      std::move(training_spec_ptr),
       std::make_shared<DataSpec<long double, int> >(as<DataSpec<long double, int> >(rtraining_data)),
       Rcpp::as<double>(rforest["seed"]));
 
@@ -217,24 +217,36 @@ namespace Rcpp {
     return forest;
   }
 
-  template<> TrainingSpec<long double, int> as(SEXP x) {
+  template<> std::unique_ptr<TrainingSpec<long double, int> > as(SEXP x) {
+    Rcpp::List rtraining_spec(x);
+
+    std::string strategy = Rcpp::as<std::string>(rtraining_spec["strategy"]);
+
+    if (strategy == "glda") {
+      double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
+      return std::make_unique<GLDATrainingSpec<long double, int> >(lambda);
+    }
+
+    if (strategy == "uniform_glda") {
+      int n_vars = Rcpp::as<int>(rtraining_spec["n_vars"]);
+      double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
+
+      return std::make_unique<UniformGLDATrainingSpec<long double, int> >(n_vars, lambda);
+    }
+
+    Rcpp::stop("Unknown training strategy: %s", strategy);
+  }
+
+  template<> GLDATrainingSpec<long double, int> as(SEXP x) {
     Rcpp::List rspec(x);
+    return GLDATrainingSpec<long double, int>(Rcpp::as<double>(rspec["lambda"]));
+  }
 
-    bool has_n_vars = rspec.containsElementNamed("n_vars");
-    bool has_lambda = rspec.containsElementNamed("lambda");
-
-    if (has_n_vars && has_lambda) {
-      return TrainingSpec<long double, int>::uniform_glda(
-        Rcpp::as<int>(rspec["n_vars"]),
-        Rcpp::as<double>(rspec["lambda"]));
-    }
-
-    if (has_lambda) {
-      return TrainingSpec<long double, int>::glda(
-        Rcpp::as<double>(rspec["lambda"]));
-    }
-
-    Rcpp::stop("Invalid training spec");
+  template<> UniformGLDATrainingSpec<long double, int> as(SEXP x) {
+    Rcpp::List rspec(x);
+    return UniformGLDATrainingSpec<long double, int>(
+      Rcpp::as<int>(rspec["n_vars"]),
+      Rcpp::as<double>(rspec["lambda"]));
   }
 
   template<> DataSpec<long double, int> as(SEXP x) {

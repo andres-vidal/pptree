@@ -7,6 +7,9 @@
 namespace models::dr::strategy {
   template<typename T>
   struct DRStrategy {
+    virtual ~DRStrategy() = default;
+    virtual std::unique_ptr<DRStrategy<T> > clone() const = 0;
+
     virtual stats::Data<T> select_variables(
       const stats::Data<T>& data,
       std::mt19937&         rng) const = 0;
@@ -20,6 +23,10 @@ namespace models::dr::strategy {
 
   template<typename T>
   struct ReduceNoneStrategy : public DRStrategy<T> {
+    std::unique_ptr<DRStrategy<T> > clone() const override {
+      return std::make_unique<ReduceNoneStrategy<T> >(*this);
+    }
+
     stats::Data<T> select_variables(
       const stats::Data<T>& data,
       std::mt19937&         rng) const override {
@@ -33,12 +40,17 @@ namespace models::dr::strategy {
 
     explicit ReduceUniformlyStrategy(const int n_vars) : n_vars(n_vars) {
       assert(n_vars > 0 && "The number of variables must be greater than 0.");
-      assert(n_vars <= data.cols() && "The number of variables must be less than or equal to the number of columns in the data.");
+    }
+
+    std::unique_ptr<DRStrategy<T> > clone() const override {
+      return std::make_unique<ReduceUniformlyStrategy<T> >(*this);
     }
 
     stats::Data<T> select_variables(
       const stats::Data<T>& data,
       std::mt19937&         rng) const override {
+      assert(n_vars <= data.cols() && "The number of variables must be less than or equal to the number of columns in the data.");
+
       if (n_vars == data.cols()) return data;
 
       LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
@@ -60,12 +72,12 @@ namespace models::dr::strategy {
 
 
   template<typename T>
-  std::shared_ptr<DRStrategy<T> > all() {
-    return std::make_shared<ReduceNoneStrategy<T> >();
+  std::unique_ptr<DRStrategy<T> > all() {
+    return std::make_unique<ReduceNoneStrategy<T> >();
   }
 
   template<typename T>
-  std::shared_ptr<DRStrategy<T> > uniform(const int n_vars) {
-    return std::make_shared<ReduceUniformlyStrategy<T> >(n_vars);
+  std::unique_ptr<DRStrategy<T> > uniform(const int n_vars) {
+    return std::make_unique<ReduceUniformlyStrategy<T> >(n_vars);
   }
 }

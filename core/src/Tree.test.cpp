@@ -201,7 +201,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 
 
   Tree<long double, int> result = train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
@@ -210,7 +210,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)),
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    TrainingSpec<long double, int>::lda(),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -230,7 +230,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
     2, 2, 2, 2, 2;
 
   Tree<long double, int> result = train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
@@ -243,7 +243,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
         2.5,
         std::make_unique<Response<long double, int> >(1),
         std::make_unique<Response<long double, int> >(2))),
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    TrainingSpec<long double, int>::lda(),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
 
 
@@ -278,7 +278,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
     1;
 
   Tree<long double, int> result = train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
@@ -288,7 +288,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
       ),
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    TrainingSpec<long double, int>::lda(),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -362,7 +362,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
     2;
 
   Tree<long double, int> result = train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
@@ -375,7 +375,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
       std::make_unique<Response<long double, int> >(2)),
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    TrainingSpec<long double, int>::lda(),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
 
   ASSERT_EQ(expect, result);
@@ -393,7 +393,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
     1, 1, 1, 1, 1;
 
   Tree<long double, int> result = train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
@@ -402,7 +402,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)),
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    TrainingSpec<long double, int>::lda(),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -436,7 +436,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
     1;
 
   Tree<long double, int> result = train(
-    TrainingSpec<long double, int>::glda(0.5),
+    *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
@@ -446,7 +446,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
       ),
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::glda(0.5)),
+    TrainingSpec<long double, int>::glda(0.5),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
 
@@ -689,7 +689,7 @@ TEST(Tree, RetrainLDASameDataSpec) {
     2;
 
   Tree<long double, int> tree = train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(data, groups));
@@ -765,7 +765,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
     2;
 
   Tree<long double, int> tree = train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Data<long double> other_data(10, 4);
@@ -803,7 +803,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
       ),
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    TrainingSpec<long double, int>::lda(),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -837,7 +837,7 @@ TEST(Tree, RetrainPDASameDataSpec) {
     1;
 
   Tree<long double, int> tree = train(
-    TrainingSpec<long double, int>::glda(0.5),
+    *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> result = tree.retrain(DataSpec<long double, int>(data, groups));
@@ -857,7 +857,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
     1, 1, 1, 1, 1;
 
   Tree<long double, int> tree = train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Data<long double> other_data(10, 1);
@@ -878,7 +878,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)),
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::lda()),
+    TrainingSpec<long double, int>::lda(),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -951,7 +951,7 @@ TEST(Tree, VariableImportanceLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(),
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Projector<long double> result = tree.variable_importance();
@@ -994,7 +994,7 @@ TEST(Tree, VariableImportantePDAMultivariateTwoGroups) {
     1;
 
   Tree<long double, int> tree = train(
-    TrainingSpec<long double, int>::glda(0.5),
+    *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
 
@@ -1085,7 +1085,7 @@ TEST(Tree, ErrorRateDataSpecMin) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1161,7 +1161,7 @@ TEST(Tree, ErrorRateDataSpecMax) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 3);
 
   double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1237,7 +1237,7 @@ TEST(Tree, ErrorRateDataSpecGeneric) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1313,7 +1313,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMin) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices(10);
@@ -1392,7 +1392,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMax) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 1);
 
   std::vector<int> sample_indices(10);
@@ -1471,7 +1471,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecGeneric) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   std::vector<int> sample_indices(20);
@@ -1551,7 +1551,7 @@ TEST(Tree, ConfusionMatrixDataSpecDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   ConfusionMatrix result = tree.confusion_matrix(DataSpec<long double, int>(x, actual_y));
@@ -1635,7 +1635,7 @@ TEST(Tree, ConfusionMatrixDataSpecZeroDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y(30);
   actual_y <<
     1,
@@ -1753,7 +1753,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
@@ -1839,7 +1839,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y(30);
   actual_y <<
     1,

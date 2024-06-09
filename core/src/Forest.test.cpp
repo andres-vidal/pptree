@@ -84,13 +84,13 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
 
 
   Forest<long double, int> result = train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     4,
     seed);
 
   Forest<long double, int> expect(
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
     seed);
 
@@ -107,7 +107,7 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
           ),
         std::make_unique<Response<long double, int> >(0)
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
     );
 
@@ -124,7 +124,7 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
           ),
         std::make_unique<Response<long double, int> >(2)
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
     );
 
@@ -142,7 +142,7 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
           ),
         std::make_unique<Response<long double, int> >(2)
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
 
     );
@@ -161,7 +161,7 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
           ),
         std::make_unique<Response<long double, int> >(2)
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
 
     );
@@ -245,13 +245,13 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   const double seed = 1;
 
   Forest<long double, int> result = train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     4,
     seed);
 
   Forest<long double, int> expect(
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
     seed);
 
@@ -268,7 +268,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
           std::make_unique<Response<long double, int> >(1)
           )
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
 
     );
@@ -286,7 +286,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
           ),
         std::make_unique<Response<long double, int> >(0)
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
 
     );
@@ -304,7 +304,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
           ),
         std::make_unique<Response<long double, int> >(1)
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
 
     );
@@ -322,7 +322,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
           ),
         std::make_unique<Response<long double, int> >(0)
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
     );
 
@@ -363,14 +363,14 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
   const double seed = 0;
 
   Forest<long double, int> result = train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     4,
     seed);
 
 
   Forest<long double, int> expect(
-    std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
     seed);
 
@@ -382,7 +382,7 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)
         ),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
     );
 
@@ -393,7 +393,7 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
         2.5,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
     );
 
@@ -404,7 +404,7 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
         1.9601144528047953,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
     );
 
@@ -415,7 +415,7 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
         1.3347158081570496,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
-      std::make_unique<TrainingSpec<long double, int> >(TrainingSpec<long double, int>::uniform_glda(n_vars, lambda)),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
     );
 
@@ -699,7 +699,7 @@ TEST(Forest, VariableImportanceLDASomeVariablesMultivariateThreeGroups) {
   const double seed = 1;
 
   Forest<long double, int> forest = train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     4,
     seed);
@@ -748,7 +748,7 @@ TEST(Forest, VariableImportancePDAAllVariablesMultivariateTwoGroups) {
   const double seed = 0;
 
   Forest<long double, int> forest = train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     4,
     seed);
@@ -842,7 +842,7 @@ TEST(Forest, ErrorRateDataSpecMin) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
   double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
@@ -920,7 +920,7 @@ TEST(Forest, ErrorRateDataSpecMax) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
   double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
@@ -998,7 +998,7 @@ TEST(Forest, ErrorRateDataSpecGeneric) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
   double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
@@ -1076,7 +1076,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMin) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
   std::vector<int> sample_indices(10);
@@ -1157,7 +1157,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMax) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
   std::vector<int> sample_indices(10);
@@ -1238,7 +1238,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecGeneric) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
   std::vector<int> sample_indices(20);
@@ -1319,7 +1319,7 @@ TEST(Forest, ErrorRate) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
   double result = forest.error_rate();
 
@@ -1396,7 +1396,7 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
   ConfusionMatrix result = forest.confusion_matrix(DataSpec<long double, int>(x, predictions));
@@ -1482,7 +1482,7 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
   DataColumn<int> predictions(30);
   predictions <<
@@ -1603,7 +1603,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecDiagonal) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
@@ -1691,7 +1691,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
   DataColumn<int> predictions(30);
   predictions <<
@@ -1812,7 +1812,7 @@ TEST(Forest, ConfusionMatrix) {
   DataSpec<long double, int> data(x, y);
 
   const double seed = 0;
-  Forest<long double, int> forest = train(TrainingSpec<long double, int>::lda(), data, 4, seed);
+  Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
   ConfusionMatrix result = forest.confusion_matrix();
 

@@ -15,7 +15,7 @@ Tree<long double, int> pptree_train_glda(
   DataColumn<int> &  groups,
   double             lambda) {
   return train(
-    TrainingSpec<long double, int>::lda(),
+    *TrainingSpec<long double, int>::glda(lambda),
     DataSpec<long double, int>(data, groups));
 }
 
@@ -27,7 +27,7 @@ Forest<long double, int> pptree_train_forest_glda(
   const int                 n_vars,
   const double              lambda) {
   return train(
-    TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     size,
     R::rnorm(0, 1));

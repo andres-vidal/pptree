@@ -7,6 +7,9 @@
 namespace models::pp::strategy {
   template<typename T, typename G>
   struct PPStrategy {
+    virtual ~PPStrategy() = default;
+    virtual std::unique_ptr<PPStrategy<T, G> > clone() const = 0;
+
     virtual T index(
       const stats::Data<T>&       data,
       const Projector<T>&         projector,
@@ -41,6 +44,10 @@ namespace models::pp::strategy {
       }
     }
 
+    std::unique_ptr<PPStrategy<T, G> > clone() const override {
+      return std::make_unique<GLDAStrategy<T, G> >(*this);
+    }
+
     T index(
       const stats::Data<T>&       data,
       const Projector<T>&         projector,
@@ -71,7 +78,7 @@ namespace models::pp::strategy {
 
 
   template<typename T, typename G>
-  std::shared_ptr<PPStrategy<T, G> > glda(const double lambda) {
-    return std::make_shared<GLDAStrategy<T, G> >(lambda);
+  std::unique_ptr<PPStrategy<T, G> > glda(const double lambda) {
+    return std::make_unique<GLDAStrategy<T, G> >(lambda);
   }
 }

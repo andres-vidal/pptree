@@ -245,7 +245,7 @@ namespace models {
         classes,
         training_spec,
         rng),
-      std::make_unique<TrainingSpec<T, R> >(training_spec),
+      training_spec.clone(),
       std::make_shared<D >(training_data));
 
     LOG_INFO << "Tree: " << tree << std::endl;
@@ -258,12 +258,6 @@ namespace models {
     const D &                 training_data) {
     std::mt19937 rng;
 
-    try {
-      const double seed = training_spec.params->template at<const double>("seed");
-      rng.seed(seed);
-    } catch (const std::out_of_range &e) {
-      LOG_WARNING << "No seed is set in training spec. Training may be non-deterministic." << std::endl;
-    }
     return train(training_spec, training_data, rng);
   }
 
