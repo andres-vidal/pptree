@@ -3,7 +3,7 @@
 
 namespace models {
   template<typename T, typename R>
-  struct BootstrapTree : Tree<T, R, stats::BootstrapDataSpec<T, R> > {
+  struct BootstrapTree : public Tree<T, R, stats::BootstrapDataSpec<T, R> > {
     explicit BootstrapTree(std::unique_ptr<Condition<T, R> > root)
       : Tree<T, R, stats::BootstrapDataSpec<T, R> >(std::move(root)) {
     }

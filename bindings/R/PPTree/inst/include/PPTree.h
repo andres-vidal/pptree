@@ -4,6 +4,7 @@
 
 using namespace pptree;
 
+
 namespace Rcpp {
   SEXP wrap(const Node<long double, int> &);
   SEXP wrap(const Tree<long double, int, DataSpec<long double, int> > &);
@@ -37,11 +38,21 @@ namespace Rcpp {
 
 namespace Rcpp {
   SEXP wrap(const Node<long double, int>& node) {
-    if (node.is_response()) {
-      return wrap(node.as_response());
-    }
+    struct NodeWrapper : public NodeVisitor<long double, int> {
+      Rcpp::List result;
 
-    return wrap(node.as_condition());
+      void visit(const Condition<long double, int> &condition) {
+        result = Rcpp::wrap(condition);
+      }
+
+      void visit(const Response<long double, int> &response) {
+        result = Rcpp::wrap(response);
+      }
+    };
+
+    NodeWrapper wrapper;
+    node.accept(wrapper);
+    return wrapper.result;
   }
 
   SEXP wrap(const Response<long double, int> &node) {

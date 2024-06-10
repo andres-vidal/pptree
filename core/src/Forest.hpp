@@ -123,6 +123,18 @@ namespace models {
       return stats::ConfusionMatrix(oob_predictions, oob_y);
     }
 
+    json to_json() const {
+      std::vector<json> trees_json;
+
+      for (const auto& tree : trees) {
+        trees_json.push_back(tree->to_json());
+      }
+
+      return json{
+        { "trees", trees_json }
+      };
+    }
+
     private:
 
       R predict(
@@ -208,22 +220,7 @@ namespace models {
 
 
   template<typename T, typename R>
-  void to_json(json& j, const Forest<T, R>& forest) {
-    std::vector<json> trees_json;
-
-    for (const auto& tree : forest.trees) {
-      json tree_json;
-
-      to_json(tree_json, *tree);
-      trees_json.push_back(tree_json);
-    }
-
-    j = json{ { "trees", trees_json } };
-  }
-
-  template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Forest<T, R>& forest) {
-    json json_response(forest);
-    return ostream << json_response.dump(2, ' ', false);
+    return ostream << forest.to_json().dump(2, ' ', false);
   }
 }

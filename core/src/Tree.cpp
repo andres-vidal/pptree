@@ -196,8 +196,8 @@ namespace models {
       group_2,
       pp_strategy);
 
-    R binary_lower_group = temp_node->lower->as_response().value;
-    R binary_upper_group = temp_node->upper->as_response().value;
+    R binary_lower_group = temp_node->lower->response();
+    R binary_upper_group = temp_node->upper->response();
 
     LOG_INFO << "Build lower branch" << std::endl;
     std::unique_ptr<Node<T, R> > lower_branch = build_branch(

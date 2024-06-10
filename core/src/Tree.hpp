@@ -5,7 +5,6 @@
 #include "Projector.hpp"
 #include "ConfusionMatrix.hpp"
 
-
 #include <nlohmann/json.hpp>
 
 namespace models {
@@ -22,31 +21,31 @@ namespace models {
   struct Response;
 
   template<typename T, typename R>
+  struct NodeVisitor {
+    virtual void visit(const Condition<T, R> &condition) = 0;
+    virtual void visit(const Response<T, R> &response) = 0;
+  };
+
+  template<typename T, typename R>
   struct Node {
     virtual ~Node() = default;
+    virtual void accept(NodeVisitor<T, R> &visitor) const = 0;
     virtual R predict(const stats::DataColumn<T> &data) const = 0;
-    virtual bool is_response() const = 0;
-    virtual bool is_condition() const = 0;
-    virtual const Condition<T, R>& as_condition() const = 0;
-    virtual const Response<T, R>& as_response() const = 0;
+    virtual R response() const = 0;
+    virtual std::set<int> classes() const = 0;
+    virtual pp::Projector<T> variable_importance() const = 0;
+    virtual json to_json() const = 0;
+    virtual bool equals(const Node<T, R> &other) const = 0;
+    virtual bool equals(const Condition<T, R> &other) const = 0;
+    virtual bool equals(const Response<T, R> &other) const = 0;
 
     bool operator==(const Node<T, R> &other) const {
-      if (this->is_condition() && other.is_condition()) {
-        return this->as_condition() == other.as_condition();
-      } else if (this->is_response() && other.is_response()) {
-        return this->as_response() == other.as_response();
-      } else {
-        return false;
-      }
+      return this->equals(other);
     }
 
     bool operator!=(const Node<T, R> &other) const {
-      return !(*this == other);
+      return this->equals(other);
     }
-
-    virtual std::set<int> classes() const = 0;
-
-    virtual pp::Projector<T> variable_importance() const = 0;
   };
 
   template<typename T, typename R>
@@ -64,6 +63,14 @@ namespace models {
       : projector(projector), threshold(threshold), lower(std::move(lower)), upper(std::move(upper)) {
     }
 
+    void accept(NodeVisitor<T, R> &visitor) const override {
+      visitor.visit(*this);
+    }
+
+    R response() const override {
+      throw std::invalid_argument("Cannot get response from a condition node");
+    }
+
     R predict(const stats::DataColumn<T> &data) const override {
       T projected_data = pp::project(data, projector);
 
@@ -72,22 +79,6 @@ namespace models {
       } else {
         return upper->predict(data);
       }
-    }
-
-    bool is_response() const override {
-      return false;
-    }
-
-    bool is_condition() const override {
-      return true;
-    }
-
-    const Condition<T, R>& as_condition() const override {
-      return *this;
-    }
-
-    const Response<T, R>& as_response() const override {
-      throw std::runtime_error("Cannot cast condition to response");
     }
 
     bool operator==(const Condition<T, R> &other) const {
@@ -111,16 +102,39 @@ namespace models {
 
     pp::Projector<T> variable_importance() const override {
       pp::Projector<T> importance = math::abs(projector) / classes().size();
+      pp::Projector<T> lower_importance = lower->variable_importance();
+      pp::Projector<T> upper_importance = upper->variable_importance();
 
-      if (lower->is_condition()) {
-        importance += lower->variable_importance();
+      if (lower_importance.size()) {
+        importance += lower_importance;
       }
 
-      if (upper->is_condition()) {
-        importance += upper->variable_importance();
+      if (upper_importance.size()) {
+        importance += upper_importance;
       }
 
       return importance;
+    }
+
+    json to_json() const override {
+      return json{
+        { "projector", projector },
+        { "threshold", threshold },
+        { "lower", lower->to_json() },
+        { "upper", upper->to_json() }
+      };
+    }
+
+    bool equals(const Node<T, R> &other) const override {
+      return other.equals(*this);
+    }
+
+    bool equals(const Condition<T, R> &other) const override {
+      return *this == other;
+    }
+
+    bool equals(const Response<T, R> &other) const override {
+      return false;
     }
   };
 
@@ -131,24 +145,16 @@ namespace models {
     explicit Response(R value) : value(value) {
     }
 
-    R predict(const stats::DataColumn<T> &data) const override {
+    void accept(NodeVisitor<T, R> &visitor) const override {
+      visitor.visit(*this);
+    }
+
+    R response() const override {
       return value;
     }
 
-    bool is_response() const override {
-      return true;
-    }
-
-    bool is_condition() const override {
-      return false;
-    }
-
-    const Condition<T, R>& as_condition() const override {
-      throw std::runtime_error("Cannot cast response to condition");
-    }
-
-    const Response<T, R>& as_response() const override {
-      return *this;
+    R predict(const stats::DataColumn<T> &data) const override {
+      return value;
     }
 
     bool operator==(const Response<T, R> &other) const {
@@ -164,7 +170,25 @@ namespace models {
     }
 
     pp::Projector<T> variable_importance() const override {
-      throw std::runtime_error("Cannot compute variable importance for response node");
+      return pp::Projector<T>::Zero(0);
+    }
+
+    json to_json() const override {
+      return json{
+        { "value", value }
+      };
+    }
+
+    bool equals(const Node<T, R> &other) const override {
+      return other.equals(*this);
+    }
+
+    bool equals(const Condition<T, R> &other) const override {
+      return false;
+    }
+
+    bool equals(const Response<T, R> &other) const override {
+      return *this == other;
     }
   };
 
@@ -226,6 +250,12 @@ namespace models {
       auto [x, y, _classes] = data.unwrap();
       return stats::ConfusionMatrix(predict(x), y);
     }
+
+    json to_json() const {
+      return json{
+        { "root", root->to_json() }
+      };
+    }
   };
 
   template<typename T, typename R, typename D>
@@ -239,68 +269,23 @@ namespace models {
     const TrainingSpec<T, R> &training_spec,
     const D &                 training_data);
 
-
-  template<typename T, typename R >
-  void to_json(json& j, const Condition<T, R> &condition);
-  template<typename T, typename R >
-  void to_json(json& j, const Response<T, R> &response);
-  template<typename T, typename R >
-  void to_json(json& j, const Node<T, R> &node);
-
-  template<typename T, typename R >
-  void to_json(json& j, const Condition<T, R>& condition) {
-    j = json{
-      { "projector", condition.projector },
-      { "threshold", condition.threshold },
-      { "lower", *condition.lower },
-      { "upper", *condition.upper }
-    };
-  }
-
-  template<typename T, typename R >
-  void to_json(json& j, const Response<T, R>& response) {
-    j = json{
-      { "value", response.value }
-    };
-  }
-
-  template<typename T, typename R >
-  void to_json(json& j, const Node<T, R>& node) {
-    if (node.is_response()) {
-      to_json(j, node.as_response());
-    } else {
-      to_json(j, node.as_condition());
-    }
-  }
-
-  template<typename T, typename R, typename D>
-  void to_json(json& j, const Tree<T, R, D>& tree) {
-    j = json{
-      { "root", *tree.root }
-    };
-  }
-
   template<typename T, typename R, typename D>
   std::ostream& operator<<(std::ostream & ostream, const Tree<T, R, D>& tree) {
-    json json_tree(tree);
-    return ostream << json_tree.dump(2, ' ', false);
+    return ostream << tree.to_json().dump(2, ' ', false);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Node<T, R> &node) {
-    json json_node(node);
-    return ostream << json_node.dump(2, ' ', false);
+    return ostream << node.to_json().dump(2, ' ', false);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Condition<T, R>& condition) {
-    json json_condition(condition);
-    return ostream << json_condition.dump(2, ' ', false);
+    return ostream << condition.to_json().dump(2, ' ', false);
   }
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Response<T, R>& response) {
-    json json_response(response);
-    return ostream << json_response.dump(2, ' ', false);
+    return ostream << response.to_json().dump(2, ' ', false);
   }
 }
