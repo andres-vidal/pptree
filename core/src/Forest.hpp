@@ -77,14 +77,14 @@ namespace models {
         seed);
     }
 
-    pp::Projector<T> variable_importance() const {
+    math::DVector<T> variable_importance() const {
       Forest<T, R> std_forest = retrain(center(descale(*training_data)));
 
-      pp::Projector<T> importance = std::accumulate(
+      math::DVector<T> importance = std::accumulate(
         std_forest.trees.begin(),
         std_forest.trees.end(),
-        pp::Projector<T>(pp::Projector<T>::Zero(training_data->x.cols())),
-        [] (pp::Projector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> pp::Projector<T> {
+        math::DVector<T>(math::DVector<T>::Zero(training_data->x.cols())),
+        [] (math::DVector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> math::DVector<T> {
           return acc + tree->variable_importance();
         });
 

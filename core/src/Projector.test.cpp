@@ -39,11 +39,9 @@ TEST(Projector, ProjectDataZeroProjector) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  Projector<long double> projector(5);
-  projector <<
-    0.0, 0.0, 0.0, 0.0, 0.0;
+  Projector<long double> projector({ 0.0, 0.0, 0.0, 0.0, 0.0 });
 
-  DataColumn<long double> actual = project(data, projector);
+  DataColumn<long double> actual = projector.project(data);
   DataColumn<long double> expected = DataColumn<long double>::Zero(30);
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -86,11 +84,9 @@ TEST(Projector, ProjectDataGeneric) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  Projector<long double> projector(5);
-  projector <<
-    -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
+  Projector<long double> projector({ -0.02965,  0.08452, -0.24243, -0.40089, -0.87892 });
 
-  DataColumn<long double> actual = project(data, projector);
+  DataColumn<long double> actual = projector.project(data);
   DataColumn<long double> expected(30);
   expected <<
     -1.30946,
@@ -135,11 +131,9 @@ TEST(Projector, PProjectDataColumnZeroProjector) {
   data <<
     1.0, 2.0, 3.0, 4.0, 5.0;
 
-  Projector<long double> projector(5);
-  projector <<
-    0.0, 0.0, 0.0, 0.0, 0.0;
+  Projector<long double> projector({ 0.0, 0.0, 0.0, 0.0, 0.0 });
 
-  long double result = project(data, projector);
+  long double result = projector.project(data);
 
   ASSERT_EQ(0, result);
 }
@@ -149,11 +143,9 @@ TEST(Projector, PProjectDataColumnGeneric) {
   data <<
     1.0, 2.0, 3.0, 4.0, 5.0;
 
-  Projector<long double> projector(5);
-  projector <<
-    -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
+  Projector<long double> projector({ -0.02965,  0.08452, -0.24243, -0.40089, -0.87892 });
 
-  long double result = project(data, projector);
+  long double result = projector.project(data);
 
   ASSERT_NEAR(-6.58606, result, 0.00001);
 }

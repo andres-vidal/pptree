@@ -33,7 +33,7 @@ namespace models {
     virtual R predict(const stats::DataColumn<T> &data) const = 0;
     virtual R response() const = 0;
     virtual std::set<int> classes() const = 0;
-    virtual pp::Projector<T> variable_importance() const = 0;
+    virtual math::DVector<T> variable_importance() const = 0;
     virtual json to_json() const = 0;
     virtual bool equals(const Node<T, R> &other) const = 0;
     virtual bool equals(const Condition<T, R> &other) const = 0;
@@ -72,7 +72,7 @@ namespace models {
     }
 
     R predict(const stats::DataColumn<T> &data) const override {
-      T projected_data = pp::project(data, projector);
+      T projected_data = projector.project(data);
 
       if (projected_data < threshold) {
         return lower->predict(data);
@@ -82,7 +82,7 @@ namespace models {
     }
 
     bool operator==(const Condition<T, R> &other) const {
-      return math::collinear(projector, other.projector)
+      return projector.is_collinear(other.projector)
              && math::is_approx(threshold, other.threshold)
              && *lower == *other.lower
              && *upper == *other.upper;
@@ -100,10 +100,12 @@ namespace models {
       return classes;
     }
 
-    pp::Projector<T> variable_importance() const override {
-      pp::Projector<T> importance = math::abs(projector) / classes().size();
-      pp::Projector<T> lower_importance = lower->variable_importance();
-      pp::Projector<T> upper_importance = upper->variable_importance();
+    math::DVector<T> variable_importance() const override {
+      math::DVector<T> lower_importance = lower->variable_importance();
+      math::DVector<T> upper_importance = upper->variable_importance();
+
+      // TODO: make it possible to multiply by the pp index instead of dividing by the number of classes
+      math::DVector<T> importance = math::abs(projector.vector) / classes().size();
 
       if (lower_importance.size()) {
         importance += lower_importance;
@@ -118,7 +120,7 @@ namespace models {
 
     json to_json() const override {
       return json{
-        { "projector", projector },
+        { "projector", projector.to_json() },
         { "threshold", threshold },
         { "lower", lower->to_json() },
         { "upper", upper->to_json() }
@@ -169,8 +171,8 @@ namespace models {
       return { value };
     }
 
-    pp::Projector<T> variable_importance() const override {
-      return pp::Projector<T>::Zero(0);
+    math::DVector<T> variable_importance() const override {
+      return math::DVector<T>::Zero(0);
     }
 
     json to_json() const override {
@@ -236,7 +238,7 @@ namespace models {
       return train(*training_spec, data);
     }
 
-    pp::Projector<T> variable_importance() const {
+    math::DVector<T> variable_importance() const {
       Tree<T, R, D> std_tree = retrain(center(descale(*training_data)));
       return std_tree.root->variable_importance();
     }
