@@ -6,7 +6,7 @@ using namespace models::pp;
 using namespace models::pp::strategy;
 using namespace models::stats;
 
-#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(a.is_collinear(b)) << std::endl << "Expected vectors to be collinear: [" << a.vector.transpose() << "] [" << b.vector.transpose() << "]" << std::endl
+#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(models::math::collinear(a.vector, b.vector)) << std::endl << "Expected vectors to be collinear: [" << a.vector.transpose() << "] [" << b.vector.transpose() << "]" << std::endl
 
 TEST(Projector, LDAOptimumProjectorTwoGroups1) {
   Data<long double> data(10, 4);

@@ -14,12 +14,13 @@ namespace models::pp {
     using Size = Eigen::Index;
 
     const math::DVector<T> vector;
+    const double index;
 
-    explicit Projector(math::DVector<T> vector) : vector(vector) {
+    explicit Projector(const math::DVector<T> vector, const double index = 0) : vector(vector), index(index) {
     }
 
-    Projector(std::initializer_list<T> init_list)
-      : vector(math::DVector<T>::Map(init_list.begin(), init_list.size())) {
+    Projector(std::initializer_list<T> init_list, const double index = 0)
+      : vector(math::DVector<T>::Map(init_list.begin(), init_list.size())), index(index) {
     }
 
     Projection<T> project(const stats::Data<T> & data) const {
@@ -41,7 +42,7 @@ namespace models::pp {
         i++;
 
       // Guarantee the first non-zero component is positive
-      return Projector<T>((truncated(i) < 0 ? -1 : 1) * truncated);
+      return Projector<T>((truncated(i) < 0 ? -1 : 1) * truncated, index);
     }
 
     Size size() const {
@@ -61,7 +62,7 @@ namespace models::pp {
     }
 
     Projector<T> expand(const std::vector<int> &mask) const {
-      return Projector<T>(stats::expand(vector, mask));
+      return Projector<T>(stats::expand(vector, mask), index);
     }
 
     json to_json() const {

@@ -82,7 +82,7 @@ namespace models {
     }
 
     bool operator==(const Condition<T, R> &other) const {
-      return projector.is_collinear(other.projector)
+      return math::collinear(projector.vector, other.projector.vector)
              && math::is_approx(threshold, other.threshold)
              && *lower == *other.lower
              && *upper == *other.upper;

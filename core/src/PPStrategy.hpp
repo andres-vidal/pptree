@@ -52,16 +52,11 @@ namespace models::pp::strategy {
     }
 
     T index(
-      const stats::Data<T>&       data,
-      const Projector<T>&         projector,
-      const stats::DataColumn<G>& groups,
-      const std::set<G>&          unique_groups) const override {
-      stats::Data<T> A = projector.vector;
-
-      stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
+      const stats::Data<T>& A,
+      const stats::Data<T>& W,
+      const stats::Data<T>& B) const {
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
       stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
-      stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
       stats::Data<T> WpB = W_pda + B;
 
       T denominator = math::determinant(math::inner_square(A, WpB));
@@ -73,11 +68,24 @@ namespace models::pp::strategy {
       return 1 - math::determinant(math::inner_square(A, W_pda)) / denominator;
     }
 
+    T index(
+      const stats::Data<T>&       data,
+      const Projector<T>&         projector,
+      const stats::DataColumn<G>& groups,
+      const std::set<G>&          unique_groups) const override {
+      stats::Data<T> A = projector.vector;
+      stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
+      stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
+
+      return index(A, W, B);
+    }
+
     Projector<T> optimize(
       const stats::Data<T>&       data,
       const stats::DataColumn<G>& groups,
       const std::set<G>&          unique_groups) const override {
       LOG_INFO << "Calculating PDA optimum projector for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
+
       LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables:" << std::endl;
       LOG_INFO << std::endl << data << std::endl;
       LOG_INFO << "Groups:" << std::endl;
@@ -103,7 +111,6 @@ namespace models::pp::strategy {
       stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
       stats::Data<T> WpB = W_pda + B;
 
-
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
@@ -122,7 +129,7 @@ namespace models::pp::strategy {
       pp::Projector<T> projector = pp::Projector<T>(max_eigen_vec).normalize().expand(var_mask);
 
       LOG_INFO << "Projector:" << std::endl << projector << std::endl;
-      return projector;
+      return Projector<T>(projector.vector, index(projector.vector, complete_B, complete_W));
     }
   };
 
