@@ -28,16 +28,22 @@ namespace models {
 
   template<typename T, typename R>
   struct Node {
+    enum class ImportanceKind {
+      INDEX,
+      CLASS,
+    };
+
     virtual ~Node() = default;
     virtual void accept(NodeVisitor<T, R> &visitor) const = 0;
     virtual R predict(const stats::DataColumn<T> &data) const = 0;
     virtual R response() const = 0;
     virtual std::set<int> classes() const = 0;
-    virtual math::DVector<T> variable_importance() const = 0;
+    virtual math::DVector<T> variable_importance(ImportanceKind) const = 0;
     virtual json to_json() const = 0;
     virtual bool equals(const Node<T, R> &other) const = 0;
     virtual bool equals(const Condition<T, R> &other) const = 0;
     virtual bool equals(const Response<T, R> &other) const = 0;
+
 
     bool operator==(const Node<T, R> &other) const {
       return this->equals(other);
@@ -100,12 +106,17 @@ namespace models {
       return classes;
     }
 
-    math::DVector<T> variable_importance() const override {
-      math::DVector<T> lower_importance = lower->variable_importance();
-      math::DVector<T> upper_importance = upper->variable_importance();
+    math::DVector<T> variable_importance(typename Node<T, R>::ImportanceKind importance_kind) const override {
+      math::DVector<T> lower_importance = lower->variable_importance(importance_kind);
+      math::DVector<T> upper_importance = upper->variable_importance(importance_kind);
 
-      // TODO: make it possible to multiply by the pp index instead of dividing by the number of classes
-      math::DVector<T> importance = math::abs(projector.vector) / classes().size();
+      double factor = 1 / (double)classes().size();
+
+      if (importance_kind == Node<T, R>::ImportanceKind::INDEX) {
+        factor = projector.index;
+      }
+
+      math::DVector<T> importance = math::abs(projector.vector) * factor;
 
       if (lower_importance.size()) {
         importance += lower_importance;
@@ -171,7 +182,7 @@ namespace models {
       return { value };
     }
 
-    math::DVector<T> variable_importance() const override {
+    math::DVector<T> variable_importance(typename Node<T, R>::ImportanceKind) const override {
       return math::DVector<T>::Zero(0);
     }
 
@@ -240,7 +251,7 @@ namespace models {
 
     math::DVector<T> variable_importance() const {
       Tree<T, R, D> std_tree = retrain(center(descale(*training_data)));
-      return std_tree.root->variable_importance();
+      return std_tree.root->variable_importance(Node<T, R>::ImportanceKind::CLASS);
     }
 
     virtual double error_rate(const stats::DataSpec<T, R> &data) const {
