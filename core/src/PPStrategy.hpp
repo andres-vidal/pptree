@@ -129,7 +129,7 @@ namespace models::pp::strategy {
       pp::Projector<T> projector = pp::Projector<T>(max_eigen_vec).normalize().expand(var_mask);
 
       LOG_INFO << "Projector:" << std::endl << projector << std::endl;
-      return Projector<T>(projector.vector, index(projector.vector, complete_B, complete_W));
+      return Projector<T>(projector.vector, index(projector.vector, complete_W, complete_B));
     }
   };
 

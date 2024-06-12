@@ -85,7 +85,7 @@ namespace models {
         std_forest.trees.end(),
         math::DVector<T>(math::DVector<T>::Zero(training_data->x.cols())),
         [] (math::DVector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> math::DVector<T> {
-          return acc + tree->variable_importance();
+          return acc + tree->variable_importance(VariableImportanceKind::PROJECTOR);
         });
 
 
