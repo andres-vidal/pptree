@@ -1107,15 +1107,15 @@ TEST(Data, DescaleDataPartiallyScaledData) {
 }
 
 TEST(Data, ShuffleColumnOfDataFirstColumn) {
+  Random::rng.seed(0.0);
+
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  std::mt19937 rng(0);
-
-  Data<long double> shuffled = shuffle_column(data, 0, rng);
+  Data<long double> shuffled = shuffle_column(data, 0);
 
   ASSERT_EQ(data.size(), shuffled.size());
   ASSERT_EQ(data.rows(), shuffled.rows());
@@ -1127,15 +1127,15 @@ TEST(Data, ShuffleColumnOfDataFirstColumn) {
 }
 
 TEST(Data, ShuffleColumnOfDataMiddleColumn) {
+  Random::rng.seed(0.0);
+
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  std::mt19937 rng(0);
-
-  Data<long double> shuffled = shuffle_column(data, 1, rng);
+  Data<long double> shuffled = shuffle_column(data, 1);
 
   ASSERT_EQ(data.size(), shuffled.size());
   ASSERT_EQ(data.rows(), shuffled.rows());
@@ -1147,15 +1147,15 @@ TEST(Data, ShuffleColumnOfDataMiddleColumn) {
 }
 
 TEST(Data, ShuffleColumnOfDataLastColumn) {
+  Random::rng.seed(0.0);
+
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  std::mt19937 rng(0);
-
-  Data<long double> shuffled = shuffle_column(data, 2, rng);
+  Data<long double> shuffled = shuffle_column(data, 2);
 
   ASSERT_EQ(data.size(), shuffled.size());
   ASSERT_EQ(data.rows(), shuffled.rows());

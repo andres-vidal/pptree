@@ -7,7 +7,7 @@ using namespace models::stats;
 #ifndef NDEBUG
 
 TEST(StratifiedProportionalSample, NegativeSampleSize) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(6, 3);
   x <<
@@ -29,11 +29,11 @@ TEST(StratifiedProportionalSample, NegativeSampleSize) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, -1, generator); }, "Sample size must be greater than 0.");
+  ASSERT_DEATH({ stratified_proportional_sample(data, -1); }, "Sample size must be greater than 0.");
 }
 
 TEST(StratifiedProportionalSample, ZeroSampleSize) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(6, 3);
   x <<
@@ -55,11 +55,11 @@ TEST(StratifiedProportionalSample, ZeroSampleSize) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, 0, generator); }, "Sample size must be greater than 0.");
+  ASSERT_DEATH({ stratified_proportional_sample(data, 0); }, "Sample size must be greater than 0.");
 }
 
 TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(6, 3);
   x <<
@@ -81,13 +81,13 @@ TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, 7, generator); }, "Sample size cannot be larger than the number of rows in the data.");
+  ASSERT_DEATH({ stratified_proportional_sample(data, 7); }, "Sample size cannot be larger than the number of rows in the data.");
 }
 
 #endif // NDEBUG
 
 TEST(StratifiedProportionalSample, AssertCorrectSize) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(6, 3);
   x <<
@@ -109,7 +109,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSize) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator).get_sample();
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   ASSERT_EQ(4, result.x.rows());
   ASSERT_EQ(3, result.x.cols());
@@ -117,7 +117,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSize) {
 }
 
 TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(6, 3);
   x <<
@@ -139,7 +139,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator).get_sample();
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -152,7 +152,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
 }
 
 TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(6, 3);
   x <<
@@ -174,7 +174,7 @@ TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 4, generator).get_sample();
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   for (int i = 0; i < result.x.rows(); i++) {
     bool found = false;
@@ -191,7 +191,7 @@ TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
 }
 
 TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(9, 3);
 
@@ -220,7 +220,7 @@ TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
 
   DataSpec<long double, int> data(x, y, { 0, 1, 2 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 6, generator).get_sample();
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 6).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -248,7 +248,7 @@ TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
 }
 
 TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(9, 3);
 
@@ -277,7 +277,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 6, generator).get_sample();
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 6).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -304,7 +304,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
 }
 
 TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
-  std::mt19937 generator(0);
+  Random::rng.seed(0.0);
 
   Data<long double> x(9, 3);
 
@@ -333,7 +333,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  DataSpec<long double, int> result = stratified_proportional_sample(data, 5, generator).get_sample();
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 5).get_sample();
 
   std::map<int, int> result_sizes;
 

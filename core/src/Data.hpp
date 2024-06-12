@@ -2,6 +2,7 @@
 
 #include "DMatrix.hpp"
 #include "DataColumn.hpp"
+#include "Random.hpp"
 
 #include <map>
 #include <set>
@@ -141,13 +142,12 @@ namespace models::stats {
   template<typename T>
   Data<T> shuffle_column(
     const Data<T> &data,
-    const int      column,
-    std::mt19937 & rng) {
+    const int      column) {
     Data<T> shuffled = data;
 
     std::vector<int> indices(data.rows());
     std::iota(indices.begin(), indices.end(), 0);
-    std::shuffle(indices.begin(), indices.end(), rng);
+    std::shuffle(indices.begin(), indices.end(), Random::rng);
 
     for (int i = 0; i < data.rows(); i++) {
       shuffled(i, column) = data(indices[i], column);

@@ -14,7 +14,7 @@ namespace models {
 
     assert(size > 0 && "The forest size must be greater than 0.");
 
-    std::mt19937 rng(seed);
+    Random::rng.seed(seed);
 
     Forest<T, R> forest(
       training_spec.clone(),
@@ -24,13 +24,11 @@ namespace models {
     for (int i = 0; i < size; i++) {
       BootstrapDataSpec<T, R> sample_training_data = stratified_proportional_sample(
         training_data,
-        training_data.x.rows(),
-        rng);
+        training_data.x.rows());
 
       BootstrapTree<T, R> tree = train(
         training_spec,
-        sample_training_data,
-        rng);
+        sample_training_data);
 
       forest.add_tree(std::make_unique<BootstrapTree<T, R> >(std::move(tree)));
     }

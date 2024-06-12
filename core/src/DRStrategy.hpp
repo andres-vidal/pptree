@@ -11,13 +11,11 @@ namespace models::dr::strategy {
     virtual std::unique_ptr<DRStrategy<T> > clone() const = 0;
 
     virtual stats::Data<T> select_variables(
-      const stats::Data<T>& data,
-      std::mt19937&         rng) const = 0;
+      const stats::Data<T>& data) const = 0;
 
     stats::Data<T> operator()(
-      const stats::Data<T>& data,
-      std::mt19937&         rng) const {
-      return select_variables(data, rng);
+      const stats::Data<T>& data) const {
+      return select_variables(data);
     }
   };
 
@@ -28,8 +26,7 @@ namespace models::dr::strategy {
     }
 
     stats::Data<T> select_variables(
-      const stats::Data<T>& data,
-      std::mt19937&         rng) const override {
+      const stats::Data<T>& data) const override {
       return data;
     }
   };
@@ -47,15 +44,14 @@ namespace models::dr::strategy {
     }
 
     stats::Data<T> select_variables(
-      const stats::Data<T>& data,
-      std::mt19937&         rng) const override {
+      const stats::Data<T>& data) const override {
       assert(n_vars <= data.cols() && "The number of variables must be less than or equal to the number of columns in the data.");
 
       if (n_vars == data.cols()) return data;
 
       LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
 
-      std::vector<int> var_sampled_indices = stats::Uniform(0, data.cols() - 1)(rng, n_vars);
+      std::vector<int> var_sampled_indices = stats::Uniform(0, data.cols() - 1)(n_vars);
 
       LOG_INFO << "Selected variables: " << var_sampled_indices << std::endl;
 

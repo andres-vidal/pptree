@@ -297,12 +297,6 @@ namespace models {
       }
   };
 
-  template<typename T, typename R, typename D>
-  Tree<T, R, D> train(
-    const TrainingSpec<T, R> &training_spec,
-    const D &                 training_data,
-    std::mt19937&             rng);
-
   template<typename T, typename R, typename D >
   Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,

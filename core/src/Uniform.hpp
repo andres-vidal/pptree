@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include "Random.hpp"
 namespace models::stats {
   class Uniform {
     private:
@@ -11,17 +12,17 @@ namespace models::stats {
       Uniform(int min, int max) : min(min), max(max) {
       }
 
-      int operator()(std::mt19937 &rng) const {
+      int operator()() const {
         uint64_t range = static_cast<uint64_t>(max) - min + 1;
-        uint64_t random_number = rng() - rng.min();
+        uint64_t random_number = Random::rng() - Random::rng.min();
         return min + static_cast<int>(random_number % range);
       }
 
-      std::vector<int> operator()(std::mt19937 &rng, int count) const {
+      std::vector<int> operator()(int count) const {
         std::vector<int> result(count);
 
         for (int i = 0; i < count; i++) {
-          result[i] = operator()(rng);
+          result[i] = operator()();
         }
 
         return result;

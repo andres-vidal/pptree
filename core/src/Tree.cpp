@@ -15,8 +15,7 @@ namespace models {
     const Data<T> &           data,
     const DataColumn<R> &     groups,
     const std::set<R> &       unique_groups,
-    const TrainingSpec<T, R> &training_spec,
-    std::mt19937 &            rng);
+    const TrainingSpec<T, R> &training_spec);
 
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
@@ -135,8 +134,7 @@ namespace models {
     const DataColumn<R> &              binary_groups,
     const R &                          binary_group,
     const std::map<int, std::set<R> >& binary_group_mapping,
-    const TrainingSpec<T, R> &         training_spec,
-    std::mt19937 &                     rng) {
+    const TrainingSpec<T, R> &         training_spec) {
     std::set<R> unique_groups = binary_group_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
@@ -151,8 +149,7 @@ namespace models {
       select_group(data, binary_groups, binary_group),
       select_group(groups, binary_groups, binary_group),
       unique_groups,
-      training_spec,
-      rng);
+      training_spec);
 
     return condition;
   }
@@ -162,15 +159,14 @@ namespace models {
     const Data<T> &            data,
     const DataColumn<R> &      groups,
     const std::set<R> &        unique_groups,
-    const TrainingSpec<T, R> & training_spec,
-    std::mt19937 &             rng) {
+    const TrainingSpec<T, R> & training_spec) {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
     PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
     DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
 
-    Data<T> reduced_data = dr_strategy(data, rng);
+    Data<T> reduced_data = dr_strategy(data);
 
     if (unique_groups.size() == 2) {
       auto [group_1, group_2] = take_two(unique_groups);
@@ -208,8 +204,7 @@ namespace models {
       binary_groups,
       binary_lower_group,
       binary_group_mapping,
-      training_spec,
-      rng);
+      training_spec);
 
     LOG_INFO << "Build upper branch" << std::endl;
     std::unique_ptr<Node<T, R> > upper_branch = build_branch(
@@ -218,8 +213,7 @@ namespace models {
       binary_groups,
       binary_upper_group,
       binary_group_mapping,
-      training_spec,
-      rng);
+      training_spec);
 
     std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,
@@ -234,8 +228,7 @@ namespace models {
   template<typename T, typename R, typename D>
   Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
-    const D &                 training_data,
-    std::mt19937&             rng) {
+    const D &                 training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     auto [x, y, classes] = training_data.unwrap();
@@ -245,22 +238,12 @@ namespace models {
         x,
         y,
         classes,
-        training_spec,
-        rng),
+        training_spec),
       training_spec.clone(),
       std::make_shared<D >(training_data));
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
-  }
-
-  template<typename T, typename R, typename D>
-  Tree<T, R, D> train(
-    const TrainingSpec<T, R> &training_spec,
-    const D &                 training_data) {
-    std::mt19937 rng;
-
-    return train(training_spec, training_data, rng);
   }
 
   template Tree<long double, int, DataSpec<long double, int> > train(

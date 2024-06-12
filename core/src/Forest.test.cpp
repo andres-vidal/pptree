@@ -623,6 +623,8 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
 }
 
 TEST(Forest, VariableImportanceLDASomeVariablesMultivariateThreeGroups) {
+  Random::rng.seed(0.0);
+
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -704,11 +706,11 @@ TEST(Forest, VariableImportanceLDASomeVariablesMultivariateThreeGroups) {
 
   DVector<long double> expected(5);
   expected <<
-    0.499742,
-    0.000000,
-    0.333333,
-    0.000000,
-    0.003474;
+    0.414709,
+    0.182947,
+    0.008322,
+    0.025119,
+    0.255536;
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }
@@ -1145,6 +1147,8 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
     4,
     seed);
 
+  Random::rng.seed(0.0);
+
   DVector<long double> result = forest.variable_importance(VariableImportanceKind::PERMUTATION);
 
   DVector<long double> expected(5);
@@ -1194,6 +1198,8 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
     DataSpec<long double, int>(data, groups),
     4,
     seed);
+
+  Random::rng.seed(0.0);
 
   DVector<long double> result = forest.variable_importance(VariableImportanceKind::PERMUTATION);
 
