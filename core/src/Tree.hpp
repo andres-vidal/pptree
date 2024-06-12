@@ -23,6 +23,7 @@ namespace models {
   enum class VariableImportanceKind {
     PROJECTOR,
     PROJECTOR_ADJUSTED,
+    PERMUTATION,
   };
 
   template<typename T, typename R>
@@ -280,6 +281,10 @@ namespace models {
 
     protected:
       virtual math::DVector<T> variable_importance(VariableImportanceKind importance_kind) const {
+        if (importance_kind == VariableImportanceKind::PERMUTATION) {
+          throw std::invalid_argument("VariableImportanceKind::PERMUTATION not supported for a single Tree");
+        }
+
         Tree<T, R, D> std_tree = retrain(center(descale(*training_data)));
 
         double factor = 1.0;

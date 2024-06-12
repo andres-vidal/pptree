@@ -41,6 +41,10 @@ namespace models {
     }
 
     math::DVector<T> variable_importance(VariableImportanceKind importance_kind) const override {
+      if (importance_kind == VariableImportanceKind::PERMUTATION) {
+        return permutation_variable_importance();
+      }
+
       math::DVector<T> importance = Base::variable_importance(importance_kind);
 
       double factor = 1.0;
@@ -51,5 +55,24 @@ namespace models {
 
       return importance * factor;
     }
+
+    private:
+      math::DVector<T> permutation_variable_importance() const {
+        const stats::DataSpec<T, R> oob = this->training_data->get_oob();
+        const stats::DataColumn<R> oob_predictions = Base::predict(oob.x);
+        const double oob_accuracy = stats::accuracy(oob_predictions, oob.y);
+
+        math::DVector<T> importance = math::DVector<T>(oob.x.cols());
+
+        for (int j = 0; j < oob.x.cols(); j++) {
+          const stats::Data<T> nonsense_data = stats::shuffle_column(oob.x, j);
+          const stats::DataColumn<R> nonsense_predictions = Base::predict(nonsense_data);
+          const double nonsense_accuracy = stats::accuracy(nonsense_predictions, oob.y);
+
+          importance(j) = oob_accuracy - nonsense_accuracy;
+        }
+
+        return importance;
+      }
   };
 }

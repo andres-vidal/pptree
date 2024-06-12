@@ -77,19 +77,23 @@ namespace models {
         seed);
     }
 
-    math::DVector<T> variable_importance() const {
+    math::DVector<T> variable_importance(VariableImportanceKind importance_kind) const {
       Forest<T, R> std_forest = retrain(center(descale(*training_data)));
 
       math::DVector<T> importance = std::accumulate(
         std_forest.trees.begin(),
         std_forest.trees.end(),
         math::DVector<T>(math::DVector<T>::Zero(training_data->x.cols())),
-        [] (math::DVector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> math::DVector<T> {
-          return acc + tree->variable_importance(VariableImportanceKind::PROJECTOR);
+        [&importance_kind] (math::DVector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> math::DVector<T> {
+          return acc + tree->variable_importance(importance_kind);
         });
 
 
-      return importance.array() / std_forest.trees.size();
+      return importance.array() / (double)std_forest.trees.size();
+    }
+
+    math::DVector<T> variable_importance() const {
+      return variable_importance(VariableImportanceKind::PROJECTOR);
     }
 
     double error_rate(const stats::DataSpec<T, R> &data) const {

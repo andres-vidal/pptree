@@ -128,7 +128,7 @@ namespace models::stats {
       }
     }
 
-    return (double)correct / predictions.rows();
+    return (double)correct / (double)predictions.rows();
   }
 
   template<typename T>

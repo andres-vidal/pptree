@@ -770,6 +770,452 @@ TEST(Forest, VariableImportancePDAAllVariablesMultivariateTwoGroups) {
   ASSERT_TRUE(expected.isApprox(result, 0.01));
 }
 
+TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+
+  const int n_vars = 2;
+  const double lambda = 0;
+  const double seed = 1;
+
+  Forest<long double, int> forest = train(
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PROJECTOR);
+
+  DVector<long double> expected(5);
+  expected <<
+    0.414709,
+    0.182947,
+    0.008322,
+    0.025119,
+    0.255536;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+}
+
+TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  const int n_vars = data.cols();
+  const double lambda = 0.1;
+  const double seed = 0;
+
+  Forest<long double, int> forest = train(
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PROJECTOR);
+
+  DVector<long double> expected(12);
+  expected <<
+    0.497305,
+    0.00889968,
+    0.0137289,
+    0.0177429,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566,
+    0.0126566;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.01));
+}
+
+TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThreeGroups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+
+  const int n_vars = 2;
+  const double lambda = 0;
+  const double seed = 1;
+
+  Forest<long double, int> forest = train(
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PROJECTOR_ADJUSTED);
+
+  DVector<long double> expected(5);
+  expected <<
+    0.2150686,
+    0.1293697,
+    0.0072579,
+    0.0044490,
+    0.0276018;
+
+
+  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+}
+
+TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGroups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  const int n_vars = data.cols();
+  const double lambda = 0.1;
+  const double seed = 0;
+
+  Forest<long double, int> forest = train(
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PROJECTOR_ADJUSTED);
+
+  DVector<long double> expected(12);
+  expected <<
+    0.983637,
+    0.018022,
+    0.028957,
+    0.036786,
+    0.026617,
+    0.026617,
+    0.026617,
+    0.026617,
+    0.026617,
+    0.026617,
+    0.026617,
+    0.026617;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+}
+
+TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+
+  const int n_vars = 2;
+  const double lambda = 0;
+  const double seed = 1;
+
+  Forest<long double, int> forest = train(
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PERMUTATION);
+
+  DVector<long double> expected(5);
+  expected <<
+    0,
+    0.125,
+    -0.04999,
+    -0.04999,
+    0.05000;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+}
+
+TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  const int n_vars = data.cols();
+  const double lambda = 0.1;
+  const double seed = 0;
+
+  Forest<long double, int> forest = train(
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    DataSpec<long double, int>(data, groups),
+    4,
+    seed);
+
+  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PERMUTATION);
+
+  DVector<long double> expected(12);
+  expected <<
+    0.266667,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+}
+
+
 TEST(Forest, ErrorRateDataSpecMin) {
   Data<long double> x(30, 5);
   x <<

@@ -1477,3 +1477,140 @@ TEST(BootstrapTree, VariableImportanteProjectorAdjustedPDAMultivariateTwoGroups)
 
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
 }
+
+TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
+  Data<long double> x(30, 5);
+  x <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> y(30);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
+
+  BootstrapDataSpec<long double, int> data(x, y, sample_indices);
+  BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+
+  DVector<long double> result = tree.variable_importance(VariableImportanceKind::PERMUTATION);
+
+  DataColumn<long double> expected(5);
+  expected <<
+    0.33333,
+    0.50000,
+    0.00000,
+    0.00000,
+    0.00000;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+}
+
+TEST(BootstrapTree, VariableImportantePermutationPDAMultivariateTwoGroups) {
+  Data<long double> x(10, 12);
+  x <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> y(10);
+  y <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  std::vector<int> sample_indices = { 0, 2, 6, 8 };
+
+  BootstrapDataSpec<long double, int> data(x, y, sample_indices);
+  BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+
+  DataColumn<long double> result = tree.variable_importance(VariableImportanceKind::PERMUTATION);
+
+  DataColumn<long double> expected(12);
+  expected <<
+    0.666667,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0;
+
+  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+}
