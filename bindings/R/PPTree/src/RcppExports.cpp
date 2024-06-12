@@ -65,7 +65,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // pptree_variable_importance
-Projector<long double> pptree_variable_importance(const Tree<long double, int>& tree);
+DVector<long double> pptree_variable_importance(const Tree<long double, int>& tree);
 RcppExport SEXP _PPTree_pptree_variable_importance(SEXP treeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -76,7 +76,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // pptree_forest_variable_importance
-Projector<long double> pptree_forest_variable_importance(const Forest<long double, int>& forest);
+DVector<long double> pptree_forest_variable_importance(const Forest<long double, int>& forest);
 RcppExport SEXP _PPTree_pptree_forest_variable_importance(SEXP forestSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

@@ -13,6 +13,8 @@ namespace Rcpp {
   SEXP wrap(const Condition<long double, int> &);
   SEXP wrap(const Forest<long double, int> &);
 
+  SEXP wrap(const Projector<long double>&);
+
   SEXP wrap(const TrainingSpec<long double, int> &);
   SEXP wrap(const GLDATrainingSpec<long double, int> &);
   SEXP wrap(const UniformGLDATrainingSpec<long double, int> &);
@@ -27,7 +29,11 @@ namespace Rcpp {
   template<> Condition<long double, int> as(SEXP);
   template<> Forest<long double, int> as(SEXP);
 
+  template<> Projector<long double> as(SEXP);
+
   template<> std::unique_ptr<TrainingSpec<long double, int> > as(SEXP);
+  template<> GLDATrainingSpec<long double, int> as(SEXP x);
+  template<> UniformGLDATrainingSpec<long double, int> as(SEXP x);
 
   template<> DataSpec<long double, int>  as(SEXP);
   template<> BootstrapDataSpec<long double, int> as(SEXP);
@@ -94,6 +100,12 @@ namespace Rcpp {
       Rcpp::Named("trainingData") = Rcpp::wrap(*forest.training_data),
       Rcpp::Named("seed") = Rcpp::wrap(forest.seed),
       Rcpp::Named("trees") = trees);
+  }
+
+  SEXP wrap(const Projector<long double>& projector) {
+    return Rcpp::List::create(
+      Rcpp::Named("vector") = Rcpp::wrap(projector.vector),
+      Rcpp::Named("index") = Rcpp::wrap(projector.index));
   }
 
   SEXP wrap(const TrainingSpec<long double, int> &spec) {
@@ -226,6 +238,13 @@ namespace Rcpp {
     }
 
     return forest;
+  }
+
+  template<> Projector<long double> as(SEXP x) {
+    Rcpp::List rprojector(x);
+    return Projector<long double>(
+      Rcpp::as<DVector<long double> >(rprojector["vector"]),
+      Rcpp::as<double>(rprojector["index"]));
   }
 
   template<> std::unique_ptr<TrainingSpec<long double, int> > as(SEXP x) {
