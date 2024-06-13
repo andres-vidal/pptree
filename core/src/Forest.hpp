@@ -89,26 +89,26 @@ namespace models {
         });
 
 
-      return importance.array() / (double)std_forest.trees.size();
+      return importance.array() / (long double)std_forest.trees.size();
     }
 
     math::DVector<T> variable_importance() const {
       return variable_importance(VariableImportanceKind::PROJECTOR);
     }
 
-    double error_rate(const stats::DataSpec<T, R> &data) const {
-      double accumulated_error = std::accumulate(
+    long double error_rate(const stats::DataSpec<T, R> &data) const {
+      long double accumulated_error = std::accumulate(
         trees.begin(),
         trees.end(),
         0.0,
-        [&data](double acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> double {
+        [&data](long double acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> long double {
           return acc + tree->error_rate(data);
         });
 
-      return accumulated_error / trees.size();
+      return accumulated_error / (long double)trees.size();
     }
 
-    double error_rate() const {
+    long double error_rate() const {
       std::set<int> oob_indices = get_oob_indices();
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
       stats::DataColumn<R> oob_y = stats::select_rows(training_data->y, oob_indices);

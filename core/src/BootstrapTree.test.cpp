@@ -82,7 +82,7 @@ TEST(BootstrapTree, ErrorRateDataSpecMin) {
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
-  double result = tree.error_rate(DataSpec<long double, int>(test_x, tree.predict(test_x)));
+  long double result = tree.error_rate(DataSpec<long double, int>(test_x, tree.predict(test_x)));
 
   ASSERT_DOUBLE_EQ(0.0, result);
 }
@@ -166,7 +166,7 @@ TEST(BootstrapTree, ErrorRateDataSpecMax) {
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
-  double result = tree.error_rate(DataSpec<long double, int>(test_x, actual_y));
+  long double result = tree.error_rate(DataSpec<long double, int>(test_x, actual_y));
 
   ASSERT_DOUBLE_EQ(1.0, result);
 }
@@ -247,7 +247,7 @@ TEST(BootstrapTree, ErrorRateDataSpecGeneric) {
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
-  double result = tree.error_rate(DataSpec<long double, int>(test_x, actual_y));
+  long double result = tree.error_rate(DataSpec<long double, int>(test_x, actual_y));
 
   ASSERT_NEAR(0.5, result, 0.1);
 }
@@ -325,7 +325,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecMin) {
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
 
-  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, tree.predict(data.x), sample_indices));
+  long double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, tree.predict(data.x), sample_indices));
 
   ASSERT_DOUBLE_EQ(0.0, result);
 }
@@ -404,7 +404,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecMax) {
   BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(20, 2);
 
-  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
+  long double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
 
   ASSERT_DOUBLE_EQ(1.0, result);
 }
@@ -483,7 +483,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecGeneric) {
   BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(20);
 
-  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
+  long double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
 
   ASSERT_NEAR(0.5, result, 0.1);
 }
@@ -561,7 +561,7 @@ TEST(BootstrapTree, ErrorRate) {
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
 
-  double result = tree.error_rate();
+  long double result = tree.error_rate();
 
   ASSERT_NEAR(0.8, result, 0.01);
 }

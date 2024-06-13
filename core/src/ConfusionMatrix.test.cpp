@@ -144,7 +144,7 @@ TEST(ConfusionMatrix, ErrorMin) {
   DataColumn<int> predictions(3);
   predictions << 0, 1, 2;
 
-  double result = ConfusionMatrix(predictions, actual).error();
+  long double result = ConfusionMatrix(predictions, actual).error();
 
   ASSERT_DOUBLE_EQ(0, result);
 }
@@ -156,7 +156,7 @@ TEST(ConfusionMatrix, ErrorMax) {
   DataColumn<int> predictions(3);
   predictions << 2, 0, 1;
 
-  double result = ConfusionMatrix(predictions, actual).error();
+  long double result = ConfusionMatrix(predictions, actual).error();
 
   ASSERT_DOUBLE_EQ(1, result);
 }
@@ -168,7 +168,7 @@ TEST(ConfusionMatrix, ErrorGeneric) {
   DataColumn<int> predictions(6);
   predictions << 0, 1, 2, 0, 1, 2;
 
-  double result = ConfusionMatrix(predictions, actual).error();
+  long double result = ConfusionMatrix(predictions, actual).error();
 
   ASSERT_NEAR(0.5, result, 0.0001);
 }

@@ -469,8 +469,8 @@ TEST(DataColumn, AccuracyMax) {
     2,
     3;
 
-  double result = accuracy(predictions, actual);
-  double expected = 1.0;
+  long double result = accuracy(predictions, actual);
+  long double expected = 1.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
@@ -488,8 +488,8 @@ TEST(DataColumn, AccuracyMin) {
     3,
     1;
 
-  double result = accuracy(predictions, actual);
-  double expected = 0.0;
+  long double result = accuracy(predictions, actual);
+  long double expected = 0.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
@@ -507,8 +507,8 @@ TEST(DataColumn, AccuracyGeneric1) {
     3,
     3;
 
-  double result = accuracy(predictions, actual);
-  double expected = 2.0 / 3.0;
+  long double result = accuracy(predictions, actual);
+  long double expected = 2.0 / 3.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
@@ -529,8 +529,8 @@ TEST(DataColumn, AccuracyGeneric2) {
     3;
 
 
-  double result = accuracy(predictions, actual);
-  double expected = 1.0 / 2.0;
+  long double result = accuracy(predictions, actual);
+  long double expected = 1.0 / 2.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
@@ -568,8 +568,8 @@ TEST(DataColumn, ErrorRateMax) {
     3,
     1;
 
-  double result = error_rate(predictions, actual);
-  double expected = 1.0;
+  long double result = error_rate(predictions, actual);
+  long double expected = 1.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
@@ -587,8 +587,8 @@ TEST(DataColumn, ErrorRateMin) {
     2,
     3;
 
-  double result = error_rate(predictions, actual);
-  double expected = 0.0;
+  long double result = error_rate(predictions, actual);
+  long double expected = 0.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
@@ -606,8 +606,8 @@ TEST(DataColumn, ErrorRateGeneric1) {
     3,
     3;
 
-  double result = error_rate(predictions, actual);
-  double expected = 1.0 / 3.0;
+  long double result = error_rate(predictions, actual);
+  long double expected = 1.0 / 3.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
@@ -627,8 +627,8 @@ TEST(DataColumn, ErrorRateGeneric2) {
     3,
     3;
 
-  double result = error_rate(predictions, actual);
-  double expected = 1.0 / 2.0;
+  long double result = error_rate(predictions, actual);
+  long double expected = 1.0 / 2.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }

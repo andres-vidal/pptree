@@ -1295,7 +1295,7 @@ TEST(Forest, ErrorRateDataSpecMin) {
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
-  double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
+  long double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
 
   ASSERT_DOUBLE_EQ(0.0, result);
 }
@@ -1373,7 +1373,7 @@ TEST(Forest, ErrorRateDataSpecMax) {
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
-  double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
+  long double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
 
   ASSERT_DOUBLE_EQ(1.0, result);
 }
@@ -1451,7 +1451,7 @@ TEST(Forest, ErrorRateDataSpecGeneric) {
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
-  double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
+  long double result = forest.error_rate(DataSpec<long double, int>(x, predictions));
 
   ASSERT_NEAR(0.666, result, 0.1);
 }
@@ -1532,7 +1532,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMin) {
   std::vector<int> sample_indices(10);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
+  long double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
 
   ASSERT_DOUBLE_EQ(0.0, result);
 }
@@ -1613,7 +1613,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMax) {
   std::vector<int> sample_indices(10);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
+  long double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
 
   ASSERT_DOUBLE_EQ(1.0, result);
 }
@@ -1694,7 +1694,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecGeneric) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
+  long double result = forest.error_rate(BootstrapDataSpec<long double, int>(x, predictions, sample_indices));
 
   ASSERT_NEAR(0.5, result, 0.1);
 }
@@ -1771,7 +1771,7 @@ TEST(Forest, ErrorRate) {
   const double seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
-  double result = forest.error_rate();
+  long double result = forest.error_rate();
 
   ASSERT_NEAR(0.0, result, 0.1);
 }

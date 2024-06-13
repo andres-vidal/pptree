@@ -1086,7 +1086,7 @@ TEST(Tree, ErrorRateDataSpecMin) {
   Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
-  double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
+  long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
 
   ASSERT_DOUBLE_EQ(0.0, result);
 }
@@ -1162,7 +1162,7 @@ TEST(Tree, ErrorRateDataSpecMax) {
   Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 3);
 
-  double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
+  long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
 
   ASSERT_DOUBLE_EQ(1.0, result);
 }
@@ -1238,7 +1238,7 @@ TEST(Tree, ErrorRateDataSpecGeneric) {
   Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
-  double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
+  long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
 
   ASSERT_NEAR(0.666, result, 0.1);
 }
@@ -1317,7 +1317,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMin) {
   std::vector<int> sample_indices(10);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
+  long double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
 
   ASSERT_DOUBLE_EQ(0.0, result);
 }
@@ -1396,7 +1396,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMax) {
   std::vector<int> sample_indices(10);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
+  long double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
 
   ASSERT_DOUBLE_EQ(1.0, result);
 }
@@ -1475,7 +1475,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecGeneric) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
+  long double result = tree.error_rate(BootstrapDataSpec<long double, int>(x, actual_y, sample_indices));
 
 
   ASSERT_NEAR(0.5, result, 0.1);

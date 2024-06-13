@@ -27,7 +27,7 @@ namespace models::stats {
       return row_errors.array().cast<double>() / row_sums.array().cast<double>();
     }
 
-    double error() {
+    long double error() {
       return 1 - math::trace(values) / (double)math::sum(values);
     }
   };

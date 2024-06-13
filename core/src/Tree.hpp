@@ -116,7 +116,7 @@ namespace models {
       math::DVector<T> lower_importance = lower->variable_importance(importance_kind);
       math::DVector<T> upper_importance = upper->variable_importance(importance_kind);
 
-      double factor = 1 / (double)classes().size();
+      long double factor = 1 / (long double)classes().size();
 
       if (importance_kind == VariableImportanceKind::PROJECTOR_ADJUSTED) {
         factor = projector.index;
@@ -263,7 +263,7 @@ namespace models {
       return variable_importance(VariableImportanceKind::PROJECTOR);
     }
 
-    virtual double error_rate(const stats::DataSpec<T, R> &data) const {
+    virtual long double error_rate(const stats::DataSpec<T, R> &data) const {
       auto [x, y, _classes] = data.unwrap();
       return stats::error_rate(predict(x), y);
     }
@@ -287,10 +287,10 @@ namespace models {
 
         Tree<T, R, D> std_tree = retrain(center(descale(*training_data)));
 
-        double factor = 1.0;
+        long double factor = 1.0;
 
         if (importance_kind == VariableImportanceKind::PROJECTOR_ADJUSTED) {
-          factor = 1.0 / (double)(root->partition_count());
+          factor = 1.0 / (long double)(root->partition_count());
         }
 
         return std_tree.root->variable_importance(importance_kind) * factor;
