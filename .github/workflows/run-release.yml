@@ -1,0 +1,32 @@
+name: Run Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  RPackageRepo:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: andres-vidal/r-pptree
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+          ref: main
+      - uses: r-lib/actions/setup-r@v2
+      - run: find . -mindepth 1 ! -name 'README.md' ! -path './.git' ! -path './.git/*' ! -path './.github' ! -path './.github/*' -exec rm -rf {} +
+      - run: git clone https://github.com/andres-vidal/pptree.git
+      - run: cd pptree && make r-install-deps
+      - run: cd pptree && make r-build
+      - run: cd pptree && make r-untar
+      - run: cp -r pptree/PPTree/. .
+      - run: rm -rf pptree
+      - run: git config --global user.name "Andrés Vidal"
+      - run: git config --global user.email "me@andresvidal.dev"
+      - run: git add -A
+      - run: git commit -m "Release"
+      - run: git push -f
+
+
+
+
+
