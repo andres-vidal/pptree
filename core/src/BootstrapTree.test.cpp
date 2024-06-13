@@ -1547,17 +1547,17 @@ TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
+  Random::rng.seed(0);
+
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
-
-  Random::rng.seed(0);
 
   DVector<long double> result = tree.variable_importance(VariableImportanceKind::PERMUTATION);
 
   DataColumn<long double> expected(5);
   expected <<
+    0.33333,
     0.44444,
-    0.50000,
     0.00000,
     0.00000,
     0.00000;

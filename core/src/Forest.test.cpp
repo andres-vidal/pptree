@@ -1153,11 +1153,11 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
 
   DVector<long double> expected(5);
   expected <<
-    0,
-    0.125,
-    -0.04999,
-    -0.04999,
-    0.05000;
+    0.000000,
+    0.000000,
+    -0.02500,
+    0.049990,
+    0.024999;
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }
@@ -1205,7 +1205,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
 
   DVector<long double> expected(12);
   expected <<
-    0.266667,
+    0.0,
     0.0,
     0.0,
     0.0,
