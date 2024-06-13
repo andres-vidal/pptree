@@ -27,5 +27,14 @@ namespace models::stats {
 
         return result;
       }
+
+      std::set<int> distinct(int count) {
+        std::set<int> result;
+
+        while (result.size() < count)
+          result.insert(operator()());
+
+        return result;
+      }
   };
 }
