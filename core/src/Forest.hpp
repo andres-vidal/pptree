@@ -13,7 +13,7 @@ namespace models {
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<stats::DataSpec<T, R> > training_data;
-    const double seed = 0.0;
+    const int seed = 0;
 
     Forest() {
     }
@@ -21,7 +21,7 @@ namespace models {
     Forest(
       std::unique_ptr<TrainingSpec<T, R> > &&    training_spec,
       std::shared_ptr<stats::DataSpec<T, R> > && training_data,
-      const double                               seed)
+      const int                                  seed)
       : training_spec(std::move(training_spec)),
       training_data(training_data),
       seed(seed) {
@@ -220,7 +220,7 @@ namespace models {
     const TrainingSpec<T, R> &            training_spec,
     const models::stats::DataSpec<T, R> & training_data,
     const int                             size,
-    const double                          seed);
+    const int                             seed);
 
 
   template<typename T, typename R>

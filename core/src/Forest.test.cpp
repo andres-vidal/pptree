@@ -76,7 +76,7 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
 
   const int n_vars = data.cols();
   const double lambda = 0;
-  const double seed = 0;
+  const int seed = 0;
 
 
   Forest<long double, int> result = train(
@@ -238,7 +238,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
 
   const int n_vars = 2;
   const double lambda = 0;
-  const double seed = 1;
+  const int seed = 1;
 
   Forest<long double, int> result = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -356,7 +356,7 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
 
   const int n_vars = data.cols();
   const double lambda = 0.1;
-  const double seed = 0;
+  const int seed = 0;
 
   Forest<long double, int> result = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -623,7 +623,7 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
 }
 
 TEST(Forest, VariableImportanceLDASomeVariablesMultivariateThreeGroups) {
-  Random::rng.seed(0.0);
+  Random::rng.seed(0);
 
   Data<long double> data(30, 5);
   data <<
@@ -694,7 +694,7 @@ TEST(Forest, VariableImportanceLDASomeVariablesMultivariateThreeGroups) {
 
   const int n_vars = 2;
   const double lambda = 0;
-  const double seed = 1;
+  const int seed = 1;
 
   Forest<long double, int> forest = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -744,7 +744,7 @@ TEST(Forest, VariableImportancePDAAllVariablesMultivariateTwoGroups) {
 
   const int n_vars = data.cols();
   const double lambda = 0.1;
-  const double seed = 0;
+  const int seed = 0;
 
   Forest<long double, int> forest = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -842,7 +842,7 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
 
   const int n_vars = 2;
   const double lambda = 0;
-  const double seed = 1;
+  const int seed = 1;
 
   Forest<long double, int> forest = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -892,7 +892,7 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
 
   const int n_vars = data.cols();
   const double lambda = 0.1;
-  const double seed = 0;
+  const int seed = 0;
 
   Forest<long double, int> forest = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -990,7 +990,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
 
   const int n_vars = 2;
   const double lambda = 0;
-  const double seed = 1;
+  const int seed = 1;
 
   Forest<long double, int> forest = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -1041,7 +1041,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
 
   const int n_vars = data.cols();
   const double lambda = 0.1;
-  const double seed = 0;
+  const int seed = 0;
 
   Forest<long double, int> forest = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -1139,7 +1139,7 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
 
   const int n_vars = 2;
   const double lambda = 0;
-  const double seed = 1;
+  const int seed = 1;
 
   Forest<long double, int> forest = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -1147,7 +1147,7 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
     4,
     seed);
 
-  Random::rng.seed(0.0);
+  Random::rng.seed(0);
 
   DVector<long double> result = forest.variable_importance(VariableImportanceKind::PERMUTATION);
 
@@ -1191,7 +1191,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
 
   const int n_vars = data.cols();
   const double lambda = 0.1;
-  const double seed = 0;
+  const int seed = 0;
 
   Forest<long double, int> forest = train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -1199,7 +1199,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
     4,
     seed);
 
-  Random::rng.seed(0.0);
+  Random::rng.seed(0);
 
   DVector<long double> result = forest.variable_importance(VariableImportanceKind::PERMUTATION);
 
@@ -1291,7 +1291,7 @@ TEST(Forest, ErrorRateDataSpecMin) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
@@ -1369,7 +1369,7 @@ TEST(Forest, ErrorRateDataSpecMax) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
@@ -1447,7 +1447,7 @@ TEST(Forest, ErrorRateDataSpecGeneric) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
@@ -1525,7 +1525,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMin) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
@@ -1606,7 +1606,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMax) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
@@ -1687,7 +1687,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecGeneric) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
@@ -1768,7 +1768,7 @@ TEST(Forest, ErrorRate) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
   long double result = forest.error_rate();
@@ -1845,7 +1845,7 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
@@ -1931,7 +1931,7 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
   DataColumn<int> predictions(30);
@@ -2052,7 +2052,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecDiagonal) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
@@ -2140,7 +2140,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
   DataColumn<int> predictions(30);
@@ -2261,7 +2261,7 @@ TEST(Forest, ConfusionMatrix) {
 
   DataSpec<long double, int> data(x, y);
 
-  const double seed = 0;
+  const int seed = 0;
   Forest<long double, int> forest = train(*TrainingSpec<long double, int>::lda(), data, 4, seed);
 
   ConfusionMatrix result = forest.confusion_matrix();

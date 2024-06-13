@@ -8,7 +8,7 @@ namespace models {
     const TrainingSpec<T, R> &training_spec,
     const DataSpec<T, R> &    training_data,
     const int                 size,
-    const double              seed) {
+    const int                 seed) {
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
     LOG_INFO << "The seed is: " << seed << std::endl;
 
@@ -42,5 +42,5 @@ namespace models {
     const TrainingSpec<long double, int> &training_spec,
     const DataSpec<long double, int> &    training_data,
     const int                             size,
-    const double                          seed);
+    const int                             seed);
 }

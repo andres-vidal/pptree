@@ -1550,7 +1550,7 @@ TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
 
-  Random::rng.seed(0.0);
+  Random::rng.seed(0);
 
   DVector<long double> result = tree.variable_importance(VariableImportanceKind::PERMUTATION);
 
@@ -1597,7 +1597,7 @@ TEST(BootstrapTree, VariableImportancePermutationPDAMultivariateTwoGroups) {
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = train(*TrainingSpec<long double, int>::glda(0.1), data);
 
-  Random::rng.seed(0.0);
+  Random::rng.seed(0);
 
   DataColumn<long double> result = tree.variable_importance(VariableImportanceKind::PERMUTATION);
 

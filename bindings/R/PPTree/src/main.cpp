@@ -30,7 +30,7 @@ Forest<long double, int> pptree_train_forest_glda(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     size,
-    R::rnorm(0, 1));
+    R::runif(0, INT_MAX));
 }
 
 // [[Rcpp::export]]
