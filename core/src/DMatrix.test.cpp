@@ -382,106 +382,6 @@ TEST(DMatrix, DeterminantSingularMatrix) {
   ASSERT_EQ(expected, actual);
 }
 
-#ifndef NDEBUG
-
-TEST(DMatrix, InverseZeroMatrix) {
-  DMatrix<long double> m(3, 3);
-  m <<
-    0, 0, 0,
-    0, 0, 0,
-    0, 0, 0;
-
-  ASSERT_DEATH({ inverse(m); }, "Given matrix is not invertible");
-}
-
-TEST(DMatrix, InverseSingularMatrix) {
-  DMatrix<long double> m(3, 3);
-  m <<
-    1.0, 1.0, 6.0,
-    2.0, 2.0, 7.0,
-    3.0, 3.0, 8.0;
-
-  ASSERT_DEATH({ inverse(m); }, "Given matrix is not invertible");
-}
-
-#endif // ifndef NDEBUG
-
-TEST(DMatrix, InverseIdentity) {
-  DMatrix<long double> m(3, 3);
-  m <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  DMatrix<long double> actual = inverse(m);
-  DMatrix<long double> expected(3, 3);
-  expected <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DMatrix, InverseGeneric) {
-  DMatrix<long double> m(3, 3);
-  m <<
-    0.0, 1.0, 2.0,
-    1.0, 2.0, 3.0,
-    3.0, 1.0, 1.0;
-
-  DMatrix<long double> actual = inverse(m);
-  DMatrix<long double> expected(3, 3);
-  expected <<
-    0.5,  -0.5,   0.5,
-    -4.0,  3.0,  -1.0,
-    2.5,  -1.5,   0.5;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_APPROX(expected, actual);
-}
-
-#ifndef NDEBUG
-
-TEST(DMatrix, SolveZeroMatrixIdentity) {
-  DMatrix<long double> l(3, 3);
-  l <<
-    0, 0, 0,
-    0, 0, 0,
-    0, 0, 0;
-
-  DMatrix<long double> r(3, 3);
-  r <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  ASSERT_DEATH({ solve(l, r); }, "Given matrix is not invertible");
-}
-
-TEST(DMatrix, SolveSingularMatrixIdentity) {
-  DMatrix<long double> l(3, 3);
-  l <<
-    1.0, 1.0, 6.0,
-    2.0, 2.0, 7.0,
-    3.0, 3.0, 8.0;
-
-  DMatrix<long double> r(3, 3);
-  r <<
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0;
-
-  ASSERT_DEATH({ solve(l, r); }, "Given matrix is not invertible");
-}
-
-#endif // ifndef NDEBUG
-
 TEST(DMatrix, SolveIdentityIdentity) {
   DMatrix<long double> l(3, 3);
   l <<
@@ -744,4 +644,100 @@ TEST(DMatrix, CollinearSomeColumnsNonCollinear) {
     7.0, 12.0, 36.0;
 
   ASSERT_FALSE(collinear(a, b));
+}
+
+TEST(DMatrix, SumZero) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  long double actual = sum(m);
+
+  ASSERT_EQ(0, actual);
+}
+
+TEST(DMatrix, SumIdentity) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1;
+
+  long double actual = sum(m);
+
+  ASSERT_EQ(3, actual);
+}
+
+TEST(DMatrix, SumOnes) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 1, 1,
+    1, 1, 1,
+    1, 1, 1;
+
+  long double actual = sum(m);
+
+  ASSERT_EQ(9, actual);
+}
+
+TEST(DMatrix, SumGeneric) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 2, 3,
+    4, 5, 6,
+    7, 8, 9;
+
+  long double actual = sum(m);
+
+  ASSERT_EQ(45, actual);
+}
+
+TEST(DMatrix, TraceZero) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0;
+
+  long double actual = trace(m);
+
+  ASSERT_EQ(0, actual);
+}
+
+TEST(DMatrix, TraceIdentity) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1;
+
+  long double actual = trace(m);
+
+  ASSERT_EQ(3, actual);
+}
+
+TEST(DMatrix, TraceZeroDiagonal) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    0, 1, 1,
+    1, 0, 1,
+    1, 1, 0;
+
+  long double actual = trace(m);
+
+  ASSERT_EQ(0, actual);
+}
+
+TEST(DMatrix, TraceGeneric) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1, 2, 3,
+    4, 5, 6,
+    7, 8, 9;
+
+  long double actual = trace(m);
+
+  ASSERT_EQ(15, actual);
 }

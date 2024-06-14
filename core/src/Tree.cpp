@@ -1,20 +1,21 @@
+
 #include "Tree.hpp"
 #include "BootstrapDataSpec.hpp"
 #include "Group.hpp"
 #include "Logger.hpp"
 
+
 using namespace models::pp;
 using namespace models::pp::strategy;
+using namespace models::dr::strategy;
 using namespace models::stats;
-
 namespace models {
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > step(
     const Data<T> &           data,
     const DataColumn<R> &     groups,
     const std::set<R> &       unique_groups,
-    const TrainingSpec<T, R> &training_spec,
-    std::mt19937 &            rng);
+    const TrainingSpec<T, R> &training_spec);
 
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
@@ -59,8 +60,8 @@ namespace models {
     DataColumn<T> mean_1 = mean(select_group(data, groups, group_1));
     DataColumn<T> mean_2 = mean(select_group(data, groups, group_2));
 
-    T projected_mean_1 = project(mean_1, projector);
-    T projected_mean_2 = project(mean_2, projector);
+    T projected_mean_1 = projector.project(mean_1);
+    T projected_mean_2 = projector.project(mean_2);
 
     LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
     LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
@@ -133,8 +134,7 @@ namespace models {
     const DataColumn<R> &              binary_groups,
     const R &                          binary_group,
     const std::map<int, std::set<R> >& binary_group_mapping,
-    const TrainingSpec<T, R> &         training_spec,
-    std::mt19937 &                     rng) {
+    const TrainingSpec<T, R> &         training_spec) {
     std::set<R> unique_groups = binary_group_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
@@ -149,8 +149,7 @@ namespace models {
       select_group(data, binary_groups, binary_group),
       select_group(groups, binary_groups, binary_group),
       unique_groups,
-      training_spec,
-      rng);
+      training_spec);
 
     return condition;
   }
@@ -160,12 +159,14 @@ namespace models {
     const Data<T> &            data,
     const DataColumn<R> &      groups,
     const std::set<R> &        unique_groups,
-    const TrainingSpec<T, R> & training_spec,
-    std::mt19937 &             rng) {
+    const TrainingSpec<T, R> & training_spec) {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
-    Data<T> reduced_data = training_spec.dr_strategy(data, rng);
+    PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+    DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
+
+    Data<T> reduced_data = dr_strategy(data);
 
     if (unique_groups.size() == 2) {
       auto [group_1, group_2] = take_two(unique_groups);
@@ -175,14 +176,14 @@ namespace models {
         groups,
         group_1,
         group_2,
-        training_spec.pp_strategy);
+        pp_strategy);
     }
 
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
       reduced_data,
       groups,
       unique_groups,
-      training_spec.pp_strategy);
+      pp_strategy);
 
     auto [group_1, group_2] = take_two(binary_unique_groups);
 
@@ -191,10 +192,10 @@ namespace models {
       binary_groups,
       group_1,
       group_2,
-      training_spec.pp_strategy);
+      pp_strategy);
 
-    R binary_lower_group = temp_node->lower->as_response().value;
-    R binary_upper_group = temp_node->upper->as_response().value;
+    R binary_lower_group = temp_node->lower->response();
+    R binary_upper_group = temp_node->upper->response();
 
     LOG_INFO << "Build lower branch" << std::endl;
     std::unique_ptr<Node<T, R> > lower_branch = build_branch(
@@ -203,8 +204,7 @@ namespace models {
       binary_groups,
       binary_lower_group,
       binary_group_mapping,
-      training_spec,
-      rng);
+      training_spec);
 
     LOG_INFO << "Build upper branch" << std::endl;
     std::unique_ptr<Node<T, R> > upper_branch = build_branch(
@@ -213,8 +213,7 @@ namespace models {
       binary_groups,
       binary_upper_group,
       binary_group_mapping,
-      training_spec,
-      rng);
+      training_spec);
 
     std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,
@@ -229,8 +228,7 @@ namespace models {
   template<typename T, typename R, typename D>
   Tree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
-    const D &                 training_data,
-    std::mt19937&             rng) {
+    const D &                 training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     auto [x, y, classes] = training_data.unwrap();
@@ -240,28 +238,12 @@ namespace models {
         x,
         y,
         classes,
-        training_spec,
-        rng),
-      std::make_unique<TrainingSpec<T, R> >(training_spec),
+        training_spec),
+      training_spec.clone(),
       std::make_shared<D >(training_data));
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
-  }
-
-  template<typename T, typename R, typename D>
-  Tree<T, R, D> train(
-    const TrainingSpec<T, R> &training_spec,
-    const D &                 training_data) {
-    std::mt19937 rng;
-
-    try {
-      const double seed = training_spec.params->template at<const double>("seed");
-      rng.seed(seed);
-    } catch (const std::out_of_range &e) {
-      LOG_WARNING << "No seed is set in training spec. Training may be non-deterministic." << std::endl;
-    }
-    return train(training_spec, training_data, rng);
   }
 
   template Tree<long double, int, DataSpec<long double, int> > train(

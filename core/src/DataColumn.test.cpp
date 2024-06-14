@@ -455,3 +455,200 @@ TEST(DataColumn, DescaleScaledVector) {
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
+
+TEST(DataColumn, AccuracyMax) {
+  DataColumn<long double> predictions(3);
+  predictions <<
+    1,
+    2,
+    3;
+
+  DataColumn<long double> actual(3);
+  actual <<
+    1,
+    2,
+    3;
+
+  long double result = accuracy(predictions, actual);
+  long double expected = 1.0;
+
+  ASSERT_DOUBLE_EQ(expected, result);
+}
+
+TEST(DataColumn, AccuracyMin) {
+  DataColumn<long double> predictions(3);
+  predictions <<
+    1,
+    2,
+    3;
+
+  DataColumn<long double> actual(3);
+  actual <<
+    3,
+    3,
+    1;
+
+  long double result = accuracy(predictions, actual);
+  long double expected = 0.0;
+
+  ASSERT_DOUBLE_EQ(expected, result);
+}
+
+TEST(DataColumn, AccuracyGeneric1) {
+  DataColumn<long double> predictions(3);
+  predictions <<
+    1,
+    2,
+    3;
+
+  DataColumn<long double> actual(3);
+  actual <<
+    1,
+    3,
+    3;
+
+  long double result = accuracy(predictions, actual);
+  long double expected = 2.0 / 3.0;
+
+  ASSERT_DOUBLE_EQ(expected, result);
+}
+
+TEST(DataColumn, AccuracyGeneric2) {
+  DataColumn<long double> predictions(4);
+  predictions <<
+    1,
+    2,
+    3,
+    4;
+
+  DataColumn<long double> actual(4);
+  actual <<
+    1,
+    1,
+    3,
+    3;
+
+
+  long double result = accuracy(predictions, actual);
+  long double expected = 1.0 / 2.0;
+
+  ASSERT_DOUBLE_EQ(expected, result);
+}
+
+TEST(DataColumn, AccuracyMorePredictionsThanObservations) {
+  DataColumn<int> predictions(3);
+  predictions << 0, 1, 2;
+
+  DataColumn<int> observations(2);
+  observations << 0, 1;
+
+  ASSERT_THROW(accuracy(predictions, observations), std::invalid_argument);
+}
+
+TEST(DataColumn, AccuracyMoreObservationsThanPredictions) {
+  DataColumn<int> predictions(2);
+  predictions << 0, 1;
+
+  DataColumn<int> observations(3);
+  observations << 0, 1, 2;
+
+  ASSERT_THROW(accuracy(predictions, observations), std::invalid_argument);
+}
+
+TEST(DataColumn, ErrorRateMax) {
+  DataColumn<long double> predictions(3);
+  predictions <<
+    1,
+    2,
+    3;
+
+  DataColumn<long double> actual(3);
+  actual <<
+    3,
+    3,
+    1;
+
+  long double result = error_rate(predictions, actual);
+  long double expected = 1.0;
+
+  ASSERT_DOUBLE_EQ(expected, result);
+}
+
+TEST(DataColumn, ErrorRateMin) {
+  DataColumn<long double> predictions(3);
+  predictions <<
+    1,
+    2,
+    3;
+
+  DataColumn<long double> actual(3);
+  actual <<
+    1,
+    2,
+    3;
+
+  long double result = error_rate(predictions, actual);
+  long double expected = 0.0;
+
+  ASSERT_DOUBLE_EQ(expected, result);
+}
+
+TEST(DataColumn, ErrorRateGeneric1) {
+  DataColumn<long double> predictions(3);
+  predictions <<
+    1,
+    2,
+    3;
+
+  DataColumn<long double> actual(3);
+  actual <<
+    1,
+    3,
+    3;
+
+  long double result = error_rate(predictions, actual);
+  long double expected = 1.0 / 3.0;
+
+  ASSERT_DOUBLE_EQ(expected, result);
+}
+
+TEST(DataColumn, ErrorRateGeneric2) {
+  DataColumn<long double> predictions(4);
+  predictions <<
+    1,
+    2,
+    3,
+    4;
+
+  DataColumn<long double> actual(4);
+  actual <<
+    1,
+    1,
+    3,
+    3;
+
+  long double result = error_rate(predictions, actual);
+  long double expected = 1.0 / 2.0;
+
+  ASSERT_DOUBLE_EQ(expected, result);
+}
+
+TEST(DataColumn, ErrorRateMorePredictionsThanObservations) {
+  DataColumn<int> predictions(3);
+  predictions << 0, 1, 2;
+
+  DataColumn<int> observations(2);
+  observations << 0, 1;
+
+  ASSERT_THROW(error_rate(predictions, observations), std::invalid_argument);
+}
+
+TEST(DataColumn, ErrorRateMoreObservationsThanPredictions) {
+  DataColumn<int> predictions(2);
+  predictions << 0, 1;
+
+  DataColumn<int> observations(3);
+  observations << 0, 1, 2;
+
+  ASSERT_THROW(error_rate(predictions, observations), std::invalid_argument);
+}

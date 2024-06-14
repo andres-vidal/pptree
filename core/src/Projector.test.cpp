@@ -39,11 +39,9 @@ TEST(Projector, ProjectDataZeroProjector) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  Projector<long double> projector(5);
-  projector <<
-    0.0, 0.0, 0.0, 0.0, 0.0;
+  Projector<long double> projector({ 0.0, 0.0, 0.0, 0.0, 0.0 });
 
-  DataColumn<long double> actual = project(data, projector);
+  DataColumn<long double> actual = projector.project(data);
   DataColumn<long double> expected = DataColumn<long double>::Zero(30);
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -86,11 +84,9 @@ TEST(Projector, ProjectDataGeneric) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  Projector<long double> projector(5);
-  projector <<
-    -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
+  Projector<long double> projector({ -0.02965,  0.08452, -0.24243, -0.40089, -0.87892 });
 
-  DataColumn<long double> actual = project(data, projector);
+  DataColumn<long double> actual = projector.project(data);
   DataColumn<long double> expected(30);
   expected <<
     -1.30946,
@@ -130,30 +126,53 @@ TEST(Projector, ProjectDataGeneric) {
   ASSERT_TRUE(expected.isApprox(actual, 0.00001));
 }
 
-TEST(Projector, PProjectDataColumnZeroProjector) {
+TEST(Projector, ProjectDataColumnZeroProjector) {
   DataColumn<long double> data(5);
   data <<
     1.0, 2.0, 3.0, 4.0, 5.0;
 
-  Projector<long double> projector(5);
-  projector <<
-    0.0, 0.0, 0.0, 0.0, 0.0;
+  Projector<long double> projector({ 0.0, 0.0, 0.0, 0.0, 0.0 });
 
-  long double result = project(data, projector);
+  long double result = projector.project(data);
 
   ASSERT_EQ(0, result);
 }
 
-TEST(Projector, PProjectDataColumnGeneric) {
+TEST(Projector, ProjectDataColumnGeneric) {
   DataColumn<long double> data(5);
   data <<
     1.0, 2.0, 3.0, 4.0, 5.0;
 
-  Projector<long double> projector(5);
-  projector <<
-    -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
+  Projector<long double> projector({ -0.02965,  0.08452, -0.24243, -0.40089, -0.87892 });
 
-  long double result = project(data, projector);
+  long double result = projector.project(data);
 
   ASSERT_NEAR(-6.58606, result, 0.00001);
+}
+
+TEST(Projector, Normalize) {
+  Projector<long double> projector({ -0.02965,  0.08452, -0.24243, -0.40089, 0e-17 }, 1.2);
+
+  Projector<long double> actual = projector.normalize();
+
+  Projector<long double> expected({ 0.02965, -0.08452, 0.24243, 0.40089, 0.0 }, projector.index);
+  ASSERT_EQ(expected.vector.size(), actual.vector.size());
+  ASSERT_EQ(expected.vector.rows(), actual.vector.rows());
+  ASSERT_EQ(expected.vector.cols(), actual.vector.cols());
+  ASSERT_EQ(expected.vector, actual.vector);
+  ASSERT_DOUBLE_EQ(expected.index, actual.index);
+}
+
+TEST(Projector, Expand) {
+  Projector<long double> projector({ 1.0, 2.0, 3.0 }, 1.2);
+  std::vector<int> mask { 1, 0, 1, 0, 1 };
+
+  Projector<long double> actual = projector.expand(mask);
+
+  Projector<long double> expected({ 1.0, 0.0, 2.0, 0.0, 3.0 }, projector.index);
+  ASSERT_EQ(expected.vector.size(), actual.vector.size());
+  ASSERT_EQ(expected.vector.rows(), actual.vector.rows());
+  ASSERT_EQ(expected.vector.cols(), actual.vector.cols());
+  ASSERT_EQ(expected.vector, actual.vector);
+  ASSERT_DOUBLE_EQ(expected.index, actual.index);
 }

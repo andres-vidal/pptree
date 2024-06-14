@@ -1107,61 +1107,69 @@ TEST(Data, DescaleDataPartiallyScaledData) {
 }
 
 TEST(Data, ShuffleColumnOfDataFirstColumn) {
+  Random::rng.seed(0);
+
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  std::mt19937 rng(0);
+  Data<long double> shuffled = shuffle_column(data, 0);
 
-  Data<long double> shuffled = shuffle_column(data, 0, rng);
-
-  ASSERT_EQ(data.size(), shuffled.size());
-  ASSERT_EQ(data.rows(), shuffled.rows());
-  ASSERT_EQ(data.cols(), shuffled.cols());
-  ASSERT_EQ(data.col(1), shuffled.col(1));
-  ASSERT_EQ(data.col(2), shuffled.col(2));
-
-  ASSERT_NE(data.col(0), shuffled.col(0));
+  Data<long double> expected(3, 3);
+  expected <<
+    2.0, 2.0, 6.0,
+    1.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+  ASSERT_EQ(expected.size(), shuffled.size());
+  ASSERT_EQ(expected.rows(), shuffled.rows());
+  ASSERT_EQ(expected.cols(), shuffled.cols());
+  ASSERT_EQ(expected, shuffled);
 }
 
 TEST(Data, ShuffleColumnOfDataMiddleColumn) {
+  Random::rng.seed(0);
+
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  std::mt19937 rng(0);
+  Data<long double> shuffled = shuffle_column(data, 1);
 
-  Data<long double> shuffled = shuffle_column(data, 1, rng);
+  Data<long double> expected(3, 3);
+  expected <<
+    1.0, 3.0, 6.0,
+    2.0, 2.0, 7.0,
+    3.0, 4.0, 8.0;
 
-  ASSERT_EQ(data.size(), shuffled.size());
-  ASSERT_EQ(data.rows(), shuffled.rows());
-  ASSERT_EQ(data.cols(), shuffled.cols());
-  ASSERT_EQ(data.col(0), shuffled.col(0));
-  ASSERT_EQ(data.col(2), shuffled.col(2));
-
-  ASSERT_NE(data.col(1), shuffled.col(1));
+  ASSERT_EQ(expected.size(), shuffled.size());
+  ASSERT_EQ(expected.rows(), shuffled.rows());
+  ASSERT_EQ(expected.cols(), shuffled.cols());
+  ASSERT_EQ(expected, shuffled);
 }
 
 TEST(Data, ShuffleColumnOfDataLastColumn) {
+  Random::rng.seed(0);
+
   Data<long double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  std::mt19937 rng(0);
+  Data<long double> shuffled = shuffle_column(data, 2);
 
-  Data<long double> shuffled = shuffle_column(data, 2, rng);
+  Data<long double> expected(3, 3);
+  expected <<
+    1.0, 2.0, 7.0,
+    2.0, 3.0, 6.0,
+    3.0, 4.0, 8.0;
 
-  ASSERT_EQ(data.size(), shuffled.size());
-  ASSERT_EQ(data.rows(), shuffled.rows());
-  ASSERT_EQ(data.cols(), shuffled.cols());
-  ASSERT_EQ(data.col(0), shuffled.col(0));
-  ASSERT_EQ(data.col(1), shuffled.col(1));
-
-  ASSERT_NE(data.col(2), shuffled.col(2));
+  ASSERT_EQ(expected.size(), shuffled.size());
+  ASSERT_EQ(expected.rows(), shuffled.rows());
+  ASSERT_EQ(expected.cols(), shuffled.cols());
+  ASSERT_EQ(expected, shuffled);
 }

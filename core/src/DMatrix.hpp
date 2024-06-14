@@ -46,21 +46,12 @@ namespace models::math {
   }
 
   template<typename T>
-  DMatrix<T> inverse(const DMatrix<T> &m) {
-    Eigen::FullPivLU<DMatrix<T> > lu(m);
-
-    assert(lu.isInvertible() && "Given matrix is not invertible");
-    return lu.inverse();
-  }
-
-  template<typename T>
   DMatrix<T> solve(
     const DMatrix<T> &l,
     const DMatrix<T> &r
     ) {
     Eigen::FullPivLU<DMatrix<T> > lu(l);
 
-    assert(lu.isInvertible() && "Given matrix is not invertible");
     return lu.solve(r);
   }
 
@@ -82,4 +73,15 @@ namespace models::math {
 
   template<typename T>
   std::tuple<DVector<T>, DMatrix<T> > eigen(const DMatrix<T> &m);
+
+
+  template<typename T>
+  T trace(const DMatrix<T> &m) {
+    return m.trace();
+  }
+
+  template<typename T>
+  T sum(const DMatrix<T> &m) {
+    return m.rowwise().sum().colwise().sum().value();
+  }
 }

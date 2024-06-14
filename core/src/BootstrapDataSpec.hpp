@@ -66,8 +66,7 @@ namespace models::stats {
   template<typename T, typename G>
   BootstrapDataSpec<T, G> stratified_proportional_sample(
     const DataSpec<T, G> &data,
-    const int             size,
-    std::mt19937 &        rng) {
+    const int             size) {
     assert(size > 0 && "Sample size must be greater than 0.");
     assert(size <= data.y.rows() && "Sample size cannot be larger than the number of rows in the data.");
 
@@ -83,7 +82,7 @@ namespace models::stats {
 
       for (int i = 0; i < group_sample_size; i++) {
         const Uniform unif(0, group_indices.size() - 1);
-        const int sampled_index = group_indices[unif(rng)];
+        const int sampled_index = group_indices[unif()];
         sample_indices.push_back(sampled_index);
       }
     }
