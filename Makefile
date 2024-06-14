@@ -91,4 +91,6 @@ r-check-cran: r-build
 r-install: r-build
 	@R CMD INSTALL ${R_PACKAGE_TARBALL}
 
+r-untar:
+	@tar -xvf ${R_PACKAGE_TARBALL}
 

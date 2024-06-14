@@ -59,6 +59,12 @@ Refer to the root's `Makefile` for other useful commands.
 
 # R package management
 
+To avoid cloning this repository and using the specified toolchain, install the `devtools` package and use the following command to install the latest changes in `main`:
+
+```R
+devtools::install_github("https://github.com/andres-vidal/r-pptree")
+```
+
 Install project build dependencies:
 
 - `R`
