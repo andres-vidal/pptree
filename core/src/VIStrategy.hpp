@@ -16,12 +16,14 @@ namespace models {
 
     public:
       math::DVector<T> importance;
-      int n_classes;
+      std::set<int> classes;
 
       explicit NodeSummarizer(
         const VIStrategy<T, R> &strategy,
         const int               n_vars)  :
-        strategy(strategy), importance(math::DVector<T>::Zero(n_vars)), n_classes(-INT_MAX) {
+        strategy(strategy),
+        importance(math::DVector<T>::Zero(n_vars)),
+        classes({}) {
       }
 
       void visit(const Condition<T, R> &condition) override {
@@ -31,7 +33,8 @@ namespace models {
         condition.lower->accept(lower_summarizer);
         condition.upper->accept(upper_summarizer);
 
-        n_classes = lower_summarizer.n_classes + upper_summarizer.n_classes;
+        classes.insert(lower_summarizer.classes.begin(), lower_summarizer.classes.end());
+        classes.insert(upper_summarizer.classes.begin(), upper_summarizer.classes.end());
 
         importance = strategy.compute_partial(
           lower_summarizer.importance,
@@ -41,7 +44,7 @@ namespace models {
       }
 
       void visit(const Response<T, R> &response) override {
-        n_classes = 1;
+        classes = { response.value };
       }
   };
 
@@ -138,7 +141,7 @@ namespace models {
       const math::DVector<T> &     upper_importance,
       const Condition<T, R> &      condition,
       const NodeSummarizer<T, R> & condition_summary) const override {
-      const int n_classes = condition_summary.n_classes;
+      const int n_classes = condition_summary.classes.size();
 
       return math::abs(condition.projector.vector) / n_classes + lower_importance + upper_importance;
     }
@@ -158,7 +161,17 @@ namespace models {
       const math::DVector<T> &     upper_importance,
       const Condition<T, R> &      condition,
       const NodeSummarizer<T, R> & condition_summary) const override {
-      const long double pp_index = condition.projector.index;
+      assert(condition.training_data != nullptr && "training_data is null");
+      assert(condition.training_spec != nullptr && "training_spec is null");
+      assert(condition.training_spec->pp_strategy != nullptr && "pp_strategy is null");
+
+      auto [x, y, _all_classes] = condition.training_data->unwrap();
+
+      const long double pp_index = condition.training_spec->pp_strategy->index(
+        x,
+        condition.projector,
+        y,
+        condition_summary.classes);
 
       return math::abs(condition.projector.vector) * pp_index + lower_importance + upper_importance;
     }
@@ -167,7 +180,7 @@ namespace models {
       const math::DVector<T> &     accumulated_importance,
       const BootstrapTree<T, R> &  tree,
       const NodeSummarizer<T, R> & root_summary) const override {
-      const int n_classes = root_summary.n_classes;
+      const int n_classes = root_summary.classes.size();
       const long double oob_error = tree.error_rate();
       return ((1 - oob_error) / (n_classes - 1)) * accumulated_importance;
     }
@@ -197,6 +210,7 @@ namespace models {
       const NodeSummarizer<T, R> & root_summary) const override {
       const stats::DataSpec<T, R> oob = tree.training_data->get_oob();
       const stats::DataColumn<R> oob_predictions = tree.predict(oob.x);
+
       const long double oob_accuracy = stats::accuracy(oob_predictions, oob.y);
 
       math::DVector<T> importance = math::DVector<T>(oob.x.cols());

@@ -86,13 +86,15 @@ namespace models {
 
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > binary_step(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const R &               group_1,
-    const R &               group_2,
-    const PPStrategy<T, R> &pp_strategy) {
+    const Data<T> &            data,
+    const DataColumn<R> &      groups,
+    const R &                  group_1,
+    const R &                  group_2,
+    const TrainingSpec<T, R> & training_spec) {
     std::set<R> unique_groups = { group_1, group_2 };
     LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << unique_groups << std::endl;
+
+    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
     auto [projector, projected] = pp_strategy(data, groups, unique_groups);
 
@@ -113,7 +115,9 @@ namespace models {
       projector,
       threshold,
       std::move(lower_response),
-      std::move(upper_response));
+      std::move(upper_response),
+      training_spec.clone(),
+      std::make_unique<DataSpec<T, R> >(data, groups, unique_groups));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -164,8 +168,8 @@ namespace models {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
-    PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
-    DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
+    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+    const DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
 
     Data<T> reduced_data = dr_strategy(data);
 
@@ -177,7 +181,7 @@ namespace models {
         groups,
         group_1,
         group_2,
-        pp_strategy);
+        training_spec);
     }
 
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
@@ -193,7 +197,7 @@ namespace models {
       binary_groups,
       group_1,
       group_2,
-      pp_strategy);
+      training_spec);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
@@ -220,7 +224,9 @@ namespace models {
       temp_node->projector,
       temp_node->threshold,
       std::move(lower_branch),
-      std::move(upper_branch));
+      std::move(upper_branch),
+      training_spec.clone(),
+      std::make_unique<DataSpec<T, R> >(data, groups, unique_groups));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;

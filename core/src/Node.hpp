@@ -2,7 +2,9 @@
 
 #include "Data.hpp"
 #include "DataColumn.hpp"
+#include "DataSpec.hpp"
 #include "Projector.hpp"
+#include "TrainingSpec.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -51,13 +53,33 @@ namespace models {
     Threshold<T> threshold;
     std::unique_ptr<Node<T, R> > lower;
     std::unique_ptr<Node<T, R> > upper;
+    std::unique_ptr<TrainingSpec<T, R> > training_spec;
+    std::unique_ptr<stats::DataSpec<T, R> > training_data;
+
+    Condition(
+      pp::Projector<T> &                      projector,
+      Threshold<T> &                          threshold,
+      std::unique_ptr<Node<T, R> >            lower,
+      std::unique_ptr<Node<T, R> >            upper,
+      std::unique_ptr<TrainingSpec<T, R> >    training_spec,
+      std::unique_ptr<stats::DataSpec<T, R> > training_data)  :
+      projector(projector),
+      threshold(threshold),
+      lower(std::move(lower)),
+      upper(std::move(upper)),
+      training_spec(std::move(training_spec)),
+      training_data(std::move(training_data)) {
+    }
 
     Condition(
       pp::Projector<T>             projector,
       Threshold<T>                 threshold,
       std::unique_ptr<Node<T, R> > lower,
-      std::unique_ptr<Node<T, R> > upper)
-      : projector(projector), threshold(threshold), lower(std::move(lower)), upper(std::move(upper)) {
+      std::unique_ptr<Node<T, R> > upper) :
+      projector(projector),
+      threshold(threshold),
+      lower(std::move(lower)),
+      upper(std::move(upper)) {
     }
 
     void accept(NodeVisitor<T, R> &visitor) const override {
