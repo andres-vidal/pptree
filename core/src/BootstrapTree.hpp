@@ -3,17 +3,18 @@
 
 namespace models {
   template<typename T, typename R>
-  struct BootstrapTree : public Tree<T, R, stats::BootstrapDataSpec<T, R> > {
-    using Base = Tree<T, R, stats::BootstrapDataSpec<T, R> >;
+  struct BootstrapTree : public BaseTree<T, R, stats::BootstrapDataSpec<T, R> > {
+    using Base = BaseTree<T, R, stats::BootstrapDataSpec<T, R> >;
     using Base::variable_importance;
-
+    using Base::error_rate;
+    using Base::confusion_matrix;
 
     explicit BootstrapTree(std::unique_ptr<Condition<T, R> > root)
-      : Tree<T, R, stats::BootstrapDataSpec<T, R> >(std::move(root)) {
+      : Base(std::move(root)) {
     }
 
     // cppcheck-suppress noExplicitConstructor
-    BootstrapTree(Tree<T, R, stats::BootstrapDataSpec<T, R> > tree)
+    BootstrapTree(Base tree)
       : Base(std::move(tree.root), std::move(tree.training_spec), std::move(tree.training_data)) {
     }
 
@@ -24,16 +25,8 @@ namespace models {
       : Base(std::move(root),  std::move(training_spec), training_data) {
     }
 
-    long double error_rate(const stats::DataSpec<T, R> &data) const override {
-      return Tree<T, R, stats::BootstrapDataSpec<T, R> >::error_rate(data);
-    }
-
     long double error_rate() const {
       return error_rate(this->training_data->get_oob());
-    }
-
-    stats::ConfusionMatrix confusion_matrix(const stats::DataSpec<T, R> &data) const override {
-      return Tree<T, R, stats::BootstrapDataSpec<T, R> >::confusion_matrix(data);
     }
 
     stats::ConfusionMatrix confusion_matrix() const {

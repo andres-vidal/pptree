@@ -7,7 +7,7 @@ using namespace pptree;
 
 namespace Rcpp {
   SEXP wrap(const Node<long double, int> &);
-  SEXP wrap(const Tree<long double, int, DataSpec<long double, int> > &);
+  SEXP wrap(const Tree<long double, int > &);
   SEXP wrap(const BootstrapTree<long double, int> &);
   SEXP wrap(const Response<long double, int> &);
   SEXP wrap(const Condition<long double, int> &);
@@ -23,7 +23,7 @@ namespace Rcpp {
   SEXP wrap(const BootstrapDataSpec<long double, int> &);
 
   template<> std::unique_ptr<Node<long double, int> > as(SEXP);
-  template<> Tree<long double, int, DataSpec<long double, int> > as(SEXP);
+  template<> Tree<long double, int > as(SEXP);
   template<> BootstrapTree<long double, int> as(SEXP);
   template<> Response<long double, int> as(SEXP);
   template<> Condition<long double, int> as(SEXP);
@@ -74,7 +74,7 @@ namespace Rcpp {
       Rcpp::Named("upper") = Rcpp::wrap(*node.upper));
   }
 
-  SEXP wrap(const Tree<long double, int, DataSpec<long double, int> > &tree) {
+  SEXP wrap(const Tree<long double, int > &tree) {
     return Rcpp::List::create(
       Rcpp::Named("trainingSpec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("trainingData") = Rcpp::wrap(*tree.training_data),
@@ -187,7 +187,7 @@ namespace Rcpp {
       std::move(upper));
   }
 
-  template<> Tree<long double, int, DataSpec<long double, int> > as(SEXP x) {
+  template<> Tree<long double, int > as(SEXP x) {
     Rcpp::List rtree(x);
     Rcpp::List rtraining_spec(rtree["trainingSpec"]);
     Rcpp::List rtraining_data(rtree["trainingData"]);
@@ -196,7 +196,7 @@ namespace Rcpp {
     auto root_ptr = std::make_unique<Condition<long double, int> >(std::move(root));
     auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<long double, int> > >(rtraining_spec);
 
-    return Tree<long double, int, DataSpec<long double, int> >(
+    return Tree<long double, int >(
       std::move(root_ptr),
       std::move(training_spec_ptr),
       std::make_shared<DataSpec<long double, int> >(as<DataSpec<long double, int> >(rtraining_data)));

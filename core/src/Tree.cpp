@@ -226,14 +226,14 @@ namespace models {
   };
 
   template<typename T, typename R, typename D>
-  Tree<T, R, D> train(
+  BaseTree<T, R, D> train(
     const TrainingSpec<T, R> &training_spec,
     const D &                 training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     auto [x, y, classes] = training_data.unwrap();
 
-    Tree<T, R, D> tree(
+    BaseTree<T, R, D> tree(
       step(
         x,
         y,
@@ -246,11 +246,11 @@ namespace models {
     return tree;
   }
 
-  template Tree<long double, int, DataSpec<long double, int> > train(
+  template BaseTree<long double, int, DataSpec<long double, int> > train(
     const TrainingSpec<long double, int> &training_spec,
     const DataSpec<long double, int> &    training_data);
 
-  template Tree<long double, int, BootstrapDataSpec<long double, int> > train(
+  template BaseTree<long double, int, BootstrapDataSpec<long double, int> > train(
     const TrainingSpec<long double, int> &      training_spec,
     const BootstrapDataSpec<long double, int> & training_data);
 }
