@@ -91,7 +91,7 @@ namespace models {
     }
 
     R predict(const stats::DataColumn<T> &data) const override {
-      T projected_data = projector.project(data);
+      T projected_data = pp::project(projector, data);
 
       if (projected_data < threshold) {
         return lower->predict(data);
@@ -101,7 +101,7 @@ namespace models {
     }
 
     bool operator==(const Condition<T, R> &other) const {
-      return math::collinear(projector.vector, other.projector.vector)
+      return math::collinear(projector, other.projector)
              && math::is_approx(threshold, other.threshold)
              && *lower == *other.lower
              && *upper == *other.upper;
@@ -113,7 +113,7 @@ namespace models {
 
     json to_json() const override {
       return json{
-        { "projector", projector.to_json() },
+        { "projector", projector },
         { "threshold", threshold },
         { "lower", lower->to_json() },
         { "upper", upper->to_json() }

@@ -1,10 +1,8 @@
-
 #include "Tree.hpp"
 #include "BootstrapDataSpec.hpp"
 #include "BootstrapTree.hpp"
 #include "Group.hpp"
 #include "Logger.hpp"
-
 
 using namespace models::pp;
 using namespace models::pp::strategy;
@@ -61,8 +59,8 @@ namespace models {
     DataColumn<T> mean_1 = mean(select_group(data, groups, group_1));
     DataColumn<T> mean_2 = mean(select_group(data, groups, group_2));
 
-    T projected_mean_1 = projector.project(mean_1);
-    T projected_mean_2 = projector.project(mean_2);
+    T projected_mean_1 = project(mean_1, projector);
+    T projected_mean_2 = project(mean_2, projector);
 
     LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
     LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;

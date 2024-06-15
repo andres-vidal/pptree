@@ -2,11 +2,10 @@
 
 #include "PPStrategy.hpp"
 
-using namespace models::pp;
 using namespace models::pp::strategy;
 using namespace models::stats;
 
-#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(models::math::collinear(a.vector, b.vector)) << std::endl << "Expected vectors to be collinear: [" << a.vector.transpose() << "] [" << b.vector.transpose() << "]" << std::endl
+#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(models::math::collinear(a, b)) << std::endl << "Expected vectors to be collinear: [" << a.transpose() << "] [" << b.transpose() << "]" << std::endl
 
 TEST(Projector, LDAOptimumProjectorTwoGroups1) {
   Data<long double> data(10, 4);
@@ -35,9 +34,11 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
     1,
     1;
 
-  Projector<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
 
-  Projector<long double> expected({ -1, 0, 0, 0 });
+  DataColumn<long double> expected(4);
+  expected <<
+    -1, 0, 0, 0;
 
   ASSERT_COLLINEAR(expected, actual);
 }
@@ -70,9 +71,12 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
     1,
     1;
 
-  Projector<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
 
-  Projector<long double> expected({ 0, 1, 0, 0 });
+  DataColumn<long double> expected(4);
+  expected <<
+    0, 1, 0, 0;
+
 
   ASSERT_COLLINEAR(expected, actual);
 }
@@ -105,10 +109,11 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
     1,
     1;
 
-  Projector<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
 
-  Projector<long double> expected({ 0, 0, -1, 0 });
-
+  DataColumn<long double> expected(4);
+  expected <<
+    0, 0, -1, 0;
 
   ASSERT_COLLINEAR(expected, actual);
 }
@@ -140,14 +145,14 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
     1,
     1;
 
-  Projector<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1 });
 
-  Projector<long double> expected({
+  DataColumn<long double> expected(4);
+  expected <<
     2.0965219514666735e-15,
     4.4408920985006262e-16,
     -2.4980018054066002e-16,
-    1
-  });
+    1;
 
   ASSERT_COLLINEAR(expected, actual);
 }
@@ -219,15 +224,15 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
     2,
     2;
 
-  Projector<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1, 2 });
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0).optimize(data, groups, { 0, 1, 2 });
 
-  Projector<long double> expected({
+  DataColumn<long double> expected(5);
+  expected <<
     1,
     0,
     0,
     0,
-    0
-  });
+    0;
 
   ASSERT_COLLINEAR(expected, actual);
 }
@@ -247,7 +252,9 @@ TEST(Projector, LDAIndexZeroReturn) {
     1,
     1;
 
-  Projector<long double> projector({  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  DataColumn<long double> projector(12);
+  projector <<
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
   long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1 });
 
@@ -321,7 +328,9 @@ TEST(Projector, LDAIndexOptimal1) {
     2,
     2;
 
-  Projector<long double> projector({ -0.12823, -0.99174, 0.0, 0.0, 0.0 });
+  DataColumn<long double> projector(5);
+  projector <<
+    -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
   long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
@@ -395,7 +404,10 @@ TEST(Projector, LDAIndexOptimal2) {
     2,
     2;
 
-  Projector<long double> projector({ 0.78481, 0.61974, 0.0, 0.0, 0.0 });
+  DataColumn<long double> projector(5);
+
+  projector <<
+    0.78481, 0.61974, 0.0, 0.0, 0.0;
 
   long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
@@ -469,7 +481,10 @@ TEST(Projector, LDAIndexOptimal3) {
     2,
     2;
 
-  Projector<long double> projector({ -0.66808,  0.74409,  0.0,  0.0,  0.0 });
+  DataColumn<long double> projector(5);
+
+  projector <<
+    -0.66808,  0.74409,  0.0,  0.0,  0.0;
 
   long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
@@ -543,7 +558,10 @@ TEST(Projector, LDAIndexSuboptimal1) {
     2,
     2;
 
-  Projector<long double> projector({ 0, 0, 1, 1, 1 });
+  DataColumn<long double> projector(5);
+
+  projector <<
+    0, 0, 1, 1, 1;
 
   long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
@@ -617,7 +635,10 @@ TEST(Projector, LDAIndexSuboptimal2) {
     2,
     2;
 
-  Projector<long double> projector({ -0.02965,  0.08452, -0.24243, -0.40089, -0.87892 });
+  DataColumn<long double> projector(5);
+
+  projector <<
+    -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
   long double actual = GLDAStrategy<long double, int>(0).index(data, projector, groups, { 0, 1, 2 });
 
@@ -639,9 +660,11 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
     1,
     1;
 
-  Projector<long double> actual = GLDAStrategy<long double, int>(0.5).optimize(data, groups, { 0, 1 });
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0.5).optimize(data, groups, { 0, 1 });
 
-  Projector<long double> expected({  0, 0, 0, 0, 0, 1 });
+  DataColumn<long double> expected(6);
+  expected <<
+    0, 0, 0, 0, 0, 1;
 
   ASSERT_COLLINEAR(expected, actual);
 }
@@ -661,9 +684,11 @@ TEST(Projector, GLDAOptimumProjectorZeroColumn) {
     1,
     1;
 
-  Projector<long double> actual = GLDAStrategy<long double, int>(0.1).optimize(data, groups, { 0, 1 });
+  DataColumn<long double> actual = GLDAStrategy<long double, int>(0.1).optimize(data, groups, { 0, 1 });
 
-  Projector<long double> expected({ 0, 0, 0, 0, 0, 1, 0 });
+  DataColumn<long double> expected(7);
+  expected <<
+    0, 0, 0, 0, 0, 1, 0;
 
   ASSERT_COLLINEAR(expected, actual);
 }
@@ -683,7 +708,9 @@ TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
     1,
     1;
 
-  Projector<long double> projector({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  DataColumn<long double> projector(12);
+  projector <<
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
   long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1 });
 
@@ -757,7 +784,9 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
     2,
     2;
 
-  Projector<long double> projector({   -0.12823, -0.99174, 0.0, 0.0, 0.0 });
+  DataColumn<long double> projector(5);
+  projector <<
+    -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
   long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
@@ -831,7 +860,10 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
     2,
     2;
 
-  Projector<long double> projector({ 0.78481, 0.61974, 0.0, 0.0, 0.0 });
+  DataColumn<long double> projector(5);
+
+  projector <<
+    0.78481, 0.61974, 0.0, 0.0, 0.0;
 
   long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
@@ -905,7 +937,12 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
     2,
     2;
 
-  long double actual = GLDAStrategy<long double, int>(0.5).index(data, Projector<long double>({ -0.66808,  0.74409,  0.0,  0.0,  0.0 }), groups, { 0, 1, 2 });
+  DataColumn<long double> projector(5);
+
+  projector <<
+    -0.66808,  0.74409,  0.0,  0.0,  0.0;
+
+  long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
@@ -977,7 +1014,10 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
     2,
     2;
 
-  Projector<long double> projector({ 0, 0, 1, 1, 1 });
+  DataColumn<long double> projector(5);
+
+  projector <<
+    0, 0, 1, 1, 1;
 
   long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 
@@ -1051,7 +1091,10 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
     2,
     2;
 
-  Projector<long double> projector({ -0.02965,  0.08452, -0.24243, -0.40089, -0.87892 });
+  DataColumn<long double> projector(5);
+
+  projector <<
+    -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
   long double actual = GLDAStrategy<long double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
 

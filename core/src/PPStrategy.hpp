@@ -1,13 +1,10 @@
 #pragma once
 
-#include "Logger.hpp"
 #include "Projector.hpp"
 
 #include <set>
 
 namespace models::pp::strategy {
-  using models::operator<<;
-
   template<typename T, typename G>
   struct PPStrategy {
     virtual ~PPStrategy() = default;
@@ -30,7 +27,7 @@ namespace models::pp::strategy {
       const std::set<G>&          unique_groups
       ) const {
       Projector<T> projector = optimize(data, groups, unique_groups);
-      Projection<T> projection = projector.project(data);
+      Projection<T> projection = project(data, projector);
       return { projector, projection };
     }
   };
@@ -52,11 +49,16 @@ namespace models::pp::strategy {
     }
 
     T index(
-      const stats::Data<T>& A,
-      const stats::Data<T>& W,
-      const stats::Data<T>& B) const {
+      const stats::Data<T>&       data,
+      const Projector<T>&         projector,
+      const stats::DataColumn<G>& groups,
+      const std::set<G>&          unique_groups) const override {
+      stats::Data<T> A = projector;
+
+      stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
       stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
+      stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
       stats::Data<T> WpB = W_pda + B;
 
       T denominator = math::determinant(math::inner_square(A, WpB));
@@ -68,24 +70,11 @@ namespace models::pp::strategy {
       return 1 - math::determinant(math::inner_square(A, W_pda)) / denominator;
     }
 
-    T index(
-      const stats::Data<T>&       data,
-      const Projector<T>&         projector,
-      const stats::DataColumn<G>& groups,
-      const std::set<G>&          unique_groups) const override {
-      stats::Data<T> A = projector.vector;
-      stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
-      stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
-
-      return index(A, W, B);
-    }
-
     Projector<T> optimize(
-      const stats::Data<T>&       data,
-      const stats::DataColumn<G>& groups,
-      const std::set<G>&          unique_groups) const override {
+      const stats::Data<T> &      data,
+      const stats::DataColumn<G> &groups,
+      const std::set<G> &         unique_groups) const override {
       LOG_INFO << "Calculating PDA optimum projector for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
-
       LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables:" << std::endl;
       LOG_INFO << std::endl << data << std::endl;
       LOG_INFO << "Groups:" << std::endl;
@@ -111,6 +100,7 @@ namespace models::pp::strategy {
       stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
       stats::Data<T> WpB = W_pda + B;
 
+
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
@@ -126,13 +116,15 @@ namespace models::pp::strategy {
       LOG_INFO << "Eigenvectors:" << std::endl << eigen_vec << std::endl;
 
       math::DVector<T> max_eigen_vec = eigen_vec.col(eigen_vec.cols() - 1);
-      pp::Projector<T> projector = pp::Projector<T>(max_eigen_vec).normalize().expand(var_mask);
+
+      LOG_INFO << "Maximal eigenvector:" << std::endl << max_eigen_vec << std::endl;
+
+      Projector<T> projector = models::pp::expand(pp::normalize(max_eigen_vec), var_mask);
 
       LOG_INFO << "Projector:" << std::endl << projector << std::endl;
-      return Projector<T>(projector.vector, index(projector.vector, complete_W, complete_B));
+      return projector;
     }
   };
-
 
   template<typename T, typename G>
   std::unique_ptr<PPStrategy<T, G> > glda(const double lambda) {
