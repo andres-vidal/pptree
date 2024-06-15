@@ -30,7 +30,6 @@ namespace models {
     virtual void accept(NodeVisitor<T, R> &visitor) const = 0;
     virtual R predict(const stats::DataColumn<T> &data) const = 0;
     virtual R response() const = 0;
-    virtual std::set<int> classes() const = 0;
     virtual json to_json() const = 0;
     virtual bool equals(const Node<T, R> &other) const = 0;
     virtual bool equals(const Condition<T, R> &other) const = 0;
@@ -90,14 +89,6 @@ namespace models {
       return !(*this == other);
     }
 
-    std::set<int> classes() const override {
-      std::set<int> classes;
-      auto [lower_classes, upper_classes] = std::make_tuple(lower->classes(), upper->classes());
-      classes.insert(lower_classes.begin(), lower_classes.end());
-      classes.insert(upper_classes.begin(), upper_classes.end());
-      return classes;
-    }
-
     json to_json() const override {
       return json{
         { "projector", projector.to_json() },
@@ -145,10 +136,6 @@ namespace models {
 
     bool operator!=(const Response<T, R> &other) const {
       return !(*this == other);
-    }
-
-    std::set<int> classes() const override {
-      return { value };
     }
 
     json to_json() const override {

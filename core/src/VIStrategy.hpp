@@ -16,11 +16,12 @@ namespace models {
 
     public:
       math::DVector<T> importance;
+      int n_classes;
 
       explicit NodeSummarizer(
         const VIStrategy<T, R> &strategy,
         const int               n_vars)  :
-        strategy(strategy), importance(math::DVector<T>::Zero(n_vars)) {
+        strategy(strategy), importance(math::DVector<T>::Zero(n_vars)), n_classes(-INT_MAX) {
       }
 
       void visit(const Condition<T, R> &condition) override {
@@ -30,13 +31,17 @@ namespace models {
         condition.lower->accept(lower_summarizer);
         condition.upper->accept(upper_summarizer);
 
+        n_classes = lower_summarizer.n_classes + upper_summarizer.n_classes;
+
         importance = strategy.compute_partial(
           lower_summarizer.importance,
           upper_summarizer.importance,
-          condition);
+          condition,
+          *this);
       }
 
       void visit(const Response<T, R> &response) override {
+        n_classes = 1;
       }
   };
 
@@ -51,17 +56,20 @@ namespace models {
     private:
 
       virtual math::DVector<T> compute_partial(
-        const math::DVector<T> &lower_importance,
-        const math::DVector<T> &upper_importance,
-        const Condition<T, R> & condition) const = 0;
+        const math::DVector<T> &     lower_importance,
+        const math::DVector<T> &     upper_importance,
+        const Condition<T, R> &      condition,
+        const NodeSummarizer<T, R> & condition_summary) const = 0;
 
       virtual math::DVector<T> compute_final(
-        const math::DVector<T> &accumulated_importance,
-        const Tree<T, R> &      tree) const = 0;
+        const math::DVector<T> &    accumulated_importance,
+        const Tree<T, R> &          tree,
+        const NodeSummarizer<T, R> &root_summary) const = 0;
 
       virtual math::DVector<T> compute_final(
-        const math::DVector<T> &   accumulated_importance,
-        const BootstrapTree<T, R> &tree) const = 0;
+        const math::DVector<T> &    accumulated_importance,
+        const BootstrapTree<T, R> & tree,
+        const NodeSummarizer<T, R> &root_summary) const = 0;
 
       virtual math::DVector<T> compute_final(
         const math::DVector<T> &accumulated_importance,
@@ -76,7 +84,7 @@ namespace models {
       NodeSummarizer<T, R> summarizer(*this, std_tree.training_data->x.cols());
       std_tree.root->accept(summarizer);
 
-      return compute_final(summarizer.importance, std_tree);
+      return compute_final(summarizer.importance, std_tree, summarizer);
     }
 
     virtual math::DVector<T> operator()(const BootstrapTree<T, R> &tree) const override {
@@ -85,7 +93,7 @@ namespace models {
       NodeSummarizer<T, R> summarizer(*this, std_tree.training_data->x.cols());
       std_tree.root->accept(summarizer);
 
-      return compute_final(summarizer.importance, std_tree);
+      return compute_final(summarizer.importance, std_tree, summarizer);
     }
 
     virtual math::DVector<T> operator()(const Forest<T, R> &forest) const override {
@@ -103,14 +111,16 @@ namespace models {
     }
 
     virtual math::DVector<T> compute_final(
-      const math::DVector<T> &accumulated_importance,
-      const Tree<T, R> &      tree) const override {
+      const math::DVector<T> &    accumulated_importance,
+      const Tree<T, R> &          tree,
+      const NodeSummarizer<T, R> &root_summary) const override {
       return accumulated_importance;
     }
 
     virtual math::DVector<T> compute_final(
-      const math::DVector<T> &   accumulated_importance,
-      const BootstrapTree<T, R> &tree) const override {
+      const math::DVector<T> &    accumulated_importance,
+      const BootstrapTree<T, R> & tree,
+      const NodeSummarizer<T, R> &root_summary) const override {
       return accumulated_importance;
     }
 
@@ -124,10 +134,11 @@ namespace models {
   template <typename T, typename R>
   struct VIProjectorStrategy : public BaseVIStrategy<T, R> {
     virtual math::DVector<T> compute_partial(
-      const math::DVector<T> &lower_importance,
-      const math::DVector<T> &upper_importance,
-      const Condition<T, R> & condition) const override {
-      const int n_classes = condition.classes().size();
+      const math::DVector<T> &     lower_importance,
+      const math::DVector<T> &     upper_importance,
+      const Condition<T, R> &      condition,
+      const NodeSummarizer<T, R> & condition_summary) const override {
+      const int n_classes = condition_summary.n_classes;
 
       return math::abs(condition.projector.vector) / n_classes + lower_importance + upper_importance;
     }
@@ -143,18 +154,20 @@ namespace models {
     }
 
     virtual math::DVector<T> compute_partial(
-      const math::DVector<T> &lower_importance,
-      const math::DVector<T> &upper_importance,
-      const Condition<T, R> & condition) const override {
+      const math::DVector<T> &     lower_importance,
+      const math::DVector<T> &     upper_importance,
+      const Condition<T, R> &      condition,
+      const NodeSummarizer<T, R> & condition_summary) const override {
       const long double pp_index = condition.projector.index;
 
       return math::abs(condition.projector.vector) * pp_index + lower_importance + upper_importance;
     }
 
     virtual math::DVector<T> compute_final(
-      const math::DVector<T> &   accumulated_importance,
-      const BootstrapTree<T, R> &tree) const override {
-      const int n_classes = tree.root->classes().size();
+      const math::DVector<T> &     accumulated_importance,
+      const BootstrapTree<T, R> &  tree,
+      const NodeSummarizer<T, R> & root_summary) const override {
+      const int n_classes = root_summary.n_classes;
       const long double oob_error = tree.error_rate();
       return ((1 - oob_error) / (n_classes - 1)) * accumulated_importance;
     }
@@ -171,15 +184,17 @@ namespace models {
     }
 
     virtual math::DVector<T> compute_partial(
-      const math::DVector<T> &lower_importance,
-      const math::DVector<T> &upper_importance,
-      const Condition<T, R> & condition) const override {
+      const math::DVector<T> &     lower_importance,
+      const math::DVector<T> &     upper_importance,
+      const Condition<T, R> &      condition,
+      const NodeSummarizer<T, R> & condition_summary) const override {
       return math::DVector<T>::Zero(lower_importance.size());
     }
 
     virtual math::DVector<T> compute_final(
-      const math::DVector<T> &   _accumulated_importance,
-      const BootstrapTree<T, R> &tree) const override {
+      const math::DVector<T> &     accumulated_importance,
+      const BootstrapTree<T, R> &  tree,
+      const NodeSummarizer<T, R> & root_summary) const override {
       const stats::DataSpec<T, R> oob = tree.training_data->get_oob();
       const stats::DataColumn<R> oob_predictions = tree.predict(oob.x);
       const long double oob_accuracy = stats::accuracy(oob_predictions, oob.y);
