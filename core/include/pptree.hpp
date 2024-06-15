@@ -1,5 +1,6 @@
 #include "Forest.hpp"
 #include "Tree.hpp"
+#include "VIStrategy.hpp"
 
 
 namespace pptree {

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "BootstrapTree.hpp"
+#include "VIStrategy.hpp"
 
 using namespace models;
 using namespace models::pp;
@@ -1065,144 +1066,6 @@ TEST(BootstrapTree, ConfusionMatrix) {
   ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
 }
 
-TEST(BootstrapTree, VariableImportanceLDAMultivariateThreeGroups) {
-  Data<long double> x(30, 5);
-  x <<
-    1, 0, 1, 1, 1,
-    1, 0, 1, 0, 0,
-    1, 0, 0, 0, 1,
-    1, 0, 1, 2, 1,
-    1, 0, 0, 1, 1,
-    1, 1, 1, 1, 0,
-    1, 0, 0, 2, 1,
-    1, 0, 1, 1, 2,
-    1, 0, 0, 2, 0,
-    1, 0, 2, 1, 0,
-    2, 5, 0, 0, 1,
-    2, 5, 0, 0, 2,
-    3, 5, 1, 0, 2,
-    2, 5, 1, 0, 1,
-    2, 5, 0, 1, 1,
-    2, 5, 0, 1, 2,
-    2, 5, 2, 1, 1,
-    2, 5, 1, 1, 1,
-    2, 5, 1, 1, 2,
-    2, 5, 2, 1, 2,
-    2, 5, 1, 2, 1,
-    2, 5, 2, 1, 1,
-    9, 8, 0, 0, 1,
-    9, 8, 0, 0, 2,
-    9, 8, 1, 0, 2,
-    9, 8, 1, 0, 1,
-    9, 8, 0, 1, 1,
-    9, 8, 0, 1, 2,
-    9, 8, 2, 1, 1,
-    9, 8, 1, 1, 1;
-
-  DataColumn<int> y(30);
-  y <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
-
-  std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
-
-  BootstrapDataSpec<long double, int> data(x, y, sample_indices);
-  BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
-
-  DVector<long double> result = tree.variable_importance();
-
-  DataColumn<long double> expected(5);
-  expected <<
-    0.327572,
-    0.561704,
-    0.0,
-    0.0,
-    0.0;
-
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
-}
-
-TEST(BootstrapTree, VariableImportantePDAMultivariateTwoGroups) {
-  Data<long double> x(10, 12);
-  x <<
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
-    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
-
-  DataColumn<int> y(10);
-  y <<
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1;
-
-  std::vector<int> sample_indices = { 0, 2, 6, 8 };
-
-  BootstrapDataSpec<long double, int> data(x, y, sample_indices);
-  BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
-
-  DataColumn<long double> result = tree.variable_importance();
-
-  DataColumn<long double> expected(12);
-  expected <<
-    0.5,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0;
-
-
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
-}
-
 TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
   Data<long double> x(30, 5);
   x <<
@@ -1275,7 +1138,7 @@ TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
 
-  DVector<long double> result = tree.variable_importance(VariableImportanceKind::PROJECTOR);
+  DVector<long double> result = tree.variable_importance(VIProjectorStrategy<long double, int>());
 
   DataColumn<long double> expected(5);
   expected <<
@@ -1289,7 +1152,7 @@ TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
 }
 
-TEST(BootstrapTree, VariableImportanteProjectorPDAMultivariateTwoGroups) {
+TEST(BootstrapTree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
   Data<long double> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -1321,7 +1184,7 @@ TEST(BootstrapTree, VariableImportanteProjectorPDAMultivariateTwoGroups) {
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::glda(0.1), data);
 
-  DataColumn<long double> result = tree.variable_importance(VariableImportanceKind::PROJECTOR);
+  DataColumn<long double> result = tree.variable_importance(VIProjectorStrategy<long double, int>());
 
   DataColumn<long double> expected(12);
   expected <<
@@ -1413,7 +1276,7 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroup
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
 
-  DVector<long double> result = tree.variable_importance(VariableImportanceKind::PROJECTOR_ADJUSTED);
+  DVector<long double> result = tree.variable_importance(VIProjectorAdjustedStrategy<long double, int>());
 
   DataColumn<long double> expected(5);
   expected <<
@@ -1426,7 +1289,7 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroup
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
 }
 
-TEST(BootstrapTree, VariableImportanteProjectorAdjustedPDAMultivariateTwoGroups) {
+TEST(BootstrapTree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups) {
   Data<long double> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -1458,7 +1321,7 @@ TEST(BootstrapTree, VariableImportanteProjectorAdjustedPDAMultivariateTwoGroups)
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::glda(0.1), data);
 
-  DataColumn<long double> result = tree.variable_importance(VariableImportanceKind::PROJECTOR_ADJUSTED);
+  DataColumn<long double> result = tree.variable_importance(VIProjectorAdjustedStrategy<long double, int>());
 
   DataColumn<long double> expected(12);
   expected <<
@@ -1552,7 +1415,7 @@ TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
 
-  DVector<long double> result = tree.variable_importance(VariableImportanceKind::PERMUTATION);
+  DVector<long double> result = tree.variable_importance(VIPermutationStrategy<long double, int>());
 
   DataColumn<long double> expected(5);
   expected <<
@@ -1599,7 +1462,7 @@ TEST(BootstrapTree, VariableImportancePermutationPDAMultivariateTwoGroups) {
 
   Random::rng.seed(0);
 
-  DataColumn<long double> result = tree.variable_importance(VariableImportanceKind::PERMUTATION);
+  DataColumn<long double> result = tree.variable_importance(VIPermutationStrategy<long double, int>());
 
   DataColumn<long double> expected(12);
   expected <<

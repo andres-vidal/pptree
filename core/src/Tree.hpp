@@ -2,14 +2,19 @@
 
 #include "Node.hpp"
 #include "DataSpec.hpp"
+#include "BootstrapDataSpec.hpp"
 #include "TrainingSpec.hpp"
-#include "Projector.hpp"
 #include "ConfusionMatrix.hpp"
 
 #include <nlohmann/json.hpp>
 
+
 namespace models {
   using json = nlohmann::json;
+
+  template <typename T, typename R>
+  class VIStrategy;
+
   template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
   struct BaseTree {
     static DerivedTree<T, R> train(const TrainingSpec<T, R> &training_spec, const D &training_data);
@@ -34,6 +39,10 @@ namespace models {
       return BaseTree::train(*this->training_spec, data);
     }
 
+    DerivedTree<T, R> standardize() const {
+      return retrain(stats::center(descale(*training_data)));
+    }
+
     R predict(const stats::DataColumn<T> &data) const {
       return root->predict(data);
     }
@@ -56,10 +65,6 @@ namespace models {
       return !(*this == other);
     }
 
-    math::DVector<T> variable_importance() const {
-      return variable_importance(VariableImportanceKind::PROJECTOR);
-    }
-
     virtual long double error_rate(const stats::DataSpec<T, R> &data) const {
       auto [x, y, _classes] = data.unwrap();
       return stats::error_rate(predict(x), y);
@@ -75,23 +80,6 @@ namespace models {
         { "root", root->to_json() }
       };
     }
-
-    protected:
-      virtual math::DVector<T> variable_importance(VariableImportanceKind importance_kind) const {
-        if (importance_kind == VariableImportanceKind::PERMUTATION) {
-          throw std::invalid_argument("VariableImportanceKind::PERMUTATION not supported for a single BaseTree");
-        }
-
-        DerivedTree<T, R> std_tree = retrain(center(descale(*training_data)));
-
-        long double factor = 1.0;
-
-        if (importance_kind == VariableImportanceKind::PROJECTOR_ADJUSTED) {
-          factor = 1.0 / (long double)(root->partition_count());
-        }
-
-        return std_tree.root->variable_importance(importance_kind) * factor;
-      }
   };
 
   template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
@@ -106,6 +94,10 @@ namespace models {
 
     static Tree<T, R> train(const TrainingSpec<T, R> &training_spec, const stats::DataSpec<T, R> &training_data) {
       return Base::train(training_spec, training_data);
+    }
+
+    math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
+      return strategy(*this);
     }
 
     // cppcheck-suppress noExplicitConstructor

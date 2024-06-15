@@ -18,13 +18,6 @@ namespace models {
   struct Condition;
   template<typename T, typename R>
   struct Response;
-
-  enum class VariableImportanceKind {
-    PROJECTOR,
-    PROJECTOR_ADJUSTED,
-    PERMUTATION,
-  };
-
   template<typename T, typename R>
   struct NodeVisitor {
     virtual void visit(const Condition<T, R> &condition) = 0;
@@ -38,8 +31,6 @@ namespace models {
     virtual R predict(const stats::DataColumn<T> &data) const = 0;
     virtual R response() const = 0;
     virtual std::set<int> classes() const = 0;
-    virtual int partition_count() const = 0;
-    virtual math::DVector<T> variable_importance(VariableImportanceKind) const = 0;
     virtual json to_json() const = 0;
     virtual bool equals(const Node<T, R> &other) const = 0;
     virtual bool equals(const Condition<T, R> &other) const = 0;
@@ -107,33 +98,6 @@ namespace models {
       return classes;
     }
 
-    int partition_count() const override {
-      return 1 + lower->partition_count() + upper->partition_count();
-    }
-
-    math::DVector<T> variable_importance(VariableImportanceKind importance_kind) const override {
-      math::DVector<T> lower_importance = lower->variable_importance(importance_kind);
-      math::DVector<T> upper_importance = upper->variable_importance(importance_kind);
-
-      long double factor = 1 / (long double)classes().size();
-
-      if (importance_kind == VariableImportanceKind::PROJECTOR_ADJUSTED) {
-        factor = projector.index;
-      }
-
-      math::DVector<T> importance = math::abs(projector.vector) * factor;
-
-      if (lower_importance.size()) {
-        importance += lower_importance;
-      }
-
-      if (upper_importance.size()) {
-        importance += upper_importance;
-      }
-
-      return importance;
-    }
-
     json to_json() const override {
       return json{
         { "projector", projector.to_json() },
@@ -187,10 +151,6 @@ namespace models {
       return { value };
     }
 
-    math::DVector<T> variable_importance(VariableImportanceKind) const override {
-      return math::DVector<T>::Zero(0);
-    }
-
     json to_json() const override {
       return json{
         { "value", value }
@@ -207,10 +167,6 @@ namespace models {
 
     bool equals(const Response<T, R> &other) const override {
       return *this == other;
-    }
-
-    int partition_count() const override {
-      return 0;
     }
   };
 

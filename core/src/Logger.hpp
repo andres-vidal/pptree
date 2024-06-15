@@ -6,7 +6,6 @@
 
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
 
 
 #ifdef NDEBUG
@@ -20,6 +19,8 @@ using json = nlohmann::json;
 #endif
 
 namespace models {
+  using json = nlohmann::json;
+
   template<typename V>
   std::ostream& operator<<(std::ostream& ostream, const std::vector<V> &vec) {
     json json_vector(vec);

@@ -50,11 +50,11 @@ DataColumn<int> pptree_predict_forest(
 // [[Rcpp::export]]
 DVector<long double> pptree_variable_importance(
   const Tree<long double, int> &tree) {
-  return tree.variable_importance();
+  return tree.variable_importance(VIProjectorStrategy<long double, int>());
 }
 
 // [[Rcpp::export]]
 DVector<long double> pptree_forest_variable_importance(
   const Forest<long double, int> &forest) {
-  return forest.variable_importance();
+  return forest.variable_importance(VIProjectorStrategy<long double, int>());
 }

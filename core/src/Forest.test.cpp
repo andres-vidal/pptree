@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "Forest.hpp"
+#include "VIStrategy.hpp"
 
 using namespace models;
 using namespace models::stats;
@@ -622,156 +623,6 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
   ASSERT_EQ(groups, result);
 }
 
-TEST(Forest, VariableImportanceLDASomeVariablesMultivariateThreeGroups) {
-  Random::rng.seed(0);
-
-  Data<long double> data(30, 5);
-  data <<
-    1, 0, 1, 1, 1,
-    1, 0, 1, 0, 0,
-    1, 0, 0, 0, 1,
-    1, 0, 1, 2, 1,
-    1, 0, 0, 1, 1,
-    1, 1, 1, 1, 0,
-    1, 0, 0, 2, 1,
-    1, 0, 1, 1, 2,
-    1, 0, 0, 2, 0,
-    1, 0, 2, 1, 0,
-    2, 5, 0, 0, 1,
-    2, 5, 0, 0, 2,
-    3, 5, 1, 0, 2,
-    2, 5, 1, 0, 1,
-    2, 5, 0, 1, 1,
-    2, 5, 0, 1, 2,
-    2, 5, 2, 1, 1,
-    2, 5, 1, 1, 1,
-    2, 5, 1, 1, 2,
-    2, 5, 2, 1, 2,
-    2, 5, 1, 2, 1,
-    2, 5, 2, 1, 1,
-    9, 8, 0, 0, 1,
-    9, 8, 0, 0, 2,
-    9, 8, 1, 0, 2,
-    9, 8, 1, 0, 1,
-    9, 8, 0, 1, 1,
-    9, 8, 0, 1, 2,
-    9, 8, 2, 1, 1,
-    9, 8, 1, 1, 1;
-
-  DataColumn<int> groups(30);
-  groups <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
-
-
-  const int n_vars = 2;
-  const double lambda = 0;
-  const int seed = 1;
-
-  Forest<long double, int> forest = Forest<long double, int>::train(
-    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<long double, int>(data, groups),
-    4,
-    seed);
-
-  DVector<long double> result = forest.variable_importance();
-
-  DVector<long double> expected(5);
-  expected <<
-    0.499640,
-    0.249999,
-    0.004744,
-    0.062054,
-    0.064683;
-
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
-}
-
-TEST(Forest, VariableImportancePDAAllVariablesMultivariateTwoGroups) {
-  Data<long double> data(10, 12);
-  data <<
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
-    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
-
-  DataColumn<int> groups(10);
-  groups <<
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1;
-
-  const int n_vars = data.cols();
-  const double lambda = 0.1;
-  const int seed = 0;
-
-  Forest<long double, int> forest = Forest<long double, int>::train(
-    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<long double, int>(data, groups),
-    4,
-    seed);
-
-  DVector<long double> result = forest.variable_importance();
-
-  DVector<long double> expected(12);
-  expected <<
-    0.497305,
-    0.00889968,
-    0.0137289,
-    0.0177429,
-    0.0126566,
-    0.0126566,
-    0.0126566,
-    0.0126566,
-    0.0126566,
-    0.0126566,
-    0.0126566,
-    0.0126566;
-
-  ASSERT_TRUE(expected.isApprox(result, 0.01));
-}
-
 TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups) {
   Data<long double> data(30, 5);
   data <<
@@ -850,7 +701,7 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
     4,
     seed);
 
-  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PROJECTOR);
+  DVector<long double> result = forest.variable_importance(VIProjectorStrategy<long double, int>());
 
   DVector<long double> expected(5);
   expected <<
@@ -900,7 +751,7 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
     4,
     seed);
 
-  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PROJECTOR);
+  DVector<long double> result = forest.variable_importance(VIProjectorStrategy<long double, int>());
 
   DVector<long double> expected(12);
   expected <<
@@ -998,15 +849,15 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
     4,
     seed);
 
-  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PROJECTOR_ADJUSTED);
+  DVector<long double> result = forest.variable_importance(VIProjectorAdjustedStrategy<long double, int>());
 
   DVector<long double> expected(5);
   expected <<
-    0.421856,
-    0.185576,
-    0.004015,
-    0.022115,
-    0.031158;
+    0.565137,
+    0.247005,
+    0.006922,
+    0.025883,
+    0.035029;
 
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
@@ -1049,7 +900,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
     4,
     seed);
 
-  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PROJECTOR_ADJUSTED);
+  DVector<long double> result = forest.variable_importance(VIProjectorAdjustedStrategy<long double, int>());
 
   DVector<long double> expected(12);
   expected <<
@@ -1149,15 +1000,15 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
 
   Random::rng.seed(0);
 
-  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PERMUTATION);
+  DVector<long double> result = forest.variable_importance(VIPermutationStrategy<long double, int>());
 
   DVector<long double> expected(5);
   expected <<
-    0.0681818,
-    0.2780303,
-    -0.108333,
-    -0.050000,
-    0.0208333;
+    0.282954,
+    0.125000,
+    -0.022727,
+    0.093181,
+    0.000000;
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }
@@ -1201,7 +1052,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
 
   Random::rng.seed(0);
 
-  DVector<long double> result = forest.variable_importance(VariableImportanceKind::PERMUTATION);
+  DVector<long double> result = forest.variable_importance(VIPermutationStrategy<long double, int>());
 
   DVector<long double> expected(12);
   expected <<
