@@ -5,11 +5,23 @@
 #include <nlohmann/json.hpp>
 #include <set>
 
-using json = nlohmann::json;
+
 
 namespace models {
+  using json = nlohmann::json;
+
+  template <typename T, typename R>
+  class VIStrategy;
+
   template<typename T, typename R>
   struct Forest {
+    static Forest<T, R> train(
+      const TrainingSpec<T, R> &    training_spec,
+      const stats::DataSpec<T, R> & training_data,
+      const int                     size,
+      const int                     seed);
+
+
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<stats::DataSpec<T, R> > training_data;
@@ -70,30 +82,15 @@ namespace models {
     }
 
     Forest<T, R> retrain(const stats::DataSpec<T, R> &data) const {
-      return train(
+      return Forest<T, R>::train(
         *training_spec,
         data,
         trees.size(),
         seed);
     }
 
-    math::DVector<T> variable_importance(VariableImportanceKind importance_kind) const {
-      Forest<T, R> std_forest = retrain(center(descale(*training_data)));
-
-      math::DVector<T> importance = std::accumulate(
-        std_forest.trees.begin(),
-        std_forest.trees.end(),
-        math::DVector<T>(math::DVector<T>::Zero(training_data->x.cols())),
-        [&importance_kind] (math::DVector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> math::DVector<T> {
-          return acc + tree->variable_importance(importance_kind);
-        });
-
-
-      return importance.array() / (long double)std_forest.trees.size();
-    }
-
-    math::DVector<T> variable_importance() const {
-      return variable_importance(VariableImportanceKind::PROJECTOR);
+    Forest<T, R> standardize() const {
+      return retrain(stats::center(stats::descale(*training_data)));
     }
 
     long double error_rate(const stats::DataSpec<T, R> &data) const {
@@ -115,16 +112,20 @@ namespace models {
       return stats::error_rate(oob_predictions, oob_y);
     }
 
-    virtual stats::ConfusionMatrix confusion_matrix(const stats::DataSpec<T, R> &data) const {
+    stats::ConfusionMatrix confusion_matrix(const stats::DataSpec<T, R> &data) const {
       auto [x, y, _classes] = data.unwrap();
       return stats::ConfusionMatrix(predict(x), y);
     }
 
-    virtual stats::ConfusionMatrix confusion_matrix() const {
+    stats::ConfusionMatrix confusion_matrix() const {
       std::set<int> oob_indices = get_oob_indices();
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
       stats::DataColumn<R> oob_y = stats::select_rows(training_data->y, oob_indices);
       return stats::ConfusionMatrix(oob_predictions, oob_y);
+    }
+
+    math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
+      return strategy(*this);
     }
 
     json to_json() const {
@@ -214,14 +215,6 @@ namespace models {
         return indices;
       }
   };
-
-  template<typename T, typename R >
-  Forest<T, R> train(
-    const TrainingSpec<T, R> &            training_spec,
-    const models::stats::DataSpec<T, R> & training_data,
-    const int                             size,
-    const int                             seed);
-
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Forest<T, R>& forest) {

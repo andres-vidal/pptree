@@ -2,11 +2,17 @@
 
 #include "Tree.hpp"
 #include "BootstrapDataSpec.hpp"
+#include "VIStrategy.hpp"
 
 using namespace models;
 using namespace models::pp;
 using namespace models::stats;
 using namespace models::math;
+
+static Projector<long double> as_projector(std::vector<long double> vector) {
+  Eigen::Map<Projector<long double> > projector(vector.data(), vector.size());
+  return projector;
+}
 
 TEST(Response, EqualsEqualResponses) {
   Response<long double, int> r1(1);
@@ -24,13 +30,13 @@ TEST(Response, EqualsDifferentResponses) {
 
 TEST(Condition, EqualsEqualConditions) {
   Condition<long double, int> c1(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
@@ -40,13 +46,13 @@ TEST(Condition, EqualsEqualConditions) {
 
 TEST(Condition, EqualsCollinearProjectors) {
   Condition<long double, int> c1(
-    Projector<long double>({ 1.0, 1.0 }),
+    as_projector({ 1.0, 1.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
-    Projector<long double>({ 2.0, 2.0 }),
+    as_projector({ 2.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
@@ -56,13 +62,13 @@ TEST(Condition, EqualsCollinearProjectors) {
 
 TEST(Condition, EqualsApproximateThresholds) {
   Condition<long double, int> c1(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.000000000000001,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
@@ -72,13 +78,13 @@ TEST(Condition, EqualsApproximateThresholds) {
 
 TEST(Condition, EqualsNonCollinearProjectors) {
   Condition<long double, int> c1(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
-    Projector<long double>({ 2.0, 3.0 }),
+    as_projector({ 2.0, 3.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
@@ -88,13 +94,13 @@ TEST(Condition, EqualsNonCollinearProjectors) {
 
 TEST(Condition, EqualsDifferentThresholds) {
   Condition<long double, int> c1(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     4.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
@@ -104,13 +110,13 @@ TEST(Condition, EqualsDifferentThresholds) {
 
 TEST(Condition, EqualsDifferentResponses) {
   Condition<long double, int> c1(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(3));
@@ -120,17 +126,17 @@ TEST(Condition, EqualsDifferentResponses) {
 
 TEST(Condition, EqualsDifferentStructures) {
   Condition<long double, int> c1(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Response<long double, int> >(2));
 
   Condition<long double, int> c2(
-    Projector<long double>({ 1.0, 2.0 }),
+    as_projector({ 1.0, 2.0 }),
     3.0,
     std::make_unique<Response<long double, int> >(1),
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 2.0 }),
+      as_projector({ 1.0, 2.0 }),
       3.0,
       std::make_unique<Response<long double, int> >(1),
       std::make_unique<Response<long double, int> >(2)));
@@ -141,22 +147,22 @@ TEST(Condition, EqualsDifferentStructures) {
 TEST(Tree, EqualTrees) {
   Tree<long double, int> t1(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 2.0 }),
+      as_projector({ 1.0, 2.0 }),
       3.0,
       std::make_unique<Response<long double, int> >(1),
       std::make_unique<Condition<long double, int> >(
-        Projector<long double>({ 1.0, 2.0 }),
+        as_projector({ 1.0, 2.0 }),
         3.0,
         std::make_unique<Response<long double, int> >(1),
         std::make_unique<Response<long double, int> >(2))));
 
   Tree<long double, int> t2(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 2.0 }),
+      as_projector({ 1.0, 2.0 }),
       3.0,
       std::make_unique<Response<long double, int> >(1),
       std::make_unique<Condition<long double, int> >(
-        Projector<long double>({ 1.0, 2.0 }),
+        as_projector({ 1.0, 2.0 }),
         3.0,
         std::make_unique<Response<long double, int> >(1),
         std::make_unique<Response<long double, int> >(2))));
@@ -167,14 +173,14 @@ TEST(Tree, EqualTrees) {
 TEST(Tree, DifferentTrees) {
   Tree<long double, int> t1(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 2.0 }),
+      as_projector({ 1.0, 2.0 }),
       3.0,
       std::make_unique<Response<long double, int> >(1),
       std::make_unique<Response<long double, int> >(2)));
 
   Tree<long double, int> t2(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 2.0 }),
+      as_projector({ 1.0, 2.0 }),
       3.0,
       std::make_unique<Response<long double, int> >(1),
       std::make_unique<Response<long double, int> >(3)));
@@ -196,13 +202,13 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 
 
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0 }),
+      as_projector({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)),
@@ -225,17 +231,17 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
     1, 1, 1, 1, 1,
     2, 2, 2, 2, 2;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0 }),
+      as_projector({ 1.0 }),
       1.75,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Condition<long double, int> >(
-        Projector<long double>({ 1.0 }),
+        as_projector({ 1.0 }),
         2.5,
         std::make_unique<Response<long double, int> >(1),
         std::make_unique<Response<long double, int> >(2))),
@@ -273,13 +279,13 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
@@ -357,16 +363,16 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 0.9753647250984685, -0.19102490285203763, -0.02603961769477166, 0.06033431306913992, -0.08862758318234709 }),
+      as_projector({ 0.9753647250984685, -0.19102490285203763, -0.02603961769477166, 0.06033431306913992, -0.08862758318234709 }),
       4.0505145097205055,
       std::make_unique<Condition<long double, int> >(
-        Projector<long double>({ 0.15075268856227853, 0.9830270463921728, -0.013280681282024458, 0.023289310653985006, 0.10105782733996031 }),
+        as_projector({ 0.15075268856227853, 0.9830270463921728, -0.013280681282024458, 0.023289310653985006, 0.10105782733996031 }),
         2.8568896254203113,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
@@ -388,13 +394,13 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0 }),
+      as_projector({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)),
@@ -431,13 +437,13 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 0.9969498534721803, -0.00784130658079787, 0.053487283057874875, -0.05254780467349118, -0.007135670500966689, -0.007135670500966691, -0.007135670500966693, -0.007135670500966691, -0.007135670500966698, -0.007135670500966698, -0.007135670500966696, -0.007135670500966696 }),
+      as_projector({ 0.9969498534721803, -0.00784130658079787, 0.053487283057874875, -0.05254780467349118, -0.007135670500966689, -0.007135670500966691, -0.007135670500966693, -0.007135670500966691, -0.007135670500966698, -0.007135670500966698, -0.007135670500966696, -0.007135670500966696 }),
       2.4440,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
@@ -452,7 +458,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
 TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0 }),
+      as_projector({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)));
@@ -469,11 +475,11 @@ TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
 TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0 }),
+      as_projector({ 1.0 }),
       1.75,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Condition<long double, int> >(
-        Projector<long double>({ 1.0 }),
+        as_projector({ 1.0 }),
         2.5,
         std::make_unique<Response<long double, int> >(1),
         std::make_unique<Response<long double, int> >(2))));
@@ -492,7 +498,7 @@ TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
 TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)));
@@ -508,10 +514,10 @@ TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
 TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
+      as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
       4.118438837901864,
       std::make_unique<Condition<long double, int> >(
-        Projector<long double>({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
+        as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
         2.5,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
@@ -531,7 +537,7 @@ TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
 TEST(Tree, PredictDataUnivariateTwoGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0 }),
+      as_projector({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)));
@@ -550,11 +556,11 @@ TEST(Tree, PredictDataUnivariateTwoGroups) {
 TEST(Tree, PredictDataUnivariateThreeGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0 }),
+      as_projector({ 1.0 }),
       1.75,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Condition<long double, int> >(
-        Projector<long double>({ 1.0 }),
+        as_projector({ 1.0 }),
         2.5,
         std::make_unique<Response<long double, int> >(1),
         std::make_unique<Response<long double, int> >(2))));
@@ -573,7 +579,7 @@ TEST(Tree, PredictDataUnivariateThreeGroups) {
 TEST(Tree, PredictDataMultivariateTwoGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)));
@@ -594,10 +600,10 @@ TEST(Tree, PredictDataMultivariateTwoGroups) {
 TEST(Tree, PredictDataMultivariateThreeGroups) {
   Tree<long double, int> tree = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
+      as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
       4.118438837901864,
       std::make_unique<Condition<long double, int> >(
-        Projector<long double>({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
+        as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
         2.5,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Response<long double, int> >(1)),
@@ -684,7 +690,7 @@ TEST(Tree, RetrainLDASameDataSpec) {
     2,
     2;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -760,7 +766,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
     2,
     2;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -794,7 +800,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0, 0.0, 0.0, 0.0 }),
+      as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)
@@ -832,7 +838,7 @@ TEST(Tree, RetrainPDASameDataSpec) {
     1,
     1;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
@@ -852,7 +858,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -870,7 +876,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
 
   Tree<long double, int> expect = Tree<long double, int>(
     std::make_unique<Condition<long double, int> >(
-      Projector<long double>({ 1.0 }),
+      as_projector({ 1.0 }),
       1.5,
       std::make_unique<Response<long double, int> >(0),
       std::make_unique<Response<long double, int> >(1)),
@@ -880,7 +886,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(Tree, VariableImportanceLDAMultivariateThreeGroups) {
+TEST(Tree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
   Data<long double> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
@@ -947,23 +953,22 @@ TEST(Tree, VariableImportanceLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(),
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
-  DVector<long double> result = tree.variable_importance();
+  DVector<long double> result = tree.variable_importance(VIProjectorStrategy<long double, int>());
 
-  DataColumn<long double> expected(5);
-  expected <<
-    0.408057,
-    0.553833,
-    0.00341304,
-    0.00643757,
-    0.0160685;
+  Projector<long double> expected = as_projector(
+    {   0.408057,
+        0.553833,
+        0.00341304,
+        0.00643757,
+        0.0160685 });
 
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
 }
 
-TEST(Tree, VariableImportantePDAMultivariateTwoGroups) {
+TEST(Tree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
   Data<long double> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -990,15 +995,14 @@ TEST(Tree, VariableImportantePDAMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
 
-  DataColumn<long double> result = tree.variable_importance();
+  DVector<long double> result = tree.variable_importance(VIProjectorStrategy<long double, int>());
 
-  DataColumn<long double> expected(12);
-  expected <<
+  Projector<long double> expected = as_projector({
     0.499665,
     0.00113766,
     0.00831906,
@@ -1010,9 +1014,224 @@ TEST(Tree, VariableImportantePDAMultivariateTwoGroups) {
     0.00180949,
     0.00180949,
     0.00180949,
-    0.00180949;
+    0.00180949 });
 
   ASSERT_TRUE(expected.isApprox(result, 0.0001));
+}
+
+TEST(Tree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
+
+  ASSERT_THROW(tree.variable_importance(VIProjectorAdjustedStrategy<long double, int>()), std::invalid_argument);
+}
+
+TEST(Tree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> tree = Tree<long double, int>::train(
+    *TrainingSpec<long double, int>::glda(0.5),
+    DataSpec<long double, int>(data, groups));
+
+
+  ASSERT_THROW(tree.variable_importance(VIProjectorAdjustedStrategy<long double, int>()), std::invalid_argument);
+}
+
+TEST(Tree, VariableImportancePermutationLDAMultivariateThreeGroups) {
+  Data<long double> data(30, 5);
+  data <<
+    1, 0, 1, 1, 1,
+    1, 0, 1, 0, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 1, 2, 1,
+    1, 0, 0, 1, 1,
+    1, 1, 1, 1, 0,
+    1, 0, 0, 2, 1,
+    1, 0, 1, 1, 2,
+    1, 0, 0, 2, 0,
+    1, 0, 2, 1, 0,
+    2, 5, 0, 0, 1,
+    2, 5, 0, 0, 2,
+    3, 5, 1, 0, 2,
+    2, 5, 1, 0, 1,
+    2, 5, 0, 1, 1,
+    2, 5, 0, 1, 2,
+    2, 5, 2, 1, 1,
+    2, 5, 1, 1, 1,
+    2, 5, 1, 1, 2,
+    2, 5, 2, 1, 2,
+    2, 5, 1, 2, 1,
+    2, 5, 2, 1, 1,
+    9, 8, 0, 0, 1,
+    9, 8, 0, 0, 2,
+    9, 8, 1, 0, 2,
+    9, 8, 1, 0, 1,
+    9, 8, 0, 1, 1,
+    9, 8, 0, 1, 2,
+    9, 8, 2, 1, 1,
+    9, 8, 1, 1, 1;
+
+  DataColumn<int> groups(30);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2;
+
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(),
+    DataSpec<long double, int>(data, groups));
+
+  ASSERT_THROW(tree.variable_importance(VIPermutationStrategy<long double, int>()), std::invalid_argument);
+}
+
+TEST(Tree, VariableImportancePermutationPDAMultivariateTwoGroups) {
+  Data<long double> data(10, 12);
+  data <<
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+
+  DataColumn<int> groups(10);
+  groups <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1;
+
+  Tree<long double, int> tree = Tree<long double, int>::train(
+    *TrainingSpec<long double, int>::glda(0.5),
+    DataSpec<long double, int>(data, groups));
+
+  ASSERT_THROW(tree.variable_importance(VIPermutationStrategy<long double, int>()), std::invalid_argument);
 }
 
 TEST(Tree, ErrorRateDataSpecMin) {
@@ -1083,7 +1302,7 @@ TEST(Tree, ErrorRateDataSpecMin) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1159,7 +1378,7 @@ TEST(Tree, ErrorRateDataSpecMax) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 3);
 
   long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1235,7 +1454,7 @@ TEST(Tree, ErrorRateDataSpecGeneric) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1311,7 +1530,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMin) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices(10);
@@ -1390,7 +1609,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMax) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 1);
 
   std::vector<int> sample_indices(10);
@@ -1469,7 +1688,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecGeneric) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   std::vector<int> sample_indices(20);
@@ -1549,7 +1768,7 @@ TEST(Tree, ConfusionMatrixDataSpecDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   ConfusionMatrix result = tree.confusion_matrix(DataSpec<long double, int>(x, actual_y));
@@ -1633,7 +1852,7 @@ TEST(Tree, ConfusionMatrixDataSpecZeroDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y(30);
   actual_y <<
     1,
@@ -1751,7 +1970,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
@@ -1837,7 +2056,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y(30);
   actual_y <<
     1,

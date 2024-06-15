@@ -14,7 +14,7 @@ Tree<long double, int> pptree_train_glda(
   Data<long double> &data,
   DataColumn<int> &  groups,
   double             lambda) {
-  return train(
+  return Tree<long double, int>::train(
     *TrainingSpec<long double, int>::glda(lambda),
     DataSpec<long double, int>(data, groups));
 }
@@ -26,7 +26,7 @@ Forest<long double, int> pptree_train_forest_glda(
   const int                 size,
   const int                 n_vars,
   const double              lambda) {
-  return train(
+  return Forest<long double, int>::train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     size,
@@ -48,13 +48,13 @@ DataColumn<int> pptree_predict_forest(
 }
 
 // [[Rcpp::export]]
-DVector<long double> pptree_variable_importance(
+Projector<long double> pptree_variable_importance(
   const Tree<long double, int> &tree) {
-  return tree.variable_importance();
+  return tree.variable_importance(VIProjectorStrategy<long double, int>());
 }
 
 // [[Rcpp::export]]
-DVector<long double> pptree_forest_variable_importance(
+Projector<long double> pptree_forest_variable_importance(
   const Forest<long double, int> &forest) {
-  return forest.variable_importance();
+  return forest.variable_importance(VIProjectorStrategy<long double, int>());
 }

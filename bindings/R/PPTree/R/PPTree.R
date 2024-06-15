@@ -115,7 +115,7 @@ print_node <- function(model, node, depth = 0) {
     cat(indent, "Predict:", model$classes[node$value], "\n")
   } else {
     projection_str <- paste(
-      "[", paste(round(node$projector$vector, 2), collapse = " "), "] * x",
+      "[", paste(round(node$projector, 2), collapse = " "), "] * x",
       collapse = ""
     )
 

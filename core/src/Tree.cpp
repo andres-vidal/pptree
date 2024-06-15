@@ -1,9 +1,8 @@
-
 #include "Tree.hpp"
 #include "BootstrapDataSpec.hpp"
+#include "BootstrapTree.hpp"
 #include "Group.hpp"
 #include "Logger.hpp"
-
 
 using namespace models::pp;
 using namespace models::pp::strategy;
@@ -60,8 +59,8 @@ namespace models {
     DataColumn<T> mean_1 = mean(select_group(data, groups, group_1));
     DataColumn<T> mean_2 = mean(select_group(data, groups, group_2));
 
-    T projected_mean_1 = projector.project(mean_1);
-    T projected_mean_2 = projector.project(mean_2);
+    T projected_mean_1 = project(mean_1, projector);
+    T projected_mean_2 = project(mean_2, projector);
 
     LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
     LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
@@ -85,13 +84,15 @@ namespace models {
 
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > binary_step(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const R &               group_1,
-    const R &               group_2,
-    const PPStrategy<T, R> &pp_strategy) {
+    const Data<T> &            data,
+    const DataColumn<R> &      groups,
+    const R &                  group_1,
+    const R &                  group_2,
+    const TrainingSpec<T, R> & training_spec) {
     std::set<R> unique_groups = { group_1, group_2 };
     LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << unique_groups << std::endl;
+
+    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
     auto [projector, projected] = pp_strategy(data, groups, unique_groups);
 
@@ -112,7 +113,9 @@ namespace models {
       projector,
       threshold,
       std::move(lower_response),
-      std::move(upper_response));
+      std::move(upper_response),
+      training_spec.clone(),
+      std::make_unique<DataSpec<T, R> >(data, groups, unique_groups));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -163,8 +166,8 @@ namespace models {
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
-    PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
-    DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
+    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+    const DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
 
     Data<T> reduced_data = dr_strategy(data);
 
@@ -176,7 +179,7 @@ namespace models {
         groups,
         group_1,
         group_2,
-        pp_strategy);
+        training_spec);
     }
 
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
@@ -192,7 +195,7 @@ namespace models {
       binary_groups,
       group_1,
       group_2,
-      pp_strategy);
+      training_spec);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
@@ -219,21 +222,23 @@ namespace models {
       temp_node->projector,
       temp_node->threshold,
       std::move(lower_branch),
-      std::move(upper_branch));
+      std::move(upper_branch),
+      training_spec.clone(),
+      std::make_unique<DataSpec<T, R> >(data, groups, unique_groups));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
   };
 
-  template<typename T, typename R, typename D>
-  Tree<T, R, D> train(
+  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
+  DerivedTree<T, R> BaseTree<T, R, D, DerivedTree>::train(
     const TrainingSpec<T, R> &training_spec,
     const D &                 training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     auto [x, y, classes] = training_data.unwrap();
 
-    Tree<T, R, D> tree(
+    DerivedTree<T, R> tree(
       step(
         x,
         y,
@@ -246,11 +251,11 @@ namespace models {
     return tree;
   }
 
-  template Tree<long double, int, DataSpec<long double, int> > train(
+  template Tree<long double, int> BaseTree<long double, int, DataSpec<long double, int>, Tree>::train(
     const TrainingSpec<long double, int> &training_spec,
     const DataSpec<long double, int> &    training_data);
 
-  template Tree<long double, int, BootstrapDataSpec<long double, int> > train(
-    const TrainingSpec<long double, int> &      training_spec,
-    const BootstrapDataSpec<long double, int> & training_data);
+  template BootstrapTree<long double, int> BaseTree<long double, int, BootstrapDataSpec<long double, int>, BootstrapTree>::train(
+    const TrainingSpec<long double, int> &     training_spec,
+    const BootstrapDataSpec<long double, int> &training_data);
 }
