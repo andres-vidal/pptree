@@ -1,6 +1,7 @@
 
 #include "Tree.hpp"
 #include "BootstrapDataSpec.hpp"
+#include "BootstrapTree.hpp"
 #include "Group.hpp"
 #include "Logger.hpp"
 
@@ -225,15 +226,15 @@ namespace models {
     return condition;
   };
 
-  template<typename T, typename R, typename D>
-  BaseTree<T, R, D> train(
+  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
+  DerivedTree<T, R> BaseTree<T, R, D, DerivedTree>::train(
     const TrainingSpec<T, R> &training_spec,
     const D &                 training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     auto [x, y, classes] = training_data.unwrap();
 
-    BaseTree<T, R, D> tree(
+    DerivedTree<T, R> tree(
       step(
         x,
         y,
@@ -246,11 +247,11 @@ namespace models {
     return tree;
   }
 
-  template BaseTree<long double, int, DataSpec<long double, int> > train(
+  template Tree<long double, int> BaseTree<long double, int, DataSpec<long double, int>, Tree>::train(
     const TrainingSpec<long double, int> &training_spec,
     const DataSpec<long double, int> &    training_data);
 
-  template BaseTree<long double, int, BootstrapDataSpec<long double, int> > train(
-    const TrainingSpec<long double, int> &      training_spec,
-    const BootstrapDataSpec<long double, int> & training_data);
+  template BootstrapTree<long double, int> BaseTree<long double, int, BootstrapDataSpec<long double, int>, BootstrapTree>::train(
+    const TrainingSpec<long double, int> &     training_spec,
+    const BootstrapDataSpec<long double, int> &training_data);
 }

@@ -4,7 +4,7 @@ using namespace models::stats;
 
 namespace models {
   template<typename T, typename R >
-  Forest<T, R> train(
+  Forest<T, R> Forest<T, R>::train(
     const TrainingSpec<T, R> &training_spec,
     const DataSpec<T, R> &    training_data,
     const int                 size,
@@ -26,7 +26,7 @@ namespace models {
         training_data,
         training_data.x.rows());
 
-      BootstrapTree<T, R> tree = train(
+      BootstrapTree<T, R> tree = BootstrapTree<T, R>::train(
         training_spec,
         sample_training_data);
 
@@ -38,7 +38,7 @@ namespace models {
     return forest;
   }
 
-  template Forest<long double, int> train(
+  template Forest<long double, int> Forest<long double, int>::train(
     const TrainingSpec<long double, int> &training_spec,
     const DataSpec<long double, int> &    training_data,
     const int                             size,

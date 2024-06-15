@@ -10,6 +10,13 @@ using json = nlohmann::json;
 namespace models {
   template<typename T, typename R>
   struct Forest {
+    static Forest<T, R> train(
+      const TrainingSpec<T, R> &    training_spec,
+      const stats::DataSpec<T, R> & training_data,
+      const int                     size,
+      const int                     seed);
+
+
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<stats::DataSpec<T, R> > training_data;
@@ -70,7 +77,7 @@ namespace models {
     }
 
     Forest<T, R> retrain(const stats::DataSpec<T, R> &data) const {
-      return train(
+      return Forest<T, R>::train(
         *training_spec,
         data,
         trees.size(),
@@ -214,14 +221,6 @@ namespace models {
         return indices;
       }
   };
-
-  template<typename T, typename R >
-  Forest<T, R> train(
-    const TrainingSpec<T, R> &            training_spec,
-    const models::stats::DataSpec<T, R> & training_data,
-    const int                             size,
-    const int                             seed);
-
 
   template<typename T, typename R>
   std::ostream& operator<<(std::ostream & ostream, const Forest<T, R>& forest) {

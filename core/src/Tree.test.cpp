@@ -196,7 +196,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 
 
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -225,7 +225,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
     1, 1, 1, 1, 1,
     2, 2, 2, 2, 2;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -273,7 +273,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -357,7 +357,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -388,7 +388,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -431,7 +431,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<long double, int> result = train(
+  Tree<long double, int> result = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
@@ -684,7 +684,7 @@ TEST(Tree, RetrainLDASameDataSpec) {
     2,
     2;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -760,7 +760,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
     2,
     2;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -832,7 +832,7 @@ TEST(Tree, RetrainPDASameDataSpec) {
     1,
     1;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
@@ -852,7 +852,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
@@ -947,7 +947,7 @@ TEST(Tree, VariableImportanceLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(),
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(),
     DataSpec<long double, int>(data, groups));
 
   DVector<long double> result = tree.variable_importance();
@@ -990,7 +990,7 @@ TEST(Tree, VariableImportantePDAMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<long double, int> tree = train(
+  Tree<long double, int> tree = Tree<long double, int>::train(
     *TrainingSpec<long double, int>::glda(0.5),
     DataSpec<long double, int>(data, groups));
 
@@ -1083,7 +1083,7 @@ TEST(Tree, ErrorRateDataSpecMin) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1159,7 +1159,7 @@ TEST(Tree, ErrorRateDataSpecMax) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 3);
 
   long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1235,7 +1235,7 @@ TEST(Tree, ErrorRateDataSpecGeneric) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   long double result = tree.error_rate(DataSpec<long double, int>(x, actual_y));
@@ -1311,7 +1311,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMin) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices(10);
@@ -1390,7 +1390,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMax) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 1);
 
   std::vector<int> sample_indices(10);
@@ -1469,7 +1469,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecGeneric) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   std::vector<int> sample_indices(20);
@@ -1549,7 +1549,7 @@ TEST(Tree, ConfusionMatrixDataSpecDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   ConfusionMatrix result = tree.confusion_matrix(DataSpec<long double, int>(x, actual_y));
@@ -1633,7 +1633,7 @@ TEST(Tree, ConfusionMatrixDataSpecZeroDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y(30);
   actual_y <<
     1,
@@ -1751,7 +1751,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
@@ -1837,7 +1837,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
     2;
 
   DataSpec<long double, int> data(x, y);
-  Tree<long double, int> tree = train(*TrainingSpec<long double, int>::lda(), data);
+  Tree<long double, int> tree = Tree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
   DataColumn<int> actual_y(30);
   actual_y <<
     1,

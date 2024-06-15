@@ -1,3 +1,5 @@
+#pragma once
+
 #include "DataSpec.hpp"
 #include "Uniform.hpp"
 namespace models::stats {

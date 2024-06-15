@@ -10,8 +10,10 @@
 
 namespace models {
   using json = nlohmann::json;
-  template<typename T, typename R, typename D>
+  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
   struct BaseTree {
+    static DerivedTree<T, R> train(const TrainingSpec<T, R> &training_spec, const D &training_data);
+
     std::unique_ptr<Condition<T, R> > root;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<D> training_data;
@@ -28,6 +30,10 @@ namespace models {
       training_data(training_data) {
     }
 
+    DerivedTree<T, R> retrain(const D &data) const {
+      return BaseTree::train(*this->training_spec, data);
+    }
+
     R predict(const stats::DataColumn<T> &data) const {
       return root->predict(data);
     }
@@ -42,16 +48,12 @@ namespace models {
       return predictions;
     }
 
-    bool operator==(const BaseTree<T, R, D> &other) const {
+    bool operator==(const BaseTree<T, R, D, DerivedTree> &other) const {
       return *root == *other.root;
     }
 
-    bool operator!=(const BaseTree<T, R, D> &other) const {
+    bool operator!=(const BaseTree<T, R, D, DerivedTree> &other) const {
       return !(*this == other);
-    }
-
-    BaseTree<T, R, D > retrain(const D &data) const {
-      return train(*training_spec, data);
     }
 
     math::DVector<T> variable_importance() const {
@@ -80,7 +82,7 @@ namespace models {
           throw std::invalid_argument("VariableImportanceKind::PERMUTATION not supported for a single BaseTree");
         }
 
-        BaseTree<T, R, D> std_tree = retrain(center(descale(*training_data)));
+        DerivedTree<T, R> std_tree = retrain(center(descale(*training_data)));
 
         long double factor = 1.0;
 
@@ -92,20 +94,19 @@ namespace models {
       }
   };
 
-  template<typename T, typename R, typename D >
-  BaseTree<T, R, D> train(
-    const TrainingSpec<T, R> &training_spec,
-    const D &                 training_data);
-
-  template<typename T, typename R, typename D>
-  std::ostream& operator<<(std::ostream & ostream, const BaseTree<T, R, D>& tree) {
+  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
+  std::ostream& operator<<(std::ostream & ostream, const BaseTree<T, R, D, DerivedTree>& tree) {
     return ostream << tree.to_json().dump(2, ' ', false);
   }
 
   template<typename T, typename R>
-  struct Tree : public BaseTree<T, R, stats::DataSpec<T, R> > {
-    using Base = BaseTree<T, R, stats::DataSpec<T, R> >;
-    using BaseTree<T, R, stats::DataSpec<T, R> >::BaseTree;
+  struct Tree : public BaseTree<T, R, stats::DataSpec<T, R>, Tree> {
+    using Base = BaseTree<T, R, stats::DataSpec<T, R>, Tree >;
+    using Base::Base;
+
+    static Tree<T, R> train(const TrainingSpec<T, R> &training_spec, const stats::DataSpec<T, R> &training_data) {
+      return Base::train(training_spec, training_data);
+    }
 
     // cppcheck-suppress noExplicitConstructor
     Tree(Base tree)

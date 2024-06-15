@@ -3,11 +3,16 @@
 
 namespace models {
   template<typename T, typename R>
-  struct BootstrapTree : public BaseTree<T, R, stats::BootstrapDataSpec<T, R> > {
-    using Base = BaseTree<T, R, stats::BootstrapDataSpec<T, R> >;
+  struct BootstrapTree : public BaseTree<T, R, stats::BootstrapDataSpec<T, R>, BootstrapTree > {
+    using Base = BaseTree<T, R, stats::BootstrapDataSpec<T, R>, BootstrapTree >;
+    using Base::Base;
     using Base::variable_importance;
     using Base::error_rate;
     using Base::confusion_matrix;
+
+    static BootstrapTree<T, R> train(const TrainingSpec<T, R> &training_spec, const stats::BootstrapDataSpec<T, R> &training_data) {
+      return Base::train(training_spec, training_data);
+    }
 
     explicit BootstrapTree(std::unique_ptr<Condition<T, R> > root)
       : Base(std::move(root)) {
