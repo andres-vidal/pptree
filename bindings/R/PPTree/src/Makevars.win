@@ -6,7 +6,20 @@ BUILD_DIR = .build
 all: pptree $(SHLIB)
  
 pptree:
-	mkdir -p "$(BUILD_DIR)" "../inst/lib"
-	cd "$(BUILD_DIR)" && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release "../core" && make
-	cp "$(BUILD_DIR)/libpptree.a" "../inst/lib"
-	rm -rf "$(BUILD_DIR)"
+	@if [ -f .core ]; then \
+		cd ../../../..;\
+		echo "Development environment detected. Copying source files"; \
+		mkdir -p $(BUILD_DIR); \
+		make build; \
+		cp -r $(DEV_NLHOHMMAN_DIR)/* $(DEV_PACKAGE_DIR)/inst/include; \
+		mkdir -p ${DEV_PACKAGE_DIR}/src/core && cp -r core/* ${DEV_PACKAGE_DIR}/src/core; \
+	fi
+
+	@if [ ! -f ../inst/lib/libpptree.a ]; then \
+		mkdir -p $(BUILD_DIR) ../inst/lib; \
+		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core && make && cd ..; \
+		cp $(BUILD_DIR)/libpptree.a ../inst/lib; \
+		rm -rf $(BUILD_DIR); \
+	else \
+		echo "pptree already built. Skipping compilation."; \
+	fi

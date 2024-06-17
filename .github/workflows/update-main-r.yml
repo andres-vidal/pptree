@@ -1,0 +1,33 @@
+name: Update R Package Main Branch
+on:
+  push:
+    branches:
+      - main
+jobs:
+  UpdateMainR:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+      - run: make r-install-deps 
+      - run: make r-build
+      - run: make r-untar
+      - run: git config --global user.name "Andrés Vidal"
+      - run: git config --global user.email "me@andresvidal.dev"
+      - run: git add -A
+      - run: git commit -m "Release"
+      - run: git subtree split -P PPTree -b main-r
+      - run: git checkout main-r
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GH_ACCESS_TOKEN }}
+          branch: main-r
+          force: true
+          
+          
+
+
+
+
+

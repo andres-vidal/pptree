@@ -57,12 +57,20 @@ Install the development tools from the project's root executing:
 
 Refer to the root's `Makefile` for other useful commands.
 
+## Runnings Tests
+
+Test can be run using one of the following `Makefile` targets:
+
+- `make test`
+- `make test-debug`
+
+
 # R package management
 
 To avoid cloning this repository and using the specified toolchain, install the `devtools` package and use the following command to install the latest changes in `main`:
 
 ```R
-devtools::install_github("https://github.com/andres-vidal/r-pptree")
+devtools::install_github("https://github.com/andres-vidal/pptree", ref="main-r")
 ```
 
 Install project build dependencies:
@@ -86,12 +94,3 @@ The `Makefile` defines useful targets to build, check and install the R package 
 - `make r-document` updates the documentation based on source files
 
 **Do not check or install the package from the raw source files. Always run `make r-build` and use the generated tarball.** This is important, because that target copies the core library's code to the package so it can be compiled on install.
-
-
-## Runnings Tests
-
-Test can be run using one of the following `Makefile` targets:
-
-- `make test`
-- `make test-debug`
-

@@ -67,7 +67,7 @@ r-clean:
 		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
 		PPTree.Rcheck
 
-r-prepare:
+r-prepare: r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 
@@ -78,8 +78,10 @@ r-document:
 
 r-build: build r-clean
 	@make r-prepare
+	@rm ${R_PACKAGE_DIR}/src/.core
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
 	@R CMD build ${R_PACKAGE_DIR}
+	@touch ${R_PACKAGE_DIR}/src/.core
 	@make r-clean
 
 r-check: r-build

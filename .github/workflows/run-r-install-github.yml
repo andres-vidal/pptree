@@ -1,0 +1,34 @@
+name: Run R Install GitHub
+on:
+  push:
+    branches:
+      - main-r
+jobs:
+  Ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+      - run: make r-install-deps 
+      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/pptree', ref='main-r')"
+  Mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+      - run: make r-install-deps 
+      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/pptree', ref='main-r')"
+  Windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+      - run: make r-install-deps 
+      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/pptree', ref='main-r')"
+      
+
+
+
+
+
+

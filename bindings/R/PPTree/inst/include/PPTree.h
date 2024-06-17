@@ -4,7 +4,6 @@
 
 using namespace pptree;
 
-
 namespace Rcpp {
   SEXP wrap(const Node<long double, int> &);
   SEXP wrap(const Tree<long double, int > &);
