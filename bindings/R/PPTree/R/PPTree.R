@@ -13,7 +13,7 @@ NULL
 #' @param x A matrix containing the features for each observation.
 #' @param y A matrix containing the labels for each observation.
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
-#' @param max.retries The maximum number of retries to perform when the optimization fails. The whole tree is retried. The default is 0.
+#' @param max_retries The maximum number of retries to perform when the optimization fails. The whole tree is retried. The default is 0.
 #' @return A PPTree model trained on \code{x} and \code{y}.
 #' @examples
 #'
@@ -52,14 +52,14 @@ PPTree <- function(
     x = NULL,
     y = NULL,
     lambda = 0,
-    max.retries = 0) {
+    max_retries = 0) {
   args <- process_model_arguments(formula, data, x, y)
 
   x <- args$x
   y <- args$y
   classes <- args$classes
 
-  model <- pptree_train_glda(args$x, args$y, lambda, max.retries)
+  model <- pptree_train_glda(args$x, args$y, lambda, max_retries)
 
   class(model) <- "PPTree"
   model$classes <- classes
@@ -167,8 +167,8 @@ print.PPTree <- function(x, ...) {
 #' @export
 summary.PPTree <- function(object, ...) {
   model <- object
-  model$variableImportance <- data.frame(Var.Importance = t(pptree_variable_importance(model)))
-  colnames(model$variableImportance) <- colnames(model$x)
+  model$variable_importance <- data.frame(Var.Importance = t(pptree_variable_importance(model)))
+  colnames(model$variable_importance) <- colnames(model$x)
 
 
   if (!is.null(formula(object))) {
@@ -176,13 +176,13 @@ summary.PPTree <- function(object, ...) {
     cat("Project-Pursuit Oblique Decision Tree\n")
     cat("-------------------------------------\n")
     cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
-    cat("Regularization parameter:", model$trainingSpec$lambda, "\n")
+    cat("Regularization parameter:", model$training_spec$lambda, "\n")
     cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
     if (!is.null(model$formula)) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
     cat("-------------------------------------\n")
-    print(model$variableImportance)
+    print(model$variable_importance)
   }
   cat("\n")
 }

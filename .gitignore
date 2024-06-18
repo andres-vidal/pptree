@@ -14,5 +14,4 @@ PPTree_*.tar.gz
 .DS_Store
 
 bindings/R/PPTree/src/core
-bindings/R/PPTree/inst/include
-!bindings/R/PPTree/inst/include/PPTree.h
+bindings/R/PPTree/inst/include/nlohmann

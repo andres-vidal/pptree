@@ -69,15 +69,15 @@ namespace Rcpp {
 
   SEXP wrap(const Tree<long double, int > &tree) {
     return Rcpp::List::create(
-      Rcpp::Named("trainingSpec") = Rcpp::wrap(*tree.training_spec),
-      Rcpp::Named("trainingData") = Rcpp::wrap(*tree.training_data),
+      Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
+      Rcpp::Named("training_data") = Rcpp::wrap(*tree.training_data),
       Rcpp::Named("root") = Rcpp::wrap(*tree.root));
   }
 
   SEXP wrap(const BootstrapTree<long double, int> &tree) {
     return Rcpp::List::create(
-      Rcpp::Named("trainingSpec") = Rcpp::wrap(*tree.training_spec),
-      Rcpp::Named("trainingData") = Rcpp::wrap(*tree.training_data),
+      Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
+      Rcpp::Named("training_data") = Rcpp::wrap(*tree.training_data),
       Rcpp::Named("root") = Rcpp::wrap(*tree.root));
   }
 
@@ -89,8 +89,8 @@ namespace Rcpp {
     }
 
     return Rcpp::List::create(
-      Rcpp::Named("trainingSpec") = Rcpp::wrap(*forest.training_spec),
-      Rcpp::Named("trainingData") = Rcpp::wrap(*forest.training_data),
+      Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
+      Rcpp::Named("training_data") = Rcpp::wrap(*forest.training_data),
       Rcpp::Named("seed") = Rcpp::wrap(forest.seed),
       Rcpp::Named("trees") = trees);
   }
@@ -117,7 +117,7 @@ namespace Rcpp {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "glda",
       Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda),
-      Rcpp::Named("maxRetries") = Rcpp::wrap(spec.max_retries));
+      Rcpp::Named("max_retries") = Rcpp::wrap(spec.max_retries));
   }
 
   SEXP wrap(const UniformGLDATrainingSpec<long double, int> &spec) {
@@ -125,7 +125,7 @@ namespace Rcpp {
       Rcpp::Named("strategy") = "uniform_glda",
       Rcpp::Named("n_vars") = Rcpp::wrap(spec.n_vars),
       Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda),
-      Rcpp::Named("maxRetries") = Rcpp::wrap(spec.max_retries));
+      Rcpp::Named("max_retries") = Rcpp::wrap(spec.max_retries));
   }
 
   SEXP wrap(const DataSpec<long double, int> &data) {
@@ -140,7 +140,7 @@ namespace Rcpp {
       Rcpp::Named("x") = Rcpp::wrap(data.x),
       Rcpp::Named("y") = Rcpp::wrap(data.y),
       Rcpp::Named("classes") = Rcpp::wrap(data.classes),
-      Rcpp::Named("sampleIndices") = Rcpp::wrap(data.sample_indices));
+      Rcpp::Named("sample_indices") = Rcpp::wrap(data.sample_indices));
   }
 
   template<> std::unique_ptr<Node<long double, int> > as(SEXP x) {
@@ -178,8 +178,8 @@ namespace Rcpp {
 
   template<> Tree<long double, int > as(SEXP x) {
     Rcpp::List rtree(x);
-    Rcpp::List rtraining_spec(rtree["trainingSpec"]);
-    Rcpp::List rtraining_data(rtree["trainingData"]);
+    Rcpp::List rtraining_spec(rtree["training_spec"]);
+    Rcpp::List rtraining_data(rtree["training_data"]);
 
     auto root = as<Condition<long double, int> >(rtree["root"]);
     auto root_ptr = std::make_unique<Condition<long double, int> >(std::move(root));
@@ -193,8 +193,8 @@ namespace Rcpp {
 
   template<> BootstrapTree<long double, int> as(SEXP x) {
     Rcpp::List rtree(x);
-    Rcpp::List rtraining_spec(rtree["trainingSpec"]);
-    Rcpp::List rtraining_data(rtree["trainingData"]);
+    Rcpp::List rtraining_spec(rtree["training_spec"]);
+    Rcpp::List rtraining_data(rtree["training_data"]);
 
     auto root = as<Condition<long double, int> >(rtree["root"]);
     auto root_ptr = std::make_unique<Condition<long double, int> >(std::move(root));
@@ -210,8 +210,8 @@ namespace Rcpp {
   template<> Forest<long double, int> as(SEXP x) {
     Rcpp::List rforest(x);
     Rcpp::List rtrees(rforest["trees"]);
-    Rcpp::List rtraining_spec(rforest["trainingSpec"]);
-    Rcpp::List rtraining_data(rforest["trainingData"]);
+    Rcpp::List rtraining_spec(rforest["training_spec"]);
+    Rcpp::List rtraining_data(rforest["training_data"]);
 
     auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<long double, int> > >(rtraining_spec);
 
@@ -233,7 +233,7 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(x);
 
     std::string strategy = Rcpp::as<std::string>(rtraining_spec["strategy"]);
-    int max_retries = Rcpp::as<int>(rtraining_spec["maxRetries"]);
+    int max_retries = Rcpp::as<int>(rtraining_spec["max_retries"]);
 
     if (strategy == "glda") {
       double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
@@ -265,7 +265,7 @@ namespace Rcpp {
     Rcpp::List rdata(x);
 
     std::vector<int> classes = Rcpp::as<std::vector<int> >(rdata["classes"]);
-    std::vector<int> sample_indices = Rcpp::as<std::vector<int> >(rdata["sampleIndices"]);
+    std::vector<int> sample_indices = Rcpp::as<std::vector<int> >(rdata["sample_indices"]);
 
     return BootstrapDataSpec<long double, int>(
       Rcpp::as<Data<long double> >(rdata["x"]),
