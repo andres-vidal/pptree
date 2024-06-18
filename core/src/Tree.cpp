@@ -3,6 +3,7 @@
 #include "BootstrapTree.hpp"
 #include "Group.hpp"
 #include "Logger.hpp"
+#include "Error.hpp"
 
 using namespace models::pp;
 using namespace models::pp::strategy;
@@ -236,14 +237,25 @@ namespace models {
     const D &                 training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
-    auto [x, y, classes] = training_data.unwrap();
+    auto unwrapped = training_data.unwrap();
+    auto &x = std::get<0>(unwrapped);
+    auto &y = std::get<1>(unwrapped);
+    auto &classes = std::get<2>(unwrapped);
+
+    std::unique_ptr<Condition<T, R> > root_ptr = attempt<models::training_error>(
+      training_spec.max_retries,
+      [&x, &y, &classes, &training_spec]() {
+        LOG_INFO << "Root step." << std::endl;
+        return step(
+          x,
+          y,
+          classes,
+          training_spec);
+      });
+
 
     DerivedTree<T, R> tree(
-      step(
-        x,
-        y,
-        classes,
-        training_spec),
+      std::move(root_ptr),
       training_spec.clone(),
       std::make_shared<D >(training_data));
 

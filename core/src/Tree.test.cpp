@@ -477,7 +477,7 @@ TEST(Tree, TrainLDAConstantData) {
   auto spec = TrainingSpec<long double, int>::glda(0.0);
   auto data = DataSpec<long double, int>(x, y);
 
-  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), std::runtime_error);
+  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), models::training_error);
 }
 
 TEST(Tree, TrainPDAConstantData) {
@@ -502,7 +502,7 @@ TEST(Tree, TrainPDAConstantData) {
   auto spec = TrainingSpec<long double, int>::glda(0.5);
   auto data = DataSpec<long double, int>(x, y);
 
-  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), std::runtime_error);
+  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), models::training_error);
 }
 
 TEST(Tree, TrainLDANoVarianceBetweenGroups) {
@@ -530,7 +530,7 @@ TEST(Tree, TrainLDANoVarianceBetweenGroups) {
   auto spec = TrainingSpec<long double, int>::glda(0.0);
   auto data = DataSpec<long double, int>(x, y);
 
-  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), std::runtime_error);
+  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), models::training_error);
 }
 
 TEST(Tree, TrainPDANoVarianceBetweenGroups) {
@@ -558,7 +558,7 @@ TEST(Tree, TrainPDANoVarianceBetweenGroups) {
   auto spec = TrainingSpec<long double, int>::glda(0.5);
   auto data = DataSpec<long double, int>(x, y);
 
-  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), std::runtime_error);
+  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), models::training_error);
 }
 
 TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
