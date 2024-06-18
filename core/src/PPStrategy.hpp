@@ -88,6 +88,12 @@ namespace models::pp::strategy {
 
       auto [var_mask, var_index] = stats::mask_null_columns(complete_B);
 
+      if (var_index.size() == 0) {
+        std::stringstream ss;
+        ss << "Cannot split between classes " << unique_groups << ": no variance between groups for any considered variable.";
+        throw std::runtime_error(ss.str());
+      }
+
       LOG_INFO << "Considered variables after filtering out constant ones: " << var_index << std::endl;
 
       stats::Data<T> B = complete_B(var_index, var_index);
