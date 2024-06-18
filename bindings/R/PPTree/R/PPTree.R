@@ -13,6 +13,7 @@ NULL
 #' @param x A matrix containing the features for each observation.
 #' @param y A matrix containing the labels for each observation.
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
+#' @param max.retries The maximum number of retries to perform when the optimization fails. The whole tree is retried. The default is 0.
 #' @return A PPTree model trained on \code{x} and \code{y}.
 #' @examples
 #'
@@ -50,14 +51,15 @@ PPTree <- function(
     data = NULL,
     x = NULL,
     y = NULL,
-    lambda = 0) {
+    lambda = 0,
+    max.retries = 0) {
   args <- process_model_arguments(formula, data, x, y)
 
   x <- args$x
   y <- args$y
   classes <- args$classes
 
-  model <- pptree_train_glda(args$x, args$y, lambda)
+  model <- pptree_train_glda(args$x, args$y, lambda, max.retries)
 
   class(model) <- "PPTree"
   model$classes <- classes

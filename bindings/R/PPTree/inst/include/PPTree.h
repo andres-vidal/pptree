@@ -116,14 +116,16 @@ namespace Rcpp {
   SEXP wrap(const GLDATrainingSpec<long double, int> &spec) {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "glda",
-      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
+      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda),
+      Rcpp::Named("maxRetries") = Rcpp::wrap(spec.max_retries));
   }
 
   SEXP wrap(const UniformGLDATrainingSpec<long double, int> &spec) {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "uniform_glda",
       Rcpp::Named("n_vars") = Rcpp::wrap(spec.n_vars),
-      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
+      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda),
+      Rcpp::Named("maxRetries") = Rcpp::wrap(spec.max_retries));
   }
 
   SEXP wrap(const DataSpec<long double, int> &data) {
@@ -231,32 +233,21 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(x);
 
     std::string strategy = Rcpp::as<std::string>(rtraining_spec["strategy"]);
+    int max_retries = Rcpp::as<int>(rtraining_spec["maxRetries"]);
 
     if (strategy == "glda") {
       double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
-      return std::make_unique<GLDATrainingSpec<long double, int> >(lambda);
+      return std::make_unique<GLDATrainingSpec<long double, int> >(lambda, max_retries);
     }
 
     if (strategy == "uniform_glda") {
       int n_vars = Rcpp::as<int>(rtraining_spec["n_vars"]);
       double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
 
-      return std::make_unique<UniformGLDATrainingSpec<long double, int> >(n_vars, lambda);
+      return std::make_unique<UniformGLDATrainingSpec<long double, int> >(n_vars, lambda, max_retries);
     }
 
     Rcpp::stop("Unknown training strategy: %s", strategy);
-  }
-
-  template<> GLDATrainingSpec<long double, int> as(SEXP x) {
-    Rcpp::List rspec(x);
-    return GLDATrainingSpec<long double, int>(Rcpp::as<double>(rspec["lambda"]));
-  }
-
-  template<> UniformGLDATrainingSpec<long double, int> as(SEXP x) {
-    Rcpp::List rspec(x);
-    return UniformGLDATrainingSpec<long double, int>(
-      Rcpp::as<int>(rspec["n_vars"]),
-      Rcpp::as<double>(rspec["lambda"]));
   }
 
   template<> DataSpec<long double, int> as(SEXP x) {

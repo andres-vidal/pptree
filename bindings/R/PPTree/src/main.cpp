@@ -11,11 +11,12 @@ using namespace pptree;
 
 // [[Rcpp::export]]
 Tree<long double, int> pptree_train_glda(
-  Data<long double> &data,
-  DataColumn<int> &  groups,
-  double             lambda) {
+  const Data<long double> &data,
+  const DataColumn<int> &  groups,
+  const double             lambda,
+  const int                max_retries) {
   return Tree<long double, int>::train(
-    *TrainingSpec<long double, int>::glda(lambda),
+    *TrainingSpec<long double, int>::glda(lambda, max_retries),
     DataSpec<long double, int>(data, groups));
 }
 
@@ -25,9 +26,10 @@ Forest<long double, int> pptree_train_forest_glda(
   const DataColumn<int> &   groups,
   const int                 size,
   const int                 n_vars,
-  const double              lambda) {
+  const double              lambda,
+  const int                 max_retries) {
   return Forest<long double, int>::train(
-    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, max_retries),
     DataSpec<long double, int>(data, groups),
     size,
     R::runif(0, INT_MAX));
@@ -35,15 +37,15 @@ Forest<long double, int> pptree_train_forest_glda(
 
 // [[Rcpp::export]]
 DataColumn<int> pptree_predict(
-  Tree<long double, int> &tree,
-  Data<long double> &     data) {
+  const Tree<long double, int> &tree,
+  const Data<long double> &     data) {
   return tree.predict(data);
 }
 
 // [[Rcpp::export]]
 DataColumn<int> pptree_predict_forest(
-  Forest<long double, int> &forest,
-  Data<long double> &       data) {
+  const Forest<long double, int> &forest,
+  const Data<long double> &       data) {
   return forest.predict(data);
 }
 

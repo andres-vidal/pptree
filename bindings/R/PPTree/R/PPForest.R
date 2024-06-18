@@ -17,6 +17,7 @@ NULL
 #' @param size The number of trees in the forest.
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
 #' @param nvars The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.
+#' @param max.retries The maximum number of retries to perform when the optimization fails. A failing tree is retried max.retries times for each one of max.retries different bootstrap samples. The default is 0.
 #' @return A PPForest model trained on \code{x} and \code{y}.
 #' @examples
 #'
@@ -56,7 +57,8 @@ PPForest <- function(
     y = NULL,
     size = 2,
     lambda = 0,
-    nvars = NULL) {
+    nvars = NULL,
+    max.retries = 0) {
   args <- process_model_arguments(formula, data, x, y)
 
   x <- args$x
@@ -68,7 +70,8 @@ PPForest <- function(
     y,
     size,
     (if (is.null(nvars)) ncol(args$x) else nvars),
-    lambda
+    lambda,
+    max.retries
   )
 
   class(model) <- "PPForest"
