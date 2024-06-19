@@ -7,7 +7,7 @@ NULL
 #'
 #' This function trains a Random Forest of Project-Pursuit oblique decision tree (PPTree) using either a formula and data frame interface or a matrix-based interface. When using the formula interface, specify the model formula and the data frame containing the variables. For the matrix-based interface, provide matrices for the features and labels directly.
 #' The number of trees is controlled by the \code{size} parameter. Each tree is trained on a stratified bootstrap sample drawn from the data.
-#' The number of variables to consider at each split is controlled by the \code{nvars} parameter.
+#' The number of variables to consider at each split is controlled by the \code{n_vars} parameter.
 #' If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
 #'
 #' @param formula A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.
@@ -16,7 +16,8 @@ NULL
 #' @param y A matrix containing the labels for each observation.
 #' @param size The number of trees in the forest.
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
-#' @param nvars The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.
+#' @param n_vars The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.
+#' @param max_retries The maximum number of retries to perform when the optimization fails. A failing tree is retried max_retries times for each one of max_retries different bootstrap samples. The default is 0.
 #' @return A PPForest model trained on \code{x} and \code{y}.
 #' @examples
 #'
@@ -56,7 +57,8 @@ PPForest <- function(
     y = NULL,
     size = 2,
     lambda = 0,
-    nvars = NULL) {
+    n_vars = NULL,
+    max_retries = 0) {
   args <- process_model_arguments(formula, data, x, y)
 
   x <- args$x
@@ -67,8 +69,9 @@ PPForest <- function(
     x,
     y,
     size,
-    (if (is.null(nvars)) ncol(args$x) else nvars),
-    lambda
+    (if (is.null(n_vars)) ncol(args$x) else n_vars),
+    lambda,
+    max_retries
   )
 
   class(model) <- "PPForest"
@@ -156,8 +159,8 @@ print.PPForest <- function(x, ...) {
 #' @export
 summary.PPForest <- function(object, ...) {
   model <- object
-  model$variableImportance <- data.frame(Var.Importance = t(pptree_forest_variable_importance(model)))
-  colnames(model$variableImportance) <- colnames(model$x)
+  model$variable_importance <- data.frame(Var.Importance = t(pptree_forest_variable_importance(model)))
+  colnames(model$variable_importance) <- colnames(model$x)
 
 
   if (!is.null(formula(object))) {
@@ -165,13 +168,13 @@ summary.PPForest <- function(object, ...) {
     cat("Project-Pursuit Oblique Decision Tree\n")
     cat("-------------------------------------\n")
     cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
-    cat("Regularization parameter:", model$trainingSpec$lambda, "\n")
+    cat("Regularization parameter:", model$training_spec$lambda, "\n")
     cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
     if (!is.null(model$formula)) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
     cat("-------------------------------------\n")
-    print(model$variableImportance)
+    print(model$variable_importance)
   }
   cat("\n")
 }

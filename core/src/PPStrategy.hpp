@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Projector.hpp"
+#include "Error.hpp"
 
 #include <set>
 
@@ -87,6 +88,12 @@ namespace models::pp::strategy {
       LOG_INFO << "WGSS:" << std::endl << complete_W << std::endl;
 
       auto [var_mask, var_index] = stats::mask_null_columns(complete_B);
+
+      if (var_index.size() == 0) {
+        std::stringstream ss;
+        ss << "Cannot split between classes " << unique_groups << ": no variance between groups for any considered variable.";
+        throw models::training_error(ss.str());
+      }
 
       LOG_INFO << "Considered variables after filtering out constant ones: " << var_index << std::endl;
 

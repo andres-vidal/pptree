@@ -144,7 +144,7 @@ TEST(Condition, EqualsDifferentStructures) {
   ASSERT_FALSE(c1 == c2);
 }
 
-TEST(Tree, EqualTrees) {
+TEST(Tree, EqualsEqualTrees) {
   Tree<long double, int> t1(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0, 2.0 }),
@@ -170,7 +170,7 @@ TEST(Tree, EqualTrees) {
   ASSERT_TRUE(t1 == t2);
 }
 
-TEST(Tree, DifferentTrees) {
+TEST(Tree, EqualsDifferentTrees) {
   Tree<long double, int> t1(
     std::make_unique<Condition<long double, int> >(
       as_projector({ 1.0, 2.0 }),
@@ -453,6 +453,112 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
 
 
   ASSERT_EQ(expect, result);
+}
+
+TEST(Tree, TrainLDAConstantData) {
+  Data<long double> x(10, 3);
+  x <<
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3;
+
+  DataColumn<int> y(10, 1);
+  y <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1;
+
+  auto spec = TrainingSpec<long double, int>::glda(0.0);
+  auto data = DataSpec<long double, int>(x, y);
+
+  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), models::training_error);
+}
+
+TEST(Tree, TrainPDAConstantData) {
+  Data<long double> x(10, 3);
+  x <<
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3;
+
+  DataColumn<int> y(10, 1);
+  y <<
+    0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1;
+
+  auto spec = TrainingSpec<long double, int>::glda(0.5);
+  auto data = DataSpec<long double, int>(x, y);
+
+  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), models::training_error);
+}
+
+TEST(Tree, TrainLDANoVarianceBetweenGroups) {
+  Data<long double> x(12, 3);
+  x <<
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9;
+
+  DataColumn<int> y(12);
+  y <<
+    0, 0, 0, 0,
+    1, 1, 1, 1,
+    2, 2, 2, 2;
+
+  auto spec = TrainingSpec<long double, int>::glda(0.0);
+  auto data = DataSpec<long double, int>(x, y);
+
+  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), models::training_error);
+}
+
+TEST(Tree, TrainPDANoVarianceBetweenGroups) {
+  Data<long double> x(12, 3);
+  x <<
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    1, 2, 3,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9,
+    7, 8, 9;
+
+  DataColumn<int> y(12);
+  y <<
+    0, 0, 0, 0,
+    1, 1, 1, 1,
+    2, 2, 2, 2;
+
+  auto spec = TrainingSpec<long double, int>::glda(0.5);
+  auto data = DataSpec<long double, int>(x, y);
+
+  ASSERT_THROW((Tree<long double, int>::train(*spec, data)), models::training_error);
 }
 
 TEST(Tree, PredictDataColumnUnivariateTwoGroups) {

@@ -22,13 +22,17 @@ namespace models {
       seed);
 
     for (int i = 0; i < size; i++) {
-      BootstrapDataSpec<T, R> sample_training_data = stratified_proportional_sample(
-        training_data,
-        training_data.x.rows());
+      BootstrapTree<T, R> tree = attempt<models::training_error>(
+        training_spec.max_retries,
+        [&training_spec, &training_data]() {
+          BootstrapDataSpec<T, R> sample = stratified_proportional_sample(
+            training_data,
+            training_data.x.rows());
 
-      BootstrapTree<T, R> tree = BootstrapTree<T, R>::train(
-        training_spec,
-        sample_training_data);
+          return BootstrapTree<T, R>::train(
+            training_spec,
+            sample);
+        });
 
       forest.add_tree(std::make_unique<BootstrapTree<T, R> >(std::move(tree)));
     }
