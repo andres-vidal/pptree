@@ -50,13 +50,23 @@ DataColumn<int> pptree_predict_forest(
 }
 
 // [[Rcpp::export]]
-Projector<long double> pptree_variable_importance(
+Data<long double> pptree_variable_importance(
   const Tree<long double, int> &tree) {
   return tree.variable_importance(VIProjectorStrategy<long double, int>());
 }
 
 // [[Rcpp::export]]
-Projector<long double> pptree_forest_variable_importance(
+Data<long double> pptree_forest_variable_importance(
   const Forest<long double, int> &forest) {
-  return forest.variable_importance(VIProjectorStrategy<long double, int>());
+  DataColumn<long double> projector = forest.variable_importance(VIProjectorStrategy<long double, int>());
+  DataColumn<long double> projector_adjusted = forest.variable_importance(VIProjectorAdjustedStrategy<long double, int>());
+  DataColumn<long double> permutation = forest.variable_importance(VIPermutationStrategy<long double, int>());
+
+  Data<long double> result = Data<long double>(projector.size(), 3);
+
+  result.col(0) = projector;
+  result.col(1) = projector_adjusted;
+  result.col(2) = permutation;
+
+  return result;
 }
