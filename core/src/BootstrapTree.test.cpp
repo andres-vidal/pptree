@@ -652,7 +652,8 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecDiagonal) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1 }), result.labels);
+
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 } })), result.label_index);
 }
 
 TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
@@ -766,7 +767,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 } })), result.label_index);
 }
 
 TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecDiagonal) {
@@ -853,7 +854,7 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecDiagonal) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
 TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
@@ -975,7 +976,7 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
 TEST(BootstrapTree, ConfusionMatrix) {
@@ -1063,7 +1064,7 @@ TEST(BootstrapTree, ConfusionMatrix) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
 TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {

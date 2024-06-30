@@ -88,6 +88,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pptree_confusion_matrix
+Data<long double> pptree_confusion_matrix(const Tree<long double, int>& tree);
+RcppExport SEXP _PPTree_pptree_confusion_matrix(SEXP treeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Tree<long double, int>& >::type tree(treeSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_confusion_matrix(tree));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_forest_confusion_matrix
+Data<long double> pptree_forest_confusion_matrix(const Forest<long double, int>& forest);
+RcppExport SEXP _PPTree_pptree_forest_confusion_matrix(SEXP forestSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Forest<long double, int>& >::type forest(forestSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_forest_confusion_matrix(forest));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_glda", (DL_FUNC) &_PPTree_pptree_train_glda, 4},
@@ -96,6 +118,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_predict_forest", (DL_FUNC) &_PPTree_pptree_predict_forest, 2},
     {"_PPTree_pptree_variable_importance", (DL_FUNC) &_PPTree_pptree_variable_importance, 1},
     {"_PPTree_pptree_forest_variable_importance", (DL_FUNC) &_PPTree_pptree_forest_variable_importance, 1},
+    {"_PPTree_pptree_confusion_matrix", (DL_FUNC) &_PPTree_pptree_confusion_matrix, 1},
+    {"_PPTree_pptree_forest_confusion_matrix", (DL_FUNC) &_PPTree_pptree_forest_confusion_matrix, 1},
     {NULL, NULL, 0}
 };
 
