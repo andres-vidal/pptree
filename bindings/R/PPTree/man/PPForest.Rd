@@ -11,7 +11,8 @@ PPForest(
   y = NULL,
   size = 2,
   lambda = 0,
-  n_vars = NULL
+  n_vars = NULL,
+  max_retries = 0
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ PPForest(
 \item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).}
 
 \item{n_vars}{The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.}
+
+\item{max_retries}{The maximum number of retries to perform when the optimization fails. A failing tree is retried max_retries times for each one of max_retries different bootstrap samples. The default is 0.}
 }
 \value{
 A PPForest model trained on \code{x} and \code{y}.

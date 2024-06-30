@@ -4,7 +4,14 @@
 \alias{PPTree}
 \title{Trains a Project-Pursuit oblique decision tree.}
 \usage{
-PPTree(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0)
+PPTree(
+  formula = NULL,
+  data = NULL,
+  x = NULL,
+  y = NULL,
+  lambda = 0,
+  max_retries = 0
+)
 }
 \arguments{
 \item{formula}{A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.}
@@ -16,6 +23,8 @@ PPTree(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0)
 \item{y}{A matrix containing the labels for each observation.}
 
 \item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).}
+
+\item{max_retries}{The maximum number of retries to perform when the optimization fails. The whole tree is retried. The default is 0.}
 }
 \value{
 A PPTree model trained on \code{x} and \code{y}.

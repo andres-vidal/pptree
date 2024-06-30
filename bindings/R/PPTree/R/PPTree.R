@@ -167,8 +167,9 @@ print.PPTree <- function(x, ...) {
 #' @export
 summary.PPTree <- function(object, ...) {
   model <- object
-  model$variable_importance <- data.frame(Var.Importance = t(pptree_variable_importance(model)))
-  colnames(model$variable_importance) <- colnames(model$x)
+  model$variable_importance <- data.frame(pptree_variable_importance(model))
+  rownames(model$variable_importance) <- colnames(model$x)
+  colnames(model$variable_importance) <- c("Proj.")
 
 
   if (!is.null(formula(object))) {
@@ -182,6 +183,7 @@ summary.PPTree <- function(object, ...) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
     cat("-------------------------------------\n")
+    cat("Variable Importance:\n")
     print(model$variable_importance)
   }
   cat("\n")

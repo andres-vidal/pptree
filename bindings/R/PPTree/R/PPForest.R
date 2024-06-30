@@ -159,14 +159,16 @@ print.PPForest <- function(x, ...) {
 #' @export
 summary.PPForest <- function(object, ...) {
   model <- object
-  model$variable_importance <- data.frame(Var.Importance = t(pptree_forest_variable_importance(model)))
-  colnames(model$variable_importance) <- colnames(model$x)
+  model$variable_importance <- data.frame(pptree_forest_variable_importance(model))
+  rownames(model$variable_importance) <- colnames(model$x)
+  colnames(model$variable_importance) <- c("Proj.", "Proj. Adjusted", "Permutation")
 
 
   if (!is.null(formula(object))) {
     cat("\n")
-    cat("Project-Pursuit Oblique Decision Tree\n")
+    cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
     cat("-------------------------------------\n")
+    cat("Size:", length(model$trees), "trees\n")
     cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
     cat("Regularization parameter:", model$training_spec$lambda, "\n")
     cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
@@ -174,6 +176,7 @@ summary.PPForest <- function(object, ...) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
     cat("-------------------------------------\n")
+    cat("Variable Importance:\n")
     print(model$variable_importance)
   }
   cat("\n")
