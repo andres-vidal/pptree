@@ -1852,7 +1852,7 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
 TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
@@ -1973,7 +1973,7 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
 TEST(Forest, ConfusionMatrixBootstrapDataSpecDiagonal) {
@@ -2061,7 +2061,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecDiagonal) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
 TEST(Forest, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
@@ -2182,7 +2182,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
 TEST(Forest, ConfusionMatrix) {
@@ -2270,5 +2270,5 @@ TEST(Forest, ConfusionMatrix) {
   ASSERT_EQ(expected.cols(), result.values.cols());
   ASSERT_EQ(expected, result.values);
 
-  ASSERT_EQ(std::set<int>({ 0, 1, 2 }), result.labels);
+  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }

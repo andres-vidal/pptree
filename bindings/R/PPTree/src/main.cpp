@@ -70,3 +70,36 @@ Data<long double> pptree_forest_variable_importance(
 
   return result;
 }
+
+Data<long double> parse_confusion_matrix(const ConfusionMatrix &confusion_matrix) {
+  Data<int> values = confusion_matrix.values;
+  Data<long double> result(values.rows() + 1, values.cols() + 1);
+
+  DataColumn<long double> class_errors = confusion_matrix.class_errors();
+
+  for (int i = 0; i < values.rows(); i++) {
+    for (int j = 0; j < values.cols(); j++) {
+      result(i, j) = values(i, j);
+    }
+  }
+
+  for (int i = 0; i < values.rows(); i++) {
+    result(i, values.cols()) = class_errors(i);
+  }
+
+  result(values.rows(), values.cols()) = confusion_matrix.error();
+
+  return result;
+}
+
+// [[Rcpp::export]]
+Data<long double> pptree_confusion_matrix(
+  const Tree<long double, int> &tree) {
+  return parse_confusion_matrix(tree.confusion_matrix(*tree.training_data));
+}
+
+// [[Rcpp::export]]
+Data<long double> pptree_forest_confusion_matrix(
+  const Forest<long double, int> &forest) {
+  return parse_confusion_matrix(forest.confusion_matrix());
+}
