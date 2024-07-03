@@ -89,3 +89,4 @@ add_executable(pptree-profile src/Profiler.cpp)
 
 target_link_libraries(pptree-profile
   pptree)
+  
