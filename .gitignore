@@ -2,6 +2,7 @@
 .debug
 .tools
 .vscode
+*.trace
 
 *.Rcheck
 *.rds

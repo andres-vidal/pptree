@@ -26,8 +26,7 @@ namespace models::math {
     const DMatrix<T> &a,
     const DMatrix<T> &b
     ) {
-    DMatrix<T> identity = DMatrix<T>::Identity(a.rows(), b.cols());
-    return inner_product(a, b, identity);
+    return (a.transpose() * b);
   }
 
   template<typename T>
@@ -36,6 +35,13 @@ namespace models::math {
     const DMatrix<T> &weights
     ) {
     return inner_product(m, m, weights);
+  }
+
+  template<typename T>
+  DMatrix<T> inner_square(
+    const DMatrix<T> &m
+    ) {
+    return inner_product(m, m);
   }
 
   template<typename T>
