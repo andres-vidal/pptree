@@ -7,7 +7,7 @@ using namespace models::math;
 #define ASSERT_APPROX(a, b)    ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
 #define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
 
-TEST(DMatrix, InnerProductEqualMatrices_unweighted) {
+TEST(DMatrix, InnerProductEqualMatricesUnweighted) {
   DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -39,7 +39,7 @@ TEST(DMatrix, InnerProductEqualMatrices_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, InnerProductEqualMatrices_unweighted_implicit) {
+TEST(DMatrix, InnerProductEqualMatricesUnweightedImplicit) {
   DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -66,7 +66,7 @@ TEST(DMatrix, InnerProductEqualMatrices_unweighted_implicit) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, InnerProductEqualMatrices_weighted) {
+TEST(DMatrix, InnerProductEqualMatricesWeighted) {
   DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -98,7 +98,7 @@ TEST(DMatrix, InnerProductEqualMatrices_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, InnerProductZeroMatrices_unweighted) {
+TEST(DMatrix, InnerProductZeroMatricesUnweighted) {
   DMatrix<long double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
@@ -130,7 +130,7 @@ TEST(DMatrix, InnerProductZeroMatrices_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, InnerProductZeroMatrices_unweighted_implicit) {
+TEST(DMatrix, InnerProductZeroMatricesUnweightedImplicit) {
   DMatrix<long double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
@@ -156,7 +156,7 @@ TEST(DMatrix, InnerProductZeroMatrices_unweighted_implicit) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, InnerProductZeroMatrices_weighted) {
+TEST(DMatrix, InnerProductZeroMatricesWeighted) {
   DMatrix<long double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
@@ -188,7 +188,7 @@ TEST(DMatrix, InnerProductZeroMatrices_weighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, InnerProductDifferentMatrices_unweighted) {
+TEST(DMatrix, InnerProductDifferentMatricesUnweighted) {
   DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -220,7 +220,7 @@ TEST(DMatrix, InnerProductDifferentMatrices_unweighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, InnerProductDifferentMatrices_unweighted_implicit) {
+TEST(DMatrix, InnerProductDifferentMatricesUnweightedImplicit) {
   DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -246,7 +246,7 @@ TEST(DMatrix, InnerProductDifferentMatrices_unweighted_implicit) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, InnerProductDifferentMatrices_weighted) {
+TEST(DMatrix, InnerProductDifferentMatricesWeighted) {
   DMatrix<long double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
@@ -304,6 +304,26 @@ TEST(DMatrix, InnerSquareGenericUnweighted) {
   ASSERT_EQ(expected, actual);
 }
 
+TEST(DMatrix, InnerSquareGenericUnweightedImplicit) {
+  DMatrix<long double> m(3, 3);
+  m <<
+    1.0, 2.0, 6.0,
+    2.0, 3.0, 7.0,
+    3.0, 4.0, 8.0;
+
+  DMatrix<long double> actual = inner_square(m);
+  DMatrix<long double> expected(3, 3);
+  expected <<
+    14.0, 20.0, 44.0,
+    20.0, 29.0, 65.0,
+    44.0, 65.0, 149.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
 TEST(DMatrix, InnerSquareGenericWeighted) {
   DMatrix<long double> m(3, 3);
   m <<
@@ -330,7 +350,7 @@ TEST(DMatrix, InnerSquareGenericWeighted) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DMatrix, DeterminantGenericPositive_determinant) {
+TEST(DMatrix, DeterminantGenericPositiveDeterminant) {
   DMatrix<long double> m(3, 3);
   m <<
     6.0, 1.0, 4.0,
@@ -343,7 +363,7 @@ TEST(DMatrix, DeterminantGenericPositive_determinant) {
   ASSERT_DOUBLE_EQ(expected, actual);
 }
 
-TEST(DMatrix, DeterminantGenericNegative_determinant) {
+TEST(DMatrix, DeterminantGenericNegativeDeterminant) {
   DMatrix<long double> m(3, 3);
   m <<
     6.0, 1.0, 4.0,

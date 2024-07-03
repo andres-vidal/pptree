@@ -39,8 +39,7 @@ namespace models::math {
     const DVector<T> &a,
     const DVector<T> &b
     ) {
-    DMatrix<T> identity = DMatrix<T>::Identity(a.size(), b.size());
-    return inner_product(a, b, identity);
+    return a.transpose()  * b;
   }
 
   template<typename T>
@@ -54,8 +53,7 @@ namespace models::math {
   template<typename T>
   long double inner_square(
     const DVector<T> &a) {
-    DMatrix<T> identity = DMatrix<T>::Identity(a.size(), a.size());
-    return inner_square(a, identity);
+    return inner_product(a, a);
   }
 
   template<typename T>
