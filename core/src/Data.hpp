@@ -127,13 +127,10 @@ namespace models::stats {
     Data<T> result = Data<T>::Zero(data.cols(), data.cols());
 
     for (const G& group : unique_groups) {
-      Data<T> centered_group_data = center(select_group(data, groups, group));
+      Data<T> group_data = select_group(data, groups, group);
+      Data<T> centered_group_data = center(group_data);
 
-      for (int r = 0; r < centered_group_data.rows(); r++) {
-        DataColumn<T> row = centered_group_data.row(r);
-
-        result += math::outer_square(row);
-      }
+      result += math::inner_square(centered_group_data);
     }
 
     return result;
