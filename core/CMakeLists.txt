@@ -46,7 +46,7 @@ file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
 # Collect all .cpp files that are not test files
 set(NON_TEST_CPP_FILES "")
 foreach(file ${ALL_CPP_FILES})
-  if (NOT file MATCHES "\\.test\\.cpp$")
+  if (NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\Profiler\\.cpp$")
     list(APPEND NON_TEST_CPP_FILES ${file})
   endif()
 endforeach()
@@ -83,3 +83,9 @@ target_include_directories(pptree-test
 
 include(GoogleTest)
 gtest_discover_tests(pptree-test)
+
+# Add profiler executable
+add_executable(pptree-profile src/Profiler.cpp)
+
+target_link_libraries(pptree-profile
+  pptree)
