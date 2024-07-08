@@ -2,6 +2,9 @@
 
 #include "DataSpec.hpp"
 #include "Uniform.hpp"
+
+#include <algorithm>
+
 namespace models::stats {
   template<typename T, typename G>
   struct BootstrapDataSpec : DataSpec<T, G> {
@@ -80,7 +83,7 @@ namespace models::stats {
       const std::vector<int> group_indices = select_group(data.y, group);
 
       const int group_size = group_indices.size();
-      const int group_sample_size = std::round(group_size / (double)data_size * size);
+      const int group_sample_size = std::max(1.0, std::round(group_size / (double)data_size * size));
 
       for (int i = 0; i < group_sample_size; i++) {
         const Uniform unif(0, group_indices.size() - 1);
