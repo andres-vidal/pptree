@@ -359,6 +359,50 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
   }
 }
 
+TEST(StratifiedPorportionalSample, AtLeastOneObservationPerGroup) {
+  Random::rng.seed(0);
+
+  Data<long double> x(9, 3);
+
+  x <<
+    1.0, 1.0, 1.0,
+    2.0, 2.0, 2.0,
+    3.0, 3.0, 3.0,
+    4.0, 4.0, 4.0,
+    5.0, 5.0, 5.0,
+    6.0, 6.0, 6.0,
+    7.0, 7.0, 7.0,
+    8.0, 8.0, 8.0,
+    9.0, 9.0, 9.0;
+
+  DataColumn<int> y(9);
+  y <<
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2;
+
+  DataSpec<long double, int> data(x, y, { 0, 1, 2 });
+
+  DataSpec<long double, int> result = stratified_proportional_sample(data, 3).get_sample();
+
+  std::map<int, int> result_sizes;
+
+  for (int i = 0; i < result.y.size(); i++) {
+    result_sizes[result.y[i]]++;
+  }
+
+  ASSERT_EQ(4, result.x.rows());
+  ASSERT_EQ(1, result_sizes[0]);
+  ASSERT_EQ(2, result_sizes[1]);
+  ASSERT_EQ(1, result_sizes[2]);
+}
+
 TEST(BootstrapDataSpec, CenterSingleObservation) {
   Data<long double> x(1, 3);
   x <<
