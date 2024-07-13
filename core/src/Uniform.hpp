@@ -14,7 +14,7 @@ namespace models::stats {
 
       int operator()() const {
         uint64_t range = static_cast<uint64_t>(max) - min + 1;
-        uint64_t random_number = Random::rng() - Random::rng.min();
+        uint64_t random_number = Random::gen() - Random::rng.min();
         return min + static_cast<int>(random_number % range);
       }
 

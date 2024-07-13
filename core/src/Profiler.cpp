@@ -1,5 +1,7 @@
 #include "pptree.hpp"
 
+#include <omp.h>
+
 using namespace pptree;
 
 DataSpec<long double, int> simulate(
@@ -43,6 +45,8 @@ int main(int argc, char *argv[]) {
   const auto spec = TrainingSpec<long double, int>::uniform_glda(std::round((std::sqrt(p - 1) / (p - 1)) * p), 0.1);
 
   const auto start = std::chrono::high_resolution_clock::now();
+
+  omp_set_num_threads(C);
 
   if (B > 1) {
     Forest<long double, int>::train(*spec, data, B, 0);

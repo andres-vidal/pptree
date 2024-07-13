@@ -1,4 +1,5 @@
 #include "Forest.hpp"
+#include <omp.h>
 
 using namespace models::stats;
 
@@ -21,6 +22,7 @@ namespace models {
       std::make_shared<DataSpec<T, R> >(training_data),
       seed);
 
+    #pragma omp parallel for
     for (int i = 0; i < size; i++) {
       BootstrapTree<T, R> tree = attempt<models::training_error>(
         training_spec.max_retries,
@@ -34,7 +36,8 @@ namespace models {
             sample);
         });
 
-      forest.add_tree(std::make_unique<BootstrapTree<T, R> >(std::move(tree)));
+      #pragma omp critical
+      { forest.add_tree(std::make_unique<BootstrapTree<T, R> >(std::move(tree))); }
     }
 
     LOG_INFO << "Forest: " << forest << std::endl;
