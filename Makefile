@@ -12,6 +12,10 @@ build:
 	@mkdir -p ${BUILD_DIR}
 	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core && make
 
+build-no-test:
+	@mkdir -p ${BUILD_DIR}
+	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DPPTREE_SKIP_TESTS=true ../core && make
+
 build-debug:
 	@mkdir -p ${BUILD_DIR_DEBUG}
 	@cd ${BUILD_DIR_DEBUG} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../core && make
@@ -69,7 +73,6 @@ r-clean:
 
 r-prepare: r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
-	@find ${R_PACKAGE_DIR}/src/core -name "*.test.cpp" -type f -delete
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 
 r-document:
@@ -77,7 +80,7 @@ r-document:
 	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
 	@make r-clean
 
-r-build: build r-clean
+r-build: build-no-test r-clean
 	@make r-prepare
 	@rm ${R_PACKAGE_DIR}/src/.core
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"

@@ -88,8 +88,7 @@ enable_testing()
 # Collect all .test.cpp
 file(GLOB_RECURSE TEST_SOURCES ./**/*.test.cpp)
 
-if(TEST_SOURCES)
-
+if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   add_library(pptree_singlethreaded ${NON_TEST_CPP_FILES})
   target_link_libraries(pptree_singlethreaded
     Eigen3::Eigen
