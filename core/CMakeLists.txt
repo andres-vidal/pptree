@@ -9,18 +9,33 @@ set(CMAKE_CXX_FLAGS "")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -DEIGEN_NO_DEBUG")
 
+# Append Release flags to CMAKE_CXX_FLAGS
 if(CMAKE_BUILD_TYPE MATCHES Release)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}")
 endif()
 
-
+# Append Debug flags to CMAKE_CXX_FLAGS
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
+# Configure Address Sanitizer in Unix systems
 if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
   add_compile_options(-fsanitize=address)
   add_link_options(-fsanitize=address)
+endif()
+
+# Add search hints
+list(APPEND CMAKE_PREFIX_PATH 
+  /usr/local/opt/libomp
+  /opt/homebrew/opt/libomp)
+
+# Find OpenMP
+find_package(OpenMP)
+
+if (NOT OpenMP_FOUND)
+  message(WARNING "Could NOT find OpenMP. Parallelization will not be available.")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
 include(FetchContent)
@@ -40,14 +55,6 @@ FetchContent_Declare(
   GIT_TAG v3.11.3
 )
 FetchContent_MakeAvailable(json)
-
-# Google Test
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG release-1.12.1
-)
-FetchContent_MakeAvailable(googletest)
 
 # Collect all .cpp files from the specified directories
 file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
@@ -71,31 +78,50 @@ target_link_libraries(pptree
   Eigen3::Eigen
   nlohmann_json::nlohmann_json)
 
+if(OpenMP_FOUND)
+  target_link_libraries(pptree OpenMP::OpenMP_CXX)
+endif()
+
 # Test runner
 enable_testing()
 
 # Collect all .test.cpp
 file(GLOB_RECURSE TEST_SOURCES ./**/*.test.cpp)
 
-# Add executable for the tests
-add_executable(pptree-test ${TEST_SOURCES})
+if(TEST_SOURCES)
 
-target_link_libraries(pptree-test
-  pptree
-  gtest_main
-  gtest)
+  add_library(pptree_singlethreaded ${NON_TEST_CPP_FILES})
+  target_link_libraries(pptree_singlethreaded
+    Eigen3::Eigen
+    nlohmann_json::nlohmann_json)
 
-target_include_directories(pptree-test
-  PUBLIC src
-  PUBLIC ${gtest_SOURCE_DIR}/include
-  PUBLIC ${gtest_SOURCE_DIR})
+  # Google Test
+  FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG release-1.12.1
+  )
+  FetchContent_MakeAvailable(googletest)
 
-include(GoogleTest)
-gtest_discover_tests(pptree-test)
+  # Add executable for the tests
+  add_executable(pptree-test ${TEST_SOURCES})
+
+  target_link_libraries(pptree-test
+    pptree_singlethreaded
+    gtest_main
+    gtest)
+
+  target_include_directories(pptree-test
+    PUBLIC src
+    PUBLIC ${gtest_SOURCE_DIR}/include
+    PUBLIC ${gtest_SOURCE_DIR})
+
+  include(GoogleTest)
+  gtest_discover_tests(pptree-test)
+endif()
 
 # Add profiler executable
 add_executable(pptree-profile src/Profiler.cpp)
 
-target_link_libraries(pptree-profile
-  pptree)
+target_link_libraries(pptree-profile pptree)
   

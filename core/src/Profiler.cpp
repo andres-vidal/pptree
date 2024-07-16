@@ -1,6 +1,9 @@
 #include "pptree.hpp"
 
+#ifdef _OPENMP
 #include <omp.h>
+#endif
+
 
 using namespace pptree;
 
@@ -46,7 +49,9 @@ int main(int argc, char *argv[]) {
 
   const auto start = std::chrono::high_resolution_clock::now();
 
+  #ifdef _OPENMP
   omp_set_num_threads(C);
+  #endif
 
   if (B > 1) {
     Forest<long double, int>::train(*spec, data, B, 0);

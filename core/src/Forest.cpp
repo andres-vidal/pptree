@@ -1,5 +1,8 @@
 #include "Forest.hpp"
+
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 using namespace models::stats;
 

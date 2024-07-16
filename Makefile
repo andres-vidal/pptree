@@ -69,6 +69,7 @@ r-clean:
 
 r-prepare: r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
+	@find ${R_PACKAGE_DIR}/src/core -name "*.test.cpp" -type f -delete
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 
 r-document:

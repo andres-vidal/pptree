@@ -9,7 +9,7 @@ Description: Builds decision trees by splitting on linear combinations of random
 License: MIT + file LICENSE
 Imports: Rcpp (>= 1.0.11)
 LinkingTo: Rcpp, RcppEigen
-SystemRequirements: C++17
+SystemRequirements: C++17 CMake (>= 3.10) OpenMP
 Depends: 
     R (>= 2.10)
 LazyData: true
