@@ -59,10 +59,7 @@ PPTree <- function(
   y <- args$y
   classes <- args$classes
 
-  start_time <- Sys.time()
   model <- pptree_train_glda(args$x, args$y, lambda, max_retries)
-  end_time <- Sys.time()
-  cat("Trained in ", end_time - start_time, "ms\n", sep = "")
 
   class(model) <- "PPTree"
   model$classes <- classes

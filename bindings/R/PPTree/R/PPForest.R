@@ -67,8 +67,6 @@ PPForest <- function(
   y <- args$y
   classes <- args$classes
 
-  start_time <- Sys.time()
-
   model <- pptree_train_forest_glda(
     x,
     y,
@@ -78,9 +76,6 @@ PPForest <- function(
     max_retries,
     n_threads
   )
-
-  end_time <- Sys.time()
-  cat("Trained in ", end_time - start_time, "ms\n", sep = "")
 
   class(model) <- "PPForest"
 
