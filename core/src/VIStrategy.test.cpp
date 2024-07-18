@@ -1008,7 +1008,7 @@ TEST(VIPermutationStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  Random::rng.seed(0);
+  Random::seed(0);
 
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::lda(), data);
@@ -1058,7 +1058,7 @@ TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
   BootstrapDataSpec<long double, int> data(x, y, sample_indices);
   BootstrapTree<long double, int> tree = BootstrapTree<long double, int>::train(*TrainingSpec<long double, int>::glda(0.1), data);
 
-  Random::rng.seed(0);
+  Random::seed(0);
 
   DataColumn<long double> result = VIPermutationStrategy<long double, int>()(tree);
 

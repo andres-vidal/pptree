@@ -4,8 +4,8 @@
 
 #include <nlohmann/json.hpp>
 #include <set>
-
-
+#include <algorithm>
+#include <thread>
 
 namespace models {
   using json = nlohmann::json;
@@ -21,11 +21,19 @@ namespace models {
       const int                     size,
       const int                     seed);
 
+    static Forest<T, R> train(
+      const TrainingSpec<T, R> &    training_spec,
+      const stats::DataSpec<T, R> & training_data,
+      const int                     size,
+      const int                     seed,
+      const int                     n_threads);
+
 
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<stats::DataSpec<T, R> > training_data;
     const int seed = 0;
+    const int n_threads = 1;
 
     Forest() {
     }
@@ -36,7 +44,19 @@ namespace models {
       const int                                  seed)
       : training_spec(std::move(training_spec)),
       training_data(training_data),
-      seed(seed) {
+      seed(seed),
+      n_threads(std::thread::hardware_concurrency()) {
+    }
+
+    Forest(
+      std::unique_ptr<TrainingSpec<T, R> > &&    training_spec,
+      std::shared_ptr<stats::DataSpec<T, R> > && training_data,
+      const int                                  seed,
+      const int                                  n_threads)
+      : training_spec(std::move(training_spec)),
+      training_data(training_data),
+      seed(seed),
+      n_threads(std::clamp(n_threads, 1, (int) std::thread::hardware_concurrency())) {
     }
 
     R predict(const stats::DataColumn<T> &data) const {
@@ -86,7 +106,8 @@ namespace models {
         *training_spec,
         data,
         trees.size(),
-        seed);
+        seed,
+        n_threads);
     }
 
     Forest<T, R> standardize() const {

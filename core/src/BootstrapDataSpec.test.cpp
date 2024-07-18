@@ -7,7 +7,7 @@ using namespace models::stats;
 #ifndef NDEBUG
 
 TEST(StratifiedProportionalSample, NegativeSampleSize) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(6, 3);
   x <<
@@ -33,7 +33,7 @@ TEST(StratifiedProportionalSample, NegativeSampleSize) {
 }
 
 TEST(StratifiedProportionalSample, ZeroSampleSize) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(6, 3);
   x <<
@@ -59,7 +59,7 @@ TEST(StratifiedProportionalSample, ZeroSampleSize) {
 }
 
 TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(6, 3);
   x <<
@@ -87,7 +87,7 @@ TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
 #endif // NDEBUG
 
 TEST(StratifiedProportionalSample, AssertCorrectSize) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(6, 3);
   x <<
@@ -117,7 +117,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSize) {
 }
 
 TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(6, 3);
   x <<
@@ -152,7 +152,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
 }
 
 TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(6, 3);
   x <<
@@ -191,7 +191,7 @@ TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
 }
 
 TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(9, 3);
 
@@ -248,7 +248,7 @@ TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
 }
 
 TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(9, 3);
 
@@ -304,7 +304,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
 }
 
 TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(9, 3);
 
@@ -360,7 +360,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
 }
 
 TEST(StratifiedPorportionalSample, AtLeastOneObservationPerGroup) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> x(9, 3);
 

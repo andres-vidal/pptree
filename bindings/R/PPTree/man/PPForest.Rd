@@ -12,7 +12,8 @@ PPForest(
   size = 2,
   lambda = 0,
   n_vars = NULL,
-  max_retries = 0
+  max_retries = 0,
+  n_threads = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ PPForest(
 \item{n_vars}{The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.}
 
 \item{max_retries}{The maximum number of retries to perform when the optimization fails. A failing tree is retried max_retries times for each one of max_retries different bootstrap samples. The default is 0.}
+
+\item{n_threads}{The number of threads to use. The default is the number of cores available.}
 }
 \value{
 A PPForest model trained on \code{x} and \code{y}.

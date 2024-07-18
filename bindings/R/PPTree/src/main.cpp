@@ -27,12 +27,22 @@ Forest<long double, int> pptree_train_forest_glda(
   const int                 size,
   const int                 n_vars,
   const double              lambda,
-  const int                 max_retries) {
+  const int                 max_retries,
+  SEXP                      n_threads) {
+  if (n_threads == R_NilValue) {
+    return Forest<long double, int>::train(
+      *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, max_retries),
+      DataSpec<long double, int>(data, groups),
+      size,
+      R::runif(0, INT_MAX));
+  }
+
   return Forest<long double, int>::train(
     *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, max_retries),
     DataSpec<long double, int>(data, groups),
     size,
-    R::runif(0, INT_MAX));
+    R::runif(0, INT_MAX),
+    as<const int>(n_threads));
 }
 
 // [[Rcpp::export]]

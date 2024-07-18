@@ -5,8 +5,8 @@ pptree_train_glda <- function(data, groups, lambda, max_retries) {
     .Call('_PPTree_pptree_train_glda', PACKAGE = 'PPTree', data, groups, lambda, max_retries)
 }
 
-pptree_train_forest_glda <- function(data, groups, size, n_vars, lambda, max_retries) {
-    .Call('_PPTree_pptree_train_forest_glda', PACKAGE = 'PPTree', data, groups, size, n_vars, lambda, max_retries)
+pptree_train_forest_glda <- function(data, groups, size, n_vars, lambda, max_retries, n_threads) {
+    .Call('_PPTree_pptree_train_forest_glda', PACKAGE = 'PPTree', data, groups, size, n_vars, lambda, max_retries, n_threads)
 }
 
 pptree_predict <- function(tree, data) {

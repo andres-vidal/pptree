@@ -1,4 +1,7 @@
 Sys.setenv(DEBUG_MODE = "0")
+Sys.setenv(R_TESTS = "")
+Sys.setenv(OMP_NUM_THREADS = "1")
+Sys.setenv(OMP_THREAD_LIMIT = "1")
 
 library(testthat)
 library(PPTree)
@@ -31,6 +34,11 @@ describe("PPForest formula interface", {
     model <- PPForest(Species ~ ., data = iris)
     expected <- Species ~ .
     expect_equal(model$formula, expected)
+  })
+
+  it("preserves the n_threads in the returned model", {
+    model <- PPForest(Species ~ ., data = iris, n_threads = 2)
+    expect_equal(model$n_threads, 2)
   })
 })
 

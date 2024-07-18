@@ -1140,7 +1140,7 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
     4,
     seed);
 
-  Random::rng.seed(0);
+  Random::seed(0);
 
   DVector<long double> result = forest.variable_importance(VIPermutationStrategy<long double, int>());
 
@@ -1192,7 +1192,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
     4,
     seed);
 
-  Random::rng.seed(0);
+  Random::seed(0);
 
   DVector<long double> result = forest.variable_importance(VIPermutationStrategy<long double, int>());
 
