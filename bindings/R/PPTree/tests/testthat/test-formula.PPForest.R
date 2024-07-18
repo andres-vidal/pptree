@@ -1,4 +1,3 @@
-Sys.setenv(DEBUG_MODE = "0")
 Sys.setenv(R_TESTS = "")
 Sys.setenv(OMP_THREAD_LIMIT = "1")
 Sys.setenv(OMP_NUM_THREADS = "1")
