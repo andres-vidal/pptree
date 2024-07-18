@@ -1,5 +1,8 @@
-PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) -L../inst/lib -lpptree
-PKG_CPPFLAGS = -I../inst/include -Icore/include -Icore/src -DNDEBUG -DEIGEN_NO_DEBUG -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
+CXX_STD = CXX17
+
+PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS) @DARWIN_OPENMP_LIBS@ -L"../inst/lib" -lpptree 
+PKG_CPPFLAGS = -I"../inst/include" -I"core/include" -I"core/src" -DNDEBUG -DEIGEN_NO_DEBUG -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
+PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) @DARWIN_OPENMP_CXXFLAGS@
 
 BUILD_DIR = .build
 
@@ -14,14 +17,14 @@ pptree:
 		cd ../../../..;\
 		echo "Development environment detected. Copying source files"; \
 		mkdir -p $(BUILD_DIR); \
-		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core && make && cd ..; \
+		make build-no-test; \
 		cp -r $(DEV_NLHOHMMAN_DIR)/* $(DEV_PACKAGE_DIR)/inst/include; \
 		mkdir -p ${DEV_PACKAGE_DIR}/src/core && cp -r core/* ${DEV_PACKAGE_DIR}/src/core; \
 	fi
 
 	@if [ ! -f ../inst/lib/libpptree.a ]; then \
 		mkdir -p $(BUILD_DIR) ../inst/lib; \
-		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core && make && cd ..; \
+		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DPPTREE_SKIP_TESTS=true ../core && make && cd ..; \
 		cp $(BUILD_DIR)/libpptree.a ../inst/lib; \
 		rm -rf $(BUILD_DIR); \
 	else \

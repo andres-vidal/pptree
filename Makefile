@@ -12,6 +12,10 @@ build:
 	@mkdir -p ${BUILD_DIR}
 	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core && make
 
+build-no-test:
+	@mkdir -p ${BUILD_DIR}
+	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DPPTREE_SKIP_TESTS=true ../core && make
+
 build-debug:
 	@mkdir -p ${BUILD_DIR_DEBUG}
 	@cd ${BUILD_DIR_DEBUG} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../core && make
@@ -76,7 +80,7 @@ r-document:
 	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
 	@make r-clean
 
-r-build: build r-clean
+r-build: build-no-test r-clean
 	@make r-prepare
 	@rm ${R_PACKAGE_DIR}/src/.core
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
@@ -101,13 +105,13 @@ r-untar:
 # Profiling
 
 PROFILE_OUTPUT = pptree-profile.trace
-PROFILE_OUTPUT_DEBUG = pptree-profile-.trace
+PROFILE_OUTPUT_DEBUG = pptree-profile-debug.trace
 
 
 profile: build
 	@rm -rf ${PROFILE_OUTPUT}
-	@xcrun xctrace record --template 'Time Profiler' --output ${PROFILE_OUTPUT} --launch ${BUILD_DIR}/pptree-profile 100 100 2 1
+	@xcrun xctrace record --template 'Time Profiler' --output ${PROFILE_OUTPUT} --launch ${BUILD_DIR}/pptree-profile 1000 1000 10 1 1
 
 profile-debug: build-debug
 	@rm -rf ${PROFILE_OUTPUT_DEBUG}
-	@xcrun xctrace record --template 'Time Profiler' --output ${PROFILE_OUTPUT_DEBUG} --launch ${BUILD_DIR_DEBUG}/pptree-profile 100 100 2 1
+	@xcrun xctrace record --template 'Time Profiler' --output ${PROFILE_OUTPUT_DEBUG} --launch ${BUILD_DIR_DEBUG}/pptree-profile 100 100 2 1 1

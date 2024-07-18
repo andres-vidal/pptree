@@ -92,6 +92,7 @@ namespace Rcpp {
       Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
       Rcpp::Named("training_data") = Rcpp::wrap(*forest.training_data),
       Rcpp::Named("seed") = Rcpp::wrap(forest.seed),
+      Rcpp::Named("n_threads") = Rcpp::wrap(forest.n_threads),
       Rcpp::Named("trees") = trees);
   }
 
@@ -218,7 +219,8 @@ namespace Rcpp {
     Forest<long double, int> forest(
       std::move(training_spec_ptr),
       std::make_shared<DataSpec<long double, int> >(as<DataSpec<long double, int> >(rtraining_data)),
-      Rcpp::as<double>(rforest["seed"]));
+      Rcpp::as<double>(rforest["seed"]),
+      Rcpp::as<int>(rforest["n_threads"]));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree = as<BootstrapTree<long double, int> > (rtrees[i]);

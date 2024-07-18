@@ -27,8 +27,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // pptree_train_forest_glda
-Forest<long double, int> pptree_train_forest_glda(const Data<long double>& data, const DataColumn<int>& groups, const int size, const int n_vars, const double lambda, const int max_retries);
-RcppExport SEXP _PPTree_pptree_train_forest_glda(SEXP dataSEXP, SEXP groupsSEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP max_retriesSEXP) {
+Forest<long double, int> pptree_train_forest_glda(const Data<long double>& data, const DataColumn<int>& groups, const int size, const int n_vars, const double lambda, const int max_retries, SEXP n_threads);
+RcppExport SEXP _PPTree_pptree_train_forest_glda(SEXP dataSEXP, SEXP groupsSEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP max_retriesSEXP, SEXP n_threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -38,7 +38,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type n_vars(n_varsSEXP);
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const int >::type max_retries(max_retriesSEXP);
-    rcpp_result_gen = Rcpp::wrap(pptree_train_forest_glda(data, groups, size, n_vars, lambda, max_retries));
+    Rcpp::traits::input_parameter< SEXP >::type n_threads(n_threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_train_forest_glda(data, groups, size, n_vars, lambda, max_retries, n_threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -113,7 +114,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_glda", (DL_FUNC) &_PPTree_pptree_train_glda, 4},
-    {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 6},
+    {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 7},
     {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
     {"_PPTree_pptree_predict_forest", (DL_FUNC) &_PPTree_pptree_predict_forest, 2},
     {"_PPTree_pptree_variable_importance", (DL_FUNC) &_PPTree_pptree_variable_importance, 1},

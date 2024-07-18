@@ -1107,7 +1107,7 @@ TEST(Data, DescaleDataPartiallyScaledData) {
 }
 
 TEST(Data, ShuffleColumnOfDataFirstColumn) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> data(3, 3);
   data <<
@@ -1129,7 +1129,7 @@ TEST(Data, ShuffleColumnOfDataFirstColumn) {
 }
 
 TEST(Data, ShuffleColumnOfDataMiddleColumn) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> data(3, 3);
   data <<
@@ -1152,7 +1152,7 @@ TEST(Data, ShuffleColumnOfDataMiddleColumn) {
 }
 
 TEST(Data, ShuffleColumnOfDataLastColumn) {
-  Random::rng.seed(0);
+  Random::seed(0);
 
   Data<long double> data(3, 3);
   data <<

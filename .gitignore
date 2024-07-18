@@ -15,4 +15,5 @@ PPTree_*.tar.gz
 .DS_Store
 
 bindings/R/PPTree/src/core
+bindings/R/PPTree/src/Makevars
 bindings/R/PPTree/inst/include/nlohmann

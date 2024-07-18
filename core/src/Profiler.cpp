@@ -1,5 +1,10 @@
 #include "pptree.hpp"
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+
 using namespace pptree;
 
 DataSpec<long double, int> simulate(
@@ -28,8 +33,8 @@ DataSpec<long double, int> simulate(
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 5) {
-    std::cerr << "Usage: " << argv[0] << " n p G B" << std::endl;
+  if (argc != 6) {
+    std::cerr << "Usage: " << argv[0] << " n p G B C" << std::endl;
     return 1;
   }
 
@@ -37,15 +42,23 @@ int main(int argc, char *argv[]) {
   const int p = std::stoi(argv[2]);
   const int G = std::stoi(argv[3]);
   const int B = std::stoi(argv[4]);
+  const int C = std::stoi(argv[5]);
 
   const auto data = simulate(n, p, G);
   const auto spec = TrainingSpec<long double, int>::uniform_glda(std::round((std::sqrt(p - 1) / (p - 1)) * p), 0.1);
 
+  const auto start = std::chrono::high_resolution_clock::now();
+
   if (B > 1) {
-    Forest<long double, int>::train(*spec, data, B, 0);
+    Forest<long double, int>::train(*spec, data, B, 0, C);
   } else {
     Tree<long double, int>::train(*spec, data);
   }
+
+  const auto end = std::chrono::high_resolution_clock::now();
+  const auto elapsed_time = std::chrono::duration_cast<std::chrono::duration<double> >(end - start).count();
+
+  std::cout << "Elapsed Time: " << elapsed_time << " seconds." << std::endl;
 
   return 0;
 }
