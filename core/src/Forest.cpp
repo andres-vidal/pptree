@@ -50,17 +50,8 @@ namespace models {
 
     #pragma omp parallel for
     for (int i = 0; i < size; i++) {
-      BootstrapTree<T, R> tree = attempt<models::training_error>(
-        training_spec.max_retries,
-        [&training_spec, &training_data]() {
-          BootstrapDataSpec<T, R> sample = stratified_proportional_sample(
-            training_data,
-            training_data.x.rows());
-
-          return BootstrapTree<T, R>::train(
-            training_spec,
-            sample);
-        });
+      auto sample = stratified_proportional_sample(training_data, training_data.x.rows());
+      auto tree = BootstrapTree<T, R>::train(training_spec, sample);
 
       #pragma omp critical
       { forest.add_tree(std::make_unique<BootstrapTree<T, R> >(std::move(tree))); }

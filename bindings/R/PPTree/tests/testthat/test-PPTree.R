@@ -77,16 +77,6 @@ describe("PPTree training spec", {
     expect_equal(model$training_spec$lambda, 0)
   })
 
-  it("preserves the max_retries parameter in the returned model", {
-    model <- PPTree(Species ~ ., data = iris, max_retries = 10)
-    expect_equal(model$training_spec$max_retries, 10)
-  })
-
-  it("the max_retries parameter is 0 by default", {
-    model <- PPTree(Species ~ ., data = iris)
-    expect_equal(model$training_spec$max_retries, 0)
-  })
-
   it("the training strategy is glda", {
     model <- PPTree(Species ~ ., data = iris)
     expect_equal(model$training_spec$strategy, "glda")

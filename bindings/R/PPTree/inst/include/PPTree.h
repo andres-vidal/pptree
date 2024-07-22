@@ -117,16 +117,14 @@ namespace Rcpp {
   SEXP wrap(const GLDATrainingSpec<long double, int> &spec) {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "glda",
-      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda),
-      Rcpp::Named("max_retries") = Rcpp::wrap(spec.max_retries));
+      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
   }
 
   SEXP wrap(const UniformGLDATrainingSpec<long double, int> &spec) {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "uniform_glda",
       Rcpp::Named("n_vars") = Rcpp::wrap(spec.n_vars),
-      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda),
-      Rcpp::Named("max_retries") = Rcpp::wrap(spec.max_retries));
+      Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
   }
 
   SEXP wrap(const DataSpec<long double, int> &data) {
@@ -235,18 +233,17 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(x);
 
     std::string strategy = Rcpp::as<std::string>(rtraining_spec["strategy"]);
-    int max_retries = Rcpp::as<int>(rtraining_spec["max_retries"]);
 
     if (strategy == "glda") {
       double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
-      return std::make_unique<GLDATrainingSpec<long double, int> >(lambda, max_retries);
+      return std::make_unique<GLDATrainingSpec<long double, int> >(lambda);
     }
 
     if (strategy == "uniform_glda") {
       int n_vars = Rcpp::as<int>(rtraining_spec["n_vars"]);
       double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
 
-      return std::make_unique<UniformGLDATrainingSpec<long double, int> >(n_vars, lambda, max_retries);
+      return std::make_unique<UniformGLDATrainingSpec<long double, int> >(n_vars, lambda);
     }
 
     Rcpp::stop("Unknown training strategy: %s", strategy);

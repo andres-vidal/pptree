@@ -13,10 +13,9 @@ using namespace pptree;
 Tree<long double, int> pptree_train_glda(
   const Data<long double> &data,
   const DataColumn<int> &  groups,
-  const double             lambda,
-  const int                max_retries) {
+  const double             lambda) {
   return Tree<long double, int>::train(
-    *TrainingSpec<long double, int>::glda(lambda, max_retries),
+    *TrainingSpec<long double, int>::glda(lambda),
     DataSpec<long double, int>(data, groups));
 }
 
@@ -27,18 +26,17 @@ Forest<long double, int> pptree_train_forest_glda(
   const int                 size,
   const int                 n_vars,
   const double              lambda,
-  const int                 max_retries,
   SEXP                      n_threads) {
   if (n_threads == R_NilValue) {
     return Forest<long double, int>::train(
-      *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, max_retries),
+      *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       DataSpec<long double, int>(data, groups),
       size,
       R::runif(0, INT_MAX));
   }
 
   return Forest<long double, int>::train(
-    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda, max_retries),
+    *TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
     DataSpec<long double, int>(data, groups),
     size,
     R::runif(0, INT_MAX),

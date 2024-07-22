@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Projector.hpp"
-#include "Error.hpp"
 
 #include <set>
 
@@ -81,24 +80,8 @@ namespace models::pp::strategy {
       LOG_INFO << "Groups:" << std::endl;
       LOG_INFO << std::endl << groups << std::endl;
 
-      stats::Data<T> complete_B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
-      stats::Data<T> complete_W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
-
-      LOG_INFO << "BGSS:" << std::endl << complete_B << std::endl;
-      LOG_INFO << "WGSS:" << std::endl << complete_W << std::endl;
-
-      auto [var_mask, var_index] = stats::mask_null_columns(complete_B);
-
-      if (var_index.size() == 0) {
-        std::stringstream ss;
-        ss << "Cannot split between classes " << unique_groups << ": no variance between groups for any considered variable.";
-        throw models::training_error(ss.str());
-      }
-
-      LOG_INFO << "Considered variables after filtering out constant ones: " << var_index << std::endl;
-
-      stats::Data<T> B = complete_B(var_index, var_index);
-      stats::Data<T> W = complete_W(var_index, var_index);
+      stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
+      stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
 
       LOG_INFO << "B:" << std::endl << B << std::endl;
       LOG_INFO << "W:" << std::endl << W << std::endl;
@@ -106,7 +89,6 @@ namespace models::pp::strategy {
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
       stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
       stats::Data<T> WpB = W_pda + B;
-
 
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
@@ -126,7 +108,7 @@ namespace models::pp::strategy {
 
       LOG_INFO << "Maximal eigenvector:" << std::endl << max_eigen_vec << std::endl;
 
-      Projector<T> projector = models::pp::expand(pp::normalize(max_eigen_vec), var_mask);
+      Projector<T> projector = pp::normalize(max_eigen_vec);
 
       LOG_INFO << "Projector:" << std::endl << projector << std::endl;
       return projector;
