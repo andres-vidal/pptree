@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Error.hpp"
-
 #include <random>
+#include <exception>
+#include <stdexcept>
+#include <string>
+#include <sstream>
 
 #ifdef _OPENMP
 #include "omp.h"

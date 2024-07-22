@@ -278,14 +278,14 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<long double, int> >(
       std::make_unique<Condition<long double, int> >(
-        as_projector({ 0.0, 0.996837157947326, 0.0, -0.07947125603322207, 0.0 }),
+        as_projector({ 0.0, 0.996837157947326, 0.0, -0.07947125603322205, 0.0 }),
         3.1123944307990516,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Condition<long double, int> >(
-          as_projector({ 0.0, 0.0, 0.0, 1.0, 0.0 }),
-          0.625,
-          std::make_unique<Response<long double, int> >(2),
-          std::make_unique<Response<long double, int> >(1)
+          as_projector({ -0.0, -0.0, 0.274721127897378, -0.9615239476408232, -0.0 }),
+          -0.3262313393781365,
+          std::make_unique<Response<long double, int> >(1),
+          std::make_unique<Response<long double, int> >(2)
           )
         ),
       TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
@@ -296,7 +296,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<long double, int> >(
       std::make_unique<Condition<long double, int> >(
-        as_projector({ 0.0, 0.9238600027787576, 0.0, 0.38273057790779436, 0.0 }),
+        as_projector({ 0.0, 0.9238600027787575, 0.0, 0.38273057790779447, 0.0 }),
         3.2641847933177965,
         std::make_unique<Response<long double, int> >(0),
         std::make_unique<Condition<long double, int> >(
@@ -328,6 +328,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
       )
     );
+
 
   ASSERT_EQ(expect, result);
   ASSERT_EQ(expect.seed, result.seed);
@@ -424,144 +425,6 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
   ASSERT_EQ(expect, result);
   ASSERT_EQ(expect.seed, result.seed);
 }
-
-TEST(Forest, TrainLDAConstantData) {
-  Data<long double> x(10, 3);
-  x <<
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3;
-
-  DataColumn<int> y(10, 1);
-  y <<
-    0, 0, 0, 0, 0,
-    1, 1, 1, 1, 1;
-
-  auto spec = TrainingSpec<long double, int>::glda(0.0);
-  auto data = DataSpec<long double, int>(x, y);
-
-  ASSERT_THROW((Forest<long double, int>::train(*spec, data, 4, 0)), models::training_error);
-}
-
-TEST(Forest, TrainLDANoVarianceBetweenGroups) {
-  Data<long double> x(12, 3);
-  x <<
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    1, 2, 3,
-    7, 8, 9,
-    7, 8, 9,
-    7, 8, 9,
-    7, 8, 9,
-    7, 8, 9,
-    7, 8, 9,
-    7, 8, 9,
-    7, 8, 9;
-
-  DataColumn<int> y(12);
-  y <<
-    0, 0, 0, 0,
-    1, 1, 1, 1,
-    2, 2, 2, 2;
-
-  auto spec = TrainingSpec<long double, int>::glda(0.0);
-  auto data = DataSpec<long double, int>(x, y);
-
-  ASSERT_THROW((Forest<long double, int>::train(*spec, data, 4, 0)), models::training_error);
-}
-
-TEST(Forest, TrainLDANoVarianceBetweenGroupsInSomeVariablesNoRetries) {
-  Data<long double> x(12, 4);
-  x <<
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5;
-
-  DataColumn<int> y(12);
-  y <<
-    0, 0, 0, 0,
-    1, 1, 1, 1,
-    2, 2, 2, 2;
-
-  auto spec = TrainingSpec<long double, int>::uniform_glda(2, 0.0);
-  auto data = DataSpec<long double, int>(x, y);
-
-  ASSERT_THROW((Forest<long double, int>::train(*spec, data, 4, 0)), models::training_error);
-}
-
-TEST(Forest, TrainLDANoVarianceBetweenGroupsInSomeVariablesNotEnoughRetries) {
-  Data<long double> x(12, 4);
-  x <<
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5;
-
-  DataColumn<int> y(12);
-  y <<
-    0, 0, 0, 0,
-    1, 1, 1, 1,
-    2, 2, 2, 2;
-
-  auto spec = TrainingSpec<long double, int>::uniform_glda(2, 0.0, 1);
-  auto data = DataSpec<long double, int>(x, y);
-
-  ASSERT_THROW((Forest<long double, int>::train(*spec, data, 4, 0)), models::training_error);
-}
-
-TEST(Forest, TrainLDANoVarianceBetweenGroupsInSomeVariablesEnoughRetries) {
-  Data<long double> x(12, 4);
-  x <<
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    1, 2, 3, 4,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 8, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5,
-    7, 7, 9, 5;
-
-  DataColumn<int> y(12);
-  y <<
-    0, 0, 0, 0,
-    1, 1, 1, 1,
-    2, 2, 2, 2;
-
-  auto spec = TrainingSpec<long double, int>::uniform_glda(2, 0.0, 3);
-  auto data = DataSpec<long double, int>(x, y);
-
-  ASSERT_NO_THROW((Forest<long double, int>::train(*spec, data, 4, 0)));
-}
-
 
 TEST(Forest, PredictDataColumnSomeVariablesMultivariateThreeGroups) {
   Forest<long double, int> forest;

@@ -3,7 +3,6 @@
 #include "BootstrapTree.hpp"
 #include "Group.hpp"
 #include "Logger.hpp"
-#include "Error.hpp"
 
 using namespace models::pp;
 using namespace models::pp::strategy;
@@ -242,16 +241,12 @@ namespace models {
     auto &y = std::get<1>(unwrapped);
     auto &classes = std::get<2>(unwrapped);
 
-    std::unique_ptr<Condition<T, R> > root_ptr = attempt<models::training_error>(
-      training_spec.max_retries,
-      [&x, &y, &classes, &training_spec]() {
-        LOG_INFO << "Root step." << std::endl;
-        return step(
-          x,
-          y,
-          classes,
-          training_spec);
-      });
+    LOG_INFO << "Root step." << std::endl;
+    auto root_ptr = step(
+      x,
+      y,
+      classes,
+      training_spec);
 
 
     DerivedTree<T, R> tree(

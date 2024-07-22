@@ -82,16 +82,6 @@ describe("PPForest training spec", {
     expect_equal(model$training_spec$lambda, 0)
   })
 
-  it("preserves the max_retries parameter in the returned model", {
-    model <- PPForest(Species ~ ., data = iris, max_retries = 10, n_threads = 1)
-    expect_equal(model$training_spec$max_retries, 10)
-  })
-
-  it("the max_retries parameter is 0 by default", {
-    model <- PPForest(Species ~ ., data = iris, n_threads = 1)
-    expect_equal(model$training_spec$max_retries, 0)
-  })
-
   it("preserves the n_vars parameter in the returned model", {
     model <- PPForest(Species ~ ., data = iris, n_vars = 2, n_threads = 1)
     expect_equal(model$training_spec$n_vars, 2)
