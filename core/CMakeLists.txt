@@ -6,8 +6,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_CXX_FLAGS "")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_DEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -DEIGEN_NO_DEBUG")
+
+# Configure Address Sanitizer in Unix systems
+if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address,undefined")
+  add_compile_options(-fsanitize=address,undefined)
+  add_link_options(-fsanitize=address,undefined)
+endif()
 
 # Append Release flags to CMAKE_CXX_FLAGS
 if(CMAKE_BUILD_TYPE MATCHES Release)
@@ -17,12 +24,6 @@ endif()
 # Append Debug flags to CMAKE_CXX_FLAGS
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
-endif()
-
-# Configure Address Sanitizer in Unix systems
-if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
-  add_compile_options(-fsanitize=address)
-  add_link_options(-fsanitize=address)
 endif()
 
 # Add search hints
