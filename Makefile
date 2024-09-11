@@ -54,9 +54,9 @@ R_PACKAGE_TARBALL = PPTree_${R_PACKAGE_VERSION}.tar.gz
 R_CRAN_MIRROR = https://cran.rstudio.com/
 
 r-install-deps:
-	@Rscript -e "install.packages('Rcpp', repos='${R_CRAN_MIRROR}')"
-	@Rscript -e "install.packages('RcppEigen', repos='${R_CRAN_MIRROR}')"
-	@Rscript -e "install.packages('devtools', repos='${R_CRAN_MIRROR}')"
+	@Rscript -e "install.packages('Rcpp', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
+	@Rscript -e "install.packages('RcppEigen', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
+	@Rscript -e "install.packages('devtools', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
 
 r-clean:
 	@rm -rf \
