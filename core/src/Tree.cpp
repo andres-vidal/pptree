@@ -3,6 +3,7 @@
 #include "BootstrapTree.hpp"
 #include "Group.hpp"
 #include "Logger.hpp"
+#include "Invariant.hpp"
 
 using namespace models::pp;
 using namespace models::pp::strategy;
@@ -65,8 +66,8 @@ namespace models {
     LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
     LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
 
-    assert(std::max(projected_mean_1, projected_mean_2) > threshold && "Threshold is greater than the two groups means");
-    assert(std::min(projected_mean_1, projected_mean_2) < threshold && "Threshold is lower than the two groups means");
+    invariant(std::max(projected_mean_1, projected_mean_2) > threshold, "Threshold is greater than the two groups means");
+    invariant(std::min(projected_mean_1, projected_mean_2) < threshold, "Threshold is lower than the two groups means");
 
     if (projected_mean_1 < projected_mean_2) {
       l_group = group_1;
@@ -123,7 +124,7 @@ namespace models {
 
   template<typename R >
   std::tuple<R, R> take_two(const std::set<R> &group_set) {
-    assert(group_set.size() >= 2 && "The set does not contain enough elements.");
+    invariant(group_set.size() >= 2, "The set does not contain enough elements.");
 
     auto first = *group_set.begin();
     auto last = *std::prev(group_set.end());

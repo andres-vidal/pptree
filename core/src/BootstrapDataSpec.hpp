@@ -2,6 +2,7 @@
 
 #include "DataSpec.hpp"
 #include "Uniform.hpp"
+#include "Invariant.hpp"
 
 #include <algorithm>
 
@@ -72,8 +73,8 @@ namespace models::stats {
   BootstrapDataSpec<T, G> stratified_proportional_sample(
     const DataSpec<T, G> &data,
     const int             size) {
-    assert(size > 0 && "Sample size must be greater than 0.");
-    assert(size <= data.y.rows() && "Sample size cannot be larger than the number of rows in the data.");
+    invariant(size > 0, "Sample size must be greater than 0.");
+    invariant(size <= data.y.rows(), "Sample size cannot be larger than the number of rows in the data.");
 
     const int data_size = data.y.rows();
 

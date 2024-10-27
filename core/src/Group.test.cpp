@@ -4,7 +4,6 @@
 
 using namespace models::stats;
 
-#ifndef NDEBUG
 
 TEST(Group, BinaryRegroupSingleGroup) {
   Data<long double> data(3, 1);
@@ -18,7 +17,7 @@ TEST(Group, BinaryRegroupSingleGroup) {
     1,
     1;
 
-  ASSERT_DEATH({ binary_regroup(data, groups, { 1 }); }, "Must have more than 2 groups to binary regroup");
+  ASSERT_THROW({ binary_regroup(data, groups, { 1 }); }, std::runtime_error);
 }
 
 TEST(Group, BinaryRegroupTwoGroups) {
@@ -33,7 +32,7 @@ TEST(Group, BinaryRegroupTwoGroups) {
     1,
     2;
 
-  ASSERT_DEATH({ binary_regroup(data, groups, { 1, 2 }); }, "Must have more than 2 groups to binary regroup");
+  ASSERT_THROW({ binary_regroup(data, groups, { 1, 2 }); }, std::runtime_error);
 }
 
 TEST(Group, BinaryRegroupMultidimensional) {
@@ -48,10 +47,8 @@ TEST(Group, BinaryRegroupMultidimensional) {
     2,
     3;
 
-  ASSERT_DEATH({ binary_regroup(data, groups, { 1, 2, 3 }); }, "Data must be unidimensional to binary regroup");
+  ASSERT_THROW({ binary_regroup(data, groups, { 1, 2, 3 }); },  std::runtime_error);
 }
-
-#endif // NDEBUG
 
 TEST(Group, BinaryRegroupSingleObservationPerGroup) {
   Data<long double> data(3, 1);

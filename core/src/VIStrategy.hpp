@@ -4,6 +4,7 @@
 #include "Tree.hpp"
 #include "BootstrapTree.hpp"
 #include "Forest.hpp"
+#include "Invariant.hpp"
 
 namespace models {
   template <typename T, typename R>
@@ -161,9 +162,9 @@ namespace models {
       const math::DVector<T> &     upper_importance,
       const Condition<T, R> &      condition,
       const NodeSummarizer<T, R> & condition_summary) const override {
-      assert(condition.training_data != nullptr && "training_data is null");
-      assert(condition.training_spec != nullptr && "training_spec is null");
-      assert(condition.training_spec->pp_strategy != nullptr && "pp_strategy is null");
+      invariant(condition.training_data != nullptr, "training_data is null");
+      invariant(condition.training_spec != nullptr, "training_spec is null");
+      invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
       auto [x, y, _all_classes] = condition.training_data->unwrap();
 

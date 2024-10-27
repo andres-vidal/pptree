@@ -4,8 +4,6 @@
 
 using namespace models::stats;
 
-#ifndef NDEBUG
-
 TEST(StratifiedProportionalSample, NegativeSampleSize) {
   Random::seed(0);
 
@@ -29,7 +27,7 @@ TEST(StratifiedProportionalSample, NegativeSampleSize) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, -1); }, "Sample size must be greater than 0.");
+  ASSERT_THROW({ stratified_proportional_sample(data, -1); }, std::runtime_error);
 }
 
 TEST(StratifiedProportionalSample, ZeroSampleSize) {
@@ -55,7 +53,7 @@ TEST(StratifiedProportionalSample, ZeroSampleSize) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, 0); }, "Sample size must be greater than 0.");
+  ASSERT_THROW({ stratified_proportional_sample(data, 0); }, std::runtime_error);
 }
 
 TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
@@ -81,10 +79,8 @@ TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
 
   DataSpec<long double, int> data(x, y, { 0, 1 });
 
-  ASSERT_DEATH({ stratified_proportional_sample(data, 7); }, "Sample size cannot be larger than the number of rows in the data.");
+  ASSERT_THROW({ stratified_proportional_sample(data, 7); }, std::runtime_error);
 }
-
-#endif // NDEBUG
 
 TEST(StratifiedProportionalSample, AssertCorrectSize) {
   Random::seed(0);

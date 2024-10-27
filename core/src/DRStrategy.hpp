@@ -3,6 +3,7 @@
 
 #include "Data.hpp"
 #include "Uniform.hpp"
+#include "Invariant.hpp"
 
 namespace models::dr::strategy {
   template<typename T>
@@ -36,7 +37,7 @@ namespace models::dr::strategy {
     const int n_vars;
 
     explicit ReduceUniformlyStrategy(const int n_vars) : n_vars(n_vars) {
-      assert(n_vars > 0 && "The number of variables must be greater than 0.");
+      invariant(n_vars > 0, "The number of variables must be greater than 0.");
     }
 
     std::unique_ptr<DRStrategy<T> > clone() const override {
@@ -45,7 +46,7 @@ namespace models::dr::strategy {
 
     stats::Data<T> select_variables(
       const stats::Data<T>& data) const override {
-      assert(n_vars <= data.cols() && "The number of variables must be less than or equal to the number of columns in the data.");
+      invariant(n_vars <= data.cols(), "The number of variables must be less than or equal to the number of columns in the data.");
 
       if (n_vars == data.cols()) return data;
 

@@ -1,4 +1,5 @@
 #include "Group.hpp"
+#include "Invariant.hpp"
 
 #include <vector>
 namespace models::stats {
@@ -66,8 +67,8 @@ namespace models::stats {
     const Data<T> &      data,
     const DataColumn<G> &data_groups,
     const std::set<G> &  unique_groups) {
-    assert(unique_groups.size() > 2 && "Must have more than 2 groups to binary regroup");
-    assert(data.cols() == 1 && "Data must be unidimensional to binary regroup");
+    invariant(unique_groups.size() > 2, "Must have more than 2 groups to binary regroup");
+    invariant(data.cols() == 1, "Data must be unidimensional to binary regroup");
 
     std::vector<Group<T, G> > groups = summarize_groups(data, data_groups, unique_groups);
     Group<T, G> edge_group = get_edge_group(groups);

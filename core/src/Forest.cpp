@@ -1,4 +1,5 @@
 #include "Forest.hpp"
+#include "Invariant.hpp"
 
 #include <algorithm>
 #include <thread>
@@ -34,7 +35,7 @@ namespace models {
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
     LOG_INFO << "The seed is: " << seed << std::endl;
 
-    assert(size > 0 && "The forest size must be greater than 0.");
+    invariant(size > 0, "The forest size must be greater than 0.");
 
     Random::seed(seed);
 
