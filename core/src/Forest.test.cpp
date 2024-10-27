@@ -257,18 +257,19 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
     std::make_shared<DataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
     seed);
 
+
   expect.add_tree(
     std::make_unique<BootstrapTree<long double, int> >(
       std::make_unique<Condition<long double, int> >(
-        as_projector({ 0.0, 0.9993353191880817, 0.0, -0.03645435259684161, 0.0 }),
-        3.116920055735142,
-        std::make_unique<Response<long double, int> >(0),
+        as_projector({ 0.8978733593465457, 0.0, 0.0, 0.0, -0.440253825168787 }),
+        4.231846144606273,
         std::make_unique<Condition<long double, int> >(
-          as_projector({ 0.0, 0.0, 0.908629785316463, 0.4176025780999904, 0.0 }),
-          1.1010826217897414,
-          std::make_unique<Response<long double, int> >(2),
+          as_projector({ 0.2121285477220988, 0.9772417711300072, -0.0, -0.0, -0.0 }),
+          2.818998027453087,
+          std::make_unique<Response<long double, int> >(0),
           std::make_unique<Response<long double, int> >(1)
-          )
+          ),
+        std::make_unique<Response<long double, int> >(2)
         ),
       TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
@@ -278,33 +279,15 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<long double, int> >(
       std::make_unique<Condition<long double, int> >(
-        as_projector({ 0.0, 0.996837157947326, 0.0, -0.07947125603322205, 0.0 }),
-        3.1123944307990516,
-        std::make_unique<Response<long double, int> >(0),
-        std::make_unique<Condition<long double, int> >(
-          as_projector({ -0.0, -0.0, 0.274721127897378, -0.9615239476408232, -0.0 }),
-          -0.3262313393781365,
-          std::make_unique<Response<long double, int> >(1),
-          std::make_unique<Response<long double, int> >(2)
-          )
-        ),
-      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
-      std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
-      )
-    );
-
-  expect.add_tree(
-    std::make_unique<BootstrapTree<long double, int> >(
-      std::make_unique<Condition<long double, int> >(
-        as_projector({ 0.0, 0.9238600027787575, 0.0, 0.38273057790779447, 0.0 }),
-        3.2641847933177965,
-        std::make_unique<Response<long double, int> >(0),
+        as_projector({ 0.9795739451426357, -0.20108427585888605, 0.0, 0.0, 0.0 }),
+        4.077343127697197,
         std::make_unique<Condition<long double, int> >(
           as_projector({ 1.0, 0.0, 0.0, 0.0, 0.0 }),
-          5.5,
-          std::make_unique<Response<long double, int> >(1),
-          std::make_unique<Response<long double, int> >(2)
-          )
+          1.5,
+          std::make_unique<Response<long double, int> >(0),
+          std::make_unique<Response<long double, int> >(1)
+          ),
+        std::make_unique<Response<long double, int> >(2)
         ),
       TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
@@ -314,21 +297,38 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<long double, int> >(
       std::make_unique<Condition<long double, int> >(
-        as_projector({ 0.0, 0.0, 0.13105273540218915, 0.0, -0.9913753983953826 }),
-        -0.9047649582634063,
+        as_projector({ 0.9801146552821868, -0.1984320097692913, 0.0, 0.0, 0.0 }),
+        4.099050311594211,
         std::make_unique<Condition<long double, int> >(
-          as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
-          6.5,
-          std::make_unique<Response<long double, int> >(1),
-          std::make_unique<Response<long double, int> >(2)
+          as_projector({ 1.0, 0.0, 0.0, 0.0, 0.0 }),
+          1.5,
+          std::make_unique<Response<long double, int> >(0),
+          std::make_unique<Response<long double, int> >(1)
           ),
-        std::make_unique<Response<long double, int> >(0)
+        std::make_unique<Response<long double, int> >(2)
         ),
       TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
       )
     );
 
+  expect.add_tree(
+    std::make_unique<BootstrapTree<long double, int> >(
+      std::make_unique<Condition<long double, int> >(
+        as_projector({ 0.0, 0.9253862992640225, 0.0, 0.0, 0.37902532518874943 }),
+        3.397115281611934,
+        std::make_unique<Response<long double, int> >(0),
+        std::make_unique<Condition<long double, int> >(
+          as_projector({ -8.747190380910579e-15, 1.0, -0.0, -0.0, -0.0 }),
+          6.499999999999952,
+          std::make_unique<Response<long double, int> >(1),
+          std::make_unique<Response<long double, int> >(2)
+          )
+        ),
+      TrainingSpec<long double, int>::uniform_glda(n_vars, lambda),
+      std::make_shared<BootstrapDataSpec<long double, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
+      )
+    );
 
   ASSERT_EQ(expect, result);
   ASSERT_EQ(expect.seed, result.seed);
@@ -711,11 +711,11 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
 
   DVector<long double> expected(5);
   expected <<
-    0.499640,
-    0.249999,
-    0.004744,
-    0.062054,
-    0.064683;
+    0.16613521906617199,
+    0.58310157864772916,
+    0,
+    0.074664119133181384,
+    0.06294791631582175;
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }
@@ -858,11 +858,11 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
 
   DVector<long double> expected(5);
   expected <<
-    0.565137,
-    0.247005,
-    0.006922,
-    0.025883,
-    0.035029;
+    0.24800322129499591,
+    0.57124263447778101,
+    0,
+    0.04021947739798909,
+    0.041419747834681817;
 
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
@@ -1009,11 +1009,11 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
 
   DVector<long double> expected(5);
   expected <<
-    0.282954,
-    0.125000,
-    -0.022727,
-    0.093181,
-    0.000000;
+    0.34999999999999998,
+    0.34999999999999998,
+    0,
+    0,
+    0;
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }

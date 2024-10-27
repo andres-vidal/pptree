@@ -361,11 +361,11 @@ TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
 
   DVector<long double> expected(5);
   expected <<
-    0.499640,
-    0.249999,
-    0.004744,
-    0.062054,
-    0.064683;
+    0.16613521906617199,
+    0.58310157864772916,
+    0,
+    0.074664119133181384,
+    0.06294791631582175;
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }
@@ -759,11 +759,11 @@ TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups)
 
   DVector<long double> expected(5);
   expected <<
-    0.565137,
-    0.247005,
-    0.006922,
-    0.025883,
-    0.035029;
+    0.24800322129499591,
+    0.57124263447778101,
+    0,
+    0.04021947739798909,
+    0.041419747834681817;
 
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
@@ -1162,11 +1162,12 @@ TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
 
   DVector<long double> expected(5);
   expected <<
-    0.282954,
-    0.125000,
-    -0.022727,
-    0.093181,
-    0.000000;
+    0.34999999999999998,
+    0.34999999999999998,
+    0,
+    0,
+    0;
+
 
   ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
 }

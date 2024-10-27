@@ -29,12 +29,21 @@ namespace models::stats {
       }
 
       std::set<int> distinct(int count) {
-        std::set<int> result;
+        int range_size = max - min + 1;
 
-        while (result.size() < count)
-          result.insert(operator()());
+        if (count > range_size) {
+          throw std::invalid_argument("Count exceeds the number of unique values in the range");
+        }
 
-        return result;
+        std::vector<int> values(range_size);
+        std::iota(values.begin(), values.end(), min);
+
+        for (int i = range_size - 1; i >= range_size - count; --i) {
+          int j = min + operator()() % (i + 1 - min);
+          std::swap(values[i], values[j]);
+        }
+
+        return std::set<int>(values.begin(), values.begin() + count);
       }
   };
 }
