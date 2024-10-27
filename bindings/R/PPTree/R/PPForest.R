@@ -69,7 +69,7 @@ PPForest <- function(
     x,
     y,
     size,
-    (if (is.null(n_vars)) ncol(args$x) else n_vars),
+    ifelse(is.null(n_vars), ncol(x), n_vars),
     lambda,
     n_threads
   )
