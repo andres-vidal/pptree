@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
   const int C = std::stoi(argv[5]);
 
   const auto data = simulate(n, p, G);
-  const auto spec = TrainingSpec<long double, int>::uniform_glda(std::round((std::sqrt(p - 1) / (p - 1)) * p), 0.1);
+  const auto spec = TrainingSpec<long double, int>::uniform_glda(std::round(p / 2), 0.1);
 
   const auto start = std::chrono::high_resolution_clock::now();
 
