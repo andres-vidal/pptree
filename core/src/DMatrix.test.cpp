@@ -8,26 +8,26 @@ using namespace models::math;
 #define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
 
 TEST(DMatrix, InnerProductEqualMatricesUnweighted) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> weights(3, 3);
+  DMatrix<double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<long double> actual = inner_product(a, b, weights);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b, weights);
+  DMatrix<double> expected(3, 3);
   expected <<
     14.0, 20.0, 44.0,
     20.0, 29.0, 65.0,
@@ -40,21 +40,21 @@ TEST(DMatrix, InnerProductEqualMatricesUnweighted) {
 }
 
 TEST(DMatrix, InnerProductEqualMatricesUnweightedImplicit) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
 
-  DMatrix<long double> actual = inner_product(a, b);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b);
+  DMatrix<double> expected(3, 3);
   expected <<
     14.0, 20.0, 44.0,
     20.0, 29.0, 65.0,
@@ -67,26 +67,26 @@ TEST(DMatrix, InnerProductEqualMatricesUnweightedImplicit) {
 }
 
 TEST(DMatrix, InnerProductEqualMatricesWeighted) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> weights(3, 3);
+  DMatrix<double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> actual = inner_product(a, b, weights);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b, weights);
+  DMatrix<double> expected(3, 3);
   expected <<
     529.0,  736.0,  1564.0,
     736.0,  1024.0, 2176.0,
@@ -99,26 +99,26 @@ TEST(DMatrix, InnerProductEqualMatricesWeighted) {
 }
 
 TEST(DMatrix, InnerProductZeroMatricesUnweighted) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<long double> weights(3, 3);
+  DMatrix<double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<long double> actual = inner_product(a, b, weights);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b, weights);
+  DMatrix<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -131,20 +131,20 @@ TEST(DMatrix, InnerProductZeroMatricesUnweighted) {
 }
 
 TEST(DMatrix, InnerProductZeroMatricesUnweightedImplicit) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<long double> actual = inner_product(a, b);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b);
+  DMatrix<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -157,26 +157,26 @@ TEST(DMatrix, InnerProductZeroMatricesUnweightedImplicit) {
 }
 
 TEST(DMatrix, InnerProductZeroMatricesWeighted) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  DMatrix<long double> weights(3, 3);
+  DMatrix<double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> actual = inner_product(a, b, weights);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b, weights);
+  DMatrix<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -189,26 +189,26 @@ TEST(DMatrix, InnerProductZeroMatricesWeighted) {
 }
 
 TEST(DMatrix, InnerProductDifferentMatricesUnweighted) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0,
     4.0, 5.0, 9.0;
 
-  DMatrix<long double> weights(3, 3);
+  DMatrix<double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<long double> actual = inner_product(a, b, weights);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b, weights);
+  DMatrix<double> expected(3, 3);
   expected <<
     20.0, 26.0, 50.0,
     29.0, 38.0, 74.0,
@@ -221,20 +221,20 @@ TEST(DMatrix, InnerProductDifferentMatricesUnweighted) {
 }
 
 TEST(DMatrix, InnerProductDifferentMatricesUnweightedImplicit) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0,
     4.0, 5.0, 9.0;
 
-  DMatrix<long double> actual = inner_product(a, b);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b);
+  DMatrix<double> expected(3, 3);
   expected <<
     20.0, 26.0, 50.0,
     29.0, 38.0, 74.0,
@@ -247,26 +247,26 @@ TEST(DMatrix, InnerProductDifferentMatricesUnweightedImplicit) {
 }
 
 TEST(DMatrix, InnerProductDifferentMatricesWeighted) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0,
     4.0, 5.0, 9.0;
 
-  DMatrix<long double> weights(3, 3);
+  DMatrix<double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> actual = inner_product(a, b, weights);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_product(a, b, weights);
+  DMatrix<double> expected(3, 3);
   expected <<
     736.0,  943.0,  1771.0,
     1024.0, 1312.0, 2464.0,
@@ -279,20 +279,20 @@ TEST(DMatrix, InnerProductDifferentMatricesWeighted) {
 }
 
 TEST(DMatrix, InnerSquareGenericUnweighted) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> weights(3, 3);
+  DMatrix<double> weights(3, 3);
   weights <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<long double> actual = inner_square(m, weights);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_square(m, weights);
+  DMatrix<double> expected(3, 3);
   expected <<
     14.0, 20.0, 44.0,
     20.0, 29.0, 65.0,
@@ -305,14 +305,14 @@ TEST(DMatrix, InnerSquareGenericUnweighted) {
 }
 
 TEST(DMatrix, InnerSquareGenericUnweightedImplicit) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> actual = inner_square(m);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_square(m);
+  DMatrix<double> expected(3, 3);
   expected <<
     14.0, 20.0, 44.0,
     20.0, 29.0, 65.0,
@@ -325,20 +325,20 @@ TEST(DMatrix, InnerSquareGenericUnweightedImplicit) {
 }
 
 TEST(DMatrix, InnerSquareGenericWeighted) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DMatrix<long double> weights(3, 3);
+  DMatrix<double> weights(3, 3);
   weights <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> actual = inner_square(m, weights);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = inner_square(m, weights);
+  DMatrix<double> expected(3, 3);
   expected <<
     529.0,  736.0,  1564.0,
     736.0,  1024.0, 2176.0,
@@ -351,72 +351,72 @@ TEST(DMatrix, InnerSquareGenericWeighted) {
 }
 
 TEST(DMatrix, DeterminantGenericPositiveDeterminant) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     6.0, 1.0, 4.0,
     4.0, 8.0, 4.0,
     6.0, 3.0, 5.0;
 
-  long double actual = determinant(m);
-  long double expected = 28.0;
+  double actual = determinant(m);
+  double expected = 28.0;
 
   ASSERT_DOUBLE_EQ(expected, actual);
 }
 
 TEST(DMatrix, DeterminantGenericNegativeDeterminant) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     6.0, 1.0, 4.0,
     4.0, 8.0, 4.0,
     8.0, 3.0, 5.0;
 
-  long double actual = determinant(m);
-  long double expected = -28.0;
+  double actual = determinant(m);
+  double expected = -28.0;
 
   ASSERT_DOUBLE_EQ(expected, actual);
 }
 
 TEST(DMatrix, DeterminantZeroMatrix) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  long double actual = determinant(m);
-  long double expected = 0.0;
+  double actual = determinant(m);
+  double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(DMatrix, DeterminantSingularMatrix) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 7.0,
     3.0, 6.0, 8.0;
 
-  long double actual = determinant(m);
-  long double expected = 0.0;
+  double actual = determinant(m);
+  double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(DMatrix, SolveIdentityIdentity) {
-  DMatrix<long double> l(3, 3);
+  DMatrix<double> l(3, 3);
   l <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<long double> r(3, 3);
+  DMatrix<double> r(3, 3);
   r <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<long double> actual = solve(l, r);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = solve(l, r);
+  DMatrix<double> expected(3, 3);
   expected <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
@@ -429,20 +429,20 @@ TEST(DMatrix, SolveIdentityIdentity) {
 }
 
 TEST(DMatrix, SolveGenericIdentity) {
-  DMatrix<long double> l(3, 3);
+  DMatrix<double> l(3, 3);
   l <<
     0.0, 1.0, 2.0,
     1.0, 2.0, 3.0,
     3.0, 1.0, 1.0;
 
-  DMatrix<long double> r(3, 3);
+  DMatrix<double> r(3, 3);
   r <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0;
 
-  DMatrix<long double> actual = solve(l, r);
-  DMatrix<long double> expected(3, 3);
+  DMatrix<double> actual = solve(l, r);
+  DMatrix<double> expected(3, 3);
   expected <<
     0.5,  -0.5,   0.5,
     -4.0,  3.0,  -1.0,
@@ -455,7 +455,7 @@ TEST(DMatrix, SolveGenericIdentity) {
 }
 
 TEST(DMatrix, EigenIdentity) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
@@ -463,11 +463,11 @@ TEST(DMatrix, EigenIdentity) {
 
   auto [actual_values, actual_vectors] = eigen(m);
 
-  DVector<long double> expected_values(3);
+  DVector<double> expected_values(3);
   expected_values <<
     1.0, 1.0, 1.0;
 
-  DMatrix<long double> expected_vectors(3, 3);
+  DMatrix<double> expected_vectors(3, 3);
   expected_vectors <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
@@ -485,7 +485,7 @@ TEST(DMatrix, EigenIdentity) {
 }
 
 TEST(DMatrix, EigenDiagonal) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1.0, 0.0, 0.0,
     0.0, 2.0, 0.0,
@@ -493,11 +493,11 @@ TEST(DMatrix, EigenDiagonal) {
 
   auto [actual_values, actual_vectors] = eigen(m);
 
-  DVector<long double> expected_values(3);
+  DVector<double> expected_values(3);
   expected_values <<
     1.0, 2.0, 3.0;
 
-  DMatrix<long double> expected_vectors(3, 3);
+  DMatrix<double> expected_vectors(3, 3);
   expected_vectors <<
     1.0, 0.0, 0.0,
     0.0, 1.0, 0.0,
@@ -515,7 +515,7 @@ TEST(DMatrix, EigenDiagonal) {
 }
 
 TEST(DMatrix, EigenSymmetricRealNonNegativeEigenvalues) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     3.0, 1.0, 1.0,
     1.0, 2.0, 2.0,
@@ -523,11 +523,11 @@ TEST(DMatrix, EigenSymmetricRealNonNegativeEigenvalues) {
 
   auto [actual_values, actual_vectors] = eigen(m);
 
-  DVector<long double> expected_values(3);
+  DVector<double> expected_values(3);
   expected_values <<
     0.0, 2.0, 5.0;
 
-  DMatrix<long double> expected_vectors(3, 3);
+  DMatrix<double> expected_vectors(3, 3);
   expected_vectors <<
     00.000000, -0.816497, 0.57735,
     -0.707107,  0.408248, 0.57735,
@@ -543,15 +543,15 @@ TEST(DMatrix, EigenSymmetricRealNonNegativeEigenvalues) {
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
   ASSERT_COLLINEAR(expected_vectors, actual_vectors);
 
-  Eigen::DiagonalMatrix<long double, 3> DL;
+  Eigen::DiagonalMatrix<double, 3> DL;
   DL.diagonal() = actual_values;
-  DMatrix<long double> Mv = m * actual_vectors;
-  DMatrix<long double> Lv =  actual_vectors * DL;
+  DMatrix<double> Mv = m * actual_vectors;
+  DMatrix<double> Lv =  actual_vectors * DL;
   ASSERT_APPROX(Mv, Lv);
 }
 
 TEST(DMatrix, EigenAsymmetricRealNixedEigenvalues) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -559,11 +559,11 @@ TEST(DMatrix, EigenAsymmetricRealNixedEigenvalues) {
 
   auto [actual_values, actual_vectors] = eigen(m);
 
-  DVector<long double> expected_values(3);
+  DVector<double> expected_values(3);
   expected_values <<
     0.0, -1.11684, 16.11684;
 
-  DMatrix<long double> expected_vectors(3, 3);
+  DMatrix<double> expected_vectors(3, 3);
   expected_vectors <<
     00.408248,  0.7858302, 0.2319707,
     -0.816497,  0.0867513, 0.5253221,
@@ -579,21 +579,21 @@ TEST(DMatrix, EigenAsymmetricRealNixedEigenvalues) {
   ASSERT_EQ(expected_vectors.cols(), actual_vectors.cols());
   ASSERT_COLLINEAR(expected_vectors, actual_vectors);
 
-  Eigen::DiagonalMatrix<long double, 3> DL;
+  Eigen::DiagonalMatrix<double, 3> DL;
   DL.diagonal() = actual_values;
-  DMatrix<long double> Mv = m * actual_vectors;
-  DMatrix<long double> Lv =  actual_vectors * DL;
+  DMatrix<double> Mv = m * actual_vectors;
+  DMatrix<double> Lv =  actual_vectors * DL;
   ASSERT_APPROX(Mv, Lv);
 }
 
 TEST(DMatrix, CollinearAllColumnsCollinearSameDirection) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     2.0, 4.0, 12.0,
     4.0, 8.0, 24.0,
@@ -603,13 +603,13 @@ TEST(DMatrix, CollinearAllColumnsCollinearSameDirection) {
 }
 
 TEST(DMatrix, CollinearAllColumnsCollinearOppositeDirection) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     -1.0, -2.0, -6.0,
     -2.0, -4.0, -12.0,
@@ -619,13 +619,13 @@ TEST(DMatrix, CollinearAllColumnsCollinearOppositeDirection) {
 }
 
 TEST(DMatrix, CollinearSomeColumnsCollinearOppositeDirection) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     1.0, 2.0, -6.0,
     2.0, 4.0, -12.0,
@@ -635,13 +635,13 @@ TEST(DMatrix, CollinearSomeColumnsCollinearOppositeDirection) {
 }
 
 TEST(DMatrix, CollinearAllColumnsNonColinear) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -651,13 +651,13 @@ TEST(DMatrix, CollinearAllColumnsNonColinear) {
 }
 
 TEST(DMatrix, CollinearSomeColumnsNonCollinear) {
-  DMatrix<long double> a(3, 3);
+  DMatrix<double> a(3, 3);
   a <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 12.0,
     6.0, 12.0, 36.0;
 
-  DMatrix<long double> b(3, 3);
+  DMatrix<double> b(3, 3);
   b <<
     1.0, 2.0, 6.0,
     2.0, 4.0, 12.0,
@@ -667,97 +667,97 @@ TEST(DMatrix, CollinearSomeColumnsNonCollinear) {
 }
 
 TEST(DMatrix, SumZero) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  long double actual = sum(m);
+  double actual = sum(m);
 
   ASSERT_EQ(0, actual);
 }
 
 TEST(DMatrix, SumIdentity) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1, 0, 0,
     0, 1, 0,
     0, 0, 1;
 
-  long double actual = sum(m);
+  double actual = sum(m);
 
   ASSERT_EQ(3, actual);
 }
 
 TEST(DMatrix, SumOnes) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1, 1, 1,
     1, 1, 1,
     1, 1, 1;
 
-  long double actual = sum(m);
+  double actual = sum(m);
 
   ASSERT_EQ(9, actual);
 }
 
 TEST(DMatrix, SumGeneric) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1, 2, 3,
     4, 5, 6,
     7, 8, 9;
 
-  long double actual = sum(m);
+  double actual = sum(m);
 
   ASSERT_EQ(45, actual);
 }
 
 TEST(DMatrix, TraceZero) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  long double actual = trace(m);
+  double actual = trace(m);
 
   ASSERT_EQ(0, actual);
 }
 
 TEST(DMatrix, TraceIdentity) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1, 0, 0,
     0, 1, 0,
     0, 0, 1;
 
-  long double actual = trace(m);
+  double actual = trace(m);
 
   ASSERT_EQ(3, actual);
 }
 
 TEST(DMatrix, TraceZeroDiagonal) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     0, 1, 1,
     1, 0, 1,
     1, 1, 0;
 
-  long double actual = trace(m);
+  double actual = trace(m);
 
   ASSERT_EQ(0, actual);
 }
 
 TEST(DMatrix, TraceGeneric) {
-  DMatrix<long double> m(3, 3);
+  DMatrix<double> m(3, 3);
   m <<
     1, 2, 3,
     4, 5, 6,
     7, 8, 9;
 
-  long double actual = trace(m);
+  double actual = trace(m);
 
   ASSERT_EQ(15, actual);
 }

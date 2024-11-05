@@ -27,7 +27,7 @@ namespace models::math {
   }
 
   template<typename T>
-  long double inner_product(
+  double inner_product(
     const DVector<T> &a,
     const DVector<T> &b,
     const DMatrix<T> &weights) {
@@ -35,7 +35,7 @@ namespace models::math {
   }
 
   template<typename T>
-  long double inner_product(
+  double inner_product(
     const DVector<T> &a,
     const DVector<T> &b
     ) {
@@ -43,7 +43,7 @@ namespace models::math {
   }
 
   template<typename T>
-  long double inner_square(
+  double inner_square(
     const DVector<T> &a,
     const DMatrix<T> &weights
     ) {
@@ -51,7 +51,7 @@ namespace models::math {
   }
 
   template<typename T>
-  long double inner_square(
+  double inner_square(
     const DVector<T> &a) {
     return inner_product(a, a);
   }

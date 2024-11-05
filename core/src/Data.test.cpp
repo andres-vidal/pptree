@@ -5,16 +5,16 @@
 using namespace models::stats;
 
 TEST(Data, SelectRowsVectorSingleRow) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::vector<int> indices = { 1 };
-  Data<long double> actual = select_rows(data, indices);
+  Data<double> actual = select_rows(data, indices);
 
-  Data<long double> expected(1, 3);
+  Data<double> expected(1, 3);
   expected <<
     4.0, 5.0, 6.0;
 
@@ -25,16 +25,16 @@ TEST(Data, SelectRowsVectorSingleRow) {
 }
 
 TEST(Data, SelectRowsVectorMultipleRowsNonAdjacent) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::vector<int> indices = { 0, 2 };
-  Data<long double> actual = select_rows(data, indices);
+  Data<double> actual = select_rows(data, indices);
 
-  Data<long double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 3.0,
     7.0, 8.0, 9.0;
@@ -46,16 +46,16 @@ TEST(Data, SelectRowsVectorMultipleRowsNonAdjacent) {
 }
 
 TEST(Data, SelectRowsVectorMultipleRowsAdjacent) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::vector<int> indices = { 0, 1 };
-  Data<long double> actual = select_rows(data, indices);
+  Data<double> actual = select_rows(data, indices);
 
-  Data<long double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0;
@@ -67,16 +67,16 @@ TEST(Data, SelectRowsVectorMultipleRowsAdjacent) {
 }
 
 TEST(Data, SelectRowsSetSingleRow) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::set<int> indices = { 1 };
-  Data<long double> actual = select_rows(data, indices);
+  Data<double> actual = select_rows(data, indices);
 
-  Data<long double> expected(1, 3);
+  Data<double> expected(1, 3);
   expected <<
     4.0, 5.0, 6.0;
 
@@ -87,16 +87,16 @@ TEST(Data, SelectRowsSetSingleRow) {
 }
 
 TEST(Data, SelectRowsSetMultipleRowsNonAdjacent) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::set<int> indices = { 0, 2 };
-  Data<long double> actual = select_rows(data, indices);
+  Data<double> actual = select_rows(data, indices);
 
-  Data<long double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 3.0,
     7.0, 8.0, 9.0;
@@ -108,16 +108,16 @@ TEST(Data, SelectRowsSetMultipleRowsNonAdjacent) {
 }
 
 TEST(Data, SelectRowsSetMultipleRowsAdjacent) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::set<int> indices = { 0, 1 };
-  Data<long double> actual = select_rows(data, indices);
+  Data<double> actual = select_rows(data, indices);
 
-  Data<long double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0;
@@ -129,7 +129,7 @@ TEST(Data, SelectRowsSetMultipleRowsAdjacent) {
 }
 
 TEST(Data, SelectGroupSingleGroup) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -141,9 +141,9 @@ TEST(Data, SelectGroupSingleGroup) {
     1,
     1;
 
-  Data<long double> actual = select_group(data, groups, 1);
+  Data<double> actual = select_group(data, groups, 1);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -156,7 +156,7 @@ TEST(Data, SelectGroupSingleGroup) {
 }
 
 TEST(Data, SelectGroupMultipleGroupsAdjacent) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -168,9 +168,9 @@ TEST(Data, SelectGroupMultipleGroupsAdjacent) {
     1,
     2;
 
-  Data<long double> actual = select_group(data, groups, 1);
+  Data<double> actual = select_group(data, groups, 1);
 
-  Data<long double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0;
@@ -182,7 +182,7 @@ TEST(Data, SelectGroupMultipleGroupsAdjacent) {
 }
 
 TEST(Data, SelectGroupMultipleGroupsMixed) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -194,9 +194,9 @@ TEST(Data, SelectGroupMultipleGroupsMixed) {
     2,
     1;
 
-  Data<long double> actual = select_group(data, groups, 1);
+  Data<double> actual = select_group(data, groups, 1);
 
-  Data<long double> expected(2, 3);
+  Data<double> expected(2, 3);
   expected <<
     1.0, 2.0, 6.0,
     3.0, 4.0, 8.0;
@@ -208,7 +208,7 @@ TEST(Data, SelectGroupMultipleGroupsMixed) {
 }
 
 TEST(Data, SelectGroupEmptyResult) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -220,7 +220,7 @@ TEST(Data, SelectGroupEmptyResult) {
     1,
     1;
 
-  Data<long double> actual = select_group(data, groups, 2);
+  Data<double> actual = select_group(data, groups, 2);
 
   ASSERT_EQ(0, actual.size());
   ASSERT_EQ(0, actual.rows());
@@ -228,7 +228,7 @@ TEST(Data, SelectGroupEmptyResult) {
 }
 
 TEST(Data, BetweenGroupsSumOfSquaresSingleGroup) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -240,8 +240,8 @@ TEST(Data, BetweenGroupsSumOfSquaresSingleGroup) {
     0,
     0;
 
-  Data<long double> actual = between_groups_sum_of_squares(data, groups, { 0 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 0 });
+  Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -254,7 +254,7 @@ TEST(Data, BetweenGroupsSumOfSquaresSingleGroup) {
 }
 
 TEST(Data, BetweenGroupsSumOfSquaresTwoEqualGroups) {
-  Data<long double> data(6, 3);
+  Data<double> data(6, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -272,8 +272,8 @@ TEST(Data, BetweenGroupsSumOfSquaresTwoEqualGroups) {
     1,
     1;
 
-  Data<long double> actual = between_groups_sum_of_squares(data, groups, { 0, 1 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 0, 1 });
+  Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -287,7 +287,7 @@ TEST(Data, BetweenGroupsSumOfSquaresTwoEqualGroups) {
 }
 
 TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
-  Data<long double> data(8, 1);
+  Data<double> data(8, 1);
   data <<
     23.0,
     25.0,
@@ -309,8 +309,8 @@ TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
     2,
     2;
 
-  Data<long double> actual = between_groups_sum_of_squares(data, groups, { 0, 1, 2 });
-  Data<long double> expected(1, 1);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 0, 1, 2 });
+  Data<double> expected(1, 1);
   expected <<
     19.875;
 
@@ -321,7 +321,7 @@ TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
 }
 
 TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
-  Data<long double> data(8, 1);
+  Data<double> data(8, 1);
   data <<
     23.0,
     25.0,
@@ -343,8 +343,8 @@ TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups)
     3,
     3;
 
-  Data<long double> actual = between_groups_sum_of_squares(data, groups, { 1, 7, 3 });
-  Data<long double> expected(1, 1);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 1, 7, 3 });
+  Data<double> expected(1, 1);
   expected <<
     19.875;
 
@@ -355,7 +355,7 @@ TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups)
 }
 
 TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
-  Data<long double> data(8, 3);
+  Data<double> data(8, 3);
   data <<
     23.0, 1.0, 1.0,
     25.0, 1.0, 1.0,
@@ -377,8 +377,8 @@ TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
     2,
     2;
 
-  Data<long double> actual = between_groups_sum_of_squares(data, groups, { 0, 1, 2 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = between_groups_sum_of_squares(data, groups, { 0, 1, 2 });
+  Data<double> expected(3, 3);
   expected <<
     19.875, 0.0, 0.0,
     0.0,    0.0, 0.0,
@@ -391,7 +391,7 @@ TEST(Data, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
 }
 
 TEST(Data, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 1.0, 1.0,
     1.0, 1.0, 1.0,
@@ -403,8 +403,8 @@ TEST(Data, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
     0,
     0;
 
-  Data<long double> actual = within_groups_sum_of_squares(data, groups, { 0 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0 });
+  Data<double> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -417,7 +417,7 @@ TEST(Data, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
 }
 
 TEST(Data, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -429,8 +429,8 @@ TEST(Data, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
     0,
     0;
 
-  Data<long double> actual = within_groups_sum_of_squares(data, groups, { 0 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0 });
+  Data<double> expected(3, 3);
   expected <<
     2.0, 2.0, 2.0,
     2.0, 2.0, 2.0,
@@ -443,7 +443,7 @@ TEST(Data, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
 }
 
 TEST(Data, WithinGroupsSumOfSquaresTwoEqualGroups) {
-  Data<long double> data(6, 3);
+  Data<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -461,8 +461,8 @@ TEST(Data, WithinGroupsSumOfSquaresTwoEqualGroups) {
     1,
     1;
 
-  Data<long double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
+  Data<double> expected(3, 3);
   expected <<
     4.0, 4.0, 4.0,
     4.0, 4.0, 4.0,
@@ -475,7 +475,7 @@ TEST(Data, WithinGroupsSumOfSquaresTwoEqualGroups) {
 }
 
 TEST(Data, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
-  Data<long double> data(6, 3);
+  Data<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -493,8 +493,8 @@ TEST(Data, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
     1,
     1;
 
-  Data<long double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
+  Data<double> expected(3, 3);
   expected <<
     4.0, 4.0, 4.0,
     4.0, 4.0, 4.0,
@@ -507,7 +507,7 @@ TEST(Data, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
 }
 
 TEST(Data, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
-  Data<long double> data(6, 3);
+  Data<double> data(6, 3);
   data <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -525,8 +525,8 @@ TEST(Data, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
     1,
     1;
 
-  Data<long double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1 });
+  Data<double> expected(3, 3);
   expected <<
     16.0, 16.0, 16.0,
     16.0, 16.0, 16.0,
@@ -539,7 +539,7 @@ TEST(Data, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
 }
 
 TEST(Data, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
-  Data<long double> data(8, 3);
+  Data<double> data(8, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -561,8 +561,8 @@ TEST(Data, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
     2,
     2;
 
-  Data<long double> actual = within_groups_sum_of_squares(data, groups, { 0, 1, 2 });
-  Data<long double> expected(3, 3);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1, 2 });
+  Data<double> expected(3, 3);
   expected <<
     24.5, 24.5, 24.5,
     24.5, 24.5, 24.5,
@@ -575,7 +575,7 @@ TEST(Data, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
 }
 
 TEST(Data, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
-  Data<long double> data(8, 4);
+  Data<double> data(8, 4);
   data <<
     1.0, 2.0, 3.0, 0.0,
     4.0, 5.0, 6.0, 0.0,
@@ -597,8 +597,8 @@ TEST(Data, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
     2,
     2;
 
-  Data<long double> actual = within_groups_sum_of_squares(data, groups, { 0, 1, 2 });
-  Data<long double> expected(4, 4);
+  Data<double> actual = within_groups_sum_of_squares(data, groups, { 0, 1, 2 });
+  Data<double> expected(4, 4);
   expected <<
     24.5, 24.5, 24.5, 0.0,
     24.5, 24.5, 24.5, 0.0,
@@ -612,7 +612,7 @@ TEST(Data, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
 }
 
 TEST(Data, MaskNullColumnsZeroMatrix) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -631,7 +631,7 @@ TEST(Data, MaskNullColumnsZeroMatrix) {
 }
 
 TEST(Data, MaskNullColumnsNoNullColumns) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -650,7 +650,7 @@ TEST(Data, MaskNullColumnsNoNullColumns) {
 }
 
 TEST(Data, MaskNullColumnsSomeNullColumns) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 0.0, 3.0,
     4.0, 0.0, 6.0,
@@ -669,13 +669,13 @@ TEST(Data, MaskNullColumnsSomeNullColumns) {
 }
 
 TEST(Data, MeanSingleObservation) {
-  Data<long double> data(1, 3);
+  Data<double> data(1, 3);
   data <<
     1.0, 2.0, 6.0;
 
-  DataColumn<long double> actual = mean(data);
+  DataColumn<double> actual = mean(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected <<
     1.0, 2.0, 6.0;
 
@@ -686,15 +686,15 @@ TEST(Data, MeanSingleObservation) {
 }
 
 TEST(Data, MeanMultipleEqualObservations) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0;
 
-  DataColumn<long double> actual = mean(data);
+  DataColumn<double> actual = mean(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected <<
     1.0, 2.0, 6.0;
 
@@ -705,15 +705,15 @@ TEST(Data, MeanMultipleEqualObservations) {
 }
 
 TEST(Data, MeanMultipleDifferentObservations) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DataColumn<long double> actual = mean(data);
+  DataColumn<double> actual = mean(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected <<
     2.0, 3.0, 7.0;
 
@@ -724,13 +724,13 @@ TEST(Data, MeanMultipleDifferentObservations) {
 }
 
 TEST(Data, CovarianceZeroMatrix) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  Data<long double> result = covariance(data);
+  Data<double> result = covariance(data);
 
   ASSERT_EQ(data.size(), result.size());
   ASSERT_EQ(data.rows(), result.rows());
@@ -739,15 +739,15 @@ TEST(Data, CovarianceZeroMatrix) {
 }
 
 TEST(Data, CovarianceConstantMatrix) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 1, 1,
     1, 1, 1,
     1, 1, 1;
 
-  Data<long double> result = covariance(data);
+  Data<double> result = covariance(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     0, 0, 0,
     0, 0, 0,
@@ -760,15 +760,15 @@ TEST(Data, CovarianceConstantMatrix) {
 }
 
 TEST(Data, CovarianceAllConstantColumns) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     1, 2, 3,
     1, 2, 3;
 
-  Data<long double> result = covariance(data);
+  Data<double> result = covariance(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     0, 0, 0,
     0, 0, 0,
@@ -781,15 +781,15 @@ TEST(Data, CovarianceAllConstantColumns) {
 }
 
 TEST(Data, CovarianceSomeConstantColumns) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     1, 3, 3,
     1, 4, 3;
 
-  Data<long double> result = covariance(data);
+  Data<double> result = covariance(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     0, 0, 0,
     0, 1, 0,
@@ -802,15 +802,15 @@ TEST(Data, CovarianceSomeConstantColumns) {
 }
 
 TEST(Data, CovarianceGeneric1) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     2, 3, 4,
     3, 4, 5;
 
-  Data<long double> result = covariance(data);
+  Data<double> result = covariance(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1, 1, 1,
     1, 1, 1,
@@ -823,15 +823,15 @@ TEST(Data, CovarianceGeneric1) {
 }
 
 TEST(Data, CovarianceGeneric2) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     1, 2, 3,
     2, 3, 4;
 
-  Data<long double> result = covariance(data);
+  Data<double> result = covariance(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     0.33333, 0.33333, 0.33333,
     0.33333, 0.33333, 0.33333,
@@ -844,15 +844,15 @@ TEST(Data, CovarianceGeneric2) {
 }
 
 TEST(Data, SdZeroMatrix) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  DataColumn<long double> result = sd(data);
+  DataColumn<double> result = sd(data);
 
-  DataColumn<long double> expected = DataColumn<long double>::Zero(3);
+  DataColumn<double> expected = DataColumn<double>::Zero(3);
 
   ASSERT_EQ(expected.size(), result.size());
   ASSERT_EQ(expected.rows(), result.rows());
@@ -861,15 +861,15 @@ TEST(Data, SdZeroMatrix) {
 }
 
 TEST(Data, SdConstantMatrix) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 1, 1,
     1, 1, 1,
     1, 1, 1;
 
-  Data<long double> result = sd(data);
+  Data<double> result = sd(data);
 
-  DataColumn<long double> expected = DataColumn<long double>::Zero(3);
+  DataColumn<double> expected = DataColumn<double>::Zero(3);
 
   ASSERT_EQ(expected.size(), result.size());
   ASSERT_EQ(expected.rows(), result.rows());
@@ -878,15 +878,15 @@ TEST(Data, SdConstantMatrix) {
 }
 
 TEST(Data, SdAllConstantColumns) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     1, 2, 3,
     1, 2, 3;
 
-  Data<long double> result = sd(data);
+  Data<double> result = sd(data);
 
-  DataColumn<long double> expected = DataColumn<long double>::Zero(3);
+  DataColumn<double> expected = DataColumn<double>::Zero(3);
 
   ASSERT_EQ(expected.size(), result.size());
   ASSERT_EQ(expected.rows(), result.rows());
@@ -895,15 +895,15 @@ TEST(Data, SdAllConstantColumns) {
 }
 
 TEST(Data, SdSomeConstantColumns) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     1, 3, 3,
     1, 4, 3;
 
-  Data<long double> result = sd(data);
+  Data<double> result = sd(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected << 0, 1, 0;
 
   ASSERT_EQ(expected.size(), result.size());
@@ -913,15 +913,15 @@ TEST(Data, SdSomeConstantColumns) {
 }
 
 TEST(Data, SdGeneric1) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     2, 3, 4,
     3, 4, 5;
 
-  Data<long double> result = sd(data);
+  Data<double> result = sd(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected << 1, 1, 1;
 
   ASSERT_EQ(expected.size(), result.size());
@@ -931,15 +931,15 @@ TEST(Data, SdGeneric1) {
 }
 
 TEST(Data, SdGeneric2) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     1, 2, 3,
     2, 3, 4;
 
-  Data<long double> result = sd(data);
+  Data<double> result = sd(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected << 0.5773503, 0.5773503, 0.5773503;
 
   ASSERT_EQ(expected.size(), result.size());
@@ -949,13 +949,13 @@ TEST(Data, SdGeneric2) {
 }
 
 TEST(Data, CenterDataSingleObservation) {
-  Data<long double> data(1, 3);
+  Data<double> data(1, 3);
   data <<
     1.0, 2.0, 6.0;
 
-  Data<long double> actual = center(data);
+  Data<double> actual = center(data);
 
-  Data<long double> expected = Data<long double>::Zero(1, 3);
+  Data<double> expected = Data<double>::Zero(1, 3);
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
@@ -964,15 +964,15 @@ TEST(Data, CenterDataSingleObservation) {
 }
 
 TEST(Data, CenterDataMultipleEqualObservations) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0;
 
-  Data<long double> actual = center(data);
+  Data<double> actual = center(data);
 
-  Data<long double> expected = Data<long double>::Zero(3, 3);
+  Data<double> expected = Data<double>::Zero(3, 3);
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
@@ -981,15 +981,15 @@ TEST(Data, CenterDataMultipleEqualObservations) {
 }
 
 TEST(Data, CenterDataMultipleDifferentObservations) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  Data<long double> actual = center(data);
+  Data<double> actual = center(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     -1.0, -1.0, -1.0,
     0.0, 0.0, 0.0,
@@ -1002,15 +1002,15 @@ TEST(Data, CenterDataMultipleDifferentObservations) {
 }
 
 TEST(Data, DescaleDataZeroMatrix) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  Data<long double> actual = descale(data);
+  Data<double> actual = descale(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     0, 0, 0,
     0, 0, 0,
@@ -1023,15 +1023,15 @@ TEST(Data, DescaleDataZeroMatrix) {
 }
 
 TEST(Data, DescaleDataConstantMatrix) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 1, 1,
     1, 1, 1,
     1, 1, 1;
 
-  Data<long double> actual = descale(data);
+  Data<double> actual = descale(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1, 1, 1,
     1, 1, 1,
@@ -1044,15 +1044,15 @@ TEST(Data, DescaleDataConstantMatrix) {
 }
 
 TEST(Data, DescaleDataDescaledData) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1, 2, 3,
     2, 3, 4,
     3, 4, 5;
 
-  Data<long double> actual = descale(data);
+  Data<double> actual = descale(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1, 2, 3,
     2, 3, 4,
@@ -1065,15 +1065,15 @@ TEST(Data, DescaleDataDescaledData) {
 }
 
 TEST(Data, DescaleDataScaledData) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     2, 4, 6,
     4, 6, 8,
     6, 8, 10;
 
-  Data<long double> actual = descale(data);
+  Data<double> actual = descale(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1, 2, 3,
     2, 3, 4,
@@ -1086,15 +1086,15 @@ TEST(Data, DescaleDataScaledData) {
 }
 
 TEST(Data, DescaleDataPartiallyScaledData) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     2, 4, 3,
     4, 6, 4,
     6, 8, 5;
 
-  Data<long double> actual = descale(data);
+  Data<double> actual = descale(data);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1, 2, 3,
     2, 3, 4,
@@ -1109,15 +1109,15 @@ TEST(Data, DescaleDataPartiallyScaledData) {
 TEST(Data, ShuffleColumnOfDataFirstColumn) {
   Random::seed(0);
 
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  Data<long double> shuffled = shuffle_column(data, 0);
+  Data<double> shuffled = shuffle_column(data, 0);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     2.0, 2.0, 6.0,
     1.0, 3.0, 7.0,
@@ -1131,15 +1131,15 @@ TEST(Data, ShuffleColumnOfDataFirstColumn) {
 TEST(Data, ShuffleColumnOfDataMiddleColumn) {
   Random::seed(0);
 
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  Data<long double> shuffled = shuffle_column(data, 1);
+  Data<double> shuffled = shuffle_column(data, 1);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1.0, 3.0, 6.0,
     2.0, 2.0, 7.0,
@@ -1154,15 +1154,15 @@ TEST(Data, ShuffleColumnOfDataMiddleColumn) {
 TEST(Data, ShuffleColumnOfDataLastColumn) {
   Random::seed(0);
 
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  Data<long double> shuffled = shuffle_column(data, 2);
+  Data<double> shuffled = shuffle_column(data, 2);
 
-  Data<long double> expected(3, 3);
+  Data<double> expected(3, 3);
   expected <<
     1.0, 2.0, 7.0,
     2.0, 3.0, 6.0,

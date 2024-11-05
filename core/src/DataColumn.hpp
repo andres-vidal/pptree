@@ -115,7 +115,7 @@ namespace models::stats {
   }
 
   template<typename T>
-  long double accuracy(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
+  double accuracy(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("predictions and actual must have the same number of rows");
     }
@@ -128,11 +128,11 @@ namespace models::stats {
       }
     }
 
-    return (long double)correct / (long double)predictions.rows();
+    return (double)correct / (double)predictions.rows();
   }
 
   template<typename T>
-  long double error_rate(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
+  double error_rate(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("predictions and actual must have the same number of rows");
     }

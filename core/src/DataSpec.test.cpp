@@ -5,7 +5,7 @@
 using namespace models::stats;
 
 TEST(DataSpec, CenterSingleObservation) {
-  Data<long double> x(1, 3);
+  Data<double> x(1, 3);
   x <<
     1.0, 2.0, 6.0;
 
@@ -15,11 +15,11 @@ TEST(DataSpec, CenterSingleObservation) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y);
+  DataSpec<double, int> data(x, y);
 
-  DataSpec<long double, int> actual = center(data);
+  DataSpec<double, int> actual = center(data);
 
-  Data<long double> expected_x = Data<long double>::Zero(1, 3);
+  Data<double> expected_x = Data<double>::Zero(1, 3);
 
   ASSERT_EQ(expected_x.size(), actual.x.size());
   ASSERT_EQ(expected_x.rows(), actual.x.rows());
@@ -35,7 +35,7 @@ TEST(DataSpec, CenterSingleObservation) {
 }
 
 TEST(DataSpec, CenterMultipleEqualObservations) {
-  Data<long double> x(3, 3);
+  Data<double> x(3, 3);
   x <<
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0,
@@ -47,11 +47,11 @@ TEST(DataSpec, CenterMultipleEqualObservations) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y);
+  DataSpec<double, int> data(x, y);
 
-  DataSpec<long double, int> actual = center(data);
+  DataSpec<double, int> actual = center(data);
 
-  Data<long double> expected_x = Data<long double>::Zero(3, 3);
+  Data<double> expected_x = Data<double>::Zero(3, 3);
 
   ASSERT_EQ(expected_x.size(), actual.x.size());
   ASSERT_EQ(expected_x.rows(), actual.x.rows());
@@ -67,7 +67,7 @@ TEST(DataSpec, CenterMultipleEqualObservations) {
 }
 
 TEST(DataSpec, CenterMultipleDifferentObservations) {
-  Data<long double> x(3, 3);
+  Data<double> x(3, 3);
   x <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -79,11 +79,11 @@ TEST(DataSpec, CenterMultipleDifferentObservations) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y);
+  DataSpec<double, int> data(x, y);
 
-  DataSpec<long double, int> actual = center(data);
+  DataSpec<double, int> actual = center(data);
 
-  Data<long double> expected_x(3, 3);
+  Data<double> expected_x(3, 3);
   expected_x <<
     -1.0, -1.0, -1.0,
     0.0, 0.0, 0.0,
@@ -103,7 +103,7 @@ TEST(DataSpec, CenterMultipleDifferentObservations) {
 }
 
 TEST(DataSpec, DescaleZeroMatrix) {
-  Data<long double> x(3, 3);
+  Data<double> x(3, 3);
   x <<
     0, 0, 0,
     0, 0, 0,
@@ -115,11 +115,11 @@ TEST(DataSpec, DescaleZeroMatrix) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y, { 1, 2 });
+  DataSpec<double, int> data(x, y, { 1, 2 });
 
-  DataSpec<long double, int> actual = descale(data);
+  DataSpec<double, int> actual = descale(data);
 
-  Data<long double> expected_x(3, 3);
+  Data<double> expected_x(3, 3);
   expected_x <<
     0, 0, 0,
     0, 0, 0,
@@ -139,7 +139,7 @@ TEST(DataSpec, DescaleZeroMatrix) {
 }
 
 TEST(DataSpec, DescaleConstantMatrix) {
-  Data<long double> x(3, 3);
+  Data<double> x(3, 3);
   x <<
     1, 1, 1,
     1, 1, 1,
@@ -151,11 +151,11 @@ TEST(DataSpec, DescaleConstantMatrix) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y, { 1, 2 });
+  DataSpec<double, int> data(x, y, { 1, 2 });
 
-  DataSpec<long double, int> actual = descale(data);
+  DataSpec<double, int> actual = descale(data);
 
-  Data<long double> expected_x(3, 3);
+  Data<double> expected_x(3, 3);
   expected_x <<
     1, 1, 1,
     1, 1, 1,
@@ -175,7 +175,7 @@ TEST(DataSpec, DescaleConstantMatrix) {
 }
 
 TEST(DataSpec, DescaleDescaledData) {
-  Data<long double> x(3, 3);
+  Data<double> x(3, 3);
   x <<
     1, 2, 3,
     2, 3, 4,
@@ -187,11 +187,11 @@ TEST(DataSpec, DescaleDescaledData) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y, { 1, 2 });
+  DataSpec<double, int> data(x, y, { 1, 2 });
 
-  DataSpec<long double, int> actual = descale(data);
+  DataSpec<double, int> actual = descale(data);
 
-  Data<long double> expected_x(3, 3);
+  Data<double> expected_x(3, 3);
   expected_x <<
     1, 2, 3,
     2, 3, 4,
@@ -211,7 +211,7 @@ TEST(DataSpec, DescaleDescaledData) {
 }
 
 TEST(DataSpec, DescaleScaledData) {
-  Data<long double> x(3, 3);
+  Data<double> x(3, 3);
   x <<
     2, 4, 6,
     4, 6, 8,
@@ -223,11 +223,11 @@ TEST(DataSpec, DescaleScaledData) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y, { 1, 2 });
+  DataSpec<double, int> data(x, y, { 1, 2 });
 
-  DataSpec<long double, int> actual = descale(data);
+  DataSpec<double, int> actual = descale(data);
 
-  Data<long double> expected_x(3, 3);
+  Data<double> expected_x(3, 3);
   expected_x <<
     1, 2, 3,
     2, 3, 4,
@@ -247,7 +247,7 @@ TEST(DataSpec, DescaleScaledData) {
 }
 
 TEST(DataSpec, DescalePartiallyScaledData) {
-  Data<long double> x(3, 3);
+  Data<double> x(3, 3);
   x <<
     2, 4, 3,
     4, 6, 4,
@@ -259,11 +259,11 @@ TEST(DataSpec, DescalePartiallyScaledData) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y, { 1, 2 });
+  DataSpec<double, int> data(x, y, { 1, 2 });
 
-  DataSpec<long double, int> actual = descale(data);
+  DataSpec<double, int> actual = descale(data);
 
-  Data<long double> expected_x(3, 3);
+  Data<double> expected_x(3, 3);
   expected_x <<
     1, 2, 3,
     2, 3, 4,
@@ -283,7 +283,7 @@ TEST(DataSpec, DescalePartiallyScaledData) {
 }
 
 TEST(DataSpec, UnwrapGeneric) {
-  Data<long double> x(3, 3);
+  Data<double> x(3, 3);
   x <<
     1, 2, 3,
     2, 3, 4,
@@ -295,11 +295,11 @@ TEST(DataSpec, UnwrapGeneric) {
     2,
     3;
 
-  DataSpec<long double, int> data(x, y);
+  DataSpec<double, int> data(x, y);
 
   auto [unwrapped_x, unwrapped_y, unwrapped_classes] = data.unwrap();
 
-  Data<long double> expected_x(3, 3);
+  Data<double> expected_x(3, 3);
   expected_x <<
     1, 2, 3,
     2, 3, 4,

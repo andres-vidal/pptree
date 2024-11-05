@@ -168,7 +168,7 @@ namespace models {
 
       auto [x, y, _all_classes] = condition.training_data->unwrap();
 
-      const long double pp_index = condition.training_spec->pp_strategy->index(
+      const double pp_index = condition.training_spec->pp_strategy->index(
         x,
         condition.projector,
         y,
@@ -182,7 +182,7 @@ namespace models {
       const BootstrapTree<T, R> &  tree,
       const NodeSummarizer<T, R> & root_summary) const override {
       const int n_classes = root_summary.classes.size();
-      const long double oob_error = tree.error_rate();
+      const double oob_error = tree.error_rate();
       return ((1 - oob_error) / (n_classes - 1)) * accumulated_importance;
     }
   };
@@ -212,14 +212,14 @@ namespace models {
       const stats::DataSpec<T, R> oob = tree.training_data->get_oob();
       const stats::DataColumn<R> oob_predictions = tree.predict(oob.x);
 
-      const long double oob_accuracy = stats::accuracy(oob_predictions, oob.y);
+      const double oob_accuracy = stats::accuracy(oob_predictions, oob.y);
 
       math::DVector<T> importance = math::DVector<T>(oob.x.cols());
 
       for (int j = 0; j < oob.x.cols(); j++) {
         const stats::Data<T> nonsense_data = stats::shuffle_column(oob.x, j);
         const stats::DataColumn<R> nonsense_predictions = tree.predict(nonsense_data);
-        const long double nonsense_accuracy = stats::accuracy(nonsense_predictions, oob.y);
+        const double nonsense_accuracy = stats::accuracy(nonsense_predictions, oob.y);
 
         importance(j) = oob_accuracy - nonsense_accuracy;
       }

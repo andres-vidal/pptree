@@ -7,15 +7,15 @@
 
 using namespace pptree;
 
-DataSpec<long double, int> simulate(
+DataSpec<double, int> simulate(
   const int n,
   const int p,
   const int G) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::normal_distribution<long double> norm(0, 1);
+  std::normal_distribution<double> norm(0, 1);
 
-  Data<long double> x(n, p);
+  Data<double> x(n, p);
 
   for (int i = 0; i < x.rows(); ++i) {
     for (int j = 0; j < x.cols(); ++j) {
@@ -29,7 +29,7 @@ DataSpec<long double, int> simulate(
     y[i] = i % G;
   }
 
-  return DataSpec<long double, int>(x, y);
+  return DataSpec<double, int>(x, y);
 }
 
 int main(int argc, char *argv[]) {
@@ -45,14 +45,14 @@ int main(int argc, char *argv[]) {
   const int C = std::stoi(argv[5]);
 
   const auto data = simulate(n, p, G);
-  const auto spec = TrainingSpec<long double, int>::uniform_glda(std::round(p / 2), 0.1);
+  const auto spec = TrainingSpec<double, int>::uniform_glda(std::round(p / 2), 0.1);
 
   const auto start = std::chrono::high_resolution_clock::now();
 
   if (B > 1) {
-    Forest<long double, int>::train(*spec, data, B, 0, C);
+    Forest<double, int>::train(*spec, data, B, 0, C);
   } else {
-    Tree<long double, int>::train(*spec, data);
+    Tree<double, int>::train(*spec, data);
   }
 
   const auto end = std::chrono::high_resolution_clock::now();

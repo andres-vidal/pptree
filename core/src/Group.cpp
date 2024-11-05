@@ -95,7 +95,7 @@ namespace models::stats {
   }
 
   template std::tuple<DataColumn<int>, std::set<int>, std::map<int, std::set<int> > > binary_regroup(
-    const Data<long double> & data,
-    const DataColumn<int> &   data_groups,
-    const std::set<int> &     unique_groups);
+    const Data<double> &    data,
+    const DataColumn<int> & data_groups,
+    const std::set<int> &   unique_groups);
 }

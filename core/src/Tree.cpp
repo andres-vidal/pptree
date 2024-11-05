@@ -259,11 +259,11 @@ namespace models {
     return tree;
   }
 
-  template Tree<long double, int> BaseTree<long double, int, DataSpec<long double, int>, Tree>::train(
-    const TrainingSpec<long double, int> &training_spec,
-    const DataSpec<long double, int> &    training_data);
+  template Tree<double, int> BaseTree<double, int, DataSpec<double, int>, Tree>::train(
+    const TrainingSpec<double, int> &training_spec,
+    const DataSpec<double, int> &    training_data);
 
-  template BootstrapTree<long double, int> BaseTree<long double, int, BootstrapDataSpec<long double, int>, BootstrapTree>::train(
-    const TrainingSpec<long double, int> &     training_spec,
-    const BootstrapDataSpec<long double, int> &training_data);
+  template BootstrapTree<double, int> BaseTree<double, int, BootstrapDataSpec<double, int>, BootstrapTree>::train(
+    const TrainingSpec<double, int> &     training_spec,
+    const BootstrapDataSpec<double, int> &training_data);
 }

@@ -45,7 +45,7 @@ namespace models::math {
   }
 
   template<typename T>
-  long double determinant(
+  double determinant(
     const DMatrix<T> &m
     ) {
     return m.determinant();

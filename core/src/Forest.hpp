@@ -114,19 +114,19 @@ namespace models {
       return retrain(stats::center(stats::descale(*training_data)));
     }
 
-    long double error_rate(const stats::DataSpec<T, R> &data) const {
-      long double accumulated_error = std::accumulate(
+    double error_rate(const stats::DataSpec<T, R> &data) const {
+      double accumulated_error = std::accumulate(
         trees.begin(),
         trees.end(),
         0.0,
-        [&data](long double acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> long double {
+        [&data](double acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> double {
           return acc + tree->error_rate(data);
         });
 
-      return accumulated_error / (long double)trees.size();
+      return accumulated_error / (double)trees.size();
     }
 
-    long double error_rate() const {
+    double error_rate() const {
       std::set<int> oob_indices = get_oob_indices();
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
       stats::DataColumn<R> oob_y = stats::select_rows(training_data->y, oob_indices);

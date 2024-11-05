@@ -37,17 +37,17 @@ namespace models::stats {
       }
     }
 
-    DataColumn<long double> class_errors() const {
+    DataColumn<double> class_errors() const {
       Data<int> error_matrix = values;
       error_matrix.diagonal().setZero();
 
       DataColumn<int> row_sums = values.rowwise().sum();
       DataColumn<int> row_errors = error_matrix.rowwise().sum();
 
-      return row_errors.array().cast<long double>() / row_sums.array().cast<long double>();
+      return row_errors.array().cast<double>() / row_sums.array().cast<double>();
     }
 
-    long double error() const {
+    double error() const {
       return 1 - math::trace(values) / (double)math::sum(values);
     }
   };

@@ -5,13 +5,13 @@
 using namespace models::stats;
 
 TEST(DataColumn, SelectRowsVectorSingleRow) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::vector<int> indices = { 1 };
-  DataColumn<long double> actual = select_rows(data, indices);
+  DataColumn<double> actual = select_rows(data, indices);
 
-  DataColumn<long double> expected(1);
+  DataColumn<double> expected(1);
   expected << 2.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -19,13 +19,13 @@ TEST(DataColumn, SelectRowsVectorSingleRow) {
 }
 
 TEST(DataColumn, SelectRowsVectorMultipleRowsNonAdjacent) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::vector<int> indices = { 0, 2 };
-  DataColumn<long double> actual = select_rows(data, indices);
+  DataColumn<double> actual = select_rows(data, indices);
 
-  DataColumn<long double> expected(2);
+  DataColumn<double> expected(2);
   expected << 1.0, 3.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -33,13 +33,13 @@ TEST(DataColumn, SelectRowsVectorMultipleRowsNonAdjacent) {
 }
 
 TEST(DataColumn, SelectRowsVectorMultipleRowsAdjacent) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::vector<int> indices = { 0, 1 };
-  DataColumn<long double> actual = select_rows(data, indices);
+  DataColumn<double> actual = select_rows(data, indices);
 
-  DataColumn<long double> expected(2);
+  DataColumn<double> expected(2);
   expected << 1.0, 2.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -47,13 +47,13 @@ TEST(DataColumn, SelectRowsVectorMultipleRowsAdjacent) {
 }
 
 TEST(DataColumn, SelectRowsSetSingleRow) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::set<int> indices = { 1 };
-  DataColumn<long double> actual = select_rows(data, indices);
+  DataColumn<double> actual = select_rows(data, indices);
 
-  DataColumn<long double> expected(1);
+  DataColumn<double> expected(1);
   expected << 2.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -61,13 +61,13 @@ TEST(DataColumn, SelectRowsSetSingleRow) {
 }
 
 TEST(DataColumn, SelectRowsSetMultipleRowsNonAdjacent) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::set<int> indices = { 0, 2 };
-  DataColumn<long double> actual = select_rows(data, indices);
+  DataColumn<double> actual = select_rows(data, indices);
 
-  DataColumn<long double> expected(2);
+  DataColumn<double> expected(2);
   expected << 1.0, 3.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -75,13 +75,13 @@ TEST(DataColumn, SelectRowsSetMultipleRowsNonAdjacent) {
 }
 
 TEST(DataColumn, SelectRowsSetMultipleRowsAdjacent) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::set<int> indices = { 0, 1 };
-  DataColumn<long double> actual = select_rows(data, indices);
+  DataColumn<double> actual = select_rows(data, indices);
 
-  DataColumn<long double> expected(2);
+  DataColumn<double> expected(2);
   expected << 1.0, 2.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -200,12 +200,12 @@ TEST(DataColumn, UniqueMultipleValuesRepeated) {
 }
 
 TEST(DataColumn, ExpandIdempotent) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::vector<int> mask { 1, 1, 1 };
 
-  DataColumn<long double> actual = expand(data, mask);
+  DataColumn<double> actual = expand(data, mask);
 
   ASSERT_EQ(data.size(), actual.size());
   ASSERT_EQ(data.rows(), actual.rows());
@@ -214,14 +214,14 @@ TEST(DataColumn, ExpandIdempotent) {
 }
 
 TEST(DataColumn, ExpandGeneric) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::vector<int> mask { 1, 0, 1, 0, 1 };
 
-  DataColumn<long double> actual = expand(data, mask);
+  DataColumn<double> actual = expand(data, mask);
 
-  DataColumn<long double> expected(5);
+  DataColumn<double> expected(5);
   expected <<
     1.0, 0.0, 2.0, 0.0, 3.0;
 
@@ -232,101 +232,101 @@ TEST(DataColumn, ExpandGeneric) {
 }
 
 TEST(DataColumn, MeanSingleObservation) {
-  DataColumn<long double> data(1);
+  DataColumn<double> data(1);
   data <<
     1.0;
 
-  long double actual = mean(data);
-  long double expected = 1.0;
+  double actual = mean(data);
+  double expected = 1.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(DataColumn, MeanMultipleEqualObservations) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1.0,
     1.0,
     1.0;
 
-  long double actual = mean(data);
-  long double expected = 1.0;
+  double actual = mean(data);
+  double expected = 1.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(DataColumn, MeanMultipleDifferentObservations) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1.0,
     2.0,
     3.0;
 
-  long double actual = mean(data);
-  long double expected = 2.0;
+  double actual = mean(data);
+  double expected = 2.0;
 
   ASSERT_EQ(expected, actual);
 }
 
 TEST(DataColumn, SdZeroVector) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     0,
     0,
     0;
 
-  long double result = sd(data);
-  long double expected = 0;
+  double result = sd(data);
+  double expected = 0;
 
   ASSERT_EQ(expected, result);
 }
 
 TEST(DataColumn, SdConstantVector) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1,
     1,
     1;
 
-  long double result = sd(data);
-  long double expected = 0;
+  double result = sd(data);
+  double expected = 0;
 
   ASSERT_EQ(expected, result);
 }
 
 TEST(DataColumn, SdGeneric1) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1,
     2,
     3;
 
-  long double result = sd(data);
-  long double expected = 1;
+  double result = sd(data);
+  double expected = 1;
 
   ASSERT_EQ(expected, result);
 }
 
 TEST(DataColumn, SdGeneric2) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1,
     1,
     2;
 
-  long double result = sd(data);
-  long double expected = 0.5773503;
+  double result = sd(data);
+  double expected = 0.5773503;
 
   ASSERT_NEAR(expected, result, 0.00001);
 }
 
 TEST(DataColumn, CenterSingleObservation) {
-  DataColumn<long double> data(1);
+  DataColumn<double> data(1);
   data << 1.0;
 
-  DataColumn<long double> actual = center(data);
+  DataColumn<double> actual = center(data);
 
-  DataColumn<long double> expected = DataColumn<long double>::Zero(1);
+  DataColumn<double> expected = DataColumn<double>::Zero(1);
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
@@ -335,15 +335,15 @@ TEST(DataColumn, CenterSingleObservation) {
 }
 
 TEST(DataColumn, CenterMultipleEqualObservations) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1.0,
     1.0,
     1.0;
 
-  DataColumn<long double> actual = center(data);
+  DataColumn<double> actual = center(data);
 
-  DataColumn<long double> expected = DataColumn<long double>::Zero(3);
+  DataColumn<double> expected = DataColumn<double>::Zero(3);
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
@@ -352,15 +352,15 @@ TEST(DataColumn, CenterMultipleEqualObservations) {
 }
 
 TEST(DataColumn, CenterMultipleDifferentObservations) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1.0,
     2.0,
     3.0;
 
-  DataColumn<long double> actual = center(data);
+  DataColumn<double> actual = center(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected <<
     -1.0,
     0.0,
@@ -373,15 +373,15 @@ TEST(DataColumn, CenterMultipleDifferentObservations) {
 }
 
 TEST(DataColumn, DescaleZeroVector) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     0,
     0,
     0;
 
-  DataColumn<long double> actual = descale(data);
+  DataColumn<double> actual = descale(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected <<
     0,
     0,
@@ -394,15 +394,15 @@ TEST(DataColumn, DescaleZeroVector) {
 }
 
 TEST(DataColumn, DescaleConstantVector) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1,
     1,
     1;
 
-  DataColumn<long double> actual = descale(data);
+  DataColumn<double> actual = descale(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected <<
     1,
     1,
@@ -415,15 +415,15 @@ TEST(DataColumn, DescaleConstantVector) {
 }
 
 TEST(DataColumn, DescaleDescaledVector) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     1,
     2,
     3;
 
-  DataColumn<long double> actual = descale(data);
+  DataColumn<double> actual = descale(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected <<
     1,
     2,
@@ -436,15 +436,15 @@ TEST(DataColumn, DescaleDescaledVector) {
 }
 
 TEST(DataColumn, DescaleScaledVector) {
-  DataColumn<long double> data(3);
+  DataColumn<double> data(3);
   data <<
     2,
     4,
     6;
 
-  DataColumn<long double> actual = descale(data);
+  DataColumn<double> actual = descale(data);
 
-  DataColumn<long double> expected(3);
+  DataColumn<double> expected(3);
   expected <<
     1,
     2,
@@ -457,71 +457,71 @@ TEST(DataColumn, DescaleScaledVector) {
 }
 
 TEST(DataColumn, AccuracyMax) {
-  DataColumn<long double> predictions(3);
+  DataColumn<double> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<long double> actual(3);
+  DataColumn<double> actual(3);
   actual <<
     1,
     2,
     3;
 
-  long double result = accuracy(predictions, actual);
-  long double expected = 1.0;
+  double result = accuracy(predictions, actual);
+  double expected = 1.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
 
 TEST(DataColumn, AccuracyMin) {
-  DataColumn<long double> predictions(3);
+  DataColumn<double> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<long double> actual(3);
+  DataColumn<double> actual(3);
   actual <<
     3,
     3,
     1;
 
-  long double result = accuracy(predictions, actual);
-  long double expected = 0.0;
+  double result = accuracy(predictions, actual);
+  double expected = 0.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
 
 TEST(DataColumn, AccuracyGeneric1) {
-  DataColumn<long double> predictions(3);
+  DataColumn<double> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<long double> actual(3);
+  DataColumn<double> actual(3);
   actual <<
     1,
     3,
     3;
 
-  long double result = accuracy(predictions, actual);
-  long double expected = 2.0 / 3.0;
+  double result = accuracy(predictions, actual);
+  double expected = 2.0 / 3.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
 
 TEST(DataColumn, AccuracyGeneric2) {
-  DataColumn<long double> predictions(4);
+  DataColumn<double> predictions(4);
   predictions <<
     1,
     2,
     3,
     4;
 
-  DataColumn<long double> actual(4);
+  DataColumn<double> actual(4);
   actual <<
     1,
     1,
@@ -529,8 +529,8 @@ TEST(DataColumn, AccuracyGeneric2) {
     3;
 
 
-  long double result = accuracy(predictions, actual);
-  long double expected = 1.0 / 2.0;
+  double result = accuracy(predictions, actual);
+  double expected = 1.0 / 2.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
@@ -556,79 +556,79 @@ TEST(DataColumn, AccuracyMoreObservationsThanPredictions) {
 }
 
 TEST(DataColumn, ErrorRateMax) {
-  DataColumn<long double> predictions(3);
+  DataColumn<double> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<long double> actual(3);
+  DataColumn<double> actual(3);
   actual <<
     3,
     3,
     1;
 
-  long double result = error_rate(predictions, actual);
-  long double expected = 1.0;
+  double result = error_rate(predictions, actual);
+  double expected = 1.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
 
 TEST(DataColumn, ErrorRateMin) {
-  DataColumn<long double> predictions(3);
+  DataColumn<double> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<long double> actual(3);
+  DataColumn<double> actual(3);
   actual <<
     1,
     2,
     3;
 
-  long double result = error_rate(predictions, actual);
-  long double expected = 0.0;
+  double result = error_rate(predictions, actual);
+  double expected = 0.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
 
 TEST(DataColumn, ErrorRateGeneric1) {
-  DataColumn<long double> predictions(3);
+  DataColumn<double> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<long double> actual(3);
+  DataColumn<double> actual(3);
   actual <<
     1,
     3,
     3;
 
-  long double result = error_rate(predictions, actual);
-  long double expected = 1.0 / 3.0;
+  double result = error_rate(predictions, actual);
+  double expected = 1.0 / 3.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }
 
 TEST(DataColumn, ErrorRateGeneric2) {
-  DataColumn<long double> predictions(4);
+  DataColumn<double> predictions(4);
   predictions <<
     1,
     2,
     3,
     4;
 
-  DataColumn<long double> actual(4);
+  DataColumn<double> actual(4);
   actual <<
     1,
     1,
     3,
     3;
 
-  long double result = error_rate(predictions, actual);
-  long double expected = 1.0 / 2.0;
+  double result = error_rate(predictions, actual);
+  double expected = 1.0 / 2.0;
 
   ASSERT_DOUBLE_EQ(expected, result);
 }

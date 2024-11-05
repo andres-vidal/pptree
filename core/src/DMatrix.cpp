@@ -15,8 +15,8 @@ namespace models::math {
 
     std::sort(idx.data(), idx.data() + idx.size(), [&values, &vectors](int idx1, int idx2)
      {
-       long double value1_mod = fabs(values.row(idx1).value());
-       long double value2_mod = fabs(values.row(idx2).value());
+       double value1_mod = fabs(values.row(idx1).value());
+       double value2_mod = fabs(values.row(idx2).value());
 
        if (is_approx(value1_mod, value2_mod)) {
          DVector<T> vector1 = vectors.col(idx1);
@@ -57,5 +57,5 @@ namespace models::math {
     return { values, vectors };
   }
 
-  template std::tuple<DVector<long double>, DMatrix<long double> > eigen(const DMatrix<long double> &m);
+  template std::tuple<DVector<double>, DMatrix<double> > eigen(const DMatrix<double> &m);
 }

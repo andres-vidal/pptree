@@ -6,7 +6,7 @@ using namespace models::stats;
 
 
 TEST(Group, BinaryRegroupSingleGroup) {
-  Data<long double> data(3, 1);
+  Data<double> data(3, 1);
   data <<
     1.0,
     4.0,
@@ -21,7 +21,7 @@ TEST(Group, BinaryRegroupSingleGroup) {
 }
 
 TEST(Group, BinaryRegroupTwoGroups) {
-  Data<long double> data(3, 1);
+  Data<double> data(3, 1);
   data <<
     1.0,
     4.0,
@@ -36,7 +36,7 @@ TEST(Group, BinaryRegroupTwoGroups) {
 }
 
 TEST(Group, BinaryRegroupMultidimensional) {
-  Data<long double> data(3, 3);
+  Data<double> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -51,7 +51,7 @@ TEST(Group, BinaryRegroupMultidimensional) {
 }
 
 TEST(Group, BinaryRegroupSingleObservationPerGroup) {
-  Data<long double> data(3, 1);
+  Data<double> data(3, 1);
   data <<
     1.0,
     2.0,
@@ -84,7 +84,7 @@ TEST(Group, BinaryRegroupSingleObservationPerGroup) {
 }
 
 TEST(Group, BinaryRegroupMultipleObservationsPerGroupAdjacent) {
-  Data<long double> data(8, 1);
+  Data<double> data(8, 1);
   data <<
     1.0,
     2.0,
@@ -133,7 +133,7 @@ TEST(Group, BinaryRegroupMultipleObservationsPerGroupAdjacent) {
 }
 
 TEST(Group, BinaryRegroupMultipleObservationsPerGroupMixed) {
-  Data<long double> data(8, 1);
+  Data<double> data(8, 1);
   data <<
     7.0,
     1.0,
