@@ -88,7 +88,7 @@ namespace models {
         return false;
       }
 
-      for (int i = 0; i < trees.size(); i++) {
+      for (std::size_t i = 0; i < trees.size(); i++) {
         if (*trees[i] != *other.trees[i]) {
           return false;
         }
@@ -179,7 +179,7 @@ namespace models {
         }
 
         int most_voted_group_votes = 0;
-        R most_voted_group;
+        R most_voted_group = 0;
 
         for (const auto &[key, votes] : votes_per_group) {
           if (votes > most_voted_group_votes) {

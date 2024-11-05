@@ -50,10 +50,10 @@ namespace models {
     const double lambda;
 
     explicit GLDATrainingSpec(const double lambda) :
-      lambda(lambda),
       TrainingSpec<T, R>(
-        std::move(pp::strategy::glda<T, R>(lambda)),
-        std::move(dr::strategy::all<T>())) {
+        pp::strategy::glda<T, R>(lambda),
+        dr::strategy::all<T>()),
+      lambda(lambda) {
     }
 
     virtual void accept(TrainingSpecVisitor<T, R> &visitor) const override {
@@ -71,11 +71,11 @@ namespace models {
     const double lambda;
 
     UniformGLDATrainingSpec(const int n_vars, const double lambda) :
-      n_vars(n_vars),
-      lambda(lambda),
       TrainingSpec<T, R>(
-        std::move(pp::strategy::glda<T, R>(lambda)),
-        std::move(dr::strategy::uniform<T>(n_vars))) {
+        pp::strategy::glda<T, R>(lambda),
+        dr::strategy::uniform<T>(n_vars)),
+      n_vars(n_vars),
+      lambda(lambda) {
     }
 
     virtual void accept(TrainingSpecVisitor<T, R> &visitor) const override {

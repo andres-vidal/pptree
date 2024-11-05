@@ -25,7 +25,7 @@ namespace models::stats {
     const std::vector<int> &indices) {
     DataColumn<T> result(indices.size());
 
-    for (int i = 0; i < indices.size(); i++) {
+    for (std::size_t i = 0; i < indices.size(); i++) {
       result(i) = data(indices[i]);
     }
 
@@ -63,7 +63,7 @@ namespace models::stats {
 
     DataColumn<T> result(indices.size());
 
-    for (int i = 0; i < indices.size(); i++) {
+    for (std::size_t i = 0; i < indices.size(); i++) {
       result(i) = data(indices[i]);
     }
 
@@ -78,7 +78,7 @@ namespace models::stats {
 
     int j = 0;
 
-    for (int i = 0; i < mask.size(); i++) {
+    for (std::size_t i = 0; i < mask.size(); i++) {
       if (mask[i] == 1) {
         expanded.row(i) = data.row(j);
         j++;

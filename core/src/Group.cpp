@@ -40,7 +40,7 @@ namespace models::stats {
 
     std::sort(groups.begin(), groups.end(), cmp_mean_ascending);
 
-    for (G g = 0; g < groups.size(); g++) {
+    for (std::size_t g = 0; g < groups.size(); g++) {
       if (g ==  groups.size() - 1) {
         groups[g].diff = 0;
       } else {
