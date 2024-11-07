@@ -32,22 +32,25 @@ namespace models {
     const int                 size,
     const int                 seed,
     const int                 n_threads) {
+    #ifdef _OPENMP
+    omp_set_num_threads(n_threads);
+    #endif
+
+    #pragma omp parallel
+    {
+      Random::seed(seed);
+    }
+
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
     LOG_INFO << "The seed is: " << seed << std::endl;
 
     invariant(size > 0, "The forest size must be greater than 0.");
-
-    Random::seed(seed);
 
     Forest<T, R> forest(
       training_spec.clone(),
       std::make_shared<DataSpec<T, R> >(training_data),
       seed,
       n_threads);
-
-    #ifdef _OPENMP
-    omp_set_num_threads(forest.n_threads);
-    #endif
 
     #pragma omp parallel for
     for (int i = 0; i < size; i++) {
