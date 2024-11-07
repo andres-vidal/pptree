@@ -43,13 +43,13 @@ namespace models::stats {
       }
 
       static std::mt19937& get_current_rng() {
-        std::mt19937& rng = rngs[0];
-
         #ifdef _OPENMP
-        rng = rngs[omp_get_thread_num()];
-        #endif
+        return rngs[omp_get_thread_num()];
 
-        return rng;
+        #else
+        return rngs[0];
+
+        #endif
       }
   };
 }
