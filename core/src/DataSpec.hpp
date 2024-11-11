@@ -25,9 +25,11 @@ namespace models::stats {
     DataSpec(
       const Data<T> &       x,
       const DataColumn<G> & y)
-      : x(x),
-      y(y),
-      classes(unique(y)) {
+      : DataSpec(x, y, unique(y)) {
+    }
+
+    DataSpec(const DataSpec<T, G>& other)
+      : x(other.x), y(other.y), classes(other.classes) {
     }
 
     virtual std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const {
