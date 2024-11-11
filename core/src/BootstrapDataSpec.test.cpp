@@ -25,7 +25,7 @@ TEST(StratifiedProportionalSample, NegativeSampleSize) {
     1,
     1;
 
-  DataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
   ASSERT_THROW({ stratified_proportional_sample(data, -1); }, std::runtime_error);
 }
@@ -51,7 +51,7 @@ TEST(StratifiedProportionalSample, ZeroSampleSize) {
     1,
     1;
 
-  DataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
   ASSERT_THROW({ stratified_proportional_sample(data, 0); }, std::runtime_error);
 }
@@ -77,7 +77,7 @@ TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
     1,
     1;
 
-  DataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
   ASSERT_THROW({ stratified_proportional_sample(data, 7); }, std::runtime_error);
 }
@@ -103,7 +103,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSize) {
     1,
     1;
 
-  DataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
   DataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
@@ -133,7 +133,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
     1,
     1;
 
-  DataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
   DataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
@@ -168,7 +168,7 @@ TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
     1,
     1;
 
-  DataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
   DataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
@@ -214,7 +214,7 @@ TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1, 2 });
 
   DataSpec<double, int> result = stratified_proportional_sample(data, 6).get_sample();
 
@@ -271,7 +271,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
     1,
     1;
 
-  DataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
   DataSpec<double, int> result = stratified_proportional_sample(data, 6).get_sample();
 
@@ -327,7 +327,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
     1,
     1;
 
-  DataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
   DataSpec<double, int> result = stratified_proportional_sample(data, 5).get_sample();
 
@@ -383,7 +383,7 @@ TEST(StratifiedPorportionalSample, AtLeastOneObservationPerGroup) {
     1,
     2;
 
-  DataSpec<double, int> data(x, y, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y, { 0, 1, 2 });
 
   DataSpec<double, int> result = stratified_proportional_sample(data, 3).get_sample();
 

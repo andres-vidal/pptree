@@ -18,15 +18,20 @@ namespace models::stats {
       : SortedDataSpec<T, G>(x, y, unique(y)) {
     }
 
-    int group_size(const G &group) {
+    explicit SortedDataSpec(
+      const DataSpec<T, G> &data)
+      : SortedDataSpec<T, G>(data.x, data.y, data.classes) {
+    }
+
+    int group_size(const G &group) const {
       return 1 + group_end(group) - group_start(group);
     }
 
-    int group_start(const G &group) {
+    int group_start(const G &group) const {
       return group_specs.at(group).index;
     }
 
-    int group_end(const G &group) {
+    int group_end(const G &group) const {
       if (group_specs.at(group).next == nullptr) {
         return this->y.rows() - 1;
       }
@@ -34,7 +39,7 @@ namespace models::stats {
       return group_specs.at(group).next->index - 1;
     }
 
-    Data<T> group(const G &group) {
+    Data<T> group(const G &group) const {
       return this->x(Eigen::seq(group_start(group), group_end(group)), Eigen::all);
     }
 

@@ -31,7 +31,7 @@ namespace models {
 
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
-    std::shared_ptr<stats::DataSpec<T, R> > training_data;
+    std::shared_ptr<stats::SortedDataSpec<T, R> > training_data;
     const int seed = 0;
     const int n_threads = 1;
 
@@ -39,9 +39,9 @@ namespace models {
     }
 
     Forest(
-      std::unique_ptr<TrainingSpec<T, R> > &&    training_spec,
-      std::shared_ptr<stats::DataSpec<T, R> > && training_data,
-      const int                                  seed)
+      std::unique_ptr<TrainingSpec<T, R> > &&          training_spec,
+      std::shared_ptr<stats::SortedDataSpec<T, R> > && training_data,
+      const int                                        seed)
       : training_spec(std::move(training_spec)),
       training_data(training_data),
       seed(seed),
@@ -49,10 +49,10 @@ namespace models {
     }
 
     Forest(
-      std::unique_ptr<TrainingSpec<T, R> > &&    training_spec,
-      std::shared_ptr<stats::DataSpec<T, R> > && training_data,
-      const int                                  seed,
-      const int                                  n_threads)
+      std::unique_ptr<TrainingSpec<T, R> > &&          training_spec,
+      std::shared_ptr<stats::SortedDataSpec<T, R> > && training_data,
+      const int                                        seed,
+      const int                                        n_threads)
       : training_spec(std::move(training_spec)),
       training_data(training_data),
       seed(seed),

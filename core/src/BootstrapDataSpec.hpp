@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DataSpec.hpp"
+#include "SortedDataSpec.hpp"
 #include "Uniform.hpp"
 #include "Invariant.hpp"
 
@@ -8,7 +8,7 @@
 
 namespace models::stats {
   template<typename T, typename G>
-  struct BootstrapDataSpec : DataSpec<T, G> {
+  struct BootstrapDataSpec : SortedDataSpec<T, G> {
     const std::vector<int> sample_indices;
     const std::set<int> oob_indices;
 
@@ -17,7 +17,7 @@ namespace models::stats {
       const DataColumn<G> &   y,
       const std::set<G> &     classes,
       const std::vector<int> &sample_indices)
-      : DataSpec<T, G>(x, y, classes),
+      : SortedDataSpec<T, G>(x, y, classes),
       sample_indices(sample_indices),
       oob_indices(init_oob_indices(x, sample_indices)) {
     }
@@ -26,9 +26,7 @@ namespace models::stats {
       const Data<T> &         x,
       const DataColumn<G> &   y,
       const std::vector<int> &sample_indices)
-      : DataSpec<T, G>(x, y),
-      sample_indices(sample_indices),
-      oob_indices(init_oob_indices(x, sample_indices)) {
+      : BootstrapDataSpec<T, G>(x, y, unique(y), sample_indices) {
     }
 
     DataSpec<T, G> get_sample() const {
@@ -71,8 +69,8 @@ namespace models::stats {
 
   template<typename T, typename G>
   BootstrapDataSpec<T, G> stratified_proportional_sample(
-    const DataSpec<T, G> &data,
-    const int             size) {
+    const SortedDataSpec<T, G> &data,
+    const int                   size) {
     invariant(size > 0, "Sample size must be greater than 0.");
     invariant(size <= data.y.rows(), "Sample size cannot be larger than the number of rows in the data.");
 
@@ -81,15 +79,12 @@ namespace models::stats {
     std::vector<int> sample_indices;
 
     for (const G& group : data.classes) {
-      const std::vector<int> group_indices = select_group(data.y, group);
-
-      const int group_size = group_indices.size();
+      const int group_size = data.group_size(group);
       const int group_sample_size = std::max(1.0, std::round(group_size / (double)data_size * size));
 
       for (int i = 0; i < group_sample_size; i++) {
-        const Uniform unif(0, group_indices.size() - 1);
-        const int sampled_index = group_indices[unif()];
-        sample_indices.push_back(sampled_index);
+        const Uniform unif(data.group_start(group), data.group_end(group));
+        sample_indices.push_back(unif());
       }
     }
 
