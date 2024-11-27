@@ -48,23 +48,6 @@ namespace models::stats
   }
 
   template <typename T>
-  std::tuple<std::vector<int>, std::vector<int> > mask_null_columns(const Data<T> &data) {
-    std::vector<int> mask(data.cols());
-    std::vector<int> index;
-
-    for (int i = 0; i < data.cols(); i++) {
-      if (data.col(i).minCoeff() == 0 && data.col(i).maxCoeff() == 0) {
-        mask[i] = 0;
-      } else {
-        mask[i] = 1;
-        index.push_back(i);
-      }
-    }
-
-    return { mask, index };
-  }
-
-  template <typename T>
   DataColumn<T> mean(const Data<T> &data) {
     return data.colwise().mean();
   }

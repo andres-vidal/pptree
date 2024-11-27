@@ -611,63 +611,6 @@ TEST(Data, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(Data, MaskNullColumnsZeroMatrix) {
-  Data<double> data(3, 3);
-  data <<
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0;
-
-  auto [mask, indx] = mask_null_columns(data);
-
-  std::vector<int> expected_mask { 0, 0, 0 };
-  std::vector<int> expected_indx {  };
-
-  ASSERT_EQ(expected_mask.size(), mask.size());
-  ASSERT_EQ(expected_indx.size(), indx.size());
-
-  ASSERT_EQ(expected_mask, mask);
-  ASSERT_EQ(expected_indx, indx);
-}
-
-TEST(Data, MaskNullColumnsNoNullColumns) {
-  Data<double> data(3, 3);
-  data <<
-    1.0, 2.0, 3.0,
-    4.0, 5.0, 6.0,
-    7.0, 8.0, 9.0;
-
-  auto [mask, indx] = mask_null_columns(data);
-
-  std::vector<int> expected_mask { 1, 1, 1 };
-  std::vector<int> expected_indx { 0, 1, 2 };
-
-  ASSERT_EQ(expected_mask.size(), mask.size());
-  ASSERT_EQ(expected_indx.size(), indx.size());
-
-  ASSERT_EQ(expected_mask, mask);
-  ASSERT_EQ(expected_indx, indx);
-}
-
-TEST(Data, MaskNullColumnsSomeNullColumns) {
-  Data<double> data(3, 3);
-  data <<
-    1.0, 0.0, 3.0,
-    4.0, 0.0, 6.0,
-    7.0, 0.0, 9.0;
-
-  auto [mask, indx] = mask_null_columns(data);
-
-  std::vector<int> expected_mask { 1, 0, 1 };
-  std::vector<int> expected_indx { 0, 2 };
-
-  ASSERT_EQ(expected_mask.size(), mask.size());
-  ASSERT_EQ(expected_indx.size(), indx.size());
-
-  ASSERT_EQ(expected_mask, mask);
-  ASSERT_EQ(expected_indx, indx);
-}
-
 TEST(Data, MeanSingleObservation) {
   Data<double> data(1, 3);
   data <<
