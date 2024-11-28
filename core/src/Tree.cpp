@@ -15,6 +15,16 @@ namespace models {
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data);
 
+
+  template<typename R >
+  std::tuple<R, R> take_two(const std::set<R> &group_set) {
+    invariant(group_set.size() >= 2, "The set does not contain enough elements.");
+
+    auto first = *group_set.begin();
+    auto last = *std::prev(group_set.end());
+    return { first, last };
+  }
+
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
     const Data<T> &         data,
@@ -31,35 +41,33 @@ namespace models {
   }
 
   template<typename T, typename R >
-  Threshold<T> get_threshold(
-    const DataColumn<T> &projected_data,
-    const DataColumn<R> &groups,
-    const R &            group_1,
-    const R &            group_2) {
-    T mean_1 = mean(select_group(projected_data, groups, group_1));
-    T mean_2 = mean(select_group(projected_data, groups, group_2));
+  std::unique_ptr<Condition<T, R> > binary_step(
+    const TrainingSpec<T, R> &   training_spec,
+    const SortedDataSpec<T, R> & training_data) {
+    auto [data, groups, unique_groups] = training_data.unwrap();
+    auto [group_1, group_2] = take_two(unique_groups);
 
-    return (mean_1 + mean_2) / 2;
-  };
+    LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << unique_groups << std::endl;
 
-  template<typename T, typename R >
-  std::tuple<R, R> sort_groups_by_threshold(
-    const Data<T> &      data,
-    const DataColumn<R> &groups,
-    const R &            group_1,
-    const R &            group_2,
-    const Projector<T> & projector,
-    const Threshold<T> & threshold) {
-    LOG_INFO << "Sorting groups by threshold:" << std::endl;
+    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+
+    auto [projector, _] = pp_strategy(data, groups, unique_groups);
+
+    Data<T> data_group_1 = training_data.group(group_1);
+    Data<T> data_group_2 = training_data.group(group_2);
+
+    T mean_1 = mean(project(data_group_1, projector));
+    T mean_2 = mean(project(data_group_2, projector));
+
+    LOG_INFO << "Mean for projected group " << group_1 << ": " << mean_1 << std::endl;
+    LOG_INFO << "Mean for projected group " << group_2 << ": " << mean_2 << std::endl;
+
+    T threshold =  (mean_1 + mean_2) / 2;
+
     LOG_INFO << "Threshold: " << threshold << std::endl;
 
-    R l_group, u_group;
-
-    DataColumn<T> mean_1 = mean(select_group(data, groups, group_1));
-    DataColumn<T> mean_2 = mean(select_group(data, groups, group_2));
-
-    T projected_mean_1 = project(mean_1, projector);
-    T projected_mean_2 = project(mean_2, projector);
+    T projected_mean_1 = project(mean(data_group_1), projector);
+    T projected_mean_2 = project(mean(data_group_2), projector);
 
     LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
     LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
@@ -67,43 +75,18 @@ namespace models {
     invariant(std::max(projected_mean_1, projected_mean_2) > threshold, "Threshold is greater than the two groups means");
     invariant(std::min(projected_mean_1, projected_mean_2) < threshold, "Threshold is lower than the two groups means");
 
+    R lower_group, upper_group;
+
     if (projected_mean_1 < projected_mean_2) {
-      l_group = group_1;
-      u_group = group_2;
+      lower_group = group_1;
+      upper_group = group_2;
     } else {
-      l_group = group_2;
-      u_group = group_1;
+      lower_group = group_2;
+      upper_group = group_1;
     }
 
-    LOG_INFO << "Lower group: " << l_group << std::endl;
-    LOG_INFO << "Upper group: " << u_group << std::endl;
-
-    return { l_group, u_group };
-  }
-
-  template<typename T, typename R >
-  std::unique_ptr<Condition<T, R> > binary_step(
-    const Data<T> &            data,
-    const DataColumn<R> &      groups,
-    const R &                  group_1,
-    const R &                  group_2,
-    const TrainingSpec<T, R> & training_spec) {
-    std::set<R> unique_groups = { group_1, group_2 };
-    LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << unique_groups << std::endl;
-
-    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
-
-    auto [projector, projected] = pp_strategy(data, groups, unique_groups);
-
-    T threshold = get_threshold(projected, groups, group_1, group_2);
-
-    auto [lower_group, upper_group] = sort_groups_by_threshold(
-      data,
-      groups,
-      group_1,
-      group_2,
-      projector,
-      threshold);
+    LOG_INFO << "Lower group: " << lower_group << std::endl;
+    LOG_INFO << "Upper group: " << upper_group << std::endl;
 
     std::unique_ptr<Node<T, R> >lower_response = std::make_unique<Response<T, R> >(lower_group);
     std::unique_ptr<Node<T, R> >upper_response = std::make_unique<Response<T, R> >(upper_group);
@@ -118,15 +101,6 @@ namespace models {
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
-  }
-
-  template<typename R >
-  std::tuple<R, R> take_two(const std::set<R> &group_set) {
-    invariant(group_set.size() >= 2, "The set does not contain enough elements.");
-
-    auto first = *group_set.begin();
-    auto last = *std::prev(group_set.end());
-    return { first, last };
   }
 
   template<typename T, typename R >
@@ -172,14 +146,12 @@ namespace models {
     Data<T> reduced_data = dr_strategy(data);
 
     if (unique_groups.size() == 2) {
-      auto [group_1, group_2] = take_two(unique_groups);
-
       return binary_step(
-        reduced_data,
-        groups,
-        group_1,
-        group_2,
-        training_spec);
+        training_spec,
+        SortedDataSpec<T, R>(
+          reduced_data,
+          groups,
+          unique_groups));
     }
 
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
@@ -188,14 +160,13 @@ namespace models {
       unique_groups,
       pp_strategy);
 
-    auto [group_1, group_2] = take_two(binary_unique_groups);
 
     std::unique_ptr<Condition<T, R> > temp_node = binary_step(
-      reduced_data,
-      binary_groups,
-      group_1,
-      group_2,
-      training_spec);
+      training_spec,
+      SortedDataSpec<T, R>(
+        reduced_data,
+        groups,
+        binary_unique_groups));
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
