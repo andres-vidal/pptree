@@ -118,9 +118,7 @@ namespace models {
   std::unique_ptr< Condition<T, R> >   step(
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data) {
-    auto data = training_data.x;
-    auto groups = training_data.y;
-    auto unique_groups = training_data.classes;
+    auto[data, groups, unique_groups] = training_data.unwrap();
 
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
@@ -128,20 +126,16 @@ namespace models {
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
     const DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
 
-    Data<T> reduced_data = dr_strategy(data);
+    SortedDataSpec<T, R> reduced_data = training_data.analog(dr_strategy(data));
 
     if (unique_groups.size() == 2) {
-      return binary_step(
-        training_spec,
-        SortedDataSpec<T, R>(
-          reduced_data,
-          groups,
-          unique_groups));
+      return binary_step(training_spec, reduced_data);
     }
 
     LOG_INFO << "Redefining a " << unique_groups.size() << " group problem as binary:" << std::endl;
 
-    auto [projector, projected] = pp_strategy(data, groups, unique_groups);
+    auto [projector, projected] = pp_strategy(reduced_data.x, groups, unique_groups);
+
     auto [binary_groups, binary_unique_groups, binary_group_mapping] = binary_regroup((Data<T>)projected, groups, unique_groups);
 
     LOG_INFO << "Mapping: " << binary_group_mapping << std::endl;
@@ -149,8 +143,8 @@ namespace models {
     std::unique_ptr<Condition<T, R> > temp_node = binary_step(
       training_spec,
       SortedDataSpec<T, R>(
-        reduced_data,
-        groups,
+        reduced_data.x,
+        binary_groups,
         binary_unique_groups));
 
     R binary_lower_group = temp_node->lower->response();
