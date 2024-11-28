@@ -7,32 +7,32 @@ namespace models::stats {
   template<typename T, typename G>
   struct SortedDataSpec : DataSpec<T, G> {
     private:
-      template<typename GG>
+
       struct GroupSpec {
         int index;
-        GroupSpec<GG> *next = nullptr;
-        GroupSpec<GG> *prev = nullptr;
+        GroupSpec *next = nullptr;
+        GroupSpec *prev = nullptr;
       };
 
-      const std::map<G, GroupSpec<G> > group_specs;
+      const std::map<G, GroupSpec > group_specs;
 
       SortedDataSpec<T, G>(
-        const Data<T> &                   x,
-        const DataColumn<G> &             y,
-        const std::set<G> &               classes,
-        const std::map<G, GroupSpec<G> > &group_specs)
+        const Data<T> &               x,
+        const DataColumn<G> &         y,
+        const std::set<G> &           classes,
+        const std::map<G, GroupSpec> &group_specs)
         : DataSpec<T, G>(x, y, classes),
         group_specs(group_specs) {
       }
 
-      std::map<G,  GroupSpec<G> > init_group_specs() {
-        std::map<G, GroupSpec<G> > specs;
+      std::map<G,  GroupSpec > init_group_specs() {
+        std::map<G, GroupSpec > specs;
 
         for (int i = 0; i < this->y.rows(); i++) {
           if (specs.count(this->y(i)) == 0) {
             G curr = this->y(i);
 
-            specs[curr] = GroupSpec<G>{ i };
+            specs[curr] = GroupSpec{ i };
 
             if (i != 0) {
               G prev = this->y(i - 1);
@@ -43,6 +43,20 @@ namespace models::stats {
         }
 
         return specs;
+      }
+
+      DataSpec<T, G> sort(const DataSpec<T, G> &data) {
+        std::vector<int> indices(data.x.rows());
+        std::iota(indices.begin(), indices.end(), 0);
+
+        std::stable_sort(indices.begin(), indices.end(), [&data](int idx1, int idx2) {
+           return data.y(idx1) < data.y(idx2);
+         });
+
+        return DataSpec<T, G>(
+          select_rows(data.x, indices),
+          select_rows(data.y, indices),
+          data.classes);
       }
 
     public:
@@ -91,19 +105,4 @@ namespace models::stats {
         return SortedDataSpec<T, G>(data, this->y, this->classes, this->group_specs);
       }
   };
-
-  template<typename T, typename G>
-  DataSpec<T, G> sort(const DataSpec<T, G> &data) {
-    std::vector<int> indices(data.x.rows());
-    std::iota(indices.begin(), indices.end(), 0);
-
-    std::stable_sort(indices.begin(), indices.end(), [&data](int idx1, int idx2) {
-       return data.y(idx1) < data.y(idx2);
-     });
-
-    return DataSpec<T, G>(
-      select_rows(data.x, indices),
-      select_rows(data.y, indices),
-      data.classes);
-  }
 }
