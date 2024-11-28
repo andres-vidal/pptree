@@ -26,21 +26,6 @@ namespace models {
   }
 
   template<typename T, typename R >
-  std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
-    const Data<T> &         data,
-    const DataColumn<R> &   groups,
-    const std::set<R> &     unique_groups,
-    const PPStrategy<T, R> &pp_strategy) {
-    LOG_INFO << "Redefining a " << unique_groups.size() << " group problem as binary:" << std::endl;
-
-    auto [projector, projected] = pp_strategy(data, groups, unique_groups);
-    auto [binary_groups, binary_unique_groups, binary_group_mapping] = binary_regroup((Data<T>)projected, groups, unique_groups);
-
-    LOG_INFO << "Mapping: " << binary_group_mapping << std::endl;
-    return { binary_groups, binary_unique_groups, binary_group_mapping };
-  }
-
-  template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > binary_step(
     const TrainingSpec<T, R> &   training_spec,
     const SortedDataSpec<T, R> & training_data) {
@@ -154,12 +139,12 @@ namespace models {
           unique_groups));
     }
 
-    auto [binary_groups, binary_unique_groups, binary_group_mapping] = as_binary_problem(
-      reduced_data,
-      groups,
-      unique_groups,
-      pp_strategy);
+    LOG_INFO << "Redefining a " << unique_groups.size() << " group problem as binary:" << std::endl;
 
+    auto [projector, projected] = pp_strategy(data, groups, unique_groups);
+    auto [binary_groups, binary_unique_groups, binary_group_mapping] = binary_regroup((Data<T>)projected, groups, unique_groups);
+
+    LOG_INFO << "Mapping: " << binary_group_mapping << std::endl;
 
     std::unique_ptr<Condition<T, R> > temp_node = binary_step(
       training_spec,
