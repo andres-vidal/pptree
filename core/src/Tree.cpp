@@ -116,7 +116,7 @@ namespace models {
       std::move(lower_response),
       std::move(upper_response),
       training_spec.clone(),
-      std::make_unique<DataSpec<T, R> >(data, groups, unique_groups));
+      std::make_unique<SortedDataSpec<T, R> >(data, groups, unique_groups));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -225,7 +225,7 @@ namespace models {
       std::move(lower_branch),
       std::move(upper_branch),
       training_spec.clone(),
-      std::make_unique<DataSpec<T, R> >(data, groups, unique_groups));
+      std::make_unique<SortedDataSpec<T, R> >(data, groups, unique_groups));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -259,9 +259,9 @@ namespace models {
     return tree;
   }
 
-  template Tree<double, int> BaseTree<double, int, DataSpec<double, int>, Tree>::train(
-    const TrainingSpec<double, int> &training_spec,
-    const DataSpec<double, int> &    training_data);
+  template Tree<double, int> BaseTree<double, int, SortedDataSpec<double, int>, Tree>::train(
+    const TrainingSpec<double, int> &   training_spec,
+    const SortedDataSpec<double, int> & training_data);
 
   template BootstrapTree<double, int> BaseTree<double, int, BootstrapDataSpec<double, int>, BootstrapTree>::train(
     const TrainingSpec<double, int> &     training_spec,

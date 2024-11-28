@@ -105,7 +105,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSize) {
 
   SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
-  DataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
+  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   ASSERT_EQ(4, result.x.rows());
   ASSERT_EQ(3, result.x.cols());
@@ -135,7 +135,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
 
   SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
-  DataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
+  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -170,7 +170,7 @@ TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
 
   SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
-  DataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
+  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   for (int i = 0; i < result.x.rows(); i++) {
     bool found = false;
@@ -216,7 +216,7 @@ TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
 
   SortedDataSpec<double, int> data(x, y, { 0, 1, 2 });
 
-  DataSpec<double, int> result = stratified_proportional_sample(data, 6).get_sample();
+  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 6).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -273,7 +273,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
 
   SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
-  DataSpec<double, int> result = stratified_proportional_sample(data, 6).get_sample();
+  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 6).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -329,7 +329,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
 
   SortedDataSpec<double, int> data(x, y, { 0, 1 });
 
-  DataSpec<double, int> result = stratified_proportional_sample(data, 5).get_sample();
+  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 5).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -385,7 +385,7 @@ TEST(StratifiedPorportionalSample, AtLeastOneObservationPerGroup) {
 
   SortedDataSpec<double, int> data(x, y, { 0, 1, 2 });
 
-  DataSpec<double, int> result = stratified_proportional_sample(data, 3).get_sample();
+  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 3).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -700,7 +700,7 @@ TEST(BootstrapDataSpec, GetSampleGeneric) {
 
   BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
 
-  DataSpec<double, int> sample = data.get_sample();
+  SortedDataSpec<double, int> sample = data.get_sample();
 
   Data<double> expected_x(2, 3);
   expected_x <<
@@ -856,7 +856,7 @@ TEST(BootstrapDataSpec, GetOOBAssertDataIsComplementary) {
 
   BootstrapDataSpec<double, int> data(x, y, { 1, 2, 2 });
 
-  DataSpec<double, int> oob = data.get_oob();
+  SortedDataSpec<double, int> oob = data.get_oob();
 
   Data<double> expected_x(2, 3);
   expected_x <<

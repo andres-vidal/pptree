@@ -29,14 +29,14 @@ namespace models::stats {
       : BootstrapDataSpec<T, G>(x, y, unique(y), sample_indices) {
     }
 
-    DataSpec<T, G> get_sample() const {
-      return DataSpec<T, G>(
+    SortedDataSpec<T, G> get_sample() const {
+      return SortedDataSpec<T, G>(
         select_rows(this->x, this->sample_indices),
         select_rows(this->y, this->sample_indices));
     }
 
-    DataSpec<T, G> get_oob() const {
-      return DataSpec<T, G>(
+    SortedDataSpec<T, G> get_oob() const {
+      return SortedDataSpec<T, G>(
         select_rows(this->x, this->oob_indices),
         select_rows(this->y, this->oob_indices));
     }

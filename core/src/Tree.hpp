@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Node.hpp"
-#include "DataSpec.hpp"
+#include "SortedDataSpec.hpp"
 #include "BootstrapDataSpec.hpp"
 #include "TrainingSpec.hpp"
 #include "ConfusionMatrix.hpp"
@@ -65,12 +65,12 @@ namespace models {
       return !(*this == other);
     }
 
-    virtual double error_rate(const stats::DataSpec<T, R> &data) const {
+    virtual double error_rate(const stats::SortedDataSpec<T, R> &data) const {
       auto [x, y, _classes] = data.unwrap();
       return stats::error_rate(predict(x), y);
     }
 
-    virtual stats::ConfusionMatrix confusion_matrix(const stats::DataSpec<T, R> &data) const {
+    virtual stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
       auto [x, y, _classes] = data.unwrap();
       return stats::ConfusionMatrix(predict(x), y);
     }
@@ -88,11 +88,11 @@ namespace models {
   }
 
   template<typename T, typename R>
-  struct Tree : public BaseTree<T, R, stats::DataSpec<T, R>, Tree> {
-    using Base = BaseTree<T, R, stats::DataSpec<T, R>, Tree >;
+  struct Tree : public BaseTree<T, R, stats::SortedDataSpec<T, R>, Tree> {
+    using Base = BaseTree<T, R, stats::SortedDataSpec<T, R>, Tree >;
     using Base::Base;
 
-    static Tree<T, R> train(const TrainingSpec<T, R> &training_spec, const stats::DataSpec<T, R> &training_data) {
+    static Tree<T, R> train(const TrainingSpec<T, R> &training_spec, const stats::SortedDataSpec<T, R> &training_data) {
       return Base::train(training_spec, training_data);
     }
 

@@ -87,7 +87,7 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
 
   Forest<double, int> result = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -248,7 +248,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
 
   Forest<double, int> result = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -367,7 +367,7 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
 
   Forest<double, int> result = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -703,7 +703,7 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
 
   Forest<double, int> forest = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -753,7 +753,7 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
 
   Forest<double, int> forest = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -850,7 +850,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
 
   Forest<double, int> forest = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -901,7 +901,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
 
   Forest<double, int> forest = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -999,7 +999,7 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
 
   Forest<double, int> forest = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -1051,7 +1051,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
 
   Forest<double, int> forest = Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     4,
     seed);
 
@@ -1145,13 +1145,13 @@ TEST(Forest, ErrorRateDataSpecMin) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
-  double result = forest.error_rate(DataSpec<double, int>(x, predictions));
+  double result = forest.error_rate(SortedDataSpec<double, int>(x, predictions));
 
   ASSERT_DOUBLE_EQ(0.0, result);
 }
@@ -1223,13 +1223,13 @@ TEST(Forest, ErrorRateDataSpecMax) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
-  double result = forest.error_rate(DataSpec<double, int>(x, predictions));
+  double result = forest.error_rate(SortedDataSpec<double, int>(x, predictions));
 
   ASSERT_DOUBLE_EQ(1.0, result);
 }
@@ -1301,13 +1301,13 @@ TEST(Forest, ErrorRateDataSpecGeneric) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
-  double result = forest.error_rate(DataSpec<double, int>(x, predictions));
+  double result = forest.error_rate(SortedDataSpec<double, int>(x, predictions));
 
   ASSERT_NEAR(0.666, result, 0.1);
 }
@@ -1379,7 +1379,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMin) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
@@ -1460,7 +1460,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMax) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
@@ -1541,7 +1541,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecGeneric) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
@@ -1622,7 +1622,7 @@ TEST(Forest, ErrorRate) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
@@ -1699,13 +1699,13 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
-  ConfusionMatrix result = forest.confusion_matrix(DataSpec<double, int>(x, predictions));
+  ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<double, int>(x, predictions));
 
   Data<int> expected = Data<int>::Zero(3, 3);
   expected.diagonal() << 10, 12, 8;
@@ -1785,7 +1785,7 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
@@ -1823,7 +1823,7 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
     0,
     0;
 
-  ConfusionMatrix result = forest.confusion_matrix(DataSpec<double, int>(x, predictions));
+  ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<double, int>(x, predictions));
 
   Data<int> expected(3, 3);
   expected <<
@@ -1906,7 +1906,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecDiagonal) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
@@ -1994,7 +1994,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);
@@ -2032,7 +2032,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
     0,
     0;
 
-  ConfusionMatrix result = forest.confusion_matrix(DataSpec<double, int>(x, predictions));
+  ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<double, int>(x, predictions));
 
   Data<int> expected(3, 3);
   expected <<
@@ -2115,7 +2115,7 @@ TEST(Forest, ConfusionMatrix) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
 
   const int seed = 0;
   Forest<double, int> forest = Forest<double, int>::train(*TrainingSpec<double, int>::lda(), data, 4, seed);

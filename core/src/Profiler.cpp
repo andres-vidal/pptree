@@ -7,7 +7,7 @@
 
 using namespace pptree;
 
-DataSpec<double, int> simulate(
+SortedDataSpec<double, int> simulate(
   const int n,
   const int p,
   const int G) {
@@ -29,7 +29,7 @@ DataSpec<double, int> simulate(
     y[i] = i % G;
   }
 
-  return DataSpec<double, int>(x, y);
+  return SortedDataSpec<double, int>(x, y);
 }
 
 int main(int argc, char *argv[]) {

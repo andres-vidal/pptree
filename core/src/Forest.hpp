@@ -16,17 +16,17 @@ namespace models {
   template<typename T, typename R>
   struct Forest {
     static Forest<T, R> train(
-      const TrainingSpec<T, R> &    training_spec,
-      const stats::DataSpec<T, R> & training_data,
-      const int                     size,
-      const int                     seed);
+      const TrainingSpec<T, R> &          training_spec,
+      const stats::SortedDataSpec<T, R> & training_data,
+      const int                           size,
+      const int                           seed);
 
     static Forest<T, R> train(
-      const TrainingSpec<T, R> &    training_spec,
-      const stats::DataSpec<T, R> & training_data,
-      const int                     size,
-      const int                     seed,
-      const int                     n_threads);
+      const TrainingSpec<T, R> &          training_spec,
+      const stats::SortedDataSpec<T, R> & training_data,
+      const int                           size,
+      const int                           seed,
+      const int                           n_threads);
 
 
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
@@ -101,7 +101,7 @@ namespace models {
       return !(*this == other);
     }
 
-    Forest<T, R> retrain(const stats::DataSpec<T, R> &data) const {
+    Forest<T, R> retrain(const stats::SortedDataSpec<T, R> &data) const {
       return Forest<T, R>::train(
         *training_spec,
         data,
@@ -114,7 +114,7 @@ namespace models {
       return retrain(stats::center(stats::descale(*training_data)));
     }
 
-    double error_rate(const stats::DataSpec<T, R> &data) const {
+    double error_rate(const stats::SortedDataSpec<T, R> &data) const {
       double accumulated_error = std::accumulate(
         trees.begin(),
         trees.end(),
@@ -133,7 +133,7 @@ namespace models {
       return stats::error_rate(oob_predictions, oob_y);
     }
 
-    stats::ConfusionMatrix confusion_matrix(const stats::DataSpec<T, R> &data) const {
+    stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
       auto [x, y, _classes] = data.unwrap();
       return stats::ConfusionMatrix(predict(x), y);
     }

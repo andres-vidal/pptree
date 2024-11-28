@@ -1,3 +1,5 @@
+#pragma once
+
 #include "DataSpec.hpp"
 
 #include "Invariant.hpp"
@@ -18,7 +20,8 @@ namespace models::stats {
       : SortedDataSpec<T, G>(x, y, unique(y)) {
     }
 
-    explicit SortedDataSpec(
+    //cppcheck-suppress noExplicitConstructor
+    SortedDataSpec(
       const DataSpec<T, G> &data)
       : SortedDataSpec<T, G>(data.x, data.y, data.classes) {
     }
