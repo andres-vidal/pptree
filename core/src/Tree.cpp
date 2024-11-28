@@ -12,10 +12,8 @@ using namespace models::stats;
 namespace models {
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > step(
-    const Data<T> &           data,
-    const DataColumn<R> &     groups,
-    const std::set<R> &       unique_groups,
-    const TrainingSpec<T, R> &training_spec);
+    const TrainingSpec<T, R> &  training_spec,
+    const SortedDataSpec<T, R> &training_data);
 
   template<typename T, typename R >
   std::tuple<DataColumn<R>, std::set<int>, std::map<int, std::set<R> > >as_binary_problem(
@@ -149,21 +147,22 @@ namespace models {
 
     LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
 
-    std::unique_ptr<Condition<T, R> > condition = step(
+    SortedDataSpec<T, R> training_data(
       select_group(data, binary_groups, binary_group),
       select_group(groups, binary_groups, binary_group),
-      unique_groups,
-      training_spec);
+      unique_groups);
 
-    return condition;
+    return step(training_spec, training_data);
   }
 
   template<typename T, typename R >
-  std::unique_ptr< Condition<T, R> >  step(
-    const Data<T> &            data,
-    const DataColumn<R> &      groups,
-    const std::set<R> &        unique_groups,
-    const TrainingSpec<T, R> & training_spec) {
+  std::unique_ptr< Condition<T, R> >   step(
+    const TrainingSpec<T, R> &  training_spec,
+    const SortedDataSpec<T, R> &training_data) {
+    auto data = training_data.x;
+    auto groups = training_data.y;
+    auto unique_groups = training_data.classes;
+
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
 
@@ -243,11 +242,7 @@ namespace models {
     auto &classes = std::get<2>(unwrapped);
 
     LOG_INFO << "Root step." << std::endl;
-    auto root_ptr = step(
-      x,
-      y,
-      classes,
-      training_spec);
+    auto root_ptr = step(training_spec, training_data);
 
 
     DerivedTree<T, R> tree(
