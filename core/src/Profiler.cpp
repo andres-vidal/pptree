@@ -33,8 +33,8 @@ DataSpec<double, int> simulate(
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 6) {
-    std::cerr << "Usage: " << argv[0] << " n p G B C" << std::endl;
+  if (argc != 7) {
+    std::cerr << "Usage: " << argv[0] << " n p G B l C" << std::endl;
     return 1;
   }
 
@@ -42,10 +42,11 @@ int main(int argc, char *argv[]) {
   const int p = std::stoi(argv[2]);
   const int G = std::stoi(argv[3]);
   const int B = std::stoi(argv[4]);
-  const int C = std::stoi(argv[5]);
+  const int l = std::stoi(argv[5]);
+  const int C = std::stoi(argv[6]);
 
   const auto data = simulate(n, p, G);
-  const auto spec = TrainingSpec<double, int>::uniform_glda(std::round(p / 2), 0.1);
+  const auto spec = TrainingSpec<double, int>::uniform_glda(std::round(p / 2), l);
 
   const auto start = std::chrono::high_resolution_clock::now();
 
