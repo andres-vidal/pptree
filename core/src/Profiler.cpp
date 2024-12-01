@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   const int p = std::stoi(argv[2]);
   const int G = std::stoi(argv[3]);
   const int B = std::stoi(argv[4]);
-  const int B = std::stoi(argv[5]);
+  const int l = std::stoi(argv[5]);
   const int C = std::stoi(argv[6]);
 
   const auto data = simulate(n, p, G);
