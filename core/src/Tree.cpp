@@ -1,7 +1,6 @@
 #include "Tree.hpp"
 #include "BootstrapDataSpec.hpp"
 #include "BootstrapTree.hpp"
-#include "Group.hpp"
 #include "Logger.hpp"
 #include "Invariant.hpp"
 
@@ -15,6 +14,55 @@ namespace models {
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data);
 
+
+  template<typename T, typename R >
+  std::map<R, int> binary_regroup(
+    const SortedDataSpec<T, R> data
+    ) {
+    std::vector<std::tuple<R, T> > means;
+
+    for (const R group : data.classes) {
+      Data<T> group_data = data.group(group);
+      means.push_back({ group, mean(group_data).value() });
+    }
+
+    std::sort(means.begin(), means.end(), [](const auto &a, const auto &b) {
+       return std::get<1>(a) < std::get<1>(b);
+     });
+
+    T edge_gap = 0;
+    T edge_group = 0;
+
+    for (int i = 0; i < means.size() - 1; i++) {
+      T gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);
+      LOG_INFO << "Gap between " << std::get<0>(means[i]) << " and " << std::get<0>(means[i + 1]) << ": " << gap << std::endl;
+
+      if (gap > edge_gap) {
+        edge_gap = gap;
+        edge_group = std::get<0>(means[i + 1]);
+
+        LOG_INFO << "New edge gap: " << edge_gap << std::endl;
+        LOG_INFO << "New edge group: " << edge_group << std::endl;
+      }
+    }
+
+    LOG_INFO << "Edge group: " << edge_group << std::endl;
+
+    std::map<R, int > binary_mapping;
+
+    bool edge_found = false;
+    for (const auto&[group, mean] : means) {
+      LOG_INFO << "Remapping group " << group << std::endl;
+
+      edge_found = edge_found || group == edge_group;
+
+      binary_mapping[group] = edge_found ? 1 : 0;
+
+      LOG_INFO << "Mapping: " << group << " -> " << binary_mapping[group] << std::endl;
+    }
+
+    return binary_mapping;
+  }
 
   template<typename R >
   std::tuple<R, R> take_two(const std::set<R> &group_set) {
@@ -90,13 +138,19 @@ namespace models {
 
   template<typename T, typename R >
   std::unique_ptr<Node<T, R> > build_branch(
-    const Data<T> &                    data,
-    const DataColumn<R> &              groups,
-    const DataColumn<R> &              binary_groups,
-    const R &                          binary_group,
-    const std::map<int, std::set<R> >& binary_group_mapping,
-    const TrainingSpec<T, R> &         training_spec) {
-    std::set<R> unique_groups = binary_group_mapping.at(binary_group);
+    const Data<T> &            data,
+    const DataColumn<R> &      groups,
+    const DataColumn<R> &      binary_groups,
+    const R &                  binary_group,
+    const std::map<R, int >&   binary_group_mapping,
+    const TrainingSpec<T, R> & training_spec) {
+    std::map<int, std::set<R> > inverse_binary_group_mapping;
+
+    for (const auto&[group, b_group] : binary_group_mapping) {
+      inverse_binary_group_mapping[b_group].insert(group);
+    }
+
+    std::set<R> unique_groups = inverse_binary_group_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
       R group = *unique_groups.begin();
@@ -112,6 +166,13 @@ namespace models {
       unique_groups);
 
     return step(training_spec, training_data);
+  }
+
+  template<typename T, typename R>
+  std::unique_ptr< Condition<T, R> >   step(
+    const TrainingSpec<T, R> &     training_spec,
+    const BootstrapDataSpec<T, R> &training_data) {
+    return step(training_spec, training_data.get_sample());
   }
 
   template<typename T, typename R >
@@ -136,16 +197,27 @@ namespace models {
 
     auto [projector, projected] = pp_strategy(reduced_data.x, groups, unique_groups);
 
-    auto [binary_groups, binary_unique_groups, binary_group_mapping] = binary_regroup((Data<T>)projected, groups, unique_groups);
+    SortedDataSpec<T, R> projected_reduced_data = reduced_data.analog(projected);
 
-    LOG_INFO << "Mapping: " << binary_group_mapping << std::endl;
+    std::map<R, int> binary_mapping = binary_regroup(projected_reduced_data);
+
+    LOG_INFO << "Mapping: " << binary_mapping << std::endl;
+
+    DataColumn<R> binary_y(groups.rows());
+
+    for (int i = 0; i < groups.rows(); i++) {
+      binary_y(i) = binary_mapping[groups(i)];
+    }
+
+    // TODO: use remap instead
+    SortedDataSpec<T, R> binary_mapping_data(
+      reduced_data.x,
+      binary_y,
+      { 0, 1 });
 
     std::unique_ptr<Condition<T, R> > temp_node = binary_step(
       training_spec,
-      SortedDataSpec<T, R>(
-        reduced_data.x,
-        binary_groups,
-        binary_unique_groups));
+      binary_mapping_data);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
@@ -154,18 +226,18 @@ namespace models {
     std::unique_ptr<Node<T, R> > lower_branch = build_branch(
       data,
       groups,
-      binary_groups,
+      binary_y,
       binary_lower_group,
-      binary_group_mapping,
+      binary_mapping,
       training_spec);
 
     LOG_INFO << "Build upper branch" << std::endl;
     std::unique_ptr<Node<T, R> > upper_branch = build_branch(
       data,
       groups,
-      binary_groups,
+      binary_y,
       binary_upper_group,
-      binary_group_mapping,
+      binary_mapping,
       training_spec);
 
     std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
@@ -193,7 +265,6 @@ namespace models {
 
     LOG_INFO << "Root step." << std::endl;
     auto root_ptr = step(training_spec, training_data);
-
 
     DerivedTree<T, R> tree(
       std::move(root_ptr),

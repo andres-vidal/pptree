@@ -403,7 +403,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecMax) {
 
   BootstrapDataSpec<double, int> data(x, y, sample_indices);
   BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
-  DataColumn<int> actual_y = DataColumn<int>::Constant(20, 2);
+  DataColumn<int> actual_y = DataColumn<int>::Constant(30, 2);
 
   double result = tree.error_rate(BootstrapDataSpec<double, int>(x, actual_y, sample_indices));
 
@@ -482,7 +482,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecGeneric) {
 
   BootstrapDataSpec<double, int> data(x, y, sample_indices);
   BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
-  DataColumn<int> actual_y = DataColumn<int>::Zero(20);
+  DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   double result = tree.error_rate(BootstrapDataSpec<double, int>(x, actual_y, sample_indices));
 
