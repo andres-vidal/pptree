@@ -3,6 +3,7 @@
 #include "DataSpec.hpp"
 
 #include "Invariant.hpp"
+#include <optional>
 namespace models::stats {
   template<typename T, typename G>
   struct SortedDataSpec : DataSpec<T, G> {
@@ -10,8 +11,8 @@ namespace models::stats {
 
       struct GroupSpec {
         int index;
-        GroupSpec *next = nullptr;
-        GroupSpec *prev = nullptr;
+        std::optional<G> next;
+        std::optional<G> prev;
       };
 
       const std::map<G, GroupSpec > group_specs;
@@ -36,8 +37,8 @@ namespace models::stats {
 
             if (i != 0) {
               G prev = this->y(i - 1);
-              specs[curr].prev = &specs[prev];
-              specs[prev].next = &specs[curr];
+              specs[curr].prev = prev;
+              specs[prev].next = curr;
             }
           }
         }
@@ -90,11 +91,13 @@ namespace models::stats {
       }
 
       int group_end(const G &group) const {
-        if (group_specs.at(group).next == nullptr) {
+        std::optional<G> next = group_specs.at(group).next;
+
+        if (!next.has_value()) {
           return this->y.rows() - 1;
         }
 
-        return group_specs.at(group).next->index - 1;
+        return group_specs.at(next.value()).index - 1;
       }
 
       Data<T> group(const G &group) const {
