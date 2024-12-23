@@ -61,21 +61,13 @@ namespace models {
     return binary_mapping;
   }
 
-  template<typename R >
-  std::tuple<R, R> take_two(const std::set<R> &group_set) {
-    invariant(group_set.size() >= 2, "The set does not contain enough elements.");
-
-    auto first = *group_set.begin();
-    auto last = *std::prev(group_set.end());
-    return { first, last };
-  }
-
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > binary_step(
     const TrainingSpec<T, R> &   training_spec,
     const SortedDataSpec<T, R> & training_data) {
     auto [data, groups, unique_groups] = training_data.unwrap();
-    auto [group_1, group_2] = take_two(unique_groups);
+    auto group_1 = *unique_groups.begin();
+    auto group_2 = *std::next(unique_groups.begin());
 
     LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << unique_groups << std::endl;
 
