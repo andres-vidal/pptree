@@ -110,10 +110,10 @@ namespace models {
     LOG_INFO << "Lower group: " << lower_group << std::endl;
     LOG_INFO << "Upper group: " << upper_group << std::endl;
 
-    std::unique_ptr<Node<T, R> >lower_response = std::make_unique<Response<T, R> >(lower_group);
-    std::unique_ptr<Node<T, R> >upper_response = std::make_unique<Response<T, R> >(upper_group);
+    auto lower_response = std::make_unique<Response<T, R> >(lower_group);
+    auto upper_response = std::make_unique<Response<T, R> >(upper_group);
 
-    std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
+    auto condition = std::make_unique<Condition<T, R> >(
       projector,
       threshold,
       std::move(lower_response),
@@ -136,7 +136,7 @@ namespace models {
   std::unique_ptr<Node<T, R> >   step(
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data) {
-    auto[data, groups, unique_groups] = training_data.unwrap();
+    auto [data, groups, unique_groups] = training_data.unwrap();
 
     LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
     LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
@@ -148,7 +148,7 @@ namespace models {
       return std::make_unique<Response<T, R> >(*unique_groups.begin());
     }
 
-    SortedDataSpec<T, R> reduced_data = training_data.analog(dr_strategy(data));
+    auto reduced_data = training_data.analog(dr_strategy(data));
 
     if (unique_groups.size() == 2) {
       return binary_step(training_spec, reduced_data);
@@ -157,31 +157,28 @@ namespace models {
     LOG_INFO << "Redefining a " << unique_groups.size() << " group problem as binary:" << std::endl;
 
     auto projector = pp_strategy(reduced_data.x, groups, unique_groups);
-
-    std::map<R, int> binary_mapping = binary_regroup(reduced_data.analog(project(reduced_data.x, projector)));
+    auto binary_mapping = binary_regroup(reduced_data.analog(project(reduced_data.x, projector)));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
-    SortedDataSpec<T, R> binary_remapped_data = reduced_data.remap(binary_mapping);
+    auto binary_remapped_data = reduced_data.remap(binary_mapping);
 
-    std::unique_ptr<Condition<T, R> > temp_node = binary_step(
-      training_spec,
-      binary_remapped_data);
+    auto temp_node = binary_step(training_spec, binary_remapped_data);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
 
-    std::map<int, std::set<R> > inverse_mapping = invert(binary_mapping);
-    std::set<R> lower_groups = inverse_mapping.at(binary_lower_group);
-    std::set<R> upper_groups = inverse_mapping.at(binary_upper_group);
+    std::map<R, std::set<R> > inverse_mapping = invert(binary_mapping);
+    auto lower_groups = inverse_mapping.at(binary_lower_group);
+    auto upper_groups = inverse_mapping.at(binary_upper_group);
 
     LOG_INFO << "Build lower branch" << std::endl;
-    std::unique_ptr<Node<T, R> > lower_branch = step(training_spec, training_data.subset(lower_groups));
+    auto lower_branch = step(training_spec, training_data.subset(lower_groups));
 
     LOG_INFO << "Build upper branch" << std::endl;
-    std::unique_ptr<Node<T, R> > upper_branch = step(training_spec, training_data.subset(upper_groups));
+    auto upper_branch = step(training_spec, training_data.subset(upper_groups));
 
-    std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
+    auto condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,
       temp_node->threshold,
       std::move(lower_branch),
