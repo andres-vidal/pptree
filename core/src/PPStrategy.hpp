@@ -21,14 +21,12 @@ namespace models::pp::strategy {
       const stats::DataColumn<G>& groups,
       const std::set<G>&          unique_groups) const = 0;
 
-    std::tuple<Projector<T>, Projection<T> > operator()(
+    Projector<T> operator()(
       const stats::Data<T>&       data,
       const stats::DataColumn<G>& groups,
       const std::set<G>&          unique_groups
       ) const {
-      Projector<T> projector = optimize(data, groups, unique_groups);
-      Projection<T> projection = project(data, projector);
-      return { projector, projection };
+      return optimize(data, groups, unique_groups);
     }
   };
 

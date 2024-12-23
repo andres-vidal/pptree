@@ -81,7 +81,7 @@ namespace models {
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    auto [projector, _] = pp_strategy(data, groups, unique_groups);
+    auto projector = pp_strategy(data, groups, unique_groups);
 
     Data<T> data_group_1 = training_data.group(group_1);
     Data<T> data_group_2 = training_data.group(group_2);
@@ -164,11 +164,9 @@ namespace models {
 
     LOG_INFO << "Redefining a " << unique_groups.size() << " group problem as binary:" << std::endl;
 
-    auto [projector, projected] = pp_strategy(reduced_data.x, groups, unique_groups);
+    auto projector = pp_strategy(reduced_data.x, groups, unique_groups);
 
-    SortedDataSpec<T, R> projected_reduced_data = reduced_data.analog(projected);
-
-    std::map<R, int> binary_mapping = binary_regroup(projected_reduced_data);
+    std::map<R, int> binary_mapping = binary_regroup(reduced_data.analog(project(reduced_data.x, projector)));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
