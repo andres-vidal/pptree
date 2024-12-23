@@ -13,12 +13,6 @@ using namespace utils;
 
 namespace models {
   template<typename T, typename R >
-  std::unique_ptr<Condition<T, R> > step(
-    const TrainingSpec<T, R> &  training_spec,
-    const SortedDataSpec<T, R> &training_data);
-
-
-  template<typename T, typename R >
   std::map<R, int> binary_regroup(
     const SortedDataSpec<T, R> data
     ) {
@@ -139,35 +133,15 @@ namespace models {
     return condition;
   }
 
-  template<typename T, typename R >
-  std::unique_ptr<Node<T, R> > build_branch(
-    const R &                    binary_group,
-    const std::map<R, R > &      binary_group_mapping,
-    const SortedDataSpec<T, R> & training_data,
-    const TrainingSpec<T, R> &   training_spec) {
-    std::map<int, std::set<R> > inverse_mapping = invert(binary_group_mapping);
-    std::set<R> unique_groups = inverse_mapping.at(binary_group);
-
-    if (unique_groups.size() == 1) {
-      R group = *unique_groups.begin();
-      LOG_INFO << "Branch is a Response for group " << group << std::endl;
-      return std::make_unique<Response<T, R> >(group);
-    }
-
-    LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
-
-    return step(training_spec, training_data.subset(unique_groups));
-  }
-
   template<typename T, typename R>
-  std::unique_ptr< Condition<T, R> >   step(
+  std::unique_ptr<Node<T, R> >   step(
     const TrainingSpec<T, R> &     training_spec,
     const BootstrapDataSpec<T, R> &training_data) {
     return step(training_spec, training_data.get_sample());
   }
 
   template<typename T, typename R >
-  std::unique_ptr< Condition<T, R> >   step(
+  std::unique_ptr<Node<T, R> >   step(
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data) {
     auto[data, groups, unique_groups] = training_data.unwrap();
@@ -177,6 +151,10 @@ namespace models {
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
     const DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
+
+    if (unique_groups.size() == 1) {
+      return std::make_unique<Response<T, R> >(*unique_groups.begin());
+    }
 
     SortedDataSpec<T, R> reduced_data = training_data.analog(dr_strategy(data));
 
@@ -203,19 +181,15 @@ namespace models {
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
 
+    std::map<int, std::set<R> > inverse_mapping = invert(binary_mapping);
+    std::set<R> lower_groups = inverse_mapping.at(binary_lower_group);
+    std::set<R> upper_groups = inverse_mapping.at(binary_upper_group);
+
     LOG_INFO << "Build lower branch" << std::endl;
-    std::unique_ptr<Node<T, R> > lower_branch = build_branch(
-      binary_lower_group,
-      binary_mapping,
-      training_data,
-      training_spec);
+    std::unique_ptr<Node<T, R> > lower_branch = step(training_spec, training_data.subset(lower_groups));
 
     LOG_INFO << "Build upper branch" << std::endl;
-    std::unique_ptr<Node<T, R> > upper_branch = build_branch(
-      binary_upper_group,
-      binary_mapping,
-      training_data,
-      training_spec);
+    std::unique_ptr<Node<T, R> > upper_branch = step(training_spec, training_data.subset(upper_groups));
 
     std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,

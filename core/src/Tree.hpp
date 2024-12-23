@@ -19,7 +19,7 @@ namespace models {
   struct BaseTree {
     static DerivedTree<T, R> train(const TrainingSpec<T, R> &training_spec, const D &training_data);
 
-    std::unique_ptr<Condition<T, R> > root;
+    std::unique_ptr<Node<T, R> > root;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::shared_ptr<D> training_data;
 
@@ -27,7 +27,7 @@ namespace models {
     }
 
     BaseTree(
-      std::unique_ptr<Condition<T, R> >    root,
+      std::unique_ptr<Node<T, R> >         root,
       std::unique_ptr<TrainingSpec<T, R> > training_spec,
       std::shared_ptr<D >                  training_data)
       : root(std::move(root)),
