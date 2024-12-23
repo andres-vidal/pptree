@@ -3,7 +3,10 @@
 #include "DataSpec.hpp"
 
 #include "Invariant.hpp"
+#include "Map.hpp"
+
 #include <optional>
+
 namespace models::stats {
   template<typename T, typename G>
   struct SortedDataSpec : DataSpec<T, G> {
@@ -106,6 +109,46 @@ namespace models::stats {
 
       SortedDataSpec<T, G> analog(const Data<T> &data) const {
         return SortedDataSpec<T, G>(data, this->y, this->classes, this->group_specs);
+      }
+
+      SortedDataSpec<T, G> remap(const std::map<G, G> &mapping) const {
+        std::vector<G> sorted_old_groups = utils::sort_keys_by_value(mapping);
+
+        Data<T> new_x(this->x.rows(), this->x.cols());
+        DataColumn<G> new_y(this->y.rows());
+        std::set<G> new_classes;
+        std::map<G, GroupSpec> new_group_specs;
+
+        int batch_start = 0;
+
+        for (int i = 0; i < sorted_old_groups.size(); i++) {
+          G old_group = sorted_old_groups[i];
+          G new_group = mapping.at(old_group);
+
+          int batch_end = batch_start + group_size(old_group) - 1;
+
+          new_x(Eigen::seq(batch_start, batch_end), Eigen::all) = group(old_group);
+          new_y(Eigen::seq(batch_start, batch_end)).setConstant(new_group);
+          new_classes.insert(new_group);
+
+          if (!new_group_specs.count(new_group)) {
+            new_group_specs[new_group] = GroupSpec{ batch_start };
+
+            if (i != 0) {
+              G prev_new_group = mapping.at(sorted_old_groups[i - 1]);
+              new_group_specs[new_group].prev = prev_new_group;
+              new_group_specs[prev_new_group].next = new_group;
+            }
+          }
+
+          batch_start = batch_end + 1;
+        }
+
+        return SortedDataSpec<T, G>(
+          new_x,
+          new_y,
+          new_classes,
+          new_group_specs);
       }
   };
 }

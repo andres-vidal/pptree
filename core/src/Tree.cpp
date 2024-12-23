@@ -3,11 +3,14 @@
 #include "BootstrapTree.hpp"
 #include "Logger.hpp"
 #include "Invariant.hpp"
+#include "Map.hpp"
 
 using namespace models::pp;
 using namespace models::pp::strategy;
 using namespace models::dr::strategy;
 using namespace models::stats;
+using namespace utils;
+
 namespace models {
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > step(
@@ -138,19 +141,13 @@ namespace models {
 
   template<typename T, typename R >
   std::unique_ptr<Node<T, R> > build_branch(
-    const Data<T> &            data,
-    const DataColumn<R> &      groups,
-    const DataColumn<R> &      binary_groups,
-    const R &                  binary_group,
-    const std::map<R, int >&   binary_group_mapping,
-    const TrainingSpec<T, R> & training_spec) {
-    std::map<int, std::set<R> > inverse_binary_group_mapping;
-
-    for (const auto&[group, b_group] : binary_group_mapping) {
-      inverse_binary_group_mapping[b_group].insert(group);
-    }
-
-    std::set<R> unique_groups = inverse_binary_group_mapping.at(binary_group);
+    const R &                    binary_group,
+    const std::map<R, R > &      binary_group_mapping,
+    const SortedDataSpec<T, R> & binary_mapped_data,
+    const SortedDataSpec<T, R> & original_data,
+    const TrainingSpec<T, R> &   training_spec) {
+    std::map<int, std::set<R> > inverse_mapping = invert(binary_group_mapping);
+    std::set<R> unique_groups = inverse_mapping.at(binary_group);
 
     if (unique_groups.size() == 1) {
       R group = *unique_groups.begin();
@@ -160,9 +157,27 @@ namespace models {
 
     LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
 
+    DataColumn<R> group_assignment(binary_mapped_data.group(binary_group).rows());
+
+    std::vector<R> sorted_groups = sort_keys_by_value(binary_group_mapping);
+
+    int batch_start = 0;
+
+    for (const R &group : sorted_groups) {
+      if (binary_group_mapping.at(group) == binary_group) {
+        LOG_INFO << "Unmapping group " << group << std::endl;
+
+        int batch_end = batch_start + original_data.group_size(group) - 1;
+
+        group_assignment(Eigen::seq(batch_start, batch_end)).setConstant(group);
+
+        batch_start = batch_end + 1;
+      }
+    }
+
     SortedDataSpec<T, R> training_data(
-      select_group(data, binary_groups, binary_group),
-      select_group(groups, binary_groups, binary_group),
+      binary_mapped_data.group(binary_group),
+      group_assignment,
       unique_groups);
 
     return step(training_spec, training_data);
@@ -203,41 +218,31 @@ namespace models {
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
-    DataColumn<R> binary_y(groups.rows());
-
-    for (int i = 0; i < groups.rows(); i++) {
-      binary_y(i) = binary_mapping[groups(i)];
-    }
-
-    // TODO: use remap instead
-    SortedDataSpec<T, R> binary_mapping_data(
-      reduced_data.x,
-      binary_y,
-      { 0, 1 });
+    SortedDataSpec<T, R> binary_remapped_data = reduced_data.remap(binary_mapping);
 
     std::unique_ptr<Condition<T, R> > temp_node = binary_step(
       training_spec,
-      binary_mapping_data);
+      binary_remapped_data);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
 
+    SortedDataSpec<T, R> remapped_data = training_data.remap(binary_mapping);
+
     LOG_INFO << "Build lower branch" << std::endl;
     std::unique_ptr<Node<T, R> > lower_branch = build_branch(
-      data,
-      groups,
-      binary_y,
       binary_lower_group,
       binary_mapping,
+      remapped_data,
+      training_data,
       training_spec);
 
     LOG_INFO << "Build upper branch" << std::endl;
     std::unique_ptr<Node<T, R> > upper_branch = build_branch(
-      data,
-      groups,
-      binary_y,
       binary_upper_group,
       binary_mapping,
+      remapped_data,
+      training_data,
       training_spec);
 
     std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
