@@ -150,5 +150,46 @@ namespace models::stats {
           new_classes,
           new_group_specs);
       }
+
+      SortedDataSpec<T, G> subset(const std::set<G> &groups) const {
+        int subset_size = 0;
+
+        for (const G &g : groups) {
+          subset_size += group_size(g);
+        }
+
+        Data<T> new_x(subset_size, this->x.cols());
+        DataColumn<G> new_y(subset_size);
+        std::set<G> new_classes = groups;
+        std::map<G, GroupSpec> new_group_specs;
+
+        int batch_start = 0;
+
+        for (const G &g : groups) {
+          int batch_end = batch_start + group_size(g) - 1;
+
+          new_x(Eigen::seq(batch_start, batch_end), Eigen::all) = group(g);
+          new_y(Eigen::seq(batch_start, batch_end)).setConstant(g);
+          new_classes.insert(g);
+
+          if (!new_group_specs.count(g)) {
+            new_group_specs[g] = GroupSpec{ batch_start };
+
+            if (batch_start != 0) {
+              G prev_g = new_y(batch_start - 1);
+              new_group_specs[g].prev = prev_g;
+              new_group_specs[prev_g].next = g;
+            }
+          }
+
+          batch_start = batch_end + 1;
+        }
+
+        return SortedDataSpec<T, G>(
+          new_x,
+          new_y,
+          new_classes,
+          new_group_specs);
+      }
   };
 }

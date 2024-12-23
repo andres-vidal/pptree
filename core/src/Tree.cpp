@@ -143,8 +143,7 @@ namespace models {
   std::unique_ptr<Node<T, R> > build_branch(
     const R &                    binary_group,
     const std::map<R, R > &      binary_group_mapping,
-    const SortedDataSpec<T, R> & binary_mapped_data,
-    const SortedDataSpec<T, R> & original_data,
+    const SortedDataSpec<T, R> & training_data,
     const TrainingSpec<T, R> &   training_spec) {
     std::map<int, std::set<R> > inverse_mapping = invert(binary_group_mapping);
     std::set<R> unique_groups = inverse_mapping.at(binary_group);
@@ -157,30 +156,7 @@ namespace models {
 
     LOG_INFO << "Branch is a Condition for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
 
-    DataColumn<R> group_assignment(binary_mapped_data.group(binary_group).rows());
-
-    std::vector<R> sorted_groups = sort_keys_by_value(binary_group_mapping);
-
-    int batch_start = 0;
-
-    for (const R &group : sorted_groups) {
-      if (binary_group_mapping.at(group) == binary_group) {
-        LOG_INFO << "Unmapping group " << group << std::endl;
-
-        int batch_end = batch_start + original_data.group_size(group) - 1;
-
-        group_assignment(Eigen::seq(batch_start, batch_end)).setConstant(group);
-
-        batch_start = batch_end + 1;
-      }
-    }
-
-    SortedDataSpec<T, R> training_data(
-      binary_mapped_data.group(binary_group),
-      group_assignment,
-      unique_groups);
-
-    return step(training_spec, training_data);
+    return step(training_spec, training_data.subset(unique_groups));
   }
 
   template<typename T, typename R>
@@ -227,13 +203,10 @@ namespace models {
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
 
-    SortedDataSpec<T, R> remapped_data = training_data.remap(binary_mapping);
-
     LOG_INFO << "Build lower branch" << std::endl;
     std::unique_ptr<Node<T, R> > lower_branch = build_branch(
       binary_lower_group,
       binary_mapping,
-      remapped_data,
       training_data,
       training_spec);
 
@@ -241,7 +214,6 @@ namespace models {
     std::unique_ptr<Node<T, R> > upper_branch = build_branch(
       binary_upper_group,
       binary_mapping,
-      remapped_data,
       training_data,
       training_spec);
 
