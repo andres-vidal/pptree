@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Projector.hpp"
+#include "SortedDataSpec.hpp"
 
 #include <set>
 
@@ -11,22 +12,13 @@ namespace models::pp::strategy {
     virtual std::unique_ptr<PPStrategy<T, G> > clone() const = 0;
 
     virtual T index(
-      const stats::Data<T>&       data,
-      const Projector<T>&         projector,
-      const stats::DataColumn<G>& groups,
-      const std::set<G>&          unique_groups) const = 0;
+      const stats::SortedDataSpec<T, G>& data,
+      const Projector<T>&                projector) const = 0;
 
-    virtual Projector<T> optimize(
-      const stats::Data<T>&       data,
-      const stats::DataColumn<G>& groups,
-      const std::set<G>&          unique_groups) const = 0;
+    virtual Projector<T> optimize(const stats::SortedDataSpec<T, G>& data) const = 0;
 
-    Projector<T> operator()(
-      const stats::Data<T>&       data,
-      const stats::DataColumn<G>& groups,
-      const std::set<G>&          unique_groups
-      ) const {
-      return optimize(data, groups, unique_groups);
+    Projector<T> operator()(const stats::SortedDataSpec<T, G>& data) const {
+      return optimize(data);
     }
   };
 
@@ -47,16 +39,14 @@ namespace models::pp::strategy {
     }
 
     T index(
-      const stats::Data<T>&       data,
-      const Projector<T>&         projector,
-      const stats::DataColumn<G>& groups,
-      const std::set<G>&          unique_groups) const override {
+      const stats::SortedDataSpec<T, G>& data,
+      const Projector<T>&                projector) const override {
       stats::Data<T> A = projector;
 
-      stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
+      stats::Data<T> W = stats::within_groups_sum_of_squares(data.x, data.y, data.classes);
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
       stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
-      stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
+      stats::Data<T> B = stats::between_groups_sum_of_squares(data.x, data.y, data.classes);
       stats::Data<T> WpB = W_pda + B;
 
       T denominator = math::determinant(math::inner_square(A, WpB));
@@ -68,18 +58,15 @@ namespace models::pp::strategy {
       return 1 - math::determinant(math::inner_square(A, W_pda)) / denominator;
     }
 
-    Projector<T> optimize(
-      const stats::Data<T> &      data,
-      const stats::DataColumn<G> &groups,
-      const std::set<G> &         unique_groups) const override {
-      LOG_INFO << "Calculating PDA optimum projector for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
-      LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables:" << std::endl;
-      LOG_INFO << std::endl << data << std::endl;
+    Projector<T> optimize(const stats::SortedDataSpec<T, G>& data) const override {
+      LOG_INFO << "Calculating PDA optimum projector for " << data.classes.size() << " groups: " << data.classes << std::endl;
+      LOG_INFO << "Dataset size: " << data.x.rows() << " observations of " << data.x.cols() << " variables:" << std::endl;
+      LOG_INFO << std::endl << data.x << std::endl;
       LOG_INFO << "Groups:" << std::endl;
-      LOG_INFO << std::endl << groups << std::endl;
+      LOG_INFO << std::endl << data.y << std::endl;
 
-      stats::Data<T> B = stats::between_groups_sum_of_squares(data, groups, unique_groups);
-      stats::Data<T> W = stats::within_groups_sum_of_squares(data, groups, unique_groups);
+      stats::Data<T> B = stats::between_groups_sum_of_squares(data.x, data.y, data.classes);
+      stats::Data<T> W = stats::within_groups_sum_of_squares(data.x, data.y, data.classes);
 
       LOG_INFO << "B:" << std::endl << B << std::endl;
       LOG_INFO << "W:" << std::endl << W << std::endl;

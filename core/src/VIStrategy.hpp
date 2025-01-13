@@ -3,6 +3,7 @@
 #include "Node.hpp"
 #include "Tree.hpp"
 #include "BootstrapTree.hpp"
+#include "SortedDataSpec.hpp"
 #include "Forest.hpp"
 #include "Invariant.hpp"
 
@@ -168,11 +169,11 @@ namespace models {
 
       auto [x, y, _all_classes] = condition.training_data->unwrap();
 
+      stats::SortedDataSpec<T, R> data(x, y, condition_summary.classes);
+
       const double pp_index = condition.training_spec->pp_strategy->index(
-        x,
-        condition.projector,
-        y,
-        condition_summary.classes);
+        data,
+        condition.projector);
 
       return math::abs(condition.projector) * pp_index + lower_importance + upper_importance;
     }

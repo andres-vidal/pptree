@@ -65,15 +65,14 @@ namespace models {
   std::unique_ptr<Condition<T, R> > binary_step(
     const TrainingSpec<T, R> &   training_spec,
     const SortedDataSpec<T, R> & training_data) {
-    auto [data, groups, unique_groups] = training_data.unwrap();
-    auto group_1 = *unique_groups.begin();
-    auto group_2 = *std::next(unique_groups.begin());
+    auto group_1 = *training_data.classes.begin();
+    auto group_2 = *std::next(training_data.classes.begin());
 
-    LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << unique_groups << std::endl;
+    LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << training_data.classes << std::endl;
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    auto projector = pp_strategy(data, groups, unique_groups);
+    auto projector = pp_strategy(training_data);
 
     Data<T> data_group_1 = training_data.group(group_1);
     Data<T> data_group_2 = training_data.group(group_2);
@@ -119,7 +118,7 @@ namespace models {
       std::move(lower_response),
       std::move(upper_response),
       training_spec.clone(),
-      std::make_unique<SortedDataSpec<T, R> >(data, groups, unique_groups));
+      std::make_unique<SortedDataSpec<T, R> >(training_data));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -136,27 +135,25 @@ namespace models {
   std::unique_ptr<Node<T, R> >   step(
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data) {
-    auto [data, groups, unique_groups] = training_data.unwrap();
-
-    LOG_INFO << "Project-Pursuit Tree building step for " << unique_groups.size() << " groups: " << unique_groups << std::endl;
-    LOG_INFO << "Dataset size: " << data.rows() << " observations of " << data.cols() << " variables" << std::endl;
+    LOG_INFO << "Project-Pursuit Tree building step for " << training_data.classes.size() << " groups: " << training_data.classes << std::endl;
+    LOG_INFO << "Dataset size: " << training_data.x.rows() << " observations of " << training_data.y.cols() << " variables" << std::endl;
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
     const DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
 
-    if (unique_groups.size() == 1) {
-      return std::make_unique<Response<T, R> >(*unique_groups.begin());
+    if (training_data.classes.size() == 1) {
+      return std::make_unique<Response<T, R> >(*training_data.classes.begin());
     }
 
-    auto reduced_data = training_data.analog(dr_strategy(data));
+    auto reduced_data = training_data.analog(dr_strategy(training_data.x));
 
-    if (unique_groups.size() == 2) {
+    if (training_data.classes.size() == 2) {
       return binary_step(training_spec, reduced_data);
     }
 
-    LOG_INFO << "Redefining a " << unique_groups.size() << " group problem as binary:" << std::endl;
+    LOG_INFO << "Redefining a " << training_data.classes.size() << " group problem as binary:" << std::endl;
 
-    auto projector = pp_strategy(reduced_data.x, groups, unique_groups);
+    auto projector = pp_strategy(reduced_data);
     auto binary_mapping = binary_regroup(reduced_data.analog(project(reduced_data.x, projector)));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
@@ -184,7 +181,7 @@ namespace models {
       std::move(lower_branch),
       std::move(upper_branch),
       training_spec.clone(),
-      std::make_unique<SortedDataSpec<T, R> >(data, groups, unique_groups));
+      std::make_unique<SortedDataSpec<T, R> >(training_data));
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -195,11 +192,6 @@ namespace models {
     const TrainingSpec<T, R> &training_spec,
     const D &                 training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
-
-    auto unwrapped = training_data.unwrap();
-    auto &x = std::get<0>(unwrapped);
-    auto &y = std::get<1>(unwrapped);
-    auto &classes = std::get<2>(unwrapped);
 
     LOG_INFO << "Root step." << std::endl;
     auto root_ptr = step(training_spec, training_data);
