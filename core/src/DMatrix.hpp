@@ -9,44 +9,47 @@ namespace models::math {
   template<typename T>
   using DMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 
+  template<typename Derived>
+  using DMatrixBase = Eigen::MatrixBase<Derived>;
+
   template<typename T>
   using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
-  template<typename T>
-  DMatrix<T> inner_product(
-    const DMatrix<T> &a,
-    const DMatrix<T> &b,
-    const DMatrix<T> &weights
+  template<typename Derived>
+  auto inner_product(
+    const DMatrixBase<Derived> &a,
+    const DMatrixBase<Derived> &b,
+    const DMatrixBase<Derived> &weights
     ) {
     return (a.transpose() * weights * b);
   }
 
-  template<typename T>
-  DMatrix<T> inner_product(
-    const DMatrix<T> &a,
-    const DMatrix<T> &b
+  template<typename Derived>
+  auto inner_product(
+    const DMatrixBase<Derived> &a,
+    const DMatrixBase<Derived> &b
     ) {
     return (a.transpose() * b);
   }
 
-  template<typename T>
-  DMatrix<T> inner_square(
-    const DMatrix<T> &m,
-    const DMatrix<T> &weights
+  template<typename Derived>
+  auto inner_square(
+    const DMatrixBase<Derived> &m,
+    const DMatrixBase<Derived> &weights
     ) {
     return inner_product(m, m, weights);
   }
 
-  template<typename T>
-  DMatrix<T> inner_square(
-    const DMatrix<T> &m
+  template<typename Derived>
+  auto inner_square(
+    const DMatrixBase<Derived> &m
     ) {
     return inner_product(m, m);
   }
 
-  template<typename T>
+  template<typename Derived>
   double determinant(
-    const DMatrix<T> &m
+    const DMatrixBase<Derived> &m
     ) {
     return m.determinant();
   }

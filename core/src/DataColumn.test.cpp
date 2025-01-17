@@ -88,58 +88,6 @@ TEST(DataColumn, SelectRowsSetMultipleRowsAdjacent) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataColumn, SelectGroupIndicesSingleGroup) {
-  DataColumn<int> groups(3);
-  groups <<
-    1,
-    1,
-    1;
-
-  std::vector<int> actual = select_group(groups, 1);
-  std::vector<int> expected = { 0, 1, 2 };
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, SelectGroupIndicesMultipleGroupsAdjacent) {
-  DataColumn<int> groups(3);
-  groups <<
-    1,
-    1,
-    2;
-
-  std::vector<int> actual = select_group(groups, 1);
-  std::vector<int> expected = { 0, 1 };
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, SelectGroupIndicesMultipleGroupsMixed) {
-  DataColumn<int> groups(3);
-  groups <<
-    1,
-    2,
-    1;
-
-  std::vector<int> actual = select_group(groups, 1);
-  std::vector<int> expected = { 0, 2 };
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, SelectGroupIndicesEmptyResult) {
-  DataColumn<int> groups(3);
-  groups <<
-    1,
-    1,
-    1;
-
-  std::vector<int> actual = select_group(groups, 2);
-  std::vector<int> expected = {};
-
-  ASSERT_EQ(expected, actual);
-}
-
 TEST(DataColumn, UniqueEmptyResult) {
   DataColumn<int> column(0);
   std::set<int> actual = unique(column);

@@ -43,10 +43,10 @@ namespace models::pp::strategy {
       const Projector<T>&                projector) const override {
       stats::Data<T> A = projector;
 
-      stats::Data<T> W = stats::within_groups_sum_of_squares(data.x, data.y, data.classes);
+      stats::Data<T> W = data.wgss();
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
       stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
-      stats::Data<T> B = stats::between_groups_sum_of_squares(data.x, data.y, data.classes);
+      stats::Data<T> B = data.bgss();
       stats::Data<T> WpB = W_pda + B;
 
       T denominator = math::determinant(math::inner_square(A, WpB));
@@ -65,8 +65,8 @@ namespace models::pp::strategy {
       LOG_INFO << "Groups:" << std::endl;
       LOG_INFO << std::endl << data.y << std::endl;
 
-      stats::Data<T> B = stats::between_groups_sum_of_squares(data.x, data.y, data.classes);
-      stats::Data<T> W = stats::within_groups_sum_of_squares(data.x, data.y, data.classes);
+      stats::Data<T> B = data.bgss();
+      stats::Data<T> W = data.wgss();
 
       LOG_INFO << "B:" << std::endl << B << std::endl;
       LOG_INFO << "W:" << std::endl << W << std::endl;

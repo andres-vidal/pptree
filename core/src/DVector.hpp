@@ -1,6 +1,5 @@
 #pragma once
 
-#include "DMatrix.hpp"
 #include "Math.hpp"
 
 #include <Eigen/Dense>
@@ -8,20 +7,23 @@ namespace models::math {
   template<typename T>
   using DMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 
+  template<typename Derived>
+  using DMatrixBase = Eigen::MatrixBase<Derived>;
+
   template<typename T>
   using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
   template<typename T>
-  DMatrix<T> outer_product(
-    const DVector<T> &a,
-    const DVector<T> &b
+  auto outer_product(
+    const DMatrixBase<T> &a,
+    const DMatrixBase<T> &b
     ) {
     return a * b.transpose();
   }
 
   template<typename T>
-  DMatrix<T> outer_square(
-    const DVector<T> &a
+  auto outer_square(
+    const DMatrixBase<T> &a
     ) {
     return outer_product(a, a);
   }

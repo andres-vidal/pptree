@@ -33,20 +33,6 @@ namespace models::stats
     return select_rows(data, std::vector<int>(indices.begin(), indices.end()));
   }
 
-  template <typename T, typename G>
-  Data<T> select_group(
-    const Data<T> &      data,
-    const DataColumn<G> &groups,
-    const G &            group) {
-    std::vector<G> indices = select_group(groups, group);
-
-    if (indices.size() == 0) {
-      return Data<T>(0, 0);
-    }
-
-    return data(indices, Eigen::all);
-  }
-
   template <typename T>
   DataColumn<T> mean(const Data<T> &data) {
     return data.colwise().mean();
@@ -80,42 +66,6 @@ namespace models::stats
     }
 
     return data.array().rowwise() / scaling_factor.transpose().array();
-  }
-
-  template <typename T, typename G>
-  Data<T> between_groups_sum_of_squares(
-    const Data<T> &      data,
-    const DataColumn<G> &groups,
-    const std::set<G> &  unique_groups) {
-    DataColumn<T> global_mean = mean(data);
-    Data<T> result = Data<T>::Zero(data.cols(), data.cols());
-
-    for (const G &group : unique_groups) {
-      Data<T> group_data = select_group(data, groups, group);
-      DataColumn<T> group_mean = mean(group_data);
-      DataColumn<T> centered_mean = group_mean - global_mean;
-
-      result += group_data.rows() * math::outer_square(centered_mean);
-    }
-
-    return result;
-  }
-
-  template <typename T, typename G>
-  Data<T> within_groups_sum_of_squares(
-    const Data<T> &      data,
-    const DataColumn<G> &groups,
-    const std::set<G> &  unique_groups) {
-    Data<T> result = Data<T>::Zero(data.cols(), data.cols());
-
-    for (const G &group : unique_groups) {
-      Data<T> group_data = select_group(data, groups, group);
-      Data<T> centered_group_data = center(group_data);
-
-      result += math::inner_square(centered_group_data);
-    }
-
-    return result;
   }
 
   template <typename T>

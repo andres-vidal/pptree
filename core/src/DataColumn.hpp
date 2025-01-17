@@ -39,37 +39,6 @@ namespace models::stats {
     return select_rows(data, std::vector<int>(indices.begin(), indices.end()));
   }
 
-  template<typename G>
-  std::vector<G> select_group(
-    const DataColumn<G> &groups,
-    const G &            group) {
-    std::vector<G> indices;
-
-    for (int i = 0; i < groups.rows(); i++) {
-      if (groups(i) == group) {
-        indices.push_back(i);
-      }
-    }
-
-    return indices;
-  }
-
-  template<typename T, typename G>
-  DataColumn<T> select_group(
-    const DataColumn<T> &data,
-    const DataColumn<G> &groups,
-    const G &            group) {
-    std::vector<G> indices = select_group(groups, group);
-
-    DataColumn<T> result(indices.size());
-
-    for (std::size_t i = 0; i < indices.size(); i++) {
-      result(i) = data(indices[i]);
-    }
-
-    return result;
-  }
-
   template<typename T>
   DataColumn<T> expand(
     const DataColumn<T> &   data,

@@ -191,5 +191,33 @@ namespace models::stats {
           new_classes,
           new_group_specs);
       }
+
+      Data<T> bgss() const {
+        auto global_mean = mean(this->x);
+        Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
+
+        for (const G &g : this->classes) {
+          auto group_data = group(g);
+          auto group_mean = mean(group_data);
+          auto centered_mean = group_mean - global_mean;
+
+          result.noalias() += group_data.rows() * math::outer_square(centered_mean);
+        }
+
+        return result;
+      }
+
+      Data<T> wgss() const {
+        Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
+
+        for (const G &g : this->classes) {
+          auto group_data = group(g);
+          auto centered_group_data = center(group_data);
+
+          result.noalias() += math::inner_square(centered_group_data);
+        }
+
+        return result;
+      }
   };
 }
