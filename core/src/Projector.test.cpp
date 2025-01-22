@@ -139,7 +139,7 @@ TEST(Projector, PProjectDataColumnZeroProjector) {
   projector <<
     0.0, 0.0, 0.0, 0.0, 0.0;
 
-  double result = project(data, projector);
+  double result = project(data.transpose(), projector).value();
 
   ASSERT_EQ(0, result);
 }
@@ -153,7 +153,7 @@ TEST(Projector, PProjectDataColumnGeneric) {
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double result = project(data, projector);
+  double result = project(data.transpose(), projector).value();
 
   ASSERT_NEAR(-6.58606, result, 0.00001);
 }
