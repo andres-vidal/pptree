@@ -58,13 +58,8 @@ namespace models::stats {
   }
 
   template<typename T>
-  T mean(const DataColumn<T> &data) {
-    return data.mean();
-  }
-
-  template<typename T>
   DataColumn<T> center(const DataColumn<T> &data) {
-    return data.array() - mean(data);
+    return data.array() - data.mean();
   }
 
   template<typename T>

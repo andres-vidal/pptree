@@ -179,42 +179,6 @@ TEST(DataColumn, ExpandGeneric) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataColumn, MeanSingleObservation) {
-  DataColumn<double> data(1);
-  data <<
-    1.0;
-
-  double actual = mean(data);
-  double expected = 1.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, MeanMultipleEqualObservations) {
-  DataColumn<double> data(3);
-  data <<
-    1.0,
-    1.0,
-    1.0;
-
-  double actual = mean(data);
-  double expected = 1.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, MeanMultipleDifferentObservations) {
-  DataColumn<double> data(3);
-  data <<
-    1.0,
-    2.0,
-    3.0;
-
-  double actual = mean(data);
-  double expected = 2.0;
-
-  ASSERT_EQ(expected, actual);
-}
 
 TEST(DataColumn, SdZeroVector) {
   DataColumn<double> data(3);
