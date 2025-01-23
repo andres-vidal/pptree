@@ -31,25 +31,9 @@ namespace models::math {
   template<typename T>
   double inner_product(
     const DVector<T> &a,
-    const DVector<T> &b,
-    const DMatrix<T> &weights) {
-    return a.transpose() * weights * b;
-  }
-
-  template<typename T>
-  double inner_product(
-    const DVector<T> &a,
     const DVector<T> &b
     ) {
     return a.transpose()  * b;
-  }
-
-  template<typename T>
-  double inner_square(
-    const DVector<T> &a,
-    const DMatrix<T> &weights
-    ) {
-    return inner_product(a, a, weights);
   }
 
   template<typename T>
