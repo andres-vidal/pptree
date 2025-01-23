@@ -33,9 +33,9 @@ namespace models::stats
     return select_rows(data, std::vector<int>(indices.begin(), indices.end()));
   }
 
-  template <typename T>
-  DataColumn<T> mean(const Data<T> &data) {
-    return data.colwise().mean();
+  template <typename Derived>
+  auto mean(const math::DMatrixBase<Derived> &data) {
+    return data.colwise().mean().transpose();
   }
 
   template <typename T>
