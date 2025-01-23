@@ -13,40 +13,26 @@ namespace models::math {
   template<typename T>
   using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
-  template<typename T>
+  template<typename Derived>
   auto outer_product(
-    const DMatrixBase<T> &a,
-    const DMatrixBase<T> &b
+    const DMatrixBase<Derived> &a,
+    const DMatrixBase<Derived> &b
     ) {
     return a * b.transpose();
   }
 
-  template<typename T>
+  template<typename Derived>
   auto outer_square(
-    const DMatrixBase<T> &a
+    const DMatrixBase<Derived> &a
     ) {
     return outer_product(a, a);
-  }
-
-  template<typename T>
-  double inner_product(
-    const DVector<T> &a,
-    const DVector<T> &b
-    ) {
-    return a.transpose()  * b;
-  }
-
-  template<typename T>
-  double inner_square(
-    const DVector<T> &a) {
-    return inner_product(a, a);
   }
 
   template<typename T>
   bool collinear(
     const DVector<T> &a,
     const DVector<T> &b) {
-    return is_module_approx(inner_product(a, b) / (a.norm() * b.norm()), 1.0);
+    return is_module_approx((a.transpose() * b).value() / (a.norm() * b.norm()), 1.0);
   }
 
   template<typename T>

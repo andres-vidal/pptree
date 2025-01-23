@@ -162,55 +162,6 @@ TEST(DVector, OuterSquareZeroVector) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DVector, InnerProductEqualVectorsUnweightedImplicit) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DVector<double> b(3);
-  b << 1.0, 2.0, 6.0;
-
-  double actual = inner_product(a, b);
-  double expected = 41;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DVector, InnerProductZeroVectorsUnweightedImplicit) {
-  DVector<double> a(3);
-  a << 0.0, 0.0, 0.0;
-
-  DVector<double> b(3);
-  b << 0.0, 0.0, 0.0;
-
-  double actual = inner_product(a, b);
-  double expected = 0.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DVector, InnerProductDifferentVectorsUnweightedImplicit) {
-  DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
-
-  DVector<double> b(3);
-  b << 2.0, 3.0, 7.0;
-
-  double actual = inner_product(a, b);
-  double expected = 50;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DVector, InnerSquareGenericUnweighted) {
-  DVector<double> m(3);
-  m << 1.0, 2.0, 6.0;
-
-  double actual = inner_square(m);
-  double expected = 41;
-
-  ASSERT_EQ(expected, actual);
-}
-
 TEST(DVector, CollinearCollinearSameDirection) {
   DVector<double> a(3);
   a << 1.0, 2.0, 6.0;

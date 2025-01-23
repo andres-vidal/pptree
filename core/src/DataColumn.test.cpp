@@ -199,58 +199,6 @@ TEST(DataColumn, SdGeneric2) {
   ASSERT_NEAR(expected, result, 0.00001);
 }
 
-TEST(DataColumn, CenterSingleObservation) {
-  DataColumn<double> data(1);
-  data << 1.0;
-
-  DataColumn<double> actual = center(data);
-
-  DataColumn<double> expected = DataColumn<double>::Zero(1);
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, CenterMultipleEqualObservations) {
-  DataColumn<double> data(3);
-  data <<
-    1.0,
-    1.0,
-    1.0;
-
-  DataColumn<double> actual = center(data);
-
-  DataColumn<double> expected = DataColumn<double>::Zero(3);
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, CenterMultipleDifferentObservations) {
-  DataColumn<double> data(3);
-  data <<
-    1.0,
-    2.0,
-    3.0;
-
-  DataColumn<double> actual = center(data);
-
-  DataColumn<double> expected(3);
-  expected <<
-    -1.0,
-    0.0,
-    1.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
 TEST(DataColumn, DescaleZeroVector) {
   DataColumn<double> data(3);
   data <<

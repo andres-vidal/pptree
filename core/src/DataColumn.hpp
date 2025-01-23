@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DVector.hpp"
+#include "DMatrix.hpp"
 
 #include <set>
 
@@ -40,13 +40,8 @@ namespace models::stats {
   }
 
   template<typename T>
-  DataColumn<T> center(const DataColumn<T> &data) {
-    return data.array() - data.mean();
-  }
-
-  template<typename T>
   T sd(const DataColumn<T> &data) {
-    return sqrt((math::inner_square(center(data))) / (data.rows() - 1));
+    return sqrt((math::inner_square((data.array() - data.mean()).matrix())).value() / (data.rows() - 1));
   }
 
   template<typename T>
