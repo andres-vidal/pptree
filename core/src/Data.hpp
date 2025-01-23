@@ -38,8 +38,8 @@ namespace models::stats
     return data.colwise().mean().transpose();
   }
 
-  template <typename T>
-  Data<T> center(const Data<T> &data) {
+  template <typename Derived>
+  auto center(const math::DMatrixBase<Derived> &data) {
     return data.rowwise() - mean(data).transpose();
   }
 
