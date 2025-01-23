@@ -32,11 +32,4 @@ namespace models::pp {
     // Guarantee the first non-zero component is positive
     return (truncated(i) < 0 ? -1 : 1) * truncated;
   }
-
-  template<typename T>
-  Projector<T> expand(
-    const Projector<T> &    projector,
-    const std::vector<int> &mask) {
-    return stats::expand(projector, mask);
-  }
 }

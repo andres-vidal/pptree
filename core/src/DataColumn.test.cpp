@@ -147,39 +147,6 @@ TEST(DataColumn, UniqueMultipleValuesRepeated) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataColumn, ExpandIdempotent) {
-  DataColumn<double> data(3);
-  data << 1.0, 2.0, 3.0;
-
-  std::vector<int> mask { 1, 1, 1 };
-
-  DataColumn<double> actual = expand(data, mask);
-
-  ASSERT_EQ(data.size(), actual.size());
-  ASSERT_EQ(data.rows(), actual.rows());
-  ASSERT_EQ(data.cols(), actual.cols());
-  ASSERT_EQ(data, actual);
-}
-
-TEST(DataColumn, ExpandGeneric) {
-  DataColumn<double> data(3);
-  data << 1.0, 2.0, 3.0;
-
-  std::vector<int> mask { 1, 0, 1, 0, 1 };
-
-  DataColumn<double> actual = expand(data, mask);
-
-  DataColumn<double> expected(5);
-  expected <<
-    1.0, 0.0, 2.0, 0.0, 3.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-
 TEST(DataColumn, SdZeroVector) {
   DataColumn<double> data(3);
   data <<

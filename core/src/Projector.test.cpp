@@ -174,22 +174,3 @@ TEST(Projector, Normalize) {
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
-
-TEST(Projector, Expand) {
-  Projector<double> projector(3);
-  projector <<
-    1.0, 2.0, 3.0;
-
-  std::vector<int> mask { 1, 0, 1, 0, 1 };
-
-  Projector<double> actual = models::pp::expand(projector, mask);
-
-  Projector<double> expected(5);
-  expected
-    << 1.0, 0.0, 2.0, 0.0, 3.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}

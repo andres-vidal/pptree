@@ -40,24 +40,6 @@ namespace models::stats {
   }
 
   template<typename T>
-  DataColumn<T> expand(
-    const DataColumn<T> &   data,
-    const std::vector<int> &mask) {
-    DataColumn<T> expanded = DataColumn<T>::Zero(mask.size());
-
-    int j = 0;
-
-    for (std::size_t i = 0; i < mask.size(); i++) {
-      if (mask[i] == 1) {
-        expanded.row(i) = data.row(j);
-        j++;
-      }
-    }
-
-    return expanded;
-  }
-
-  template<typename T>
   DataColumn<T> center(const DataColumn<T> &data) {
     return data.array() - data.mean();
   }
