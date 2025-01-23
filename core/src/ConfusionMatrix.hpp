@@ -48,7 +48,7 @@ namespace models::stats {
     }
 
     double error() const {
-      return 1 - math::trace(values) / (double)math::sum(values);
+      return 1 - values.trace() / (double)values.sum();
     }
   };
 }
