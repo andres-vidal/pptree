@@ -9,7 +9,10 @@ namespace models::stats::Random {
 
   void seed(const uint_fast32_t value) {
     #ifdef _OPENMP
-    rng.seed(value + omp_get_thread_num());
+    #pragma omp parallel
+    {
+      rng.seed(value + omp_get_thread_num());
+    }
     #else
     rng.seed(value);
     #endif

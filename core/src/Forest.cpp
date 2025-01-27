@@ -36,10 +36,7 @@ namespace models {
     omp_set_num_threads(n_threads);
     #endif
 
-    #pragma omp parallel
-    {
-      Random::seed(seed);
-    }
+    Random::seed(seed);
 
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
     LOG_INFO << "The seed is: " << seed << std::endl;
