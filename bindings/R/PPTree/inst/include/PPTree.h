@@ -16,7 +16,7 @@ namespace Rcpp {
   SEXP wrap(const GLDATrainingSpec<double, int> &);
   SEXP wrap(const UniformGLDATrainingSpec<double, int> &);
 
-  SEXP wrap(const DataSpec<double, int> &);
+  SEXP wrap(const SortedDataSpec<double, int> &);
   SEXP wrap(const BootstrapDataSpec<double, int> &);
 
   template<> std::unique_ptr<Node<double, int> > as(SEXP);
@@ -28,7 +28,7 @@ namespace Rcpp {
 
   template<> std::unique_ptr<TrainingSpec<double, int> > as(SEXP);
 
-  template<> DataSpec<double, int>  as(SEXP);
+  template<> SortedDataSpec<double, int>  as(SEXP);
   template<> BootstrapDataSpec<double, int> as(SEXP);
 }
 
@@ -127,7 +127,7 @@ namespace Rcpp {
       Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
   }
 
-  SEXP wrap(const DataSpec<double, int> &data) {
+  SEXP wrap(const SortedDataSpec<double, int> &data) {
     return Rcpp::List::create(
       Rcpp::Named("x") = Rcpp::wrap(data.x),
       Rcpp::Named("y") = Rcpp::wrap(data.y),
@@ -187,7 +187,7 @@ namespace Rcpp {
     return Tree<double, int >(
       std::move(root_ptr),
       std::move(training_spec_ptr),
-      std::make_shared<DataSpec<double, int> >(as<DataSpec<double, int> >(rtraining_data)));
+      std::make_shared<SortedDataSpec<double, int> >(as<SortedDataSpec<double, int> >(rtraining_data)));
   }
 
   template<> BootstrapTree<double, int> as(SEXP x) {
@@ -216,7 +216,7 @@ namespace Rcpp {
 
     Forest<double, int> forest(
       std::move(training_spec_ptr),
-      std::make_shared<DataSpec<double, int> >(as<DataSpec<double, int> >(rtraining_data)),
+      std::make_shared<SortedDataSpec<double, int> >(as<SortedDataSpec<double, int> >(rtraining_data)),
       Rcpp::as<double>(rforest["seed"]),
       Rcpp::as<int>(rforest["n_threads"]));
 
@@ -249,12 +249,12 @@ namespace Rcpp {
     Rcpp::stop("Unknown training strategy: %s", strategy);
   }
 
-  template<> DataSpec<double, int> as(SEXP x) {
+  template<> SortedDataSpec<double, int> as(SEXP x) {
     Rcpp::List rdata(x);
 
     std::vector<int> classes = Rcpp::as<std::vector<int> >(rdata["classes"]);
 
-    return DataSpec<double, int>(
+    return SortedDataSpec<double, int>(
       Rcpp::as<Data<double> >(rdata["x"]),
       Rcpp::as<DataColumn<int> >(rdata["y"]),
       std::set<int>(classes.begin(), classes.end()));

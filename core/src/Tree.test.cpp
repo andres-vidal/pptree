@@ -204,7 +204,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 
   Tree<double, int> result = Tree<double, int>::train(
     *TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   Tree<double, int> expect = Tree<double, int>(
     std::make_unique<Condition<double, int> >(
@@ -213,7 +213,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
       std::make_unique<Response<double, int> >(0),
       std::make_unique<Response<double, int> >(1)),
     TrainingSpec<double, int>::lda(),
-    std::make_shared<DataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
+    std::make_shared<SortedDataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -233,7 +233,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
 
   Tree<double, int> result = Tree<double, int>::train(
     *TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   Tree<double, int> expect = Tree<double, int>(
     std::make_unique<Condition<double, int> >(
@@ -246,7 +246,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
         std::make_unique<Response<double, int> >(1),
         std::make_unique<Response<double, int> >(2))),
     TrainingSpec<double, int>::lda(),
-    std::make_shared<DataSpec<double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    std::make_shared<SortedDataSpec<double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
 
 
   ASSERT_EQ(expect, result);
@@ -281,7 +281,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
 
   Tree<double, int> result = Tree<double, int>::train(
     *TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   Tree<double, int> expect = Tree<double, int>(
     std::make_unique<Condition<double, int> >(
@@ -291,7 +291,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
       std::make_unique<Response<double, int> >(1)
       ),
     TrainingSpec<double, int>::lda(),
-    std::make_shared<DataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
+    std::make_shared<SortedDataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -365,7 +365,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
 
   Tree<double, int> result = Tree<double, int>::train(
     *TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   Tree<double, int> expect = Tree<double, int>(
     std::make_unique<Condition<double, int> >(
@@ -378,7 +378,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
         std::make_unique<Response<double, int> >(1)),
       std::make_unique<Response<double, int> >(2)),
     TrainingSpec<double, int>::lda(),
-    std::make_shared<DataSpec<double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    std::make_shared<SortedDataSpec<double, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -396,7 +396,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
 
   Tree<double, int> result = Tree<double, int>::train(
     *TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   Tree<double, int> expect = Tree<double, int>(
     std::make_unique<Condition<double, int> >(
@@ -405,7 +405,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
       std::make_unique<Response<double, int> >(0),
       std::make_unique<Response<double, int> >(1)),
     TrainingSpec<double, int>::lda(),
-    std::make_shared<DataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
+    std::make_shared<SortedDataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -439,7 +439,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
 
   Tree<double, int> result = Tree<double, int>::train(
     *TrainingSpec<double, int>::glda(0.5),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   Tree<double, int> expect = Tree<double, int>(
     std::make_unique<Condition<double, int> >(
@@ -449,7 +449,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
       std::make_unique<Response<double, int> >(1)
       ),
     TrainingSpec<double, int>::glda(0.5),
-    std::make_shared<DataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
+    std::make_shared<SortedDataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
 
   ASSERT_EQ(expect, result);
@@ -692,9 +692,9 @@ TEST(Tree, RetrainLDASameDataSpec) {
 
   Tree<double, int> tree = Tree<double, int>::train(
     *TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
-  Tree<double, int> result = tree.retrain(DataSpec<double, int>(data, groups));
+  Tree<double, int> result = tree.retrain(SortedDataSpec<double, int>(data, groups));
 
   ASSERT_EQ(tree, result);
 }
@@ -768,7 +768,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
 
   Tree<double, int> tree = Tree<double, int>::train(
     *TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   Data<double> other_data(10, 4);
   other_data <<
@@ -796,7 +796,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
     1,
     1;
 
-  Tree<double, int> result = tree.retrain(DataSpec<double, int>(other_data, other_groups));
+  Tree<double, int> result = tree.retrain(SortedDataSpec<double, int>(other_data, other_groups));
 
   Tree<double, int> expect = Tree<double, int>(
     std::make_unique<Condition<double, int> >(
@@ -806,7 +806,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
       std::make_unique<Response<double, int> >(1)
       ),
     TrainingSpec<double, int>::lda(),
-    std::make_shared<DataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
+    std::make_shared<SortedDataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -840,9 +840,9 @@ TEST(Tree, RetrainPDASameDataSpec) {
 
   Tree<double, int> tree = Tree<double, int>::train(
     *TrainingSpec<double, int>::glda(0.5),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
-  Tree<double, int> result = tree.retrain(DataSpec<double, int>(data, groups));
+  Tree<double, int> result = tree.retrain(SortedDataSpec<double, int>(data, groups));
 
   ASSERT_EQ(tree, result);
 }
@@ -860,7 +860,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
 
   Tree<double, int> tree = Tree<double, int>::train(
     *TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   Data<double> other_data(10, 1);
   other_data <<
@@ -872,7 +872,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
     0, 0, 0, 0, 0,
     1, 1, 1, 1, 1;
 
-  Tree<double, int> result = tree.retrain(DataSpec<double, int>(other_data, other_groups));
+  Tree<double, int> result = tree.retrain(SortedDataSpec<double, int>(other_data, other_groups));
 
   Tree<double, int> expect = Tree<double, int>(
     std::make_unique<Condition<double, int> >(
@@ -881,7 +881,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
       std::make_unique<Response<double, int> >(0),
       std::make_unique<Response<double, int> >(1)),
     TrainingSpec<double, int>::lda(),
-    std::make_shared<DataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
+    std::make_shared<SortedDataSpec<double, int> >(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -954,7 +954,7 @@ TEST(Tree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
     2;
 
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   DVector<double> result = tree.variable_importance(VIProjectorStrategy<double, int>());
 
@@ -997,7 +997,7 @@ TEST(Tree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
 
   Tree<double, int> tree = Tree<double, int>::train(
     *TrainingSpec<double, int>::glda(0.5),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
 
   DVector<double> result = tree.variable_importance(VIProjectorStrategy<double, int>());
@@ -1087,7 +1087,7 @@ TEST(Tree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroups) {
     2;
 
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   ASSERT_THROW(tree.variable_importance(VIProjectorAdjustedStrategy<double, int>()), std::invalid_argument);
 }
@@ -1121,7 +1121,7 @@ TEST(Tree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups) {
 
   Tree<double, int> tree = Tree<double, int>::train(
     *TrainingSpec<double, int>::glda(0.5),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
 
   ASSERT_THROW(tree.variable_importance(VIProjectorAdjustedStrategy<double, int>()), std::invalid_argument);
@@ -1195,7 +1195,7 @@ TEST(Tree, VariableImportancePermutationLDAMultivariateThreeGroups) {
     2;
 
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   ASSERT_THROW(tree.variable_importance(VIPermutationStrategy<double, int>()), std::invalid_argument);
 }
@@ -1229,7 +1229,7 @@ TEST(Tree, VariableImportancePermutationPDAMultivariateTwoGroups) {
 
   Tree<double, int> tree = Tree<double, int>::train(
     *TrainingSpec<double, int>::glda(0.5),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 
   ASSERT_THROW(tree.variable_importance(VIPermutationStrategy<double, int>()), std::invalid_argument);
 }
@@ -1301,11 +1301,11 @@ TEST(Tree, ErrorRateDataSpecMin) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
-  double result = tree.error_rate(DataSpec<double, int>(x, actual_y));
+  double result = tree.error_rate(SortedDataSpec<double, int>(x, actual_y));
 
   ASSERT_DOUBLE_EQ(0.0, result);
 }
@@ -1377,11 +1377,11 @@ TEST(Tree, ErrorRateDataSpecMax) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 3);
 
-  double result = tree.error_rate(DataSpec<double, int>(x, actual_y));
+  double result = tree.error_rate(SortedDataSpec<double, int>(x, actual_y));
 
   ASSERT_DOUBLE_EQ(1.0, result);
 }
@@ -1453,11 +1453,11 @@ TEST(Tree, ErrorRateDataSpecGeneric) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
-  double result = tree.error_rate(DataSpec<double, int>(x, actual_y));
+  double result = tree.error_rate(SortedDataSpec<double, int>(x, actual_y));
 
   ASSERT_NEAR(0.666, result, 0.1);
 }
@@ -1529,7 +1529,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMin) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
@@ -1608,7 +1608,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMax) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 1);
 
@@ -1687,7 +1687,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecGeneric) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
@@ -1767,11 +1767,11 @@ TEST(Tree, ConfusionMatrixDataSpecDiagonal) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
-  ConfusionMatrix result = tree.confusion_matrix(DataSpec<double, int>(x, actual_y));
+  ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<double, int>(x, actual_y));
 
   Data<int> expected = Data<int>::Zero(3, 3);
   expected.diagonal() << 10, 12, 8;
@@ -1851,7 +1851,7 @@ TEST(Tree, ConfusionMatrixDataSpecZeroDiagonal) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y(30);
   actual_y <<
@@ -1886,7 +1886,7 @@ TEST(Tree, ConfusionMatrixDataSpecZeroDiagonal) {
     0,
     0;
 
-  ConfusionMatrix result = tree.confusion_matrix(DataSpec<double, int>(x, actual_y));
+  ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<double, int>(x, actual_y));
 
   Data<int> expected(3, 3);
   expected <<
@@ -1969,7 +1969,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecDiagonal) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
@@ -2055,7 +2055,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
     2,
     2;
 
-  DataSpec<double, int> data(x, y);
+  SortedDataSpec<double, int> data(x, y);
   Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
   DataColumn<int> actual_y(30);
   actual_y <<

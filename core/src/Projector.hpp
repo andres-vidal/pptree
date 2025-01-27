@@ -11,18 +11,11 @@ namespace models::pp {
   template<typename T>
   using Projection = stats::DataColumn<T>;
 
-  template<typename T>
-  Projection<T> project(
-    const stats::Data<T> & data,
-    const Projector<T> &   projector) {
+  template<typename DerivedData, typename DerivedProj>
+  auto project(
+    const math::DMatrixBase<DerivedData> & data,
+    const math::DMatrixBase<DerivedProj> & projector) {
     return data * projector;
-  }
-
-  template<typename T>
-  T project(
-    const stats::DataColumn<T> &data,
-    const Projector<T> &        projector) {
-    return (data.transpose() * projector).value();
   }
 
   template<typename T>
@@ -38,12 +31,5 @@ namespace models::pp {
 
     // Guarantee the first non-zero component is positive
     return (truncated(i) < 0 ? -1 : 1) * truncated;
-  }
-
-  template<typename T>
-  Projector<T> expand(
-    const Projector<T> &    projector,
-    const std::vector<int> &mask) {
-    return stats::expand(projector, mask);
   }
 }

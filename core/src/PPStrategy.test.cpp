@@ -8,8 +8,8 @@ using namespace models::stats;
 #define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(models::math::collinear(a, b)) << std::endl << "Expected vectors to be collinear: [" << a.transpose() << "] [" << b.transpose() << "]" << std::endl
 
 TEST(Projector, LDAOptimumProjectorTwoGroups1) {
-  Data<double> data(10, 4);
-  data <<
+  Data<double> x(10, 4);
+  x <<
     1, 0, 1, 1,
     1, 1, 0, 0,
     1, 0, 0, 1,
@@ -21,8 +21,8 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
     4, 0, 1, 1,
     4, 0, 1, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -34,7 +34,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
     1,
     1;
 
-  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data, groups, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y);
+
+  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data);
 
   DataColumn<double> expected(4);
   expected <<
@@ -44,8 +46,8 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups2) {
-  Data<double> data(10, 4);
-  data <<
+  Data<double> x(10, 4);
+  x <<
     0, 1, 1, 1,
     1, 1, 0, 0,
     0, 1, 0, 1,
@@ -58,8 +60,8 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
     0, 4, 1, 2;
 
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -71,7 +73,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
     1,
     1;
 
-  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data, groups, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y);
+
+  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data);
 
   DataColumn<double> expected(4);
   expected <<
@@ -82,8 +86,8 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups3) {
-  Data<double> data(10, 4);
-  data <<
+  Data<double> x(10, 4);
+  x <<
     0, 1, 1, 1,
     1, 0, 1, 0,
     0, 0, 1, 1,
@@ -96,8 +100,8 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
     0, 1, 4, 2;
 
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -109,7 +113,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
     1,
     1;
 
-  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data, groups, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y);
+
+  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data);
 
   DataColumn<double> expected(4);
   expected <<
@@ -119,8 +125,8 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups4) {
-  Data<double> data(10, 4);
-  data <<
+  Data<double> x(10, 4);
+  x <<
     0, 1, 1, 1,
     1, 0, 0, 1,
     0, 0, 1, 1,
@@ -132,8 +138,8 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
     0, 1, 1, 4,
     0, 1, 2, 4;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -145,7 +151,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
     1,
     1;
 
-  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data, groups, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y);
+
+  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data);
 
   DataColumn<double> expected(4);
   expected <<
@@ -158,8 +166,8 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
 }
 
 TEST(Projector, LDAOptimumProjectorThreeGroups1) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -191,8 +199,8 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -224,7 +232,9 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
     2,
     2;
 
-  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  DataColumn<double> actual = GLDAStrategy<double, int>(0).optimize(data);
 
   DataColumn<double> expected(5);
   expected <<
@@ -238,15 +248,15 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
 }
 
 TEST(Projector, LDAIndexZeroReturn) {
-  Data<double> data(4, 12);
-  data <<
+  Data<double> x(4, 12);
+  x <<
     1, 0, 1, 1, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 0, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 1, 1, 0, 1, 0, 2, 3, 4, 5,
     1, 0, 1, 1, 1, 0, 1, 0, 2, 3, 4, 5;
 
-  DataColumn<int> groups(4);
-  groups <<
+  DataColumn<int> y(4);
+  y <<
     0,
     0,
     1,
@@ -256,14 +266,16 @@ TEST(Projector, LDAIndexZeroReturn) {
   projector <<
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
-  double actual = GLDAStrategy<double, int>(0).index(data, projector, groups, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0).index(data, projector);
 
   ASSERT_EQ(0.0, actual);
 }
 
 TEST(Projector, LDAIndexOptimal1) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -295,8 +307,8 @@ TEST(Projector, LDAIndexOptimal1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -332,14 +344,17 @@ TEST(Projector, LDAIndexOptimal1) {
   projector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
-  double actual = GLDAStrategy<double, int>(0).index(data, projector, groups, { 0, 1, 2 });
+
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0).index(data, projector);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(Projector, LDAIndexOptimal2) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -371,8 +386,8 @@ TEST(Projector, LDAIndexOptimal2) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -409,14 +424,16 @@ TEST(Projector, LDAIndexOptimal2) {
   projector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
 
-  double actual = GLDAStrategy<double, int>(0).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0).index(data, projector);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(Projector, LDAIndexOptimal3) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -448,8 +465,8 @@ TEST(Projector, LDAIndexOptimal3) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -486,14 +503,16 @@ TEST(Projector, LDAIndexOptimal3) {
   projector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
 
-  double actual = GLDAStrategy<double, int>(0).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0).index(data, projector);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(Projector, LDAIndexSuboptimal1) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -525,8 +544,8 @@ TEST(Projector, LDAIndexSuboptimal1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -563,14 +582,16 @@ TEST(Projector, LDAIndexSuboptimal1) {
   projector <<
     0, 0, 1, 1, 1;
 
-  double actual = GLDAStrategy<double, int>(0).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0).index(data, projector);
 
   ASSERT_NEAR(0.134985, actual, 0.00001);
 }
 
 TEST(Projector, LDAIndexSuboptimal2) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -602,8 +623,8 @@ TEST(Projector, LDAIndexSuboptimal2) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -640,27 +661,31 @@ TEST(Projector, LDAIndexSuboptimal2) {
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double actual = GLDAStrategy<double, int>(0).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0).index(data, projector);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
 
 TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
-  Data<double> data(4, 6);
-  data <<
+  Data<double> x(4, 6);
+  x <<
     1, 0, 1, 1, 1, 4,
     2, 1, 0, 0, 0, 4,
     3, 0, 1, 1, 1, 1,
     4, 0, 1, 2, 2, 1;
 
-  DataColumn<int> groups(4);
-  groups <<
+  DataColumn<int> y(4);
+  y <<
     0,
     0,
     1,
     1;
 
-  DataColumn<double> actual = GLDAStrategy<double, int>(0.5).optimize(data, groups, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y);
+
+  DataColumn<double> actual = GLDAStrategy<double, int>(0.5).optimize(data);
 
   DataColumn<double> expected(6);
   expected <<
@@ -670,21 +695,23 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
 }
 
 TEST(Projector, GLDAOptimumProjectorZeroColumn) {
-  Data<double> data(4, 7);
-  data <<
+  Data<double> x(4, 7);
+  x <<
     1, 0, 1, 1, 1, 4, 0,
     2, 1, 0, 0, 0, 4, 0,
     3, 0, 1, 1, 1, 1, 0,
     4, 0, 1, 2, 2, 1, 0;
 
-  DataColumn<int> groups(4);
-  groups <<
+  DataColumn<int> y(4);
+  y <<
     0,
     0,
     1,
     1;
 
-  DataColumn<double> actual = GLDAStrategy<double, int>(0.1).optimize(data, groups, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y);
+
+  DataColumn<double> actual = GLDAStrategy<double, int>(0.1).optimize(data);
 
   DataColumn<double> expected(7);
   expected <<
@@ -694,15 +721,15 @@ TEST(Projector, GLDAOptimumProjectorZeroColumn) {
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
-  Data<double> data(4, 12);
-  data <<
+  Data<double> x(4, 12);
+  x <<
     1, 0, 1, 1, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 0, 0, 1, 0, 1, 2, 3, 4, 5,
     1, 1, 0, 1, 1, 0, 1, 0, 2, 3, 4, 5,
     1, 0, 1, 1, 1, 0, 1, 0, 2, 3, 4, 5;
 
-  DataColumn<int> groups(4);
-  groups <<
+  DataColumn<int> y(4);
+  y <<
     0,
     0,
     1,
@@ -712,14 +739,16 @@ TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
   projector <<
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
-  double actual = GLDAStrategy<double, int>(0.5).index(data, projector, groups, { 0, 1 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0.5).index(data, projector);
 
   ASSERT_EQ(0.0, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -751,8 +780,8 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -788,14 +817,16 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
   projector <<
     -0.12823, -0.99174, 0.0, 0.0, 0.0;
 
-  double actual = GLDAStrategy<double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0.5).index(data, projector);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -827,8 +858,8 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -865,14 +896,16 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
   projector <<
     0.78481, 0.61974, 0.0, 0.0, 0.0;
 
-  double actual = GLDAStrategy<double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0.5).index(data, projector);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -904,8 +937,8 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -942,14 +975,16 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
   projector <<
     -0.66808,  0.74409,  0.0,  0.0,  0.0;
 
-  double actual = GLDAStrategy<double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0.5).index(data, projector);
 
   ASSERT_DOUBLE_EQ(1.0, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -981,8 +1016,8 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -1019,14 +1054,16 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
   projector <<
     0, 0, 1, 1, 1;
 
-  double actual = GLDAStrategy<double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0.5).index(data, projector);
 
   ASSERT_NEAR(0.12597, actual, 0.00001);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
-  Data<double> data(30, 5);
-  data <<
+  Data<double> x(30, 5);
+  x <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -1058,8 +1095,8 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -1096,7 +1133,9 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double actual = GLDAStrategy<double, int>(0.5).index(data, projector, groups, { 0, 1, 2 });
+  SortedDataSpec<double, int> data(x, y);
+
+  double actual = GLDAStrategy<double, int>(0.5).index(data, projector);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }

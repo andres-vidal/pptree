@@ -139,7 +139,7 @@ TEST(Projector, PProjectDataColumnZeroProjector) {
   projector <<
     0.0, 0.0, 0.0, 0.0, 0.0;
 
-  double result = project(data, projector);
+  double result = project(data.transpose(), projector).value();
 
   ASSERT_EQ(0, result);
 }
@@ -153,7 +153,7 @@ TEST(Projector, PProjectDataColumnGeneric) {
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double result = project(data, projector);
+  double result = project(data.transpose(), projector).value();
 
   ASSERT_NEAR(-6.58606, result, 0.00001);
 }
@@ -168,25 +168,6 @@ TEST(Projector, Normalize) {
   Projector<double> expected(5);
   expected <<
     0.02965, -0.08452, 0.24243, 0.40089, 0.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(Projector, Expand) {
-  Projector<double> projector(3);
-  projector <<
-    1.0, 2.0, 3.0;
-
-  std::vector<int> mask { 1, 0, 1, 0, 1 };
-
-  Projector<double> actual = models::pp::expand(projector, mask);
-
-  Projector<double> expected(5);
-  expected
-    << 1.0, 0.0, 2.0, 0.0, 3.0;
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());

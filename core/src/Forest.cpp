@@ -13,10 +13,10 @@ using namespace models::stats;
 namespace models {
   template<typename T, typename R>
   Forest<T, R> Forest<T, R>::train(
-    const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data,
-    const int                 size,
-    const int                 seed) {
+    const TrainingSpec<T, R> &   training_spec,
+    const SortedDataSpec<T, R> & training_data,
+    const int                    size,
+    const int                    seed) {
     return train(
       training_spec,
       training_data,
@@ -27,11 +27,11 @@ namespace models {
 
   template<typename T, typename R >
   Forest<T, R> Forest<T, R>::train(
-    const TrainingSpec<T, R> &training_spec,
-    const DataSpec<T, R> &    training_data,
-    const int                 size,
-    const int                 seed,
-    const int                 n_threads) {
+    const TrainingSpec<T, R> &   training_spec,
+    const SortedDataSpec<T, R> & training_data,
+    const int                    size,
+    const int                    seed,
+    const int                    n_threads) {
     #ifdef _OPENMP
     omp_set_num_threads(n_threads);
     #endif
@@ -46,15 +46,17 @@ namespace models {
 
     invariant(size > 0, "The forest size must be greater than 0.");
 
+    const SortedDataSpec<T, R> sorted_training_data(training_data);
+
     Forest<T, R> forest(
       training_spec.clone(),
-      std::make_shared<DataSpec<T, R> >(training_data),
+      std::make_shared<SortedDataSpec<T, R> >(sorted_training_data),
       seed,
       n_threads);
 
     #pragma omp parallel for
     for (int i = 0; i < size; i++) {
-      auto sample = stratified_proportional_sample(training_data, training_data.x.rows());
+      auto sample = stratified_proportional_sample(sorted_training_data, sorted_training_data.x.rows());
       auto tree = BootstrapTree<T, R>::train(training_spec, sample);
 
       #pragma omp critical
@@ -67,15 +69,15 @@ namespace models {
   }
 
   template Forest<double, int> Forest<double, int>::train(
-    const TrainingSpec<double, int> &training_spec,
-    const DataSpec<double, int> &    training_data,
-    const int                        size,
-    const int                        seed);
+    const TrainingSpec<double, int> &   training_spec,
+    const SortedDataSpec<double, int> & training_data,
+    const int                           size,
+    const int                           seed);
 
   template Forest<double, int> Forest<double, int>::train(
-    const TrainingSpec<double, int> &training_spec,
-    const DataSpec<double, int> &    training_data,
-    const int                        size,
-    const int                        seed,
-    const int                        n_threads);
+    const TrainingSpec<double, int> &   training_spec,
+    const SortedDataSpec<double, int> & training_data,
+    const int                           size,
+    const int                           seed,
+    const int                           n_threads);
 }

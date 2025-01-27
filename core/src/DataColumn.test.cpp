@@ -88,58 +88,6 @@ TEST(DataColumn, SelectRowsSetMultipleRowsAdjacent) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataColumn, SelectGroupIndicesSingleGroup) {
-  DataColumn<int> groups(3);
-  groups <<
-    1,
-    1,
-    1;
-
-  std::vector<int> actual = select_group(groups, 1);
-  std::vector<int> expected = { 0, 1, 2 };
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, SelectGroupIndicesMultipleGroupsAdjacent) {
-  DataColumn<int> groups(3);
-  groups <<
-    1,
-    1,
-    2;
-
-  std::vector<int> actual = select_group(groups, 1);
-  std::vector<int> expected = { 0, 1 };
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, SelectGroupIndicesMultipleGroupsMixed) {
-  DataColumn<int> groups(3);
-  groups <<
-    1,
-    2,
-    1;
-
-  std::vector<int> actual = select_group(groups, 1);
-  std::vector<int> expected = { 0, 2 };
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, SelectGroupIndicesEmptyResult) {
-  DataColumn<int> groups(3);
-  groups <<
-    1,
-    1,
-    1;
-
-  std::vector<int> actual = select_group(groups, 2);
-  std::vector<int> expected = {};
-
-  ASSERT_EQ(expected, actual);
-}
-
 TEST(DataColumn, UniqueEmptyResult) {
   DataColumn<int> column(0);
   std::set<int> actual = unique(column);
@@ -199,75 +147,6 @@ TEST(DataColumn, UniqueMultipleValuesRepeated) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataColumn, ExpandIdempotent) {
-  DataColumn<double> data(3);
-  data << 1.0, 2.0, 3.0;
-
-  std::vector<int> mask { 1, 1, 1 };
-
-  DataColumn<double> actual = expand(data, mask);
-
-  ASSERT_EQ(data.size(), actual.size());
-  ASSERT_EQ(data.rows(), actual.rows());
-  ASSERT_EQ(data.cols(), actual.cols());
-  ASSERT_EQ(data, actual);
-}
-
-TEST(DataColumn, ExpandGeneric) {
-  DataColumn<double> data(3);
-  data << 1.0, 2.0, 3.0;
-
-  std::vector<int> mask { 1, 0, 1, 0, 1 };
-
-  DataColumn<double> actual = expand(data, mask);
-
-  DataColumn<double> expected(5);
-  expected <<
-    1.0, 0.0, 2.0, 0.0, 3.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, MeanSingleObservation) {
-  DataColumn<double> data(1);
-  data <<
-    1.0;
-
-  double actual = mean(data);
-  double expected = 1.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, MeanMultipleEqualObservations) {
-  DataColumn<double> data(3);
-  data <<
-    1.0,
-    1.0,
-    1.0;
-
-  double actual = mean(data);
-  double expected = 1.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, MeanMultipleDifferentObservations) {
-  DataColumn<double> data(3);
-  data <<
-    1.0,
-    2.0,
-    3.0;
-
-  double actual = mean(data);
-  double expected = 2.0;
-
-  ASSERT_EQ(expected, actual);
-}
-
 TEST(DataColumn, SdZeroVector) {
   DataColumn<double> data(3);
   data <<
@@ -318,58 +197,6 @@ TEST(DataColumn, SdGeneric2) {
   double expected = 0.5773503;
 
   ASSERT_NEAR(expected, result, 0.00001);
-}
-
-TEST(DataColumn, CenterSingleObservation) {
-  DataColumn<double> data(1);
-  data << 1.0;
-
-  DataColumn<double> actual = center(data);
-
-  DataColumn<double> expected = DataColumn<double>::Zero(1);
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, CenterMultipleEqualObservations) {
-  DataColumn<double> data(3);
-  data <<
-    1.0,
-    1.0,
-    1.0;
-
-  DataColumn<double> actual = center(data);
-
-  DataColumn<double> expected = DataColumn<double>::Zero(3);
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(DataColumn, CenterMultipleDifferentObservations) {
-  DataColumn<double> data(3);
-  data <<
-    1.0,
-    2.0,
-    3.0;
-
-  DataColumn<double> actual = center(data);
-
-  DataColumn<double> expected(3);
-  expected <<
-    -1.0,
-    0.0,
-    1.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
 }
 
 TEST(DataColumn, DescaleZeroVector) {

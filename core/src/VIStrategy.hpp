@@ -3,6 +3,7 @@
 #include "Node.hpp"
 #include "Tree.hpp"
 #include "BootstrapTree.hpp"
+#include "SortedDataSpec.hpp"
 #include "Forest.hpp"
 #include "Invariant.hpp"
 
@@ -168,11 +169,11 @@ namespace models {
 
       auto [x, y, _all_classes] = condition.training_data->unwrap();
 
+      stats::SortedDataSpec<T, R> data(x, y, condition_summary.classes);
+
       const double pp_index = condition.training_spec->pp_strategy->index(
-        x,
-        condition.projector,
-        y,
-        condition_summary.classes);
+        data,
+        condition.projector);
 
       return math::abs(condition.projector) * pp_index + lower_importance + upper_importance;
     }
@@ -209,7 +210,7 @@ namespace models {
       const math::DVector<T> &     accumulated_importance,
       const BootstrapTree<T, R> &  tree,
       const NodeSummarizer<T, R> & root_summary) const override {
-      const stats::DataSpec<T, R> oob = tree.training_data->get_oob();
+      const stats::SortedDataSpec<T, R> oob = tree.training_data->get_oob();
       const stats::DataColumn<R> oob_predictions = tree.predict(oob.x);
 
       const double oob_accuracy = stats::accuracy(oob_predictions, oob.y);

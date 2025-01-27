@@ -16,7 +16,7 @@ Tree<double, int> pptree_train_glda(
   const double            lambda) {
   return Tree<double, int>::train(
     *TrainingSpec<double, int>::glda(lambda),
-    DataSpec<double, int>(data, groups));
+    SortedDataSpec<double, int>(data, groups));
 }
 
 // [[Rcpp::export]]
@@ -30,14 +30,14 @@ Forest<double, int> pptree_train_forest_glda(
   if (n_threads == R_NilValue) {
     return Forest<double, int>::train(
       *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-      DataSpec<double, int>(data, groups),
+      SortedDataSpec<double, int>(data, groups),
       size,
       R::runif(0, INT_MAX));
   }
 
   return Forest<double, int>::train(
     *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    DataSpec<double, int>(data, groups),
+    SortedDataSpec<double, int>(data, groups),
     size,
     R::runif(0, INT_MAX),
     as<const int>(n_threads));

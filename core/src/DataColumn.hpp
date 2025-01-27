@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DVector.hpp"
+#include "DMatrix.hpp"
 
 #include <set>
 
@@ -39,68 +39,9 @@ namespace models::stats {
     return select_rows(data, std::vector<int>(indices.begin(), indices.end()));
   }
 
-  template<typename G>
-  std::vector<G> select_group(
-    const DataColumn<G> &groups,
-    const G &            group) {
-    std::vector<G> indices;
-
-    for (int i = 0; i < groups.rows(); i++) {
-      if (groups(i) == group) {
-        indices.push_back(i);
-      }
-    }
-
-    return indices;
-  }
-
-  template<typename T, typename G>
-  DataColumn<T> select_group(
-    const DataColumn<T> &data,
-    const DataColumn<G> &groups,
-    const G &            group) {
-    std::vector<G> indices = select_group(groups, group);
-
-    DataColumn<T> result(indices.size());
-
-    for (std::size_t i = 0; i < indices.size(); i++) {
-      result(i) = data(indices[i]);
-    }
-
-    return result;
-  }
-
-  template<typename T>
-  DataColumn<T> expand(
-    const DataColumn<T> &   data,
-    const std::vector<int> &mask) {
-    DataColumn<T> expanded = DataColumn<T>::Zero(mask.size());
-
-    int j = 0;
-
-    for (std::size_t i = 0; i < mask.size(); i++) {
-      if (mask[i] == 1) {
-        expanded.row(i) = data.row(j);
-        j++;
-      }
-    }
-
-    return expanded;
-  }
-
-  template<typename T>
-  T mean(const DataColumn<T> &data) {
-    return data.mean();
-  }
-
-  template<typename T>
-  DataColumn<T> center(const DataColumn<T> &data) {
-    return data.array() - mean(data);
-  }
-
   template<typename T>
   T sd(const DataColumn<T> &data) {
-    return sqrt((math::inner_square(center(data))) / (data.rows() - 1));
+    return sqrt((math::inner_square((data.array() - data.mean()).matrix())).value() / (data.rows() - 1));
   }
 
   template<typename T>

@@ -2,7 +2,7 @@
 
 #include "Data.hpp"
 #include "DataColumn.hpp"
-#include "DataSpec.hpp"
+#include "SortedDataSpec.hpp"
 #include "Projector.hpp"
 #include "TrainingSpec.hpp"
 
@@ -54,15 +54,15 @@ namespace models {
     std::unique_ptr<Node<T, R> > lower;
     std::unique_ptr<Node<T, R> > upper;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
-    std::unique_ptr<stats::DataSpec<T, R> > training_data;
+    std::unique_ptr<stats::SortedDataSpec<T, R> > training_data;
 
     Condition(
-      pp::Projector<T> &                      projector,
-      Threshold<T> &                          threshold,
-      std::unique_ptr<Node<T, R> >            lower,
-      std::unique_ptr<Node<T, R> >            upper,
-      std::unique_ptr<TrainingSpec<T, R> >    training_spec,
-      std::unique_ptr<stats::DataSpec<T, R> > training_data)  :
+      pp::Projector<T> &                            projector,
+      Threshold<T> &                                threshold,
+      std::unique_ptr<Node<T, R> >                  lower,
+      std::unique_ptr<Node<T, R> >                  upper,
+      std::unique_ptr<TrainingSpec<T, R> >          training_spec,
+      std::unique_ptr<stats::SortedDataSpec<T, R> > training_data)  :
       projector(projector),
       threshold(threshold),
       lower(std::move(lower)),
@@ -91,7 +91,7 @@ namespace models {
     }
 
     R predict(const stats::DataColumn<T> &data) const override {
-      T projected_data = pp::project(projector, data);
+      T projected_data = pp::project(data.transpose(), projector).value();
 
       if (projected_data < threshold) {
         return lower->predict(data);
