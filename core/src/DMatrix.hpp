@@ -55,16 +55,6 @@ namespace models::math {
   }
 
   template<typename T>
-  DMatrix<T> solve(
-    const DMatrix<T> &l,
-    const DMatrix<T> &r
-    ) {
-    Eigen::FullPivLU<DMatrix<T> > lu(l);
-
-    return lu.solve(r);
-  }
-
-  template<typename T>
   bool collinear(
     const DMatrix<T> &a,
     const DMatrix<T> &b) {
@@ -79,7 +69,4 @@ namespace models::math {
 
     return true;
   }
-
-  template<typename T>
-  std::tuple<DVector<T>, DMatrix<T> > eigen(const DMatrix<T> &m);
 }

@@ -4,6 +4,7 @@
 #include "SortedDataSpec.hpp"
 
 #include <set>
+#include <vector>
 
 namespace models::pp::strategy {
   template<typename T, typename G>
@@ -65,31 +66,54 @@ namespace models::pp::strategy {
       LOG_INFO << "Groups:" << std::endl;
       LOG_INFO << std::endl << data.y << std::endl;
 
-      stats::Data<T> B = data.bgss();
-      stats::Data<T> W = data.wgss();
+      auto B = data.bgss();
+      auto W = data.wgss();
 
       LOG_INFO << "B:" << std::endl << B << std::endl;
       LOG_INFO << "W:" << std::endl << W << std::endl;
 
-      stats::Data<T> W_diag = W.diagonal().asDiagonal();
-      stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
-      stats::Data<T> WpB = W_pda + B;
+      auto W_diag = W.diagonal().asDiagonal().toDenseMatrix();
+      auto W_pda = W_diag + (1 - lambda) * (W - W_diag);
+      auto WpB = W_pda + B;
 
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
-      stats::Data<T> WpBInvB = math::solve(WpB, B);
+      stats::Data<T> WpBInvB = WpB.fullPivLu().solve(B);
       stats::Data<T> truncatedWpBInvB = WpBInvB.unaryExpr(reinterpret_cast<T (*)(T)>(&math::truncate<T>));
 
       LOG_INFO << "(W_pda + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
       LOG_INFO << "(W_pda + B)^-1 * B (truncated):" << std::endl << truncatedWpBInvB << std::endl;
 
-      auto [eigen_val, eigen_vec] = math::eigen(truncatedWpBInvB);
+      Eigen::EigenSolver<math::DMatrix<T> > eigen_solver(truncatedWpBInvB);
+      math::DVector<T> eigen_val = eigen_solver.eigenvalues().real();
+      math::DMatrix<T> eigen_vec = eigen_solver.eigenvectors().real();
 
       LOG_INFO << "Eigenvalues:" << std::endl << eigen_val << std::endl;
       LOG_INFO << "Eigenvectors:" << std::endl << eigen_vec << std::endl;
 
-      math::DVector<T> max_eigen_vec = eigen_vec.col(eigen_vec.cols() - 1);
+      std::vector<Eigen::Index> indices(eigen_val.size());
+      std::iota(indices.begin(), indices.end(), 0);
+
+      std::sort(indices.begin(), indices.end(), [&eigen_val, &eigen_vec](Eigen::Index idx1, Eigen::Index idx2) {
+         double value1_mod = fabs(eigen_val.row(idx1).value());
+         double value2_mod = fabs(eigen_val.row(idx2).value());
+
+         if (math::is_approx(value1_mod, value2_mod)) {
+           auto vector1 = eigen_vec.col(idx1);
+           auto vector2 = eigen_vec.col(idx2);
+
+           for (int i = 0; i < vector1.size(); ++i) {
+             if (!math::is_module_approx(vector1[i], vector2[i]) ) {
+               return vector1[i] < vector2[i];
+             }
+           }
+         }
+
+         return value1_mod < value2_mod;
+       });
+
+      math::DVector<T> max_eigen_vec = eigen_vec.col(indices.back());
 
       LOG_INFO << "Maximal eigenvector:" << std::endl << max_eigen_vec << std::endl;
 
