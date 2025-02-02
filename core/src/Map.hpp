@@ -22,10 +22,10 @@ namespace utils {
   }
 
   template<typename K, typename V>
-  std::map<V, std::set<K> > invert(const std::map<K, V> &mapping) {
+  std::map<V, std::set<K> > invert(const std::map<K, V> &map) {
     std::map<V, std::set<K> > result;
 
-    for (const auto&[key, value] : mapping) {
+    for (const auto&[key, value] : map) {
       result[value].insert(key);
     }
 
