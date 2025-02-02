@@ -99,7 +99,7 @@ namespace models::pp::strategy {
          double value1_mod = fabs(eigen_val.row(idx1).value());
          double value2_mod = fabs(eigen_val.row(idx2).value());
 
-         if (math::is_approx(value1_mod, value2_mod)) {
+         if (math::is_approx(value1_mod, value2_mod, 0.001)) {
            auto vector1 = eigen_vec.col(idx1);
            auto vector2 = eigen_vec.col(idx2);
 

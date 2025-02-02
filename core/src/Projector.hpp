@@ -26,7 +26,7 @@ namespace models::pp {
     // Fetch the index of the first non-zero component
     int i = 0;
 
-    while (i < truncated.size() && math::is_approx(truncated(i), 0))
+    while (i < truncated.size() && math::is_approx(truncated(i), 0, 0.001))
       i++;
 
     // Guarantee the first non-zero component is positive

@@ -4,6 +4,8 @@
 #include "BootstrapDataSpec.hpp"
 #include "VIStrategy.hpp"
 
+#include "Macros.hpp"
+
 using namespace models;
 using namespace models::pp;
 using namespace models::stats;
@@ -78,13 +80,13 @@ TEST(Condition, EqualsApproximateThresholds) {
 
 TEST(Condition, EqualsNonCollinearProjectors) {
   Condition<double, int> c1(
-    as_projector({ 1.0, 2.0 }),
+    as_projector({ 1.0, 0.0 }),
     3.0,
     std::make_unique<Response<double, int> >(1),
     std::make_unique<Response<double, int> >(2));
 
   Condition<double, int> c2(
-    as_projector({ 2.0, 3.0 }),
+    as_projector({ 0.0, 1.0 }),
     3.0,
     std::make_unique<Response<double, int> >(1),
     std::make_unique<Response<double, int> >(2));
@@ -965,7 +967,7 @@ TEST(Tree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
         0.00643757,
         0.0160685 });
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Tree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
@@ -1016,7 +1018,7 @@ TEST(Tree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
     0.00180949,
     0.00180949 });
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Tree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroups) {

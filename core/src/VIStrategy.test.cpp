@@ -2,6 +2,8 @@
 
 #include "VIStrategy.hpp"
 
+#include "Macros.hpp"
+
 using namespace models;
 using namespace models::stats;
 using namespace models::math;
@@ -86,7 +88,7 @@ TEST(VIProjectorStrategy, TreeLDAMultivariateThreeGroups) {
     0.00643757,
     0.0160685;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, TreePDAMultivariateTwoGroups) {
@@ -138,7 +140,7 @@ TEST(VIProjectorStrategy, TreePDAMultivariateTwoGroups) {
     0.00180949,
     0.00180949;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
@@ -224,7 +226,7 @@ TEST(VIProjectorStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
     0.0;
 
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, BootstrapTreePDAMultivariateTwoGroups) {
@@ -276,7 +278,7 @@ TEST(VIProjectorStrategy, BootstrapTreePDAMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
@@ -367,7 +369,7 @@ TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
     0.074664119133181384,
     0.06294791631582175;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
@@ -424,7 +426,7 @@ TEST(VIProjectorStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     0.0126566,
     0.0126566;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorAdjustedStrategy, TreeLDAMultivariateThreeGroups) {
@@ -622,7 +624,7 @@ TEST(VIProjectorAdjustedStrategy, BootstrapLDATreeMultivariateThreeGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorAdjustedStrategy, BootstrapPDATreeMultivariateTwoGroups) {
@@ -674,7 +676,7 @@ TEST(VIProjectorAdjustedStrategy, BootstrapPDATreeMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
@@ -766,7 +768,7 @@ TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups)
     0.041419747834681817;
 
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorAdjustedStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
@@ -823,7 +825,7 @@ TEST(VIProjectorAdjustedStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     0.026617,
     0.026617;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIPermutationStrategy, TreeLDAMultivariateThreeGroups) {
@@ -1023,7 +1025,7 @@ TEST(VIPermutationStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
     0.00000,
     0.00000;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
@@ -1077,7 +1079,7 @@ TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
@@ -1168,8 +1170,7 @@ TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
     0,
     0;
 
-
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIPermutationStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
@@ -1226,5 +1227,5 @@ TEST(VIPermutationStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }

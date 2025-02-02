@@ -3,6 +3,8 @@
 #include "BootstrapTree.hpp"
 #include "VIStrategy.hpp"
 
+#include "Macros.hpp"
+
 using namespace models;
 using namespace models::pp;
 using namespace models::stats;
@@ -1150,7 +1152,7 @@ TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
     0.0;
 
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
@@ -1202,7 +1204,7 @@ TEST(BootstrapTree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroups) {
@@ -1287,7 +1289,7 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroup
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups) {
@@ -1339,7 +1341,7 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups)
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
@@ -1426,7 +1428,7 @@ TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
     0.00000,
     0.00000;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportancePermutationPDAMultivariateTwoGroups) {
@@ -1480,5 +1482,5 @@ TEST(BootstrapTree, VariableImportancePermutationPDAMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+  ASSERT_APPROX(expected, result);
 }

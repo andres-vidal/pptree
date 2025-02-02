@@ -2,10 +2,9 @@
 
 #include "DMatrix.hpp"
 
-using namespace models::math;
+#include "Macros.hpp"
 
-#define ASSERT_APPROX(a, b)    ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
-#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
+using namespace models::math;
 
 TEST(DMatrix, InnerProductEqualMatricesUnweighted) {
   DMatrix<double> a(3, 3);
@@ -400,84 +399,4 @@ TEST(DMatrix, DeterminantSingularMatrix) {
   double expected = 0.0;
 
   ASSERT_EQ(expected, actual);
-}
-
-TEST(DMatrix, CollinearAllColumnsCollinearSameDirection) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 4.0, 12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    2.0, 4.0, 12.0,
-    4.0, 8.0, 24.0,
-    12.0, 24.0, 72.0;
-
-  ASSERT_TRUE(collinear(a, b));
-}
-
-TEST(DMatrix, CollinearAllColumnsCollinearOppositeDirection) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 4.0, 12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    -1.0, -2.0, -6.0,
-    -2.0, -4.0, -12.0,
-    -6.0, -12.0, -36.0;
-
-  ASSERT_TRUE(collinear(a, b));
-}
-
-TEST(DMatrix, CollinearSomeColumnsCollinearOppositeDirection) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 4.0, 12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    1.0, 2.0, -6.0,
-    2.0, 4.0, -12.0,
-    6.0, 12.0, -36.0;
-
-  ASSERT_TRUE(collinear(a, b));
-}
-
-TEST(DMatrix, CollinearAllColumnsNonColinear) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 4.0, 12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  ASSERT_FALSE(collinear(a, b));
-}
-
-TEST(DMatrix, CollinearSomeColumnsNonCollinear) {
-  DMatrix<double> a(3, 3);
-  a <<
-    1.0, 2.0, 6.0,
-    2.0, 4.0, 12.0,
-    6.0, 12.0, 36.0;
-
-  DMatrix<double> b(3, 3);
-  b <<
-    1.0, 2.0, 6.0,
-    2.0, 4.0, 12.0,
-    7.0, 12.0, 36.0;
-
-  ASSERT_FALSE(collinear(a, b));
 }

@@ -53,20 +53,4 @@ namespace models::math {
     ) {
     return m.determinant();
   }
-
-  template<typename T>
-  bool collinear(
-    const DMatrix<T> &a,
-    const DMatrix<T> &b) {
-    for (int i = 0; i < a.cols(); i++) {
-      DVector<T> a_col = a.col(i);
-      DVector<T> b_col = b.col(i);
-
-      if (!collinear(a_col, b_col)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 }

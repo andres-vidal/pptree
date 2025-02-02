@@ -2,6 +2,8 @@
 
 #include "ConfusionMatrix.hpp"
 
+#include "Macros.hpp"
+
 using namespace models::stats;
 
 TEST(ConfusionMatrix, Identity) {
@@ -218,5 +220,5 @@ TEST(ConfusionMatrix, ClassErrorsMixed) {
   expected_errors << 0, 0.5, 0.666667;
 
   ASSERT_EQ(expected_errors.size(), result.size());
-  ASSERT_TRUE(expected_errors.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected_errors, result);
 }

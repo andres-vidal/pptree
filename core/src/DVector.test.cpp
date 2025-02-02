@@ -2,10 +2,9 @@
 
 #include "DVector.hpp"
 
-using namespace models::math;
+#include "Macros.hpp"
 
-#define ASSERT_APPROX(a, b)    ASSERT_TRUE(a.isApprox(b, 0.00001)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
-#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
+using namespace models::math;
 
 TEST(DVector, OuterProductEqualVectors) {
   DVector<double> a(3);
@@ -184,10 +183,10 @@ TEST(DVector, CollinearCollinearOppositeDirection) {
 
 TEST(DVector, CollinearNonCollinear) {
   DVector<double> a(3);
-  a << 1.0, 2.0, 6.0;
+  a << 0.0, 1.0, 0.0;
 
   DVector<double> b(3);
-  b << 2.0, 3.0, 7.0;
+  b << 1.0, 0.0, 0.0;
 
   ASSERT_FALSE(collinear(a, b));
 }

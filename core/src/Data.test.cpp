@@ -2,6 +2,8 @@
 
 #include "Data.hpp"
 
+#include "Macros.hpp"
+
 using namespace models::stats;
 
 TEST(Data, SelectRowsVectorSingleRow) {
@@ -300,7 +302,7 @@ TEST(Data, CovarianceGeneric2) {
   ASSERT_EQ(expected.size(), result.size());
   ASSERT_EQ(expected.rows(), result.rows());
   ASSERT_EQ(expected.cols(), result.cols());
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Data, SdZeroMatrix) {
@@ -405,7 +407,7 @@ TEST(Data, SdGeneric2) {
   ASSERT_EQ(expected.size(), result.size());
   ASSERT_EQ(expected.rows(), result.rows());
   ASSERT_EQ(expected.cols(), result.cols());
-  ASSERT_TRUE(expected.isApprox(result, 0.000001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Data, CenterDataSingleObservation) {

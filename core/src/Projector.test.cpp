@@ -2,6 +2,8 @@
 
 #include "Projector.hpp"
 
+#include "Macros.hpp"
+
 using namespace models::pp;
 using namespace models::stats;
 
@@ -127,7 +129,7 @@ TEST(Projector, ProjectDataGeneric) {
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
   ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_TRUE(expected.isApprox(actual, 0.00001));
+  ASSERT_APPROX(expected, actual);
 }
 
 TEST(Projector, PProjectDataColumnZeroProjector) {

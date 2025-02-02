@@ -2,10 +2,10 @@
 
 #include "PPStrategy.hpp"
 
+#include "Macros.hpp"
+
 using namespace models::pp::strategy;
 using namespace models::stats;
-
-#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(models::math::collinear(a, b)) << std::endl << "Expected vectors to be collinear: [" << a.transpose() << "] [" << b.transpose() << "]" << std::endl
 
 TEST(Projector, LDAOptimumProjectorTwoGroups1) {
   Data<double> x(10, 4);

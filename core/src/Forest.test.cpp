@@ -3,6 +3,8 @@
 #include "Forest.hpp"
 #include "VIStrategy.hpp"
 
+#include "Macros.hpp"
+
 using namespace models;
 using namespace models::stats;
 using namespace models::pp;
@@ -717,7 +719,7 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
     0.074664119133181384,
     0.06294791631582175;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
@@ -773,7 +775,7 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
     0.0126566,
     0.0126566 });
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThreeGroups) {
@@ -865,7 +867,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
     0.041419747834681817;
 
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGroups) {
@@ -922,7 +924,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
     0.026617,
     0.026617;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroups) {
@@ -1015,7 +1017,7 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
     0,
     0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) {
@@ -1074,7 +1076,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 
