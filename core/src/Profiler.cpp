@@ -13,7 +13,7 @@ SortedDataSpec<double, int> simulate(
   const int G) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::normal_distribution<double> norm(0, 1);
+  std::normal_distribution<double> norm(100, 10);
 
   Data<double> x(n, p);
 
