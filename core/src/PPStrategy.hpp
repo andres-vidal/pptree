@@ -80,7 +80,7 @@ namespace models::pp::strategy {
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
       stats::Data<T> WpBInvB = WpB.fullPivLu().solve(B);
-      stats::Data<T> truncatedWpBInvB = WpBInvB.unaryExpr(reinterpret_cast<T (*)(T)>(&math::truncate<T>));
+      stats::Data<T> truncatedWpBInvB = math::truncate(WpBInvB);
 
       LOG_INFO << "(W_pda + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
       LOG_INFO << "(W_pda + B)^-1 * B (truncated):" << std::endl << truncatedWpBInvB << std::endl;

@@ -53,4 +53,11 @@ namespace models::math {
     ) {
     return m.determinant();
   }
+
+  template<typename Derived>
+  auto truncate(
+    const DMatrixBase<Derived> &m
+    ) {
+    return (m.array().abs() < 1e-15).select(0, m.array());
+  }
 }
