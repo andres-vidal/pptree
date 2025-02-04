@@ -77,6 +77,7 @@ namespace models::stats {
     const int data_size = data.y.rows();
 
     std::vector<int> sample_indices;
+    sample_indices.reserve(size);
 
     for (const G& group : data.classes) {
       const int group_size = data.group_size(group);
