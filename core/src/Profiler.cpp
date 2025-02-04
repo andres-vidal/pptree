@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 
   const auto start = std::chrono::high_resolution_clock::now();
 
-  if (B > 1) {
+  if (B > 0) {
     Forest<double, int>::train(*spec, data, B, 0, C);
   } else {
     Tree<double, int>::train(*spec, data);
