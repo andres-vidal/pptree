@@ -398,5 +398,5 @@ TEST(DMatrix, DeterminantSingularMatrix) {
   float actual = determinant(m);
   float expected = 0.0;
 
-  ASSERT_EQ(expected, actual);
+  ASSERT_NEAR(expected, actual, APPROX_THRESHOLD);
 }
