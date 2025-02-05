@@ -7,16 +7,16 @@
 using namespace models::stats;
 
 TEST(Data, SelectRowsVectorSingleRow) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::vector<int> indices = { 1 };
-  Data<double> actual = select_rows(data, indices);
+  Data<float> actual = select_rows(data, indices);
 
-  Data<double> expected(1, 3);
+  Data<float> expected(1, 3);
   expected <<
     4.0, 5.0, 6.0;
 
@@ -27,16 +27,16 @@ TEST(Data, SelectRowsVectorSingleRow) {
 }
 
 TEST(Data, SelectRowsVectorMultipleRowsNonAdjacent) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::vector<int> indices = { 0, 2 };
-  Data<double> actual = select_rows(data, indices);
+  Data<float> actual = select_rows(data, indices);
 
-  Data<double> expected(2, 3);
+  Data<float> expected(2, 3);
   expected <<
     1.0, 2.0, 3.0,
     7.0, 8.0, 9.0;
@@ -48,16 +48,16 @@ TEST(Data, SelectRowsVectorMultipleRowsNonAdjacent) {
 }
 
 TEST(Data, SelectRowsVectorMultipleRowsAdjacent) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::vector<int> indices = { 0, 1 };
-  Data<double> actual = select_rows(data, indices);
+  Data<float> actual = select_rows(data, indices);
 
-  Data<double> expected(2, 3);
+  Data<float> expected(2, 3);
   expected <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0;
@@ -69,16 +69,16 @@ TEST(Data, SelectRowsVectorMultipleRowsAdjacent) {
 }
 
 TEST(Data, SelectRowsSetSingleRow) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::set<int> indices = { 1 };
-  Data<double> actual = select_rows(data, indices);
+  Data<float> actual = select_rows(data, indices);
 
-  Data<double> expected(1, 3);
+  Data<float> expected(1, 3);
   expected <<
     4.0, 5.0, 6.0;
 
@@ -89,16 +89,16 @@ TEST(Data, SelectRowsSetSingleRow) {
 }
 
 TEST(Data, SelectRowsSetMultipleRowsNonAdjacent) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::set<int> indices = { 0, 2 };
-  Data<double> actual = select_rows(data, indices);
+  Data<float> actual = select_rows(data, indices);
 
-  Data<double> expected(2, 3);
+  Data<float> expected(2, 3);
   expected <<
     1.0, 2.0, 3.0,
     7.0, 8.0, 9.0;
@@ -110,16 +110,16 @@ TEST(Data, SelectRowsSetMultipleRowsNonAdjacent) {
 }
 
 TEST(Data, SelectRowsSetMultipleRowsAdjacent) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
     7.0, 8.0, 9.0;
 
   std::set<int> indices = { 0, 1 };
-  Data<double> actual = select_rows(data, indices);
+  Data<float> actual = select_rows(data, indices);
 
-  Data<double> expected(2, 3);
+  Data<float> expected(2, 3);
   expected <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0;
@@ -131,13 +131,13 @@ TEST(Data, SelectRowsSetMultipleRowsAdjacent) {
 }
 
 TEST(Data, MeanSingleObservation) {
-  Data<double> data(1, 3);
+  Data<float> data(1, 3);
   data <<
     1.0, 2.0, 6.0;
 
-  DataColumn<double> actual = mean(data);
+  DataColumn<float> actual = mean(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected <<
     1.0, 2.0, 6.0;
 
@@ -148,15 +148,15 @@ TEST(Data, MeanSingleObservation) {
 }
 
 TEST(Data, MeanMultipleEqualObservations) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0;
 
-  DataColumn<double> actual = mean(data);
+  DataColumn<float> actual = mean(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected <<
     1.0, 2.0, 6.0;
 
@@ -167,15 +167,15 @@ TEST(Data, MeanMultipleEqualObservations) {
 }
 
 TEST(Data, MeanMultipleDifferentObservations) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  DataColumn<double> actual = mean(data);
+  DataColumn<float> actual = mean(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected <<
     2.0, 3.0, 7.0;
 
@@ -186,13 +186,13 @@ TEST(Data, MeanMultipleDifferentObservations) {
 }
 
 TEST(Data, CovarianceZeroMatrix) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  Data<double> result = covariance(data);
+  Data<float> result = covariance(data);
 
   ASSERT_EQ(data.size(), result.size());
   ASSERT_EQ(data.rows(), result.rows());
@@ -201,15 +201,15 @@ TEST(Data, CovarianceZeroMatrix) {
 }
 
 TEST(Data, CovarianceConstantMatrix) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 1, 1,
     1, 1, 1,
     1, 1, 1;
 
-  Data<double> result = covariance(data);
+  Data<float> result = covariance(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     0, 0, 0,
     0, 0, 0,
@@ -222,15 +222,15 @@ TEST(Data, CovarianceConstantMatrix) {
 }
 
 TEST(Data, CovarianceAllConstantColumns) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     1, 2, 3,
     1, 2, 3;
 
-  Data<double> result = covariance(data);
+  Data<float> result = covariance(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     0, 0, 0,
     0, 0, 0,
@@ -243,15 +243,15 @@ TEST(Data, CovarianceAllConstantColumns) {
 }
 
 TEST(Data, CovarianceSomeConstantColumns) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     1, 3, 3,
     1, 4, 3;
 
-  Data<double> result = covariance(data);
+  Data<float> result = covariance(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     0, 0, 0,
     0, 1, 0,
@@ -264,15 +264,15 @@ TEST(Data, CovarianceSomeConstantColumns) {
 }
 
 TEST(Data, CovarianceGeneric1) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     2, 3, 4,
     3, 4, 5;
 
-  Data<double> result = covariance(data);
+  Data<float> result = covariance(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     1, 1, 1,
     1, 1, 1,
@@ -285,15 +285,15 @@ TEST(Data, CovarianceGeneric1) {
 }
 
 TEST(Data, CovarianceGeneric2) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     1, 2, 3,
     2, 3, 4;
 
-  Data<double> result = covariance(data);
+  Data<float> result = covariance(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     0.33333, 0.33333, 0.33333,
     0.33333, 0.33333, 0.33333,
@@ -306,15 +306,15 @@ TEST(Data, CovarianceGeneric2) {
 }
 
 TEST(Data, SdZeroMatrix) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  DataColumn<double> result = sd(data);
+  DataColumn<float> result = sd(data);
 
-  DataColumn<double> expected = DataColumn<double>::Zero(3);
+  DataColumn<float> expected = DataColumn<float>::Zero(3);
 
   ASSERT_EQ(expected.size(), result.size());
   ASSERT_EQ(expected.rows(), result.rows());
@@ -323,15 +323,15 @@ TEST(Data, SdZeroMatrix) {
 }
 
 TEST(Data, SdConstantMatrix) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 1, 1,
     1, 1, 1,
     1, 1, 1;
 
-  Data<double> result = sd(data);
+  Data<float> result = sd(data);
 
-  DataColumn<double> expected = DataColumn<double>::Zero(3);
+  DataColumn<float> expected = DataColumn<float>::Zero(3);
 
   ASSERT_EQ(expected.size(), result.size());
   ASSERT_EQ(expected.rows(), result.rows());
@@ -340,15 +340,15 @@ TEST(Data, SdConstantMatrix) {
 }
 
 TEST(Data, SdAllConstantColumns) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     1, 2, 3,
     1, 2, 3;
 
-  Data<double> result = sd(data);
+  Data<float> result = sd(data);
 
-  DataColumn<double> expected = DataColumn<double>::Zero(3);
+  DataColumn<float> expected = DataColumn<float>::Zero(3);
 
   ASSERT_EQ(expected.size(), result.size());
   ASSERT_EQ(expected.rows(), result.rows());
@@ -357,15 +357,15 @@ TEST(Data, SdAllConstantColumns) {
 }
 
 TEST(Data, SdSomeConstantColumns) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     1, 3, 3,
     1, 4, 3;
 
-  Data<double> result = sd(data);
+  Data<float> result = sd(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected << 0, 1, 0;
 
   ASSERT_EQ(expected.size(), result.size());
@@ -375,15 +375,15 @@ TEST(Data, SdSomeConstantColumns) {
 }
 
 TEST(Data, SdGeneric1) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     2, 3, 4,
     3, 4, 5;
 
-  Data<double> result = sd(data);
+  Data<float> result = sd(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected << 1, 1, 1;
 
   ASSERT_EQ(expected.size(), result.size());
@@ -393,15 +393,15 @@ TEST(Data, SdGeneric1) {
 }
 
 TEST(Data, SdGeneric2) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     1, 2, 3,
     2, 3, 4;
 
-  Data<double> result = sd(data);
+  Data<float> result = sd(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected << 0.5773503, 0.5773503, 0.5773503;
 
   ASSERT_EQ(expected.size(), result.size());
@@ -411,13 +411,13 @@ TEST(Data, SdGeneric2) {
 }
 
 TEST(Data, CenterDataSingleObservation) {
-  Data<double> data(1, 3);
+  Data<float> data(1, 3);
   data <<
     1.0, 2.0, 6.0;
 
-  Data<double> actual = center(data);
+  Data<float> actual = center(data);
 
-  Data<double> expected = Data<double>::Zero(1, 3);
+  Data<float> expected = Data<float>::Zero(1, 3);
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
@@ -426,15 +426,15 @@ TEST(Data, CenterDataSingleObservation) {
 }
 
 TEST(Data, CenterDataMultipleEqualObservations) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0;
 
-  Data<double> actual = center(data);
+  Data<float> actual = center(data);
 
-  Data<double> expected = Data<double>::Zero(3, 3);
+  Data<float> expected = Data<float>::Zero(3, 3);
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
@@ -443,15 +443,15 @@ TEST(Data, CenterDataMultipleEqualObservations) {
 }
 
 TEST(Data, CenterDataMultipleDifferentObservations) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  Data<double> actual = center(data);
+  Data<float> actual = center(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     -1.0, -1.0, -1.0,
     0.0, 0.0, 0.0,
@@ -464,15 +464,15 @@ TEST(Data, CenterDataMultipleDifferentObservations) {
 }
 
 TEST(Data, DescaleDataZeroMatrix) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     0, 0, 0,
     0, 0, 0,
     0, 0, 0;
 
-  Data<double> actual = descale(data);
+  Data<float> actual = descale(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     0, 0, 0,
     0, 0, 0,
@@ -485,15 +485,15 @@ TEST(Data, DescaleDataZeroMatrix) {
 }
 
 TEST(Data, DescaleDataConstantMatrix) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 1, 1,
     1, 1, 1,
     1, 1, 1;
 
-  Data<double> actual = descale(data);
+  Data<float> actual = descale(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     1, 1, 1,
     1, 1, 1,
@@ -506,15 +506,15 @@ TEST(Data, DescaleDataConstantMatrix) {
 }
 
 TEST(Data, DescaleDataDescaledData) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1, 2, 3,
     2, 3, 4,
     3, 4, 5;
 
-  Data<double> actual = descale(data);
+  Data<float> actual = descale(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     1, 2, 3,
     2, 3, 4,
@@ -527,15 +527,15 @@ TEST(Data, DescaleDataDescaledData) {
 }
 
 TEST(Data, DescaleDataScaledData) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     2, 4, 6,
     4, 6, 8,
     6, 8, 10;
 
-  Data<double> actual = descale(data);
+  Data<float> actual = descale(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     1, 2, 3,
     2, 3, 4,
@@ -548,15 +548,15 @@ TEST(Data, DescaleDataScaledData) {
 }
 
 TEST(Data, DescaleDataPartiallyScaledData) {
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     2, 4, 3,
     4, 6, 4,
     6, 8, 5;
 
-  Data<double> actual = descale(data);
+  Data<float> actual = descale(data);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     1, 2, 3,
     2, 3, 4,
@@ -571,15 +571,15 @@ TEST(Data, DescaleDataPartiallyScaledData) {
 TEST(Data, ShuffleColumnOfDataFirstColumn) {
   Random::seed(0);
 
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  Data<double> shuffled = shuffle_column(data, 0);
+  Data<float> shuffled = shuffle_column(data, 0);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     2.0, 2.0, 6.0,
     1.0, 3.0, 7.0,
@@ -593,15 +593,15 @@ TEST(Data, ShuffleColumnOfDataFirstColumn) {
 TEST(Data, ShuffleColumnOfDataMiddleColumn) {
   Random::seed(0);
 
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  Data<double> shuffled = shuffle_column(data, 1);
+  Data<float> shuffled = shuffle_column(data, 1);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     1.0, 3.0, 6.0,
     2.0, 2.0, 7.0,
@@ -616,15 +616,15 @@ TEST(Data, ShuffleColumnOfDataMiddleColumn) {
 TEST(Data, ShuffleColumnOfDataLastColumn) {
   Random::seed(0);
 
-  Data<double> data(3, 3);
+  Data<float> data(3, 3);
   data <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
     3.0, 4.0, 8.0;
 
-  Data<double> shuffled = shuffle_column(data, 2);
+  Data<float> shuffled = shuffle_column(data, 2);
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     1.0, 2.0, 7.0,
     2.0, 3.0, 6.0,

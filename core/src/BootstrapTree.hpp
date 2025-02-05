@@ -34,7 +34,7 @@ namespace models {
       : Base(std::move(root),  std::move(training_spec), training_data) {
     }
 
-    double error_rate() const {
+    float error_rate() const {
       return error_rate(this->training_data->get_oob());
     }
 

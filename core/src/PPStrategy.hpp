@@ -25,9 +25,9 @@ namespace models::pp::strategy {
 
   template<typename T, typename G>
   struct GLDAStrategy : public PPStrategy<T, G> {
-    const double lambda;
+    const float lambda;
 
-    explicit GLDAStrategy(const double lambda) : lambda(lambda) {
+    explicit GLDAStrategy(const float lambda) : lambda(lambda) {
       if (lambda == 0) {
         LOG_INFO << "Chosen Projection-Pursuit Strategy is LDA" << std::endl;
       } else {
@@ -96,8 +96,8 @@ namespace models::pp::strategy {
       std::iota(indices.begin(), indices.end(), 0);
 
       std::sort(indices.begin(), indices.end(), [&eigen_val, &eigen_vec](Eigen::Index idx1, Eigen::Index idx2) {
-         double value1_mod = fabs(eigen_val.row(idx1).value());
-         double value2_mod = fabs(eigen_val.row(idx2).value());
+         float value1_mod = fabs(eigen_val.row(idx1).value());
+         float value2_mod = fabs(eigen_val.row(idx2).value());
 
          if (math::is_approx(value1_mod, value2_mod, 0.001)) {
            auto vector1 = eigen_vec.col(idx1);
@@ -125,7 +125,7 @@ namespace models::pp::strategy {
   };
 
   template<typename T, typename G>
-  std::unique_ptr<PPStrategy<T, G> > glda(const double lambda) {
+  std::unique_ptr<PPStrategy<T, G> > glda(const float lambda) {
     return std::make_unique<GLDAStrategy<T, G> >(lambda);
   }
 }

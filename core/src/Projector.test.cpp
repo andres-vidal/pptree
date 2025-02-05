@@ -8,7 +8,7 @@ using namespace models::pp;
 using namespace models::stats;
 
 TEST(Projector, ProjectDataZeroProjector) {
-  Data<double> data(30, 5);
+  Data<float> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -41,12 +41,12 @@ TEST(Projector, ProjectDataZeroProjector) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  Projector<double> projector(5);
+  Projector<float> projector(5);
   projector <<
     0.0, 0.0, 0.0, 0.0, 0.0;
 
-  DataColumn<double> actual = project(data, projector);
-  DataColumn<double> expected = DataColumn<double>::Zero(30);
+  DataColumn<float> actual = project(data, projector);
+  DataColumn<float> expected = DataColumn<float>::Zero(30);
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
@@ -55,7 +55,7 @@ TEST(Projector, ProjectDataZeroProjector) {
 }
 
 TEST(Projector, ProjectDataGeneric) {
-  Data<double> data(30, 5);
+  Data<float> data(30, 5);
   data <<
     1, 0, 0, 1, 1,
     1, 0, 1, 0, 0,
@@ -88,12 +88,12 @@ TEST(Projector, ProjectDataGeneric) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  Projector<double> projector(5);
+  Projector<float> projector(5);
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  DataColumn<double> actual = project(data, projector);
-  DataColumn<double> expected(30);
+  DataColumn<float> actual = project(data, projector);
+  DataColumn<float> expected(30);
   expected <<
     -1.30946,
     -0.27208,
@@ -133,41 +133,41 @@ TEST(Projector, ProjectDataGeneric) {
 }
 
 TEST(Projector, PProjectDataColumnZeroProjector) {
-  DataColumn<double> data(5);
+  DataColumn<float> data(5);
   data <<
     1.0, 2.0, 3.0, 4.0, 5.0;
 
-  Projector<double> projector(5);
+  Projector<float> projector(5);
   projector <<
     0.0, 0.0, 0.0, 0.0, 0.0;
 
-  double result = project(data.transpose(), projector).value();
+  float result = project(data.transpose(), projector).value();
 
   ASSERT_EQ(0, result);
 }
 
 TEST(Projector, PProjectDataColumnGeneric) {
-  DataColumn<double> data(5);
+  DataColumn<float> data(5);
   data <<
     1.0, 2.0, 3.0, 4.0, 5.0;
 
-  Projector<double> projector(5);
+  Projector<float> projector(5);
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, -0.87892;
 
-  double result = project(data.transpose(), projector).value();
+  float result = project(data.transpose(), projector).value();
 
   ASSERT_NEAR(-6.58606, result, 0.00001);
 }
 
 TEST(Projector, Normalize) {
-  Projector<double> projector(5);
+  Projector<float> projector(5);
   projector <<
     -0.02965,  0.08452, -0.24243, -0.40089, 0e-17;
 
-  Projector<double> actual = normalize(projector);
+  Projector<float> actual = normalize(projector);
 
-  Projector<double> expected(5);
+  Projector<float> expected(5);
   expected <<
     0.02965, -0.08452, 0.24243, 0.40089, 0.0;
 

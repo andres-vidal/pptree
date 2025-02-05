@@ -5,13 +5,13 @@
 using namespace models::stats;
 
 TEST(DataColumn, SelectRowsVectorSingleRow) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::vector<int> indices = { 1 };
-  DataColumn<double> actual = select_rows(data, indices);
+  DataColumn<float> actual = select_rows(data, indices);
 
-  DataColumn<double> expected(1);
+  DataColumn<float> expected(1);
   expected << 2.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -19,13 +19,13 @@ TEST(DataColumn, SelectRowsVectorSingleRow) {
 }
 
 TEST(DataColumn, SelectRowsVectorMultipleRowsNonAdjacent) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::vector<int> indices = { 0, 2 };
-  DataColumn<double> actual = select_rows(data, indices);
+  DataColumn<float> actual = select_rows(data, indices);
 
-  DataColumn<double> expected(2);
+  DataColumn<float> expected(2);
   expected << 1.0, 3.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -33,13 +33,13 @@ TEST(DataColumn, SelectRowsVectorMultipleRowsNonAdjacent) {
 }
 
 TEST(DataColumn, SelectRowsVectorMultipleRowsAdjacent) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::vector<int> indices = { 0, 1 };
-  DataColumn<double> actual = select_rows(data, indices);
+  DataColumn<float> actual = select_rows(data, indices);
 
-  DataColumn<double> expected(2);
+  DataColumn<float> expected(2);
   expected << 1.0, 2.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -47,13 +47,13 @@ TEST(DataColumn, SelectRowsVectorMultipleRowsAdjacent) {
 }
 
 TEST(DataColumn, SelectRowsSetSingleRow) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::set<int> indices = { 1 };
-  DataColumn<double> actual = select_rows(data, indices);
+  DataColumn<float> actual = select_rows(data, indices);
 
-  DataColumn<double> expected(1);
+  DataColumn<float> expected(1);
   expected << 2.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -61,13 +61,13 @@ TEST(DataColumn, SelectRowsSetSingleRow) {
 }
 
 TEST(DataColumn, SelectRowsSetMultipleRowsNonAdjacent) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::set<int> indices = { 0, 2 };
-  DataColumn<double> actual = select_rows(data, indices);
+  DataColumn<float> actual = select_rows(data, indices);
 
-  DataColumn<double> expected(2);
+  DataColumn<float> expected(2);
   expected << 1.0, 3.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -75,13 +75,13 @@ TEST(DataColumn, SelectRowsSetMultipleRowsNonAdjacent) {
 }
 
 TEST(DataColumn, SelectRowsSetMultipleRowsAdjacent) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data << 1.0, 2.0, 3.0;
 
   std::set<int> indices = { 0, 1 };
-  DataColumn<double> actual = select_rows(data, indices);
+  DataColumn<float> actual = select_rows(data, indices);
 
-  DataColumn<double> expected(2);
+  DataColumn<float> expected(2);
   expected << 1.0, 2.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -148,67 +148,67 @@ TEST(DataColumn, UniqueMultipleValuesRepeated) {
 }
 
 TEST(DataColumn, SdZeroVector) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data <<
     0,
     0,
     0;
 
-  double result = sd(data);
-  double expected = 0;
+  float result = sd(data);
+  float expected = 0;
 
   ASSERT_EQ(expected, result);
 }
 
 TEST(DataColumn, SdConstantVector) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data <<
     1,
     1,
     1;
 
-  double result = sd(data);
-  double expected = 0;
+  float result = sd(data);
+  float expected = 0;
 
   ASSERT_EQ(expected, result);
 }
 
 TEST(DataColumn, SdGeneric1) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data <<
     1,
     2,
     3;
 
-  double result = sd(data);
-  double expected = 1;
+  float result = sd(data);
+  float expected = 1;
 
   ASSERT_EQ(expected, result);
 }
 
 TEST(DataColumn, SdGeneric2) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data <<
     1,
     1,
     2;
 
-  double result = sd(data);
-  double expected = 0.5773503;
+  float result = sd(data);
+  float expected = 0.5773503;
 
   ASSERT_NEAR(expected, result, 0.00001);
 }
 
 TEST(DataColumn, DescaleZeroVector) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data <<
     0,
     0,
     0;
 
-  DataColumn<double> actual = descale(data);
+  DataColumn<float> actual = descale(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected <<
     0,
     0,
@@ -221,15 +221,15 @@ TEST(DataColumn, DescaleZeroVector) {
 }
 
 TEST(DataColumn, DescaleConstantVector) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data <<
     1,
     1,
     1;
 
-  DataColumn<double> actual = descale(data);
+  DataColumn<float> actual = descale(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected <<
     1,
     1,
@@ -242,15 +242,15 @@ TEST(DataColumn, DescaleConstantVector) {
 }
 
 TEST(DataColumn, DescaleDescaledVector) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data <<
     1,
     2,
     3;
 
-  DataColumn<double> actual = descale(data);
+  DataColumn<float> actual = descale(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected <<
     1,
     2,
@@ -263,15 +263,15 @@ TEST(DataColumn, DescaleDescaledVector) {
 }
 
 TEST(DataColumn, DescaleScaledVector) {
-  DataColumn<double> data(3);
+  DataColumn<float> data(3);
   data <<
     2,
     4,
     6;
 
-  DataColumn<double> actual = descale(data);
+  DataColumn<float> actual = descale(data);
 
-  DataColumn<double> expected(3);
+  DataColumn<float> expected(3);
   expected <<
     1,
     2,
@@ -284,71 +284,71 @@ TEST(DataColumn, DescaleScaledVector) {
 }
 
 TEST(DataColumn, AccuracyMax) {
-  DataColumn<double> predictions(3);
+  DataColumn<float> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<double> actual(3);
+  DataColumn<float> actual(3);
   actual <<
     1,
     2,
     3;
 
-  double result = accuracy(predictions, actual);
-  double expected = 1.0;
+  float result = accuracy(predictions, actual);
+  float expected = 1.0;
 
-  ASSERT_DOUBLE_EQ(expected, result);
+  ASSERT_FLOAT_EQ(expected, result);
 }
 
 TEST(DataColumn, AccuracyMin) {
-  DataColumn<double> predictions(3);
+  DataColumn<float> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<double> actual(3);
+  DataColumn<float> actual(3);
   actual <<
     3,
     3,
     1;
 
-  double result = accuracy(predictions, actual);
-  double expected = 0.0;
+  float result = accuracy(predictions, actual);
+  float expected = 0.0;
 
-  ASSERT_DOUBLE_EQ(expected, result);
+  ASSERT_FLOAT_EQ(expected, result);
 }
 
 TEST(DataColumn, AccuracyGeneric1) {
-  DataColumn<double> predictions(3);
+  DataColumn<float> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<double> actual(3);
+  DataColumn<float> actual(3);
   actual <<
     1,
     3,
     3;
 
-  double result = accuracy(predictions, actual);
-  double expected = 2.0 / 3.0;
+  float result = accuracy(predictions, actual);
+  float expected = 2.0 / 3.0;
 
-  ASSERT_DOUBLE_EQ(expected, result);
+  ASSERT_FLOAT_EQ(expected, result);
 }
 
 TEST(DataColumn, AccuracyGeneric2) {
-  DataColumn<double> predictions(4);
+  DataColumn<float> predictions(4);
   predictions <<
     1,
     2,
     3,
     4;
 
-  DataColumn<double> actual(4);
+  DataColumn<float> actual(4);
   actual <<
     1,
     1,
@@ -356,10 +356,10 @@ TEST(DataColumn, AccuracyGeneric2) {
     3;
 
 
-  double result = accuracy(predictions, actual);
-  double expected = 1.0 / 2.0;
+  float result = accuracy(predictions, actual);
+  float expected = 1.0 / 2.0;
 
-  ASSERT_DOUBLE_EQ(expected, result);
+  ASSERT_FLOAT_EQ(expected, result);
 }
 
 TEST(DataColumn, AccuracyMorePredictionsThanObservations) {
@@ -383,81 +383,81 @@ TEST(DataColumn, AccuracyMoreObservationsThanPredictions) {
 }
 
 TEST(DataColumn, ErrorRateMax) {
-  DataColumn<double> predictions(3);
+  DataColumn<float> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<double> actual(3);
+  DataColumn<float> actual(3);
   actual <<
     3,
     3,
     1;
 
-  double result = error_rate(predictions, actual);
-  double expected = 1.0;
+  float result = error_rate(predictions, actual);
+  float expected = 1.0;
 
-  ASSERT_DOUBLE_EQ(expected, result);
+  ASSERT_FLOAT_EQ(expected, result);
 }
 
 TEST(DataColumn, ErrorRateMin) {
-  DataColumn<double> predictions(3);
+  DataColumn<float> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<double> actual(3);
+  DataColumn<float> actual(3);
   actual <<
     1,
     2,
     3;
 
-  double result = error_rate(predictions, actual);
-  double expected = 0.0;
+  float result = error_rate(predictions, actual);
+  float expected = 0.0;
 
-  ASSERT_DOUBLE_EQ(expected, result);
+  ASSERT_FLOAT_EQ(expected, result);
 }
 
 TEST(DataColumn, ErrorRateGeneric1) {
-  DataColumn<double> predictions(3);
+  DataColumn<float> predictions(3);
   predictions <<
     1,
     2,
     3;
 
-  DataColumn<double> actual(3);
+  DataColumn<float> actual(3);
   actual <<
     1,
     3,
     3;
 
-  double result = error_rate(predictions, actual);
-  double expected = 1.0 / 3.0;
+  float result = error_rate(predictions, actual);
+  float expected = 1.0 / 3.0;
 
-  ASSERT_DOUBLE_EQ(expected, result);
+  ASSERT_FLOAT_EQ(expected, result);
 }
 
 TEST(DataColumn, ErrorRateGeneric2) {
-  DataColumn<double> predictions(4);
+  DataColumn<float> predictions(4);
   predictions <<
     1,
     2,
     3,
     4;
 
-  DataColumn<double> actual(4);
+  DataColumn<float> actual(4);
   actual <<
     1,
     1,
     3,
     3;
 
-  double result = error_rate(predictions, actual);
-  double expected = 1.0 / 2.0;
+  float result = error_rate(predictions, actual);
+  float expected = 1.0 / 2.0;
 
-  ASSERT_DOUBLE_EQ(expected, result);
+  ASSERT_FLOAT_EQ(expected, result);
 }
 
 TEST(DataColumn, ErrorRateMorePredictionsThanObservations) {

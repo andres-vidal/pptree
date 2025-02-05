@@ -7,7 +7,7 @@ using namespace models::stats;
 TEST(StratifiedProportionalSample, NegativeSampleSize) {
   Random::seed(0);
 
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -25,7 +25,7 @@ TEST(StratifiedProportionalSample, NegativeSampleSize) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1 });
 
   ASSERT_THROW({ stratified_proportional_sample(data, -1); }, std::runtime_error);
 }
@@ -33,7 +33,7 @@ TEST(StratifiedProportionalSample, NegativeSampleSize) {
 TEST(StratifiedProportionalSample, ZeroSampleSize) {
   Random::seed(0);
 
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -51,7 +51,7 @@ TEST(StratifiedProportionalSample, ZeroSampleSize) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1 });
 
   ASSERT_THROW({ stratified_proportional_sample(data, 0); }, std::runtime_error);
 }
@@ -59,7 +59,7 @@ TEST(StratifiedProportionalSample, ZeroSampleSize) {
 TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
   Random::seed(0);
 
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -77,7 +77,7 @@ TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1 });
 
   ASSERT_THROW({ stratified_proportional_sample(data, 7); }, std::runtime_error);
 }
@@ -85,7 +85,7 @@ TEST(StratifiedProportionalSample, SampleSizeLargerThanRows) {
 TEST(StratifiedProportionalSample, AssertCorrectSize) {
   Random::seed(0);
 
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -103,9 +103,9 @@ TEST(StratifiedProportionalSample, AssertCorrectSize) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1 });
 
-  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
+  SortedDataSpec<float, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   ASSERT_EQ(4, result.x.rows());
   ASSERT_EQ(3, result.x.cols());
@@ -115,7 +115,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSize) {
 TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
   Random::seed(0);
 
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -133,9 +133,9 @@ TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1 });
 
-  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
+  SortedDataSpec<float, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -150,7 +150,7 @@ TEST(StratifiedProportionalSample, AssertCorrectSizePerStrata) {
 TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
   Random::seed(0);
 
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -168,9 +168,9 @@ TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1 });
 
-  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 4).get_sample();
+  SortedDataSpec<float, int> result = stratified_proportional_sample(data, 4).get_sample();
 
   for (int i = 0; i < result.x.rows(); i++) {
     bool found = false;
@@ -189,7 +189,7 @@ TEST(StratifiedProportionalSample, AssertSubsetOfDataPerStrata) {
 TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
   Random::seed(0);
 
-  Data<double> x(9, 3);
+  Data<float> x(9, 3);
 
   x <<
     1.0, 1.0, 1.0,
@@ -214,9 +214,9 @@ TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
     2,
     2;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1, 2 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1, 2 });
 
-  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 6).get_sample();
+  SortedDataSpec<float, int> result = stratified_proportional_sample(data, 6).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -246,7 +246,7 @@ TEST(StratifiedProportionalSample, ThreeGroupsEqualSize) {
 TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
   Random::seed(0);
 
-  Data<double> x(9, 3);
+  Data<float> x(9, 3);
 
   x <<
     1.0, 1.0, 1.0,
@@ -271,9 +271,9 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1 });
 
-  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 6).get_sample();
+  SortedDataSpec<float, int> result = stratified_proportional_sample(data, 6).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -302,7 +302,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeEvenSampleSize) {
 TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
   Random::seed(0);
 
-  Data<double> x(9, 3);
+  Data<float> x(9, 3);
 
   x <<
     1.0, 1.0, 1.0,
@@ -327,9 +327,9 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1 });
 
-  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 5).get_sample();
+  SortedDataSpec<float, int> result = stratified_proportional_sample(data, 5).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -358,7 +358,7 @@ TEST(StratifiedProportionalSample, TwoGroupsDifferentSizeOddSampleSize) {
 TEST(StratifiedPorportionalSample, AtLeastOneObservationPerGroup) {
   Random::seed(0);
 
-  Data<double> x(9, 3);
+  Data<float> x(9, 3);
 
   x <<
     1.0, 1.0, 1.0,
@@ -383,9 +383,9 @@ TEST(StratifiedPorportionalSample, AtLeastOneObservationPerGroup) {
     1,
     2;
 
-  SortedDataSpec<double, int> data(x, y, { 0, 1, 2 });
+  SortedDataSpec<float, int> data(x, y, { 0, 1, 2 });
 
-  SortedDataSpec<double, int> result = stratified_proportional_sample(data, 3).get_sample();
+  SortedDataSpec<float, int> result = stratified_proportional_sample(data, 3).get_sample();
 
   std::map<int, int> result_sizes;
 
@@ -400,7 +400,7 @@ TEST(StratifiedPorportionalSample, AtLeastOneObservationPerGroup) {
 }
 
 TEST(BootstrapDataSpec, CenterSingleObservation) {
-  Data<double> x(1, 3);
+  Data<float> x(1, 3);
   x <<
     1.0, 2.0, 6.0;
 
@@ -410,11 +410,11 @@ TEST(BootstrapDataSpec, CenterSingleObservation) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  BootstrapDataSpec<double, int> actual = center(data);
+  BootstrapDataSpec<float, int> actual = center(data);
 
-  Data<double> expected_x = Data<double>::Zero(1, 3);
+  Data<float> expected_x = Data<float>::Zero(1, 3);
 
   ASSERT_EQ(expected_x.size(), actual.x.size());
   ASSERT_EQ(expected_x.rows(), actual.x.rows());
@@ -431,7 +431,7 @@ TEST(BootstrapDataSpec, CenterSingleObservation) {
 }
 
 TEST(BootstrapDataSpec, CenterMultipleEqualObservations) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1.0, 2.0, 6.0,
     1.0, 2.0, 6.0,
@@ -443,11 +443,11 @@ TEST(BootstrapDataSpec, CenterMultipleEqualObservations) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  BootstrapDataSpec<double, int> actual = center(data);
+  BootstrapDataSpec<float, int> actual = center(data);
 
-  Data<double> expected_x = Data<double>::Zero(3, 3);
+  Data<float> expected_x = Data<float>::Zero(3, 3);
 
   ASSERT_EQ(expected_x.size(), actual.x.size());
   ASSERT_EQ(expected_x.rows(), actual.x.rows());
@@ -464,7 +464,7 @@ TEST(BootstrapDataSpec, CenterMultipleEqualObservations) {
 }
 
 TEST(BootstrapDataSpec, CenterMultipleDifferentObservations) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -476,11 +476,11 @@ TEST(BootstrapDataSpec, CenterMultipleDifferentObservations) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  BootstrapDataSpec<double, int> actual = center(data);
+  BootstrapDataSpec<float, int> actual = center(data);
 
-  Data<double> expected_x(3, 3);
+  Data<float> expected_x(3, 3);
   expected_x <<
     -1.0, -1.0, -1.0,
     0.0, 0.0, 0.0,
@@ -501,7 +501,7 @@ TEST(BootstrapDataSpec, CenterMultipleDifferentObservations) {
 }
 
 TEST(BootstrapDataSpec, DescaleZeroMatrix) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     0, 0, 0,
     0, 0, 0,
@@ -513,11 +513,11 @@ TEST(BootstrapDataSpec, DescaleZeroMatrix) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  BootstrapDataSpec<double, int> actual = descale(data);
+  BootstrapDataSpec<float, int> actual = descale(data);
 
-  Data<double> expected_x(3, 3);
+  Data<float> expected_x(3, 3);
   expected_x <<
     0, 0, 0,
     0, 0, 0,
@@ -538,7 +538,7 @@ TEST(BootstrapDataSpec, DescaleZeroMatrix) {
 }
 
 TEST(BootstrapDataSpec, DescaleConstantMatrix) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1, 1, 1,
     1, 1, 1,
@@ -550,11 +550,11 @@ TEST(BootstrapDataSpec, DescaleConstantMatrix) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  BootstrapDataSpec<double, int> actual = descale(data);
+  BootstrapDataSpec<float, int> actual = descale(data);
 
-  Data<double> expected_x(3, 3);
+  Data<float> expected_x(3, 3);
   expected_x <<
     1, 1, 1,
     1, 1, 1,
@@ -575,7 +575,7 @@ TEST(BootstrapDataSpec, DescaleConstantMatrix) {
 }
 
 TEST(BootstrapDataSpec, DescaleDescaledData) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1, 2, 3,
     2, 3, 4,
@@ -587,11 +587,11 @@ TEST(BootstrapDataSpec, DescaleDescaledData) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  BootstrapDataSpec<double, int> actual = descale(data);
+  BootstrapDataSpec<float, int> actual = descale(data);
 
-  Data<double> expected_x(3, 3);
+  Data<float> expected_x(3, 3);
   expected_x <<
     1, 2, 3,
     2, 3, 4,
@@ -612,7 +612,7 @@ TEST(BootstrapDataSpec, DescaleDescaledData) {
 }
 
 TEST(BootstrapDataSpec, DescaleScaledData) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     2, 4, 6,
     4, 6, 8,
@@ -624,11 +624,11 @@ TEST(BootstrapDataSpec, DescaleScaledData) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  BootstrapDataSpec<double, int> actual = descale(data);
+  BootstrapDataSpec<float, int> actual = descale(data);
 
-  Data<double> expected_x(3, 3);
+  Data<float> expected_x(3, 3);
   expected_x <<
     1, 2, 3,
     2, 3, 4,
@@ -649,7 +649,7 @@ TEST(BootstrapDataSpec, DescaleScaledData) {
 }
 
 TEST(BootstrapDataSpec, DescalePartiallyScaledData) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     2, 4, 3,
     4, 6, 4,
@@ -661,11 +661,11 @@ TEST(BootstrapDataSpec, DescalePartiallyScaledData) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  BootstrapDataSpec<double, int> actual = descale(data);
+  BootstrapDataSpec<float, int> actual = descale(data);
 
-  Data<double> expected_x(3, 3);
+  Data<float> expected_x(3, 3);
   expected_x <<
     1, 2, 3,
     2, 3, 4,
@@ -686,7 +686,7 @@ TEST(BootstrapDataSpec, DescalePartiallyScaledData) {
 }
 
 TEST(BootstrapDataSpec, GetSampleGeneric) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1, 2, 3,
     2, 3, 4,
@@ -698,11 +698,11 @@ TEST(BootstrapDataSpec, GetSampleGeneric) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
-  SortedDataSpec<double, int> sample = data.get_sample();
+  SortedDataSpec<float, int> sample = data.get_sample();
 
-  Data<double> expected_x(2, 3);
+  Data<float> expected_x(2, 3);
   expected_x <<
     2, 3, 4,
     3, 4, 5;
@@ -729,7 +729,7 @@ TEST(BootstrapDataSpec, GetSampleGeneric) {
 }
 
 TEST(BootstrapDataSpec, UnwrapUniqueIndices) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1, 2, 3,
     2, 3, 4,
@@ -741,11 +741,11 @@ TEST(BootstrapDataSpec, UnwrapUniqueIndices) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2 });
 
   auto [unwrapped_x, unwrapped_y, unwrapped_classes] = data.unwrap();
 
-  Data<double> expected_x(2, 3);
+  Data<float> expected_x(2, 3);
   expected_x <<
     2, 3, 4,
     3, 4, 5;
@@ -772,7 +772,7 @@ TEST(BootstrapDataSpec, UnwrapUniqueIndices) {
 }
 
 TEST(BootstrapDataSpec, UnwrapRepeatedIndices) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1, 2, 3,
     2, 3, 4,
@@ -784,11 +784,11 @@ TEST(BootstrapDataSpec, UnwrapRepeatedIndices) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2, 2 });
 
   auto [unwrapped_x, unwrapped_y, unwrapped_classes] = data.unwrap();
 
-  Data<double> expected_x(3, 3);
+  Data<float> expected_x(3, 3);
   expected_x <<
     2, 3, 4,
     3, 4, 5,
@@ -817,7 +817,7 @@ TEST(BootstrapDataSpec, UnwrapRepeatedIndices) {
 }
 
 TEST(BootstrapDataSpec, OOBIndicesAssertIndicesAreComplementary) {
-  Data<double> x(4, 3);
+  Data<float> x(4, 3);
   x <<
     1, 2, 3,
     2, 3, 4,
@@ -831,7 +831,7 @@ TEST(BootstrapDataSpec, OOBIndicesAssertIndicesAreComplementary) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2, 2 });
 
   std::set<int> expected_oob_indices = { 0, 3 };
 
@@ -840,7 +840,7 @@ TEST(BootstrapDataSpec, OOBIndicesAssertIndicesAreComplementary) {
 }
 
 TEST(BootstrapDataSpec, GetOOBAssertDataIsComplementary) {
-  Data<double> x(4, 3);
+  Data<float> x(4, 3);
   x <<
     1, 2, 3,
     2, 3, 4,
@@ -854,11 +854,11 @@ TEST(BootstrapDataSpec, GetOOBAssertDataIsComplementary) {
     2,
     3;
 
-  BootstrapDataSpec<double, int> data(x, y, { 1, 2, 2 });
+  BootstrapDataSpec<float, int> data(x, y, { 1, 2, 2 });
 
-  SortedDataSpec<double, int> oob = data.get_oob();
+  SortedDataSpec<float, int> oob = data.get_oob();
 
-  Data<double> expected_x(2, 3);
+  Data<float> expected_x(2, 3);
   expected_x <<
     1, 2, 3,
     4, 5, 6;

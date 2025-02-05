@@ -5,7 +5,7 @@
 using namespace models::stats;
 
 TEST(SortedDataSpec, Constructor) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1, 1, 1,
     2, 2, 2,
@@ -24,9 +24,9 @@ TEST(SortedDataSpec, Constructor) {
     3,
     2;
 
-  SortedDataSpec<double, int> actual(x, y);
+  SortedDataSpec<float, int> actual(x, y);
 
-  Data<double> expected_x(6, 3);
+  Data<float> expected_x(6, 3);
 
   expected_x <<
     2, 2, 2,
@@ -62,7 +62,7 @@ TEST(SortedDataSpec, Constructor) {
 }
 
 TEST(SortedDataSpec, GroupSize) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1, 1, 1,
     2, 2, 2,
@@ -82,7 +82,7 @@ TEST(SortedDataSpec, GroupSize) {
     3,
     2;
 
-  SortedDataSpec<double, int> actual(x, y);
+  SortedDataSpec<float, int> actual(x, y);
 
   ASSERT_EQ(2, actual.group_size(1));
   ASSERT_EQ(2, actual.group_size(2));
@@ -90,7 +90,7 @@ TEST(SortedDataSpec, GroupSize) {
 }
 
 TEST(SortedDataSpec, Group) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1, 1, 1,
     2, 2, 2,
@@ -110,11 +110,11 @@ TEST(SortedDataSpec, Group) {
     3,
     2;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.group(1);
+  Data<float> actual = data.group(1);
 
-  Data<double> expected(2, 3);
+  Data<float> expected(2, 3);
   expected <<
     2, 2, 2,
     4, 4, 4;
@@ -150,7 +150,7 @@ TEST(SortedDataSpec, Group) {
 }
 
 TEST(SortedDataSpec, Analog) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1, 1, 1,
     2, 2, 2,
@@ -168,9 +168,9 @@ TEST(SortedDataSpec, Analog) {
     3,
     2;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> new_x(6, 3);
+  Data<float> new_x(6, 3);
 
   new_x <<
     2, 2, 2,
@@ -180,7 +180,7 @@ TEST(SortedDataSpec, Analog) {
     3, 3, 3,
     5, 5, 5;
 
-  SortedDataSpec<double, int> actual = data.analog(new_x);
+  SortedDataSpec<float, int> actual = data.analog(new_x);
 
   ASSERT_EQ(new_x.size(), actual.x.size());
   ASSERT_EQ(new_x.rows(), actual.x.rows());
@@ -196,7 +196,7 @@ TEST(SortedDataSpec, Analog) {
 }
 
 TEST(SortedDataSpec, Remap) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1, 1, 1,
     1, 2, 2,
@@ -214,7 +214,7 @@ TEST(SortedDataSpec, Remap) {
     3,
     3;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
   std::map<int, int> mapping = {
     { 1, 0 },
@@ -222,9 +222,9 @@ TEST(SortedDataSpec, Remap) {
     { 3, 0 }
   };
 
-  SortedDataSpec<double, int> actual = data.remap(mapping);
+  SortedDataSpec<float, int> actual = data.remap(mapping);
 
-  Data<double> new_x(6, 3);
+  Data<float> new_x(6, 3);
   new_x <<
     1, 1, 1,
     1, 2, 2,
@@ -257,7 +257,7 @@ TEST(SortedDataSpec, Remap) {
 }
 
 TEST(SortedDataSpec, Subset) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1, 1, 1,
     1, 2, 2,
@@ -275,11 +275,11 @@ TEST(SortedDataSpec, Subset) {
     3,
     3;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  SortedDataSpec<double, int> actual = data.subset({ 1, 3 });
+  SortedDataSpec<float, int> actual = data.subset({ 1, 3 });
 
-  Data<double> new_x(4, 3);
+  Data<float> new_x(4, 3);
   new_x <<
     1, 1, 1,
     1, 2, 2,
@@ -307,7 +307,7 @@ TEST(SortedDataSpec, Subset) {
 }
 
 TEST(SortedDataSpec, BetweenGroupsSumOfSquaresSingleGroup) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -319,11 +319,11 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresSingleGroup) {
     0,
     0;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.bgss();
+  Data<float> actual = data.bgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -336,7 +336,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresSingleGroup) {
 }
 
 TEST(SortedDataSpec, BetweenGroupsSumOfSquaresTwoEqualGroups) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 2.0, 6.0,
     2.0, 3.0, 7.0,
@@ -354,11 +354,11 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresTwoEqualGroups) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.bgss();
+  Data<float> actual = data.bgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -372,7 +372,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresTwoEqualGroups) {
 }
 
 TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
-  Data<double> x(8, 1);
+  Data<float> x(8, 1);
   x <<
     23.0,
     25.0,
@@ -394,11 +394,11 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
     2,
     2;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.bgss();
+  Data<float> actual = data.bgss();
 
-  Data<double> expected(1, 1);
+  Data<float> expected(1, 1);
   expected <<
     19.875;
 
@@ -409,7 +409,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
 }
 
 TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
-  Data<double> x(8, 1);
+  Data<float> x(8, 1);
   x <<
     23.0,
     25.0,
@@ -431,11 +431,11 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequent
     3,
     3;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.bgss();
+  Data<float> actual = data.bgss();
 
-  Data<double> expected(1, 1);
+  Data<float> expected(1, 1);
   expected <<
     19.875;
 
@@ -446,7 +446,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequent
 }
 
 TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
-  Data<double> x(8, 3);
+  Data<float> x(8, 3);
   x <<
     23.0, 1.0, 1.0,
     25.0, 1.0, 1.0,
@@ -468,11 +468,11 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
     2,
     2;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.bgss();
+  Data<float> actual = data.bgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     19.875, 0.0, 0.0,
     0.0,    0.0, 0.0,
@@ -485,7 +485,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
 }
 
 TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1.0, 1.0, 1.0,
     1.0, 1.0, 1.0,
@@ -497,11 +497,11 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
     0,
     0;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.wgss();
+  Data<float> actual = data.wgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -514,7 +514,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
 }
 
 TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
-  Data<double> x(3, 3);
+  Data<float> x(3, 3);
   x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -526,11 +526,11 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
     0,
     0;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.wgss();
+  Data<float> actual = data.wgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     2.0, 2.0, 2.0,
     2.0, 2.0, 2.0,
@@ -543,7 +543,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
 }
 
 TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoEqualGroups) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -561,11 +561,11 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoEqualGroups) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.wgss();
+  Data<float> actual = data.wgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     4.0, 4.0, 4.0,
     4.0, 4.0, 4.0,
@@ -578,7 +578,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoEqualGroups) {
 }
 
 TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -596,11 +596,11 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.wgss();
+  Data<float> actual = data.wgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     4.0, 4.0, 4.0,
     4.0, 4.0, 4.0,
@@ -613,7 +613,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
 }
 
 TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
-  Data<double> x(6, 3);
+  Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
     2.0, 2.0, 2.0,
@@ -631,11 +631,11 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
     1,
     1;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.wgss();
+  Data<float> actual = data.wgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     16.0, 16.0, 16.0,
     16.0, 16.0, 16.0,
@@ -648,7 +648,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
 }
 
 TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
-  Data<double> x(8, 3);
+  Data<float> x(8, 3);
   x <<
     1.0, 2.0, 3.0,
     4.0, 5.0, 6.0,
@@ -671,11 +671,11 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
     2;
 
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.wgss();
+  Data<float> actual = data.wgss();
 
-  Data<double> expected(3, 3);
+  Data<float> expected(3, 3);
   expected <<
     24.5, 24.5, 24.5,
     24.5, 24.5, 24.5,
@@ -688,7 +688,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
 }
 
 TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
-  Data<double> x(8, 4);
+  Data<float> x(8, 4);
   x <<
     1.0, 2.0, 3.0, 0.0,
     4.0, 5.0, 6.0, 0.0,
@@ -710,11 +710,11 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
     2,
     2;
 
-  SortedDataSpec<double, int> data(x, y);
+  SortedDataSpec<float, int> data(x, y);
 
-  Data<double> actual = data.wgss();
+  Data<float> actual = data.wgss();
 
-  Data<double> expected(4, 4);
+  Data<float> expected(4, 4);
   expected <<
     24.5, 24.5, 24.5, 0.0,
     24.5, 24.5, 24.5, 0.0,

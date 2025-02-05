@@ -5,46 +5,46 @@
 using namespace pptree;
 
 namespace Rcpp {
-  SEXP wrap(const Node<double, int> &);
-  SEXP wrap(const Tree<double, int > &);
-  SEXP wrap(const BootstrapTree<double, int> &);
-  SEXP wrap(const Response<double, int> &);
-  SEXP wrap(const Condition<double, int> &);
-  SEXP wrap(const Forest<double, int> &);
+  SEXP wrap(const Node<float, int> &);
+  SEXP wrap(const Tree<float, int > &);
+  SEXP wrap(const BootstrapTree<float, int> &);
+  SEXP wrap(const Response<float, int> &);
+  SEXP wrap(const Condition<float, int> &);
+  SEXP wrap(const Forest<float, int> &);
 
-  SEXP wrap(const TrainingSpec<double, int> &);
-  SEXP wrap(const GLDATrainingSpec<double, int> &);
-  SEXP wrap(const UniformGLDATrainingSpec<double, int> &);
+  SEXP wrap(const TrainingSpec<float, int> &);
+  SEXP wrap(const GLDATrainingSpec<float, int> &);
+  SEXP wrap(const UniformGLDATrainingSpec<float, int> &);
 
-  SEXP wrap(const SortedDataSpec<double, int> &);
-  SEXP wrap(const BootstrapDataSpec<double, int> &);
+  SEXP wrap(const SortedDataSpec<float, int> &);
+  SEXP wrap(const BootstrapDataSpec<float, int> &);
 
-  template<> std::unique_ptr<Node<double, int> > as(SEXP);
-  template<> Tree<double, int > as(SEXP);
-  template<> BootstrapTree<double, int> as(SEXP);
-  template<> Response<double, int> as(SEXP);
-  template<> Condition<double, int> as(SEXP);
-  template<> Forest<double, int> as(SEXP);
+  template<> std::unique_ptr<Node<float, int> > as(SEXP);
+  template<> Tree<float, int > as(SEXP);
+  template<> BootstrapTree<float, int> as(SEXP);
+  template<> Response<float, int> as(SEXP);
+  template<> Condition<float, int> as(SEXP);
+  template<> Forest<float, int> as(SEXP);
 
-  template<> std::unique_ptr<TrainingSpec<double, int> > as(SEXP);
+  template<> std::unique_ptr<TrainingSpec<float, int> > as(SEXP);
 
-  template<> SortedDataSpec<double, int>  as(SEXP);
-  template<> BootstrapDataSpec<double, int> as(SEXP);
+  template<> SortedDataSpec<float, int>  as(SEXP);
+  template<> BootstrapDataSpec<float, int> as(SEXP);
 }
 
 
 #include <Rcpp.h>
 
 namespace Rcpp {
-  SEXP wrap(const Node<double, int>& node) {
-    struct NodeWrapper : public NodeVisitor<double, int> {
+  SEXP wrap(const Node<float, int>& node) {
+    struct NodeWrapper : public NodeVisitor<float, int> {
       Rcpp::List result;
 
-      void visit(const Condition<double, int> &condition) {
+      void visit(const Condition<float, int> &condition) {
         result = Rcpp::wrap(condition);
       }
 
-      void visit(const Response<double, int> &response) {
+      void visit(const Response<float, int> &response) {
         result = Rcpp::wrap(response);
       }
     };
@@ -54,12 +54,12 @@ namespace Rcpp {
     return wrapper.result;
   }
 
-  SEXP wrap(const Response<double, int> &node) {
+  SEXP wrap(const Response<float, int> &node) {
     return Rcpp::List::create(
       Rcpp::Named("value") = Rcpp::wrap(node.value));
   }
 
-  SEXP wrap(const Condition<double, int> &node) {
+  SEXP wrap(const Condition<float, int> &node) {
     return Rcpp::List::create(
       Rcpp::Named("projector") = Rcpp::wrap(node.projector),
       Rcpp::Named("threshold") = Rcpp::wrap(node.threshold),
@@ -67,21 +67,21 @@ namespace Rcpp {
       Rcpp::Named("upper") = Rcpp::wrap(*node.upper));
   }
 
-  SEXP wrap(const Tree<double, int > &tree) {
+  SEXP wrap(const Tree<float, int > &tree) {
     return Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("training_data") = Rcpp::wrap(*tree.training_data),
       Rcpp::Named("root") = Rcpp::wrap(*tree.root));
   }
 
-  SEXP wrap(const BootstrapTree<double, int> &tree) {
+  SEXP wrap(const BootstrapTree<float, int> &tree) {
     return Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("training_data") = Rcpp::wrap(*tree.training_data),
       Rcpp::Named("root") = Rcpp::wrap(*tree.root));
   }
 
-  SEXP wrap(const Forest<double, int> &forest) {
+  SEXP wrap(const Forest<float, int> &forest) {
     Rcpp::List trees(forest.trees.size());
 
     for (size_t i = 0; i < forest.trees.size(); i++) {
@@ -96,15 +96,15 @@ namespace Rcpp {
       Rcpp::Named("trees") = trees);
   }
 
-  SEXP wrap(const TrainingSpec<double, int> &spec) {
-    struct TrainingSpecWrapper : public TrainingSpecVisitor<double, int> {
+  SEXP wrap(const TrainingSpec<float, int> &spec) {
+    struct TrainingSpecWrapper : public TrainingSpecVisitor<float, int> {
       Rcpp::List result;
 
-      void visit(const GLDATrainingSpec<double, int> &spec) {
+      void visit(const GLDATrainingSpec<float, int> &spec) {
         result = Rcpp::wrap(spec);
       }
 
-      void visit(const UniformGLDATrainingSpec<double, int> &spec) {
+      void visit(const UniformGLDATrainingSpec<float, int> &spec) {
         result = Rcpp::wrap(spec);
       }
     };
@@ -114,27 +114,27 @@ namespace Rcpp {
     return wrapper.result;
   }
 
-  SEXP wrap(const GLDATrainingSpec<double, int> &spec) {
+  SEXP wrap(const GLDATrainingSpec<float, int> &spec) {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "glda",
       Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
   }
 
-  SEXP wrap(const UniformGLDATrainingSpec<double, int> &spec) {
+  SEXP wrap(const UniformGLDATrainingSpec<float, int> &spec) {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "uniform_glda",
       Rcpp::Named("n_vars") = Rcpp::wrap(spec.n_vars),
       Rcpp::Named("lambda") = Rcpp::wrap(spec.lambda));
   }
 
-  SEXP wrap(const SortedDataSpec<double, int> &data) {
+  SEXP wrap(const SortedDataSpec<float, int> &data) {
     return Rcpp::List::create(
       Rcpp::Named("x") = Rcpp::wrap(data.x),
       Rcpp::Named("y") = Rcpp::wrap(data.y),
       Rcpp::Named("classes") = Rcpp::wrap(data.classes));
   }
 
-  SEXP wrap(const BootstrapDataSpec<double, int> &data) {
+  SEXP wrap(const BootstrapDataSpec<float, int> &data) {
     return Rcpp::List::create(
       Rcpp::Named("x") = Rcpp::wrap(data.x),
       Rcpp::Named("y") = Rcpp::wrap(data.y),
@@ -142,132 +142,132 @@ namespace Rcpp {
       Rcpp::Named("sample_indices") = Rcpp::wrap(data.sample_indices));
   }
 
-  template<> std::unique_ptr<Node<double, int> > as(SEXP x) {
+  template<> std::unique_ptr<Node<float, int> > as(SEXP x) {
     Rcpp::List rnode(x);
 
     if (rnode.containsElementNamed("value")) {
-      auto resp = as<Response<double, int> >(x);
+      auto resp = as<Response<float, int> >(x);
 
-      auto resp_ptr = std::make_unique<Response<double, int> >(std::move(resp));
+      auto resp_ptr = std::make_unique<Response<float, int> >(std::move(resp));
       return resp_ptr;
     }
 
-    auto cond = as<Condition<double, int> >(x);
-    auto cond_ptr = std::make_unique<Condition<double, int> >(std::move(cond));
+    auto cond = as<Condition<float, int> >(x);
+    auto cond_ptr = std::make_unique<Condition<float, int> >(std::move(cond));
     return cond_ptr;
   }
 
-  template<> Response<double, int> as(SEXP x) {
+  template<> Response<float, int> as(SEXP x) {
     Rcpp::List rresp(x);
-    return Response<double, int>(Rcpp::as<double>(rresp["value"]));
+    return Response<float, int>(Rcpp::as<float>(rresp["value"]));
   }
 
-  template<> Condition<double, int> as(SEXP x) {
+  template<> Condition<float, int> as(SEXP x) {
     Rcpp::List rcond(x);
 
-    auto lower = as<std::unique_ptr<Node<double, int> > >(rcond["lower"]);
-    auto upper = as<std::unique_ptr<Node<double, int> > >(rcond["upper"]);
+    auto lower = as<std::unique_ptr<Node<float, int> > >(rcond["lower"]);
+    auto upper = as<std::unique_ptr<Node<float, int> > >(rcond["upper"]);
 
-    return Condition<double, int>(
-      Rcpp::as<Projector<double> >(rcond["projector"]),
-      Rcpp::as<double>(rcond["threshold"]),
+    return Condition<float, int>(
+      Rcpp::as<Projector<float> >(rcond["projector"]),
+      Rcpp::as<float>(rcond["threshold"]),
       std::move(lower),
       std::move(upper));
   }
 
-  template<> Tree<double, int > as(SEXP x) {
+  template<> Tree<float, int > as(SEXP x) {
     Rcpp::List rtree(x);
     Rcpp::List rtraining_spec(rtree["training_spec"]);
     Rcpp::List rtraining_data(rtree["training_data"]);
 
-    auto root = as<Condition<double, int> >(rtree["root"]);
-    auto root_ptr = std::make_unique<Condition<double, int> >(std::move(root));
-    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<double, int> > >(rtraining_spec);
+    auto root = as<Condition<float, int> >(rtree["root"]);
+    auto root_ptr = std::make_unique<Condition<float, int> >(std::move(root));
+    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
 
-    return Tree<double, int >(
+    return Tree<float, int >(
       std::move(root_ptr),
       std::move(training_spec_ptr),
-      std::make_shared<SortedDataSpec<double, int> >(as<SortedDataSpec<double, int> >(rtraining_data)));
+      std::make_shared<SortedDataSpec<float, int> >(as<SortedDataSpec<float, int> >(rtraining_data)));
   }
 
-  template<> BootstrapTree<double, int> as(SEXP x) {
+  template<> BootstrapTree<float, int> as(SEXP x) {
     Rcpp::List rtree(x);
     Rcpp::List rtraining_spec(rtree["training_spec"]);
     Rcpp::List rtraining_data(rtree["training_data"]);
 
-    auto root = as<Condition<double, int> >(rtree["root"]);
-    auto root_ptr = std::make_unique<Condition<double, int> >(std::move(root));
+    auto root = as<Condition<float, int> >(rtree["root"]);
+    auto root_ptr = std::make_unique<Condition<float, int> >(std::move(root));
 
-    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<double, int> > >(rtraining_spec);
+    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
 
-    return BootstrapTree<double, int>(
+    return BootstrapTree<float, int>(
       std::move(root_ptr),
       std::move(training_spec_ptr),
-      std::make_shared<BootstrapDataSpec<double, int> >(as<BootstrapDataSpec<double, int> >(rtraining_data)));
+      std::make_shared<BootstrapDataSpec<float, int> >(as<BootstrapDataSpec<float, int> >(rtraining_data)));
   }
 
-  template<> Forest<double, int> as(SEXP x) {
+  template<> Forest<float, int> as(SEXP x) {
     Rcpp::List rforest(x);
     Rcpp::List rtrees(rforest["trees"]);
     Rcpp::List rtraining_spec(rforest["training_spec"]);
     Rcpp::List rtraining_data(rforest["training_data"]);
 
-    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<double, int> > >(rtraining_spec);
+    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
 
-    Forest<double, int> forest(
+    Forest<float, int> forest(
       std::move(training_spec_ptr),
-      std::make_shared<SortedDataSpec<double, int> >(as<SortedDataSpec<double, int> >(rtraining_data)),
-      Rcpp::as<double>(rforest["seed"]),
+      std::make_shared<SortedDataSpec<float, int> >(as<SortedDataSpec<float, int> >(rtraining_data)),
+      Rcpp::as<float>(rforest["seed"]),
       Rcpp::as<int>(rforest["n_threads"]));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
-      auto tree = as<BootstrapTree<double, int> > (rtrees[i]);
-      auto tree_ptr = std::make_unique<BootstrapTree<double, int> > (std::move(tree));
+      auto tree = as<BootstrapTree<float, int> > (rtrees[i]);
+      auto tree_ptr = std::make_unique<BootstrapTree<float, int> > (std::move(tree));
       forest.add_tree(std::move(tree_ptr));
     }
 
     return forest;
   }
 
-  template<> std::unique_ptr<TrainingSpec<double, int> > as(SEXP x) {
+  template<> std::unique_ptr<TrainingSpec<float, int> > as(SEXP x) {
     Rcpp::List rtraining_spec(x);
 
     std::string strategy = Rcpp::as<std::string>(rtraining_spec["strategy"]);
 
     if (strategy == "glda") {
-      double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
-      return std::make_unique<GLDATrainingSpec<double, int> >(lambda);
+      float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
+      return std::make_unique<GLDATrainingSpec<float, int> >(lambda);
     }
 
     if (strategy == "uniform_glda") {
       int n_vars = Rcpp::as<int>(rtraining_spec["n_vars"]);
-      double lambda = Rcpp::as<double>(rtraining_spec["lambda"]);
+      float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
 
-      return std::make_unique<UniformGLDATrainingSpec<double, int> >(n_vars, lambda);
+      return std::make_unique<UniformGLDATrainingSpec<float, int> >(n_vars, lambda);
     }
 
     Rcpp::stop("Unknown training strategy: %s", strategy);
   }
 
-  template<> SortedDataSpec<double, int> as(SEXP x) {
+  template<> SortedDataSpec<float, int> as(SEXP x) {
     Rcpp::List rdata(x);
 
     std::vector<int> classes = Rcpp::as<std::vector<int> >(rdata["classes"]);
 
-    return SortedDataSpec<double, int>(
-      Rcpp::as<Data<double> >(rdata["x"]),
+    return SortedDataSpec<float, int>(
+      Rcpp::as<Data<float> >(rdata["x"]),
       Rcpp::as<DataColumn<int> >(rdata["y"]),
       std::set<int>(classes.begin(), classes.end()));
   }
 
-  template<> BootstrapDataSpec<double, int> as(SEXP x) {
+  template<> BootstrapDataSpec<float, int> as(SEXP x) {
     Rcpp::List rdata(x);
 
     std::vector<int> classes = Rcpp::as<std::vector<int> >(rdata["classes"]);
     std::vector<int> sample_indices = Rcpp::as<std::vector<int> >(rdata["sample_indices"]);
 
-    return BootstrapDataSpec<double, int>(
-      Rcpp::as<Data<double> >(rdata["x"]),
+    return BootstrapDataSpec<float, int>(
+      Rcpp::as<Data<float> >(rdata["x"]),
       Rcpp::as<DataColumn<int> >(rdata["y"]),
       std::set<int>(classes.begin(), classes.end()),
       sample_indices);

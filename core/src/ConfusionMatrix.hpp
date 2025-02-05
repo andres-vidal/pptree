@@ -37,18 +37,18 @@ namespace models::stats {
       }
     }
 
-    DataColumn<double> class_errors() const {
+    DataColumn<float> class_errors() const {
       Data<int> error_matrix = values;
       error_matrix.diagonal().setZero();
 
       DataColumn<int> row_sums = values.rowwise().sum();
       DataColumn<int> row_errors = error_matrix.rowwise().sum();
 
-      return row_errors.array().cast<double>() / row_sums.array().cast<double>();
+      return row_errors.array().cast<float>() / row_sums.array().cast<float>();
     }
 
-    double error() const {
-      return 1 - values.trace() / (double)values.sum();
+    float error() const {
+      return 1 - values.trace() / (float)values.sum();
     }
   };
 }

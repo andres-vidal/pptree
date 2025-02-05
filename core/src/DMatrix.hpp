@@ -48,7 +48,7 @@ namespace models::math {
   }
 
   template<typename Derived>
-  double determinant(
+  float determinant(
     const DMatrixBase<Derived> &m
     ) {
     return m.determinant();

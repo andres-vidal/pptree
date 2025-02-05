@@ -7,15 +7,15 @@
 using namespace models::math;
 
 TEST(DVector, OuterProductEqualVectors) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<float> b(3);
   b << 1.0, 2.0, 6.0;
 
-  DMatrix<double> actual = outer_product(a, b);
+  DMatrix<float> actual = outer_product(a, b);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<float> expected(3, 3);
   expected <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
@@ -28,15 +28,15 @@ TEST(DVector, OuterProductEqualVectors) {
 }
 
 TEST(DVector, OuterProductDifferentVectors1) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<float> b(3);
   b << 2.0, 3.0, 7.0;
 
-  DMatrix<double> actual = outer_product(a, b);
+  DMatrix<float> actual = outer_product(a, b);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<float> expected(3, 3);
   expected <<
     2.0,  3.0,  7.0,
     4.0,  6.0,  14.0,
@@ -49,15 +49,15 @@ TEST(DVector, OuterProductDifferentVectors1) {
 }
 
 TEST(DVector, OuterProductDifferentVectors2) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 2.0, 3.0, 7.0;
 
-  DVector<double> b(3);
+  DVector<float> b(3);
   b << 1.0, 2.0, 6.0;
 
-  DMatrix<double> actual = outer_product(a, b);
+  DMatrix<float> actual = outer_product(a, b);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<float> expected(3, 3);
   expected <<
     2.0,  4.0,  12.0,
     3.0,  6.0,  18.0,
@@ -70,15 +70,15 @@ TEST(DVector, OuterProductDifferentVectors2) {
 }
 
 TEST(DVector, OuterProductZeroVectors) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 0.0, 0.0, 0.0;
 
-  DVector<double> b(3);
+  DVector<float> b(3);
   b << 0.0, 0.0, 0.0;
 
-  DMatrix<double> actual = outer_product(a, b);
+  DMatrix<float> actual = outer_product(a, b);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<float> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -91,14 +91,14 @@ TEST(DVector, OuterProductZeroVectors) {
 }
 
 TEST(DVector, OuterProductGeneric1) {
-  DVector<double> a(1);
+  DVector<float> a(1);
   a << 4.0;
 
-  DVector<double> b(1);
+  DVector<float> b(1);
   b << 3.0;
 
-  DMatrix<double> actual = outer_product(a, b);
-  DMatrix<double> expected(1, 1);
+  DMatrix<float> actual = outer_product(a, b);
+  DMatrix<float> expected(1, 1);
   expected << 12.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -108,12 +108,12 @@ TEST(DVector, OuterProductGeneric1) {
 }
 
 TEST(DVector, OuterSquareGeneric1) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DMatrix<double> actual = outer_square(a);
+  DMatrix<float> actual = outer_square(a);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<float> expected(3, 3);
   expected <<
     1.0, 2.0,  6.0,
     2.0, 4.0,  12.0,
@@ -126,12 +126,12 @@ TEST(DVector, OuterSquareGeneric1) {
 }
 
 TEST(DVector, OuterSquareGeneric2) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 2.0, 3.0, 7.0;
 
-  DMatrix<double> actual = outer_square(a);
+  DMatrix<float> actual = outer_square(a);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<float> expected(3, 3);
   expected <<
     4.0,  6.0,  14.0,
     6.0,  9.0,  21.0,
@@ -144,12 +144,12 @@ TEST(DVector, OuterSquareGeneric2) {
 }
 
 TEST(DVector, OuterSquareZeroVector) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 0.0, 0.0, 0.0;
 
-  DMatrix<double> actual = outer_square(a);
+  DMatrix<float> actual = outer_square(a);
 
-  DMatrix<double> expected(3, 3);
+  DMatrix<float> expected(3, 3);
   expected <<
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0,
@@ -162,41 +162,41 @@ TEST(DVector, OuterSquareZeroVector) {
 }
 
 TEST(DVector, CollinearCollinearSameDirection) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<float> b(3);
   b << 2.0, 4.0, 12.0;
 
   ASSERT_TRUE(collinear(a, b));
 }
 
 TEST(DVector, CollinearCollinearOppositeDirection) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> b(3);
+  DVector<float> b(3);
   b << -1.0, -2.0, -6.0;
 
   ASSERT_TRUE(collinear(a, b));
 }
 
 TEST(DVector, CollinearNonCollinear) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 0.0, 1.0, 0.0;
 
-  DVector<double> b(3);
+  DVector<float> b(3);
   b << 1.0, 0.0, 0.0;
 
   ASSERT_FALSE(collinear(a, b));
 }
 
 TEST(DVector, AbsPositiveVector) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << 1.0, 2.0, 6.0;
 
-  DVector<double> actual = abs(a);
-  DVector<double> expected(3);
+  DVector<float> actual = abs(a);
+  DVector<float> expected(3);
   expected << 1.0, 2.0, 6.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -206,11 +206,11 @@ TEST(DVector, AbsPositiveVector) {
 }
 
 TEST(DVector, AbsNegativeVector) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << -1.0, -2.0, -6.0;
 
-  DVector<double> actual = abs(a);
-  DVector<double> expected(3);
+  DVector<float> actual = abs(a);
+  DVector<float> expected(3);
   expected << 1.0, 2.0, 6.0;
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -220,11 +220,11 @@ TEST(DVector, AbsNegativeVector) {
 }
 
 TEST(DVector, AbsMixedVec) {
-  DVector<double> a(3);
+  DVector<float> a(3);
   a << -1.0, 2.0, -6.0;
 
-  DVector<double> actual = abs(a);
-  DVector<double> expected(3);
+  DVector<float> actual = abs(a);
+  DVector<float> expected(3);
   expected << 1.0, 2.0, 6.0;
 
   ASSERT_EQ(expected.size(), actual.size());

@@ -40,16 +40,16 @@ namespace models {
 
     virtual std::unique_ptr<TrainingSpec<T, R> > clone() const = 0;
 
-    static std::unique_ptr<TrainingSpec<T, R> > glda(const double lambda);
+    static std::unique_ptr<TrainingSpec<T, R> > glda(const float lambda);
     static std::unique_ptr<TrainingSpec<T, R> > lda();
-    static std::unique_ptr<TrainingSpec<T, R> > uniform_glda(const int n_vars, const double lambda);
+    static std::unique_ptr<TrainingSpec<T, R> > uniform_glda(const int n_vars, const float lambda);
   };
 
   template<typename T, typename R>
   struct GLDATrainingSpec : public TrainingSpec<T, R> {
-    const double lambda;
+    const float lambda;
 
-    explicit GLDATrainingSpec(const double lambda) :
+    explicit GLDATrainingSpec(const float lambda) :
       TrainingSpec<T, R>(
         pp::strategy::glda<T, R>(lambda),
         dr::strategy::all<T>()),
@@ -68,9 +68,9 @@ namespace models {
   template<typename T, typename R>
   struct UniformGLDATrainingSpec : public TrainingSpec<T, R> {
     const int n_vars;
-    const double lambda;
+    const float lambda;
 
-    UniformGLDATrainingSpec(const int n_vars, const double lambda) :
+    UniformGLDATrainingSpec(const int n_vars, const float lambda) :
       TrainingSpec<T, R>(
         pp::strategy::glda<T, R>(lambda),
         dr::strategy::uniform<T>(n_vars)),
@@ -89,7 +89,7 @@ namespace models {
 
 
   template<typename T, typename R>
-  std::unique_ptr<TrainingSpec<T, R> > TrainingSpec<T, R>::glda(const double lambda) {
+  std::unique_ptr<TrainingSpec<T, R> > TrainingSpec<T, R>::glda(const float lambda) {
     return std::make_unique<GLDATrainingSpec<T, R> >(lambda);
   }
 
@@ -99,7 +99,7 @@ namespace models {
   }
 
   template<typename T, typename R>
-  std::unique_ptr<TrainingSpec<T, R> >TrainingSpec<T, R>::uniform_glda(const int n_vars, const double lambda) {
+  std::unique_ptr<TrainingSpec<T, R> >TrainingSpec<T, R>::uniform_glda(const int n_vars, const float lambda) {
     return std::make_unique<UniformGLDATrainingSpec<T, R> >(n_vars, lambda);
   }
 }

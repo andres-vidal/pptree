@@ -68,16 +68,16 @@ namespace models {
     return forest;
   }
 
-  template Forest<double, int> Forest<double, int>::train(
-    const TrainingSpec<double, int> &   training_spec,
-    const SortedDataSpec<double, int> & training_data,
-    const int                           size,
-    const int                           seed);
+  template Forest<float, int> Forest<float, int>::train(
+    const TrainingSpec<float, int> &   training_spec,
+    const SortedDataSpec<float, int> & training_data,
+    const int                          size,
+    const int                          seed);
 
-  template Forest<double, int> Forest<double, int>::train(
-    const TrainingSpec<double, int> &   training_spec,
-    const SortedDataSpec<double, int> & training_data,
-    const int                           size,
-    const int                           seed,
-    const int                           n_threads);
+  template Forest<float, int> Forest<float, int>::train(
+    const TrainingSpec<float, int> &   training_spec,
+    const SortedDataSpec<float, int> & training_data,
+    const int                          size,
+    const int                          seed,
+    const int                          n_threads);
 }
