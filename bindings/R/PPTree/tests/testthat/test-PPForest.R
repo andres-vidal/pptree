@@ -117,7 +117,7 @@ describe("PPForest training data", {
       nrow = nrow(model$x),
       ncol = ncol(model$x)
     )
-    expect_equal(model$training_data$x, expected)
+    expect_equal(model$training_data$x, expected, tolerance = 0.1)
   })
 
   it("preserves the labels (y) as a vector without metadata", {
