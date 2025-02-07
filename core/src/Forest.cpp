@@ -51,13 +51,16 @@ namespace models {
       seed,
       n_threads);
 
-    #pragma omp parallel for
+    std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees(size);
+
+    #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
       auto sample = stratified_proportional_sample(sorted_training_data, sorted_training_data.x.rows());
-      auto tree = BootstrapTree<T, R>::train(training_spec, sample);
+      trees[i] = std::make_unique<BootstrapTree<T, R> >(BootstrapTree<T, R>::train(training_spec, sample));
+    }
 
-      #pragma omp critical
-      { forest.add_tree(std::make_unique<BootstrapTree<T, R> >(std::move(tree))); }
+    for (auto& tree : trees) {
+      forest.add_tree(std::move(tree));
     }
 
     LOG_INFO << "Forest: " << forest << std::endl;
@@ -65,16 +68,16 @@ namespace models {
     return forest;
   }
 
-  template Forest<double, int> Forest<double, int>::train(
-    const TrainingSpec<double, int> &   training_spec,
-    const SortedDataSpec<double, int> & training_data,
-    const int                           size,
-    const int                           seed);
+  template Forest<float, int> Forest<float, int>::train(
+    const TrainingSpec<float, int> &   training_spec,
+    const SortedDataSpec<float, int> & training_data,
+    const int                          size,
+    const int                          seed);
 
-  template Forest<double, int> Forest<double, int>::train(
-    const TrainingSpec<double, int> &   training_spec,
-    const SortedDataSpec<double, int> & training_data,
-    const int                           size,
-    const int                           seed,
-    const int                           n_threads);
+  template Forest<float, int> Forest<float, int>::train(
+    const TrainingSpec<float, int> &   training_spec,
+    const SortedDataSpec<float, int> & training_data,
+    const int                          size,
+    const int                          seed,
+    const int                          n_threads);
 }

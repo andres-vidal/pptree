@@ -65,7 +65,7 @@ namespace models {
       return !(*this == other);
     }
 
-    virtual double error_rate(const stats::SortedDataSpec<T, R> &data) const {
+    virtual float error_rate(const stats::SortedDataSpec<T, R> &data) const {
       auto [x, y, _classes] = data.unwrap();
       return stats::error_rate(predict(x), y);
     }

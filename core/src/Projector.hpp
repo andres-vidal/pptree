@@ -21,15 +21,22 @@ namespace models::pp {
   template<typename T>
   Projector<T> normalize(
     const Projector<T> &projector) {
-    Projector<T> truncated = projector.unaryExpr(reinterpret_cast<T (*)(T)>(&math::truncate<T>));
+    Projector<T> truncated = math::truncate(projector);
 
-    // Fetch the index of the first non-zero component
+    const int size = truncated.size();
+    const T *data = truncated.data();
+
     int i = 0;
 
-    while (i < truncated.size() && math::is_approx(truncated(i), 0))
-      i++;
+    while (i < size && math::is_approx(data[i], T(0), T(0.001)))
+      ++i;
 
-    // Guarantee the first non-zero component is positive
-    return (truncated(i) < 0 ? -1 : 1) * truncated;
+    if (i == size) {
+      return truncated;
+    }
+
+    T sign = (data[i] < T(0)) ? T(-1) : T(1);
+
+    return sign * truncated;
   }
 }

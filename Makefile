@@ -110,7 +110,7 @@ PROFILE_OUTPUT_DEBUG = pptree-profile-debug.trace
 
 profile: build
 	@rm -rf ${PROFILE_OUTPUT}
-	@xcrun xctrace record --template 'Time Profiler' --output ${PROFILE_OUTPUT} --launch ${BUILD_DIR}/pptree-profile 240 240 2 500 10
+	@xcrun xctrace record --template 'Time Profiler' --output ${PROFILE_OUTPUT} --launch ${BUILD_DIR}/pptree-profile 12 2400 2 10 0.8 10
 
 profile-debug: build-debug
 	@rm -rf ${PROFILE_OUTPUT_DEBUG}

@@ -48,38 +48,18 @@ namespace models::math {
   }
 
   template<typename Derived>
-  double determinant(
+  float determinant(
     const DMatrixBase<Derived> &m
     ) {
-    return m.determinant();
+    float d = m.determinant();
+
+    return fabs(d) < 1e-15 ? 0.0 : d;
   }
 
-  template<typename T>
-  DMatrix<T> solve(
-    const DMatrix<T> &l,
-    const DMatrix<T> &r
+  template<typename Derived>
+  auto truncate(
+    const DMatrixBase<Derived> &m
     ) {
-    Eigen::FullPivLU<DMatrix<T> > lu(l);
-
-    return lu.solve(r);
+    return (m.array().abs() < 1e-15).select(0, m.array());
   }
-
-  template<typename T>
-  bool collinear(
-    const DMatrix<T> &a,
-    const DMatrix<T> &b) {
-    for (int i = 0; i < a.cols(); i++) {
-      DVector<T> a_col = a.col(i);
-      DVector<T> b_col = b.col(i);
-
-      if (!collinear(a_col, b_col)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  template<typename T>
-  std::tuple<DVector<T>, DMatrix<T> > eigen(const DMatrix<T> &m);
 }

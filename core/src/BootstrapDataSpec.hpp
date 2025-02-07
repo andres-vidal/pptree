@@ -77,10 +77,11 @@ namespace models::stats {
     const int data_size = data.y.rows();
 
     std::vector<int> sample_indices;
+    sample_indices.reserve(size);
 
     for (const G& group : data.classes) {
       const int group_size = data.group_size(group);
-      const int group_sample_size = std::max(1.0, std::round(group_size / (double)data_size * size));
+      const int group_sample_size = std::max(1, (int)std::round(group_size / (float)data_size * size));
 
       for (int i = 0; i < group_sample_size; i++) {
         const Uniform unif(data.group_start(group), data.group_end(group));

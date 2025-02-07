@@ -2,12 +2,14 @@
 
 #include "VIStrategy.hpp"
 
+#include "Macros.hpp"
+
 using namespace models;
 using namespace models::stats;
 using namespace models::math;
 
 TEST(VIProjectorStrategy, TreeLDAMultivariateThreeGroups) {
-  Data<double> data(30, 5);
+  Data<float> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -73,12 +75,12 @@ TEST(VIProjectorStrategy, TreeLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(),
-    SortedDataSpec<double, int>(data, groups));
+  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+    SortedDataSpec<float, int>(data, groups));
 
-  DVector<double> result = VIProjectorStrategy<double, int>()(tree);
+  DVector<float> result = VIProjectorStrategy<float, int>()(tree);
 
-  DataColumn<double> expected(5);
+  DataColumn<float> expected(5);
   expected <<
     0.408057,
     0.553833,
@@ -86,11 +88,11 @@ TEST(VIProjectorStrategy, TreeLDAMultivariateThreeGroups) {
     0.00643757,
     0.0160685;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, TreePDAMultivariateTwoGroups) {
-  Data<double> data(10, 12);
+  Data<float> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -116,14 +118,14 @@ TEST(VIProjectorStrategy, TreePDAMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<double, int> tree = Tree<double, int>::train(
-    *TrainingSpec<double, int>::glda(0.5),
-    SortedDataSpec<double, int>(data, groups));
+  Tree<float, int> tree = Tree<float, int>::train(
+    *TrainingSpec<float, int>::glda(0.5),
+    SortedDataSpec<float, int>(data, groups));
 
 
-  DataColumn<double> result = VIProjectorStrategy<double, int>()(tree);
+  DataColumn<float> result = VIProjectorStrategy<float, int>()(tree);
 
-  DataColumn<double> expected(12);
+  DataColumn<float> expected(12);
   expected <<
     0.499665,
     0.00113766,
@@ -138,11 +140,11 @@ TEST(VIProjectorStrategy, TreePDAMultivariateTwoGroups) {
     0.00180949,
     0.00180949;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -210,12 +212,12 @@ TEST(VIProjectorStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  DVector<double> result = VIProjectorStrategy<double, int>()(tree);
+  DVector<float> result = VIProjectorStrategy<float, int>()(tree);
 
-  DataColumn<double> expected(5);
+  DataColumn<float> expected(5);
   expected <<
     0.327572,
     0.561704,
@@ -224,11 +226,11 @@ TEST(VIProjectorStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
     0.0;
 
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, BootstrapTreePDAMultivariateTwoGroups) {
-  Data<double> x(10, 12);
+  Data<float> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -256,12 +258,12 @@ TEST(VIProjectorStrategy, BootstrapTreePDAMultivariateTwoGroups) {
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::glda(0.1), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
 
-  DataColumn<double> result = VIProjectorStrategy<double, int>()(tree);
+  DataColumn<float> result = VIProjectorStrategy<float, int>()(tree);
 
-  DataColumn<double> expected(12);
+  DataColumn<float> expected(12);
   expected <<
     0.5,
     0.0,
@@ -276,11 +278,11 @@ TEST(VIProjectorStrategy, BootstrapTreePDAMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
-  Data<double> data(30, 5);
+  Data<float> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -348,18 +350,18 @@ TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
 
 
   const int n_vars = 2;
-  const double lambda = 0;
+  const float lambda = 0;
   const int seed = 1;
 
-  Forest<double, int> forest = Forest<double, int>::train(
-    *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<double, int>(data, groups),
+  Forest<float, int> forest = Forest<float, int>::train(
+    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    SortedDataSpec<float, int>(data, groups),
     4,
     seed);
 
-  DVector<double> result = VIProjectorStrategy<double, int>()(forest);
+  DVector<float> result = VIProjectorStrategy<float, int>()(forest);
 
-  DVector<double> expected(5);
+  DVector<float> expected(5);
   expected <<
     0.16613521906617199,
     0.58310157864772916,
@@ -367,11 +369,11 @@ TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
     0.074664119133181384,
     0.06294791631582175;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
-  Data<double> data(10, 12);
+  Data<float> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -398,18 +400,18 @@ TEST(VIProjectorStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     1;
 
   const int n_vars = data.cols();
-  const double lambda = 0.1;
+  const float lambda = 0.1;
   const int seed = 0;
 
-  Forest<double, int> forest = Forest<double, int>::train(
-    *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<double, int>(data, groups),
+  Forest<float, int> forest = Forest<float, int>::train(
+    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    SortedDataSpec<float, int>(data, groups),
     4,
     seed);
 
-  DVector<double> result = VIProjectorStrategy<double, int>()(forest);
+  DVector<float> result = VIProjectorStrategy<float, int>()(forest);
 
-  DVector<double> expected(12);
+  DVector<float> expected(12);
   expected <<
     0.497305,
     0.00889968,
@@ -424,11 +426,11 @@ TEST(VIProjectorStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     0.0126566,
     0.0126566;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorAdjustedStrategy, TreeLDAMultivariateThreeGroups) {
-  Data<double> data(30, 5);
+  Data<float> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -494,17 +496,17 @@ TEST(VIProjectorAdjustedStrategy, TreeLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(),
-    SortedDataSpec<double, int>(data, groups));
+  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+    SortedDataSpec<float, int>(data, groups));
 
 
-  auto strategy = VIProjectorAdjustedStrategy<double, int>();
+  auto strategy = VIProjectorAdjustedStrategy<float, int>();
 
   ASSERT_THROW(strategy(tree), std::invalid_argument);
 }
 
 TEST(VIProjectorAdjustedStrategy, TreePDAMultivariateTwoGroups) {
-  Data<double> data(10, 12);
+  Data<float> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -530,18 +532,18 @@ TEST(VIProjectorAdjustedStrategy, TreePDAMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<double, int> tree = Tree<double, int>::train(
-    *TrainingSpec<double, int>::glda(0.5),
-    SortedDataSpec<double, int>(data, groups));
+  Tree<float, int> tree = Tree<float, int>::train(
+    *TrainingSpec<float, int>::glda(0.5),
+    SortedDataSpec<float, int>(data, groups));
 
 
-  auto strategy = VIProjectorAdjustedStrategy<double, int>();
+  auto strategy = VIProjectorAdjustedStrategy<float, int>();
 
   ASSERT_THROW(strategy(tree), std::invalid_argument);
 }
 
 TEST(VIProjectorAdjustedStrategy, BootstrapLDATreeMultivariateThreeGroups) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -609,12 +611,12 @@ TEST(VIProjectorAdjustedStrategy, BootstrapLDATreeMultivariateThreeGroups) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  DVector<double> result = VIProjectorAdjustedStrategy<double, int>()(tree);
+  DVector<float> result = VIProjectorAdjustedStrategy<float, int>()(tree);
 
-  DataColumn<double> expected(5);
+  DataColumn<float> expected(5);
   expected <<
     0.491359,
     0.592556,
@@ -622,11 +624,11 @@ TEST(VIProjectorAdjustedStrategy, BootstrapLDATreeMultivariateThreeGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorAdjustedStrategy, BootstrapPDATreeMultivariateTwoGroups) {
-  Data<double> x(10, 12);
+  Data<float> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -654,12 +656,12 @@ TEST(VIProjectorAdjustedStrategy, BootstrapPDATreeMultivariateTwoGroups) {
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::glda(0.1), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
 
-  DataColumn<double> result = VIProjectorAdjustedStrategy<double, int>()(tree);
+  DataColumn<float> result = VIProjectorAdjustedStrategy<float, int>()(tree);
 
-  DataColumn<double> expected(12);
+  DataColumn<float> expected(12);
   expected <<
     1.0,
     0.0,
@@ -674,11 +676,11 @@ TEST(VIProjectorAdjustedStrategy, BootstrapPDATreeMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
-  Data<double> data(30, 5);
+  Data<float> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -746,18 +748,18 @@ TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups)
 
 
   const int n_vars = 2;
-  const double lambda = 0;
+  const float lambda = 0;
   const int seed = 1;
 
-  Forest<double, int> forest = Forest<double, int>::train(
-    *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<double, int>(data, groups),
+  Forest<float, int> forest = Forest<float, int>::train(
+    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    SortedDataSpec<float, int>(data, groups),
     4,
     seed);
 
-  DVector<double> result = VIProjectorAdjustedStrategy<double, int>()(forest);
+  DVector<float> result = VIProjectorAdjustedStrategy<float, int>()(forest);
 
-  DVector<double> expected(5);
+  DVector<float> expected(5);
   expected <<
     0.24800322129499591,
     0.57124263447778101,
@@ -766,11 +768,11 @@ TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups)
     0.041419747834681817;
 
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIProjectorAdjustedStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
-  Data<double> data(10, 12);
+  Data<float> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -797,18 +799,18 @@ TEST(VIProjectorAdjustedStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     1;
 
   const int n_vars = data.cols();
-  const double lambda = 0.1;
+  const float lambda = 0.1;
   const int seed = 0;
 
-  Forest<double, int> forest = Forest<double, int>::train(
-    *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<double, int>(data, groups),
+  Forest<float, int> forest = Forest<float, int>::train(
+    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    SortedDataSpec<float, int>(data, groups),
     4,
     seed);
 
-  DVector<double> result = VIProjectorAdjustedStrategy<double, int>()(forest);
+  DVector<float> result = VIProjectorAdjustedStrategy<float, int>()(forest);
 
-  DVector<double> expected(12);
+  DVector<float> expected(12);
   expected <<
     0.983637,
     0.018022,
@@ -823,11 +825,11 @@ TEST(VIProjectorAdjustedStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     0.026617,
     0.026617;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIPermutationStrategy, TreeLDAMultivariateThreeGroups) {
-  Data<double> data(30, 5);
+  Data<float> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -893,17 +895,17 @@ TEST(VIPermutationStrategy, TreeLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<double, int> tree = Tree<double, int>::train(*TrainingSpec<double, int>::lda(),
-    SortedDataSpec<double, int>(data, groups));
+  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+    SortedDataSpec<float, int>(data, groups));
 
 
-  auto strategy = VIPermutationStrategy<double, int>();
+  auto strategy = VIPermutationStrategy<float, int>();
 
   ASSERT_THROW(strategy(tree), std::invalid_argument);
 }
 
 TEST(VIPermutationStrategy, TreePDAMultivariateTwoGroups) {
-  Data<double> data(10, 12);
+  Data<float> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -929,18 +931,18 @@ TEST(VIPermutationStrategy, TreePDAMultivariateTwoGroups) {
     1,
     1;
 
-  Tree<double, int> tree = Tree<double, int>::train(
-    *TrainingSpec<double, int>::glda(0.5),
-    SortedDataSpec<double, int>(data, groups));
+  Tree<float, int> tree = Tree<float, int>::train(
+    *TrainingSpec<float, int>::glda(0.5),
+    SortedDataSpec<float, int>(data, groups));
 
 
-  auto strategy = VIPermutationStrategy<double, int>();
+  auto strategy = VIPermutationStrategy<float, int>();
 
   ASSERT_THROW(strategy(tree), std::invalid_argument);
 }
 
 TEST(VIPermutationStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -1010,12 +1012,12 @@ TEST(VIPermutationStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
 
   Random::seed(0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  DVector<double> result = VIPermutationStrategy<double, int>()(tree);
+  DVector<float> result = VIPermutationStrategy<float, int>()(tree);
 
-  DataColumn<double> expected(5);
+  DataColumn<float> expected(5);
   expected <<
     0.33333,
     0.44444,
@@ -1023,11 +1025,11 @@ TEST(VIPermutationStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
     0.00000,
     0.00000;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
-  Data<double> x(10, 12);
+  Data<float> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -1055,14 +1057,14 @@ TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::glda(0.1), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
 
   Random::seed(0);
 
-  DataColumn<double> result = VIPermutationStrategy<double, int>()(tree);
+  DataColumn<float> result = VIPermutationStrategy<float, int>()(tree);
 
-  DataColumn<double> expected(12);
+  DataColumn<float> expected(12);
   expected <<
     0.333337,
     0.0,
@@ -1077,11 +1079,11 @@ TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
-  Data<double> data(30, 5);
+  Data<float> data(30, 5);
   data <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -1149,18 +1151,18 @@ TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
 
 
   const int n_vars = 2;
-  const double lambda = 0;
+  const float lambda = 0;
   const int seed = 1;
 
-  Forest<double, int> forest = Forest<double, int>::train(
-    *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<double, int>(data, groups),
+  Forest<float, int> forest = Forest<float, int>::train(
+    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    SortedDataSpec<float, int>(data, groups),
     4,
     seed);
 
-  DVector<double> result = VIPermutationStrategy<double, int>()(forest);
+  DVector<float> result = VIPermutationStrategy<float, int>()(forest);
 
-  DVector<double> expected(5);
+  DVector<float> expected(5);
   expected <<
     0.34999999999999998,
     0.34999999999999998,
@@ -1168,12 +1170,11 @@ TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
     0,
     0;
 
-
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(VIPermutationStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
-  Data<double> data(10, 12);
+  Data<float> data(10, 12);
   data <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -1200,18 +1201,18 @@ TEST(VIPermutationStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     1;
 
   const int n_vars = data.cols();
-  const double lambda = 0.1;
+  const float lambda = 0.1;
   const int seed = 0;
 
-  Forest<double, int> forest = Forest<double, int>::train(
-    *TrainingSpec<double, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<double, int>(data, groups),
+  Forest<float, int> forest = Forest<float, int>::train(
+    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    SortedDataSpec<float, int>(data, groups),
     4,
     seed);
 
-  DVector<double> result = VIPermutationStrategy<double, int>()(forest);
+  DVector<float> result = VIPermutationStrategy<float, int>()(forest);
 
-  DVector<double> expected(12);
+  DVector<float> expected(12);
   expected <<
     0.0,
     0.0,
@@ -1226,5 +1227,5 @@ TEST(VIPermutationStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.01)) << std::endl << expected << std::endl << std::endl << result << std::endl;
+  ASSERT_APPROX(expected, result);
 }

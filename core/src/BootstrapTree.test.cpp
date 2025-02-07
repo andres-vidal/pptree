@@ -3,13 +3,15 @@
 #include "BootstrapTree.hpp"
 #include "VIStrategy.hpp"
 
+#include "Macros.hpp"
+
 using namespace models;
 using namespace models::pp;
 using namespace models::stats;
 using namespace models::math;
 
 TEST(BootstrapTree, ErrorRateDataSpecMin) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -78,18 +80,18 @@ TEST(BootstrapTree, ErrorRateDataSpecMin) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
-  double result = tree.error_rate(SortedDataSpec<double, int>(test_x, tree.predict(test_x)));
+  float result = tree.error_rate(SortedDataSpec<float, int>(test_x, tree.predict(test_x)));
 
-  ASSERT_DOUBLE_EQ(0.0, result);
+  ASSERT_FLOAT_EQ(0.0, result);
 }
 
 TEST(BootstrapTree, ErrorRateDataSpecMax) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -158,8 +160,8 @@ TEST(BootstrapTree, ErrorRateDataSpecMax) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(20, 3);
 
   std::vector<int> test_indices(20);
@@ -167,13 +169,13 @@ TEST(BootstrapTree, ErrorRateDataSpecMax) {
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
-  double result = tree.error_rate(SortedDataSpec<double, int>(test_x, actual_y));
+  float result = tree.error_rate(SortedDataSpec<float, int>(test_x, actual_y));
 
-  ASSERT_DOUBLE_EQ(1.0, result);
+  ASSERT_FLOAT_EQ(1.0, result);
 }
 
 TEST(BootstrapTree, ErrorRateDataSpecGeneric) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -242,19 +244,19 @@ TEST(BootstrapTree, ErrorRateDataSpecGeneric) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(20);
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
-  double result = tree.error_rate(SortedDataSpec<double, int>(test_x, actual_y));
+  float result = tree.error_rate(SortedDataSpec<float, int>(test_x, actual_y));
 
   ASSERT_NEAR(0.5, result, 0.1);
 }
 
 TEST(BootstrapTree, ErrorRateBootstrapDataSpecMin) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -323,16 +325,16 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecMin) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  double result = tree.error_rate(BootstrapDataSpec<double, int>(x, tree.predict(data.x), sample_indices));
+  float result = tree.error_rate(BootstrapDataSpec<float, int>(x, tree.predict(data.x), sample_indices));
 
-  ASSERT_DOUBLE_EQ(0.0, result);
+  ASSERT_FLOAT_EQ(0.0, result);
 }
 
 TEST(BootstrapTree, ErrorRateBootstrapDataSpecMax) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -401,17 +403,17 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecMax) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 2);
 
-  double result = tree.error_rate(BootstrapDataSpec<double, int>(x, actual_y, sample_indices));
+  float result = tree.error_rate(BootstrapDataSpec<float, int>(x, actual_y, sample_indices));
 
-  ASSERT_DOUBLE_EQ(1.0, result);
+  ASSERT_FLOAT_EQ(1.0, result);
 }
 
 TEST(BootstrapTree, ErrorRateBootstrapDataSpecGeneric) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -480,17 +482,17 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecGeneric) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
-  double result = tree.error_rate(BootstrapDataSpec<double, int>(x, actual_y, sample_indices));
+  float result = tree.error_rate(BootstrapDataSpec<float, int>(x, actual_y, sample_indices));
 
   ASSERT_NEAR(0.5, result, 0.1);
 }
 
 TEST(BootstrapTree, ErrorRate) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -559,16 +561,16 @@ TEST(BootstrapTree, ErrorRate) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  double result = tree.error_rate();
+  float result = tree.error_rate();
 
   ASSERT_NEAR(0.8, result, 0.01);
 }
 
 TEST(BootstrapTree, ConfusionMatrixDataSpecDiagonal) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -637,12 +639,12 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecDiagonal) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
-  ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<double, int>(test_x, tree.predict(test_x)));
+  ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<float, int>(test_x, tree.predict(test_x)));
 
   Data<int> expected = Data<int>::Zero(2, 2);
   expected.diagonal() << 10, 10;
@@ -657,7 +659,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecDiagonal) {
 }
 
 TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -726,8 +728,8 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
   std::vector<int> sample_indices(20);
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
@@ -755,7 +757,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
     0;
 
 
-  ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<double, int>(test_x, actual_y));
+  ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<float, int>(test_x, actual_y));
 
   Data<int> expected(2, 2);
   expected <<
@@ -771,7 +773,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
 }
 
 TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecDiagonal) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -839,12 +841,12 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecDiagonal) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
-  ConfusionMatrix result = tree.confusion_matrix(BootstrapDataSpec<double, int>(x, tree.predict(x), sample_indices));
+  ConfusionMatrix result = tree.confusion_matrix(BootstrapDataSpec<float, int>(x, tree.predict(x), sample_indices));
 
   Data<int> expected = Data<int>::Zero(3, 3);
   expected.diagonal() << 4, 4, 4;
@@ -858,7 +860,7 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecDiagonal) {
 }
 
 TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -926,8 +928,8 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
   DataColumn<int> actual_y(30);
   actual_y <<
@@ -963,7 +965,7 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
     0;
 
 
-  ConfusionMatrix result = tree.confusion_matrix(BootstrapDataSpec<double, int>(x, actual_y, sample_indices));
+  ConfusionMatrix result = tree.confusion_matrix(BootstrapDataSpec<float, int>(x, actual_y, sample_indices));
 
   Data<int> expected(3, 3);
   expected <<
@@ -980,7 +982,7 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
 }
 
 TEST(BootstrapTree, ConfusionMatrix) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -1048,8 +1050,8 @@ TEST(BootstrapTree, ConfusionMatrix) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
   ConfusionMatrix result = tree.confusion_matrix();
 
@@ -1068,7 +1070,7 @@ TEST(BootstrapTree, ConfusionMatrix) {
 }
 
 TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -1136,12 +1138,12 @@ TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  DVector<double> result = tree.variable_importance(VIProjectorStrategy<double, int>());
+  DVector<float> result = tree.variable_importance(VIProjectorStrategy<float, int>());
 
-  DataColumn<double> expected(5);
+  DataColumn<float> expected(5);
   expected <<
     0.327572,
     0.561704,
@@ -1150,11 +1152,11 @@ TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
     0.0;
 
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
-  Data<double> x(10, 12);
+  Data<float> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -1182,12 +1184,12 @@ TEST(BootstrapTree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::glda(0.1), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
 
-  DataColumn<double> result = tree.variable_importance(VIProjectorStrategy<double, int>());
+  DataColumn<float> result = tree.variable_importance(VIProjectorStrategy<float, int>());
 
-  DataColumn<double> expected(12);
+  DataColumn<float> expected(12);
   expected <<
     0.5,
     0.0,
@@ -1202,11 +1204,11 @@ TEST(BootstrapTree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroups) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -1274,12 +1276,12 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroup
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  DVector<double> result = tree.variable_importance(VIProjectorAdjustedStrategy<double, int>());
+  DVector<float> result = tree.variable_importance(VIProjectorAdjustedStrategy<float, int>());
 
-  DataColumn<double> expected(5);
+  DataColumn<float> expected(5);
   expected <<
     0.491359,
     0.592556,
@@ -1287,11 +1289,11 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroup
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups) {
-  Data<double> x(10, 12);
+  Data<float> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -1319,12 +1321,12 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups)
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::glda(0.1), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
 
-  DataColumn<double> result = tree.variable_importance(VIProjectorAdjustedStrategy<double, int>());
+  DataColumn<float> result = tree.variable_importance(VIProjectorAdjustedStrategy<float, int>());
 
-  DataColumn<double> expected(12);
+  DataColumn<float> expected(12);
   expected <<
     1.0,
     0.0,
@@ -1339,11 +1341,11 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups)
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001));
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
-  Data<double> x(30, 5);
+  Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
@@ -1413,12 +1415,12 @@ TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
 
   Random::seed(0);
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::lda(), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  DVector<double> result = tree.variable_importance(VIPermutationStrategy<double, int>());
+  DVector<float> result = tree.variable_importance(VIPermutationStrategy<float, int>());
 
-  DataColumn<double> expected(5);
+  DataColumn<float> expected(5);
   expected <<
     0.33333,
     0.44444,
@@ -1426,11 +1428,11 @@ TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
     0.00000,
     0.00000;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+  ASSERT_APPROX(expected, result);
 }
 
 TEST(BootstrapTree, VariableImportancePermutationPDAMultivariateTwoGroups) {
-  Data<double> x(10, 12);
+  Data<float> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -1458,14 +1460,14 @@ TEST(BootstrapTree, VariableImportancePermutationPDAMultivariateTwoGroups) {
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
-  BootstrapDataSpec<double, int> data(x, y, sample_indices);
-  BootstrapTree<double, int> tree = BootstrapTree<double, int>::train(*TrainingSpec<double, int>::glda(0.1), data);
+  BootstrapDataSpec<float, int> data(x, y, sample_indices);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
 
   Random::seed(0);
 
-  DataColumn<double> result = tree.variable_importance(VIPermutationStrategy<double, int>());
+  DataColumn<float> result = tree.variable_importance(VIPermutationStrategy<float, int>());
 
-  DataColumn<double> expected(12);
+  DataColumn<float> expected(12);
   expected <<
     0.333337,
     0.0,
@@ -1480,5 +1482,5 @@ TEST(BootstrapTree, VariableImportancePermutationPDAMultivariateTwoGroups) {
     0.0,
     0.0;
 
-  ASSERT_TRUE(expected.isApprox(result, 0.0001)) << "Expected: " << std::endl << expected << std::endl << "Result: " << std::endl << result;
+  ASSERT_APPROX(expected, result);
 }
