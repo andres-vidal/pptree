@@ -54,17 +54,11 @@ namespace models::dr::strategy {
 
       stats::Uniform unif(0, data.cols() - 1);
 
-      std::set<int> var_sampled_indices = unif.distinct(n_vars);
+      std::vector<int> var_sampled_indices = unif.distinct(n_vars);
 
       LOG_INFO << "Selected variables: " << var_sampled_indices << std::endl;
 
-      stats::Data<T> reduced_data = stats::Data<T>::Zero(data.rows(), data.cols());
-
-      for (int i : var_sampled_indices) {
-        reduced_data.col(i) = data.col(i);
-      }
-
-      return reduced_data;
+      return data(Eigen::all, var_sampled_indices);
     }
   };
 

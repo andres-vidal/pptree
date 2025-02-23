@@ -28,7 +28,7 @@ namespace models::stats {
         return result;
       }
 
-      std::set<int> distinct(int count) {
+      std::vector<int> distinct(int count) {
         int range_size = max - min + 1;
 
         if (count > range_size) {
@@ -43,7 +43,7 @@ namespace models::stats {
           std::swap(values[i], values[j]);
         }
 
-        return std::set<int>(values.begin(), values.begin() + count);
+        return values;
       }
   };
 }
