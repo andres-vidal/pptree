@@ -48,10 +48,10 @@ namespace models::math {
   }
 
   template<typename Derived>
-  float determinant(
+  auto determinant(
     const DMatrixBase<Derived> &m
     ) {
-    float d = m.determinant();
+    auto d = m.determinant();
 
     return fabs(d) < 1e-15 ? 0.0 : d;
   }

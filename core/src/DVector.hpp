@@ -32,7 +32,7 @@ namespace models::math {
   bool collinear(
     const DVector<T> &a,
     const DVector<T> &b) {
-    return is_module_approx((a.transpose() * b).value() / (a.norm() * b.norm()), 1.0);
+    return is_module_approx(a.dot(b) / (a.norm() * b.norm()), 1.0);
   }
 
   template<typename T>

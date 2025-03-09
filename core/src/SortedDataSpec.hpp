@@ -49,7 +49,7 @@ namespace models::stats {
         return specs;
       }
 
-      DataSpec<T, G> sort(const DataSpec<T, G> &data) {
+      static DataSpec<T, G> sort(const DataSpec<T, G> &data) {
         std::vector<int> indices(data.x.rows());
         std::iota(indices.begin(), indices.end(), 0);
 
@@ -69,7 +69,7 @@ namespace models::stats {
         const Data<T> &       x,
         const DataColumn<G> & y,
         const std::set<G> &   classes)
-        : DataSpec<T, G>(sort(DataSpec<T, G>(x, y, classes))),
+        : DataSpec<T, G>(SortedDataSpec<T, G>::sort(DataSpec<T, G>(x, y, classes))),
         group_specs(init_group_specs()) {
       }
 
