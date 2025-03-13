@@ -102,49 +102,84 @@ SortedDataSpec<float, int> parse_csv(const std::string& filename) {
   return SortedDataSpec<float, int>(x, y);
 }
 
-SortedDataSpec<float, int> read_data(int argc, char *argv[]) {
-  if (argc != 7 && argc != 5) {
-    std::cerr << "Usage:\n"
-              << "  Simulation mode: " << argv[0] << " n p G B l C\n"
-              << "  CSV mode: " << argv[0] << " B l C F" << std::endl;
+struct CLIParams {
+  int rows = 100;
+  int cols = 10;
+  int classes = 2;
+  int trees = 100;
+  int lambda = 10;
+  int threads = 1;
+  std::string filename = "";
+};
 
-    exit(1);
+CLIParams parse_args(int argc, char *argv[]) {
+  CLIParams params;
+
+  for (int i = 1; i < argc; i++) {
+    std::string arg = argv[i];
+    size_t pos = arg.find('=');
+
+    if (pos == std::string::npos) {
+      std::cerr << "Invalid argument format: " << arg << "\n"
+                << "Expected format: name=value" << std::endl;
+      exit(1);
+    }
+
+    std::string name = arg.substr(0, pos);
+    std::string value = arg.substr(pos + 1);
+
+    if (name == "rows") params.rows = std::stoi(value);
+    else if (name == "cols") params.cols = std::stoi(value);
+    else if (name == "classes") params.classes = std::stoi(value);
+    else if (name == "trees") params.trees = std::stoi(value);
+    else if (name == "lambda") params.lambda = std::stoi(value);
+    else if (name == "threads") params.threads = std::stoi(value);
+    else if (name == "filename") params.filename = value;
+    else {
+      std::cerr << "Unknown parameter: " << name << std::endl;
+      exit(1);
+    }
   }
 
-  if (argc == 7) {
-    const int n = std::stoi(argv[1]);
-    const int p = std::stoi(argv[2]);
-    const int G = std::stoi(argv[3]);
+  return params;
+}
 
-    return simulate(n, p, G);
+SortedDataSpec<float, int> read_data(const CLIParams& params) {
+  if (!params.filename.empty()) {
+    return parse_csv(params.filename);
   } else {
-    std::string F = argv[4];
-
-    return parse_csv(F);
+    return simulate(params.rows, params.cols, params.classes);
   }
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 7 && argc != 5) {
-    std::cerr << "Usage:\n"
-              << "  Simulation mode: " << argv[0] << " n p G B l C\n"
-              << "  CSV mode: " << argv[0] << " B l C F" << std::endl;
+  if (argc < 2) {
+    std::cerr << "Usage: " << argv[0] << " [parameter=value ...]\n"
+              << "Parameters:\n"
+              << "  rows=N        - Number of samples (simulation mode only)\n"
+              << "  cols=N        - Number of features (simulation mode only)\n"
+              << "  classes=N     - Number of classes (simulation mode only)\n"
+              << "  trees=N       - Number of trees (0 for single tree)\n"
+              << "  lambda=N      - Minimum leaf size\n"
+              << "  threads=N     - Number of threads\n"
+              << "  filename=path - CSV file to read (enables CSV mode)\n"
+              << "\nExample:\n"
+              << "  Simulation: " << argv[0] << " rows=100 cols=10 classes=2 trees=500\n"
+              << "  CSV file:   " << argv[0] << " filename=data.csv trees=500" << std::endl;
     return 1;
   }
 
-  const int B = std::stoi(argv[1]);
-  const int l = std::stoi(argv[2]);
-  const int C = std::stoi(argv[3]);
+  CLIParams params = parse_args(argc, argv);
+  SortedDataSpec<float, int> data = read_data(params);
 
-
-  SortedDataSpec<float, int> data = read_data(argc, argv);
-
-  const auto spec = TrainingSpec<float, int>::uniform_glda(std::round(data.x.cols() / 2.0), l);
+  const auto spec = TrainingSpec<float, int>::uniform_glda(
+    std::round(data.x.cols() / 2.0),
+    params.lambda);
 
   const auto start = std::chrono::high_resolution_clock::now();
 
-  if (B > 0) {
-    Forest<float, int>::train(*spec, data, B, 0, C);
+  if (params.trees > 0) {
+    Forest<float, int>::train(*spec, data, params.trees, 0, params.threads);
   } else {
     Tree<float, int>::train(*spec, data);
   }
