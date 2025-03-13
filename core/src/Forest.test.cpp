@@ -148,7 +148,6 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
         ),
       TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
       std::make_shared<BootstrapDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 })))
-
     );
 
 
@@ -254,89 +253,87 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
     4,
     seed);
 
-  Forest<float, int> expect(
-    TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
-    seed);
+  Forest<float, int> expect;
 
+  // First tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       std::make_unique<Condition<float, int> >(
-        as_projector({ 0.9758559465408325, -0.09231313318014145, -0.0032241533044725657, -0.18500669300556183, 0.0703246220946312 }),
-        4.111116409301758,
+        as_projector({ 0.8978734016418457, 0.0, 0.0, 0.0, -0.4402538239955902 }),
+        4.231846332550049,
         std::make_unique<Condition<float, int> >(
-          as_projector({ 0.15599919855594635, 0.9833118319511414, 0.0935513898730278, 0.002791941398754716, 0.001575765199959278 }),
-          2.8408889770507813,
+          as_projector({ 0.2121254801750183, 0.9772424101829529, 0.0, 0.0, 0.0 }),
+          2.8189949989318848,
           std::make_unique<Response<float, int> >(0),
           std::make_unique<Response<float, int> >(1)
           ),
         std::make_unique<Response<float, int> >(2)
         ),
       TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-      std::make_shared<BootstrapDataSpec<float, int> >(
-        data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
+      std::make_shared<BootstrapDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 4 }))
       )
     );
 
+  // Second tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       std::make_unique<Condition<float, int> >(
-        as_projector({ 0.9792769551277161, -0.19746960699558258, 0.006554579362273216, -0.04340337961912155, -0.00977456383407116 }),
-        4.042616367340088,
+        as_projector({ 0.9795739650726318, -0.20108427107334137, 0.0, 0.0, 0.0 }),
+        4.077343463897705,
         std::make_unique<Condition<float, int> >(
-          as_projector({ 1.0, 6.720548384464564e-08, 7.547996005996538e-09, -1.461530541035927e-08, 2.5287971539000864e-07 }),
-          1.5000007152557373,
+          as_projector({ 1.0, 0.0, 0.0, 0.0, 0.0 }),
+          1.5,
           std::make_unique<Response<float, int> >(0),
           std::make_unique<Response<float, int> >(1)
           ),
         std::make_unique<Response<float, int> >(2)
         ),
       TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-      std::make_shared<BootstrapDataSpec<float, int> >(
-        data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
+      std::make_shared<BootstrapDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
       )
     );
 
+  // Third tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       std::make_unique<Condition<float, int> >(
-        as_projector({ 0.9805459976196289, -0.19516022503376007, -0.004170051775872707, -0.02060389146208763, 0.0003253696486353874 }),
-        4.093138694763184,
+        as_projector({ 0.9801146388053894, -0.19843198359012604, 0.0, 0.0, 0.0 }),
+        4.099050521850586,
         std::make_unique<Condition<float, int> >(
-          as_projector({ 1.0, 1.299416112487961e-06, -2.8670829266275177e-08, 1.2065898147284315e-07, 2.986283575978632e-08 }),
-          1.500003457069397,
+          as_projector({ 1.0, 0.0, 0.0, 0.0, 0.0 }),
+          1.5,
           std::make_unique<Response<float, int> >(0),
           std::make_unique<Response<float, int> >(1)
           ),
         std::make_unique<Response<float, int> >(2)
         ),
       TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-      std::make_shared<BootstrapDataSpec<float, int> >(
-        data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
+      std::make_shared<BootstrapDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
       )
     );
 
+  // Fourth tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       std::make_unique<Condition<float, int> >(
-        as_projector({ 0.16805875301361084, 0.18092086911201477, 0.05232581868767738, -0.9623227715492249, -0.10109801590442657 }),
-        -3.9484755992889404,
-        std::make_unique<Response<float, int> >(2),
+        as_projector({ 0.0, 0.925386369228363, 0.0, 0.0, 0.37902534008026123 }),
+        3.397115468978882,
+        std::make_unique<Response<float, int> >(0),
         std::make_unique<Condition<float, int> >(
-          as_projector({ 0.11039015650749207, 0.9367238283157349, 0.006573501508682966, 0.30068090558052063, 0.1411038339138031 }),
-          3.1110880374908447,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)
+          as_projector({ -2.3717738883988204e-08, 1.0, 0.0, 0.0, 0.0 }),
+          6.5,
+          std::make_unique<Response<float, int> >(1),
+          std::make_unique<Response<float, int> >(2)
           )
         ),
       TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-      std::make_shared<BootstrapDataSpec<float, int> >(
-        data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 0, 1 }))
+      std::make_shared<BootstrapDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 }), std::vector<int>({ 1, 4 }))
       )
     );
 
+
   ASSERT_EQ(expect, result);
-  ASSERT_EQ(expect.seed, result.seed);
+  ASSERT_EQ(seed, result.seed);
 }
 
 TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
@@ -716,11 +713,11 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
 
   DVector<float> expected(5);
   expected <<
-    0.16962195932865143,
-    0.26724648475646973,
-    0.00253944098949432,
-    0.36136019229888916,
-    0.14448873698711395;
+    0.16613522171974182,
+    0.58310157060623169,
+    0.0,
+    0.074664123356342316,
+    0.06294790655374527;
 
   ASSERT_APPROX(expected, result);
 }
@@ -863,11 +860,11 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
 
   DVector<float> expected(5);
   expected <<
-    0.19476625323295593,
-    0.18999017775058746,
-    0.00231075938791036,
-    0.17675185203552246,
-    0.06259537488222122;
+    0.24800321459770203,
+    0.57124263048171997,
+    0.0,
+    0.040219482034444809,
+    0.041419751942157745;
 
 
   ASSERT_APPROX(expected, result);
@@ -1015,10 +1012,10 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
   DVector<float> expected(5);
   expected <<
     0.34999999403953552,
-    0.20000000298023224,
-    0,
-    0,
-    0;
+    0.34999999403953552,
+    0.0,
+    0.0,
+    0.0;
 
 
   ASSERT_APPROX(expected, result);

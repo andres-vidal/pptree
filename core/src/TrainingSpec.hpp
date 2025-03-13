@@ -21,16 +21,16 @@ namespace models {
   template<typename T, typename R>
   struct TrainingSpec {
     const std::unique_ptr<pp::strategy::PPStrategy<T, R> > pp_strategy;
-    const std::unique_ptr<dr::strategy::DRStrategy<T> > dr_strategy;
+    const std::unique_ptr<dr::strategy::DRStrategy<T, R> > dr_strategy;
 
     TrainingSpec(
       std::unique_ptr<pp::strategy::PPStrategy<T, R> > pp_strategy,
-      std::unique_ptr<dr::strategy::DRStrategy<T> >    dr_strategy) :
+      std::unique_ptr<dr::strategy::DRStrategy<T, R> > dr_strategy) :
       pp_strategy(std::move(pp_strategy)),
       dr_strategy(std::move(dr_strategy)) {
     }
 
-    TrainingSpec(const TrainingSpec& other) :
+    TrainingSpec(const TrainingSpec<T, R>& other) :
       pp_strategy(other.pp_strategy->clone()),
       dr_strategy(other.dr_strategy->clone()) {
     }
@@ -52,7 +52,7 @@ namespace models {
     explicit GLDATrainingSpec(const float lambda) :
       TrainingSpec<T, R>(
         pp::strategy::glda<T, R>(lambda),
-        dr::strategy::all<T>()),
+        dr::strategy::all<T, R>()),
       lambda(lambda) {
     }
 
@@ -73,7 +73,7 @@ namespace models {
     UniformGLDATrainingSpec(const int n_vars, const float lambda) :
       TrainingSpec<T, R>(
         pp::strategy::glda<T, R>(lambda),
-        dr::strategy::uniform<T>(n_vars)),
+        dr::strategy::uniform<T, R>(n_vars)),
       n_vars(n_vars),
       lambda(lambda) {
     }

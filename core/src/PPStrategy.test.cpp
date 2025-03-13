@@ -34,7 +34,12 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  SortedDataSpec<float, int> sorted_data(x, y);
+
+  std::vector<int> all_indices(x.cols());
+  std::iota(all_indices.begin(), all_indices.end(), 0);
+
+  ReducedDataSpec<float, int> data(sorted_data, all_indices);
 
   DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
 
@@ -73,7 +78,12 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  SortedDataSpec<float, int> sorted_data(x, y);
+
+  std::vector<int> all_indices(x.cols());
+  std::iota(all_indices.begin(), all_indices.end(), 0);
+
+  ReducedDataSpec<float, int> data(sorted_data, all_indices);
 
   DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
 
@@ -113,7 +123,12 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  SortedDataSpec<float, int> sorted_data(x, y);
+
+  std::vector<int> all_indices(x.cols());
+  std::iota(all_indices.begin(), all_indices.end(), 0);
+
+  ReducedDataSpec<float, int> data(sorted_data, all_indices);
 
   DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
 
@@ -151,7 +166,12 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  SortedDataSpec<float, int> sorted_data(x, y);
+
+  std::vector<int> all_indices(x.cols());
+  std::iota(all_indices.begin(), all_indices.end(), 0);
+
+  ReducedDataSpec<float, int> data(sorted_data, all_indices);
 
   DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
 
@@ -232,7 +252,12 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
+  SortedDataSpec<float, int> sorted_data(x, y);
+
+  std::vector<int> all_indices(x.cols());
+  std::iota(all_indices.begin(), all_indices.end(), 0);
+
+  ReducedDataSpec<float, int> data(sorted_data, all_indices);
 
   DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
 
@@ -683,7 +708,12 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  SortedDataSpec<float, int> sorted_data(x, y);
+
+  std::vector<int> all_indices(x.cols());
+  std::iota(all_indices.begin(), all_indices.end(), 0);
+
+  ReducedDataSpec<float, int> data(sorted_data, all_indices);
 
   DataColumn<float> actual = GLDAStrategy<float, int>(0.5).optimize(data);
 
@@ -709,7 +739,12 @@ TEST(Projector, GLDAOptimumProjectorZeroColumn) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  SortedDataSpec<float, int> sorted_data(x, y);
+
+  std::vector<int> all_indices(x.cols());
+  std::iota(all_indices.begin(), all_indices.end(), 0);
+
+  ReducedDataSpec<float, int> data(sorted_data, all_indices);
 
   DataColumn<float> actual = GLDAStrategy<float, int>(0.1).optimize(data);
 

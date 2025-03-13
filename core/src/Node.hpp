@@ -50,20 +50,20 @@ namespace models {
   template<typename T, typename R>
   struct Condition : public Node<T, R> {
     pp::Projector<T> projector;
-    Threshold<T> threshold;
+    T threshold;
     std::unique_ptr<Node<T, R> > lower;
     std::unique_ptr<Node<T, R> > upper;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
     std::unique_ptr<stats::SortedDataSpec<T, R> > training_data;
 
     Condition(
-      pp::Projector<T> &                            projector,
-      Threshold<T> &                                threshold,
+      const pp::Projector<T>&                       projector,
+      const Threshold<T>&                           threshold,
       std::unique_ptr<Node<T, R> >                  lower,
       std::unique_ptr<Node<T, R> >                  upper,
       std::unique_ptr<TrainingSpec<T, R> >          training_spec,
-      std::unique_ptr<stats::SortedDataSpec<T, R> > training_data)  :
-      projector(projector),
+      std::unique_ptr<stats::SortedDataSpec<T, R> > training_data)
+      : projector(projector),
       threshold(threshold),
       lower(std::move(lower)),
       upper(std::move(upper)),
@@ -72,11 +72,11 @@ namespace models {
     }
 
     Condition(
-      pp::Projector<T>             projector,
-      Threshold<T>                 threshold,
+      const pp::Projector<T>&      projector,
+      const Threshold<T>&          threshold,
       std::unique_ptr<Node<T, R> > lower,
-      std::unique_ptr<Node<T, R> > upper) :
-      projector(projector),
+      std::unique_ptr<Node<T, R> > upper)
+      : projector(projector),
       threshold(threshold),
       lower(std::move(lower)),
       upper(std::move(upper)) {
