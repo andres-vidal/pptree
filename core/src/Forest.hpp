@@ -115,15 +115,9 @@ namespace models {
     }
 
     float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      float accumulated_error = std::accumulate(
-        trees.begin(),
-        trees.end(),
-        0.0,
-        [&data](float acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> float {
-          return acc + tree->error_rate(data);
-        });
-
-      return accumulated_error / (float)trees.size();
+      auto [x, y, _] = data.unwrap();
+      stats::DataColumn<R> ensemble_predictions = predict(x);
+      return stats::error_rate(ensemble_predictions, y);
     }
 
     float error_rate() const {

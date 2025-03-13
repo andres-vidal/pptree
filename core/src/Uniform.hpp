@@ -43,7 +43,7 @@ namespace models::stats {
           std::swap(values[i], values[j]);
         }
 
-        return values;
+        return std::vector<int>(values.begin(), values.begin() + count);
       }
   };
 }

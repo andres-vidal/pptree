@@ -9,7 +9,7 @@
 
 namespace models::stats {
   template<typename T, typename G>
-  struct SortedDataSpec : DataSpec<T, G> {
+  struct SortedDataSpec : public DataSpec<T, G> {
     private:
 
       struct GroupSpec {
@@ -192,7 +192,7 @@ namespace models::stats {
           new_group_specs);
       }
 
-      Data<T> bgss() const {
+      virtual Data<T> bgss() const {
         auto global_mean = mean(this->x);
         Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
 
@@ -207,7 +207,7 @@ namespace models::stats {
         return result;
       }
 
-      Data<T> wgss() const {
+      virtual Data<T> wgss() const {
         Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {

@@ -372,8 +372,8 @@ int main(int argc, char *argv[]) {
     // Forest: use uniform_glda with var_proportion
     const auto spec = TrainingSpec<float, int>::uniform_glda(
       std::round(train_data.x.cols() * params.var_proportion),
-      params.lambda
-      );
+      params.lambda);
+
     auto forest = Forest<float, int>::train(*spec, train_data, params.trees, params.seed, params.threads);
     evaluate_model(forest, test_data, start);
   } else {

@@ -65,8 +65,8 @@ namespace models {
 
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > binary_step(
-    const TrainingSpec<T, R> &   training_spec,
-    const SortedDataSpec<T, R> & training_data) {
+    const TrainingSpec<T, R> &    training_spec,
+    const ReducedDataSpec<T, R> & training_data) {
     auto group_1 = *training_data.classes.begin();
     auto group_2 = *std::next(training_data.classes.begin());
 
@@ -138,16 +138,16 @@ namespace models {
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data) {
     LOG_INFO << "Project-Pursuit Tree building step for " << training_data.classes.size() << " groups: " << training_data.classes << std::endl;
-    LOG_INFO << "Dataset size: " << training_data.x.rows() << " observations of " << training_data.y.cols() << " variables" << std::endl;
+    LOG_INFO << "Dataset size: " << training_data.x.rows() << " observations of " << training_data.x.cols() << " variables" << std::endl;
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
-    const DRStrategy<T> &dr_strategy = *(training_spec.dr_strategy);
+    const DRStrategy<T, R> &dr_strategy = *(training_spec.dr_strategy);
 
     if (training_data.classes.size() == 1) {
       return std::make_unique<Response<T, R> >(*training_data.classes.begin());
     }
 
-    auto reduced_data = training_data.analog(dr_strategy(training_data.x));
+    auto reduced_data = dr_strategy(training_data);
 
     if (training_data.classes.size() == 2) {
       return binary_step(training_spec, reduced_data);
@@ -156,12 +156,11 @@ namespace models {
     LOG_INFO << "Redefining a " << training_data.classes.size() << " group problem as binary:" << std::endl;
 
     auto projector = pp_strategy(reduced_data);
-    auto binary_mapping = binary_regroup(reduced_data.analog(project(reduced_data.x, projector)));
+    auto binary_mapping = binary_regroup(training_data.analog(project(training_data.x, projector)));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
     auto binary_remapped_data = reduced_data.remap(binary_mapping);
-
     auto temp_node = binary_step(training_spec, binary_remapped_data);
 
     R binary_lower_group = temp_node->lower->response();
