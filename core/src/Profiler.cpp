@@ -257,30 +257,13 @@ split_data(const SortedDataSpec<float, int>& data, float train_ratio, int seed) 
 }
 
 template<typename Model>
-void evaluate_model(const Model&                             model,
- const SortedDataSpec<float, int>&                           test_data,
- std::chrono::time_point<std::chrono::high_resolution_clock> start_time) {
+void evaluate_model(const Model& model, const SortedDataSpec<float, int>& test_data,
+ const std::chrono::high_resolution_clock::time_point& start) {
   const auto end = std::chrono::high_resolution_clock::now();
-  const auto elapsed_time = std::chrono::duration_cast<std::chrono::duration<float> >(end - start_time).count();
+  const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-  // Calculate accuracy on test set
-  int correct = 0;
-  for (int i = 0; i < test_data.x.rows(); ++i) {
-    // Create a single-row Data matrix for prediction
-    Data<float> single_row(1, test_data.x.cols());
-    for (int j = 0; j < test_data.x.cols(); ++j) {
-      single_row(0, j) = test_data.x(i, j);
-    }
-
-    if (model.predict(single_row)(0) == test_data.y[i]) {
-      correct++;
-    }
-  }
-
-  float accuracy = static_cast<float>(correct) / test_data.x.rows();
-
-  std::cout << "Training Time: " << elapsed_time << " seconds\n"
-            << "Test Accuracy: " << (accuracy * 100) << "%" << std::endl;
+  std::cout << "Training completed in " << duration.count() << "ms" << std::endl;
+  std::cout << "Test Accuracy: " << (100 * (1 - model.error_rate(test_data))) << "%" << std::endl;
 }
 
 void print_usage(const char *program_name) {
