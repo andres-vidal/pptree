@@ -125,8 +125,20 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   gtest_discover_tests(pptree-test)
 endif()
 
+
+
 # Add profiler executable
 add_executable(pptree-profile src/Profiler.cpp)
 
-target_link_libraries(pptree-profile pptree)
+FetchContent_Declare(
+  csv  
+  GIT_REPOSITORY https://github.com/vincentlaucsb/csv-parser.git
+  GIT_SHALLOW TRUE 
+  GIT_TAG 2.2.1
+) 
+
+FetchContent_MakeAvailable(csv)
+
+target_include_directories(pptree-profile PRIVATE csv)
+target_link_libraries(pptree-profile pptree csv)
   
