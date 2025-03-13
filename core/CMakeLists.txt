@@ -125,10 +125,10 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   gtest_discover_tests(pptree-test)
 endif()
 
-
-
-# Add profiler executable
-add_executable(pptree-profile src/Profiler.cpp)
+# Add profiler executable and its dependencies
+# Disable coverage for csv-parser on all platforms
+set(CSV_PARSER_COVERAGE OFF CACHE BOOL "Disable coverage for csv-parser" FORCE)
+set(BUILD_TESTS OFF CACHE BOOL "Disable csv-parser tests" FORCE)
 
 FetchContent_Declare(
   csv  
@@ -137,8 +137,13 @@ FetchContent_Declare(
   GIT_TAG 2.2.1
 ) 
 
-FetchContent_MakeAvailable(csv)
+FetchContent_GetProperties(csv)
+if(NOT csv_POPULATED)
+    FetchContent_Populate(csv)
+    add_library(csv INTERFACE)
+    target_include_directories(csv INTERFACE ${csv_SOURCE_DIR}/single_include)
+endif()
 
-target_include_directories(pptree-profile PRIVATE csv)
+add_executable(pptree-profile src/Profiler.cpp)
+target_include_directories(pptree-profile PRIVATE ${csv_SOURCE_DIR}/single_include)
 target_link_libraries(pptree-profile pptree csv)
-  
