@@ -366,18 +366,19 @@ int main(int argc, char *argv[]) {
   auto [train_data, test_data] = split_data(full_data, params.train_proportion, params.seed);
   print_split_info(train_data, test_data, params.train_proportion);
 
-  // Train model
-  const auto spec = TrainingSpec<float, int>::uniform_glda(
-    std::round(train_data.x.cols() * params.var_proportion),
-    params.lambda
-    );
-
   const auto start = std::chrono::high_resolution_clock::now();
 
   if (params.trees > 0) {
+    // Forest: use uniform_glda with var_proportion
+    const auto spec = TrainingSpec<float, int>::uniform_glda(
+      std::round(train_data.x.cols() * params.var_proportion),
+      params.lambda
+      );
     auto forest = Forest<float, int>::train(*spec, train_data, params.trees, params.seed, params.threads);
     evaluate_model(forest, test_data, start);
   } else {
+    // Single tree: use regular glda without feature subsampling
+    const auto spec = TrainingSpec<float, int>::glda(params.lambda);
     auto tree = Tree<float, int>::train(*spec, train_data);
     evaluate_model(tree, test_data, start);
   }
