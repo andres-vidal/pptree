@@ -5,6 +5,8 @@
 #include <vector>
 #include <chrono>
 #include <cmath>
+#include <random>
+#include <algorithm>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -152,6 +154,75 @@ SortedDataSpec<float, int> read_data(const CLIParams& params) {
   }
 }
 
+std::pair<SortedDataSpec<float, int>, SortedDataSpec<float, int> >
+split_data(const SortedDataSpec<float, int>& data, float train_ratio = 0.7) {
+  const int n = data.x.rows();
+  const int train_size = static_cast<int>(n * train_ratio);
+
+  // Create index vector and shuffle it
+  std::vector<int> indices(n);
+  std::iota(indices.begin(), indices.end(), 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::shuffle(indices.begin(), indices.end(), gen);
+
+  // Create train and test matrices
+  Data<float> train_x(train_size, data.x.cols());
+  DataColumn<int> train_y(train_size);
+  Data<float> test_x(n - train_size, data.x.cols());
+  DataColumn<int> test_y(n - train_size);
+
+  // Fill train data
+  for (int i = 0; i < train_size; ++i) {
+    for (int j = 0; j < data.x.cols(); ++j) {
+      train_x(i, j) = data.x(indices[i], j);
+    }
+
+    train_y[i] = data.y[indices[i]];
+  }
+
+  // Fill test data
+  for (int i = 0; i < n - train_size; ++i) {
+    for (int j = 0; j < data.x.cols(); ++j) {
+      test_x(i, j) = data.x(indices[i + train_size], j);
+    }
+
+    test_y[i] = data.y[indices[i + train_size]];
+  }
+
+  return {
+    SortedDataSpec<float, int>(train_x, train_y),
+    SortedDataSpec<float, int>(test_x, test_y)
+  };
+}
+
+template<typename Model>
+void evaluate_model(const Model&                             model,
+ const SortedDataSpec<float, int>&                           test_data,
+ std::chrono::time_point<std::chrono::high_resolution_clock> start_time) {
+  const auto end = std::chrono::high_resolution_clock::now();
+  const auto elapsed_time = std::chrono::duration_cast<std::chrono::duration<float> >(end - start_time).count();
+
+  // Calculate accuracy on test set
+  int correct = 0;
+  for (int i = 0; i < test_data.x.rows(); ++i) {
+    // Create a single-row Data matrix for prediction
+    Data<float> single_row(1, test_data.x.cols());
+    for (int j = 0; j < test_data.x.cols(); ++j) {
+      single_row(0, j) = test_data.x(i, j);
+    }
+
+    if (model.predict(single_row)(0) == test_data.y[i]) {
+      correct++;
+    }
+  }
+
+  float accuracy = static_cast<float>(correct) / test_data.x.rows();
+
+  std::cout << "Training Time: " << elapsed_time << " seconds\n"
+            << "Test Accuracy: " << (accuracy * 100) << "%" << std::endl;
+}
+
 int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cerr << "Usage: " << argv[0] << " [parameter=value ...]\n"
@@ -170,24 +241,30 @@ int main(int argc, char *argv[]) {
   }
 
   CLIParams params = parse_args(argc, argv);
-  SortedDataSpec<float, int> data = read_data(params);
+  auto full_data = read_data(params);
+
+  // Split data into train and test sets
+  auto [train_data, test_data] = split_data(full_data);
+
+  std::cout << "Data split into:\n"
+            << "Training set: " << train_data.x.rows() << " samples\n"
+            << "Test set:     " << test_data.x.rows() << " samples\n";
 
   const auto spec = TrainingSpec<float, int>::uniform_glda(
-    std::round(data.x.cols() / 2.0),
-    params.lambda);
+    std::round(train_data.x.cols() / 2.0),
+    params.lambda
+    );
 
   const auto start = std::chrono::high_resolution_clock::now();
 
+  // Train on training data
   if (params.trees > 0) {
-    Forest<float, int>::train(*spec, data, params.trees, 0, params.threads);
+    auto forest = Forest<float, int>::train(*spec, train_data, params.trees, 0, params.threads);
+    evaluate_model(forest, test_data, start);
   } else {
-    Tree<float, int>::train(*spec, data);
+    auto tree = Tree<float, int>::train(*spec, train_data);
+    evaluate_model(tree, test_data, start);
   }
-
-  const auto end = std::chrono::high_resolution_clock::now();
-  const auto elapsed_time = std::chrono::duration_cast<std::chrono::duration<float> >(end - start).count();
-
-  std::cout << "Elapsed Time: " << elapsed_time << " seconds." << std::endl;
 
   return 0;
 }
