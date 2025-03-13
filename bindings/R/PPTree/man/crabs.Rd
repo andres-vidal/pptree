@@ -7,9 +7,8 @@
 \format{
 A data frame with 200 rows and 8 variables:
 \describe{
-  \item{sp}{Species code, with `B` indicating blue and `O` indicating orange.}
+  \item{Type}{Species code, with `B` indicating blue and `O` indicating orange.}
   \item{sex}{Sex of the crab, with `M` indicating male and `F` indicating female.}
-  \item{index}{Index number of the crab.}
   \item{FL}{Size of the frontal lobe in mm.}
   \item{RW}{Rear width in mm.}
   \item{CL}{Carapace length in mm.}

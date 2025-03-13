@@ -4,9 +4,8 @@
 #'
 #' @format A data frame with 200 rows and 8 variables:
 #' \describe{
-#'   \item{sp}{Species code, with `B` indicating blue and `O` indicating orange.}
+#'   \item{Type}{Species code, with `B` indicating blue and `O` indicating orange.}
 #'   \item{sex}{Sex of the crab, with `M` indicating male and `F` indicating female.}
-#'   \item{index}{Index number of the crab.}
 #'   \item{FL}{Size of the frontal lobe in mm.}
 #'   \item{RW}{Rear width in mm.}
 #'   \item{CL}{Carapace length in mm.}
@@ -61,7 +60,7 @@ NULL
 #' @name fishcatch
 #' @usage data(fishcatch)
 #' @format A data frame with 159 rows and 7 variables
-#' @source url{http://www.amstat.org/publications/jse/jse_data_archive.htm}
+#' @source \url{http://www.amstat.org/publications/jse/jse_data_archive.htm}
 NULL
 
 #' Glass Dataset
@@ -130,7 +129,7 @@ NULL
 #'   \item{Sepal.Width}{Width of the sepal in cm.}
 #'   \item{Petal.Length}{Length of the petal in cm.}
 #'   \item{Petal.Width}{Width of the petal in cm.}
-#'   \item{Species}{A factor with levels `setosa`, `versicolor`, and `virginica` indicating the species of each observation.}
+#'   \item{Type}{A factor with levels `setosa`, `versicolor`, and `virginica` indicating the species of each observation.}
 #' }
 #' @source Fisher, R.A. (1936) The use of multiple measurements in taxonomic problems. Annals of Eugenics, 7, Part II, 179-188.
 #' @name iris
@@ -242,7 +241,7 @@ NULL
 #' @name parkinson
 #' @usage data(parkinson)
 #' @format A data frame with 195 rows and 23 variables
-#' @source url{https://archive.ics.uci.edu/ml/datasets/Parkinsons}
+#' @source \url{https://archive.ics.uci.edu/ml/datasets/Parkinsons}
 NULL
 
 #' Wine Dataset
@@ -260,4 +259,3 @@ NULL
 #' @usage data(wine)
 #' @format A data frame with 178 rows and 14 variables
 NULL
-

@@ -11,7 +11,7 @@ A data frame with 150 rows and 5 variables:
   \item{Sepal.Width}{Width of the sepal in cm.}
   \item{Petal.Length}{Length of the petal in cm.}
   \item{Petal.Width}{Width of the petal in cm.}
-  \item{Species}{A factor with levels `setosa`, `versicolor`, and `virginica` indicating the species of each observation.}
+  \item{Type}{A factor with levels `setosa`, `versicolor`, and `virginica` indicating the species of each observation.}
 }
 }
 \source{

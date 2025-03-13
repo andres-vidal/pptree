@@ -18,6 +18,6 @@ The formula used to train the model.
 Extracts the formula used to train a PPForest model.
 }
 \examples{
-model <- PPForest(Species ~ ., data = iris)
+model <- PPForest(Type ~ ., data = iris)
 formula(model)
 }

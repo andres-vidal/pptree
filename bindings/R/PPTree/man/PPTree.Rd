@@ -4,14 +4,7 @@
 \alias{PPTree}
 \title{Trains a Project-Pursuit oblique decision tree.}
 \usage{
-PPTree(
-  formula = NULL,
-  data = NULL,
-  x = NULL,
-  y = NULL,
-  lambda = 0,
-  max_retries = 0
-)
+PPTree(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0)
 }
 \arguments{
 \item{formula}{A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.}
@@ -23,8 +16,6 @@ PPTree(
 \item{y}{A matrix containing the labels for each observation.}
 
 \item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).}
-
-\item{max_retries}{The maximum number of retries to perform when the optimization fails. The whole tree is retried. The default is 0.}
 }
 \value{
 A PPTree model trained on \code{x} and \code{y}.
@@ -36,10 +27,10 @@ If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (L
 \examples{
 
 # Example 1: formula interface with the `iris` dataset
-PPTree(Species ~ ., data = iris)
+PPTree(Type ~ ., data = iris)
 
 # Example 2: formula interface with the `iris` dataset with regularization
-PPTree(Species ~ ., data = iris, lambda = 0.5)
+PPTree(Type ~ ., data = iris, lambda = 0.5)
 
 # Example 3: matrix interface with the `iris` dataset
 PPTree(x = iris[, 1:4], y = iris[, 5])
@@ -48,19 +39,19 @@ PPTree(x = iris[, 1:4], y = iris[, 5])
 PPTree(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 
 # Example 5: formula interface with the `crabs` dataset
-PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+PPTree(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 
 # Example 6: formula interface with the `crabs` dataset with regularization
-PPTree(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
+PPTree(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
 
 # Example 7: matrix interface with the `crabs` dataset
-x <- crabs[, c(2, 4:8)]
-x$sex <- as.numeric(as.factor(x$sex))
-PPTree(x = x, y = crabs[, 1])
+x <- crabs[, 2:5]
+x$sex <- as.numeric(as.factor(crabs$sex))
+PPTree(x = x, y = crabs$Type)
 
 # Example 8: matrix interface with the `crabs` dataset with regulartion
-x <- crabs[, c(2, 4:8)]
-x$sex <- as.numeric(as.factor(x$sex))
-PPTree(x = x, y = crabs[, 1], lambda = 0.5)
+x <- crabs[, 2:5]
+x$sex <- as.numeric(as.factor(crabs$sex))
+PPTree(x = x, y = crabs$Type, lambda = 0.5)
 
 }

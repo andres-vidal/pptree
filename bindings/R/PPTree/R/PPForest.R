@@ -22,10 +22,10 @@ NULL
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
-#' PPForest(Species ~ ., data = iris)
+#' PPForest(Type ~ ., data = iris)
 #'
 #' # Example 2: formula interface with the `iris` dataset with regularization
-#' PPForest(Species ~ ., data = iris, lambda = 0.5)
+#' PPForest(Type ~ ., data = iris, lambda = 0.5)
 #'
 #' # Example 3: matrix interface with the `iris` dataset
 #' PPForest(x = iris[, 1:4], y = iris[, 5])
@@ -34,20 +34,20 @@ NULL
 #' PPForest(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #'
 #' # Example 5: formula interface with the `crabs` dataset
-#' PPForest(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+#' PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 #'
 #' # Example 6: formula interface with the `crabs` dataset with regularization
-#' PPForest(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
+#' PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
 #'
 #' # Example 7: matrix interface with the `crabs` dataset
-#' x <- crabs[, c(2, 4:8)]
-#' x$sex <- as.numeric(as.factor(x$sex))
-#' PPForest(x = x, y = crabs[, 1])
+#' x <- crabs[, 2:5]
+#' x$sex <- as.numeric(as.factor(crabs$sex))
+#' PPForest(x = x, y = crabs$Type)
 #'
 #' # Example 8: matrix interface with the `crabs` dataset with regulartion
-#' x <- crabs[, c(2, 4:8)]
-#' x$sex <- as.numeric(as.factor(x$sex))
-#' PPForest(x = x, y = crabs[, 1], lambda = 0.5)
+#' x <- crabs[, 2:5]
+#' x$sex <- as.numeric(as.factor(crabs$sex))
+#' PPForest(x = x, y = crabs$Type, lambda = 0.5)
 #'
 #' @export
 PPForest <- function(
@@ -96,11 +96,11 @@ PPForest <- function(
 #' @return A matrix containing the predicted labels for each observation.
 #' @examples
 #' # Example 1: with the `iris` dataset
-#' model <- PPForest(Species ~ ., data = iris)
+#' model <- PPForest(Type ~ ., data = iris)
 #' predict(model, iris)
 #'
 #' # Example 2: with the `crabs` dataset
-#' model <- PPForest(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+#' model <- PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 #' predict(model, crabs)
 #'
 #' @export
@@ -122,7 +122,7 @@ predict.PPForest <- function(object, ...) {
 #' @param ... (unused) other parameters tipically passed to formula
 #' @return The formula used to train the model.
 #' @examples
-#' model <- PPForest(Species ~ ., data = iris)
+#' model <- PPForest(Type ~ ., data = iris)
 #' formula(model)
 #' @export
 formula.PPForest <- function(x, ...) {
@@ -133,7 +133,7 @@ formula.PPForest <- function(x, ...) {
 #' @param x A PPForest model.
 #' @param ... (unused) other parameters tipically passed to print
 #' @examples
-#' model <- PPForest(Species ~ ., data = iris)
+#' model <- PPForest(Type ~ ., data = iris)
 #' print(model)
 #'
 #' @export
@@ -153,7 +153,7 @@ print.PPForest <- function(x, ...) {
 #' @param object A PPForest model.
 #' @param ... (unused) other parameters tipically passed to print
 #' @examples
-#' model <- PPForest(Species ~ ., data = iris)
+#' model <- PPForest(Type ~ ., data = iris)
 #' summary(model)
 #'
 #' @export
