@@ -89,14 +89,11 @@ namespace models {
 
     LOG_INFO << "Threshold: " << threshold << std::endl;
 
-    T projected_mean_1 = project(mean(data_group_1).transpose(), projector).mean();
-    T projected_mean_2 = project(mean(data_group_2).transpose(), projector).mean();
+    T projected_mean_1 = mean(data_group_1).dot(projector);
+    T projected_mean_2 = mean(data_group_2).dot(projector);
 
     LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
     LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
-
-    invariant(std::max(projected_mean_1, projected_mean_2) > threshold, "Threshold is greater than the two groups means");
-    invariant(std::min(projected_mean_1, projected_mean_2) < threshold, "Threshold is lower than the two groups means");
 
     R lower_group, upper_group;
 
