@@ -19,11 +19,11 @@ Predicts the labels of a set of observations using a PPForest model.
 }
 \examples{
 # Example 1: with the `iris` dataset
-model <- PPForest(Species ~ ., data = iris)
+model <- PPForest(Type ~ ., data = iris)
 predict(model, iris)
 
 # Example 2: with the `crabs` dataset
-model <- PPForest(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+model <- PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 predict(model, crabs)
 
 }

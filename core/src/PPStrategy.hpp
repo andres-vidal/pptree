@@ -96,8 +96,8 @@ namespace models::pp::strategy {
       std::iota(indices.begin(), indices.end(), 0);
 
       std::sort(indices.begin(), indices.end(), [&eigen_val, &eigen_vec](Eigen::Index idx1, Eigen::Index idx2) {
-         float value1_mod = fabs(eigen_val.row(idx1).value());
-         float value2_mod = fabs(eigen_val.row(idx2).value());
+         float value1_mod = fabs(eigen_val(idx1));
+         float value2_mod = fabs(eigen_val(idx2));
 
          if (math::is_approx(value1_mod, value2_mod, 0.001)) {
            auto vector1 = eigen_vec.col(idx1);

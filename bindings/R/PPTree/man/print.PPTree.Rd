@@ -15,7 +15,7 @@
 Prints a PPTree model.
 }
 \examples{
-model <- PPTree(Species ~ ., data = iris)
+model <- PPTree(Type ~ ., data = iris)
 print(model)
 
 }

@@ -15,7 +15,7 @@
 Summarizes a PPForest model.
 }
 \examples{
-model <- PPForest(Species ~ ., data = iris)
+model <- PPForest(Type ~ ., data = iris)
 summary(model)
 
 }

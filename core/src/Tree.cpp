@@ -30,7 +30,7 @@ namespace models {
      });
 
     T edge_gap = 0;
-    T edge_group = 0;
+    R edge_group = 0;
 
     for (int i = 0; i < means.size() - 1; i++) {
       T gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);

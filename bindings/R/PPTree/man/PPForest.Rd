@@ -12,7 +12,6 @@ PPForest(
   size = 2,
   lambda = 0,
   n_vars = NULL,
-  max_retries = 0,
   n_threads = NULL
 )
 }
@@ -31,8 +30,6 @@ PPForest(
 
 \item{n_vars}{The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.}
 
-\item{max_retries}{The maximum number of retries to perform when the optimization fails. A failing tree is retried max_retries times for each one of max_retries different bootstrap samples. The default is 0.}
-
 \item{n_threads}{The number of threads to use. The default is the number of cores available.}
 }
 \value{
@@ -47,10 +44,10 @@ If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (L
 \examples{
 
 # Example 1: formula interface with the `iris` dataset
-PPForest(Species ~ ., data = iris)
+PPForest(Type ~ ., data = iris)
 
 # Example 2: formula interface with the `iris` dataset with regularization
-PPForest(Species ~ ., data = iris, lambda = 0.5)
+PPForest(Type ~ ., data = iris, lambda = 0.5)
 
 # Example 3: matrix interface with the `iris` dataset
 PPForest(x = iris[, 1:4], y = iris[, 5])
@@ -59,19 +56,19 @@ PPForest(x = iris[, 1:4], y = iris[, 5])
 PPForest(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 
 # Example 5: formula interface with the `crabs` dataset
-PPForest(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 
 # Example 6: formula interface with the `crabs` dataset with regularization
-PPForest(sp ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
+PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
 
 # Example 7: matrix interface with the `crabs` dataset
-x <- crabs[, c(2, 4:8)]
-x$sex <- as.numeric(as.factor(x$sex))
-PPForest(x = x, y = crabs[, 1])
+x <- crabs[, 2:5]
+x$sex <- as.numeric(as.factor(crabs$sex))
+PPForest(x = x, y = crabs$Type)
 
 # Example 8: matrix interface with the `crabs` dataset with regulartion
-x <- crabs[, c(2, 4:8)]
-x$sex <- as.numeric(as.factor(x$sex))
-PPForest(x = x, y = crabs[, 1], lambda = 0.5)
+x <- crabs[, 2:5]
+x$sex <- as.numeric(as.factor(crabs$sex))
+PPForest(x = x, y = crabs$Type, lambda = 0.5)
 
 }

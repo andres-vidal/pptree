@@ -43,7 +43,7 @@ namespace models {
     }
 
     bool operator!=(const Node<T, R> &other) const {
-      return this->equals(other);
+      return !this->equals(other);
     }
   };
 
