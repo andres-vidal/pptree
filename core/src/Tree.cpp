@@ -22,15 +22,18 @@ namespace models {
 
     for (const R group : data.classes) {
       Data<T> group_data = data.group(group);
-      means.push_back({ group, group_data.mean() });
+
+      T group_mean = group_data.mean();
+
+      means.push_back({ group, group_mean });
     }
 
     std::sort(means.begin(), means.end(), [](const auto &a, const auto &b) {
        return std::get<1>(a) < std::get<1>(b);
      });
 
-    T edge_gap = 0;
-    R edge_group = 0;
+    T edge_gap = -1;
+    R edge_group = -1;
 
     for (int i = 0; i < means.size() - 1; i++) {
       T gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);
@@ -43,6 +46,11 @@ namespace models {
         LOG_INFO << "New edge gap: " << edge_gap << std::endl;
         LOG_INFO << "New edge group: " << edge_group << std::endl;
       }
+    }
+
+    if (edge_group == -1) {
+      LOG_INFO << "Edge group not found. Using first group." << std::endl;
+      edge_group = std::get<0>(means.front());
     }
 
     LOG_INFO << "Edge group: " << edge_group << std::endl;
