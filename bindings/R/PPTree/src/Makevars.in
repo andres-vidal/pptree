@@ -24,7 +24,7 @@ pptree:
 
 	@if [ ! -f ../inst/lib/libpptree.a ]; then \
 		mkdir -p $(BUILD_DIR) ../inst/lib; \
-		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DPPTREE_SKIP_TESTS=true ../core && make && cd ..; \
+		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DPPTREE_SKIP_TESTS=true -DPPTREE_SKIP_PROFILE=true ../core && make && cd ..; \
 		cp $(BUILD_DIR)/libpptree.a ../inst/lib; \
 		rm -rf $(BUILD_DIR); \
 	else \
