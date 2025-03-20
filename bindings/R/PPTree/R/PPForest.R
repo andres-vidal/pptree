@@ -64,6 +64,7 @@ PPForest <- function(
   x <- args$x
   y <- args$y
   classes <- args$classes
+  formula <- args$formula
 
   model <- pptree_train_forest_glda(
     x,

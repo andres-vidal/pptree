@@ -56,6 +56,7 @@ PPTree <- function(
   x <- args$x
   y <- args$y
   classes <- args$classes
+  formula <- args$formula
 
   model <- pptree_train_glda(args$x, args$y, lambda)
 
