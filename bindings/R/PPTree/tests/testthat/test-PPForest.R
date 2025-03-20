@@ -13,7 +13,11 @@ describe("PPForest formula interface", {
 
   it("preserves the observations (x) as a matrix in the returned model", {
     model <- PPForest(Type ~ ., data = iris, n_threads = 1)
-    expected <- model.matrix(Type ~ ., iris, response = TRUE)
+    expected <- model.matrix(
+      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 1,
+      iris,
+      response = TRUE
+    )
     expect_equal(model$x, expected)
   })
 
@@ -31,8 +35,11 @@ describe("PPForest formula interface", {
 
   it("preserves the formula in the returned model", {
     model <- PPForest(Type ~ ., data = iris, n_threads = 1)
-    expected <- Type ~ .
-    expect_equal(model$formula, expected)
+
+    expect_equal(
+      model$formula,
+      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 1
+    )
   })
 
   it("preserves the n_threads in the returned model", {

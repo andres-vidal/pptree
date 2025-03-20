@@ -8,7 +8,10 @@ library(PPTree)
 describe("formula.PPTree", {
   it("on an object created with the formula interface, returns the formula used to create the model", {
     model <- PPTree(Type ~ ., data = iris)
-    expect_equal(formula(model), Type ~ .)
+    expect_equal(
+      formula(model),
+      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 1
+    )
   })
 
   it("on an object created with the matrix interface, returns NULL", {

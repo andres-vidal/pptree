@@ -8,6 +8,8 @@ process_model_arguments <- function(formula, data, x, y) {
       stop("`data` must be a data frame.")
     }
 
+    formula <- update(formula(terms(formula, data = data)), . ~ . - 1)
+
     y <- model.response(model.frame(formula, data))
     x <- model.matrix(formula, data, response = TRUE)
   } else if (is.null(x) || is.null(y)) {
@@ -27,7 +29,8 @@ process_model_arguments <- function(formula, data, x, y) {
     list(
       x = as.matrix(x),
       y = as.matrix(as.numeric(y)),
-      classes = levels(y)
+      classes = levels(y),
+      formula = formula
     )
   )
 }

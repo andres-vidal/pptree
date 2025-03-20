@@ -3,6 +3,21 @@
 TEMP_CXX=`${R_HOME}/bin/R CMD config CXX17`
 TEMP_CXXFLAGS=`${R_HOME}/bin/R CMD config CXXFLAGS`
 
+# Initialize compiler-specific flags
+COMPILER_FLAGS=""
+
+# Detect compiler type and set appropriate flags
+printf "%s" "* checking compiler type... "
+if ${TEMP_CXX} -v 2>&1 | grep -q "clang"; then
+    echo "clang"
+    COMPILER_FLAGS="-Wno-ignored-attributes"
+elif ${TEMP_CXX} -v 2>&1 | grep -q "gcc"; then
+    echo "gcc"
+    COMPILER_FLAGS="-Wno-ignored-attributes"
+else
+    echo "other"
+fi
+
 cat <<EOF > test-omp.cpp
 	#include <omp.h>
 	int main() {
@@ -74,5 +89,6 @@ fi
 
 sed -e "s|@DARWIN_OPENMP_CXXFLAGS@|${DARWIN_OPENMP_CXXFLAGS}|" \
     -e "s|@DARWIN_OPENMP_LIBS@|${DARWIN_OPENMP_LIBS}|" \
+    -e "s|@COMPILER_FLAGS@|${COMPILER_FLAGS}|" \
     src/Makevars.in > src/Makevars
 
