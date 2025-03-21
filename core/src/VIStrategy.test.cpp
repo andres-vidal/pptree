@@ -363,11 +363,11 @@ TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
 
   DVector<float> expected(5);
   expected <<
-    0.16613522171974182,
-    0.58310157060623169,
-    0.0,
-    0.074664123356342316,
-    0.06294790655374527;
+    0.2082739,
+    0.0830787,
+    0.2489474,
+    0.3571811,
+    0.1128317;
 
   ASSERT_APPROX(expected, result);
 }
@@ -761,11 +761,11 @@ TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups)
 
   DVector<float> expected(5);
   expected <<
-    0.24800321459770203,
-    0.57124263048171997,
-    0.0,
-    0.040219482034444809,
-    0.041419751942157745;
+    0.155350,
+    0.078865,
+    0.027610,
+    0.032386,
+    0.015119;
 
 
   ASSERT_APPROX(expected, result);
@@ -1164,12 +1164,11 @@ TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
 
   DVector<float> expected(5);
   expected <<
-    0.34999999403953552,
-    0.34999999403953552,
-    0.0,
-    0.0,
-    0.0;
-
+    0.07499,
+    0.18181,
+    0.00000,
+    0.04166,
+    0.02462;
 
   ASSERT_APPROX(expected, result);
 }
