@@ -9,8 +9,8 @@ namespace utils {
     std::vector<std::pair<K, V> > items(mapping.begin(), mapping.end());
 
     std::sort(items.begin(), items.end(), [](const auto &a, const auto &b) {
-       return a.second < b.second || (a.second == b.second && a.first < b.first);
-     });
+        return a.second < b.second || (a.second == b.second && a.first < b.first);
+      });
 
     std::vector<K> result;
     result.reserve(items.size());

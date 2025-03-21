@@ -31,14 +31,14 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif()
 
 # Add search hints
-list(APPEND CMAKE_PREFIX_PATH 
+list(APPEND CMAKE_PREFIX_PATH
   /usr/local/opt/libomp
   /opt/homebrew/opt/libomp)
 
 # Find OpenMP
 find_package(OpenMP)
 
-if (NOT OpenMP_FOUND)
+if(NOT OpenMP_FOUND)
   message(WARNING "Could NOT find OpenMP. Parallelization will not be available.")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
@@ -68,7 +68,7 @@ file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
 # Collect all .cpp files that are not test files
 set(NON_TEST_CPP_FILES "")
 foreach(file ${ALL_CPP_FILES})
-  if (NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\Profiler\\.cpp$")
+  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\Profiler\\.cpp$")
     list(APPEND NON_TEST_CPP_FILES ${file})
   endif()
 endforeach()
@@ -96,7 +96,7 @@ file(GLOB_RECURSE TEST_SOURCES ./**/*.test.cpp)
 
 if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   add_library(pptree_singlethreaded ${NON_TEST_CPP_FILES})
-  
+
   target_link_libraries(pptree_singlethreaded
     Eigen3::Eigen
     nlohmann_json::nlohmann_json)
@@ -127,28 +127,40 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
 endif()
 
 if(NOT PPTREE_SKIP_PROFILE)
-
   # Add profiler executable and its dependencies
   # Disable coverage for csv-parser on all platforms
   set(CSV_PARSER_COVERAGE OFF CACHE BOOL "Disable coverage for csv-parser" FORCE)
   set(BUILD_TESTS OFF CACHE BOOL "Disable csv-parser tests" FORCE)
 
+  # Fetch csv-parser
   FetchContent_Declare(
-    csv  
+    csv
     GIT_REPOSITORY https://github.com/vincentlaucsb/csv-parser.git
-    GIT_SHALLOW TRUE 
+    GIT_SHALLOW TRUE
     GIT_TAG 2.2.1
-  ) 
+  )
 
   FetchContent_GetProperties(csv)
   if(NOT csv_POPULATED)
-      FetchContent_Populate(csv)
-      add_library(csv INTERFACE)
-      target_include_directories(csv INTERFACE ${csv_SOURCE_DIR}/single_include)
+    FetchContent_Populate(csv)
+    add_library(csv INTERFACE)
+    target_include_directories(csv INTERFACE ${csv_SOURCE_DIR}/single_include)
   endif()
 
+  # Fetch getopt for command line parsing
+  FetchContent_Declare(
+    getopt
+    GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
+    GIT_TAG master
+  )
+  FetchContent_MakeAvailable(getopt)
+
+  add_library(getopt_lib INTERFACE)
+  target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
+
+  # Setup profiler executable
   add_executable(pptree-profile src/Profiler.cpp)
   target_include_directories(pptree-profile PRIVATE ${csv_SOURCE_DIR}/single_include)
-  target_link_libraries(pptree-profile pptree csv)
+  target_link_libraries(pptree-profile pptree csv getopt_lib)
 
 endif()
