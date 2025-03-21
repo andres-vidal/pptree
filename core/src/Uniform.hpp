@@ -38,8 +38,8 @@ namespace models::stats {
         std::vector<int> values(range_size);
         std::iota(values.begin(), values.end(), min);
 
-        for (int i = range_size - 1; i >= range_size - count; --i) {
-          int j = min + operator()() % (i + 1 - min);
+        for (int i = range_size - 1; i > 0; i--) {
+          int j = operator()() % (i + 1);
           std::swap(values[i], values[j]);
         }
 
