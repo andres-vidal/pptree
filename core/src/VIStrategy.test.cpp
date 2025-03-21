@@ -76,7 +76,7 @@ TEST(VIProjectorStrategy, TreeLDAMultivariateThreeGroups) {
     2;
 
   Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups));
+      SortedDataSpec<float, int>(data, groups));
 
   DVector<float> result = VIProjectorStrategy<float, int>()(tree);
 
@@ -497,7 +497,7 @@ TEST(VIProjectorAdjustedStrategy, TreeLDAMultivariateThreeGroups) {
     2;
 
   Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups));
+      SortedDataSpec<float, int>(data, groups));
 
 
   auto strategy = VIProjectorAdjustedStrategy<float, int>();
@@ -896,7 +896,7 @@ TEST(VIPermutationStrategy, TreeLDAMultivariateThreeGroups) {
     2;
 
   Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups));
+      SortedDataSpec<float, int>(data, groups));
 
 
   auto strategy = VIPermutationStrategy<float, int>();

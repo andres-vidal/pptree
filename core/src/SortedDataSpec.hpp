@@ -4,6 +4,9 @@
 
 #include "Invariant.hpp"
 #include "Map.hpp"
+#include "Normal.hpp"
+
+#include "Logger.hpp"
 
 #include <optional>
 
@@ -54,8 +57,8 @@ namespace models::stats {
         std::iota(indices.begin(), indices.end(), 0);
 
         std::stable_sort(indices.begin(), indices.end(), [&data](int idx1, int idx2) {
-           return data.y(idx1) < data.y(idx2);
-         });
+            return data.y(idx1) < data.y(idx2);
+          });
 
         return DataSpec<T, G>(
           select_rows(data.x, indices),
@@ -220,4 +223,75 @@ namespace models::stats {
         return result;
       }
   };
+
+  struct SimulationParams {
+    float mean = 100.0f;
+    float mean_separation = 50.0f;
+    float sd = 10.0f;
+  };
+
+  inline SortedDataSpec<float, int> simulate(
+    const int               n,
+    const int               p,
+    const int               G,
+    const SimulationParams& params = SimulationParams{}) {
+    Data<float> x(n, p);
+    DataColumn<int> y(n);
+
+    for (int i = 0; i < n; ++i) {
+      float group_mean = params.mean + (i % G) * params.mean_separation;
+
+      Normal norm(group_mean, params.sd);
+
+      for (int j = 0; j < p; ++j) {
+        x(i, j) = norm();
+      }
+
+      y[i] = i % G;
+    }
+
+    return SortedDataSpec<float, int>(x, y);
+  }
+
+  std::pair<SortedDataSpec<float, int>, SortedDataSpec<float, int> >
+  inline split(const SortedDataSpec<float, int>& data, float train_ratio) {
+    const int n = data.x.rows();
+    const int train_size = static_cast<int>(n * train_ratio);
+
+    std::vector<int> train_indices;
+    std::vector<int> test_indices;
+    train_indices.reserve(train_size);
+    test_indices.reserve(n - train_size);
+
+    LOG_INFO << "Splitting data of size " << n << " into " << train_size << " training and " << n - train_size << " test samples:";
+    LOG_INFO << "Classes: " << data.classes << std::endl;
+    LOG_INFO << "X: " << std::endl << data.x << std::endl;
+    LOG_INFO << "Y: " << std::endl << data.y << std::endl;
+
+    for (const auto& group : data.classes) {
+      int group_start = data.group_start(group);
+      int group_size = data.group_size(group);
+      int group_end = group_start + group_size - 1;
+      int group_train_size = static_cast<int>(group_size * train_ratio);
+
+      LOG_INFO << "Group " << group
+               << ": start=" << group_start
+               << ": end=" << group_end
+               << ", size=" << group_size
+               << ", train_size=" << group_train_size << std::endl;
+
+      Uniform unif(group_start, group_end);
+      auto group_indices = unif.distinct(group_size);
+
+      train_indices.insert(train_indices.end(), group_indices.begin(), group_indices.begin() + group_train_size);
+      test_indices.insert(test_indices.end(), group_indices.begin() + group_train_size, group_indices.end());
+    }
+
+    LOG_INFO << "Final split has " << train_indices.size() << " training and " << test_indices.size() << " test samples:";
+
+    return {
+      SortedDataSpec<float, int>(data.x(train_indices, Eigen::all), data.y(train_indices)),
+      SortedDataSpec<float, int>(data.x(test_indices, Eigen::all), data.y(test_indices))
+    };
+  }
 }

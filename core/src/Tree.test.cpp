@@ -956,7 +956,7 @@ TEST(Tree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
     2;
 
   Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups));
+      SortedDataSpec<float, int>(data, groups));
 
   DVector<float> result = tree.variable_importance(VIProjectorStrategy<float, int>());
 
@@ -1089,7 +1089,7 @@ TEST(Tree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroups) {
     2;
 
   Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups));
+      SortedDataSpec<float, int>(data, groups));
 
   ASSERT_THROW(tree.variable_importance(VIProjectorAdjustedStrategy<float, int>()), std::invalid_argument);
 }
@@ -1197,7 +1197,7 @@ TEST(Tree, VariableImportancePermutationLDAMultivariateThreeGroups) {
     2;
 
   Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups));
+      SortedDataSpec<float, int>(data, groups));
 
   ASSERT_THROW(tree.variable_importance(VIPermutationStrategy<float, int>()), std::invalid_argument);
 }

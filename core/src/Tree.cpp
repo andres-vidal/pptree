@@ -29,8 +29,8 @@ namespace models {
     }
 
     std::sort(means.begin(), means.end(), [](const auto &a, const auto &b) {
-       return std::get<1>(a) < std::get<1>(b);
-     });
+        return std::get<1>(a) < std::get<1>(b);
+      });
 
     T edge_gap = -1;
     R edge_group = -1;

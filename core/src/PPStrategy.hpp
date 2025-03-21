@@ -96,22 +96,22 @@ namespace models::pp::strategy {
       std::iota(indices.begin(), indices.end(), 0);
 
       std::sort(indices.begin(), indices.end(), [&eigen_val, &eigen_vec](Eigen::Index idx1, Eigen::Index idx2) {
-         float value1_mod = fabs(eigen_val(idx1));
-         float value2_mod = fabs(eigen_val(idx2));
+          float value1_mod = fabs(eigen_val(idx1));
+          float value2_mod = fabs(eigen_val(idx2));
 
-         if (math::is_approx(value1_mod, value2_mod, 0.001)) {
-           auto vector1 = eigen_vec.col(idx1);
-           auto vector2 = eigen_vec.col(idx2);
+          if (math::is_approx(value1_mod, value2_mod, 0.001)) {
+            auto vector1 = eigen_vec.col(idx1);
+            auto vector2 = eigen_vec.col(idx2);
 
-           for (int i = 0; i < vector1.size(); ++i) {
-             if (!math::is_module_approx(vector1[i], vector2[i]) ) {
-               return vector1[i] < vector2[i];
-             }
-           }
-         }
+            for (int i = 0; i < vector1.size(); ++i) {
+              if (!math::is_module_approx(vector1[i], vector2[i]) ) {
+                return vector1[i] < vector2[i];
+              }
+            }
+          }
 
-         return value1_mod < value2_mod;
-       });
+          return value1_mod < value2_mod;
+        });
 
       math::DVector<T> max_eigen_vec = eigen_vec.col(indices.back());
 
