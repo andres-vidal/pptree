@@ -20,26 +20,6 @@ namespace models::stats {
   }
 
   template<typename T>
-  DataColumn<T> select_rows(
-    const DataColumn<T> &   data,
-    const std::vector<int> &indices) {
-    DataColumn<T> result(indices.size());
-
-    for (std::size_t i = 0; i < indices.size(); i++) {
-      result(i) = data(indices[i]);
-    }
-
-    return result;
-  }
-
-  template<typename T>
-  DataColumn<T> select_rows(
-    const DataColumn<T> & data,
-    const std::set<int> & indices) {
-    return select_rows(data, std::vector<int>(indices.begin(), indices.end()));
-  }
-
-  template<typename T>
   T sd(const DataColumn<T> &data) {
     return sqrt((math::inner_square((data.array() - data.mean()).matrix())).value() / (data.rows() - 1));
   }

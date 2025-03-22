@@ -13,26 +13,6 @@ namespace models::stats
   template <typename T>
   using Data = math::DMatrix<T>;
 
-  template <typename T>
-  Data<T> select_rows(
-    const Data<T> &         data,
-    const std::vector<int> &indices) {
-    Data<T> result(indices.size(), data.cols());
-
-    for (std::size_t i = 0; i < indices.size(); i++) {
-      result.row(i) = data.row(indices[i]);
-    }
-
-    return result;
-  }
-
-  template <typename T>
-  Data<T> select_rows(
-    const Data<T> &      data,
-    const std::set<int> &indices) {
-    return select_rows(data, std::vector<int>(indices.begin(), indices.end()));
-  }
-
   template <typename Derived>
   auto mean(const math::DMatrixBase<Derived> &data) {
     return data.colwise().mean().transpose();
