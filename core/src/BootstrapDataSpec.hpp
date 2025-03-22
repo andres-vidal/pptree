@@ -31,14 +31,16 @@ namespace models::stats {
 
     SortedDataSpec<T, G> get_sample() const {
       return SortedDataSpec<T, G>(
-        select_rows(this->x, this->sample_indices),
-        select_rows(this->y, this->sample_indices));
+        this->x(this->sample_indices, Eigen::all),
+        this->y(this->sample_indices, Eigen::all));
     }
 
     SortedDataSpec<T, G> get_oob() const {
+      std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
+
       return SortedDataSpec<T, G>(
-        select_rows(this->x, this->oob_indices),
-        select_rows(this->y, this->oob_indices));
+        this->x(oob_indices_vec, Eigen::all),
+        this->y(oob_indices_vec, Eigen::all));
     }
 
     std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const override {

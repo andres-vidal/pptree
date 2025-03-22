@@ -61,8 +61,8 @@ namespace models::stats {
           });
 
         return DataSpec<T, G>(
-          select_rows(data.x, indices),
-          select_rows(data.y, indices),
+          data.x(indices, Eigen::all),
+          data.y(indices, Eigen::all),
           data.classes);
       }
 

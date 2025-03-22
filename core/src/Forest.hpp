@@ -122,8 +122,9 @@ namespace models {
 
     float error_rate() const {
       std::set<int> oob_indices = get_oob_indices();
+      std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
-      stats::DataColumn<R> oob_y = stats::select_rows(training_data->y, oob_indices);
+      stats::DataColumn<R> oob_y = training_data->y(oob_indices_vec, Eigen::all);
       return stats::error_rate(oob_predictions, oob_y);
     }
 
@@ -134,8 +135,9 @@ namespace models {
 
     stats::ConfusionMatrix confusion_matrix() const {
       std::set<int> oob_indices = get_oob_indices();
+      std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
-      stats::DataColumn<R> oob_y = stats::select_rows(training_data->y, oob_indices);
+      stats::DataColumn<R> oob_y = training_data->y(oob_indices_vec, Eigen::all);
       return stats::ConfusionMatrix(oob_predictions, oob_y);
     }
 
@@ -187,6 +189,8 @@ namespace models {
 
       R oob_predict(int index) const {
         std::vector<std::reference_wrapper<BootstrapTree<T, R> > > tree_refs;
+
+        std::set<int> oob_set = get_oob_indices();
 
         for (const auto& tree : trees) {
           bool is_oob = tree->training_data->oob_indices.count(index);
