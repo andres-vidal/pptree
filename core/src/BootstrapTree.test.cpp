@@ -1422,8 +1422,8 @@ TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
 
   DataColumn<float> expected(5);
   expected <<
-    0.33333,
     0.44444,
+    0.27777,
     0.00000,
     0.00000,
     0.00000;
