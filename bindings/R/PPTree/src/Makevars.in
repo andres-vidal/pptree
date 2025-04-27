@@ -10,8 +10,9 @@ all: pptree $(SHLIB)
 
 DEV_PACKAGE_DIR = bindings/R/PPTree
 DEV_NLHOHMMAN_DIR = $(BUILD_DIR)/_deps/json-src/include
+DEV_PCG_DIR = $(BUILD_DIR)/_deps/pcg-src/include
 DEV_CORE_DIR = core
- 
+
 pptree:
 	@if [ -f .core ]; then \
 		cd ../../../..;\
@@ -19,6 +20,7 @@ pptree:
 		mkdir -p $(BUILD_DIR); \
 		make build-no-test; \
 		cp -r $(DEV_NLHOHMMAN_DIR)/* $(DEV_PACKAGE_DIR)/inst/include; \
+		cp -r $(DEV_PCG_DIR)/* $(DEV_PACKAGE_DIR)/inst/include; \
 		mkdir -p ${DEV_PACKAGE_DIR}/src/core && cp -r core/* ${DEV_PACKAGE_DIR}/src/core; \
 	fi
 

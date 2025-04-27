@@ -4,6 +4,7 @@ BUILD_DIR = .build
 BUILD_DIR_DEBUG = .debug
 
 NLHOMANN_JSON_HEADERS_PATH = ${BUILD_DIR}/_deps/json-src/include
+PCG_HEADERS_PATH = ${BUILD_DIR}/_deps/pcg-src/include
 
 clean:
 	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG}
@@ -68,12 +69,14 @@ r-clean:
 		${R_PACKAGE_DIR}/src/.build \
 		${R_PACKAGE_DIR}/inst/lib \
 		${R_PACKAGE_DIR}/inst/include/nlohmann \
+		${R_PACKAGE_DIR}/inst/include/pcg_* \
 		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
 		PPTree.Rcheck
 
 r-prepare: r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
+	@cp -r ${PCG_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 
 r-document:
 	@make r-prepare
