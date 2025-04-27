@@ -62,6 +62,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json)
 
+# PCG Random Number Generation
+FetchContent_Declare(
+  pcg
+  GIT_REPOSITORY https://github.com/imneme/pcg-cpp.git
+  GIT_TAG v0.98.1
+)
+FetchContent_GetProperties(pcg)
+if(NOT pcg_POPULATED)
+  FetchContent_Populate(pcg)
+  add_library(pcg INTERFACE)
+  target_include_directories(pcg INTERFACE ${pcg_SOURCE_DIR}/include)
+endif()
+
 # Collect all .cpp files from the specified directories
 file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
 
@@ -82,7 +95,8 @@ target_include_directories(pptree
 
 target_link_libraries(pptree
   Eigen3::Eigen
-  nlohmann_json::nlohmann_json)
+  nlohmann_json::nlohmann_json
+  pcg)
 
 if(OpenMP_FOUND)
   target_link_libraries(pptree OpenMP::OpenMP_CXX)
@@ -99,7 +113,8 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
 
   target_link_libraries(pptree_singlethreaded
     Eigen3::Eigen
-    nlohmann_json::nlohmann_json)
+    nlohmann_json::nlohmann_json
+    pcg)
 
   # Google Test
   FetchContent_Declare(
