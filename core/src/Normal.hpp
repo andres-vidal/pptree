@@ -16,7 +16,7 @@ namespace models::stats {
 
       double gen_unif01() {
         static constexpr uint64_t PRECISION = 53;
-        static constexpr uint64_t MAX_BITS = (1ULL << PRECISION) - 1;
+        static constexpr uint64_t MAX_BITS  = (1ULL << PRECISION) - 1;
 
         uint64_t bits = 0;
 
@@ -64,7 +64,7 @@ namespace models::stats {
         double z;
 
         if (!cached_z.has_value()) {
-          double r = std::sqrt(-2.0 * std::log(u1));
+          double r     = std::sqrt(-2.0 * std::log(u1));
           double theta = 2.0 * M_PI * u2;
 
           z = r * std::cos(theta);
