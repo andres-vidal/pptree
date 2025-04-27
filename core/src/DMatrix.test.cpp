@@ -356,7 +356,7 @@ TEST(DMatrix, DeterminantGenericPositiveDeterminant) {
     4.0, 8.0, 4.0,
     6.0, 3.0, 5.0;
 
-  float actual = determinant(m);
+  float actual   = determinant(m);
   float expected = 28.0;
 
   ASSERT_FLOAT_EQ(expected, actual);
@@ -369,7 +369,7 @@ TEST(DMatrix, DeterminantGenericNegativeDeterminant) {
     4.0, 8.0, 4.0,
     8.0, 3.0, 5.0;
 
-  float actual = determinant(m);
+  float actual   = determinant(m);
   float expected = -28.0;
 
   ASSERT_FLOAT_EQ(expected, actual);
@@ -382,7 +382,7 @@ TEST(DMatrix, DeterminantZeroMatrix) {
     0.0, 0.0, 0.0,
     0.0, 0.0, 0.0;
 
-  float actual = determinant(m);
+  float actual   = determinant(m);
   float expected = 0.0;
 
   ASSERT_EQ(expected, actual);
@@ -395,7 +395,7 @@ TEST(DMatrix, DeterminantSingularMatrix) {
     2.0, 4.0, 7.0,
     3.0, 6.0, 8.0;
 
-  float actual = determinant(m);
+  float actual   = determinant(m);
   float expected = 0.0;
 
   ASSERT_NEAR(expected, actual, APPROX_THRESHOLD);

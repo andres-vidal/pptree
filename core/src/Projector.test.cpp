@@ -45,7 +45,7 @@ TEST(Projector, ProjectDataZeroProjector) {
   projector <<
     0.0, 0.0, 0.0, 0.0, 0.0;
 
-  DataColumn<float> actual = project(data, projector);
+  DataColumn<float> actual   = project(data, projector);
   DataColumn<float> expected = DataColumn<float>::Zero(30);
 
   ASSERT_EQ(expected.size(), actual.size());

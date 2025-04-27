@@ -18,7 +18,7 @@ TEST(DataColumn, UniqueEmptyResult) {
 TEST(DataColumn, UniqueSingleValue) {
   DataColumn<int> column(1);
   column << 1;
-  std::set<int> actual = unique(column);
+  std::set<int> actual   = unique(column);
   std::set<int> expected = { 1 };
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -32,7 +32,7 @@ TEST(DataColumn, UniqueSingleValueRepeated) {
     1,
     1;
 
-  std::set<int> actual = unique(column);
+  std::set<int> actual   = unique(column);
   std::set<int> expected = { 1 };
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -45,7 +45,7 @@ TEST(DataColumn, UniqueMultipleValues) {
     1,
     2,
     3;
-  std::set<int> actual = unique(column);
+  std::set<int> actual   = unique(column);
   std::set<int> expected = { 1, 2, 3 };
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -58,7 +58,7 @@ TEST(DataColumn, UniqueMultipleValuesRepeated) {
     1,
     2,
     1;
-  std::set<int> actual = unique(column);
+  std::set<int> actual   = unique(column);
   std::set<int> expected = { 1, 2 };
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -72,7 +72,7 @@ TEST(DataColumn, SdZeroVector) {
     0,
     0;
 
-  float result = sd(data);
+  float result   = sd(data);
   float expected = 0;
 
   ASSERT_EQ(expected, result);
@@ -85,7 +85,7 @@ TEST(DataColumn, SdConstantVector) {
     1,
     1;
 
-  float result = sd(data);
+  float result   = sd(data);
   float expected = 0;
 
   ASSERT_EQ(expected, result);
@@ -98,7 +98,7 @@ TEST(DataColumn, SdGeneric1) {
     2,
     3;
 
-  float result = sd(data);
+  float result   = sd(data);
   float expected = 1;
 
   ASSERT_EQ(expected, result);
@@ -111,7 +111,7 @@ TEST(DataColumn, SdGeneric2) {
     1,
     2;
 
-  float result = sd(data);
+  float result   = sd(data);
   float expected = 0.5773503;
 
   ASSERT_NEAR(expected, result, 0.00001);
@@ -214,7 +214,7 @@ TEST(DataColumn, AccuracyMax) {
     2,
     3;
 
-  float result = accuracy(predictions, actual);
+  float result   = accuracy(predictions, actual);
   float expected = 1.0;
 
   ASSERT_FLOAT_EQ(expected, result);
@@ -233,7 +233,7 @@ TEST(DataColumn, AccuracyMin) {
     3,
     1;
 
-  float result = accuracy(predictions, actual);
+  float result   = accuracy(predictions, actual);
   float expected = 0.0;
 
   ASSERT_FLOAT_EQ(expected, result);
@@ -252,7 +252,7 @@ TEST(DataColumn, AccuracyGeneric1) {
     3,
     3;
 
-  float result = accuracy(predictions, actual);
+  float result   = accuracy(predictions, actual);
   float expected = 2.0 / 3.0;
 
   ASSERT_FLOAT_EQ(expected, result);
@@ -274,7 +274,7 @@ TEST(DataColumn, AccuracyGeneric2) {
     3;
 
 
-  float result = accuracy(predictions, actual);
+  float result   = accuracy(predictions, actual);
   float expected = 1.0 / 2.0;
 
   ASSERT_FLOAT_EQ(expected, result);
@@ -313,7 +313,7 @@ TEST(DataColumn, ErrorRateMax) {
     3,
     1;
 
-  float result = error_rate(predictions, actual);
+  float result   = error_rate(predictions, actual);
   float expected = 1.0;
 
   ASSERT_FLOAT_EQ(expected, result);
@@ -332,7 +332,7 @@ TEST(DataColumn, ErrorRateMin) {
     2,
     3;
 
-  float result = error_rate(predictions, actual);
+  float result   = error_rate(predictions, actual);
   float expected = 0.0;
 
   ASSERT_FLOAT_EQ(expected, result);
@@ -351,7 +351,7 @@ TEST(DataColumn, ErrorRateGeneric1) {
     3,
     3;
 
-  float result = error_rate(predictions, actual);
+  float result   = error_rate(predictions, actual);
   float expected = 1.0 / 3.0;
 
   ASSERT_FLOAT_EQ(expected, result);
@@ -372,7 +372,7 @@ TEST(DataColumn, ErrorRateGeneric2) {
     3,
     3;
 
-  float result = error_rate(predictions, actual);
+  float result   = error_rate(predictions, actual);
   float expected = 1.0 / 2.0;
 
   ASSERT_FLOAT_EQ(expected, result);

@@ -45,7 +45,7 @@ TEST(SortedDataSpec, Constructor) {
     3,
     3;
 
-  std::set<int> expected_classes = { 1, 2, 3 };
+  std::set<int> expected_classes       = { 1, 2, 3 };
   std::vector<int> expected_boundaries = { 1, 3 };
 
   ASSERT_EQ(expected_x.size(), actual.x.size());

@@ -23,19 +23,19 @@ namespace models {
   template<typename T, typename R>
   struct NodeVisitor {
     virtual void visit(const Condition<T, R> &condition) = 0;
-    virtual void visit(const Response<T, R> &response) = 0;
+    virtual void visit(const Response<T, R> &response)   = 0;
   };
 
   template<typename T, typename R>
   struct Node {
-    virtual ~Node() = default;
-    virtual void accept(NodeVisitor<T, R> &visitor) const = 0;
+    virtual ~Node()                                           = default;
+    virtual void accept(NodeVisitor<T, R> &visitor) const     = 0;
     virtual R predict(const stats::DataColumn<T> &data) const = 0;
-    virtual R response() const = 0;
-    virtual json to_json() const = 0;
-    virtual bool equals(const Node<T, R> &other) const = 0;
-    virtual bool equals(const Condition<T, R> &other) const = 0;
-    virtual bool equals(const Response<T, R> &other) const = 0;
+    virtual R response() const                                = 0;
+    virtual json to_json() const                              = 0;
+    virtual bool equals(const Node<T, R> &other) const        = 0;
+    virtual bool equals(const Condition<T, R> &other) const   = 0;
+    virtual bool equals(const Response<T, R> &other) const    = 0;
 
 
     bool operator==(const Node<T, R> &other) const {

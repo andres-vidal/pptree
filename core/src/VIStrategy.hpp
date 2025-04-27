@@ -52,9 +52,9 @@ namespace models {
 
   template <typename T, typename R>
   struct VIStrategy {
-    virtual math::DVector<T> operator()(const Tree<T, R> &tree) const = 0;
+    virtual math::DVector<T> operator()(const Tree<T, R> &tree) const          = 0;
     virtual math::DVector<T> operator()(const BootstrapTree<T, R> &tree) const = 0;
-    virtual math::DVector<T> operator()(const Forest<T, R> &forest) const = 0;
+    virtual math::DVector<T> operator()(const Forest<T, R> &forest) const      = 0;
 
     friend class NodeSummarizer<T, R>;
 
@@ -182,7 +182,7 @@ namespace models {
       const math::DVector<T> &     accumulated_importance,
       const BootstrapTree<T, R> &  tree,
       const NodeSummarizer<T, R> & root_summary) const override {
-      const int n_classes = root_summary.classes.size();
+      const int n_classes   = root_summary.classes.size();
       const float oob_error = tree.error_rate();
       return ((1 - oob_error) / (n_classes - 1)) * accumulated_importance;
     }
@@ -210,7 +210,7 @@ namespace models {
       const math::DVector<T> &     accumulated_importance,
       const BootstrapTree<T, R> &  tree,
       const NodeSummarizer<T, R> & root_summary) const override {
-      const stats::SortedDataSpec<T, R> oob = tree.training_data->get_oob();
+      const stats::SortedDataSpec<T, R> oob      = tree.training_data->get_oob();
       const stats::DataColumn<R> oob_predictions = tree.predict(oob.x);
 
       const float oob_accuracy = stats::accuracy(oob_predictions, oob.y);
@@ -218,9 +218,9 @@ namespace models {
       math::DVector<T> importance = math::DVector<T>(oob.x.cols());
 
       for (int j = 0; j < oob.x.cols(); j++) {
-        const stats::Data<T> nonsense_data = stats::shuffle_column(oob.x, j);
+        const stats::Data<T> nonsense_data              = stats::shuffle_column(oob.x, j);
         const stats::DataColumn<R> nonsense_predictions = tree.predict(nonsense_data);
-        const float nonsense_accuracy = stats::accuracy(nonsense_predictions, oob.y);
+        const float nonsense_accuracy                   = stats::accuracy(nonsense_predictions, oob.y);
 
         importance(j) = oob_accuracy - nonsense_accuracy;
       }

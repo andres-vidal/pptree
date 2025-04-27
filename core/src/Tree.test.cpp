@@ -1304,7 +1304,7 @@ TEST(Tree, ErrorRateDataSpecMin) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   float result = tree.error_rate(SortedDataSpec<float, int>(x, actual_y));
@@ -1380,7 +1380,7 @@ TEST(Tree, ErrorRateDataSpecMax) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 3);
 
   float result = tree.error_rate(SortedDataSpec<float, int>(x, actual_y));
@@ -1456,7 +1456,7 @@ TEST(Tree, ErrorRateDataSpecGeneric) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   float result = tree.error_rate(SortedDataSpec<float, int>(x, actual_y));
@@ -1532,7 +1532,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMin) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices(10);
@@ -1611,7 +1611,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMax) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 1);
 
   std::vector<int> sample_indices(10);
@@ -1690,7 +1690,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecGeneric) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   std::vector<int> sample_indices(20);
@@ -1770,7 +1770,7 @@ TEST(Tree, ConfusionMatrixDataSpecDiagonal) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<float, int>(x, actual_y));
@@ -1972,7 +1972,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecDiagonal) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };

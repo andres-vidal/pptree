@@ -14,7 +14,7 @@ namespace models {
 
   template <typename T, typename R>
   struct TrainingSpecVisitor {
-    virtual void visit(const GLDATrainingSpec<T, R> &spec) = 0;
+    virtual void visit(const GLDATrainingSpec<T, R> &spec)        = 0;
     virtual void visit(const UniformGLDATrainingSpec<T, R> &spec) = 0;
   };
 
@@ -35,7 +35,7 @@ namespace models {
       dr_strategy(other.dr_strategy->clone()) {
     }
 
-    virtual ~TrainingSpec() = default;
+    virtual ~TrainingSpec()                                       = default;
     virtual void accept(TrainingSpecVisitor<T, R> &visitor) const = 0;
 
     virtual std::unique_ptr<TrainingSpec<T, R> > clone() const = 0;

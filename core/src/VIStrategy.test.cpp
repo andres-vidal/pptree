@@ -349,9 +349,9 @@ TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
     2;
 
 
-  const int n_vars = 2;
+  const int n_vars   = 2;
   const float lambda = 0;
-  const int seed = 1;
+  const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
     *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
@@ -399,9 +399,9 @@ TEST(VIProjectorStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     1,
     1;
 
-  const int n_vars = data.cols();
+  const int n_vars   = data.cols();
   const float lambda = 0.1;
-  const int seed = 0;
+  const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
     *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
@@ -747,9 +747,9 @@ TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups)
     2;
 
 
-  const int n_vars = 2;
+  const int n_vars   = 2;
   const float lambda = 0;
-  const int seed = 1;
+  const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
     *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
@@ -798,9 +798,9 @@ TEST(VIProjectorAdjustedStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     1,
     1;
 
-  const int n_vars = data.cols();
+  const int n_vars   = data.cols();
   const float lambda = 0.1;
-  const int seed = 0;
+  const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
     *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
@@ -1150,9 +1150,9 @@ TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
     2;
 
 
-  const int n_vars = 2;
+  const int n_vars   = 2;
   const float lambda = 0;
-  const int seed = 1;
+  const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
     *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
@@ -1200,9 +1200,9 @@ TEST(VIPermutationStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
     1,
     1;
 
-  const int n_vars = data.cols();
+  const int n_vars   = data.cols();
   const float lambda = 0.1;
-  const int seed = 0;
+  const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
     *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),

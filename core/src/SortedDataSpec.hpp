@@ -139,7 +139,7 @@ namespace models::stats {
 
             if (i != 0) {
               G prev_new_group = mapping.at(sorted_old_groups[i - 1]);
-              new_group_specs[new_group].prev = prev_new_group;
+              new_group_specs[new_group].prev      = prev_new_group;
               new_group_specs[prev_new_group].next = new_group;
             }
           }
@@ -180,7 +180,7 @@ namespace models::stats {
 
             if (batch_start != 0) {
               G prev_g = new_y(batch_start - 1);
-              new_group_specs[g].prev = prev_g;
+              new_group_specs[g].prev      = prev_g;
               new_group_specs[prev_g].next = g;
             }
           }
@@ -197,11 +197,11 @@ namespace models::stats {
 
       virtual Data<T> bgss() const {
         auto global_mean = mean(this->x);
-        Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
+        Data<T> result   = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {
-          auto group_data = group(g);
-          auto group_mean = mean(group_data);
+          auto group_data    = group(g);
+          auto group_mean    = mean(group_data);
           auto centered_mean = group_mean - global_mean;
 
           result.noalias() += group_data.rows() * math::outer_square(centered_mean);
@@ -214,7 +214,7 @@ namespace models::stats {
         Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {
-          auto group_data = group(g);
+          auto group_data          = group(g);
           auto centered_group_data = center(group_data);
 
           result.noalias() += math::inner_square(centered_group_data);
@@ -225,9 +225,9 @@ namespace models::stats {
   };
 
   struct SimulationParams {
-    float mean = 100.0f;
+    float mean            = 100.0f;
     float mean_separation = 50.0f;
-    float sd = 10.0f;
+    float sd              = 10.0f;
   };
 
   inline SortedDataSpec<float, int> simulate(
@@ -255,7 +255,7 @@ namespace models::stats {
 
   std::pair<SortedDataSpec<float, int>, SortedDataSpec<float, int> >
   inline split(const SortedDataSpec<float, int>& data, float train_ratio) {
-    const int n = data.x.rows();
+    const int n          = data.x.rows();
     const int train_size = static_cast<int>(n * train_ratio);
 
     std::vector<int> train_indices;
@@ -269,9 +269,9 @@ namespace models::stats {
     LOG_INFO << "Y: " << std::endl << data.y << std::endl;
 
     for (const auto& group : data.classes) {
-      int group_start = data.group_start(group);
-      int group_size = data.group_size(group);
-      int group_end = group_start + group_size - 1;
+      int group_start      = data.group_start(group);
+      int group_size       = data.group_size(group);
+      int group_end        = group_start + group_size - 1;
       int group_train_size = static_cast<int>(group_size * train_ratio);
 
       LOG_INFO << "Group " << group

@@ -24,7 +24,7 @@ namespace models::pp {
     Projector<T> truncated = math::truncate(projector);
 
     const int size = truncated.size();
-    const T *data = truncated.data();
+    const T *data  = truncated.data();
 
     int i = 0;
 

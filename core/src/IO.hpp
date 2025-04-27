@@ -99,7 +99,7 @@ namespace pptree {
     double std_time() const {
       if (train_times.size() <= 1) return 0.0;
 
-      double mean = mean_time();
+      double mean   = mean_time();
       double sq_sum = std::inner_product(train_times.begin(), train_times.end(), train_times.begin(), 0.0,
           std::plus<>(), [mean](double x, double y) {
             return (x - mean) * (y - mean);
@@ -118,7 +118,7 @@ namespace pptree {
     double std_train_error() const {
       if (train_errors.size() <= 1) return 0.0;
 
-      double mean = mean_train_error();
+      double mean   = mean_train_error();
       double sq_sum = std::inner_product(train_errors.begin(), train_errors.end(), train_errors.begin(), 0.0,
           std::plus<>(), [mean](double x, double y) {
             return (x - mean) * (y - mean);
@@ -129,7 +129,7 @@ namespace pptree {
     double std_test_error() const {
       if (test_errors.size() <= 1) return 0.0;
 
-      double mean = mean_test_error();
+      double mean   = mean_test_error();
       double sq_sum = std::inner_product(test_errors.begin(), test_errors.end(), test_errors.begin(), 0.0,
           std::plus<>(), [mean](double x, double y) {
             return (x - mean) * (y - mean);

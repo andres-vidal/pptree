@@ -162,7 +162,7 @@ TEST(BootstrapTree, ErrorRateDataSpecMax) {
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
-  DataColumn<int> actual_y = DataColumn<int>::Constant(20, 3);
+  DataColumn<int> actual_y       = DataColumn<int>::Constant(20, 3);
 
   std::vector<int> test_indices(20);
   std::iota(test_indices.begin(), test_indices.end(), 0);
@@ -246,7 +246,7 @@ TEST(BootstrapTree, ErrorRateDataSpecGeneric) {
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
-  DataColumn<int> actual_y = DataColumn<int>::Zero(20);
+  DataColumn<int> actual_y       = DataColumn<int>::Zero(20);
 
   auto [test_x, _test_y, _test_classes] = data.unwrap();
 
@@ -405,7 +405,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecMax) {
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
-  DataColumn<int> actual_y = DataColumn<int>::Constant(30, 2);
+  DataColumn<int> actual_y       = DataColumn<int>::Constant(30, 2);
 
   float result = tree.error_rate(BootstrapDataSpec<float, int>(x, actual_y, sample_indices));
 
@@ -484,7 +484,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecGeneric) {
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
-  DataColumn<int> actual_y = DataColumn<int>::Zero(30);
+  DataColumn<int> actual_y       = DataColumn<int>::Zero(30);
 
   float result = tree.error_rate(BootstrapDataSpec<float, int>(x, actual_y, sample_indices));
 

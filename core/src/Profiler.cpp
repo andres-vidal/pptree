@@ -33,9 +33,9 @@ SortedDataSpec<float, int> read_data(const ProfilerOptions& params) {
     }
   } else {
     SimulationParams simulation_params;
-    simulation_params.mean = params.sim_mean;
+    simulation_params.mean            = params.sim_mean;
     simulation_params.mean_separation = params.sim_mean_separation;
-    simulation_params.sd = params.sim_sd;
+    simulation_params.sd              = params.sim_sd;
 
     try {
       return simulate(params.rows, params.cols, params.classes, simulation_params);
@@ -63,14 +63,14 @@ ModelStats evaluate_model(const TrainingSpec<float, int>& spec,
 
 
     const Model model = [&]() {
-      if constexpr (std::is_same_v<Model, Forest<float, int> >) {
-        return Forest<float, int>::train(spec, train_data, params.trees, params.seed + i, params.threads);
-      } else {
-        return Tree<float, int>::train(spec, train_data);
-      }
-    }();
+        if constexpr (std::is_same_v<Model, Forest<float, int> >) {
+          return Forest<float, int>::train(spec, train_data, params.trees, params.seed + i, params.threads);
+        } else {
+          return Tree<float, int>::train(spec, train_data);
+        }
+      }();
 
-    const auto end = std::chrono::high_resolution_clock::now();
+    const auto end      = std::chrono::high_resolution_clock::now();
     const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
     stats.train_times.push_back(duration.count());

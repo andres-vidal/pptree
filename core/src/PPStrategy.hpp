@@ -9,7 +9,7 @@
 namespace models::pp::strategy {
   template<typename T, typename G>
   struct PPStrategy {
-    virtual ~PPStrategy() = default;
+    virtual ~PPStrategy()                                    = default;
     virtual std::unique_ptr<PPStrategy<T, G> > clone() const = 0;
 
     virtual T index(
@@ -44,11 +44,11 @@ namespace models::pp::strategy {
       const Projector<T>&                projector) const override {
       stats::Data<T> A = projector;
 
-      stats::Data<T> W = data.wgss();
+      stats::Data<T> W      = data.wgss();
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
-      stats::Data<T> W_pda = W_diag + (1 - lambda) * (W - W_diag);
-      stats::Data<T> B = data.bgss();
-      stats::Data<T> WpB = W_pda + B;
+      stats::Data<T> W_pda  = W_diag + (1 - lambda) * (W - W_diag);
+      stats::Data<T> B      = data.bgss();
+      stats::Data<T> WpB    = W_pda + B;
 
       T denominator = math::determinant(math::inner_square(A, WpB));
 
@@ -73,13 +73,13 @@ namespace models::pp::strategy {
       LOG_INFO << "W:" << std::endl << W << std::endl;
 
       auto W_diag = W.diagonal().asDiagonal().toDenseMatrix();
-      auto W_pda = W_diag + (1 - lambda) * (W - W_diag);
-      auto WpB = W_pda + B;
+      auto W_pda  = W_diag + (1 - lambda) * (W - W_diag);
+      auto WpB    = W_pda + B;
 
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
-      stats::Data<T> WpBInvB = WpB.fullPivLu().solve(B);
+      stats::Data<T> WpBInvB          = WpB.fullPivLu().solve(B);
       stats::Data<T> truncatedWpBInvB = math::truncate(WpBInvB);
 
       LOG_INFO << "(W_pda + B)^-1 * B:" << std::endl << WpBInvB << std::endl;

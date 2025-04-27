@@ -9,7 +9,7 @@
 namespace models::dr::strategy {
   template<typename T, typename G>
   struct DRStrategy {
-    virtual ~DRStrategy() = default;
+    virtual ~DRStrategy()                                    = default;
     virtual std::unique_ptr<DRStrategy<T, G> > clone() const = 0;
 
     virtual stats::ReducedDataSpec<T, G> reduce(

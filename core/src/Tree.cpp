@@ -32,7 +32,7 @@ namespace models {
         return std::get<1>(a) < std::get<1>(b);
       });
 
-    T edge_gap = -1;
+    T edge_gap   = -1;
     R edge_group = -1;
 
     for (int i = 0; i < means.size() - 1; i++) {
@@ -40,7 +40,7 @@ namespace models {
       LOG_INFO << "Gap between " << std::get<0>(means[i]) << " and " << std::get<0>(means[i + 1]) << ": " << gap << std::endl;
 
       if (gap > edge_gap) {
-        edge_gap = gap;
+        edge_gap   = gap;
         edge_group = std::get<0>(means[i + 1]);
 
         LOG_INFO << "New edge gap: " << edge_gap << std::endl;
@@ -160,20 +160,20 @@ namespace models {
 
     LOG_INFO << "Redefining a " << training_data.classes.size() << " group problem as binary:" << std::endl;
 
-    auto projector = pp_strategy(reduced_data);
+    auto projector      = pp_strategy(reduced_data);
     auto binary_mapping = binary_regroup(training_data.analog(project(training_data.x, projector)));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
     auto binary_remapped_data = reduced_data.remap(binary_mapping);
-    auto temp_node = binary_step(training_spec, binary_remapped_data);
+    auto temp_node            = binary_step(training_spec, binary_remapped_data);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
 
     std::map<R, std::set<R> > inverse_mapping = invert(binary_mapping);
-    auto lower_groups = inverse_mapping.at(binary_lower_group);
-    auto upper_groups = inverse_mapping.at(binary_upper_group);
+    auto lower_groups                         = inverse_mapping.at(binary_lower_group);
+    auto upper_groups                         = inverse_mapping.at(binary_upper_group);
 
     LOG_INFO << "Build lower branch" << std::endl;
     auto lower_branch = step(training_spec, training_data.subset(lower_groups));

@@ -30,7 +30,7 @@ namespace models::stats {
       this->values = Data<int>::Zero(label_index.size(), label_index.size());
 
       for (int i = 0; i < predictions.rows(); i++) {
-        const int actual_index = label_index[actual(i)];
+        const int actual_index     = label_index[actual(i)];
         const int prediction_index = label_index[predictions(i)];
 
         this->values(actual_index, prediction_index)++;
@@ -41,7 +41,7 @@ namespace models::stats {
       Data<int> error_matrix = values;
       error_matrix.diagonal().setZero();
 
-      DataColumn<int> row_sums = values.rowwise().sum();
+      DataColumn<int> row_sums   = values.rowwise().sum();
       DataColumn<int> row_errors = error_matrix.rowwise().sum();
 
       return row_errors.array().cast<float>() / row_sums.array().cast<float>();
