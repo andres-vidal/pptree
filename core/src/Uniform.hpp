@@ -60,6 +60,18 @@ namespace models::stats {
         return result;
       }
 
+      /**
+       * @brief Generates a vector of distinct random integers from the uniform distribution
+       *
+       * This method implements the Fisher-Yates (Knuth) shuffle algorithm to generate
+       * a specified number of unique random integers from the defined range [min, max].
+       * The resulting integers are uniformly distributed and guaranteed to be unique.
+       *
+       * @param count The number of distinct integers to generate
+       * @return A vector containing count distinct integers from the range [min, max]
+       * @throws std::invalid_argument if count exceeds the number of possible unique values
+       *         in the range [min, max]
+       */
       std::vector<int> distinct(int count) {
         int range_size = max - min + 1;
 
@@ -70,8 +82,8 @@ namespace models::stats {
         std::vector<int> values(range_size);
         std::iota(values.begin(), values.end(), min);
 
-        for (int i = range_size - 1; i > 0; i--) {
-          int j = operator()() % (i + 1);
+        for (int i = range_size - 1; i >= 0; i--) {
+          int j = gen_lemire(i + 1);
           std::swap(values[i], values[j]);
         }
 
