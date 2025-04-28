@@ -87,8 +87,8 @@ namespace models {
     Data<T> data_group_1 = training_data.group(group_1);
     Data<T> data_group_2 = training_data.group(group_2);
 
-    T mean_1 = project(data_group_1, projector).mean();
-    T mean_2 = project(data_group_2, projector).mean();
+    T mean_1 = (data_group_1 * projector).mean();
+    T mean_2 = (data_group_2 * projector).mean();
 
     LOG_INFO << "Mean for projected group " << group_1 << ": " << mean_1 << std::endl;
     LOG_INFO << "Mean for projected group " << group_2 << ": " << mean_2 << std::endl;
@@ -97,8 +97,8 @@ namespace models {
 
     LOG_INFO << "Threshold: " << threshold << std::endl;
 
-    T projected_mean_1 = mean(data_group_1).dot(projector);
-    T projected_mean_2 = mean(data_group_2).dot(projector);
+    T projected_mean_1 = data_group_1.colwise().mean().dot(projector);
+    T projected_mean_2 = data_group_2.colwise().mean().dot(projector);
 
     LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
     LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
