@@ -7,60 +7,7 @@
 using namespace models::stats;
 
 
-TEST(Data, MeanSingleObservation) {
-  Data<float> data(1, 3);
-  data <<
-    1.0, 2.0, 6.0;
 
-  DataColumn<float> actual = mean(data);
-
-  DataColumn<float> expected(3);
-  expected <<
-    1.0, 2.0, 6.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(Data, MeanMultipleEqualObservations) {
-  Data<float> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    1.0, 2.0, 6.0,
-    1.0, 2.0, 6.0;
-
-  DataColumn<float> actual = mean(data);
-
-  DataColumn<float> expected(3);
-  expected <<
-    1.0, 2.0, 6.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
-
-TEST(Data, MeanMultipleDifferentObservations) {
-  Data<float> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
-
-  DataColumn<float> actual = mean(data);
-
-  DataColumn<float> expected(3);
-  expected <<
-    2.0, 3.0, 7.0;
-
-  ASSERT_EQ(expected.size(), actual.size());
-  ASSERT_EQ(expected.rows(), actual.rows());
-  ASSERT_EQ(expected.cols(), actual.cols());
-  ASSERT_EQ(expected, actual);
-}
 
 TEST(Data, CovarianceZeroMatrix) {
   Data<float> data(3, 3);
