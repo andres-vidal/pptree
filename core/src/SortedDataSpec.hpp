@@ -196,15 +196,15 @@ namespace models::stats {
       }
 
       virtual Data<T> bgss() const {
-        auto global_mean = mean(this->x);
+        auto global_mean = this->x.colwise().mean().transpose();
         Data<T> result   = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {
-          auto group_data    = group(g);
-          auto group_mean    = mean(group_data);
-          auto centered_mean = group_mean - global_mean;
+          DataView<T> group_data = group(g);
+          auto group_mean        = group_data.colwise().mean().transpose();
+          auto centered_mean     = group_mean - global_mean;
 
-          result.noalias() += group_data.rows() * math::outer_square(centered_mean);
+          result.noalias() += group_data.rows() * (centered_mean * centered_mean.transpose());
         }
 
         return result;
@@ -214,10 +214,11 @@ namespace models::stats {
         Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {
-          auto group_data          = group(g);
-          auto centered_group_data = center(group_data);
+          DataView<T> group_data   = group(g);
+          auto group_mean          = group_data.colwise().mean();
+          auto centered_group_data = group_data.rowwise() - group_mean;
 
-          result.noalias() += math::inner_square(centered_group_data);
+          result.noalias() += centered_group_data.transpose() * centered_group_data;
         }
 
         return result;
