@@ -115,7 +115,11 @@ namespace models {
     }
 
     float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      auto [x, y, _] = data.unwrap();
+      std::tuple<stats::Data<T>, stats::DataColumn<R>, std::set<R> > unwrapped = data.unwrap();
+
+      stats::Data<T> x       = std::get<0>(unwrapped);
+      stats::DataColumn<R> y = std::get<1>(unwrapped);
+
       stats::DataColumn<R> ensemble_predictions = predict(x);
       return stats::error_rate(ensemble_predictions, y);
     }
@@ -129,8 +133,12 @@ namespace models {
     }
 
     stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      auto unwrapped = data.unwrap();
-      return stats::ConfusionMatrix(predict(std::get<0>(unwrapped)), std::get<1>(unwrapped));
+      std::tuple<stats::Data<T>, stats::DataColumn<R>, std::set<R> > unwrapped = data.unwrap();
+
+      stats::Data<T> x       = std::get<0>(unwrapped);
+      stats::DataColumn<R> y = std::get<1>(unwrapped);
+
+      return stats::ConfusionMatrix(predict(x), y);
     }
 
     stats::ConfusionMatrix confusion_matrix() const {

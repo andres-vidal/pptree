@@ -167,7 +167,9 @@ namespace models {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
-      auto [x, y, _all_classes] = condition.training_data->unwrap();
+      std::tuple<stats::Data<T>, stats::DataColumn<R>, std::set<R> > unwrapped = condition.training_data->unwrap();
+      stats::Data<T> x                                                         = std::get<0>(unwrapped);
+      stats::DataColumn<R> y                                                   = std::get<1>(unwrapped);
 
       stats::SortedDataSpec<T, R> data(x, y, condition_summary.classes);
 

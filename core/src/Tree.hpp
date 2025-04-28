@@ -66,12 +66,18 @@ namespace models {
     }
 
     virtual float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      auto [x, y, _classes] = data.unwrap();
+      std::tuple<stats::Data<T>, stats::DataColumn<R>, std::set<R> > unwrapped = data.unwrap();
+      stats::Data<T> x                                                         = std::get<0>(unwrapped);
+      stats::DataColumn<R> y                                                   = std::get<1>(unwrapped);
+
       return stats::error_rate(predict(x), y);
     }
 
     virtual stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      auto [x, y, _classes] = data.unwrap();
+      std::tuple<stats::Data<T>, stats::DataColumn<R>, std::set<R> > unwrapped = data.unwrap();
+      stats::Data<T> x                                                         = std::get<0>(unwrapped);
+      stats::DataColumn<R> y                                                   = std::get<1>(unwrapped);
+
       return stats::ConfusionMatrix(predict(x), y);
     }
 
