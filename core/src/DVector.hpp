@@ -14,7 +14,7 @@ namespace models::math {
   using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
   template<typename Derived>
-  auto outer_product(
+  DMatrix<float> outer_product(
     const DMatrixBase<Derived> &a,
     const DMatrixBase<Derived> &b
     ) {
@@ -22,7 +22,7 @@ namespace models::math {
   }
 
   template<typename Derived>
-  auto outer_square(
+  DMatrix<float> outer_square(
     const DMatrixBase<Derived> &a
     ) {
     return outer_product(a, a);

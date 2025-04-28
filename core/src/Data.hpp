@@ -13,14 +13,32 @@ namespace models::stats
   template <typename T>
   using Data = math::DMatrix<T>;
 
-  template <typename Derived>
-  auto mean(const math::DMatrixBase<Derived> &data) {
+  template <typename T>
+  using DataView = Eigen::Block<const Data<T> >;
+
+  template <typename T>
+  DataColumn<T> mean(const Data<T> &data) {
     return data.colwise().mean().transpose();
   }
 
-  template <typename Derived>
-  auto center(const math::DMatrixBase<Derived> &data) {
+  template <typename T>
+  DataColumn<T> mean(const DataView<T> &data) {
+    return data.colwise().mean().transpose();
+  }
+
+  template <typename T>
+  Data<T> center(const Data<T> &data) {
     return data.rowwise() - mean(data).transpose();
+  }
+
+  template <typename T>
+  Data<T> center(const DataView<T> &data) {
+    return data.rowwise() - mean(data).transpose();
+  }
+
+  template <typename T>
+  DataColumn<T> center(const DataColumn<T> &data) {
+    return data.rowwise() - data.mean();
   }
 
   template <typename T>

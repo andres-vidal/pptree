@@ -66,15 +66,16 @@ namespace models::pp::strategy {
       LOG_INFO << "Groups:" << std::endl;
       LOG_INFO << std::endl << data.y << std::endl;
 
-      auto B = data.bgss();
-      auto W = data.wgss();
+      stats::Data<T> B = data.bgss();
+      stats::Data<T> W = data.wgss();
 
       LOG_INFO << "B:" << std::endl << B << std::endl;
       LOG_INFO << "W:" << std::endl << W << std::endl;
 
-      auto W_diag = W.diagonal().asDiagonal().toDenseMatrix();
-      auto W_pda  = W_diag + (1 - lambda) * (W - W_diag);
-      auto WpB    = W_pda + B;
+      stats::Data<T> W_pda = (1 - lambda) * W;
+      W_pda.diagonal() = W.diagonal();
+
+      stats::Data<T> WpB = W_pda + B;
 
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
@@ -100,8 +101,8 @@ namespace models::pp::strategy {
           float value2_mod = fabs(eigen_val(idx2));
 
           if (math::is_approx(value1_mod, value2_mod, 0.001)) {
-            auto vector1 = eigen_vec.col(idx1);
-            auto vector2 = eigen_vec.col(idx2);
+            stats::DataColumn<T> vector1 = eigen_vec.col(idx1);
+            stats::DataColumn<T> vector2 = eigen_vec.col(idx2);
 
             for (int i = 0; i < vector1.size(); ++i) {
               if (!math::is_module_approx(vector1[i], vector2[i]) ) {

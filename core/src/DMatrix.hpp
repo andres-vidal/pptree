@@ -16,7 +16,7 @@ namespace models::math {
   using DVector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
   template<typename Derived>
-  auto inner_product(
+  DMatrix<float> inner_product(
     const DMatrixBase<Derived> &a,
     const DMatrixBase<Derived> &b,
     const DMatrixBase<Derived> &weights
@@ -25,7 +25,7 @@ namespace models::math {
   }
 
   template<typename Derived>
-  auto inner_product(
+  DMatrix<float> inner_product(
     const DMatrixBase<Derived> &a,
     const DMatrixBase<Derived> &b
     ) {
@@ -33,7 +33,7 @@ namespace models::math {
   }
 
   template<typename Derived>
-  auto inner_square(
+  DMatrix<float> inner_square(
     const DMatrixBase<Derived> &m,
     const DMatrixBase<Derived> &weights
     ) {
@@ -41,23 +41,23 @@ namespace models::math {
   }
 
   template<typename Derived>
-  auto inner_square(
+  DMatrix<float> inner_square(
     const DMatrixBase<Derived> &m
     ) {
     return inner_product(m, m);
   }
 
   template<typename Derived>
-  auto determinant(
+  float determinant(
     const DMatrixBase<Derived> &m
     ) {
-    auto d = m.determinant();
+    float d = m.determinant();
 
     return fabs(d) < 1e-15 ? 0.0 : d;
   }
 
   template<typename Derived>
-  auto truncate(
+  DMatrix<float> truncate(
     const DMatrixBase<Derived> &m
     ) {
     return (m.array().abs() < 1e-15).select(0, m.array());

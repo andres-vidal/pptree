@@ -129,8 +129,8 @@ namespace models {
     }
 
     stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      auto [x, y, _classes] = data.unwrap();
-      return stats::ConfusionMatrix(predict(x), y);
+      auto unwrapped = data.unwrap();
+      return stats::ConfusionMatrix(predict(std::get<0>(unwrapped)), std::get<1>(unwrapped));
     }
 
     stats::ConfusionMatrix confusion_matrix() const {

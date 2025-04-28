@@ -106,7 +106,7 @@ namespace models::stats {
         return group_specs.at(next.value()).index - 1;
       }
 
-      auto group(const G &group) const {
+      DataView<T> group(const G &group) const {
         return this->x(Eigen::seq(group_start(group), group_end(group)), Eigen::all);
       }
 
@@ -196,13 +196,13 @@ namespace models::stats {
       }
 
       virtual Data<T> bgss() const {
-        auto global_mean = mean(this->x);
-        Data<T> result   = Data<T>::Zero(this->x.cols(), this->x.cols());
+        DataColumn<T> global_mean = mean(this->x);
+        Data<T> result            = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {
-          auto group_data    = group(g);
-          auto group_mean    = mean(group_data);
-          auto centered_mean = group_mean - global_mean;
+          DataView<T> group_data      = group(g);
+          DataColumn<T> group_mean    = mean(group_data);
+          DataColumn<T> centered_mean = group_mean - global_mean;
 
           result.noalias() += group_data.rows() * math::outer_square(centered_mean);
         }
@@ -214,8 +214,8 @@ namespace models::stats {
         Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {
-          auto group_data          = group(g);
-          auto centered_group_data = center(group_data);
+          DataView<T> group_data            = group(g);
+          DataColumn<T> centered_group_data = center(group_data);
 
           result.noalias() += math::inner_square(centered_group_data);
         }
@@ -281,7 +281,7 @@ namespace models::stats {
                << ", train_size=" << group_train_size << std::endl;
 
       Uniform unif(group_start, group_end);
-      auto group_indices = unif.distinct(group_size);
+      std::vector<int> group_indices = unif.distinct(group_size);
 
       train_indices.insert(train_indices.end(), group_indices.begin(), group_indices.begin() + group_train_size);
       test_indices.insert(test_indices.end(), group_indices.begin() + group_train_size, group_indices.end());

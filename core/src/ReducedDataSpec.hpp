@@ -50,7 +50,7 @@ namespace models::stats {
           selected_indices);
       }
 
-      auto reduced_x() const {
+      Data<T> reduced_x() const {
         return reduced_spec.x;
       }
   };
