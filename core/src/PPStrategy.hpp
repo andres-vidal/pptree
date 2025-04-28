@@ -75,7 +75,7 @@ namespace models::pp::strategy {
       stats::Data<T> W_pda = (1 - lambda) * W;
       W_pda.diagonal() = W.diagonal();
 
-      auto WpB = W_pda + B;
+      stats::Data<T> WpB = W_pda + B;
 
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
