@@ -106,7 +106,7 @@ namespace models::stats {
         return group_specs.at(next.value()).index - 1;
       }
 
-      auto group(const G &group) const {
+      DataView<T> group(const G &group) const {
         return this->x(Eigen::seq(group_start(group), group_end(group)), Eigen::all);
       }
 

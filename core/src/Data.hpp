@@ -13,6 +13,9 @@ namespace models::stats
   template <typename T>
   using Data = math::DMatrix<T>;
 
+  template <typename T>
+  using DataView = Eigen::Block<const Data<T> >;
+
   template <typename Derived>
   auto mean(const math::DMatrixBase<Derived> &data) {
     return data.colwise().mean().transpose();
