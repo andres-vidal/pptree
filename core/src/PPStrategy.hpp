@@ -72,9 +72,10 @@ namespace models::pp::strategy {
       LOG_INFO << "B:" << std::endl << B << std::endl;
       LOG_INFO << "W:" << std::endl << W << std::endl;
 
-      auto W_diag = W.diagonal().asDiagonal().toDenseMatrix();
-      auto W_pda  = W_diag + (1 - lambda) * (W - W_diag);
-      auto WpB    = W_pda + B;
+      stats::Data<T> W_pda = (1 - lambda) * W;
+      W_pda.diagonal() = W.diagonal();
+
+      auto WpB = W_pda + B;
 
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
