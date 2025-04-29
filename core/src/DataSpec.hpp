@@ -16,20 +16,18 @@ namespace models::stats {
     DataSpec(
       const Data<T> &       x,
       const DataColumn<G> & y,
-      const std::set<G> &   classes)
-      : x(x),
+      const std::set<G> &   classes) :
+      x(x),
       y(y),
       classes(classes) {
     }
 
     DataSpec(
       const Data<T> &       x,
-      const DataColumn<G> & y)
-      : DataSpec(x, y, unique(y)) {
-    }
-
-    DataSpec(const DataSpec<T, G>& other)
-      : x(other.x), y(other.y), classes(other.classes) {
+      const DataColumn<G> & y) :
+      x(x),
+      y(y),
+      classes(unique(y)) {
     }
   };
 }
