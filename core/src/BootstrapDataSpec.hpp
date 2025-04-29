@@ -86,14 +86,4 @@ namespace models::stats {
 
     return BootstrapDataSpec<T, G>(data.x, data.y, data.classes, sample_indices);
   }
-
-  template<typename T, typename G>
-  BootstrapDataSpec<T, G> center(const BootstrapDataSpec<T, G> &data) {
-    return BootstrapDataSpec<T, G>(center(data.x), data.y, data.classes, data.sample_indices);
-  }
-
-  template<typename T, typename G>
-  BootstrapDataSpec<T, G> descale(const BootstrapDataSpec<T, G> &data) {
-    return BootstrapDataSpec<T, G>(descale(data.x), data.y, data.classes, data.sample_indices);
-  }
 }

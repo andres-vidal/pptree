@@ -20,22 +20,6 @@ namespace models::stats {
   }
 
   template<typename T>
-  T sd(const DataColumn<T> &data) {
-    return sqrt((math::inner_square((data.array() - data.mean()).matrix())).value() / (data.rows() - 1));
-  }
-
-  template<typename T>
-  DataColumn<T> descale(const DataColumn<T> &data) {
-    T scaling_factor = sd(data);
-
-    if (scaling_factor == 0) {
-      scaling_factor = 1;
-    }
-
-    return data.array() / scaling_factor;
-  }
-
-  template<typename T>
   float accuracy(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("predictions and actual must have the same number of rows");
