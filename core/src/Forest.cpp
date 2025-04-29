@@ -55,7 +55,7 @@ namespace models {
 
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
-      auto sample = stratified_proportional_sample(sorted_training_data, sorted_training_data.x.rows());
+      BootstrapDataSpec<T, R> sample = stratified_proportional_sample(sorted_training_data, sorted_training_data.x.rows());
       trees[i] = std::make_unique<BootstrapTree<T, R> >(BootstrapTree<T, R>::train(training_spec, sample));
     }
 
