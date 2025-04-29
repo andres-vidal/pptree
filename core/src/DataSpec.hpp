@@ -31,9 +31,5 @@ namespace models::stats {
     DataSpec(const DataSpec<T, G>& other)
       : x(other.x), y(other.y), classes(other.classes) {
     }
-
-    DataSpec<T, G> standardize() const {
-      return DataSpec<T, G>(models::stats::standardize(x), y, classes);
-    }
   };
 }

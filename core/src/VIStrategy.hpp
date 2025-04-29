@@ -97,7 +97,9 @@ namespace models {
     virtual math::DVector<T> operator()(const BootstrapTree<T, R> &tree) const override {
       BootstrapTree<T, R> std_tree = tree.retrain(
         models::stats::BootstrapDataSpec<T, R>(
-          tree.training_data->standardize(),
+          models::stats::standardize(tree.training_data->x),
+          tree.training_data->y,
+          tree.training_data->classes,
           tree.training_data->sample_indices)
         );
 

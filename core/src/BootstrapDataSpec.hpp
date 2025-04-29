@@ -29,12 +29,6 @@ namespace models::stats {
       : BootstrapDataSpec<T, G>(x, y, unique(y), sample_indices) {
     }
 
-    BootstrapDataSpec(
-      const DataSpec<T, G> &  data,
-      const std::vector<int> &sample_indices)
-      : BootstrapDataSpec<T, G>(data.x, data.y, data.classes, sample_indices) {
-    }
-
     SortedDataSpec<T, G> get_sample() const {
       return SortedDataSpec<T, G>::select(sample_indices);
     }
