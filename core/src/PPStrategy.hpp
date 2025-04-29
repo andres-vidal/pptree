@@ -79,13 +79,11 @@ namespace models::pp::strategy {
       LOG_INFO << "W_pda:" << std::endl << W_pda << std::endl;
       LOG_INFO << "W_pda + B:" << std::endl << WpB << std::endl;
 
-      stats::Data<T> WpBInvB          = WpB.fullPivLu().solve(B);
-      stats::Data<T> truncatedWpBInvB = math::truncate(WpBInvB);
+      stats::Data<T> WpBInvB = WpB.fullPivLu().solve(B);
 
       LOG_INFO << "(W_pda + B)^-1 * B:" << std::endl << WpBInvB << std::endl;
-      LOG_INFO << "(W_pda + B)^-1 * B (truncated):" << std::endl << truncatedWpBInvB << std::endl;
 
-      Eigen::EigenSolver<math::DMatrix<T> > eigen_solver(truncatedWpBInvB);
+      Eigen::EigenSolver<math::DMatrix<T> > eigen_solver(WpBInvB);
       math::DVector<T> eigen_val = eigen_solver.eigenvalues().real();
       math::DMatrix<T> eigen_vec = eigen_solver.eigenvectors().real();
 

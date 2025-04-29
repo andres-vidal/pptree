@@ -145,7 +145,7 @@ namespace models {
       const NodeSummarizer<T, R> & condition_summary) const override {
       const int n_classes = condition_summary.classes.size();
 
-      return math::abs(condition.projector) / n_classes + lower_importance + upper_importance;
+      return (condition.projector.array().abs() / n_classes).matrix() + lower_importance + upper_importance;
     }
   };
 
@@ -175,7 +175,7 @@ namespace models {
         data,
         condition.projector);
 
-      return math::abs(condition.projector) * pp_index + lower_importance + upper_importance;
+      return (condition.projector.array().abs() * pp_index).matrix() + lower_importance + upper_importance;
     }
 
     virtual math::DVector<T> compute_final(
