@@ -293,7 +293,7 @@ namespace models::stats {
                << ", train_size=" << group_train_size << std::endl;
 
       Uniform unif(group_start, group_end);
-      auto group_indices = unif.distinct(group_size);
+      std::vector<int> group_indices = unif.distinct(group_size);
 
       train_indices.insert(train_indices.end(), group_indices.begin(), group_indices.begin() + group_train_size);
       test_indices.insert(test_indices.end(), group_indices.begin() + group_train_size, group_indices.end());
