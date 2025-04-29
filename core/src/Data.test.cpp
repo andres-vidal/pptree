@@ -73,3 +73,25 @@ TEST(Data, ShuffleColumnOfDataLastColumn) {
   ASSERT_EQ(expected.cols(), shuffled.cols());
   ASSERT_EQ(expected, shuffled);
 }
+
+
+TEST(Data, Standardize) {
+  Data<float> data(3, 3);
+  data <<
+    1.0, 3.0, 1.0,
+    2.0, 2.0, 3.0,
+    3.0, 1.0, 2.0;
+
+  Data<float> standardized = standardize(data);
+
+  Data<float> expected(3, 3);
+  expected <<
+    -1.0, 1.0, -1.0,
+    0.0, 0.0,  1.0,
+    1.0, -1.0, 0.0;
+
+  ASSERT_EQ(expected.size(), standardized.size());
+  ASSERT_EQ(expected.rows(), standardized.rows());
+  ASSERT_EQ(expected.cols(), standardized.cols());
+  ASSERT_EQ(expected, standardized);
+}

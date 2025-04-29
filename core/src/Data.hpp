@@ -38,4 +38,12 @@ namespace models::stats
 
     return shuffled;
   }
+
+  template <typename T>
+  Data<T> standardize(const Data<T> &data) {
+    Data<T> centered = data.rowwise() - data.colwise().mean();
+    DataColumn<T> sd = (centered.array().square().colwise().sum() / (data.rows() - 1)).sqrt();
+
+    return centered.array().rowwise() / sd.transpose().array();
+  }
 }
