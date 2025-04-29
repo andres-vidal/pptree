@@ -91,7 +91,7 @@ namespace models {
     }
 
     R predict(const stats::DataColumn<T> &data) const override {
-      T projected_data = pp::project(data.transpose(), projector).value();
+      T projected_data = data.dot(projector);
 
       if (projected_data < threshold) {
         return lower->predict(data);

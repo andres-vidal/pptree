@@ -13,40 +13,8 @@ namespace models::stats
   template <typename T>
   using Data = math::DMatrix<T>;
 
-  template <typename Derived>
-  auto mean(const math::DMatrixBase<Derived> &data) {
-    return data.colwise().mean().transpose();
-  }
-
-  template <typename Derived>
-  auto center(const math::DMatrixBase<Derived> &data) {
-    return data.rowwise() - mean(data).transpose();
-  }
-
   template <typename T>
-  Data<T> covariance(const Data<T> &data) {
-    Data<T> centered = center(data);
-
-    return (centered.transpose() * centered) / (data.rows() - 1);
-  }
-
-  template <typename T>
-  DataColumn<T> sd(const Data<T> &data) {
-    return covariance(data).diagonal().array().sqrt();
-  }
-
-  template <typename T>
-  Data<T> descale(const Data<T> &data) {
-    DataColumn<T> scaling_factor = sd(data);
-
-    for (int i = 0; i < scaling_factor.rows(); i++) {
-      if (scaling_factor(i) == 0) {
-        scaling_factor(i) = 1;
-      }
-    }
-
-    return data.array().rowwise() / scaling_factor.transpose().array();
-  }
+  using DataView = Eigen::Block<const Data<T> >;
 
   template <typename T>
   Data<T> shuffle_column(

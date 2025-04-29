@@ -11,17 +11,10 @@ namespace models::pp {
   template<typename T>
   using Projection = stats::DataColumn<T>;
 
-  template<typename DerivedData, typename DerivedProj>
-  auto project(
-    const math::DMatrixBase<DerivedData> & data,
-    const math::DMatrixBase<DerivedProj> & projector) {
-    return data * projector;
-  }
-
   template<typename T>
   Projector<T> normalize(
     const Projector<T> &projector) {
-    Projector<T> truncated = math::truncate(projector);
+    Projector<T> truncated = (projector.array().abs() < 1e-15).select(0, projector.array());
 
     const int size = truncated.size();
     const T *data  = truncated.data();

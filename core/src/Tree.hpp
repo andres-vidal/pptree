@@ -39,10 +39,6 @@ namespace models {
       return BaseTree::train(*this->training_spec, data);
     }
 
-    DerivedTree<T, R> standardize() const {
-      return retrain(stats::center(descale(*training_data)));
-    }
-
     R predict(const stats::DataColumn<T> &data) const {
       return root->predict(data);
     }
@@ -66,13 +62,19 @@ namespace models {
     }
 
     virtual float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      auto [x, y, _classes] = data.unwrap();
-      return stats::error_rate(predict(x), y);
+      return stats::error_rate(predict(data.x), data.y);
+    }
+
+    virtual float error_rate(const stats::BootstrapDataSpec<T, R> &data) const {
+      return error_rate(data.get_sample());
     }
 
     virtual stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      auto [x, y, _classes] = data.unwrap();
-      return stats::ConfusionMatrix(predict(x), y);
+      return stats::ConfusionMatrix(predict(data.x), data.y);
+    }
+
+    virtual stats::ConfusionMatrix confusion_matrix(const stats::BootstrapDataSpec<T, R> &data) const {
+      return confusion_matrix(data.get_sample());
     }
 
     json to_json() const {

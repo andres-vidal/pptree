@@ -73,22 +73,23 @@ namespace models {
 
   template<typename T, typename R >
   std::unique_ptr<Condition<T, R> > binary_step(
-    const TrainingSpec<T, R> &    training_spec,
-    const ReducedDataSpec<T, R> & training_data) {
-    auto group_1 = *training_data.classes.begin();
-    auto group_2 = *std::next(training_data.classes.begin());
+    const TrainingSpec<T, R> &   training_spec,
+    const SortedDataSpec<T, R> & training_data,
+    const ReducedDataSpec<T, R>& reduced_data) {
+    R group_1 = *training_data.classes.begin();
+    R group_2 = *std::next(training_data.classes.begin());
 
     LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << training_data.classes << std::endl;
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    auto projector = pp_strategy(training_data);
+    Projector<T> projector = reduced_data.expand(pp_strategy(reduced_data));
 
     Data<T> data_group_1 = training_data.group(group_1);
     Data<T> data_group_2 = training_data.group(group_2);
 
-    T mean_1 = project(data_group_1, projector).mean();
-    T mean_2 = project(data_group_2, projector).mean();
+    T mean_1 = (data_group_1 * projector).mean();
+    T mean_2 = (data_group_2 * projector).mean();
 
     LOG_INFO << "Mean for projected group " << group_1 << ": " << mean_1 << std::endl;
     LOG_INFO << "Mean for projected group " << group_2 << ": " << mean_2 << std::endl;
@@ -97,8 +98,8 @@ namespace models {
 
     LOG_INFO << "Threshold: " << threshold << std::endl;
 
-    T projected_mean_1 = mean(data_group_1).dot(projector);
-    T projected_mean_2 = mean(data_group_2).dot(projector);
+    T projected_mean_1 = data_group_1.colwise().mean().dot(projector);
+    T projected_mean_2 = data_group_2.colwise().mean().dot(projector);
 
     LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
     LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
@@ -116,10 +117,10 @@ namespace models {
     LOG_INFO << "Lower group: " << lower_group << std::endl;
     LOG_INFO << "Upper group: " << upper_group << std::endl;
 
-    auto lower_response = std::make_unique<Response<T, R> >(lower_group);
-    auto upper_response = std::make_unique<Response<T, R> >(upper_group);
+    std::unique_ptr<Response<T, R> > lower_response = std::make_unique<Response<T, R> >(lower_group);
+    std::unique_ptr<Response<T, R> > upper_response = std::make_unique<Response<T, R> >(upper_group);
 
-    auto condition = std::make_unique<Condition<T, R> >(
+    std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       projector,
       threshold,
       std::move(lower_response),
@@ -129,13 +130,6 @@ namespace models {
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
-  }
-
-  template<typename T, typename R>
-  std::unique_ptr<Node<T, R> >   step(
-    const TrainingSpec<T, R> &     training_spec,
-    const BootstrapDataSpec<T, R> &training_data) {
-    return step(training_spec, training_data.get_sample());
   }
 
   template<typename T, typename R >
@@ -152,36 +146,38 @@ namespace models {
       return std::make_unique<Response<T, R> >(*training_data.classes.begin());
     }
 
-    auto reduced_data = dr_strategy(training_data);
+    ReducedDataSpec<T, R> reduced_data = dr_strategy(training_data);
 
     if (training_data.classes.size() == 2) {
-      return binary_step(training_spec, reduced_data);
+      return binary_step(training_spec, training_data, reduced_data);
     }
 
     LOG_INFO << "Redefining a " << training_data.classes.size() << " group problem as binary:" << std::endl;
 
-    auto projector      = pp_strategy(reduced_data);
-    auto binary_mapping = binary_regroup(training_data.analog(project(training_data.x, projector)));
+    Projector<T> projector          = reduced_data.expand(pp_strategy(reduced_data));
+    std::map<R, int> binary_mapping = binary_regroup(training_data.analog(training_data.x * projector));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
-    auto binary_remapped_data = reduced_data.remap(binary_mapping);
-    auto temp_node            = binary_step(training_spec, binary_remapped_data);
+    SortedDataSpec<T, R> binary_training_data = training_data.remap(binary_mapping);
+    ReducedDataSpec<T, R> binary_reduced_data = reduced_data.remap(binary_mapping);
+
+    std::unique_ptr<Condition<T, R> > temp_node = binary_step(training_spec, binary_training_data, binary_reduced_data);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
 
     std::map<R, std::set<R> > inverse_mapping = invert(binary_mapping);
-    auto lower_groups                         = inverse_mapping.at(binary_lower_group);
-    auto upper_groups                         = inverse_mapping.at(binary_upper_group);
+    std::set<R> lower_groups                  = inverse_mapping.at(binary_lower_group);
+    std::set<R> upper_groups                  = inverse_mapping.at(binary_upper_group);
 
     LOG_INFO << "Build lower branch" << std::endl;
-    auto lower_branch = step(training_spec, training_data.subset(lower_groups));
+    std::unique_ptr<Node<T, R> > lower_branch = step(training_spec, training_data.subset(lower_groups));
 
     LOG_INFO << "Build upper branch" << std::endl;
-    auto upper_branch = step(training_spec, training_data.subset(upper_groups));
+    std::unique_ptr<Node<T, R> > upper_branch = step(training_spec, training_data.subset(upper_groups));
 
-    auto condition = std::make_unique<Condition<T, R> >(
+    std::unique_ptr<Condition<T, R> > condition = std::make_unique<Condition<T, R> >(
       temp_node->projector,
       temp_node->threshold,
       std::move(lower_branch),
@@ -200,7 +196,7 @@ namespace models {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     LOG_INFO << "Root step." << std::endl;
-    auto root_ptr = step(training_spec, training_data);
+    std::unique_ptr<Node<T, R> > root_ptr = step(training_spec, training_data.get());
 
     DerivedTree<T, R> tree(
       std::move(root_ptr),

@@ -84,7 +84,7 @@ namespace models {
   template <typename T, typename R>
   struct BaseVIStrategy : public VIStrategy<T, R> {
     virtual math::DVector<T> operator()(const Tree<T, R> &tree) const override {
-      Tree<T, R> std_tree = tree.standardize();
+      Tree<T, R> std_tree = tree.retrain(tree.training_data->standardize());
 
       NodeSummarizer<T, R> summarizer(*this, std_tree.training_data->x.cols());
       std_tree.root->accept(summarizer);
@@ -93,7 +93,11 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const BootstrapTree<T, R> &tree) const override {
-      BootstrapTree<T, R> std_tree = tree.standardize();
+      BootstrapTree<T, R> std_tree = tree.retrain(
+        models::stats::BootstrapDataSpec<T, R>(
+          tree.training_data->standardize(),
+          tree.training_data->sample_indices)
+        );
 
       NodeSummarizer<T, R> summarizer(*this, std_tree.training_data->x.cols());
       std_tree.root->accept(summarizer);
@@ -102,7 +106,7 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const Forest<T, R> &forest) const override {
-      Forest<T, R> std_forest = forest.standardize();
+      Forest<T, R> std_forest = forest.retrain(forest.training_data->standardize());
 
       math::DVector<T> accumulated_importance = std::accumulate(
         std_forest.trees.begin(),
@@ -145,7 +149,7 @@ namespace models {
       const NodeSummarizer<T, R> & condition_summary) const override {
       const int n_classes = condition_summary.classes.size();
 
-      return math::abs(condition.projector) / n_classes + lower_importance + upper_importance;
+      return (condition.projector.array().abs() / n_classes).matrix() + lower_importance + upper_importance;
     }
   };
 
@@ -167,15 +171,13 @@ namespace models {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
-      auto [x, y, _all_classes] = condition.training_data->unwrap();
-
-      stats::SortedDataSpec<T, R> data(x, y, condition_summary.classes);
+      stats::DataSpec<T, R> data = condition.training_data->get();
 
       const float pp_index = condition.training_spec->pp_strategy->index(
         data,
         condition.projector);
 
-      return math::abs(condition.projector) * pp_index + lower_importance + upper_importance;
+      return (condition.projector.array().abs() * pp_index).matrix() + lower_importance + upper_importance;
     }
 
     virtual math::DVector<T> compute_final(

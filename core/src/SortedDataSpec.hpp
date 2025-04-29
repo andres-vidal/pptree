@@ -106,7 +106,7 @@ namespace models::stats {
         return group_specs.at(next.value()).index - 1;
       }
 
-      auto group(const G &group) const {
+      DataView<T> group(const G &group) const {
         return this->x(Eigen::seq(group_start(group), group_end(group)), Eigen::all);
       }
 
@@ -195,16 +195,28 @@ namespace models::stats {
           new_group_specs);
       }
 
+      SortedDataSpec<T, G> select(const std::vector<int> &indices) const {
+        return SortedDataSpec<T, G>(this->x(indices, Eigen::all), this->y(indices, Eigen::all));
+      }
+
+      SortedDataSpec<T, G> select(const std::set<int> &indices) const {
+        return select(std::vector<int>(indices.begin(), indices.end()));
+      }
+
+      SortedDataSpec<T, G> get() const {
+        return *this;
+      }
+
       virtual Data<T> bgss() const {
-        auto global_mean = mean(this->x);
-        Data<T> result   = Data<T>::Zero(this->x.cols(), this->x.cols());
+        DataColumn<T> global_mean = this->x.colwise().mean().transpose();
+        Data<T> result            = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {
-          auto group_data    = group(g);
-          auto group_mean    = mean(group_data);
-          auto centered_mean = group_mean - global_mean;
+          DataView<T> group_data      = group(g);
+          DataColumn<T> group_mean    = group_data.colwise().mean();
+          DataColumn<T> centered_mean = group_mean - global_mean;
 
-          result.noalias() += group_data.rows() * math::outer_square(centered_mean);
+          result.noalias() += group_data.rows() * (centered_mean * centered_mean.transpose());
         }
 
         return result;
@@ -214,10 +226,10 @@ namespace models::stats {
         Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
 
         for (const G &g : this->classes) {
-          auto group_data          = group(g);
-          auto centered_group_data = center(group_data);
+          DataView<T> group_data      = group(g);
+          Data<T> centered_group_data = group_data.rowwise() - group_data.colwise().mean();
 
-          result.noalias() += math::inner_square(centered_group_data);
+          result.noalias() += centered_group_data.transpose() * centered_group_data;
         }
 
         return result;
@@ -281,7 +293,7 @@ namespace models::stats {
                << ", train_size=" << group_train_size << std::endl;
 
       Uniform unif(group_start, group_end);
-      auto group_indices = unif.distinct(group_size);
+      std::vector<int> group_indices = unif.distinct(group_size);
 
       train_indices.insert(train_indices.end(), group_indices.begin(), group_indices.begin() + group_train_size);
       test_indices.insert(test_indices.end(), group_indices.begin() + group_train_size, group_indices.end());

@@ -110,14 +110,12 @@ namespace models {
         n_threads);
     }
 
-    Forest<T, R> standardize() const {
-      return retrain(stats::center(stats::descale(*training_data)));
+    float error_rate(const stats::SortedDataSpec<T, R> &data) const {
+      return stats::error_rate(predict(data.x), data.y);
     }
 
-    float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      auto [x, y, _] = data.unwrap();
-      stats::DataColumn<R> ensemble_predictions = predict(x);
-      return stats::error_rate(ensemble_predictions, y);
+    float error_rate(const stats::BootstrapDataSpec<T, R> &data) const {
+      return error_rate(data.get_sample());
     }
 
     float error_rate() const {
@@ -129,8 +127,11 @@ namespace models {
     }
 
     stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      auto [x, y, _classes] = data.unwrap();
-      return stats::ConfusionMatrix(predict(x), y);
+      return stats::ConfusionMatrix(predict(data.x), data.y);
+    }
+
+    stats::ConfusionMatrix confusion_matrix(const stats::BootstrapDataSpec<T, R> &data) const {
+      return confusion_matrix(data.get_sample());
     }
 
     stats::ConfusionMatrix confusion_matrix() const {

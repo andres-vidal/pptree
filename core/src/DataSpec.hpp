@@ -32,18 +32,12 @@ namespace models::stats {
       : x(other.x), y(other.y), classes(other.classes) {
     }
 
-    virtual std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const {
-      return std::make_tuple(x, y, classes);
+    DataSpec<T, G> standardize() const {
+      Data<T> centered_x = x.rowwise() - x.colwise().mean();
+      DataColumn<T> sd_x = (centered_x.array().square().colwise().sum() / (x.rows() - 1)).sqrt();
+      Data<T> descaled_x = centered_x.array().rowwise() / sd_x.transpose().array();
+
+      return DataSpec<T, G>(descaled_x, y, classes);
     }
   };
-
-  template<typename T, typename G>
-  DataSpec<T, G> center(const DataSpec<T, G> &data) {
-    return DataSpec<T, G>(center(data.x), data.y, data.classes);
-  }
-
-  template<typename T, typename G>
-  DataSpec<T, G> descale(const DataSpec<T, G> &data) {
-    return DataSpec<T, G>(descale(data.x), data.y, data.classes);
-  }
 }
