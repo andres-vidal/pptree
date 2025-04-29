@@ -162,7 +162,7 @@ namespace models {
     LOG_INFO << "Redefining a " << training_data.classes.size() << " group problem as binary:" << std::endl;
 
     auto projector      = reduced_data.expand(pp_strategy(reduced_data));
-    auto binary_mapping = binary_regroup(training_data.analog(project(training_data.x, projector)));
+    auto binary_mapping = binary_regroup(training_data.analog(training_data.x * projector));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
