@@ -84,7 +84,9 @@ namespace models {
   template <typename T, typename R>
   struct BaseVIStrategy : public VIStrategy<T, R> {
     virtual math::DVector<T> operator()(const Tree<T, R> &tree) const override {
-      Tree<T, R> std_tree = tree.retrain(tree.training_data->standardize());
+      models::stats::SortedDataSpec<T, R> std_data = tree.training_data->analog(models::stats::standardize(tree.training_data->x));
+
+      Tree<T, R> std_tree = tree.retrain(std_data);
 
       NodeSummarizer<T, R> summarizer(*this, std_tree.training_data->x.cols());
       std_tree.root->accept(summarizer);
@@ -106,7 +108,9 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const Forest<T, R> &forest) const override {
-      Forest<T, R> std_forest = forest.retrain(forest.training_data->standardize());
+      models::stats::SortedDataSpec<T, R> std_data = forest.training_data->analog(models::stats::standardize(forest.training_data->x));
+
+      Forest<T, R> std_forest = forest.retrain(std_data);
 
       math::DVector<T> accumulated_importance = std::accumulate(
         std_forest.trees.begin(),
@@ -171,10 +175,9 @@ namespace models {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
-      stats::DataSpec<T, R> data = condition.training_data->get();
 
       const float pp_index = condition.training_spec->pp_strategy->index(
-        data,
+        condition.training_data->get(),
         condition.projector);
 
       return (condition.projector.array().abs() * pp_index).matrix() + lower_importance + upper_importance;

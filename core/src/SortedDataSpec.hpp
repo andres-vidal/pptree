@@ -82,12 +82,6 @@ namespace models::stats {
         : SortedDataSpec<T, G>(x, y, unique(y)) {
       }
 
-      //cppcheck-suppress noExplicitConstructor
-      SortedDataSpec(
-        const DataSpec<T, G> &data)
-        : SortedDataSpec<T, G>(data.x, data.y, data.classes) {
-      }
-
       int group_size(const G &group) const {
         return 1 + group_end(group) - group_start(group);
       }
