@@ -81,7 +81,7 @@ file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
 # Collect all .cpp files that are not test files
 set(NON_TEST_CPP_FILES "")
 foreach(file ${ALL_CPP_FILES})
-  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\Profiler\\.cpp$")
+  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$")
     list(APPEND NON_TEST_CPP_FILES ${file})
   endif()
 endforeach()
@@ -141,7 +141,7 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   gtest_discover_tests(pptree-test)
 endif()
 
-if(NOT PPTREE_SKIP_PROFILE)
+if(NOT PPTREE_SKIP_CLI)
   # Add profiler executable and its dependencies
   # Disable coverage for csv-parser on all platforms
   set(CSV_PARSER_COVERAGE OFF CACHE BOOL "Disable coverage for csv-parser" FORCE)
@@ -173,9 +173,9 @@ if(NOT PPTREE_SKIP_PROFILE)
   add_library(getopt_lib INTERFACE)
   target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
 
-  # Setup profiler executable
-  add_executable(pptree-profile src/Profiler.cpp)
-  target_include_directories(pptree-profile PRIVATE ${csv_SOURCE_DIR}/single_include)
-  target_link_libraries(pptree-profile pptree csv getopt_lib)
+  # Setup cli executable
+  add_executable(pptree-cli src/CLI.cpp)
+  target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/single_include)
+  target_link_libraries(pptree-cli pptree csv getopt_lib)
 
 endif()

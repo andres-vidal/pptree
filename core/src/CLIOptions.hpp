@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ProfilerOptions.hpp"
+#include "CLIOptions.hpp"
 #include "getopt.h"
 #include <iostream>
 #include <random>
@@ -17,7 +17,7 @@ namespace pptree {
     OPT_SIM_SD
   };
 
-  struct ProfilerOptions {
+  struct CLIOptions {
     int trees         = 100;
     float lambda      = 0.5;
     int threads       = -1;
@@ -41,7 +41,7 @@ namespace pptree {
     return f.good();
   }
 
-  void warn_unused_params(const ProfilerOptions& params) {
+  void warn_unused_params(const CLIOptions& params) {
     if (params.trees == 0) {
       bool has_warnings = false;
 
@@ -61,7 +61,7 @@ namespace pptree {
     }
   }
 
-  void init_params(ProfilerOptions& params, int total_vars = 0) {
+  void init_params(CLIOptions& params, int total_vars = 0) {
     if (params.lambda == -1) {
       params.lambda = 0.5;
       std::cout << "Using default lambda: " << params.lambda << std::endl;
@@ -120,8 +120,8 @@ namespace pptree {
               << "  -h, --help                    Show this help message\n\n";
   }
 
-  ProfilerOptions parse_args(int argc, char *argv[]) {
-    ProfilerOptions params;
+  CLIOptions parse_args(int argc, char *argv[]) {
+    CLIOptions params;
     const struct option long_options[] = {
       { "simulate",            required_argument,                0,                                's' },
       { "data",                required_argument,                0,                                'd' },

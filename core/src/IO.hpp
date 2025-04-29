@@ -71,7 +71,7 @@ namespace pptree {
   }
 
   void announce_configuration(
-    const ProfilerOptions&            params,
+    const CLIOptions&                 params,
     const SortedDataSpec<float, int>& train_data,
     const SortedDataSpec<float, int>& test_data) {
     if (params.trees > 0) {

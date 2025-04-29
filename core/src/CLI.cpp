@@ -8,8 +8,9 @@
 #include <random>
 #include <algorithm>
 #include <numeric>
+#include <string>
 
-#include "ProfilerOptions.hpp"
+#include "CLIOptions.hpp"
 #include "IO.hpp"
 
 #ifdef _OPENMP
@@ -19,7 +20,21 @@
 using namespace pptree;
 using namespace csv;
 
-SortedDataSpec<float, int> read_data(const ProfilerOptions& params) {
+// Display a progress bar on the console
+void display_progress(int current, int total, int bar_width = 50) {
+  float progress = static_cast<float>(current) / total;
+  int pos        = static_cast<int>(bar_width * progress);
+
+  std::cout << "\r" << std::string(pos, '-') << std::string(bar_width - pos, ' ')
+            << " | " << current << "/" << total
+            << " (" << static_cast<int>(progress * 100.0) << "%)     " << std::flush;
+
+  if (current == total) {
+    std::cout << std::endl;
+  }
+}
+
+SortedDataSpec<float, int> read_data(const CLIOptions& params) {
   if (!params.data_path.empty()) {
     try {
       return read_csv(params.data_path);
@@ -50,7 +65,7 @@ template<typename Model>
 ModelStats evaluate_model(const TrainingSpec<float, int>& spec,
   const SortedDataSpec<float, int>&                       train_data,
   const SortedDataSpec<float, int>&                       test_data,
-  const ProfilerOptions&                                  params) {
+  const CLIOptions&                                       params) {
   ModelStats stats;
   stats.train_times.reserve(params.n_runs);
   stats.train_errors.reserve(params.n_runs);
@@ -58,9 +73,12 @@ ModelStats evaluate_model(const TrainingSpec<float, int>& spec,
 
   Random::seed(params.seed);
 
-  for (int i = 0; i < params.n_runs; ++i) {
-    const auto start = std::chrono::high_resolution_clock::now();
+  std::cout << "Running " << params.n_runs << " iterations:" << std::endl;
 
+  for (int i = 0; i < params.n_runs; ++i) {
+    display_progress(i + 1, params.n_runs);
+
+    const auto start = std::chrono::high_resolution_clock::now();
 
     const Model model = [&]() {
         if constexpr (std::is_same_v<Model, Forest<float, int> >) {
@@ -78,6 +96,8 @@ ModelStats evaluate_model(const TrainingSpec<float, int>& spec,
     stats.test_errors.push_back(model.error_rate(test_data));
   }
 
+  std::cout << std::endl;
+
   return stats;
 }
 
@@ -87,7 +107,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  ProfilerOptions params = parse_args(argc, argv);
+  CLIOptions params = parse_args(argc, argv);
 
   auto full_data = read_data(params);
 
