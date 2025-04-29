@@ -110,10 +110,6 @@ namespace models {
         n_threads);
     }
 
-    Forest<T, R> standardize() const {
-      return retrain(stats::center(stats::descale(*training_data)));
-    }
-
     float error_rate(const stats::SortedDataSpec<T, R> &data) const {
       auto [x, y, _] = data.unwrap();
       stats::DataColumn<R> ensemble_predictions = predict(x);

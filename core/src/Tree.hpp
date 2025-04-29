@@ -39,10 +39,6 @@ namespace models {
       return BaseTree::train(*this->training_spec, data);
     }
 
-    DerivedTree<T, R> standardize() const {
-      return retrain(stats::center(descale(*training_data)));
-    }
-
     R predict(const stats::DataColumn<T> &data) const {
       return root->predict(data);
     }

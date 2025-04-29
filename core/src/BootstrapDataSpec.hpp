@@ -29,18 +29,18 @@ namespace models::stats {
       : BootstrapDataSpec<T, G>(x, y, unique(y), sample_indices) {
     }
 
+    BootstrapDataSpec(
+      const DataSpec<T, G> &  data,
+      const std::vector<int> &sample_indices)
+      : BootstrapDataSpec<T, G>(data.x, data.y, data.classes, sample_indices) {
+    }
+
     SortedDataSpec<T, G> get_sample() const {
-      return SortedDataSpec<T, G>(
-        this->x(this->sample_indices, Eigen::all),
-        this->y(this->sample_indices, Eigen::all));
+      return SortedDataSpec<T, G>::select(sample_indices);
     }
 
     SortedDataSpec<T, G> get_oob() const {
-      std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
-
-      return SortedDataSpec<T, G>(
-        this->x(oob_indices_vec, Eigen::all),
-        this->y(oob_indices_vec, Eigen::all));
+      return SortedDataSpec<T, G>::select(oob_indices);
     }
 
     std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const override {
@@ -50,20 +50,13 @@ namespace models::stats {
     private:
 
       static std::set<int> init_oob_indices(const Data<T> &data, const std::vector<int> &sample_indices) {
-        std::set<int> all_indices;
-
-        for (int i = 0; i < data.rows(); i++) {
-          all_indices.insert(i);
-        }
+        std::set<int> oob_indices;
 
         std::set<int> iob_indices(sample_indices.begin(), sample_indices.end());
-        std::set<int> oob_indices;
-        std::set_difference(
-          all_indices.begin(),
-          all_indices.end(),
-          iob_indices.begin(),
-          iob_indices.end(),
-          std::inserter(oob_indices, oob_indices.end()));
+
+        for (int i = 0; i < data.rows(); i++) {
+          if (iob_indices.count(i) == 0) oob_indices.insert(i);
+        }
 
         return oob_indices;
       }

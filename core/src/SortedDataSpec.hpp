@@ -195,6 +195,14 @@ namespace models::stats {
           new_group_specs);
       }
 
+      SortedDataSpec<T, G> select(const std::vector<int> &indices) const {
+        return SortedDataSpec<T, G>(this->x(indices, Eigen::all), this->y(indices, Eigen::all));
+      }
+
+      SortedDataSpec<T, G> select(const std::set<int> &indices) const {
+        return select(std::vector<int>(indices.begin(), indices.end()));
+      }
+
       virtual Data<T> bgss() const {
         DataColumn<T> global_mean = this->x.colwise().mean().transpose();
         Data<T> result            = Data<T>::Zero(this->x.cols(), this->x.cols());
