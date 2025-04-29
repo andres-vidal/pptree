@@ -39,12 +39,12 @@ namespace models::stats {
       return SortedDataSpec<T, G>::select(sample_indices);
     }
 
-    SortedDataSpec<T, G> get_oob() const {
-      return SortedDataSpec<T, G>::select(oob_indices);
+    SortedDataSpec<T, G> get() const {
+      return get_sample();
     }
 
-    std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const override {
-      return this->get_sample().unwrap();
+    SortedDataSpec<T, G> get_oob() const {
+      return SortedDataSpec<T, G>::select(oob_indices);
     }
 
     private:

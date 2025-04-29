@@ -203,6 +203,10 @@ namespace models::stats {
         return select(std::vector<int>(indices.begin(), indices.end()));
       }
 
+      SortedDataSpec<T, G> get() const {
+        return *this;
+      }
+
       virtual Data<T> bgss() const {
         DataColumn<T> global_mean = this->x.colwise().mean().transpose();
         Data<T> result            = Data<T>::Zero(this->x.cols(), this->x.cols());

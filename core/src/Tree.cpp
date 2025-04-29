@@ -132,13 +132,6 @@ namespace models {
     return condition;
   }
 
-  template<typename T, typename R>
-  std::unique_ptr<Node<T, R> >   step(
-    const TrainingSpec<T, R> &     training_spec,
-    const BootstrapDataSpec<T, R> &training_data) {
-    return step(training_spec, training_data.get_sample());
-  }
-
   template<typename T, typename R >
   std::unique_ptr<Node<T, R> >   step(
     const TrainingSpec<T, R> &  training_spec,
@@ -202,7 +195,7 @@ namespace models {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     LOG_INFO << "Root step." << std::endl;
-    auto root_ptr = step(training_spec, training_data);
+    auto root_ptr = step(training_spec, training_data.get());
 
     DerivedTree<T, R> tree(
       std::move(root_ptr),

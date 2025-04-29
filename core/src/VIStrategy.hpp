@@ -171,9 +171,7 @@ namespace models {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
-      auto [x, y, _all_classes] = condition.training_data->unwrap();
-
-      stats::SortedDataSpec<T, R> data(x, y, condition_summary.classes);
+      stats::DataSpec<T, R> data = condition.training_data->get();
 
       const float pp_index = condition.training_spec->pp_strategy->index(
         data,

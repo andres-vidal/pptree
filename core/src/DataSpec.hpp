@@ -32,10 +32,6 @@ namespace models::stats {
       : x(other.x), y(other.y), classes(other.classes) {
     }
 
-    virtual std::tuple<Data<T>, DataColumn<G>, std::set<G> > unwrap() const {
-      return std::make_tuple(x, y, classes);
-    }
-
     DataSpec<T, G> standardize() const {
       Data<T> centered_x = x.rowwise() - x.colwise().mean();
       DataColumn<T> sd_x = (centered_x.array().square().colwise().sum() / (x.rows() - 1)).sqrt();

@@ -83,7 +83,7 @@ TEST(BootstrapTree, ErrorRateDataSpecMin) {
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  auto [test_x, _test_y, _test_classes] = data.unwrap();
+  Data<float> test_x = data.get_sample().x;
 
   float result = tree.error_rate(SortedDataSpec<float, int>(test_x, tree.predict(test_x)));
 
@@ -165,9 +165,9 @@ TEST(BootstrapTree, ErrorRateDataSpecMax) {
   DataColumn<int> actual_y       = DataColumn<int>::Constant(20, 3);
 
   std::vector<int> test_indices(20);
-  std::iota(test_indices.begin(), test_indices.end(), 0);
+  std::iota(test_indices.begin(), test_indices.end(), 0);;
 
-  auto [test_x, _test_y, _test_classes] = data.unwrap();
+  Data<float> test_x = data.get_sample().x;
 
   float result = tree.error_rate(SortedDataSpec<float, int>(test_x, actual_y));
 
@@ -248,7 +248,7 @@ TEST(BootstrapTree, ErrorRateDataSpecGeneric) {
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
   DataColumn<int> actual_y       = DataColumn<int>::Zero(20);
 
-  auto [test_x, _test_y, _test_classes] = data.unwrap();
+  Data<float> test_x = data.get_sample().x;
 
   float result = tree.error_rate(SortedDataSpec<float, int>(test_x, actual_y));
 
@@ -642,7 +642,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecDiagonal) {
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  auto [test_x, _test_y, _test_classes] = data.unwrap();
+  Data<float> test_x = data.get_sample().x;
 
   ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<float, int>(test_x, tree.predict(test_x)));
 
@@ -731,7 +731,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  auto [test_x, _test_y, _test_classes] = data.unwrap();
+  Data<float> test_x = data.get_sample().x;
 
   DataColumn<int> actual_y(20);
   actual_y <<
@@ -844,7 +844,7 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecDiagonal) {
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
   BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
 
-  auto [test_x, _test_y, _test_classes] = data.unwrap();
+  Data<float> test_x = data.get_sample().x;
 
   ConfusionMatrix result = tree.confusion_matrix(BootstrapDataSpec<float, int>(x, tree.predict(x), sample_indices));
 
