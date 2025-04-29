@@ -95,3 +95,34 @@ TEST(Data, Standardize) {
   ASSERT_EQ(expected.cols(), standardized.cols());
   ASSERT_EQ(expected, standardized);
 }
+
+TEST(Data, Sort) {
+  Data<float> x(3, 3);
+  x <<
+    1.0, 3.0, 1.0,
+    2.0, 2.0, 3.0,
+    3.0, 1.0, 2.0;
+
+  DataColumn<int> y(3);
+  y <<
+    1.0,
+    2.0,
+    1.0;
+
+  sort(x, y);
+
+  Data<float> expected_x(3, 3);
+  expected_x <<
+    1.0, 3.0, 1.0,
+    3.0, 1.0, 2.0,
+    2.0, 2.0, 3.0;
+
+  DataColumn<int> expected_y(3);
+  expected_y <<
+    1.0,
+    1.0,
+    2.0;
+
+  ASSERT_EQ_MATRIX(expected_x, x);
+  ASSERT_EQ_MATRIX(expected_y, y);
+}

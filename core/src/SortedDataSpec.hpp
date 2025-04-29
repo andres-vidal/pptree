@@ -53,17 +53,12 @@ namespace models::stats {
       }
 
       static DataSpec<T, G> sort(const DataSpec<T, G> &data) {
-        std::vector<int> indices(data.x.rows());
-        std::iota(indices.begin(), indices.end(), 0);
+        Data<T> x       = data.x;
+        DataColumn<G> y = data.y;
 
-        std::stable_sort(indices.begin(), indices.end(), [&data](int idx1, int idx2) {
-            return data.y(idx1) < data.y(idx2);
-          });
+        models::stats::sort(x, y);
 
-        return DataSpec<T, G>(
-          data.x(indices, Eigen::all),
-          data.y(indices, Eigen::all),
-          data.classes);
+        return DataSpec<T, G>(x, y, data.classes);
       }
 
     public:
