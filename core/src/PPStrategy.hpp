@@ -2,7 +2,6 @@
 
 #include "Projector.hpp"
 #include "SortedDataSpec.hpp"
-#include "ReducedDataSpec.hpp"
 #include <set>
 #include <vector>
 
@@ -16,9 +15,9 @@ namespace models::pp::strategy {
       const stats::SortedDataSpec<T, G>& data,
       const Projector<T>&                projector) const = 0;
 
-    virtual Projector<T> optimize(const stats::ReducedDataSpec<T, G>& data) const = 0;
+    virtual Projector<T> optimize(const stats::SortedDataSpec<T, G>& data) const = 0;
 
-    Projector<T> operator()(const stats::ReducedDataSpec<T, G>& data) const {
+    Projector<T> operator()(const stats::SortedDataSpec<T, G>& data) const {
       return optimize(data);
     }
   };
@@ -59,10 +58,10 @@ namespace models::pp::strategy {
       return 1 - math::determinant(math::inner_square(A, W_pda)) / denominator;
     }
 
-    Projector<T> optimize(const stats::ReducedDataSpec<T, G>& data) const override {
+    Projector<T> optimize(const stats::SortedDataSpec<T, G>& data) const override {
       LOG_INFO << "Calculating PDA optimum projector for " << data.classes.size() << " groups: " << data.classes << std::endl;
-      LOG_INFO << "Dataset size: " << data.x.rows() << " observations of " << data.reduced_x().cols() << " variables:" << std::endl;
-      LOG_INFO << std::endl << data.reduced_x() << std::endl;
+      LOG_INFO << "Dataset size: " << data.x.rows() << " observations of " << data.x.cols() << " variables:" << std::endl;
+      LOG_INFO << std::endl << data.x << std::endl;
       LOG_INFO << "Groups:" << std::endl;
       LOG_INFO << std::endl << data.y << std::endl;
 
@@ -121,7 +120,7 @@ namespace models::pp::strategy {
       Projector<T> projector = pp::normalize(max_eigen_vec);
 
       LOG_INFO << "Projector:" << std::endl << projector << std::endl;
-      return data.expand(projector);
+      return projector;
     }
   };
 
