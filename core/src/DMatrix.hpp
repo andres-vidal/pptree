@@ -46,20 +46,4 @@ namespace models::math {
     ) {
     return inner_product(m, m);
   }
-
-  template<typename Derived>
-  auto determinant(
-    const DMatrixBase<Derived> &m
-    ) {
-    auto d = m.determinant();
-
-    return fabs(d) < 1e-15 ? 0.0 : d;
-  }
-
-  template<typename Derived>
-  auto truncate(
-    const DMatrixBase<Derived> &m
-    ) {
-    return (m.array().abs() < 1e-15).select(0, m.array());
-  }
 }

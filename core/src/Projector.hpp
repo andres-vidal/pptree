@@ -21,7 +21,7 @@ namespace models::pp {
   template<typename T>
   Projector<T> normalize(
     const Projector<T> &projector) {
-    Projector<T> truncated = math::truncate(projector);
+    Projector<T> truncated = (projector.array().abs() < 1e-15).select(0, projector.array());
 
     const int size = truncated.size();
     const T *data  = truncated.data();

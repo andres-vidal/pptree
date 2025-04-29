@@ -49,13 +49,15 @@ namespace models::pp::strategy {
       stats::Data<T> B      = data.bgss();
       stats::Data<T> WpB    = W_pda + B;
 
-      T denominator = math::determinant(math::inner_square(A, WpB));
+      T denominator = (A.transpose() * WpB * A).determinant();
 
-      if (denominator == 0) {
+      if (fabs(denominator) < 1e-15) {
         return 0;
       }
 
-      return 1 - math::determinant(math::inner_square(A, W_pda)) / denominator;
+      T numerator = (A.transpose() * W_pda * A).determinant();
+
+      return 1 - numerator / denominator;
     }
 
     Projector<T> optimize(const stats::SortedDataSpec<T, G>& data) const override {
