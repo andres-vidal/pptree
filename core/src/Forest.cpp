@@ -43,11 +43,9 @@ namespace models {
 
     invariant(size > 0, "The forest size must be greater than 0.");
 
-    const SortedDataSpec<T, R> sorted_training_data(training_data);
-
     Forest<T, R> forest(
       training_spec.clone(),
-      std::make_shared<SortedDataSpec<T, R> >(sorted_training_data),
+      std::make_shared<SortedDataSpec<T, R> >(training_data),
       seed,
       n_threads);
 
@@ -55,7 +53,7 @@ namespace models {
 
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
-      BootstrapDataSpec<T, R> sample = stratified_proportional_sample(sorted_training_data, sorted_training_data.x.rows());
+      BootstrapDataSpec<T, R> sample = stratified_proportional_sample(training_data, training_data.x.rows());
       trees[i] = std::make_unique<BootstrapTree<T, R> >(BootstrapTree<T, R>::train(training_spec, sample));
     }
 
