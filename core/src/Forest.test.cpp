@@ -95,7 +95,7 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
 
   Forest<float, int> expect(
     TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })),
     seed);
 
   expect.add_tree(
@@ -350,7 +350,7 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
 
   Forest<float, int> expect(
     TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })),
     seed);
 
   expect.add_tree(

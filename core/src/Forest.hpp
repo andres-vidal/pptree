@@ -31,7 +31,9 @@ namespace models {
 
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
-    std::shared_ptr<stats::SortedDataSpec<T, R> > training_data;
+
+    const stats::SortedDataSpec<T, R> training_data;
+
     const int seed      = 0;
     const int n_threads = 1;
 
@@ -39,9 +41,9 @@ namespace models {
     }
 
     Forest(
-      std::unique_ptr<TrainingSpec<T, R> > &&          training_spec,
-      std::shared_ptr<stats::SortedDataSpec<T, R> > && training_data,
-      const int                                        seed)
+      std::unique_ptr<TrainingSpec<T, R> > && training_spec,
+      const stats::SortedDataSpec<T, R> &     training_data,
+      const int                               seed)
       : training_spec(std::move(training_spec)),
       training_data(training_data),
       seed(seed),
@@ -49,10 +51,10 @@ namespace models {
     }
 
     Forest(
-      std::unique_ptr<TrainingSpec<T, R> > &&          training_spec,
-      std::shared_ptr<stats::SortedDataSpec<T, R> > && training_data,
-      const int                                        seed,
-      const int                                        n_threads)
+      std::unique_ptr<TrainingSpec<T, R> > && training_spec,
+      const stats::SortedDataSpec<T, R> &     training_data,
+      const int                               seed,
+      const int                               n_threads)
       : training_spec(std::move(training_spec)),
       training_data(training_data),
       seed(seed),
@@ -122,7 +124,7 @@ namespace models {
       std::set<int> oob_indices = get_oob_indices();
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
-      stats::DataColumn<R> oob_y           = training_data->y(oob_indices_vec, Eigen::all);
+      stats::DataColumn<R> oob_y           = training_data.y(oob_indices_vec, Eigen::all);
       return stats::error_rate(oob_predictions, oob_y);
     }
 
@@ -138,7 +140,7 @@ namespace models {
       std::set<int> oob_indices = get_oob_indices();
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
-      stats::DataColumn<R> oob_y           = training_data->y(oob_indices_vec, Eigen::all);
+      stats::DataColumn<R> oob_y           = training_data.y(oob_indices_vec, Eigen::all);
       return stats::ConfusionMatrix(oob_predictions, oob_y);
     }
 
@@ -194,14 +196,14 @@ namespace models {
         std::set<int> oob_set = get_oob_indices();
 
         for (const auto& tree : trees) {
-          bool is_oob = tree->training_data->oob_indices.count(index);
+          bool is_oob = tree->training_data.oob_indices.count(index);
 
           if (is_oob) {
             tree_refs.push_back(*tree);
           }
         }
 
-        return predict(training_data->x.row(index), tree_refs);
+        return predict(training_data.x.row(index), tree_refs);
       }
 
       stats::DataColumn<R> oob_predict(const std::set<int> &indices) const {
@@ -221,7 +223,7 @@ namespace models {
         std::set<int> indices;
 
         for (const auto& tree : trees) {
-          std::set<int> oob_indices = tree->training_data->oob_indices;
+          std::set<int> oob_indices = tree->training_data.oob_indices;
 
           std::set<int> temp;
           std::set_union(

@@ -46,6 +46,11 @@ namespace models::stats {
 
     public:
 
+      SortedDataSpec() :
+        DataSpec<T, G>(),
+        group_spec(GroupSpec<T, G>(this->x, this->y)) {
+      }
+
       SortedDataSpec(
         const Data<T> &       x,
         const DataColumn<G> & y,

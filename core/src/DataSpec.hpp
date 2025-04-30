@@ -29,5 +29,11 @@ namespace models::stats {
       y(y),
       classes(unique(y)) {
     }
+
+    DataSpec() :
+      x(Data<T>()),
+      y(DataColumn<G>()),
+      classes(std::set<G>()) {
+    }
   };
 }

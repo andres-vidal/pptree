@@ -126,7 +126,7 @@ namespace models {
       std::move(lower_response),
       std::move(upper_response),
       training_spec.clone(),
-      std::make_unique<SortedDataSpec<T, R> >(training_data));
+      training_data);
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -182,7 +182,7 @@ namespace models {
       std::move(lower_branch),
       std::move(upper_branch),
       training_spec.clone(),
-      std::make_unique<SortedDataSpec<T, R> >(training_data));
+      training_data);
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -200,7 +200,7 @@ namespace models {
     DerivedTree<T, R> tree(
       std::move(root_ptr),
       training_spec.clone(),
-      std::make_shared<D >(training_data));
+      training_data);
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;

@@ -12,6 +12,12 @@ namespace models::stats {
     const std::vector<int> sample_indices;
     const std::set<int> oob_indices;
 
+    BootstrapDataSpec() :
+      SortedDataSpec<T, G>(),
+      sample_indices(),
+      oob_indices() {
+    }
+
     BootstrapDataSpec(
       const Data<T> &         x,
       const DataColumn<G> &   y,

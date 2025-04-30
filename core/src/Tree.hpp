@@ -21,7 +21,8 @@ namespace models {
 
     std::unique_ptr<Node<T, R> > root;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
-    std::shared_ptr<D> training_data;
+
+    const D training_data;
 
     explicit BaseTree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
     }
@@ -29,7 +30,7 @@ namespace models {
     BaseTree(
       std::unique_ptr<Node<T, R> >         root,
       std::unique_ptr<TrainingSpec<T, R> > training_spec,
-      std::shared_ptr<D >                  training_data)
+      const D &                            training_data)
       : root(std::move(root)),
       training_spec(std::move(training_spec)),
       training_data(training_data) {
@@ -104,7 +105,7 @@ namespace models {
 
     // cppcheck-suppress noExplicitConstructor
     Tree(Base tree)
-      : Base(std::move(tree.root), std::move(tree.training_spec), std::move(tree.training_data)) {
+      : Base(std::move(tree.root), std::move(tree.training_spec), tree.training_data) {
     }
   };
 }

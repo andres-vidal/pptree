@@ -84,11 +84,11 @@ namespace models {
   template <typename T, typename R>
   struct BaseVIStrategy : public VIStrategy<T, R> {
     virtual math::DVector<T> operator()(const Tree<T, R> &tree) const override {
-      models::stats::SortedDataSpec<T, R> std_data = tree.training_data->analog(models::stats::standardize(tree.training_data->x));
+      models::stats::SortedDataSpec<T, R> std_data = tree.training_data.analog(models::stats::standardize(tree.training_data.x));
 
       Tree<T, R> std_tree = tree.retrain(std_data);
 
-      NodeSummarizer<T, R> summarizer(*this, std_tree.training_data->x.cols());
+      NodeSummarizer<T, R> summarizer(*this, std_tree.training_data.x.cols());
       std_tree.root->accept(summarizer);
 
       return compute_final(summarizer.importance, std_tree, summarizer);
@@ -97,27 +97,27 @@ namespace models {
     virtual math::DVector<T> operator()(const BootstrapTree<T, R> &tree) const override {
       BootstrapTree<T, R> std_tree = tree.retrain(
         models::stats::BootstrapDataSpec<T, R>(
-          models::stats::standardize(tree.training_data->x),
-          tree.training_data->y,
-          tree.training_data->classes,
-          tree.training_data->sample_indices)
+          models::stats::standardize(tree.training_data.x),
+          tree.training_data.y,
+          tree.training_data.classes,
+          tree.training_data.sample_indices)
         );
 
-      NodeSummarizer<T, R> summarizer(*this, std_tree.training_data->x.cols());
+      NodeSummarizer<T, R> summarizer(*this, std_tree.training_data.x.cols());
       std_tree.root->accept(summarizer);
 
       return compute_final(summarizer.importance, std_tree, summarizer);
     }
 
     virtual math::DVector<T> operator()(const Forest<T, R> &forest) const override {
-      models::stats::SortedDataSpec<T, R> std_data = forest.training_data->analog(models::stats::standardize(forest.training_data->x));
+      models::stats::SortedDataSpec<T, R> std_data = forest.training_data.analog(models::stats::standardize(forest.training_data.x));
 
       Forest<T, R> std_forest = forest.retrain(std_data);
 
       math::DVector<T> accumulated_importance = std::accumulate(
         std_forest.trees.begin(),
         std_forest.trees.end(),
-        math::DVector<T>(math::DVector<T>::Zero(std_forest.training_data->x.cols())),
+        math::DVector<T>(math::DVector<T>::Zero(std_forest.training_data.x.cols())),
         [this] (math::DVector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> math::DVector<T> {
           return acc + this->operator()(*tree);
         });
@@ -173,13 +173,12 @@ namespace models {
       const math::DVector<T> &     upper_importance,
       const Condition<T, R> &      condition,
       const NodeSummarizer<T, R> & condition_summary) const override {
-      invariant(condition.training_data != nullptr, "training_data is null");
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
 
       const float pp_index = condition.training_spec->pp_strategy->index(
-        condition.training_data->get(),
+        condition.training_data,
         condition.projector);
 
       return (condition.projector.array().abs() * pp_index).matrix() + lower_importance + upper_importance;
@@ -217,7 +216,7 @@ namespace models {
       const math::DVector<T> &     accumulated_importance,
       const BootstrapTree<T, R> &  tree,
       const NodeSummarizer<T, R> & root_summary) const override {
-      const stats::SortedDataSpec<T, R> oob      = tree.training_data->get_oob();
+      const stats::SortedDataSpec<T, R> oob      = tree.training_data.get_oob();
       const stats::DataColumn<R> oob_predictions = tree.predict(oob.x);
 
       const float oob_accuracy = stats::accuracy(oob_predictions, oob.y);

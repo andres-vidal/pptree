@@ -215,7 +215,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
       std::make_unique<Response<float, int> >(0),
       std::make_unique<Response<float, int> >(1)),
     TrainingSpec<float, int>::lda(),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1 })));
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -248,7 +248,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
         std::make_unique<Response<float, int> >(1),
         std::make_unique<Response<float, int> >(2))),
     TrainingSpec<float, int>::lda(),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })));
 
 
   ASSERT_EQ(expect, result);
@@ -293,7 +293,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
       std::make_unique<Response<float, int> >(1)
       ),
     TrainingSpec<float, int>::lda(),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1 })));
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -380,7 +380,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
         std::make_unique<Response<float, int> >(1)),
       std::make_unique<Response<float, int> >(2)),
     TrainingSpec<float, int>::lda(),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 })));
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -407,7 +407,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
       std::make_unique<Response<float, int> >(0),
       std::make_unique<Response<float, int> >(1)),
     TrainingSpec<float, int>::lda(),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1 })));
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -451,7 +451,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
       std::make_unique<Response<float, int> >(1)
       ),
     TrainingSpec<float, int>::glda(0.5),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1 })));
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
 
   ASSERT_EQ(expect, result);
@@ -808,7 +808,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
       std::make_unique<Response<float, int> >(1)
       ),
     TrainingSpec<float, int>::lda(),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1 })));
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }
@@ -883,7 +883,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
       std::make_unique<Response<float, int> >(0),
       std::make_unique<Response<float, int> >(1)),
     TrainingSpec<float, int>::lda(),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1 })));
+    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
 }

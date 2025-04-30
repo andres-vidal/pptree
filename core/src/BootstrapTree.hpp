@@ -28,14 +28,14 @@ namespace models {
     }
 
     BootstrapTree(
-      std::unique_ptr<Condition<T, R> >                root,
-      std::unique_ptr<TrainingSpec<T, R> >             training_spec,
-      std::shared_ptr<stats::BootstrapDataSpec<T, R> > training_data)
+      std::unique_ptr<Condition<T, R> >      root,
+      std::unique_ptr<TrainingSpec<T, R> >   training_spec,
+      const stats::BootstrapDataSpec<T, R> & training_data)
       : Base(std::move(root),  std::move(training_spec), training_data) {
     }
 
     float error_rate() const {
-      return error_rate(this->training_data->get_oob());
+      return error_rate(this->training_data.get_oob());
     }
 
     math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
@@ -43,7 +43,7 @@ namespace models {
     }
 
     stats::ConfusionMatrix confusion_matrix() const {
-      return confusion_matrix(this->training_data->get_oob());
+      return confusion_matrix(this->training_data.get_oob());
     }
   };
 }

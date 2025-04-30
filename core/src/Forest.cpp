@@ -45,7 +45,7 @@ namespace models {
 
     Forest<T, R> forest(
       training_spec.clone(),
-      std::make_shared<SortedDataSpec<T, R> >(training_data),
+      training_data,
       seed,
       n_threads);
 

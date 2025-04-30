@@ -66,9 +66,9 @@ Data<float> pptree_variable_importance(
 // [[Rcpp::export]]
 Data<float> pptree_forest_variable_importance(
   const Forest<float, int> &forest) {
-  DataColumn<float> projector = forest.variable_importance(VIProjectorStrategy<float, int>());
+  DataColumn<float> projector          = forest.variable_importance(VIProjectorStrategy<float, int>());
   DataColumn<float> projector_adjusted = forest.variable_importance(VIProjectorAdjustedStrategy<float, int>());
-  DataColumn<float> permutation = forest.variable_importance(VIPermutationStrategy<float, int>());
+  DataColumn<float> permutation        = forest.variable_importance(VIPermutationStrategy<float, int>());
 
   Data<float> result = Data<float>(projector.size(), 3);
 
@@ -103,7 +103,7 @@ Data<float> parse_confusion_matrix(const ConfusionMatrix &confusion_matrix) {
 // [[Rcpp::export]]
 Data<float> pptree_confusion_matrix(
   const Tree<float, int> &tree) {
-  return parse_confusion_matrix(tree.confusion_matrix(*tree.training_data));
+  return parse_confusion_matrix(tree.confusion_matrix(tree.training_data));
 }
 
 // [[Rcpp::export]]
