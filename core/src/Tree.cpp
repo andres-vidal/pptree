@@ -75,7 +75,7 @@ namespace models {
   std::unique_ptr<Condition<T, R> > binary_step(
     const TrainingSpec<T, R> &   training_spec,
     const SortedDataSpec<T, R> & training_data,
-    const ReducedDataSpec<T, R>& reduced_data) {
+    const DRSpec<T, R>&          dr) {
     R group_1 = *training_data.classes.begin();
     R group_2 = *std::next(training_data.classes.begin());
 
@@ -83,7 +83,7 @@ namespace models {
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    Projector<T> projector = reduced_data.expand(pp_strategy(reduced_data));
+    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data)));
 
     Data<T> data_group_1 = training_data.group(group_1);
     Data<T> data_group_2 = training_data.group(group_2);
@@ -146,23 +146,22 @@ namespace models {
       return std::make_unique<Response<T, R> >(*training_data.classes.begin());
     }
 
-    ReducedDataSpec<T, R> reduced_data = dr_strategy(training_data);
+    DRSpec<T, R> dr = dr_strategy(training_data);
 
     if (training_data.classes.size() == 2) {
-      return binary_step(training_spec, training_data, reduced_data);
+      return binary_step(training_spec, training_data, dr);
     }
 
     LOG_INFO << "Redefining a " << training_data.classes.size() << " group problem as binary:" << std::endl;
 
-    Projector<T> projector          = reduced_data.expand(pp_strategy(reduced_data));
+    Projector<T> projector          = dr.expand(pp_strategy(dr.reduce(training_data)));
     std::map<R, int> binary_mapping = binary_regroup(training_data.analog(training_data.x * projector));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
     SortedDataSpec<T, R> binary_training_data = training_data.remap(binary_mapping);
-    ReducedDataSpec<T, R> binary_reduced_data = reduced_data.remap(binary_mapping);
 
-    std::unique_ptr<Condition<T, R> > temp_node = binary_step(training_spec, binary_training_data, binary_reduced_data);
+    std::unique_ptr<Condition<T, R> > temp_node = binary_step(training_spec, binary_training_data, dr);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
