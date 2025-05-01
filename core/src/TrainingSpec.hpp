@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TrainingSpecVisitor.hpp"
+
 #include "PPStrategy.hpp"
 #include "DRStrategy.hpp"
 
@@ -8,15 +10,9 @@
 
 namespace models {
   template<typename T, typename R>
-  struct GLDATrainingSpec;
+  struct TrainingSpec;
   template<typename T, typename R>
-  struct UniformGLDATrainingSpec;
-
-  template <typename T, typename R>
-  struct TrainingSpecVisitor {
-    virtual void visit(const GLDATrainingSpec<T, R> &spec)        = 0;
-    virtual void visit(const UniformGLDATrainingSpec<T, R> &spec) = 0;
-  };
+  using TrainingSpecPtr = std::unique_ptr<TrainingSpec<T, R> >;
 
   template<typename T, typename R>
   struct TrainingSpec {
@@ -38,18 +34,17 @@ namespace models {
     virtual ~TrainingSpec()                                       = default;
     virtual void accept(TrainingSpecVisitor<T, R> &visitor) const = 0;
 
-    virtual std::unique_ptr<TrainingSpec<T, R> > clone() const = 0;
+    virtual TrainingSpecPtr<T, R> clone() const = 0;
 
-    static std::unique_ptr<TrainingSpec<T, R> > glda(const float lambda);
-    static std::unique_ptr<TrainingSpec<T, R> > lda();
-    static std::unique_ptr<TrainingSpec<T, R> > uniform_glda(const int n_vars, const float lambda);
+    static TrainingSpecPtr<T, R> glda(const float lambda);
+    static TrainingSpecPtr<T, R> lda();
+    static TrainingSpecPtr<T, R> uniform_glda(const int n_vars, const float lambda);
   };
-
   template<typename T, typename R>
-  struct GLDATrainingSpec : public TrainingSpec<T, R> {
+  struct TrainingSpecGLDA : public TrainingSpec<T, R> {
     const float lambda;
 
-    explicit GLDATrainingSpec(const float lambda) :
+    explicit TrainingSpecGLDA(const float lambda) :
       TrainingSpec<T, R>(
         pp::strategy::glda<T, R>(lambda),
         dr::strategy::all<T, R>()),
@@ -60,17 +55,17 @@ namespace models {
       visitor.visit(*this);
     }
 
-    std::unique_ptr<TrainingSpec<T, R> > clone() const override {
-      return std::make_unique<GLDATrainingSpec<T, R> >(*this);
+    TrainingSpecPtr<T, R> clone() const override {
+      return std::make_unique<TrainingSpecGLDA<T, R> >(*this);
     }
   };
 
   template<typename T, typename R>
-  struct UniformGLDATrainingSpec : public TrainingSpec<T, R> {
+  struct TrainingSpecUGLDA : public TrainingSpec<T, R> {
     const int n_vars;
     const float lambda;
 
-    UniformGLDATrainingSpec(const int n_vars, const float lambda) :
+    TrainingSpecUGLDA(const int n_vars, const float lambda) :
       TrainingSpec<T, R>(
         pp::strategy::glda<T, R>(lambda),
         dr::strategy::uniform<T, R>(n_vars)),
@@ -82,24 +77,24 @@ namespace models {
       visitor.visit(*this);
     }
 
-    std::unique_ptr<TrainingSpec<T, R> > clone() const override {
-      return std::make_unique<UniformGLDATrainingSpec<T, R> >(*this);
+    TrainingSpecPtr<T, R> clone() const override {
+      return std::make_unique<TrainingSpecUGLDA<T, R> >(*this);
     }
   };
 
 
   template<typename T, typename R>
-  std::unique_ptr<TrainingSpec<T, R> > TrainingSpec<T, R>::glda(const float lambda) {
-    return std::make_unique<GLDATrainingSpec<T, R> >(lambda);
+  TrainingSpecPtr<T, R> TrainingSpec<T, R>::glda(const float lambda) {
+    return std::make_unique<TrainingSpecGLDA<T, R> >(lambda);
   }
 
   template<typename T, typename R>
-  std::unique_ptr<TrainingSpec<T, R> > TrainingSpec<T, R>::lda() {
-    return std::make_unique<GLDATrainingSpec<T, R> >(0.0);
+  TrainingSpecPtr<T, R> TrainingSpec<T, R>::lda() {
+    return std::make_unique<TrainingSpecGLDA<T, R> >(0.0);
   }
 
   template<typename T, typename R>
-  std::unique_ptr<TrainingSpec<T, R> >TrainingSpec<T, R>::uniform_glda(const int n_vars, const float lambda) {
-    return std::make_unique<UniformGLDATrainingSpec<T, R> >(n_vars, lambda);
+  TrainingSpecPtr<T, R> TrainingSpec<T, R>::uniform_glda(const int n_vars, const float lambda) {
+    return std::make_unique<TrainingSpecUGLDA<T, R> >(n_vars, lambda);
   }
 }

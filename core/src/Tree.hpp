@@ -23,7 +23,7 @@ namespace models {
     static DerivedTree<T, R> train(const TrainingSpec<T, R> &training_spec, const D &training_data);
 
     TreeNodePtr<T, R> root;
-    std::unique_ptr<TrainingSpec<T, R> > training_spec;
+    TrainingSpecPtr<T, R> training_spec;
 
     const D training_data;
 
@@ -31,9 +31,9 @@ namespace models {
     }
 
     BaseTree(
-      TreeNodePtr<T, R>                    root,
-      std::unique_ptr<TrainingSpec<T, R> > training_spec,
-      const D &                            training_data)
+      TreeNodePtr<T, R>     root,
+      TrainingSpecPtr<T, R> training_spec,
+      const D &             training_data)
       : root(std::move(root)),
       training_spec(std::move(training_spec)),
       training_data(training_data) {

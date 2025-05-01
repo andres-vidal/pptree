@@ -13,8 +13,8 @@ namespace Rcpp {
   SEXP wrap(const Forest<float, int> &);
 
   SEXP wrap(const TrainingSpec<float, int> &);
-  SEXP wrap(const GLDATrainingSpec<float, int> &);
-  SEXP wrap(const UniformGLDATrainingSpec<float, int> &);
+  SEXP wrap(const TrainingSpecGLDA<float, int> &);
+  SEXP wrap(const TrainingSpecUGLDA<float, int> &);
 
   SEXP wrap(const SortedDataSpec<float, int> &);
   SEXP wrap(const BootstrapDataSpec<float, int> &);
@@ -26,7 +26,7 @@ namespace Rcpp {
   template<> TreeCondition<float, int> as(SEXP);
   template<> Forest<float, int> as(SEXP);
 
-  template<> std::unique_ptr<TrainingSpec<float, int> > as(SEXP);
+  template<> TrainingSpecPtr<float, int> as(SEXP);
 
   template<> SortedDataSpec<float, int>  as(SEXP);
   template<> BootstrapDataSpec<float, int> as(SEXP);
@@ -100,11 +100,11 @@ namespace Rcpp {
     struct TrainingSpecWrapper : public TrainingSpecVisitor<float, int> {
       Rcpp::List result;
 
-      void visit(const GLDATrainingSpec<float, int> &spec) {
+      void visit(const TrainingSpecGLDA<float, int> &spec) {
         result = Rcpp::wrap(spec);
       }
 
-      void visit(const UniformGLDATrainingSpec<float, int> &spec) {
+      void visit(const TrainingSpecUGLDA<float, int> &spec) {
         result = Rcpp::wrap(spec);
       }
     };
@@ -114,13 +114,13 @@ namespace Rcpp {
     return wrapper.result;
   }
 
-  SEXP wrap(const GLDATrainingSpec<float, int> &spec) {
+  SEXP wrap(const TrainingSpecGLDA<float, int> &spec) {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "glda",
       Rcpp::Named("lambda")   = Rcpp::wrap(spec.lambda));
   }
 
-  SEXP wrap(const UniformGLDATrainingSpec<float, int> &spec) {
+  SEXP wrap(const TrainingSpecUGLDA<float, int> &spec) {
     return Rcpp::List::create(
       Rcpp::Named("strategy") = "uniform_glda",
       Rcpp::Named("n_vars")   = Rcpp::wrap(spec.n_vars),
@@ -175,11 +175,9 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rtree["training_spec"]);
     Rcpp::List rtraining_data(rtree["training_data"]);
 
-    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
-
     return Tree<float, int >(
       as<TreeCondition<float, int> >(rtree["root"]).clone(),
-      std::move(training_spec_ptr),
+      as<TrainingSpecPtr<float, int> >(rtraining_spec),
       as<SortedDataSpec<float, int> >(rtraining_data));
   }
 
@@ -188,12 +186,9 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rtree["training_spec"]);
     Rcpp::List rtraining_data(rtree["training_data"]);
 
-
-    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
-
     return BootstrapTree<float, int>(
       as<TreeCondition<float, int> >(rtree["root"]).clone(),
-      std::move(training_spec_ptr),
+      as<TrainingSpecPtr<float, int> >(rtraining_spec),
       as<BootstrapDataSpec<float, int> >(rtraining_data));
   }
 
@@ -203,10 +198,8 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rforest["training_spec"]);
     Rcpp::List rtraining_data(rforest["training_data"]);
 
-    auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
-
     Forest<float, int> forest(
-      std::move(training_spec_ptr),
+      as<TrainingSpecPtr<float, int> >(rtraining_spec),
       as<SortedDataSpec<float, int> >(rtraining_data),
       Rcpp::as<float>(rforest["seed"]),
       Rcpp::as<int>(rforest["n_threads"]));
@@ -220,21 +213,21 @@ namespace Rcpp {
     return forest;
   }
 
-  template<> std::unique_ptr<TrainingSpec<float, int> > as(SEXP x) {
+  template<> TrainingSpecPtr<float, int> as(SEXP x) {
     Rcpp::List rtraining_spec(x);
 
     std::string strategy = Rcpp::as<std::string>(rtraining_spec["strategy"]);
 
     if (strategy == "glda") {
       float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
-      return std::make_unique<GLDATrainingSpec<float, int> >(lambda);
+      return std::make_unique<TrainingSpecGLDA<float, int> >(lambda);
     }
 
     if (strategy == "uniform_glda") {
       int n_vars   = Rcpp::as<int>(rtraining_spec["n_vars"]);
       float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
 
-      return std::make_unique<UniformGLDATrainingSpec<float, int> >(n_vars, lambda);
+      return std::make_unique<TrainingSpecUGLDA<float, int> >(n_vars, lambda);
     }
 
     Rcpp::stop("Unknown training strategy: %s", strategy);

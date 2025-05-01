@@ -11,17 +11,17 @@ namespace models {
     T threshold;
     TreeNodePtr<T, R> lower;
     TreeNodePtr<T, R> upper;
-    std::unique_ptr<TrainingSpec<T, R> > training_spec;
+    TrainingSpecPtr<T, R> training_spec;
 
     const stats::SortedDataSpec<T, R> training_data;
 
     TreeCondition(
-      const pp::Projector<T>&              projector,
-      const Threshold<T>&                  threshold,
-      TreeNodePtr<T, R>                    lower,
-      TreeNodePtr<T, R>                    upper,
-      std::unique_ptr<TrainingSpec<T, R> > training_spec,
-      const stats::SortedDataSpec<T, R> &  training_data)
+      const pp::Projector<T>&             projector,
+      const Threshold<T>&                 threshold,
+      TreeNodePtr<T, R>                   lower,
+      TreeNodePtr<T, R>                   upper,
+      TrainingSpecPtr<T, R>               training_spec,
+      const stats::SortedDataSpec<T, R> & training_data)
       : projector(projector),
       threshold(threshold),
       lower(std::move(lower)),
@@ -83,12 +83,12 @@ namespace models {
     }
 
     static TreeConditionPtr<T, R> make(
-      const pp::Projector<T>&              projector,
-      const Threshold<T>&                  threshold,
-      TreeNodePtr<T, R>                    lower,
-      TreeNodePtr<T, R>                    upper,
-      std::unique_ptr<TrainingSpec<T, R> > training_spec,
-      const stats::SortedDataSpec<T, R> &  training_data) {
+      const pp::Projector<T>&             projector,
+      const Threshold<T>&                 threshold,
+      TreeNodePtr<T, R>                   lower,
+      TreeNodePtr<T, R>                   upper,
+      TrainingSpecPtr<T, R>               training_spec,
+      const stats::SortedDataSpec<T, R> & training_data) {
       return std::make_unique<TreeCondition<T, R> >(
         projector,
         threshold,

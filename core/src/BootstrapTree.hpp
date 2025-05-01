@@ -29,7 +29,7 @@ namespace models {
 
     BootstrapTree(
       TreeNodePtr<T, R>                      root,
-      std::unique_ptr<TrainingSpec<T, R> >   training_spec,
+      TrainingSpecPtr<T, R>                  training_spec,
       const stats::BootstrapDataSpec<T, R> & training_data)
       : Base(std::move(root),  std::move(training_spec), training_data) {
     }
