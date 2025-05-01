@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Node.hpp"
+#include "TreeNode.hpp"
+#include "TreeCondition.hpp"
+#include "TreeResponse.hpp"
+
 #include "SortedDataSpec.hpp"
 #include "BootstrapDataSpec.hpp"
 #include "TrainingSpec.hpp"
