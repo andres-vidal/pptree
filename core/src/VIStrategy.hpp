@@ -14,7 +14,7 @@ namespace models {
   class VIStrategy;
 
   template <typename T, typename R>
-  class NodeSummarizer : public NodeVisitor<T, R> {
+  class NodeSummarizer : public TreeNodeVisitor<T, R> {
     private:
       const VIStrategy<T, R>& strategy;
 
@@ -30,7 +30,7 @@ namespace models {
         classes({}) {
       }
 
-      void visit(const Condition<T, R> &condition) override {
+      void visit(const TreeCondition<T, R> &condition) override {
         NodeSummarizer lower_summarizer(strategy, importance.size());
         NodeSummarizer upper_summarizer(strategy, importance.size());
 
@@ -47,7 +47,7 @@ namespace models {
           *this);
       }
 
-      void visit(const Response<T, R> &response) override {
+      void visit(const TreeResponse<T, R> &response) override {
         classes = { response.value };
       }
   };
@@ -65,7 +65,7 @@ namespace models {
       virtual math::DVector<T> compute_partial(
         const math::DVector<T> &     lower_importance,
         const math::DVector<T> &     upper_importance,
-        const Condition<T, R> &      condition,
+        const TreeCondition<T, R> &  condition,
         const NodeSummarizer<T, R> & condition_summary) const = 0;
 
       virtual math::DVector<T> compute_final(
@@ -153,7 +153,7 @@ namespace models {
     virtual math::DVector<T> compute_partial(
       const math::DVector<T> &     lower_importance,
       const math::DVector<T> &     upper_importance,
-      const Condition<T, R> &      condition,
+      const TreeCondition<T, R> &  condition,
       const NodeSummarizer<T, R> & condition_summary) const override {
       const int n_classes = condition_summary.classes.size();
 
@@ -173,7 +173,7 @@ namespace models {
     virtual math::DVector<T> compute_partial(
       const math::DVector<T> &     lower_importance,
       const math::DVector<T> &     upper_importance,
-      const Condition<T, R> &      condition,
+      const TreeCondition<T, R> &  condition,
       const NodeSummarizer<T, R> & condition_summary) const override {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
@@ -209,7 +209,7 @@ namespace models {
     virtual math::DVector<T> compute_partial(
       const math::DVector<T> &     lower_importance,
       const math::DVector<T> &     upper_importance,
-      const Condition<T, R> &      condition,
+      const TreeCondition<T, R> &  condition,
       const NodeSummarizer<T, R> & condition_summary) const override {
       return math::DVector<T>::Zero(lower_importance.size());
     }

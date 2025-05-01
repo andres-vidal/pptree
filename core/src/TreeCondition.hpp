@@ -4,20 +4,20 @@
 
 namespace models {
   template<typename T, typename R>
-  struct Condition : public Node<T, R> {
+  struct TreeCondition : public TreeNode<T, R> {
     pp::Projector<T> projector;
     T threshold;
-    std::unique_ptr<Node<T, R> > lower;
-    std::unique_ptr<Node<T, R> > upper;
+    std::unique_ptr<TreeNode<T, R> > lower;
+    std::unique_ptr<TreeNode<T, R> > upper;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
 
     const stats::SortedDataSpec<T, R> training_data;
 
-    Condition(
+    TreeCondition(
       const pp::Projector<T>&              projector,
       const Threshold<T>&                  threshold,
-      std::unique_ptr<Node<T, R> >         lower,
-      std::unique_ptr<Node<T, R> >         upper,
+      std::unique_ptr<TreeNode<T, R> >     lower,
+      std::unique_ptr<TreeNode<T, R> >     upper,
       std::unique_ptr<TrainingSpec<T, R> > training_spec,
       const stats::SortedDataSpec<T, R> &  training_data)
       : projector(projector),
@@ -28,18 +28,18 @@ namespace models {
       training_data(training_data) {
     }
 
-    Condition(
-      const pp::Projector<T>&      projector,
-      const Threshold<T>&          threshold,
-      std::unique_ptr<Node<T, R> > lower,
-      std::unique_ptr<Node<T, R> > upper)
+    TreeCondition(
+      const pp::Projector<T>&          projector,
+      const Threshold<T>&              threshold,
+      std::unique_ptr<TreeNode<T, R> > lower,
+      std::unique_ptr<TreeNode<T, R> > upper)
       : projector(projector),
       threshold(threshold),
       lower(std::move(lower)),
       upper(std::move(upper)) {
     }
 
-    void accept(NodeVisitor<T, R> &visitor) const override {
+    void accept(TreeNodeVisitor<T, R> &visitor) const override {
       visitor.visit(*this);
     }
 
@@ -57,15 +57,14 @@ namespace models {
       }
     }
 
-    bool operator==(const Condition<T, R> &other) const {
-      return math::collinear(projector, other.projector)
-             && math::is_approx(threshold, other.threshold)
-             && *lower == *other.lower
-             && *upper == *other.upper;
-    }
+    bool equals(const TreeNode<T, R> &other) const override {
+      const auto *cond = dynamic_cast<const TreeCondition<T, R> *>(&other);
 
-    bool operator!=(const Condition<T, R> &other) const {
-      return !(*this == other);
+      return cond
+             && math::collinear(projector, cond->projector)
+             && math::is_approx(threshold, cond->threshold)
+             && *lower == *(cond->lower)
+             && *upper == *(cond->upper);
     }
 
     json to_json() const override {
@@ -76,17 +75,10 @@ namespace models {
         { "upper", upper->to_json() }
       };
     }
-
-    bool equals(const Node<T, R> &other) const override {
-      return other.equals(*this);
-    }
-
-    bool equals(const Condition<T, R> &other) const override {
-      return *this == other;
-    }
-
-    bool equals(const Response<T, R> &other) const override {
-      return false;
-    }
   };
+
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const TreeCondition<T, R>& condition) {
+    return ostream << condition.to_json().dump(2, ' ', false);
+  }
 }

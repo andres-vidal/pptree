@@ -16,176 +16,176 @@ static Projector<float> as_projector(std::vector<float> vector) {
   return projector;
 }
 
-TEST(Response, EqualsEqualResponses) {
-  Response<float, int> r1(1);
-  Response<float, int> r2(1);
+TEST(TreeResponse, EqualsEqualResponses) {
+  TreeResponse<float, int> r1(1);
+  TreeResponse<float, int> r2(1);
 
   ASSERT_TRUE(r1 == r2);
 }
 
-TEST(Response, EqualsDifferentResponses) {
-  Response<float, int> r1(1);
-  Response<float, int> r2(2);
+TEST(TreeResponse, EqualsDifferentResponses) {
+  TreeResponse<float, int> r1(1);
+  TreeResponse<float, int> r2(2);
 
   ASSERT_FALSE(r1 == r2);
 }
 
-TEST(Condition, EqualsEqualConditions) {
-  Condition<float, int> c1(
+TEST(TreeCondition, EqualsEqualConditions) {
+  TreeCondition<float, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
-  Condition<float, int> c2(
+  TreeCondition<float, int> c2(
     as_projector({ 1.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
-TEST(Condition, EqualsCollinearProjectors) {
-  Condition<float, int> c1(
+TEST(TreeCondition, EqualsCollinearProjectors) {
+  TreeCondition<float, int> c1(
     as_projector({ 1.0, 1.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
-  Condition<float, int> c2(
+  TreeCondition<float, int> c2(
     as_projector({ 2.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
-TEST(Condition, EqualsApproximateThresholds) {
-  Condition<float, int> c1(
+TEST(TreeCondition, EqualsApproximateThresholds) {
+  TreeCondition<float, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
-  Condition<float, int> c2(
+  TreeCondition<float, int> c2(
     as_projector({ 1.0, 2.0 }),
     3.000000000000001,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
-TEST(Condition, EqualsNonCollinearProjectors) {
-  Condition<float, int> c1(
+TEST(TreeCondition, EqualsNonCollinearProjectors) {
+  TreeCondition<float, int> c1(
     as_projector({ 1.0, 0.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
-  Condition<float, int> c2(
+  TreeCondition<float, int> c2(
     as_projector({ 0.0, 1.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
   ASSERT_FALSE(c1 == c2);
 }
 
-TEST(Condition, EqualsDifferentThresholds) {
-  Condition<float, int> c1(
+TEST(TreeCondition, EqualsDifferentThresholds) {
+  TreeCondition<float, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
-  Condition<float, int> c2(
+  TreeCondition<float, int> c2(
     as_projector({ 1.0, 2.0 }),
     4.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
   ASSERT_FALSE(c1 == c2);
 }
 
-TEST(Condition, EqualsDifferentResponses) {
-  Condition<float, int> c1(
+TEST(TreeCondition, EqualsDifferentResponses) {
+  TreeCondition<float, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
-  Condition<float, int> c2(
+  TreeCondition<float, int> c2(
     as_projector({ 1.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(3));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(3));
 
   ASSERT_FALSE(c1 == c2);
 }
 
-TEST(Condition, EqualsDifferentStructures) {
-  Condition<float, int> c1(
+TEST(TreeCondition, EqualsDifferentStructures) {
+  TreeCondition<float, int> c1(
     as_projector({ 1.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Response<float, int> >(2));
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeResponse<float, int> >(2));
 
-  Condition<float, int> c2(
+  TreeCondition<float, int> c2(
     as_projector({ 1.0, 2.0 }),
     3.0,
-    std::make_unique<Response<float, int> >(1),
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeResponse<float, int> >(1),
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 2.0 }),
       3.0,
-      std::make_unique<Response<float, int> >(1),
-      std::make_unique<Response<float, int> >(2)));
+      std::make_unique<TreeResponse<float, int> >(1),
+      std::make_unique<TreeResponse<float, int> >(2)));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(Tree, EqualsEqualTrees) {
   Tree<float, int> t1(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 2.0 }),
       3.0,
-      std::make_unique<Response<float, int> >(1),
-      std::make_unique<Condition<float, int> >(
+      std::make_unique<TreeResponse<float, int> >(1),
+      std::make_unique<TreeCondition<float, int> >(
         as_projector({ 1.0, 2.0 }),
         3.0,
-        std::make_unique<Response<float, int> >(1),
-        std::make_unique<Response<float, int> >(2))));
+        std::make_unique<TreeResponse<float, int> >(1),
+        std::make_unique<TreeResponse<float, int> >(2))));
 
   Tree<float, int> t2(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 2.0 }),
       3.0,
-      std::make_unique<Response<float, int> >(1),
-      std::make_unique<Condition<float, int> >(
+      std::make_unique<TreeResponse<float, int> >(1),
+      std::make_unique<TreeCondition<float, int> >(
         as_projector({ 1.0, 2.0 }),
         3.0,
-        std::make_unique<Response<float, int> >(1),
-        std::make_unique<Response<float, int> >(2))));
+        std::make_unique<TreeResponse<float, int> >(1),
+        std::make_unique<TreeResponse<float, int> >(2))));
 
   ASSERT_TRUE(t1 == t2);
 }
 
 TEST(Tree, EqualsDifferentTrees) {
   Tree<float, int> t1(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 2.0 }),
       3.0,
-      std::make_unique<Response<float, int> >(1),
-      std::make_unique<Response<float, int> >(2)));
+      std::make_unique<TreeResponse<float, int> >(1),
+      std::make_unique<TreeResponse<float, int> >(2)));
 
   Tree<float, int> t2(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 2.0 }),
       3.0,
-      std::make_unique<Response<float, int> >(1),
-      std::make_unique<Response<float, int> >(3)));
+      std::make_unique<TreeResponse<float, int> >(1),
+      std::make_unique<TreeResponse<float, int> >(3)));
 
   ASSERT_FALSE(t1 == t2);
 }
@@ -209,11 +209,11 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0 }),
       1.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)),
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)),
     TrainingSpec<float, int>::lda(),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
@@ -238,15 +238,15 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0 }),
       1.75,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Condition<float, int> >(
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeCondition<float, int> >(
         as_projector({ 1.0 }),
         2.5,
-        std::make_unique<Response<float, int> >(1),
-        std::make_unique<Response<float, int> >(2))),
+        std::make_unique<TreeResponse<float, int> >(1),
+        std::make_unique<TreeResponse<float, int> >(2))),
     TrainingSpec<float, int>::lda(),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })));
 
@@ -286,11 +286,11 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)
       ),
     TrainingSpec<float, int>::lda(),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
@@ -370,15 +370,15 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 0.9753647250984685, -0.19102490285203763, -0.02603961769477166, 0.06033431306913992, -0.08862758318234709 }),
       4.0505145097205055,
-      std::make_unique<Condition<float, int> >(
+      std::make_unique<TreeCondition<float, int> >(
         as_projector({ 0.15075268856227853, 0.9830270463921728, -0.013280681282024458, 0.023289310653985006, 0.10105782733996031 }),
         2.8568896254203113,
-        std::make_unique<Response<float, int> >(0),
-        std::make_unique<Response<float, int> >(1)),
-      std::make_unique<Response<float, int> >(2)),
+        std::make_unique<TreeResponse<float, int> >(0),
+        std::make_unique<TreeResponse<float, int> >(1)),
+      std::make_unique<TreeResponse<float, int> >(2)),
     TrainingSpec<float, int>::lda(),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })));
 
@@ -401,11 +401,11 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0 }),
       1.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)),
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)),
     TrainingSpec<float, int>::lda(),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
@@ -444,11 +444,11 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 0.9969498534721803, -0.00784130658079787, 0.053487283057874875, -0.05254780467349118, -0.007135670500966689, -0.007135670500966691, -0.007135670500966693, -0.007135670500966691, -0.007135670500966698, -0.007135670500966698, -0.007135670500966696, -0.007135670500966696 }),
       2.4440,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)
       ),
     TrainingSpec<float, int>::glda(0.5),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
@@ -459,11 +459,11 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
 
 TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
   Tree<float, int> tree = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0 }),
       1.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)));
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)));
 
 
   DataColumn<float> input(1);
@@ -476,15 +476,15 @@ TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
 
 TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
   Tree<float, int> tree = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0 }),
       1.75,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Condition<float, int> >(
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeCondition<float, int> >(
         as_projector({ 1.0 }),
         2.5,
-        std::make_unique<Response<float, int> >(1),
-        std::make_unique<Response<float, int> >(2))));
+        std::make_unique<TreeResponse<float, int> >(1),
+        std::make_unique<TreeResponse<float, int> >(2))));
 
   DataColumn<float> input(1);
   input << 1.0;
@@ -499,11 +499,11 @@ TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
 
 TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
   Tree<float, int> tree = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)));
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)));
 
   DataColumn<float> input(4);
   input << 1, 0, 1, 1;
@@ -515,15 +515,15 @@ TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
 
 TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
   Tree<float, int> tree = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
       4.118438837901864,
-      std::make_unique<Condition<float, int> >(
+      std::make_unique<TreeCondition<float, int> >(
         as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
         2.5,
-        std::make_unique<Response<float, int> >(0),
-        std::make_unique<Response<float, int> >(1)),
-      std::make_unique<Response<float, int> >(2)));
+        std::make_unique<TreeResponse<float, int> >(0),
+        std::make_unique<TreeResponse<float, int> >(1)),
+      std::make_unique<TreeResponse<float, int> >(2)));
 
   DataColumn<float> input(5);
   input << 1, 0, 0, 1, 1;
@@ -538,11 +538,11 @@ TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
 
 TEST(Tree, PredictDataUnivariateTwoGroups) {
   Tree<float, int> tree = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0 }),
       1.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)));
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)));
 
   Data<float> input(2, 1);
   input << 1.0,  2.0;
@@ -557,15 +557,15 @@ TEST(Tree, PredictDataUnivariateTwoGroups) {
 
 TEST(Tree, PredictDataUnivariateThreeGroups) {
   Tree<float, int> tree = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0 }),
       1.75,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Condition<float, int> >(
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeCondition<float, int> >(
         as_projector({ 1.0 }),
         2.5,
-        std::make_unique<Response<float, int> >(1),
-        std::make_unique<Response<float, int> >(2))));
+        std::make_unique<TreeResponse<float, int> >(1),
+        std::make_unique<TreeResponse<float, int> >(2))));
 
   Data<float> input(3, 1);
   input << 1.0, 2.0, 3.0;
@@ -580,11 +580,11 @@ TEST(Tree, PredictDataUnivariateThreeGroups) {
 
 TEST(Tree, PredictDataMultivariateTwoGroups) {
   Tree<float, int> tree = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)));
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)));
 
   Data<float> input(2, 4);
   input <<
@@ -601,15 +601,15 @@ TEST(Tree, PredictDataMultivariateTwoGroups) {
 
 TEST(Tree, PredictDataMultivariateThreeGroups) {
   Tree<float, int> tree = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
       4.118438837901864,
-      std::make_unique<Condition<float, int> >(
+      std::make_unique<TreeCondition<float, int> >(
         as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
         2.5,
-        std::make_unique<Response<float, int> >(0),
-        std::make_unique<Response<float, int> >(1)),
-      std::make_unique<Response<float, int> >(2)));
+        std::make_unique<TreeResponse<float, int> >(0),
+        std::make_unique<TreeResponse<float, int> >(1)),
+      std::make_unique<TreeResponse<float, int> >(2)));
 
   Data<float> input(3, 5);
   input <<
@@ -801,11 +801,11 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
   Tree<float, int> result = tree.retrain(SortedDataSpec<float, int>(other_data, other_groups));
 
   Tree<float, int> expect = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)
       ),
     TrainingSpec<float, int>::lda(),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
@@ -877,11 +877,11 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
   Tree<float, int> result = tree.retrain(SortedDataSpec<float, int>(other_data, other_groups));
 
   Tree<float, int> expect = Tree<float, int>(
-    std::make_unique<Condition<float, int> >(
+    std::make_unique<TreeCondition<float, int> >(
       as_projector({ 1.0 }),
       1.5,
-      std::make_unique<Response<float, int> >(0),
-      std::make_unique<Response<float, int> >(1)),
+      std::make_unique<TreeResponse<float, int> >(0),
+      std::make_unique<TreeResponse<float, int> >(1)),
     TrainingSpec<float, int>::lda(),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 

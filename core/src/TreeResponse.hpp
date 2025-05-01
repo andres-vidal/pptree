@@ -4,13 +4,13 @@
 
 namespace models {
   template<typename T, typename R>
-  struct Response : public Node<T, R> {
+  struct TreeResponse : public TreeNode<T, R> {
     R value;
 
-    explicit Response(R value) : value(value) {
+    explicit TreeResponse(R value) : value(value) {
     }
 
-    void accept(NodeVisitor<T, R> &visitor) const override {
+    void accept(TreeNodeVisitor<T, R> &visitor) const override {
       visitor.visit(*this);
     }
 
@@ -22,12 +22,9 @@ namespace models {
       return value;
     }
 
-    bool operator==(const Response<T, R> &other) const {
-      return value == other.value;
-    }
-
-    bool operator!=(const Response<T, R> &other) const {
-      return !(*this == other);
+    bool equals(const TreeNode<T, R> &other) const override {
+      const auto *resp = dynamic_cast<const TreeResponse<T, R> *>(&other);
+      return resp && (value == resp->value);
     }
 
     json to_json() const override {
@@ -35,17 +32,10 @@ namespace models {
         { "value", value }
       };
     }
-
-    bool equals(const Node<T, R> &other) const override {
-      return other.equals(*this);
-    }
-
-    bool equals(const Condition<T, R> &other) const override {
-      return false;
-    }
-
-    bool equals(const Response<T, R> &other) const override {
-      return *this == other;
-    }
   };
+
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const TreeResponse<T, R>& response) {
+    return ostream << response.to_json().dump(2, ' ', false);
+  }
 }

@@ -5,11 +5,11 @@
 using namespace pptree;
 
 namespace Rcpp {
-  SEXP wrap(const Node<float, int> &);
+  SEXP wrap(const TreeNode<float, int> &);
   SEXP wrap(const Tree<float, int > &);
   SEXP wrap(const BootstrapTree<float, int> &);
-  SEXP wrap(const Response<float, int> &);
-  SEXP wrap(const Condition<float, int> &);
+  SEXP wrap(const TreeResponse<float, int> &);
+  SEXP wrap(const TreeCondition<float, int> &);
   SEXP wrap(const Forest<float, int> &);
 
   SEXP wrap(const TrainingSpec<float, int> &);
@@ -19,11 +19,11 @@ namespace Rcpp {
   SEXP wrap(const SortedDataSpec<float, int> &);
   SEXP wrap(const BootstrapDataSpec<float, int> &);
 
-  template<> std::unique_ptr<Node<float, int> > as(SEXP);
+  template<> std::unique_ptr<TreeNode<float, int> > as(SEXP);
   template<> Tree<float, int > as(SEXP);
   template<> BootstrapTree<float, int> as(SEXP);
-  template<> Response<float, int> as(SEXP);
-  template<> Condition<float, int> as(SEXP);
+  template<> TreeResponse<float, int> as(SEXP);
+  template<> TreeCondition<float, int> as(SEXP);
   template<> Forest<float, int> as(SEXP);
 
   template<> std::unique_ptr<TrainingSpec<float, int> > as(SEXP);
@@ -36,15 +36,15 @@ namespace Rcpp {
 #include <Rcpp.h>
 
 namespace Rcpp {
-  SEXP wrap(const Node<float, int>& node) {
-    struct NodeWrapper : public NodeVisitor<float, int> {
+  SEXP wrap(const TreeNode<float, int>& node) {
+    struct NodeWrapper : public TreeNodeVisitor<float, int> {
       Rcpp::List result;
 
-      void visit(const Condition<float, int> &condition) {
+      void visit(const TreeCondition<float, int> &condition) {
         result = Rcpp::wrap(condition);
       }
 
-      void visit(const Response<float, int> &response) {
+      void visit(const TreeResponse<float, int> &response) {
         result = Rcpp::wrap(response);
       }
     };
@@ -54,12 +54,12 @@ namespace Rcpp {
     return wrapper.result;
   }
 
-  SEXP wrap(const Response<float, int> &node) {
+  SEXP wrap(const TreeResponse<float, int> &node) {
     return Rcpp::List::create(
       Rcpp::Named("value") = Rcpp::wrap(node.value));
   }
 
-  SEXP wrap(const Condition<float, int> &node) {
+  SEXP wrap(const TreeCondition<float, int> &node) {
     return Rcpp::List::create(
       Rcpp::Named("projector") = Rcpp::wrap(node.projector),
       Rcpp::Named("threshold") = Rcpp::wrap(node.threshold),
@@ -142,33 +142,33 @@ namespace Rcpp {
       Rcpp::Named("sample_indices") = Rcpp::wrap(data.sample_indices));
   }
 
-  template<> std::unique_ptr<Node<float, int> > as(SEXP x) {
+  template<> std::unique_ptr<TreeNode<float, int> > as(SEXP x) {
     Rcpp::List rnode(x);
 
     if (rnode.containsElementNamed("value")) {
-      auto resp = as<Response<float, int> >(x);
+      auto resp = as<TreeResponse<float, int> >(x);
 
-      auto resp_ptr = std::make_unique<Response<float, int> >(std::move(resp));
+      auto resp_ptr = std::make_unique<TreeResponse<float, int> >(std::move(resp));
       return resp_ptr;
     }
 
-    auto cond     = as<Condition<float, int> >(x);
-    auto cond_ptr = std::make_unique<Condition<float, int> >(std::move(cond));
+    auto cond     = as<TreeCondition<float, int> >(x);
+    auto cond_ptr = std::make_unique<TreeCondition<float, int> >(std::move(cond));
     return cond_ptr;
   }
 
-  template<> Response<float, int> as(SEXP x) {
+  template<> TreeResponse<float, int> as(SEXP x) {
     Rcpp::List rresp(x);
-    return Response<float, int>(Rcpp::as<float>(rresp["value"]));
+    return TreeResponse<float, int>(Rcpp::as<float>(rresp["value"]));
   }
 
-  template<> Condition<float, int> as(SEXP x) {
+  template<> TreeCondition<float, int> as(SEXP x) {
     Rcpp::List rcond(x);
 
-    auto lower = as<std::unique_ptr<Node<float, int> > >(rcond["lower"]);
-    auto upper = as<std::unique_ptr<Node<float, int> > >(rcond["upper"]);
+    auto lower = as<std::unique_ptr<TreeNode<float, int> > >(rcond["lower"]);
+    auto upper = as<std::unique_ptr<TreeNode<float, int> > >(rcond["upper"]);
 
-    return Condition<float, int>(
+    return TreeCondition<float, int>(
       Rcpp::as<Projector<float> >(rcond["projector"]),
       Rcpp::as<float>(rcond["threshold"]),
       std::move(lower),
@@ -180,8 +180,8 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rtree["training_spec"]);
     Rcpp::List rtraining_data(rtree["training_data"]);
 
-    auto root              = as<Condition<float, int> >(rtree["root"]);
-    auto root_ptr          = std::make_unique<Condition<float, int> >(std::move(root));
+    auto root              = as<TreeCondition<float, int> >(rtree["root"]);
+    auto root_ptr          = std::make_unique<TreeCondition<float, int> >(std::move(root));
     auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
 
     return Tree<float, int >(
@@ -195,8 +195,8 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rtree["training_spec"]);
     Rcpp::List rtraining_data(rtree["training_data"]);
 
-    auto root     = as<Condition<float, int> >(rtree["root"]);
-    auto root_ptr = std::make_unique<Condition<float, int> >(std::move(root));
+    auto root     = as<TreeCondition<float, int> >(rtree["root"]);
+    auto root_ptr = std::make_unique<TreeCondition<float, int> >(std::move(root));
 
     auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
 
