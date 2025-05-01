@@ -22,16 +22,16 @@ namespace models {
   struct BaseTree {
     static DerivedTree<T, R> train(const TrainingSpec<T, R> &training_spec, const D &training_data);
 
-    std::unique_ptr<TreeNode<T, R> > root;
+    TreeNodePtr<T, R> root;
     std::unique_ptr<TrainingSpec<T, R> > training_spec;
 
     const D training_data;
 
-    explicit BaseTree(std::unique_ptr<TreeCondition<T, R> > root) : root(std::move(root)) {
+    explicit BaseTree(TreeNodePtr<T, R> root) : root(std::move(root)) {
     }
 
     BaseTree(
-      std::unique_ptr<TreeNode<T, R> >     root,
+      TreeNodePtr<T, R>                    root,
       std::unique_ptr<TrainingSpec<T, R> > training_spec,
       const D &                            training_data)
       : root(std::move(root)),

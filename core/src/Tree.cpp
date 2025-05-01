@@ -74,7 +74,7 @@ namespace models {
   }
 
   template<typename T, typename R >
-  std::unique_ptr<TreeCondition<T, R> > binary_step(
+  TreeConditionPtr<T, R> binary_step(
     const TrainingSpec<T, R> &   training_spec,
     const SortedDataSpec<T, R> & training_data,
     const DRSpec<T, R>&          dr) {
@@ -119,10 +119,10 @@ namespace models {
     LOG_INFO << "Lower group: " << lower_group << std::endl;
     LOG_INFO << "Upper group: " << upper_group << std::endl;
 
-    std::unique_ptr<TreeResponse<T, R> > lower_response = std::make_unique<TreeResponse<T, R> >(lower_group);
-    std::unique_ptr<TreeResponse<T, R> > upper_response = std::make_unique<TreeResponse<T, R> >(upper_group);
+    TreeResponsePtr<T, R> lower_response = TreeResponse<T, R>::make(lower_group);
+    TreeResponsePtr<T, R> upper_response = TreeResponse<T, R>::make(upper_group);
 
-    std::unique_ptr<TreeCondition<T, R> > condition = std::make_unique<TreeCondition<T, R> >(
+    auto condition = TreeCondition<T, R>::make(
       projector,
       threshold,
       std::move(lower_response),
@@ -135,7 +135,7 @@ namespace models {
   }
 
   template<typename T, typename R >
-  std::unique_ptr<TreeNode<T, R> >   step(
+  TreeNodePtr<T, R>   step(
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data) {
     LOG_INFO << "Project-Pursuit Tree building step for " << training_data.classes.size() << " groups: " << training_data.classes << std::endl;
@@ -145,7 +145,7 @@ namespace models {
     const DRStrategy<T, R> &dr_strategy = *(training_spec.dr_strategy);
 
     if (training_data.classes.size() == 1) {
-      return std::make_unique<TreeResponse<T, R> >(*training_data.classes.begin());
+      return TreeResponse<T, R>::make(*training_data.classes.begin());
     }
 
     DRSpec<T, R> dr = dr_strategy(training_data);
@@ -163,7 +163,7 @@ namespace models {
 
     SortedDataSpec<T, R> binary_training_data = training_data.remap(binary_mapping);
 
-    std::unique_ptr<TreeCondition<T, R> > temp_node = binary_step(training_spec, binary_training_data, dr);
+    TreeConditionPtr<T, R> temp_node = binary_step(training_spec, binary_training_data, dr);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
@@ -173,12 +173,12 @@ namespace models {
     std::set<R> upper_groups                  = inverse_mapping.at(binary_upper_group);
 
     LOG_INFO << "Build lower branch" << std::endl;
-    std::unique_ptr<TreeNode<T, R> > lower_branch = step(training_spec, training_data.subset(lower_groups));
+    TreeNodePtr<T, R> lower_branch = step(training_spec, training_data.subset(lower_groups));
 
     LOG_INFO << "Build upper branch" << std::endl;
-    std::unique_ptr<TreeNode<T, R> > upper_branch = step(training_spec, training_data.subset(upper_groups));
+    TreeNodePtr<T, R> upper_branch = step(training_spec, training_data.subset(upper_groups));
 
-    std::unique_ptr<TreeCondition<T, R> > condition = std::make_unique<TreeCondition<T, R> >(
+    auto condition = TreeCondition<T, R>::make(
       temp_node->projector,
       temp_node->threshold,
       std::move(lower_branch),
@@ -197,7 +197,7 @@ namespace models {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     LOG_INFO << "Root step." << std::endl;
-    std::unique_ptr<TreeNode<T, R> > root_ptr = step(training_spec, training_data.get());
+    TreeNodePtr<T, R> root_ptr = step(training_spec, training_data.get());
 
     DerivedTree<T, R> tree(
       std::move(root_ptr),

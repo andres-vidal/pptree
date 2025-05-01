@@ -14,6 +14,11 @@ namespace models {
   using json = nlohmann::json;
   template<typename T>
   using Threshold = T;
+
+  template<typename T, typename R>
+  struct TreeNode;
+  template<typename T, typename R>
+  using TreeNodePtr = std::unique_ptr<TreeNode<T, R> >;
   template<typename T, typename R>
   struct TreeNode {
     virtual ~TreeNode()                                       = default;
@@ -23,6 +28,8 @@ namespace models {
     virtual json to_json() const                              = 0;
 
     virtual bool equals(const TreeNode<T, R> &other) const = 0;
+
+    virtual TreeNodePtr<T, R> clone() const = 0;
 
     bool operator==(const TreeNode<T, R> &other) const {
       return this->equals(other);

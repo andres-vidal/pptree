@@ -146,15 +146,10 @@ namespace Rcpp {
     Rcpp::List rnode(x);
 
     if (rnode.containsElementNamed("value")) {
-      auto resp = as<TreeResponse<float, int> >(x);
-
-      auto resp_ptr = std::make_unique<TreeResponse<float, int> >(std::move(resp));
-      return resp_ptr;
+      return as<TreeResponse<float, int> >(x).clone();
     }
 
-    auto cond     = as<TreeCondition<float, int> >(x);
-    auto cond_ptr = std::make_unique<TreeCondition<float, int> >(std::move(cond));
-    return cond_ptr;
+    return as<TreeCondition<float, int> >(x).clone();
   }
 
   template<> TreeResponse<float, int> as(SEXP x) {
@@ -180,12 +175,10 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rtree["training_spec"]);
     Rcpp::List rtraining_data(rtree["training_data"]);
 
-    auto root              = as<TreeCondition<float, int> >(rtree["root"]);
-    auto root_ptr          = std::make_unique<TreeCondition<float, int> >(std::move(root));
     auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
 
     return Tree<float, int >(
-      std::move(root_ptr),
+      as<TreeCondition<float, int> >(rtree["root"]).clone(),
       std::move(training_spec_ptr),
       as<SortedDataSpec<float, int> >(rtraining_data));
   }
@@ -195,13 +188,11 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rtree["training_spec"]);
     Rcpp::List rtraining_data(rtree["training_data"]);
 
-    auto root     = as<TreeCondition<float, int> >(rtree["root"]);
-    auto root_ptr = std::make_unique<TreeCondition<float, int> >(std::move(root));
 
     auto training_spec_ptr = as<std::unique_ptr<TrainingSpec<float, int> > >(rtraining_spec);
 
     return BootstrapTree<float, int>(
-      std::move(root_ptr),
+      as<TreeCondition<float, int> >(rtree["root"]).clone(),
       std::move(training_spec_ptr),
       as<BootstrapDataSpec<float, int> >(rtraining_data));
   }

@@ -18,7 +18,7 @@ namespace models {
       return Base::train(training_spec, training_data);
     }
 
-    explicit BootstrapTree(std::unique_ptr<TreeCondition<T, R> > root)
+    explicit BootstrapTree(TreeNodePtr<T, R> root)
       : Base(std::move(root)) {
     }
 
@@ -28,7 +28,7 @@ namespace models {
     }
 
     BootstrapTree(
-      std::unique_ptr<TreeCondition<T, R> >  root,
+      TreeNodePtr<T, R>                      root,
       std::unique_ptr<TrainingSpec<T, R> >   training_spec,
       const stats::BootstrapDataSpec<T, R> & training_data)
       : Base(std::move(root),  std::move(training_spec), training_data) {

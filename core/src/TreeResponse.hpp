@@ -4,6 +4,9 @@
 
 namespace models {
   template<typename T, typename R>
+  using TreeResponsePtr = std::unique_ptr<TreeResponse<T, R> >;
+
+  template<typename T, typename R>
   struct TreeResponse : public TreeNode<T, R> {
     R value;
 
@@ -31,6 +34,14 @@ namespace models {
       return json{
         { "value", value }
       };
+    }
+
+    TreeNodePtr<T, R> clone() const override {
+      return std::make_unique<TreeResponse<T, R> >(*this);
+    }
+
+    static TreeResponsePtr<T, R> make(R value) {
+      return std::make_unique<TreeResponse<T, R> >(value);
     }
   };
 
