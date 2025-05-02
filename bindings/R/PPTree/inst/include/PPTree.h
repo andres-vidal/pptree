@@ -220,14 +220,14 @@ namespace Rcpp {
 
     if (strategy == "glda") {
       float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
-      return std::make_unique<TrainingSpecGLDA<float, int> >(lambda);
+      return TrainingSpecGLDA<float, int>::make(lambda);
     }
 
     if (strategy == "uniform_glda") {
       int n_vars   = Rcpp::as<int>(rtraining_spec["n_vars"]);
       float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
 
-      return std::make_unique<TrainingSpecUGLDA<float, int> >(n_vars, lambda);
+      return TrainingSpecUGLDA<float, int>::make(n_vars, lambda);
     }
 
     Rcpp::stop("Unknown training strategy: %s", strategy);

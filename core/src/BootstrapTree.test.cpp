@@ -2,7 +2,9 @@
 
 #include "BootstrapTree.hpp"
 #include "VIStrategy.hpp"
-
+#include "TrainingSpec.hpp"
+#include "TrainingSpecGLDA.hpp"
+#include "TrainingSpecUGLDA.hpp"
 #include "Macros.hpp"
 
 using namespace models;
@@ -81,7 +83,7 @@ TEST(BootstrapTree, ErrorRateDataSpecMin) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   Data<float> test_x = data.get_sample().x;
 
@@ -161,7 +163,7 @@ TEST(BootstrapTree, ErrorRateDataSpecMax) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y       = DataColumn<int>::Constant(20, 3);
 
   std::vector<int> test_indices(20);
@@ -245,7 +247,7 @@ TEST(BootstrapTree, ErrorRateDataSpecGeneric) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y       = DataColumn<int>::Zero(20);
 
   Data<float> test_x = data.get_sample().x;
@@ -326,7 +328,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecMin) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   float result = tree.error_rate(BootstrapDataSpec<float, int>(x, tree.predict(data.x), sample_indices));
 
@@ -404,7 +406,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecMax) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y       = DataColumn<int>::Constant(30, 2);
 
   float result = tree.error_rate(BootstrapDataSpec<float, int>(x, actual_y, sample_indices));
@@ -483,7 +485,7 @@ TEST(BootstrapTree, ErrorRateBootstrapDataSpecGeneric) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y       = DataColumn<int>::Zero(30);
 
   float result = tree.error_rate(BootstrapDataSpec<float, int>(x, actual_y, sample_indices));
@@ -562,7 +564,7 @@ TEST(BootstrapTree, ErrorRate) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   float result = tree.error_rate();
 
@@ -640,7 +642,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecDiagonal) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   Data<float> test_x = data.get_sample().x;
 
@@ -729,7 +731,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
   std::iota(sample_indices.begin(), sample_indices.end(), 0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   Data<float> test_x = data.get_sample().x;
 
@@ -842,7 +844,7 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecDiagonal) {
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   Data<float> test_x = data.get_sample().x;
 
@@ -929,7 +931,7 @@ TEST(BootstrapTree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   DataColumn<int> actual_y(30);
   actual_y <<
@@ -1051,7 +1053,7 @@ TEST(BootstrapTree, ConfusionMatrix) {
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   ConfusionMatrix result = tree.confusion_matrix();
 
@@ -1139,7 +1141,7 @@ TEST(BootstrapTree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   DVector<float> result = tree.variable_importance(VIProjectorStrategy<float, int>());
 
@@ -1184,8 +1186,10 @@ TEST(BootstrapTree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
+
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
+
+  auto tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
 
   DataColumn<float> result = tree.variable_importance(VIProjectorStrategy<float, int>());
 
@@ -1277,7 +1281,7 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroup
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   DVector<float> result = tree.variable_importance(VIProjectorAdjustedStrategy<float, int>());
 
@@ -1322,7 +1326,7 @@ TEST(BootstrapTree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups)
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
 
   DataColumn<float> result = tree.variable_importance(VIProjectorAdjustedStrategy<float, int>());
 
@@ -1416,7 +1420,7 @@ TEST(BootstrapTree, VariableImportancePermutationLDAMultivariateThreeGroups) {
   Random::seed(0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   DVector<float> result = tree.variable_importance(VIPermutationStrategy<float, int>());
 
@@ -1461,7 +1465,7 @@ TEST(BootstrapTree, VariableImportancePermutationPDAMultivariateTwoGroups) {
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
 
   Random::seed(0);
 

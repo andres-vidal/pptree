@@ -62,10 +62,11 @@ SortedDataSpec<float, int> read_data(const CLIOptions& params) {
 }
 
 template<typename Model>
-ModelStats evaluate_model(const TrainingSpec<float, int>& spec,
-  const SortedDataSpec<float, int>&                       train_data,
-  const SortedDataSpec<float, int>&                       test_data,
-  const CLIOptions&                                       params) {
+ModelStats evaluate_model(
+  const TrainingSpec<float, int>&   spec,
+  const SortedDataSpec<float, int>& train_data,
+  const SortedDataSpec<float, int>& test_data,
+  const CLIOptions&                 params) {
   ModelStats stats;
   stats.train_times.reserve(params.n_runs);
   stats.train_errors.reserve(params.n_runs);
@@ -123,11 +124,11 @@ int main(int argc, char *argv[]) {
   ModelStats stats;
 
   if (params.trees > 0) {
-    auto spec = TrainingSpec<float, int>::uniform_glda(params.n_vars, params.lambda);
-    stats = evaluate_model<Forest<float, int> >(*spec, train_data, test_data, params);
+    auto spec = TrainingSpecUGLDA<float, int>(params.n_vars, params.lambda);
+    stats = evaluate_model<Forest<float, int> >(spec, train_data, test_data, params);
   } else {
-    auto spec = TrainingSpec<float, int>::glda(params.lambda);
-    stats = evaluate_model<Tree<float, int> >(*spec, train_data, test_data, params);
+    auto spec = TrainingSpecGLDA<float, int>(params.lambda);
+    stats = evaluate_model<Tree<float, int> >(spec, train_data, test_data, params);
   }
 
   announce_results(stats);

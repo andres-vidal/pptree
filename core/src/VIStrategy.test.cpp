@@ -2,6 +2,10 @@
 
 #include "VIStrategy.hpp"
 
+#include "TrainingSpec.hpp"
+#include "TrainingSpecGLDA.hpp"
+#include "TrainingSpecUGLDA.hpp"
+
 #include "Macros.hpp"
 
 using namespace models;
@@ -75,7 +79,7 @@ TEST(VIProjectorStrategy, TreeLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+  Tree<float, int> tree = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0),
       SortedDataSpec<float, int>(data, groups));
 
   DVector<float> result = VIProjectorStrategy<float, int>()(tree);
@@ -119,7 +123,7 @@ TEST(VIProjectorStrategy, TreePDAMultivariateTwoGroups) {
     1;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(0.5),
+    TrainingSpecGLDA<float, int>(0.5),
     SortedDataSpec<float, int>(data, groups));
 
 
@@ -213,7 +217,7 @@ TEST(VIProjectorStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   DVector<float> result = VIProjectorStrategy<float, int>()(tree);
 
@@ -259,7 +263,7 @@ TEST(VIProjectorStrategy, BootstrapTreePDAMultivariateTwoGroups) {
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
 
   DataColumn<float> result = VIProjectorStrategy<float, int>()(tree);
 
@@ -354,7 +358,7 @@ TEST(VIProjectorStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -404,7 +408,7 @@ TEST(VIProjectorStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -496,7 +500,7 @@ TEST(VIProjectorAdjustedStrategy, TreeLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+  Tree<float, int> tree = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0),
       SortedDataSpec<float, int>(data, groups));
 
 
@@ -533,7 +537,7 @@ TEST(VIProjectorAdjustedStrategy, TreePDAMultivariateTwoGroups) {
     1;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(0.5),
+    TrainingSpecGLDA<float, int>(0.5),
     SortedDataSpec<float, int>(data, groups));
 
 
@@ -612,7 +616,7 @@ TEST(VIProjectorAdjustedStrategy, BootstrapLDATreeMultivariateThreeGroups) {
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   DVector<float> result = VIProjectorAdjustedStrategy<float, int>()(tree);
 
@@ -657,7 +661,7 @@ TEST(VIProjectorAdjustedStrategy, BootstrapPDATreeMultivariateTwoGroups) {
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
 
   DataColumn<float> result = VIProjectorAdjustedStrategy<float, int>()(tree);
 
@@ -752,7 +756,7 @@ TEST(VIProjectorAdjustedStrategy, ForestLDASomeVariablesMultivariateThreeGroups)
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -803,7 +807,7 @@ TEST(VIProjectorAdjustedStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -895,7 +899,7 @@ TEST(VIPermutationStrategy, TreeLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+  Tree<float, int> tree = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0),
       SortedDataSpec<float, int>(data, groups));
 
 
@@ -932,7 +936,7 @@ TEST(VIPermutationStrategy, TreePDAMultivariateTwoGroups) {
     1;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(0.5),
+    TrainingSpecGLDA<float, int>(0.5),
     SortedDataSpec<float, int>(data, groups));
 
 
@@ -1013,7 +1017,7 @@ TEST(VIPermutationStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
   Random::seed(0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
   DVector<float> result = VIPermutationStrategy<float, int>()(tree);
 
@@ -1058,7 +1062,7 @@ TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(*TrainingSpec<float, int>::glda(0.1), data);
+  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
 
   Random::seed(0);
 
@@ -1155,7 +1159,7 @@ TEST(VIPermutationStrategy, ForestLDASomeVariablesMultivariateThreeGroups) {
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -1205,7 +1209,7 @@ TEST(VIPermutationStrategy, ForestPDAAllVariablesMultivariateTwoGroups) {
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);

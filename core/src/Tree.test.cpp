@@ -4,6 +4,10 @@
 #include "BootstrapDataSpec.hpp"
 #include "VIStrategy.hpp"
 
+#include "TrainingSpec.hpp"
+#include "TrainingSpecGLDA.hpp"
+#include "TrainingSpecUGLDA.hpp"
+
 #include "Macros.hpp"
 
 using namespace models;
@@ -205,7 +209,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 
 
   Tree<float, int> result = Tree<float, int>::train(
-    *TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>(0.0),
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
@@ -213,9 +217,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
       as_projector({ 1.0 }),
       1.5,
       TreeResponse<float, int>::make(0),
-      TreeResponse<float, int>::make(1)),
-    TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
+      TreeResponse<float, int>::make(1)));
 
   ASSERT_EQ(expect, result);
 }
@@ -234,7 +236,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
     2, 2, 2, 2, 2;
 
   Tree<float, int> result = Tree<float, int>::train(
-    *TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>(0.0),
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
@@ -247,7 +249,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
         2.5,
         TreeResponse<float, int>::make(1),
         TreeResponse<float, int>::make(2))),
-    TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>::make(0.0),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })));
 
 
@@ -282,7 +284,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
     1;
 
   Tree<float, int> result = Tree<float, int>::train(
-    *TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>(0.0),
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
@@ -291,9 +293,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
       2.5,
       TreeResponse<float, int>::make(0),
       TreeResponse<float, int>::make(1)
-      ),
-    TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
+      ));
 
   ASSERT_EQ(expect, result);
 }
@@ -366,7 +366,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
     2;
 
   Tree<float, int> result = Tree<float, int>::train(
-    *TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>(0.0),
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
@@ -378,9 +378,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
         2.8568896254203113,
         TreeResponse<float, int>::make(0),
         TreeResponse<float, int>::make(1)),
-      TreeResponse<float, int>::make(2)),
-    TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })));
+      TreeResponse<float, int>::make(2)));
 
   ASSERT_EQ(expect, result);
 }
@@ -397,7 +395,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
     1, 1, 1, 1, 1;
 
   Tree<float, int> result = Tree<float, int>::train(
-    *TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>(0.0),
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
@@ -406,7 +404,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
       1.5,
       TreeResponse<float, int>::make(0),
       TreeResponse<float, int>::make(1)),
-    TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>::make(0.0),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
 
   ASSERT_EQ(expect, result);
@@ -440,7 +438,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
     1;
 
   Tree<float, int> result = Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(0.5),
+    TrainingSpecGLDA<float, int>(0.5),
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> expect = Tree<float, int>(
@@ -449,9 +447,7 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
       2.4440,
       TreeResponse<float, int>::make(0),
       TreeResponse<float, int>::make(1)
-      ),
-    TrainingSpec<float, int>::glda(0.5),
-    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
+      ));
 
 
   ASSERT_EQ(expect, result);
@@ -693,7 +689,7 @@ TEST(Tree, RetrainLDASameDataSpec) {
     2;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>(0.0),
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> result = tree.retrain(SortedDataSpec<float, int>(data, groups));
@@ -769,7 +765,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
     2;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>(0.0),
     SortedDataSpec<float, int>(data, groups));
 
   Data<float> other_data(10, 4);
@@ -806,9 +802,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
       2.5,
       TreeResponse<float, int>::make(0),
       TreeResponse<float, int>::make(1)
-      ),
-    TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
+      ));
 
   ASSERT_EQ(expect, result);
 }
@@ -841,7 +835,7 @@ TEST(Tree, RetrainPDASameDataSpec) {
     1;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(0.5),
+    TrainingSpecGLDA<float, int>(0.5),
     SortedDataSpec<float, int>(data, groups));
 
   Tree<float, int> result = tree.retrain(SortedDataSpec<float, int>(data, groups));
@@ -861,7 +855,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
     1, 1, 1, 1, 1;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::lda(),
+    TrainingSpecGLDA<float, int>(0.0),
     SortedDataSpec<float, int>(data, groups));
 
   Data<float> other_data(10, 1);
@@ -881,9 +875,7 @@ TEST(Tree, RetrainPDADifferentDataSpec) {
       as_projector({ 1.0 }),
       1.5,
       TreeResponse<float, int>::make(0),
-      TreeResponse<float, int>::make(1)),
-    TrainingSpec<float, int>::lda(),
-    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
+      TreeResponse<float, int>::make(1)));
 
   ASSERT_EQ(expect, result);
 }
@@ -955,7 +947,7 @@ TEST(Tree, VariableImportanceProjectorLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+  Tree<float, int> tree = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0),
       SortedDataSpec<float, int>(data, groups));
 
   DVector<float> result = tree.variable_importance(VIProjectorStrategy<float, int>());
@@ -998,7 +990,7 @@ TEST(Tree, VariableImportanceProjectorPDAMultivariateTwoGroups) {
     1;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(0.5),
+    TrainingSpecGLDA<float, int>(0.5),
     SortedDataSpec<float, int>(data, groups));
 
 
@@ -1088,7 +1080,7 @@ TEST(Tree, VariableImportanceProjectorAdjustedLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+  Tree<float, int> tree = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0),
       SortedDataSpec<float, int>(data, groups));
 
   ASSERT_THROW(tree.variable_importance(VIProjectorAdjustedStrategy<float, int>()), std::invalid_argument);
@@ -1122,7 +1114,7 @@ TEST(Tree, VariableImportanceProjectorAdjustedPDAMultivariateTwoGroups) {
     1;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(0.5),
+    TrainingSpecGLDA<float, int>(0.5),
     SortedDataSpec<float, int>(data, groups));
 
 
@@ -1196,7 +1188,7 @@ TEST(Tree, VariableImportancePermutationLDAMultivariateThreeGroups) {
     2,
     2;
 
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(),
+  Tree<float, int> tree = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0),
       SortedDataSpec<float, int>(data, groups));
 
   ASSERT_THROW(tree.variable_importance(VIPermutationStrategy<float, int>()), std::invalid_argument);
@@ -1230,7 +1222,7 @@ TEST(Tree, VariableImportancePermutationPDAMultivariateTwoGroups) {
     1;
 
   Tree<float, int> tree = Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(0.5),
+    TrainingSpecGLDA<float, int>(0.5),
     SortedDataSpec<float, int>(data, groups));
 
   ASSERT_THROW(tree.variable_importance(VIPermutationStrategy<float, int>()), std::invalid_argument);
@@ -1304,7 +1296,7 @@ TEST(Tree, ErrorRateDataSpecMin) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   float result = tree.error_rate(SortedDataSpec<float, int>(x, actual_y));
@@ -1380,7 +1372,7 @@ TEST(Tree, ErrorRateDataSpecMax) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 3);
 
   float result = tree.error_rate(SortedDataSpec<float, int>(x, actual_y));
@@ -1456,7 +1448,7 @@ TEST(Tree, ErrorRateDataSpecGeneric) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   float result = tree.error_rate(SortedDataSpec<float, int>(x, actual_y));
@@ -1532,7 +1524,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMin) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices(10);
@@ -1611,7 +1603,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecMax) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y = DataColumn<int>::Constant(30, 1);
 
   std::vector<int> sample_indices(10);
@@ -1690,7 +1682,7 @@ TEST(Tree, ErrorRateBootstrapDataSpecGeneric) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y = DataColumn<int>::Zero(30);
 
   std::vector<int> sample_indices(20);
@@ -1770,7 +1762,7 @@ TEST(Tree, ConfusionMatrixDataSpecDiagonal) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   ConfusionMatrix result = tree.confusion_matrix(SortedDataSpec<float, int>(x, actual_y));
@@ -1854,7 +1846,7 @@ TEST(Tree, ConfusionMatrixDataSpecZeroDiagonal) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y(30);
   actual_y <<
     1,
@@ -1972,7 +1964,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecDiagonal) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree    = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree    = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y = tree.predict(data.x);
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
@@ -2058,7 +2050,7 @@ TEST(Tree, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
     2;
 
   SortedDataSpec<float, int> data(x, y);
-  Tree<float, int> tree = Tree<float, int>::train(*TrainingSpec<float, int>::lda(), data);
+  Tree<float, int> tree = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
   DataColumn<int> actual_y(30);
   actual_y <<
     1,

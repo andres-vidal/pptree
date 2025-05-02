@@ -3,6 +3,10 @@
 #include "Forest.hpp"
 #include "VIStrategy.hpp"
 
+#include "TrainingSpec.hpp"
+#include "TrainingSpecGLDA.hpp"
+#include "TrainingSpecUGLDA.hpp"
+
 #include "Macros.hpp"
 
 using namespace models;
@@ -88,13 +92,13 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
 
 
   Forest<float, int> result = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
 
   Forest<float, int> expect(
-    TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>::make(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })),
     seed);
 
@@ -235,7 +239,7 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   const int seed     = 1;
 
   Forest<float, int> result = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -342,14 +346,14 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
   const int seed     = 0;
 
   Forest<float, int> result = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
 
 
   Forest<float, int> expect(
-    TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>::make(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })),
     seed);
 
@@ -679,7 +683,7 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -729,7 +733,7 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -826,7 +830,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -877,7 +881,7 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -975,7 +979,7 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -1028,7 +1032,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     4,
     seed);
@@ -1126,7 +1130,7 @@ TEST(Forest, ErrorRateDataSpecMin) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
   float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
@@ -1204,7 +1208,7 @@ TEST(Forest, ErrorRateDataSpecMax) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
   float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
@@ -1282,7 +1286,7 @@ TEST(Forest, ErrorRateDataSpecGeneric) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
   float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
@@ -1360,7 +1364,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMin) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
   std::vector<int> sample_indices(10);
@@ -1441,7 +1445,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecMax) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
   std::vector<int> sample_indices(10);
@@ -1522,7 +1526,7 @@ TEST(Forest, ErrorRateBootstrapDataSpecGeneric) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
   std::vector<int> sample_indices(20);
@@ -1603,7 +1607,7 @@ TEST(Forest, ErrorRate) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
 
   float result = forest.error_rate();
 
@@ -1680,7 +1684,7 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
   ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<float, int>(x, predictions));
@@ -1766,7 +1770,7 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
 
   DataColumn<int> predictions(30);
   predictions <<
@@ -1887,7 +1891,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecDiagonal) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
   DataColumn<int> predictions = forest.predict(data.x);
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
@@ -1975,7 +1979,7 @@ TEST(Forest, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
 
   DataColumn<int> predictions(30);
   predictions <<
@@ -2096,7 +2100,7 @@ TEST(Forest, ConfusionMatrix) {
   SortedDataSpec<float, int> data(x, y);
 
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
 
   ConfusionMatrix result = forest.confusion_matrix();
 

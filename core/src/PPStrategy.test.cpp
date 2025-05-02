@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "PPStrategy.hpp"
+#include "PPGLDAStrategy.hpp"
 
 #include "Macros.hpp"
 
@@ -36,7 +37,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
+  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(data);
 
   DataColumn<float> expected(4);
   expected <<
@@ -75,7 +76,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
+  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(data);
 
   DataColumn<float> expected(4);
   expected <<
@@ -115,7 +116,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
+  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(data);
 
   DataColumn<float> expected(4);
   expected <<
@@ -153,7 +154,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
+  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(data);
 
   DataColumn<float> expected(4);
   expected <<
@@ -234,7 +235,7 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  DataColumn<float> actual = GLDAStrategy<float, int>(0).optimize(data);
+  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(data);
 
   DataColumn<float> expected(5);
   expected <<
@@ -268,7 +269,7 @@ TEST(Projector, LDAIndexZeroReturn) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0).index(data, projector);
 
   ASSERT_EQ(0.0, actual);
 }
@@ -347,7 +348,7 @@ TEST(Projector, LDAIndexOptimal1) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0).index(data, projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -426,7 +427,7 @@ TEST(Projector, LDAIndexOptimal2) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0).index(data, projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -505,7 +506,7 @@ TEST(Projector, LDAIndexOptimal3) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0).index(data, projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -584,7 +585,7 @@ TEST(Projector, LDAIndexSuboptimal1) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0).index(data, projector);
 
   ASSERT_NEAR(0.134985, actual, 0.00001);
 }
@@ -663,7 +664,7 @@ TEST(Projector, LDAIndexSuboptimal2) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0).index(data, projector);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
@@ -685,7 +686,7 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  DataColumn<float> actual = GLDAStrategy<float, int>(0.5).optimize(data);
+  DataColumn<float> actual = PPGLDAStrategy<float, int>(0.5).optimize(data);
 
   DataColumn<float> expected(6);
   expected <<
@@ -711,7 +712,7 @@ TEST(Projector, GLDAOptimumProjectorZeroColumn) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  DataColumn<float> actual = GLDAStrategy<float, int>(0.1).optimize(data);
+  DataColumn<float> actual = PPGLDAStrategy<float, int>(0.1).optimize(data);
 
   DataColumn<float> expected(7);
   expected <<
@@ -741,7 +742,7 @@ TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0.5).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0.5).index(data, projector);
 
   ASSERT_EQ(0.0, actual);
 }
@@ -819,7 +820,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0.5).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0.5).index(data, projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -898,7 +899,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0.5).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0.5).index(data, projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -977,7 +978,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0.5).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0.5).index(data, projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -1056,7 +1057,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0.5).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0.5).index(data, projector);
 
   ASSERT_NEAR(0.12597, actual, 0.00001);
 }
@@ -1135,7 +1136,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
 
   SortedDataSpec<float, int> data(x, y);
 
-  float actual = GLDAStrategy<float, int>(0.5).index(data, projector);
+  float actual = PPGLDAStrategy<float, int>(0.5).index(data, projector);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }

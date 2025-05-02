@@ -15,7 +15,7 @@ Tree<float, int> pptree_train_glda(
   const DataColumn<int> & groups,
   const float             lambda) {
   return Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(lambda),
+    TrainingSpecGLDA<float, int>(lambda),
     SortedDataSpec<float, int>(data, groups));
 }
 
@@ -29,14 +29,14 @@ Forest<float, int> pptree_train_forest_glda(
   SEXP                    n_threads) {
   if (n_threads == R_NilValue) {
     return Forest<float, int>::train(
-      *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+      TrainingSpecUGLDA<float, int>(n_vars, lambda),
       SortedDataSpec<float, int>(data, groups),
       size,
       R::runif(0, INT_MAX));
   }
 
   return Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
     SortedDataSpec<float, int>(data, groups),
     size,
     R::runif(0, INT_MAX),
