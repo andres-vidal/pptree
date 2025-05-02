@@ -18,29 +18,42 @@ namespace models {
   template <typename T, typename R>
   class VIStrategy;
 
-  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
-  struct BaseTree {
-    static DerivedTree<T, R> train(const TrainingSpec<T, R> &training_spec, const D &training_data);
+  template<typename T, typename R>
+  struct Tree {
+    static Tree<T, R> train(const TrainingSpec<T, R> & training_spec, const stats::SortedDataSpec<T, R> &training_data);
 
     TreeNodePtr<T, R> root;
     TrainingSpecPtr<T, R> training_spec;
 
-    const D training_data;
+    const stats::Data<T> x;
+    const stats::DataColumn<R> y;
+    const std::set<R> classes;
 
-    explicit BaseTree(TreeNodePtr<T, R> root) : root(std::move(root)) {
+    Tree(
+      TreeNodePtr<T, R> root) :
+      root(std::move(root)),
+      training_spec(TrainingSpecGLDA<T, R>::make(0.5)),
+      x(stats::Data<T>()),
+      y(stats::DataColumn<R>()),
+      classes(std::set<R>()) {
     }
 
-    BaseTree(
-      TreeNodePtr<T, R>     root,
-      TrainingSpecPtr<T, R> training_spec,
-      const D &             training_data)
-      : root(std::move(root)),
+    Tree(
+      TreeNodePtr<T, R>            root,
+      TrainingSpecPtr<T, R>        training_spec,
+      const stats::Data<T> &       x,
+      const stats::DataColumn<R> & y,
+      const std::set<R> &          classes) :
+
+      root(std::move(root)),
       training_spec(std::move(training_spec)),
-      training_data(training_data) {
+      x(x),
+      y(y),
+      classes(classes) {
     }
 
-    DerivedTree<T, R> retrain(const D &data) const {
-      return BaseTree::train(*this->training_spec, data);
+    Tree<T, R> retrain(const stats::SortedDataSpec<T, R> &data) const {
+      return Tree<T, R>::train(*this->training_spec, data);
     }
 
     R predict(const stats::DataColumn<T> &data) const {
@@ -57,11 +70,15 @@ namespace models {
       return predictions;
     }
 
-    bool operator==(const BaseTree<T, R, D, DerivedTree> &other) const {
+    math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
+      return strategy(*this);
+    }
+
+    bool operator==(const Tree<T, R> &other) const {
       return *root == *other.root;
     }
 
-    bool operator!=(const BaseTree<T, R, D, DerivedTree> &other) const {
+    bool operator!=(const Tree<T, R> &other) const {
       return !(*this == other);
     }
 
@@ -88,27 +105,8 @@ namespace models {
     }
   };
 
-  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
-  std::ostream& operator<<(std::ostream & ostream, const BaseTree<T, R, D, DerivedTree>& tree) {
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const Tree<T, R>& tree) {
     return ostream << tree.to_json().dump(2, ' ', false);
   }
-
-  template<typename T, typename R>
-  struct Tree : public BaseTree<T, R, stats::SortedDataSpec<T, R>, Tree> {
-    using Base = BaseTree<T, R, stats::SortedDataSpec<T, R>, Tree >;
-    using Base::Base;
-
-    static Tree<T, R> train(const TrainingSpec<T, R> &training_spec, const stats::SortedDataSpec<T, R> &training_data) {
-      return Base::train(training_spec, training_data);
-    }
-
-    math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
-      return strategy(*this);
-    }
-
-    // cppcheck-suppress noExplicitConstructor
-    Tree(Base tree)
-      : Base(std::move(tree.root), std::move(tree.training_spec), tree.training_data) {
-    }
-  };
 }

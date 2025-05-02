@@ -248,9 +248,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
         as_projector({ 1.0 }),
         2.5,
         TreeResponse<float, int>::make(1),
-        TreeResponse<float, int>::make(2))),
-    TrainingSpecGLDA<float, int>::make(0.0),
-    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1, 2 })));
+        TreeResponse<float, int>::make(2))));
 
 
   ASSERT_EQ(expect, result);
@@ -292,8 +290,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       TreeResponse<float, int>::make(0),
-      TreeResponse<float, int>::make(1)
-      ));
+      TreeResponse<float, int>::make(1)));
 
   ASSERT_EQ(expect, result);
 }
@@ -403,9 +400,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
       as_projector({ 1.0 }),
       1.5,
       TreeResponse<float, int>::make(0),
-      TreeResponse<float, int>::make(1)),
-    TrainingSpecGLDA<float, int>::make(0.0),
-    SortedDataSpec<float, int>(data, groups, std::set<int>({ 0, 1 })));
+      TreeResponse<float, int>::make(1)));
 
   ASSERT_EQ(expect, result);
 }

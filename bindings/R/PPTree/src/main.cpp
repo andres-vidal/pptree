@@ -103,7 +103,12 @@ Data<float> parse_confusion_matrix(const ConfusionMatrix &confusion_matrix) {
 // [[Rcpp::export]]
 Data<float> pptree_confusion_matrix(
   const Tree<float, int> &tree) {
-  return parse_confusion_matrix(tree.confusion_matrix(tree.training_data));
+  return parse_confusion_matrix(
+    tree.confusion_matrix(
+      SortedDataSpec<float, int>(
+        tree.x,
+        tree.y,
+        tree.classes)));
 }
 
 // [[Rcpp::export]]

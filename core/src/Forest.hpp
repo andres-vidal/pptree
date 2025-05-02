@@ -197,7 +197,7 @@ namespace models {
         std::set<int> oob_set = get_oob_indices();
 
         for (const auto& tree : trees) {
-          bool is_oob = tree->training_data.oob_indices.count(index);
+          bool is_oob = tree->oob_indices.count(index);
 
           if (is_oob) {
             tree_refs.push_back(*tree);
@@ -224,7 +224,7 @@ namespace models {
         std::set<int> indices;
 
         for (const auto& tree : trees) {
-          std::set<int> oob_indices = tree->training_data.oob_indices;
+          std::set<int> oob_indices = tree->oob_indices;
 
           std::set<int> temp;
           std::set_union(

@@ -128,7 +128,9 @@ namespace models {
       std::move(lower_response),
       std::move(upper_response),
       training_spec.clone(),
-      training_data);
+      training_data.x,
+      training_data.y,
+      training_data.classes);
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
@@ -184,35 +186,35 @@ namespace models {
       std::move(lower_branch),
       std::move(upper_branch),
       training_spec.clone(),
-      training_data);
+      training_data.x,
+      training_data.y,
+      training_data.classes);
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
   };
 
-  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
-  DerivedTree<T, R> BaseTree<T, R, D, DerivedTree>::train(
-    const TrainingSpec<T, R> &training_spec,
-    const D &                 training_data) {
+  template<typename T, typename R>
+  Tree<T, R> Tree<T, R>::train(
+    const TrainingSpec<T, R> &         training_spec,
+    const stats::SortedDataSpec<T, R> &training_data) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     LOG_INFO << "Root step." << std::endl;
     TreeNodePtr<T, R> root_ptr = step(training_spec, training_data.get());
 
-    DerivedTree<T, R> tree(
+    Tree<T, R> tree(
       std::move(root_ptr),
       training_spec.clone(),
-      training_data);
+      training_data.x,
+      training_data.y,
+      training_data.classes);
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
 
-  template Tree<float, int> BaseTree<float, int, SortedDataSpec<float, int>, Tree>::train(
+  template Tree<float, int> Tree<float, int>::train(
     const TrainingSpec<float, int> &   training_spec,
     const SortedDataSpec<float, int> & training_data);
-
-  template BootstrapTree<float, int> BaseTree<float, int, BootstrapDataSpec<float, int>, BootstrapTree>::train(
-    const TrainingSpec<float, int> &     training_spec,
-    const BootstrapDataSpec<float, int> &training_data);
 }
