@@ -3,7 +3,9 @@
 #include "TrainingSpecVisitor.hpp"
 
 #include "PPGLDAStrategy.hpp"
-#include "DRStrategy.hpp"
+#include "DRUniformStrategy.hpp"
+#include "DRNoopStrategy.hpp"
+
 
 #include <memory>
 #include <map>

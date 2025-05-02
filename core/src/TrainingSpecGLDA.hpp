@@ -10,7 +10,7 @@ namespace models {
     explicit TrainingSpecGLDA(const float lambda) :
       TrainingSpec<T, R>(
         pp::strategy::glda<T, R>(lambda),
-        dr::strategy::all<T, R>()),
+        dr::strategy::noop<T, R>()),
       lambda(lambda) {
     }
 
