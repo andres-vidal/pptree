@@ -69,20 +69,7 @@ namespace models::stats {
     invariant(size > 0, "Sample size must be greater than 0.");
     invariant(size <= data.y.rows(), "Sample size cannot be larger than the number of rows in the data.");
 
-    const int data_size = data.y.rows();
-
-    std::vector<int> sample_indices;
-    sample_indices.reserve(size);
-
-    for (const G& group : data.classes) {
-      const int group_size        = data.group_size(group);
-      const int group_sample_size = std::max(1, (int)std::round(group_size / (float)data_size * size));
-
-      for (int i = 0; i < group_sample_size; i++) {
-        const Uniform unif(data.group_start(group), data.group_end(group));
-        sample_indices.push_back(unif());
-      }
-    }
+    std::vector<int> sample_indices = models::stats::stratified_proportional_sample(data.x, data.y, data.classes, size);
 
     return BootstrapDataSpec<T, G>(data.x, data.y, data.classes, sample_indices);
   }

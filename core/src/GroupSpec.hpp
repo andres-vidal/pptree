@@ -1,10 +1,19 @@
 #pragma once
 
-#include "Data.hpp"
+#include "DMatrix.hpp"
 
 #include <optional>
 
 namespace models::stats {
+  template<typename T>
+  using Data = math::DMatrix<T>;
+
+  template<typename T>
+  using DataColumn = math::DVector<T>;
+
+  template <typename T>
+  using DataView = Eigen::Block<const Data<T> >;
+
   template<typename T, typename G>
   class GroupSpec {
     private:
