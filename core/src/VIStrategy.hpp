@@ -203,11 +203,9 @@ namespace models {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
-      const stats::SortedDataSpec<T, R> training_data(training_x, training_y);
-      const stats::SortedDataSpec<T, R> subset = training_data.subset(condition.classes);
 
       const float pp_index = condition.training_spec->pp_strategy->index(
-        subset,
+        stats::GroupSpec<T, R>(training_x, training_y).subset(condition.classes),
         condition.projector);
 
       return (condition.projector.array().abs() * pp_index).matrix() + lower_importance + upper_importance;

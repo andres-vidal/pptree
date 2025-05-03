@@ -2,8 +2,6 @@
 
 #include "PPStrategy.hpp"
 
-#include "Projector.hpp"
-#include "SortedDataSpec.hpp"
 #include <set>
 #include <vector>
 
@@ -25,14 +23,14 @@ namespace models::pp::strategy {
     }
 
     T index(
-      const stats::SortedDataSpec<T, G>& data,
-      const Projector<T>&                projector) const override {
+      const stats::GroupSpec<T, G>& spec,
+      const Projector<T>&           projector) const override {
       stats::Data<T> A = projector;
 
-      stats::Data<T> W      = data.wgss();
+      stats::Data<T> W      = spec.wgss();
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
       stats::Data<T> W_pda  = W_diag + (1 - lambda) * (W - W_diag);
-      stats::Data<T> B      = data.bgss();
+      stats::Data<T> B      = spec.bgss();
       stats::Data<T> WpB    = W_pda + B;
 
       T denominator = (A.transpose() * WpB * A).determinant();
@@ -46,15 +44,13 @@ namespace models::pp::strategy {
       return 1 - numerator / denominator;
     }
 
-    Projector<T> optimize(const stats::SortedDataSpec<T, G>& data) const override {
-      LOG_INFO << "Calculating PDA optimum projector for " << data.classes.size() << " groups: " << data.classes << std::endl;
-      LOG_INFO << "Dataset size: " << data.x.rows() << " observations of " << data.x.cols() << " variables:" << std::endl;
-      LOG_INFO << std::endl << data.x << std::endl;
-      LOG_INFO << "Groups:" << std::endl;
-      LOG_INFO << std::endl << data.y << std::endl;
+    Projector<T> optimize(const stats::GroupSpec<T, G>& spec) const override {
+      LOG_INFO << "Calculating PDA optimum projector for " << spec.classes().size() << " groups: " << spec.classes() << std::endl;
+      LOG_INFO << "Dataset size: " << spec.rows() << " observations of " << spec.cols() << " variables:" << std::endl;
+      LOG_INFO << std::endl << (stats::Data<T>)spec.data() << std::endl;
 
-      stats::Data<T> B = data.bgss();
-      stats::Data<T> W = data.wgss();
+      stats::Data<T> B = spec.bgss();
+      stats::Data<T> W = spec.wgss();
 
       LOG_INFO << "B:" << std::endl << B << std::endl;
       LOG_INFO << "W:" << std::endl << W << std::endl;

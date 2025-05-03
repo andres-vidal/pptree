@@ -16,8 +16,6 @@ namespace models::stats {
   struct SortedDataSpec : public DataSpec<T, G> {
     private:
 
-      const models::stats::GroupSpec<T, G> group_spec;
-
       static DataSpec<T, G> sort(const DataSpec<T, G> &data) {
         Data<T> x       = data.x;
         DataColumn<G> y = data.y;
@@ -54,6 +52,8 @@ namespace models::stats {
       }
 
     public:
+
+      const models::stats::GroupSpec<T, G> group_spec;
 
       SortedDataSpec() :
         DataSpec<T, G>(),
@@ -163,14 +163,6 @@ namespace models::stats {
 
       SortedDataSpec<T, G> get() const {
         return *this;
-      }
-
-      Data<T> bgss() const {
-        return group_spec.bgss();
-      }
-
-      Data<T> wgss() const {
-        return group_spec.wgss();
       }
   };
 

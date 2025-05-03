@@ -1,15 +1,13 @@
 #pragma once
 
 #include "DMatrix.hpp"
+#include "DataColumn.hpp"
 
 #include <optional>
 
 namespace models::stats {
   template<typename T>
   using Data = math::DMatrix<T>;
-
-  template<typename T>
-  using DataColumn = math::DVector<T>;
 
   template <typename T>
   using DataView = Eigen::Block<const Data<T> >;
@@ -27,7 +25,7 @@ namespace models::stats {
 
       const Data<T> x;
       const std::map<G, Node> nodes;
-      const std::set<G> classes;
+      const std::set<G> groups;
 
 
       std::map<G, Node> init_nodes(const DataColumn<G> &y) {
@@ -60,9 +58,9 @@ namespace models::stats {
       GroupSpec(
         const Data<T> &          x,
         const std::map<G, Node> &nodes,
-        const std::set<G> &      classes) :
+        const std::set<G> &      groups) :
         x(x),
-        classes(classes),
+        groups(groups),
         nodes(nodes) {
       }
 
@@ -70,7 +68,7 @@ namespace models::stats {
 
       GroupSpec(const Data<T> &x, const DataColumn<G> &y) :
         x(x),
-        classes(unique(y)),
+        groups(unique(y)),
         nodes(init_nodes(y)) {
       }
 
@@ -118,7 +116,7 @@ namespace models::stats {
         DataColumn<T> global_mean = this->mean();
         Data<T> result            = Data<T>::Zero(this->cols(), this->cols());
 
-        for (const G &g : this->classes) {
+        for (const G &g : this->groups) {
           DataView<T> group_data      = group(g);
           DataColumn<T> group_mean    = group_data.colwise().mean();
           DataColumn<T> centered_mean = group_mean - global_mean;
@@ -132,7 +130,7 @@ namespace models::stats {
       Data<T> wgss() const {
         Data<T> result = Data<T>::Zero(this->cols(), this->cols());
 
-        for (const G &g : this->classes) {
+        for (const G &g : this->groups) {
           DataView<T> group_data      = group(g);
           Data<T> centered_group_data = group_data.rowwise() - group_data.colwise().mean();
 
@@ -164,6 +162,14 @@ namespace models::stats {
         }
 
         return GroupSpec<T, G>(this->x, subset_nodes, groups);
+      }
+
+      GroupSpec<T, G> analog(const Data<T>& data) const {
+        return GroupSpec<T, G>(data, this->nodes, this->groups);
+      }
+
+      std::set<G> classes() const {
+        return this->groups;
       }
   };
 }
