@@ -86,6 +86,30 @@ namespace models::stats {
         return this->x(Eigen::seq(group_start(group), group_end(group)), Eigen::all);
       }
 
+      auto data() const {
+        std::vector<int> indices;
+
+        for (const auto &group : nodes) {
+          for (int i = group_start(group.first); i <= group_end(group.first); i++) {
+            indices.push_back(i);
+          }
+        }
+
+        return this->x(indices, Eigen::all);
+      }
+
+      int rows() const {
+        return data().rows();
+      }
+
+      int cols() const {
+        return this->x.cols();
+      }
+
+      DataColumn<T> mean() const {
+        return data().colwise().mean();
+      }
+
       GroupSpec<T, G> subset(std::set<G> groups) const {
         std::map<G, Node> subset_nodes;
 

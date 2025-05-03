@@ -97,8 +97,8 @@ namespace models::stats {
       SortedDataSpec<T, G> remap(const std::map<G, G> &mapping) const {
         std::vector<G> sorted_old_groups = utils::sort_keys_by_value(mapping);
 
-        Data<T> new_x(this->x.rows(), this->x.cols());
-        DataColumn<G> new_y(this->y.rows());
+        Data<T> new_x(this->group_spec.rows(), this->group_spec.cols());
+        DataColumn<G> new_y(this->group_spec.rows());
         std::set<G> new_classes;
 
         int batch_start = 0;
@@ -130,7 +130,7 @@ namespace models::stats {
           subset_size += group_size(g);
         }
 
-        Data<T> new_x(subset_size, this->x.cols());
+        Data<T> new_x(subset_size, this->group_spec.cols());
         DataColumn<G> new_y(subset_size);
         std::set<G> new_classes = groups;
 
@@ -154,7 +154,7 @@ namespace models::stats {
       }
 
       SortedDataSpec<T, G> select(const std::vector<int> &indices) const {
-        return SortedDataSpec<T, G>(this->x(indices, Eigen::all), this->y(indices, Eigen::all), true);
+        return SortedDataSpec<T, G>(this->group_spec.data()(indices, Eigen::all), this->y(indices, Eigen::all), true);
       }
 
       SortedDataSpec<T, G> select(const std::set<int> &indices) const {
@@ -166,8 +166,8 @@ namespace models::stats {
       }
 
       virtual Data<T> bgss() const {
-        DataColumn<T> global_mean = this->x.colwise().mean().transpose();
-        Data<T> result            = Data<T>::Zero(this->x.cols(), this->x.cols());
+        DataColumn<T> global_mean = this->group_spec.mean();
+        Data<T> result            = Data<T>::Zero(this->group_spec.cols(), this->group_spec.cols());
 
         for (const G &g : this->classes) {
           DataView<T> group_data      = group(g);
@@ -181,7 +181,7 @@ namespace models::stats {
       }
 
       virtual Data<T> wgss() const {
-        Data<T> result = Data<T>::Zero(this->x.cols(), this->x.cols());
+        Data<T> result = Data<T>::Zero(this->group_spec.cols(), this->group_spec.cols());
 
         for (const G &g : this->classes) {
           DataView<T> group_data      = group(g);
