@@ -61,16 +61,4 @@ namespace models::stats {
         return oob_indices;
       }
   };
-
-  template<typename T, typename G>
-  BootstrapDataSpec<T, G> stratified_proportional_sample(
-    const SortedDataSpec<T, G> &data,
-    const int                   size) {
-    invariant(size > 0, "Sample size must be greater than 0.");
-    invariant(size <= data.y.rows(), "Sample size cannot be larger than the number of rows in the data.");
-
-    std::vector<int> sample_indices = models::stats::stratified_proportional_sample(data.x, data.y, data.classes, size);
-
-    return BootstrapDataSpec<T, G>(data.x, data.y, data.classes, sample_indices);
-  }
 }

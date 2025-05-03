@@ -51,12 +51,17 @@ namespace models {
       seed,
       n_threads);
 
-    std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees(size);
+    std::vector<BootstrapTreePtr<T, R> > trees(size);
 
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
-      BootstrapDataSpec<T, R> sample = stratified_proportional_sample(training_data, training_data.x.rows());
-      trees[i] = std::make_unique<BootstrapTree<T, R> >(BootstrapTree<T, R>::train(training_spec, sample));
+      std::vector<int> sample_indices = stratified_proportional_sample(
+        training_data.x,
+        training_data.y,
+        training_data.classes,
+        training_data.x.rows());
+
+      trees[i] = BootstrapTree<T, R>::train(training_spec, training_data, sample_indices);
     }
 
     for (auto& tree : trees) {

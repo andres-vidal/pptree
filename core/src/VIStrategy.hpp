@@ -98,18 +98,17 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const BootstrapTree<T, R> &tree) const override {
-      BootstrapTree<T, R> std_tree = tree.retrain(
-        models::stats::BootstrapDataSpec<T, R>(
-          models::stats::standardize(tree.x),
-          tree.y,
-          tree.classes,
-          tree.iob_indices)
-        );
+      stats::SortedDataSpec<T, R> std_data(
+        models::stats::standardize(tree.x),
+        tree.y,
+        tree.classes);
 
-      NodeSummarizer<T, R> summarizer(*this, std_tree.x.cols());
-      std_tree.root->accept(summarizer);
+      BootstrapTreePtr<T, R> std_tree = tree.retrain(std_data, tree.iob_indices);
 
-      return compute_final(summarizer.importance, std_tree, summarizer);
+      NodeSummarizer<T, R> summarizer(*this, std_tree->x.cols());
+      std_tree->root->accept(summarizer);
+
+      return compute_final(summarizer.importance, *std_tree, summarizer);
     }
 
     virtual math::DVector<T> operator()(const Forest<T, R> &forest) const override {

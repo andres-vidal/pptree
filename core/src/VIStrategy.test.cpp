@@ -217,9 +217,14 @@ TEST(VIProjectorStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
-  DVector<float> result = VIProjectorStrategy<float, int>()(tree);
+  SortedDataSpec<float, int> training_data(x, y);
+  BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
+    TrainingSpecGLDA<float, int>(0.0),
+    training_data,
+    sample_indices);
+
+  DVector<float> result = VIProjectorStrategy<float, int>()(*tree);
 
   DataColumn<float> expected(5);
   expected <<
@@ -263,9 +268,14 @@ TEST(VIProjectorStrategy, BootstrapTreePDAMultivariateTwoGroups) {
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
 
-  DataColumn<float> result = VIProjectorStrategy<float, int>()(tree);
+  SortedDataSpec<float, int> training_data(x, y);
+  BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
+    TrainingSpecGLDA<float, int>(0.1),
+    training_data,
+    sample_indices);
+
+  DataColumn<float> result = VIProjectorStrategy<float, int>()(*tree);
 
   DataColumn<float> expected(12);
   expected <<
@@ -616,9 +626,14 @@ TEST(VIProjectorAdjustedStrategy, BootstrapLDATreeMultivariateThreeGroups) {
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
-  DVector<float> result = VIProjectorAdjustedStrategy<float, int>()(tree);
+  SortedDataSpec<float, int> training_data(x, y);
+  BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
+    TrainingSpecGLDA<float, int>(0.0),
+    training_data,
+    sample_indices);
+
+  DVector<float> result = VIProjectorAdjustedStrategy<float, int>()(*tree);
 
   DataColumn<float> expected(5);
   expected <<
@@ -661,9 +676,14 @@ TEST(VIProjectorAdjustedStrategy, BootstrapPDATreeMultivariateTwoGroups) {
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
 
-  DataColumn<float> result = VIProjectorAdjustedStrategy<float, int>()(tree);
+  SortedDataSpec<float, int> training_data(x, y);
+  BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
+    TrainingSpecGLDA<float, int>(0.1),
+    training_data,
+    sample_indices);
+
+  DataColumn<float> result = VIProjectorAdjustedStrategy<float, int>()(*tree);
 
   DataColumn<float> expected(12);
   expected <<
@@ -1017,9 +1037,14 @@ TEST(VIPermutationStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
   Random::seed(0);
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data);
 
-  DVector<float> result = VIPermutationStrategy<float, int>()(tree);
+  SortedDataSpec<float, int> training_data(x, y);
+  BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
+    TrainingSpecGLDA<float, int>(0.0),
+    training_data,
+    sample_indices);
+
+  DVector<float> result = VIPermutationStrategy<float, int>()(*tree);
 
   DataColumn<float> expected(5);
   expected <<
@@ -1062,11 +1087,16 @@ TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
 
   BootstrapDataSpec<float, int> data(x, y, sample_indices);
-  BootstrapTree<float, int> tree = BootstrapTree<float, int>::train(TrainingSpecGLDA<float, int>(0.1), data);
+
+  SortedDataSpec<float, int> training_data(x, y);
+  BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
+    TrainingSpecGLDA<float, int>(0.1),
+    training_data,
+    sample_indices);
 
   Random::seed(0);
 
-  DataColumn<float> result = VIPermutationStrategy<float, int>()(tree);
+  DataColumn<float> result = VIPermutationStrategy<float, int>()(*tree);
 
   DataColumn<float> expected(12);
   expected <<
