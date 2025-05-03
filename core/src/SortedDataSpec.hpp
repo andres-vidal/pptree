@@ -44,6 +44,15 @@ namespace models::stats {
         group_spec(GroupSpec<T, G>(this->x, this->y)) {
       }
 
+      SortedDataSpec<T, G>(
+        const Data<T>&         x,
+        const DataColumn<G>&   y,
+        const std::set<G>&     classes,
+        const GroupSpec<T, G>& group_spec) :
+        DataSpec<T, G>(x, y, classes),
+        group_spec(group_spec) {
+      }
+
     public:
 
       SortedDataSpec() :
@@ -141,7 +150,7 @@ namespace models::stats {
           new_x,
           new_y,
           new_classes,
-          true);
+          this->group_spec.subset(groups));
       }
 
       SortedDataSpec<T, G> select(const std::vector<int> &indices) const {

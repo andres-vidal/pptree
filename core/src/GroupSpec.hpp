@@ -19,7 +19,8 @@ namespace models::stats {
     private:
 
       struct Node {
-        int index;
+        int start;
+        int end;
         std::optional<G> next;
         std::optional<G> prev;
       };
@@ -36,19 +37,30 @@ namespace models::stats {
           if (nodes.count(y(i)) == 0) {
             curr = y(i);
 
-            nodes[curr] = Node{ i };
+            nodes[curr] = Node{ .start = i };
 
             if (i != 0) {
               G prev = y(i - 1);
               nodes[curr].prev = prev;
               nodes[prev].next = curr;
+              nodes[prev].end  = i - 1;
             }
           } else if (curr != y(i)) {
             throw std::invalid_argument("GroupSpec: data is not organized in contiguous groups");
           }
         }
 
+        nodes.at(curr).end = this->x.rows() - 1;
+
         return nodes;
+      }
+
+      GroupSpec(
+        const Data<T> &          x,
+        const std::map<G, Node> &nodes
+        ) :
+        x(x),
+        nodes(nodes) {
       }
 
     public:
@@ -59,17 +71,11 @@ namespace models::stats {
       }
 
       int group_start(const G &group) const {
-        return nodes.at(group).index;
+        return nodes.at(group).start;
       }
 
       int group_end(const G &group) const {
-        std::optional<G> next = nodes.at(group).next;
-
-        if (!next.has_value()) {
-          return this->x.rows() - 1;
-        }
-
-        return nodes.at(next.value()).index - 1;
+        return nodes.at(group).end;
       }
 
       int group_size(const G &group) const {
@@ -78,6 +84,30 @@ namespace models::stats {
 
       DataView<T> group(const G &group) const {
         return this->x(Eigen::seq(group_start(group), group_end(group)), Eigen::all);
+      }
+
+      GroupSpec<T, G> subset(std::set<G> groups) const {
+        std::map<G, Node> subset_nodes;
+
+        G prev = -1;
+
+        for (const auto &group : groups) {
+          Node node = {
+            .start  = nodes.at(group).start,
+            .end    = nodes.at(group).end,
+          };
+
+          if (prev != -1) {
+            node.prev                  = prev;
+            subset_nodes.at(prev).next = group;
+          }
+
+          subset_nodes[group] = node;
+
+          prev = group;
+        }
+
+        return GroupSpec<T, G>(this->x, subset_nodes);
       }
   };
 }
