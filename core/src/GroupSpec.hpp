@@ -30,9 +30,11 @@ namespace models::stats {
       std::map<G, Node> init_nodes(const DataColumn<G> &y) {
         std::map<G, Node> nodes;
 
+        G curr = -1;
+
         for (int i = 0; i < y.rows(); i++) {
           if (nodes.count(y(i)) == 0) {
-            G curr = y(i);
+            curr = y(i);
 
             nodes[curr] = Node{ i };
 
@@ -41,6 +43,8 @@ namespace models::stats {
               nodes[curr].prev = prev;
               nodes[prev].next = curr;
             }
+          } else if (curr != y(i)) {
+            throw std::invalid_argument("GroupSpec: data is not organized in contiguous groups");
           }
         }
 

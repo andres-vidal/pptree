@@ -141,3 +141,25 @@ TEST(GroupSpec, Group) {
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 }
+
+TEST(GroupSpec, ErrorGroupsNotContiguous) {
+  Data<float> x(6, 3);
+  x <<
+    2, 2, 2,
+    4, 4, 4,
+    1, 1, 1,
+    6, 6, 6,
+    3, 3, 3,
+    5, 5, 5;
+
+  DataColumn<int> y(6);
+  y <<
+    1,
+    2,
+    3,
+    1,
+    2,
+    3;
+
+  ASSERT_THROW((GroupSpec<float, int>(x, y)), std::invalid_argument);
+}
