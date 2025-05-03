@@ -113,14 +113,16 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const Forest<T, R> &forest) const override {
-      models::stats::SortedDataSpec<T, R> std_data = forest.training_data.analog(models::stats::standardize(forest.training_data.x));
+      Forest<T, R> std_forest = forest.retrain(models::stats::SortedDataSpec<T, R>(
+            models::stats::standardize(forest.x),
+            forest.y,
+            forest.classes));
 
-      Forest<T, R> std_forest = forest.retrain(std_data);
 
       math::DVector<T> accumulated_importance = std::accumulate(
         std_forest.trees.begin(),
         std_forest.trees.end(),
-        math::DVector<T>(math::DVector<T>::Zero(std_forest.training_data.x.cols())),
+        math::DVector<T>(math::DVector<T>::Zero(std_forest.x.cols())),
         [this] (math::DVector<T> acc, const std::unique_ptr<BootstrapTree<T, R> >& tree) -> math::DVector<T> {
           return acc + this->operator()(*tree);
         });

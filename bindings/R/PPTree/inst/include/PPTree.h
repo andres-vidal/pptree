@@ -16,9 +16,6 @@ namespace Rcpp {
   SEXP wrap(const TrainingSpecGLDA<float, int> &);
   SEXP wrap(const TrainingSpecUGLDA<float, int> &);
 
-  SEXP wrap(const SortedDataSpec<float, int> &);
-  SEXP wrap(const BootstrapDataSpec<float, int> &);
-
   template<> std::unique_ptr<TreeNode<float, int> > as(SEXP);
   template<> Tree<float, int > as(SEXP);
   template<> BootstrapTree<float, int> as(SEXP);
@@ -27,9 +24,6 @@ namespace Rcpp {
   template<> Forest<float, int> as(SEXP);
 
   template<> TrainingSpecPtr<float, int> as(SEXP);
-
-  template<> SortedDataSpec<float, int>  as(SEXP);
-  template<> BootstrapDataSpec<float, int> as(SEXP);
 }
 
 
@@ -98,7 +92,10 @@ namespace Rcpp {
 
     return Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
-      Rcpp::Named("training_data") = Rcpp::wrap(forest.training_data),
+      Rcpp::Named("training_data") = Rcpp::List::create(
+        Rcpp::Named("x")           = Rcpp::wrap(forest.x),
+        Rcpp::Named("y")           = Rcpp::wrap(forest.y),
+        Rcpp::Named("classes")     = Rcpp::wrap(forest.classes)),
       Rcpp::Named("seed")          = Rcpp::wrap(forest.seed),
       Rcpp::Named("n_threads")     = Rcpp::wrap(forest.n_threads),
       Rcpp::Named("trees")         = trees);
@@ -133,21 +130,6 @@ namespace Rcpp {
       Rcpp::Named("strategy") = "uniform_glda",
       Rcpp::Named("n_vars")   = Rcpp::wrap(spec.n_vars),
       Rcpp::Named("lambda")   = Rcpp::wrap(spec.lambda));
-  }
-
-  SEXP wrap(const SortedDataSpec<float, int> &data) {
-    return Rcpp::List::create(
-      Rcpp::Named("x")       = Rcpp::wrap(data.x),
-      Rcpp::Named("y")       = Rcpp::wrap(data.y),
-      Rcpp::Named("classes") = Rcpp::wrap(data.classes));
-  }
-
-  SEXP wrap(const BootstrapDataSpec<float, int> &data) {
-    return Rcpp::List::create(
-      Rcpp::Named("x")              = Rcpp::wrap(data.x),
-      Rcpp::Named("y")              = Rcpp::wrap(data.y),
-      Rcpp::Named("classes")        = Rcpp::wrap(data.classes),
-      Rcpp::Named("sample_indices") = Rcpp::wrap(data.sample_indices));
   }
 
   template<> std::unique_ptr<TreeNode<float, int> > as(SEXP x) {
@@ -217,9 +199,13 @@ namespace Rcpp {
     Rcpp::List rtraining_spec(rforest["training_spec"]);
     Rcpp::List rtraining_data(rforest["training_data"]);
 
+    std::vector<int> classes = as<std::vector<int> >(rtraining_data["classes"]);
+
     Forest<float, int> forest(
       as<TrainingSpecPtr<float, int> >(rtraining_spec),
-      as<SortedDataSpec<float, int> >(rtraining_data),
+      as<Data<float> >(rtraining_data["x"]),
+      as<DataColumn<int> >(rtraining_data["y"]),
+      std::set<int>(classes.begin(), classes.end()),
       Rcpp::as<float>(rforest["seed"]),
       Rcpp::as<int>(rforest["n_threads"]));
 
@@ -250,29 +236,5 @@ namespace Rcpp {
     }
 
     Rcpp::stop("Unknown training strategy: %s", strategy);
-  }
-
-  template<> SortedDataSpec<float, int> as(SEXP x) {
-    Rcpp::List rdata(x);
-
-    std::vector<int> classes = Rcpp::as<std::vector<int> >(rdata["classes"]);
-
-    return SortedDataSpec<float, int>(
-      Rcpp::as<Data<float> >(rdata["x"]),
-      Rcpp::as<DataColumn<int> >(rdata["y"]),
-      std::set<int>(classes.begin(), classes.end()));
-  }
-
-  template<> BootstrapDataSpec<float, int> as(SEXP x) {
-    Rcpp::List rdata(x);
-
-    std::vector<int> classes        = Rcpp::as<std::vector<int> >(rdata["classes"]);
-    std::vector<int> sample_indices = Rcpp::as<std::vector<int> >(rdata["sample_indices"]);
-
-    return BootstrapDataSpec<float, int>(
-      Rcpp::as<Data<float> >(rdata["x"]),
-      Rcpp::as<DataColumn<int> >(rdata["y"]),
-      std::set<int>(classes.begin(), classes.end()),
-      sample_indices);
   }
 }

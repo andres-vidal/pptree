@@ -45,7 +45,9 @@ namespace models {
 
     Forest<T, R> forest(
       training_spec.clone(),
-      training_data,
+      training_data.x,
+      training_data.y,
+      training_data.classes,
       seed,
       n_threads);
 
