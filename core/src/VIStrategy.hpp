@@ -17,22 +17,27 @@ namespace models {
   class NodeSummarizer : public TreeNodeVisitor<T, R> {
     private:
       const VIStrategy<T, R>& strategy;
+      const stats::Data<T> &       training_x;
+      const stats::DataColumn<R> & training_y;
 
     public:
       math::DVector<T> importance;
       std::set<int> classes;
 
       explicit NodeSummarizer(
-        const VIStrategy<T, R> &strategy,
-        const int               n_vars)  :
+        const VIStrategy<T, R> &     strategy,
+        const stats::Data<T> &       training_x,
+        const stats::DataColumn<R> & training_y)  :
         strategy(strategy),
-        importance(math::DVector<T>::Zero(n_vars)),
+        training_x(training_x),
+        training_y(training_y),
+        importance(math::DVector<T>::Zero(training_x.cols())),
         classes({}) {
       }
 
       void visit(const TreeCondition<T, R> &condition) override {
-        NodeSummarizer lower_summarizer(strategy, importance.size());
-        NodeSummarizer upper_summarizer(strategy, importance.size());
+        NodeSummarizer lower_summarizer(strategy, training_x, training_y);
+        NodeSummarizer upper_summarizer(strategy, training_x, training_y);
 
         condition.lower->accept(lower_summarizer);
         condition.upper->accept(upper_summarizer);
@@ -44,7 +49,9 @@ namespace models {
           lower_summarizer.importance,
           upper_summarizer.importance,
           condition,
-          *this);
+          *this,
+          training_x,
+          training_y);
       }
 
       void visit(const TreeResponse<T, R> &response) override {
@@ -66,7 +73,9 @@ namespace models {
         const math::DVector<T> &     lower_importance,
         const math::DVector<T> &     upper_importance,
         const TreeCondition<T, R> &  condition,
-        const NodeSummarizer<T, R> & condition_summary) const = 0;
+        const NodeSummarizer<T, R> & condition_summary,
+        const stats::Data<T> &       training_x,
+        const stats::DataColumn<R> & training_y) const = 0;
 
       virtual math::DVector<T> compute_final(
         const math::DVector<T> &    accumulated_importance,
@@ -91,7 +100,11 @@ namespace models {
             tree.y,
             tree.classes));
 
-      NodeSummarizer<T, R> summarizer(*this, std_tree.x.cols());
+      NodeSummarizer<T, R> summarizer(
+        *this,
+        std_tree.x,
+        std_tree.y);
+
       std_tree.root->accept(summarizer);
 
       return compute_final(summarizer.importance, std_tree, summarizer);
@@ -105,7 +118,13 @@ namespace models {
 
       BootstrapTreePtr<T, R> std_tree = tree.retrain(std_data, tree.iob_indices);
 
-      NodeSummarizer<T, R> summarizer(*this, std_tree->x.cols());
+      stats::SortedDataSpec<T, R> sampled_std_data = std_data.select(std_tree->iob_indices);
+
+      NodeSummarizer<T, R> summarizer(
+        *this,
+        sampled_std_data.x,
+        sampled_std_data.y);
+
       std_tree->root->accept(summarizer);
 
       return compute_final(summarizer.importance, *std_tree, summarizer);
@@ -156,7 +175,9 @@ namespace models {
       const math::DVector<T> &     lower_importance,
       const math::DVector<T> &     upper_importance,
       const TreeCondition<T, R> &  condition,
-      const NodeSummarizer<T, R> & condition_summary) const override {
+      const NodeSummarizer<T, R> & condition_summary,
+      const stats::Data<T> &       training_x,
+      const stats::DataColumn<R> & training_y) const override {
       const int n_classes = condition_summary.classes.size();
 
       return (condition.projector.array().abs() / n_classes).matrix() + lower_importance + upper_importance;
@@ -176,17 +197,17 @@ namespace models {
       const math::DVector<T> &     lower_importance,
       const math::DVector<T> &     upper_importance,
       const TreeCondition<T, R> &  condition,
-      const NodeSummarizer<T, R> & condition_summary) const override {
+      const NodeSummarizer<T, R> & condition_summary,
+      const stats::Data<T> &       training_x,
+      const stats::DataColumn<R> & training_y) const override {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
-      const stats::SortedDataSpec<T, R> training_data(
-        condition.x,
-        condition.y,
-        condition.classes);
+      const stats::SortedDataSpec<T, R> training_data(training_x, training_y);
+      const stats::SortedDataSpec<T, R> subset = training_data.subset(condition.classes);
 
       const float pp_index = condition.training_spec->pp_strategy->index(
-        training_data,
+        subset,
         condition.projector);
 
       return (condition.projector.array().abs() * pp_index).matrix() + lower_importance + upper_importance;
@@ -216,7 +237,9 @@ namespace models {
       const math::DVector<T> &     lower_importance,
       const math::DVector<T> &     upper_importance,
       const TreeCondition<T, R> &  condition,
-      const NodeSummarizer<T, R> & condition_summary) const override {
+      const NodeSummarizer<T, R> & condition_summary,
+      const stats::Data<T> &       training_x,
+      const stats::DataColumn<R> & training_y) const override {
       return math::DVector<T>::Zero(lower_importance.size());
     }
 

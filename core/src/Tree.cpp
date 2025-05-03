@@ -126,8 +126,6 @@ namespace models {
       std::move(lower_response),
       std::move(upper_response),
       training_spec.clone(),
-      training_data.x,
-      training_data.y,
       training_data.classes);
 
     LOG_INFO << "Condition: " << *condition << std::endl;
@@ -184,8 +182,6 @@ namespace models {
       std::move(lower_branch),
       std::move(upper_branch),
       training_spec.clone(),
-      training_data.x,
-      training_data.y,
       training_data.classes);
 
     LOG_INFO << "Condition: " << *condition << std::endl;
