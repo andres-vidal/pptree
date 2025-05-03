@@ -216,8 +216,6 @@ TEST(VIProjectorStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<float, int> data(x, y, sample_indices);
-
   SortedDataSpec<float, int> training_data(x, y);
   BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
     TrainingSpecGLDA<float, int>(0.0),
@@ -266,8 +264,6 @@ TEST(VIProjectorStrategy, BootstrapTreePDAMultivariateTwoGroups) {
     1;
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
-
-  BootstrapDataSpec<float, int> data(x, y, sample_indices);
 
   SortedDataSpec<float, int> training_data(x, y);
   BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
@@ -625,8 +621,6 @@ TEST(VIProjectorAdjustedStrategy, BootstrapLDATreeMultivariateThreeGroups) {
 
   std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
 
-  BootstrapDataSpec<float, int> data(x, y, sample_indices);
-
   SortedDataSpec<float, int> training_data(x, y);
   BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
     TrainingSpecGLDA<float, int>(0.0),
@@ -674,8 +668,6 @@ TEST(VIProjectorAdjustedStrategy, BootstrapPDATreeMultivariateTwoGroups) {
     1;
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
-
-  BootstrapDataSpec<float, int> data(x, y, sample_indices);
 
   SortedDataSpec<float, int> training_data(x, y);
   BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
@@ -1036,8 +1028,6 @@ TEST(VIPermutationStrategy, BootstrapTreeLDAMultivariateThreeGroups) {
 
   Random::seed(0);
 
-  BootstrapDataSpec<float, int> data(x, y, sample_indices);
-
   SortedDataSpec<float, int> training_data(x, y);
   BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(
     TrainingSpecGLDA<float, int>(0.0),
@@ -1085,8 +1075,6 @@ TEST(VIPermutationStrategy, BootstrapTreePDAMultivariateTwoGroups) {
     1;
 
   std::vector<int> sample_indices = { 0, 2, 6, 8 };
-
-  BootstrapDataSpec<float, int> data(x, y, sample_indices);
 
   SortedDataSpec<float, int> training_data(x, y);
   BootstrapTreePtr<float, int> tree = BootstrapTree<float, int>::train(

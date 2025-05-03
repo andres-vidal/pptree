@@ -5,7 +5,6 @@
 #include "TreeResponse.hpp"
 
 #include "SortedDataSpec.hpp"
-#include "BootstrapDataSpec.hpp"
 #include "TrainingSpec.hpp"
 #include "ConfusionMatrix.hpp"
 
@@ -86,16 +85,8 @@ namespace models {
       return stats::error_rate(predict(data.x), data.y);
     }
 
-    virtual float error_rate(const stats::BootstrapDataSpec<T, R> &data) const {
-      return error_rate(data.get_sample());
-    }
-
     virtual stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
       return stats::ConfusionMatrix(predict(data.x), data.y);
-    }
-
-    virtual stats::ConfusionMatrix confusion_matrix(const stats::BootstrapDataSpec<T, R> &data) const {
-      return confusion_matrix(data.get_sample());
     }
 
     json to_json() const {

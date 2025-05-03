@@ -127,10 +127,6 @@ namespace models {
       return stats::error_rate(predict(data.x), data.y);
     }
 
-    float error_rate(const stats::BootstrapDataSpec<T, R> &data) const {
-      return error_rate(data.get_sample());
-    }
-
     float error_rate() const {
       std::set<int> oob_indices = get_oob_indices();
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
@@ -141,10 +137,6 @@ namespace models {
 
     stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
       return stats::ConfusionMatrix(predict(data.x), data.y);
-    }
-
-    stats::ConfusionMatrix confusion_matrix(const stats::BootstrapDataSpec<T, R> &data) const {
-      return confusion_matrix(data.get_sample());
     }
 
     stats::ConfusionMatrix confusion_matrix() const {
