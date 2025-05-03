@@ -27,6 +27,8 @@ namespace models::stats {
 
       const Data<T> x;
       const std::map<G, Node> nodes;
+      const std::set<G> classes;
+
 
       std::map<G, Node> init_nodes(const DataColumn<G> &y) {
         std::map<G, Node> nodes;
@@ -57,9 +59,10 @@ namespace models::stats {
 
       GroupSpec(
         const Data<T> &          x,
-        const std::map<G, Node> &nodes
-        ) :
+        const std::map<G, Node> &nodes,
+        const std::set<G> &      classes) :
         x(x),
+        classes(classes),
         nodes(nodes) {
       }
 
@@ -67,6 +70,7 @@ namespace models::stats {
 
       GroupSpec(const Data<T> &x, const DataColumn<G> &y) :
         x(x),
+        classes(unique(y)),
         nodes(init_nodes(y)) {
       }
 
@@ -110,6 +114,34 @@ namespace models::stats {
         return data().colwise().mean();
       }
 
+      Data<T> bgss() const {
+        DataColumn<T> global_mean = this->mean();
+        Data<T> result            = Data<T>::Zero(this->cols(), this->cols());
+
+        for (const G &g : this->classes) {
+          DataView<T> group_data      = group(g);
+          DataColumn<T> group_mean    = group_data.colwise().mean();
+          DataColumn<T> centered_mean = group_mean - global_mean;
+
+          result.noalias() += group_data.rows() * (centered_mean * centered_mean.transpose());
+        }
+
+        return result;
+      }
+
+      Data<T> wgss() const {
+        Data<T> result = Data<T>::Zero(this->cols(), this->cols());
+
+        for (const G &g : this->classes) {
+          DataView<T> group_data      = group(g);
+          Data<T> centered_group_data = group_data.rowwise() - group_data.colwise().mean();
+
+          result.noalias() += centered_group_data.transpose() * centered_group_data;
+        }
+
+        return result;
+      }
+
       GroupSpec<T, G> subset(std::set<G> groups) const {
         std::map<G, Node> subset_nodes;
 
@@ -131,7 +163,7 @@ namespace models::stats {
           prev = group;
         }
 
-        return GroupSpec<T, G>(this->x, subset_nodes);
+        return GroupSpec<T, G>(this->x, subset_nodes, groups);
       }
   };
 }

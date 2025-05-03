@@ -165,32 +165,12 @@ namespace models::stats {
         return *this;
       }
 
-      virtual Data<T> bgss() const {
-        DataColumn<T> global_mean = this->group_spec.mean();
-        Data<T> result            = Data<T>::Zero(this->group_spec.cols(), this->group_spec.cols());
-
-        for (const G &g : this->classes) {
-          DataView<T> group_data      = group(g);
-          DataColumn<T> group_mean    = group_data.colwise().mean();
-          DataColumn<T> centered_mean = group_mean - global_mean;
-
-          result.noalias() += group_data.rows() * (centered_mean * centered_mean.transpose());
-        }
-
-        return result;
+      Data<T> bgss() const {
+        return group_spec.bgss();
       }
 
-      virtual Data<T> wgss() const {
-        Data<T> result = Data<T>::Zero(this->group_spec.cols(), this->group_spec.cols());
-
-        for (const G &g : this->classes) {
-          DataView<T> group_data      = group(g);
-          Data<T> centered_group_data = group_data.rowwise() - group_data.colwise().mean();
-
-          result.noalias() += centered_group_data.transpose() * centered_group_data;
-        }
-
-        return result;
+      Data<T> wgss() const {
+        return group_spec.wgss();
       }
   };
 
