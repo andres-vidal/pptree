@@ -83,7 +83,7 @@ namespace models {
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data).group_spec));
+    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data.group_spec)));
 
     Data<T> data_group_1 = training_data.group(group_1);
     Data<T> data_group_2 = training_data.group(group_2);
@@ -146,7 +146,7 @@ namespace models {
       return TreeResponse<T, R>::make(*training_data.classes.begin());
     }
 
-    DRSpec<T, R> dr = dr_strategy(training_data);
+    DRSpec<T, R> dr = dr_strategy(training_data.group_spec);
 
     if (training_data.classes.size() == 2) {
       return binary_step(training_spec, training_data, dr);
@@ -154,9 +154,7 @@ namespace models {
 
     LOG_INFO << "Redefining a " << training_data.classes.size() << " group problem as binary:" << std::endl;
 
-    SortedDataSpec<T, R> reduced_data = dr.reduce(training_data);
-
-    Projector<T> projector = dr.expand(pp_strategy(reduced_data.group_spec));
+    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data.group_spec)));
 
     std::map<R, int> binary_mapping = binary_regroup(training_data.analog(training_data.x * projector));
 

@@ -14,6 +14,11 @@ namespace models::stats {
 
   template<typename T, typename G>
   class GroupSpec {
+    public:
+
+      const Data<T> x;
+      const std::set<G> groups;
+
     private:
 
       struct Node {
@@ -23,10 +28,7 @@ namespace models::stats {
         std::optional<G> prev;
       };
 
-      const Data<T> x;
       const std::map<G, Node> nodes;
-      const std::set<G> groups;
-
 
       std::map<G, Node> init_nodes(const DataColumn<G> &y) {
         std::map<G, Node> nodes;
@@ -166,10 +168,6 @@ namespace models::stats {
 
       GroupSpec<T, G> analog(const Data<T>& data) const {
         return GroupSpec<T, G>(data, this->nodes, this->groups);
-      }
-
-      std::set<G> classes() const {
-        return this->groups;
       }
   };
 }

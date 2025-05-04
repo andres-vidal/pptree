@@ -45,7 +45,7 @@ namespace models::pp::strategy {
     }
 
     Projector<T> optimize(const stats::GroupSpec<T, G>& spec) const override {
-      LOG_INFO << "Calculating PDA optimum projector for " << spec.classes().size() << " groups: " << spec.classes() << std::endl;
+      LOG_INFO << "Calculating PDA optimum projector for " << spec.groups.size() << " groups: " << spec.groups << std::endl;
       LOG_INFO << "Dataset size: " << spec.rows() << " observations of " << spec.cols() << " variables:" << std::endl;
       LOG_INFO << std::endl << (stats::Data<T>)spec.data() << std::endl;
 

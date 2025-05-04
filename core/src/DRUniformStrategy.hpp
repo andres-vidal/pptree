@@ -18,25 +18,25 @@ namespace models::dr::strategy {
       return std::make_unique<DRUniformStrategy<T, G> >(*this);
     }
 
-    DRSpec<T, G> reduce(
-      const stats::SortedDataSpec<T, G>& data) const override {
-      invariant(n_vars <= data.x.cols(), "The number of variables must be less than or equal to the number of columns in the data.");
+    DRSpec<T, G> select(
+      const stats::GroupSpec<T, G>& spec) const override {
+      invariant(n_vars <= spec.cols(), "The number of variables must be less than or equal to the number of columns in the data.");
 
-      if (n_vars == data.x.cols()) {
-        std::vector<int> all_indices(data.x.cols());
+      if (n_vars == spec.cols()) {
+        std::vector<int> all_indices(spec.cols());
         std::iota(all_indices.begin(), all_indices.end(), 0);
 
-        return DRSpec<T, G>(all_indices, data.x.cols());
+        return DRSpec<T, G>(all_indices, spec.cols());
       }
 
       LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
 
-      stats::Uniform unif(0, data.x.cols() - 1);
+      stats::Uniform unif(0, spec.cols() - 1);
       std::vector<int> selected_indices = unif.distinct(n_vars);
 
       LOG_INFO << "Selected variables: " << selected_indices << std::endl;
 
-      return DRSpec<T, G>(selected_indices, data.x.cols());
+      return DRSpec<T, G>(selected_indices, spec.cols());
     }
   };
 

@@ -10,11 +10,11 @@ namespace models::dr::strategy {
       return std::make_unique<DRNoopStrategy<T, G> >(*this);
     }
 
-    DRSpec<T, G> reduce(
-      const stats::SortedDataSpec<T, G>& data) const override {
-      std::vector<int> all_indices(data.x.cols());
+    DRSpec<T, G> select(
+      const stats::GroupSpec<T, G>& spec) const override {
+      std::vector<int> all_indices(spec.cols());
       std::iota(all_indices.begin(), all_indices.end(), 0);
-      return DRSpec<T, G>(all_indices, data.x.cols());
+      return DRSpec<T, G>(all_indices, spec.cols());
     }
   };
 

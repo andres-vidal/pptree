@@ -1,8 +1,12 @@
 #pragma once
 #include <algorithm>
 
+#include "GroupSpec.hpp"
+
 #include "Data.hpp"
 #include "Invariant.hpp"
+
+
 
 namespace models::dr::strategy {
   template<typename T, typename G>
@@ -38,8 +42,8 @@ namespace models::dr::strategy {
       return full_vector;
     }
 
-    stats::SortedDataSpec<T, G> reduce(const stats::SortedDataSpec<T, G>& data) const {
-      return data.analog(data.x(Eigen::all, selected_cols));
+    stats::GroupSpec<T, G> reduce(const stats::GroupSpec<T, G>& spec) const {
+      return spec.analog(spec.x(Eigen::all, selected_cols));
     }
   };
 
@@ -48,10 +52,10 @@ namespace models::dr::strategy {
     virtual ~DRStrategy()                     = default;
     virtual DRStrategyPtr<T, G> clone() const = 0;
 
-    virtual DRSpec<T, G> reduce(const stats::SortedDataSpec<T, G>& data) const = 0;
+    virtual DRSpec<T, G> select(const stats::GroupSpec<T, G>& spec) const = 0;
 
-    DRSpec<T, G> operator()(const stats::SortedDataSpec<T, G>& data) const {
-      return reduce(data);
+    DRSpec<T, G> operator()(const stats::GroupSpec<T, G>& spec) const {
+      return select(spec);
     }
   };
 }
