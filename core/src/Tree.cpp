@@ -14,14 +14,14 @@ using namespace utils;
 namespace models {
   template<typename T, typename R >
   std::map<R, int> binary_regroup(
-    const GroupSpec<T, R> &spec
+    const GroupSpec<T, R> &training_data
     ) {
     std::vector<std::tuple<R, T> > means;
 
-    invariant(spec.cols() == 1, "Binary regrouping requires a unidimensional data");
+    invariant(training_data.cols() == 1, "Binary regrouping requires a unidimensional data");
 
-    for (const R group : spec.groups) {
-      T group_mean = spec.group(group).mean();
+    for (const R group : training_data.groups) {
+      T group_mean = training_data.group(group).mean();
 
       means.push_back({ group, group_mean });
     }
@@ -72,19 +72,19 @@ namespace models {
   template<typename T, typename R >
   TreeConditionPtr<T, R> binary_step(
     const TrainingSpec<T, R> & training_spec,
-    const GroupSpec<T, R> &    spec,
+    const GroupSpec<T, R> &    training_data,
     const DRSpec<T, R>&        dr) {
-    R group_1 = *spec.groups.begin();
-    R group_2 = *std::next(spec.groups.begin());
+    R group_1 = *training_data.groups.begin();
+    R group_2 = *std::next(training_data.groups.begin());
 
-    LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << spec.groups << std::endl;
+    LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << training_data.groups << std::endl;
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(spec)));
+    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data)));
 
-    auto data_group_1 = spec.group(group_1);
-    auto data_group_2 = spec.group(group_2);
+    auto data_group_1 = training_data.group(group_1);
+    auto data_group_2 = training_data.group(group_2);
 
     T mean_1 = (data_group_1 * projector).mean();
     T mean_2 = (data_group_2 * projector).mean();
@@ -124,17 +124,10 @@ namespace models {
       std::move(lower_response),
       std::move(upper_response),
       training_spec.clone(),
-      spec.groups);
+      training_data.groups);
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
-  }
-
-  template<typename T, typename R >
-  TreeNodePtr<T, R>   step(
-    const TrainingSpec<T, R> &  training_spec,
-    const SortedDataSpec<T, R> &training_data) {
-    return step(training_spec, training_data.group_spec);
   }
 
   template<typename T, typename R >
@@ -199,7 +192,7 @@ namespace models {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
     LOG_INFO << "Root step." << std::endl;
-    TreeNodePtr<T, R> root_ptr = step(training_spec, training_data.get());
+    TreeNodePtr<T, R> root_ptr = step(training_spec, training_data.group_spec);
 
     Tree<T, R> tree(
       std::move(root_ptr),
