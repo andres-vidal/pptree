@@ -134,31 +134,38 @@ namespace models {
   TreeNodePtr<T, R>   step(
     const TrainingSpec<T, R> &  training_spec,
     const SortedDataSpec<T, R> &training_data) {
-    LOG_INFO << "Project-Pursuit Tree building step for " << training_data.classes.size() << " groups: " << training_data.classes << std::endl;
+    return step(training_spec, training_data.group_spec);
+  }
+
+  template<typename T, typename R >
+  TreeNodePtr<T, R>   step(
+    const TrainingSpec<T, R> & training_spec,
+    const GroupSpec<T, R> &    training_data) {
+    LOG_INFO << "Project-Pursuit Tree building step for " << training_data.groups.size() << " groups: " << training_data.groups << std::endl;
     LOG_INFO << "Dataset size: " << training_data.x.rows() << " observations of " << training_data.x.cols() << " variables" << std::endl;
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
     const DRStrategy<T, R> &dr_strategy = *(training_spec.dr_strategy);
 
-    if (training_data.classes.size() == 1) {
-      return TreeResponse<T, R>::make(*training_data.classes.begin());
+    if (training_data.groups.size() == 1) {
+      return TreeResponse<T, R>::make(*training_data.groups.begin());
     }
 
-    DRSpec<T, R> dr = dr_strategy(training_data.group_spec);
+    DRSpec<T, R> dr = dr_strategy(training_data);
 
-    if (training_data.classes.size() == 2) {
-      return binary_step(training_spec, training_data.group_spec, dr);
+    if (training_data.groups.size() == 2) {
+      return binary_step(training_spec, training_data, dr);
     }
 
-    LOG_INFO << "Redefining a " << training_data.classes.size() << " group problem as binary:" << std::endl;
+    LOG_INFO << "Redefining a " << training_data.groups.size() << " group problem as binary:" << std::endl;
 
-    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data.group_spec)));
+    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data)));
 
-    std::map<R, int> binary_mapping = binary_regroup(training_data.group_spec.analog(training_data.x * projector));
+    std::map<R, int> binary_mapping = binary_regroup(training_data.analog(training_data.x * projector));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
-    TreeConditionPtr<T, R> temp_node = binary_step(training_spec, training_data.group_spec.remap(binary_mapping), dr);
+    TreeConditionPtr<T, R> temp_node = binary_step(training_spec, training_data.remap(binary_mapping), dr);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
@@ -179,7 +186,7 @@ namespace models {
       std::move(lower_branch),
       std::move(upper_branch),
       training_spec.clone(),
-      training_data.classes);
+      training_data.groups);
 
     LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
