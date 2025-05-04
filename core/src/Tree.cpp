@@ -83,8 +83,8 @@ namespace models {
 
     Projector<T> projector = dr.expand(pp_strategy(dr.reduce(spec)));
 
-    DataView<T> data_group_1 = spec.group(group_1);
-    DataView<T> data_group_2 = spec.group(group_2);
+    auto data_group_1 = spec.group(group_1);
+    auto data_group_2 = spec.group(group_2);
 
     T mean_1 = (data_group_1 * projector).mean();
     T mean_2 = (data_group_2 * projector).mean();
@@ -158,9 +158,7 @@ namespace models {
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
-    SortedDataSpec<T, R> binary_training_data = training_data.remap(binary_mapping);
-
-    TreeConditionPtr<T, R> temp_node = binary_step(training_spec, binary_training_data.group_spec, dr);
+    TreeConditionPtr<T, R> temp_node = binary_step(training_spec, training_data.group_spec.remap(binary_mapping), dr);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();

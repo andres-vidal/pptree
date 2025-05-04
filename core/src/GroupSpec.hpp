@@ -3,6 +3,8 @@
 #include "DMatrix.hpp"
 #include "DataColumn.hpp"
 
+#include "Map.hpp"
+
 #include <optional>
 
 namespace models::stats {
@@ -24,11 +26,14 @@ namespace models::stats {
       struct Node {
         int start;
         int end;
+        int size;
         std::optional<G> next;
         std::optional<G> prev;
       };
 
       const std::map<G, Node> nodes;
+      const std::map<G, G> supergroups;
+      const std::map<G, std::set<G> > subgroups;
 
       std::map<G, Node> init_nodes(const DataColumn<G> &y) {
         std::map<G, Node> nodes;
@@ -46,6 +51,7 @@ namespace models::stats {
               nodes[curr].prev = prev;
               nodes[prev].next = curr;
               nodes[prev].end  = i - 1;
+              nodes[prev].size = i - nodes[prev].start;
             }
           } else if (curr != y(i)) {
             throw std::invalid_argument("GroupSpec: data is not organized in contiguous groups");
@@ -57,13 +63,48 @@ namespace models::stats {
         return nodes;
       }
 
+      std::map<G, G> init_supergroups() {
+        std::map<G, G> supergroups;
+
+        for (const G &g : groups) {
+          supergroups[g] = g;
+        }
+
+        return supergroups;
+      }
+
       GroupSpec(
         const Data<T> &          x,
         const std::map<G, Node> &nodes,
         const std::set<G> &      groups) :
         x(x),
         groups(groups),
-        nodes(nodes) {
+        nodes(nodes),
+        supergroups(init_supergroups()),
+        subgroups(utils::invert(supergroups)) {
+      }
+
+      GroupSpec(
+        const Data<T> &          x,
+        const std::map<G, Node> &nodes,
+        const std::map<G, G> &   supergroups) :
+        x(x),
+        groups(utils::values(supergroups)),
+        nodes(nodes),
+        supergroups(supergroups),
+        subgroups(utils::invert(supergroups)) {
+      }
+
+      GroupSpec(
+        const Data<T> &          x,
+        const std::map<G, Node> &nodes,
+        const std::set<G> &      groups,
+        const std::map<G, G> &   supergroups) :
+        x(x),
+        groups(groups),
+        nodes(nodes),
+        supergroups(supergroups),
+        subgroups(utils::invert(supergroups)) {
       }
 
     public:
@@ -71,7 +112,9 @@ namespace models::stats {
       GroupSpec(const Data<T> &x, const DataColumn<G> &y) :
         x(x),
         groups(unique(y)),
-        nodes(init_nodes(y)) {
+        nodes(init_nodes(y)),
+        supergroups(init_supergroups()),
+        subgroups(utils::invert(supergroups)) {
       }
 
       int group_start(const G &group) const {
@@ -86,8 +129,22 @@ namespace models::stats {
         return 1 + group_end(group) - group_start(group);
       }
 
-      DataView<T> group(const G &group) const {
+      DataView<T> _group(const G &group) const {
         return this->x(Eigen::seq(group_start(group), group_end(group)), Eigen::all);
+      }
+
+      auto group(const G &group) const {
+        std::vector<int> indices;
+
+        std::set<G> subgroups = this->subgroups.at(group);
+
+        for (const auto &g : subgroups) {
+          for (int i = group_start(g); i <= group_end(g); i++) {
+            indices.push_back(i);
+          }
+        }
+
+        return this->x(indices, Eigen::all);
       }
 
       auto data() const {
@@ -119,7 +176,7 @@ namespace models::stats {
         Data<T> result            = Data<T>::Zero(this->cols(), this->cols());
 
         for (const G &g : this->groups) {
-          DataView<T> group_data      = group(g);
+          auto group_data             = group(g);
           DataColumn<T> group_mean    = group_data.colwise().mean();
           DataColumn<T> centered_mean = group_mean - global_mean;
 
@@ -133,8 +190,8 @@ namespace models::stats {
         Data<T> result = Data<T>::Zero(this->cols(), this->cols());
 
         for (const G &g : this->groups) {
-          DataView<T> group_data      = group(g);
-          Data<T> centered_group_data = group_data.rowwise() - group_data.colwise().mean();
+          auto group_data          = group(g);
+          auto centered_group_data = group_data.rowwise() - group_data.colwise().mean();
 
           result.noalias() += centered_group_data.transpose() * centered_group_data;
         }
@@ -151,6 +208,7 @@ namespace models::stats {
           Node node = {
             .start  = nodes.at(group).start,
             .end    = nodes.at(group).end,
+            .size   = nodes.at(group).size
           };
 
           if (prev != -1) {
@@ -167,7 +225,25 @@ namespace models::stats {
       }
 
       GroupSpec<T, G> analog(const Data<T>& data) const {
-        return GroupSpec<T, G>(data, this->nodes, this->groups);
+        return GroupSpec<T, G>(data, this->nodes, this->groups, this->supergroups);
+      }
+
+      GroupSpec<T, G> remap(const std::map<G, G> &mapping) const {
+        return GroupSpec<T, G>(this->x, this->nodes, mapping);
+      }
+
+      void inspect() const {
+        std::cout << "GroupSpec" << std::endl;
+        std::cout << "  rows: " << this->rows() << std::endl;
+        std::cout << "  cols: " << this->cols() << std::endl;
+        std::cout << "  groups: " << this->groups << std::endl;
+        std::cout << "  supergroups: " << this->supergroups << std::endl;
+        std::cout << "  subgroups: " << this->subgroups << std::endl;
+        std::cout << "  nodes (" << this->nodes.size() << "):" << std::endl;
+
+        for (const auto &node : this->nodes) {
+          std::cout << "    " << node.first << ": " << node.second.start << " - " << node.second.end << std::endl;
+        }
       }
   };
 }

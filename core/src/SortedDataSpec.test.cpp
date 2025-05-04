@@ -195,67 +195,6 @@ TEST(SortedDataSpec, Analog) {
   ASSERT_EQ(data.classes, actual.classes);
 }
 
-TEST(SortedDataSpec, Remap) {
-  Data<float> x(6, 3);
-  x <<
-    1, 1, 1,
-    1, 2, 2,
-    2, 1, 1,
-    2, 2, 2,
-    3, 1, 1,
-    3, 2, 2;
-
-  DataColumn<int> y(6);
-  y <<
-    1,
-    1,
-    2,
-    2,
-    3,
-    3;
-
-  SortedDataSpec<float, int> data(x, y);
-
-  std::map<int, int> mapping = {
-    { 1, 0 },
-    { 2, 1 },
-    { 3, 0 }
-  };
-
-  SortedDataSpec<float, int> actual = data.remap(mapping);
-
-  Data<float> new_x(6, 3);
-  new_x <<
-    1, 1, 1,
-    1, 2, 2,
-    3, 1, 1,
-    3, 2, 2,
-    2, 1, 1,
-    2, 2, 2;
-
-
-  DataColumn<int> new_y(6);
-  new_y <<
-    0,
-    0,
-    0,
-    0,
-    1,
-    1;
-
-  ASSERT_EQ(new_x.size(), actual.x.size());
-  ASSERT_EQ(new_x.rows(), actual.x.rows());
-  ASSERT_EQ(new_x.cols(), actual.x.cols());
-  ASSERT_EQ(new_x, actual.x);
-
-  ASSERT_EQ(new_y.size(), actual.y.size());
-  ASSERT_EQ(new_y.rows(), actual.y.rows());
-  ASSERT_EQ(new_y.cols(), actual.y.cols());
-  ASSERT_EQ(new_y, actual.y);
-
-  ASSERT_EQ(std::set<int>({ 0, 1 }), actual.classes);
-}
-
 TEST(SortedDataSpec, Subset) {
   Data<float> x(6, 3);
   x <<

@@ -87,40 +87,11 @@ namespace models::stats {
       }
 
       DataView<T> group(const G &group) const {
-        return group_spec.group(group);
+        return group_spec._group(group);
       }
 
       SortedDataSpec<T, G> analog(const Data<T> &data) const {
         return SortedDataSpec<T, G>(data, this->y, this->classes, true);
-      }
-
-      SortedDataSpec<T, G> remap(const std::map<G, G> &mapping) const {
-        std::vector<G> sorted_old_groups = utils::sort_keys_by_value(mapping);
-
-        Data<T> new_x(this->group_spec.rows(), this->group_spec.cols());
-        DataColumn<G> new_y(this->group_spec.rows());
-        std::set<G> new_classes;
-
-        int batch_start = 0;
-
-        for (int i = 0; i < sorted_old_groups.size(); i++) {
-          G old_group = sorted_old_groups[i];
-          G new_group = mapping.at(old_group);
-
-          int batch_end = batch_start + group_size(old_group) - 1;
-
-          new_x(Eigen::seq(batch_start, batch_end), Eigen::all) = group(old_group);
-          new_y(Eigen::seq(batch_start, batch_end)).setConstant(new_group);
-          new_classes.insert(new_group);
-
-          batch_start = batch_end + 1;
-        }
-
-        return SortedDataSpec<T, G>(
-          new_x,
-          new_y,
-          new_classes,
-          true);
       }
 
       SortedDataSpec<T, G> subset(const std::set<G> &groups) const {

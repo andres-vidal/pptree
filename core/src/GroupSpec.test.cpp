@@ -225,6 +225,61 @@ TEST(GroupSpec, Subset) {
   ASSERT_EQ(expected_mean, spec.mean());
 }
 
+TEST(GroupSpec, Remap) {
+  Data<float> x(6, 3);
+  x <<
+    1, 1, 1,
+    1, 2, 2,
+    2, 1, 1,
+    2, 2, 2,
+    3, 1, 1,
+    3, 2, 2;
+
+  DataColumn<int> y(6);
+  y <<
+    1,
+    1,
+    2,
+    2,
+    3,
+    3;
+
+  GroupSpec<float, int> data(x, y);
+
+  std::map<int, int> mapping = {
+    { 1, 0 },
+    { 2, 1 },
+    { 3, 0 }
+  };
+
+  GroupSpec<float, int> remapped = data.remap(mapping);
+
+  Data<float> new_x(6, 3);
+  new_x <<
+    1, 1, 1,
+    1, 2, 2,
+    3, 1, 1,
+    3, 2, 2,
+    2, 1, 1,
+    2, 2, 2;
+
+
+  DataColumn<int> new_y(6);
+  new_y <<
+    0,
+    0,
+    0,
+    0,
+    1,
+    1;
+
+
+  ASSERT_EQ_MATRIX(data.x, remapped.x);
+
+  ASSERT_EQ(std::set<int>({ 0, 1 }), remapped.groups);
+}
+
+
 TEST(GroupSpec,  BetweenGroupsSumOfSquaresSingleGroup) {
   Data<float> x(3, 3);
   x <<
@@ -639,6 +694,142 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
     24.5, 24.5, 24.5, 0.0,
     24.5, 24.5, 24.5, 0.0,
     0.0,  0.0,  0.0,  0.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(GroupSpecRemapped, Group) {
+  Data<float> x(6, 3);
+  x <<
+    2, 2, 2,
+    4, 4, 4,
+    1, 1, 1,
+    6, 6, 6,
+    3, 3, 3,
+    5, 5, 5;
+
+
+  DataColumn<int> y(6);
+  y <<
+    1,
+    1,
+    2,
+    2,
+    3,
+    3;
+
+  GroupSpec<float, int> base(x, y);
+  GroupSpec<float, int> spec = base.remap({ { 1, 1 }, { 2, 1 }, { 3, 2 } });
+
+  Data<float> actual = spec.group(1);
+
+  Data<float> expected(4, 3);
+  expected <<
+    2, 2, 2,
+    4, 4, 4,
+    1, 1, 1,
+    6, 6, 6;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+
+  actual = spec.group(2);
+
+  expected.resize(2, 3);
+  expected <<
+    3, 3, 3,
+    5, 5, 5;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(GroupSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
+  Data<float> x(8, 3);
+  x <<
+    23.0, 1.0, 1.0,
+    25.0, 1.0, 1.0,
+    18.0, 1.0, 1.0,
+    29.0, 1.0, 1.0,
+    19.0, 1.0, 1.0,
+    21.0, 1.0, 1.0,
+    35.0, 1.0, 1.0,
+    17.0, 1.0, 1.0;
+
+  DataColumn<int> y(8);
+  y <<
+    0, // 0
+    0, // 0
+    1, // 0
+    2, // 1
+    2, // 1
+    3, // 1
+    4, // 2
+    4; // 2
+
+  GroupSpec<float, int> data(x, y);
+  GroupSpec<float, int> remapped = data.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
+
+  Data<float> actual = remapped.bgss();
+
+  Data<float> expected(3, 3);
+  expected <<
+    19.875, 0.0, 0.0,
+    0.0,    0.0, 0.0,
+    0.0,    0.0, 0.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(GroupSpecRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
+  Data<float> x(8, 3);
+  x <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 2.0, 1.0,
+    4.0, 3.0, 2.0,
+    5.0, 4.0, 3.0,
+    9.0, 8.0, 7.0,
+    6.0, 5.0, 4.0;
+
+  DataColumn<int> y(8);
+  y <<
+    0,  // 0
+    0,  // 0
+    1,  // 0
+    2,  // 1
+    2,  // 1
+    3,  // 1
+    4,  // 2
+    4;  // 2
+
+
+  GroupSpec<float, int> data(x, y);
+
+  data.inspect();
+
+  GroupSpec<float, int> remapped = data.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
+
+  remapped.inspect();
+
+  Data<float> actual = remapped.wgss();
+
+  Data<float> expected(3, 3);
+  expected <<
+    24.5, 24.5, 24.5,
+    24.5, 24.5, 24.5,
+    24.5, 24.5, 24.5;
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());
