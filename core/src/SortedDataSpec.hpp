@@ -82,48 +82,6 @@ namespace models::stats {
         return group_spec.group_start(group);
       }
 
-      int group_end(const G &group) const {
-        return group_spec.group_end(group);
-      }
-
-      DataView<T> group(const G &group) const {
-        return group_spec._group(group);
-      }
-
-      SortedDataSpec<T, G> analog(const Data<T> &data) const {
-        return SortedDataSpec<T, G>(data, this->y, this->classes, true);
-      }
-
-      SortedDataSpec<T, G> subset(const std::set<G> &groups) const {
-        int subset_size = 0;
-
-        for (const G &g : groups) {
-          subset_size += group_size(g);
-        }
-
-        Data<T> new_x(subset_size, this->group_spec.cols());
-        DataColumn<G> new_y(subset_size);
-        std::set<G> new_classes = groups;
-
-        int batch_start = 0;
-
-        for (const G &g : groups) {
-          int batch_end = batch_start + group_size(g) - 1;
-
-          new_x(Eigen::seq(batch_start, batch_end), Eigen::all) = group(g);
-          new_y(Eigen::seq(batch_start, batch_end)).setConstant(g);
-          new_classes.insert(g);
-
-          batch_start = batch_end + 1;
-        }
-
-        return SortedDataSpec<T, G>(
-          new_x,
-          new_y,
-          new_classes,
-          this->group_spec.subset(groups));
-      }
-
       SortedDataSpec<T, G> select(const std::vector<int> &indices) const {
         return SortedDataSpec<T, G>(this->group_spec.data()(indices, Eigen::all), this->y(indices, Eigen::all), true);
       }

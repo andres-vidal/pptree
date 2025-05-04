@@ -129,10 +129,6 @@ namespace models::stats {
         return 1 + group_end(group) - group_start(group);
       }
 
-      DataView<T> _group(const G &group) const {
-        return this->x(Eigen::seq(group_start(group), group_end(group)), Eigen::all);
-      }
-
       auto group(const G &group) const {
         std::vector<int> indices;
 
