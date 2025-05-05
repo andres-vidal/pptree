@@ -16,17 +16,12 @@ namespace models {
   template<typename T, typename R>
   struct Forest {
     static Forest<T, R> train(
-      const TrainingSpec<T, R> &          training_spec,
-      const stats::SortedDataSpec<T, R> & training_data,
-      const int                           size,
-      const int                           seed);
-
-    static Forest<T, R> train(
-      const TrainingSpec<T, R> &          training_spec,
-      const stats::SortedDataSpec<T, R> & training_data,
-      const int                           size,
-      const int                           seed,
-      const int                           n_threads);
+      const TrainingSpec<T, R> &   training_spec,
+      const stats::Data<T> &       x,
+      const stats::DataColumn<R> & y,
+      const int                    size,
+      const int                    seed,
+      const int                    n_threads = std::thread::hardware_concurrency());
 
 
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
@@ -114,17 +109,18 @@ namespace models {
       return !(*this == other);
     }
 
-    Forest<T, R> retrain(const stats::SortedDataSpec<T, R> &data) const {
+    Forest<T, R> retrain(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
       return Forest<T, R>::train(
         *training_spec,
-        data,
+        x,
+        y,
         trees.size(),
         seed,
         n_threads);
     }
 
-    float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      return stats::error_rate(predict(data.x), data.y);
+    float error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return stats::error_rate(predict(x), y);
     }
 
     float error_rate() const {
@@ -135,8 +131,8 @@ namespace models {
       return stats::error_rate(oob_predictions, oob_y);
     }
 
-    stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      return stats::ConfusionMatrix(predict(data.x), data.y);
+    stats::ConfusionMatrix confusion_matrix(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return stats::ConfusionMatrix(predict(x), y);
     }
 
     stats::ConfusionMatrix confusion_matrix() const {

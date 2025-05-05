@@ -20,8 +20,8 @@ static Projector<float> as_projector(std::vector<float> vector) {
 }
 
 TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -53,8 +53,8 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -86,14 +86,15 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
     2,
     2;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0;
   const int seed     = 0;
 
 
   Forest<float, int> result = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -164,8 +165,8 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
 }
 
 TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -197,8 +198,8 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -237,7 +238,8 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
 
   Forest<float, int> result = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -312,8 +314,8 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
 }
 
 TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
-  Data<float> data(10, 12);
-  data <<
+  Data<float> x(10, 12);
+  x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -325,8 +327,8 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
     4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
     4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -338,13 +340,14 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
     1,
     1;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0.1;
   const int seed     = 0;
 
   Forest<float, int> result = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -460,10 +463,10 @@ TEST(Forest, PredictDataColumnSomeVariablesMultivariateThreeGroups) {
         TreeResponse<float, int>::make(2)))
     );
 
-  DataColumn<float> data(5);
-  data << 9, 8, 1, 1, 1;
+  DataColumn<float> x(5);
+  x << 9, 8, 1, 1, 1;
 
-  int result = forest.predict(data);
+  int result = forest.predict(x);
 
   ASSERT_EQ(2, result);
 }
@@ -530,8 +533,8 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
       )
     );
 
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -563,8 +566,8 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -596,17 +599,17 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
     2,
     2;
 
-  DataColumn<int> result = forest.predict(data);
+  DataColumn<int> result = forest.predict(x);
 
-  ASSERT_EQ(groups.size(), result.size());
-  ASSERT_EQ(groups.cols(), result.cols());
-  ASSERT_EQ(groups.rows(), result.rows());
-  ASSERT_EQ(groups, result);
+  ASSERT_EQ(y.size(), result.size());
+  ASSERT_EQ(y.cols(), result.cols());
+  ASSERT_EQ(y.rows(), result.rows());
+  ASSERT_EQ(y, result);
 }
 
 TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -638,8 +641,8 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -678,7 +681,8 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
 
   Forest<float, int> forest = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -696,8 +700,8 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
 }
 
 TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
-  Data<float> data(10, 12);
-  data <<
+  Data<float> x(10, 12);
+  x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -709,8 +713,8 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
     4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
     4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -722,13 +726,14 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
     1,
     1;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0.1;
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -752,8 +757,8 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
 }
 
 TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -785,8 +790,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -825,7 +830,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
 
   Forest<float, int> forest = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -844,8 +850,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
 }
 
 TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGroups) {
-  Data<float> data(10, 12);
-  data <<
+  Data<float> x(10, 12);
+  x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -857,8 +863,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
     4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
     4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -870,13 +876,14 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
     1,
     1;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0.1;
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -901,8 +908,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
 }
 
 TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -934,8 +941,8 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -974,7 +981,8 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
 
   Forest<float, int> forest = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -995,8 +1003,8 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
 }
 
 TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) {
-  Data<float> data(10, 12);
-  data <<
+  Data<float> x(10, 12);
+  x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1008,8 +1016,8 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
     4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
     4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -1021,13 +1029,14 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
     1,
     1;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0.1;
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     4,
     seed);
 
@@ -1121,13 +1130,12 @@ TEST(Forest, ErrorRateDataSpecMin) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
-  DataColumn<int> predictions = forest.predict(data.x);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
+  DataColumn<int> predictions = forest.predict(x);
 
-  float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
+  float result = forest.error_rate(x, predictions);
 
   ASSERT_FLOAT_EQ(0.0, result);
 }
@@ -1199,13 +1207,11 @@ TEST(Forest, ErrorRateDataSpecMax) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
-
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
-  float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
+  float result = forest.error_rate(x, predictions);
 
   ASSERT_FLOAT_EQ(1.0, result);
 }
@@ -1277,13 +1283,11 @@ TEST(Forest, ErrorRateDataSpecGeneric) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
-
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
-  float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
+  float result = forest.error_rate(x, predictions);
 
   ASSERT_NEAR(0.666, result, 0.1);
 }
@@ -1355,10 +1359,8 @@ TEST(Forest, ErrorRate) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
-
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
 
   float result = forest.error_rate();
 
@@ -1432,13 +1434,13 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
+
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
-  DataColumn<int> predictions = forest.predict(data.x);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
+  DataColumn<int> predictions = forest.predict(x);
 
-  ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<float, int>(x, predictions));
+  ConfusionMatrix result = forest.confusion_matrix(x, predictions);
 
   Data<int> expected = Data<int>::Zero(3, 3);
   expected.diagonal() << 10, 12, 8;
@@ -1518,10 +1520,9 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
 
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
 
   DataColumn<int> predictions(30);
   predictions <<
@@ -1556,7 +1557,7 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
     0,
     0;
 
-  ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<float, int>(x, predictions));
+  ConfusionMatrix result = forest.confusion_matrix(x, predictions);
 
   Data<int> expected(3, 3);
   expected <<
@@ -1639,10 +1640,8 @@ TEST(Forest, ConfusionMatrix) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
-
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
 
   ConfusionMatrix result = forest.confusion_matrix();
 

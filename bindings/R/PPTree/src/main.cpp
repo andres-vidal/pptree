@@ -11,18 +11,19 @@ using namespace pptree;
 
 // [[Rcpp::export]]
 Tree<float, int> pptree_train_glda(
-  const Data<float> &     data,
-  const DataColumn<int> & groups,
+  const Data<float> &     x,
+  const DataColumn<int> & y,
   const float             lambda) {
   return Tree<float, int>::train(
     TrainingSpecGLDA<float, int>(lambda),
-    SortedDataSpec<float, int>(data, groups));
+    x,
+    y);
 }
 
 // [[Rcpp::export]]
 Forest<float, int> pptree_train_forest_glda(
-  const Data<float> &     data,
-  const DataColumn<int> & groups,
+  const Data<float> &     x,
+  const DataColumn<int> & y,
   const int               size,
   const int               n_vars,
   const float             lambda,
@@ -30,14 +31,16 @@ Forest<float, int> pptree_train_forest_glda(
   if (n_threads == R_NilValue) {
     return Forest<float, int>::train(
       TrainingSpecUGLDA<float, int>(n_vars, lambda),
-      SortedDataSpec<float, int>(data, groups),
+      x,
+      y,
       size,
       R::runif(0, INT_MAX));
   }
 
   return Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    x,
+    y,
     size,
     R::runif(0, INT_MAX),
     as<const int>(n_threads));
@@ -103,12 +106,7 @@ Data<float> parse_confusion_matrix(const ConfusionMatrix &confusion_matrix) {
 // [[Rcpp::export]]
 Data<float> pptree_confusion_matrix(
   const Tree<float, int> &tree) {
-  return parse_confusion_matrix(
-    tree.confusion_matrix(
-      SortedDataSpec<float, int>(
-        tree.x,
-        tree.y,
-        tree.classes)));
+  return parse_confusion_matrix(tree.confusion_matrix(tree.x, tree.y));
 }
 
 // [[Rcpp::export]]

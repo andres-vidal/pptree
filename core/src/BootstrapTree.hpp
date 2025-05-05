@@ -20,15 +20,19 @@ namespace models {
     using Base::confusion_matrix;
 
     static BootstrapTreePtr<T, R> train(
-      const TrainingSpec<T, R> &         training_spec,
-      const stats::SortedDataSpec<T, R> &training_data,
-      const std::vector<int> &           iob_indices) {
-      Tree<T, R> tree = Tree<T, R>::train(training_spec, training_data.select(iob_indices));
+      const TrainingSpec<T, R> &  training_spec,
+      const stats::Data<T> &      x,
+      const stats::DataColumn<R> &y,
+      const std::vector<int> &    iob_indices) {
+      stats::Data<T> sampled_x       = x(iob_indices, Eigen::all);
+      stats::DataColumn<R> sampled_y = y(iob_indices, Eigen::all);
+
+      Tree<T, R> tree = Tree<T, R>::train(training_spec, sampled_x, sampled_y);
 
       std::set<int> oob_indices;
       std::set<int> iob_indices_set(iob_indices.begin(), iob_indices.end());
 
-      for (int i = 0; i < training_data.x.rows(); i++) {
+      for (int i = 0; i < x.rows(); i++) {
         if (iob_indices_set.count(i) == 0) {
           oob_indices.insert(i);
         }
@@ -37,9 +41,9 @@ namespace models {
       return std::make_unique<BootstrapTree<T, R> >(
         std::move(tree.root),
         training_spec.clone(),
-        training_data.x,
-        training_data.y,
-        training_data.classes,
+        x,
+        y,
+        tree.classes,
         iob_indices,
         oob_indices);
     }
@@ -72,29 +76,24 @@ namespace models {
       oob_indices(oob_indices) {
     }
 
-    BootstrapTreePtr<T, R> retrain(const stats::SortedDataSpec<T, R> &data, const std::vector<int> &iob_indices) const {
-      return BootstrapTree<T, R>::train(*this->training_spec, data, iob_indices);
-    }
-
-    stats::SortedDataSpec<T, R> get_oob() const {
-      std::vector<int> oob_indices(this->oob_indices.begin(), this->oob_indices.end());
-
-      return stats::SortedDataSpec<T, R>(
-        this->x(oob_indices, Eigen::all),
-        this->y(oob_indices, Eigen::all),
-        this->classes);
+    BootstrapTreePtr<T, R> retrain(const stats::Data<T> &x, const stats::DataColumn<R> &y, const std::vector<int> &iob_indices) const {
+      return BootstrapTree<T, R>::train(*this->training_spec, x, y, iob_indices);
     }
 
     float error_rate() const {
-      return error_rate(this->get_oob());
+      std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
+
+      return error_rate(this->x(oob_indices_vec, Eigen::all), this->y(oob_indices_vec, Eigen::all));
+    }
+
+    stats::ConfusionMatrix confusion_matrix() const {
+      std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
+
+      return confusion_matrix(this->x(oob_indices_vec, Eigen::all), this->y(oob_indices_vec, Eigen::all));
     }
 
     math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
       return strategy(*this);
-    }
-
-    stats::ConfusionMatrix confusion_matrix() const {
-      return confusion_matrix(this->get_oob());
     }
   };
 }

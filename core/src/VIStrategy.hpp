@@ -5,7 +5,6 @@
 
 
 #include "BootstrapTree.hpp"
-#include "SortedDataSpec.hpp"
 #include "Forest.hpp"
 #include "Invariant.hpp"
 
@@ -95,10 +94,7 @@ namespace models {
   template <typename T, typename R>
   struct BaseVIStrategy : public VIStrategy<T, R> {
     virtual math::DVector<T> operator()(const Tree<T, R> &tree) const override {
-      Tree<T, R> std_tree = tree.retrain(models::stats::SortedDataSpec<T, R>(
-            models::stats::standardize(tree.x),
-            tree.y,
-            tree.classes));
+      Tree<T, R> std_tree = tree.retrain(models::stats::standardize(tree.x), tree.y);
 
       NodeSummarizer<T, R> summarizer(
         *this,
@@ -111,19 +107,15 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const BootstrapTree<T, R> &tree) const override {
-      stats::SortedDataSpec<T, R> std_data(
-        models::stats::standardize(tree.x),
-        tree.y,
-        tree.classes);
+      BootstrapTreePtr<T, R> std_tree = tree.retrain(models::stats::standardize(tree.x), tree.y, tree.iob_indices);
 
-      BootstrapTreePtr<T, R> std_tree = tree.retrain(std_data, tree.iob_indices);
-
-      stats::SortedDataSpec<T, R> sampled_std_data = std_data.select(std_tree->iob_indices);
+      stats::Data<T> sampled_x       = std_tree->x(std_tree->iob_indices, Eigen::all);
+      stats::DataColumn<R> sampled_y = std_tree->y(std_tree->iob_indices, Eigen::all);
 
       NodeSummarizer<T, R> summarizer(
         *this,
-        sampled_std_data.x,
-        sampled_std_data.y);
+        sampled_x,
+        sampled_y);
 
       std_tree->root->accept(summarizer);
 
@@ -131,11 +123,7 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const Forest<T, R> &forest) const override {
-      Forest<T, R> std_forest = forest.retrain(models::stats::SortedDataSpec<T, R>(
-            models::stats::standardize(forest.x),
-            forest.y,
-            forest.classes));
-
+      Forest<T, R> std_forest = forest.retrain(models::stats::standardize(forest.x), forest.y);
 
       math::DVector<T> accumulated_importance = std::accumulate(
         std_forest.trees.begin(),
@@ -245,17 +233,21 @@ namespace models {
       const math::DVector<T> &     accumulated_importance,
       const BootstrapTree<T, R> &  tree,
       const NodeSummarizer<T, R> & root_summary) const override {
-      const stats::SortedDataSpec<T, R> oob      = tree.get_oob();
-      const stats::DataColumn<R> oob_predictions = tree.predict(oob.x);
+      std::vector<int> oob_indices_vec(tree.oob_indices.begin(), tree.oob_indices.end());
 
-      const float oob_accuracy = stats::accuracy(oob_predictions, oob.y);
+      const stats::Data<T> oob_x       = tree.x(oob_indices_vec, Eigen::all);
+      const stats::DataColumn<R> oob_y = tree.y(oob_indices_vec, Eigen::all);
 
-      math::DVector<T> importance = math::DVector<T>(oob.x.cols());
+      const stats::DataColumn<R> oob_predictions = tree.predict(oob_x);
 
-      for (int j = 0; j < oob.x.cols(); j++) {
-        const stats::Data<T> nonsense_data              = stats::shuffle_column(oob.x, j);
+      const float oob_accuracy = stats::accuracy(oob_predictions, oob_y);
+
+      math::DVector<T> importance = math::DVector<T>(oob_x.cols());
+
+      for (int j = 0; j < oob_x.cols(); j++) {
+        const stats::Data<T> nonsense_data              = stats::shuffle_column(oob_x, j);
         const stats::DataColumn<R> nonsense_predictions = tree.predict(nonsense_data);
-        const float nonsense_accuracy                   = stats::accuracy(nonsense_predictions, oob.y);
+        const float nonsense_accuracy                   = stats::accuracy(nonsense_predictions, oob_y);
 
         importance(j) = oob_accuracy - nonsense_accuracy;
       }

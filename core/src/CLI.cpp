@@ -10,6 +10,8 @@
 #include <numeric>
 #include <string>
 
+#include "SortedDataSpec.hpp"
+
 #include "CLIOptions.hpp"
 #include "IO.hpp"
 
@@ -83,9 +85,9 @@ ModelStats evaluate_model(
 
     const Model model = [&]() {
         if constexpr (std::is_same_v<Model, Forest<float, int> >) {
-          return Forest<float, int>::train(spec, train_data, params.trees, params.seed + i, params.threads);
+          return Forest<float, int>::train(spec, train_data.x, train_data.y, params.trees, params.seed + i, params.threads);
         } else {
-          return Tree<float, int>::train(spec, train_data);
+          return Tree<float, int>::train(spec, train_data.x, train_data.y);
         }
       }();
 
@@ -93,8 +95,8 @@ ModelStats evaluate_model(
     const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
     stats.train_times.push_back(duration.count());
-    stats.train_errors.push_back(model.error_rate(train_data));
-    stats.test_errors.push_back(model.error_rate(test_data));
+    stats.train_errors.push_back(model.error_rate(train_data.x, train_data.y));
+    stats.test_errors.push_back(model.error_rate(test_data.x, test_data.y));
   }
 
   std::cout << std::endl;

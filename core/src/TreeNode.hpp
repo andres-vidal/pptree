@@ -4,7 +4,6 @@
 
 #include "Data.hpp"
 #include "DataColumn.hpp"
-#include "SortedDataSpec.hpp"
 #include "Projector.hpp"
 #include "TrainingSpec.hpp"
 

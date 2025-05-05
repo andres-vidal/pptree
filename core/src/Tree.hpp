@@ -4,7 +4,6 @@
 #include "TreeCondition.hpp"
 #include "TreeResponse.hpp"
 
-#include "SortedDataSpec.hpp"
 #include "TrainingSpec.hpp"
 #include "ConfusionMatrix.hpp"
 
@@ -19,7 +18,10 @@ namespace models {
 
   template<typename T, typename R>
   struct Tree {
-    static Tree<T, R> train(const TrainingSpec<T, R> & training_spec, const stats::SortedDataSpec<T, R> &training_data);
+    static Tree<T, R> train(
+      const TrainingSpec<T, R> &  training_spec,
+      const stats::Data<T>&       x,
+      const stats::DataColumn<R>& y);
 
     TreeNodePtr<T, R> root;
     TrainingSpecPtr<T, R> training_spec;
@@ -51,8 +53,8 @@ namespace models {
       classes(classes) {
     }
 
-    Tree<T, R> retrain(const stats::SortedDataSpec<T, R> &data) const {
-      return Tree<T, R>::train(*this->training_spec, data);
+    Tree<T, R> retrain(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return Tree<T, R>::train(*this->training_spec, x, y);
     }
 
     R predict(const stats::DataColumn<T> &data) const {
@@ -81,12 +83,12 @@ namespace models {
       return !(*this == other);
     }
 
-    virtual float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      return stats::error_rate(predict(data.x), data.y);
+    virtual float error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return stats::error_rate(predict(x), y);
     }
 
-    virtual stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      return stats::ConfusionMatrix(predict(data.x), data.y);
+    virtual stats::ConfusionMatrix confusion_matrix(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return stats::ConfusionMatrix(predict(x), y);
     }
 
     json to_json() const {

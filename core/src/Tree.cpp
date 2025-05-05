@@ -187,25 +187,29 @@ namespace models {
 
   template<typename T, typename R>
   Tree<T, R> Tree<T, R>::train(
-    const TrainingSpec<T, R> &         training_spec,
-    const stats::SortedDataSpec<T, R> &training_data) {
+    const TrainingSpec<T, R> & training_spec,
+    const Data<T>&             x,
+    const DataColumn<R>&       y) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
+    GroupSpec<T, R> training_data(x, y);
+
     LOG_INFO << "Root step." << std::endl;
-    TreeNodePtr<T, R> root_ptr = step(training_spec, training_data.group_spec);
+    TreeNodePtr<T, R> root_ptr = step(training_spec, training_data);
 
     Tree<T, R> tree(
       std::move(root_ptr),
       training_spec.clone(),
-      training_data.x,
-      training_data.y,
-      training_data.classes);
+      x,
+      y,
+      training_data.groups);
 
     LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
 
   template Tree<float, int> Tree<float, int>::train(
-    const TrainingSpec<float, int> &   training_spec,
-    const SortedDataSpec<float, int> & training_data);
+    const TrainingSpec<float, int> & training_spec,
+    const Data<float>&               x,
+    const DataColumn<int>&           y);
 }
