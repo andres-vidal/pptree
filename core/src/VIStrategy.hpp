@@ -193,7 +193,7 @@ namespace models {
 
 
       const float pp_index = condition.training_spec->pp_strategy->index(
-        stats::GroupSpec<T, R>(training_x, training_y).subset(condition.classes),
+        stats::DataSpec<T, R>(training_x, training_y).subset(condition.classes),
         condition.projector);
 
       return (condition.projector.array().abs() * pp_index).matrix() + lower_importance + upper_importance;

@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
 
-#include "GroupSpec.hpp"
+#include "DataSpec.hpp"
 
 #include "Data.hpp"
 #include "Invariant.hpp"
@@ -42,7 +42,7 @@ namespace models::dr::strategy {
       return full_vector;
     }
 
-    stats::GroupSpec<T, G> reduce(const stats::GroupSpec<T, G>& spec) const {
+    stats::DataSpec<T, G> reduce(const stats::DataSpec<T, G>& spec) const {
       return spec.analog(spec.x(Eigen::all, selected_cols));
     }
   };
@@ -52,9 +52,9 @@ namespace models::dr::strategy {
     virtual ~DRStrategy()                     = default;
     virtual DRStrategyPtr<T, G> clone() const = 0;
 
-    virtual DRSpec<T, G> select(const stats::GroupSpec<T, G>& spec) const = 0;
+    virtual DRSpec<T, G> select(const stats::DataSpec<T, G>& spec) const = 0;
 
-    DRSpec<T, G> operator()(const stats::GroupSpec<T, G>& spec) const {
+    DRSpec<T, G> operator()(const stats::DataSpec<T, G>& spec) const {
       return select(spec);
     }
   };

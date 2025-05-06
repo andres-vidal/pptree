@@ -23,8 +23,8 @@ namespace models::pp::strategy {
     }
 
     T index(
-      const stats::GroupSpec<T, G>& spec,
-      const Projector<T>&           projector) const override {
+      const stats::DataSpec<T, G>& spec,
+      const Projector<T>&          projector) const override {
       stats::Data<T> A = projector;
 
       stats::Data<T> W      = spec.wgss();
@@ -44,7 +44,7 @@ namespace models::pp::strategy {
       return 1 - numerator / denominator;
     }
 
-    Projector<T> optimize(const stats::GroupSpec<T, G>& spec) const override {
+    Projector<T> optimize(const stats::DataSpec<T, G>& spec) const override {
       LOG_INFO << "Calculating PDA optimum projector for " << spec.groups.size() << " groups: " << spec.groups << std::endl;
       LOG_INFO << "Dataset size: " << spec.rows() << " observations of " << spec.cols() << " variables:" << std::endl;
       LOG_INFO << std::endl << (stats::Data<T>)spec.data() << std::endl;

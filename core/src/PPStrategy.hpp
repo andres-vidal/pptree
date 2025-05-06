@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Projector.hpp"
-#include "GroupSpec.hpp"
+#include "DataSpec.hpp"
 #include <set>
 #include <vector>
 
@@ -18,13 +18,13 @@ namespace models::pp::strategy {
     virtual PPStrategyPtr<T, G> clone() const = 0;
 
     virtual T index(
-      const stats::GroupSpec<T, G>& spec,
-      const Projector<T>&           projector) const = 0;
+      const stats::DataSpec<T, G>& spec,
+      const Projector<T>&          projector) const = 0;
 
     virtual Projector<T> optimize(
-      const stats::GroupSpec<T, G>& spec) const = 0;
+      const stats::DataSpec<T, G>& spec) const = 0;
 
-    Projector<T> operator()(const stats::GroupSpec<T, G>& spec) const {
+    Projector<T> operator()(const stats::DataSpec<T, G>& spec) const {
       return optimize(spec);
     }
   };

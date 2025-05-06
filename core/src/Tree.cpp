@@ -14,7 +14,7 @@ using namespace utils;
 namespace models {
   template<typename T, typename R >
   std::map<R, int> binary_regroup(
-    const GroupSpec<T, R> &training_data
+    const DataSpec<T, R> &training_data
     ) {
     std::vector<std::tuple<R, T> > means;
 
@@ -72,7 +72,7 @@ namespace models {
   template<typename T, typename R >
   TreeConditionPtr<T, R> binary_step(
     const TrainingSpec<T, R> & training_spec,
-    const GroupSpec<T, R> &    training_data,
+    const DataSpec<T, R> &     training_data,
     const DRSpec<T, R>&        dr) {
     R group_1 = *training_data.groups.begin();
     R group_2 = *std::next(training_data.groups.begin());
@@ -133,7 +133,7 @@ namespace models {
   template<typename T, typename R >
   TreeNodePtr<T, R>   step(
     const TrainingSpec<T, R> & training_spec,
-    const GroupSpec<T, R> &    training_data) {
+    const DataSpec<T, R> &     training_data) {
     LOG_INFO << "Project-Pursuit Tree building step for " << training_data.groups.size() << " groups: " << training_data.groups << std::endl;
     LOG_INFO << "Dataset size: " << training_data.x.rows() << " observations of " << training_data.x.cols() << " variables" << std::endl;
 
@@ -192,7 +192,7 @@ namespace models {
     const DataColumn<R>&       y) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
-    GroupSpec<T, R> training_data(x, y);
+    DataSpec<T, R> training_data(x, y);
 
     LOG_INFO << "Root step." << std::endl;
     TreeNodePtr<T, R> root_ptr = step(training_spec, training_data);

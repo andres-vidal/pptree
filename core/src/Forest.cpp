@@ -25,7 +25,7 @@ namespace models {
 
     Random::seed(seed);
 
-    GroupSpec<T, R> training_data(x, y);
+    DataSpec<T, R> training_data(x, y);
 
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
     LOG_INFO << "The seed is: " << seed << std::endl;

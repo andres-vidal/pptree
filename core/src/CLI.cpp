@@ -61,7 +61,7 @@ inline Split split(const DataPacket<float, int>& data, float train_ratio) {
   const int n          = data.x.rows();
   const int train_size = static_cast<int>(n * train_ratio);
 
-  GroupSpec<float, int> spec(data.x, data.y);
+  DataSpec<float, int> spec(data.x, data.y);
 
   std::vector<int> train_indices;
   std::vector<int> test_indices;

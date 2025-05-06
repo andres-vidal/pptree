@@ -19,7 +19,7 @@ namespace models::dr::strategy {
     }
 
     DRSpec<T, G> select(
-      const stats::GroupSpec<T, G>& spec) const override {
+      const stats::DataSpec<T, G>& spec) const override {
       invariant(n_vars <= spec.cols(), "The number of variables must be less than or equal to the number of columns in the data.");
 
       if (n_vars == spec.cols()) {
