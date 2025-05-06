@@ -76,7 +76,7 @@ namespace models {
       oob_indices(oob_indices) {
     }
 
-    BootstrapTreePtr<T, R> retrain(const stats::Data<T> &x, const stats::DataColumn<R> &y, const std::vector<int> &iob_indices) const {
+    BootstrapTreePtr<T, R> retrain(stats::Data<T> &x,  stats::DataColumn<R> &y, const std::vector<int> &iob_indices) const {
       return BootstrapTree<T, R>::train(*this->training_spec, x, y, iob_indices);
     }
 

@@ -118,7 +118,16 @@ void display_progress(int current, int total, int bar_width = 50) {
 DataPacket<float, int> read_data(const CLIOptions& params) {
   if (!params.data_path.empty()) {
     try {
-      return read_csv(params.data_path);
+      const DataPacket<float, int> data = read_csv(params.data_path);
+
+      Data<float> x     = data.x;
+      DataColumn<int> y = data.y;
+
+      if (!DataSpec<float, int>::is_contiguous(y)) {
+        models::stats::sort(x, y);
+      }
+
+      return DataPacket<float, int>(x, y);
     } catch (const std::runtime_error& e) {
       std::cerr << "Error reading CSV file: " << e.what() << std::endl;
       std::cerr << "Please ensure the file exists and is properly formatted" << std::endl;
@@ -145,10 +154,10 @@ DataPacket<float, int> read_data(const CLIOptions& params) {
 template<typename Model>
 ModelStats evaluate_model(
   const TrainingSpec<float, int>& spec,
-  const Data<float  >&            tr_x,
-  const Data<float  >&            te_x,
-  const DataColumn<int>&          tr_y,
-  const DataColumn<int>&          te_y,
+  Data<float>&                    tr_x,
+  Data<float>&                    te_x,
+  DataColumn<int>&                tr_y,
+  DataColumn<int>&                te_y,
   const CLIOptions&               params) {
   ModelStats stats;
 

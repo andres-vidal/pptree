@@ -11,9 +11,9 @@ using namespace pptree;
 
 // [[Rcpp::export]]
 Tree<float, int> pptree_train_glda(
-  const Data<float> &     x,
-  const DataColumn<int> & y,
-  const float             lambda) {
+  Data<float> &     x,
+  DataColumn<int> & y,
+  const float       lambda) {
   return Tree<float, int>::train(
     TrainingSpecGLDA<float, int>(lambda),
     x,
@@ -22,12 +22,12 @@ Tree<float, int> pptree_train_glda(
 
 // [[Rcpp::export]]
 Forest<float, int> pptree_train_forest_glda(
-  const Data<float> &     x,
-  const DataColumn<int> & y,
-  const int               size,
-  const int               n_vars,
-  const float             lambda,
-  SEXP                    n_threads) {
+  Data<float> &     x,
+  DataColumn<int> & y,
+  const int         size,
+  const int         n_vars,
+  const float       lambda,
+  SEXP              n_threads) {
   if (n_threads == R_NilValue) {
     return Forest<float, int>::train(
       TrainingSpecUGLDA<float, int>(n_vars, lambda),

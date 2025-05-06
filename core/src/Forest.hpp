@@ -16,12 +16,12 @@ namespace models {
   template<typename T, typename R>
   struct Forest {
     static Forest<T, R> train(
-      const TrainingSpec<T, R> &   training_spec,
-      const stats::Data<T> &       x,
-      const stats::DataColumn<R> & y,
-      const int                    size,
-      const int                    seed,
-      const int                    n_threads = std::thread::hardware_concurrency());
+      const TrainingSpec<T, R> & training_spec,
+      stats::Data<T> &           x,
+      stats::DataColumn<R> &     y,
+      const int                  size,
+      const int                  seed,
+      const int                  n_threads = std::thread::hardware_concurrency());
 
 
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
@@ -109,7 +109,7 @@ namespace models {
       return !(*this == other);
     }
 
-    Forest<T, R> retrain(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+    Forest<T, R> retrain(stats::Data<T> &x,  stats::DataColumn<R> &y) const {
       return Forest<T, R>::train(
         *training_spec,
         x,

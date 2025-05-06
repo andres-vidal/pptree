@@ -19,9 +19,9 @@ namespace models {
   template<typename T, typename R>
   struct Tree {
     static Tree<T, R> train(
-      const TrainingSpec<T, R> &  training_spec,
-      const stats::Data<T>&       x,
-      const stats::DataColumn<R>& y);
+      const TrainingSpec<T, R> & training_spec,
+      stats::Data<T>&            x,
+      stats::DataColumn<R>&      y);
 
     TreeNodePtr<T, R> root;
     TrainingSpecPtr<T, R> training_spec;
@@ -53,7 +53,7 @@ namespace models {
       classes(classes) {
     }
 
-    Tree<T, R> retrain(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+    Tree<T, R> retrain(stats::Data<T> &x, stats::DataColumn<R> &y) const {
       return Tree<T, R>::train(*this->training_spec, x, y);
     }
 

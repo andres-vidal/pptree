@@ -14,8 +14,8 @@ namespace models {
   template<typename T, typename R >
   Forest<T, R> Forest<T, R>::train(
     const TrainingSpec<T, R> & training_spec,
-    const Data<T> &            x,
-    const DataColumn<R> &      y,
+    Data<T> &                  x,
+    DataColumn<R> &            y,
     const int                  size,
     const int                  seed,
     const int                  n_threads) {
@@ -24,6 +24,10 @@ namespace models {
     #endif
 
     Random::seed(seed);
+
+    if (!DataSpec<T, R>::is_contiguous(y)) {
+      stats::sort(x, y);
+    }
 
     DataSpec<T, R> training_data(x, y);
 
@@ -64,8 +68,8 @@ namespace models {
 
   template Forest<float, int> Forest<float, int>::train(
     const TrainingSpec<float, int> & training_spec,
-    const Data<float> &              x,
-    const DataColumn<int> &          y,
+    Data<float> &                    x,
+    DataColumn<int> &                y,
     const int                        size,
     const int                        seed,
     const int                        n_threads);

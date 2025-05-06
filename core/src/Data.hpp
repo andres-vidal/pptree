@@ -90,6 +90,8 @@ namespace models::stats
       }
     }
 
+    std::sort(iob_indices.begin(), iob_indices.end());
+
     return iob_indices;
   }
 }

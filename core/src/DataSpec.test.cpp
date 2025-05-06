@@ -817,11 +817,7 @@ TEST(DataSpecRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
 
   DataSpec<float, int> data(x, y);
 
-  data.inspect();
-
   DataSpec<float, int> remapped = data.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
-
-  remapped.inspect();
 
   Data<float> actual = remapped.wgss();
 

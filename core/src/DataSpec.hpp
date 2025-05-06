@@ -15,6 +15,20 @@ namespace models::stats {
   class DataSpec {
     public:
 
+      static bool is_contiguous(const DataColumn<G> &y) {
+        std::set<G> visited;
+
+        for (int i = 0; i < y.rows(); i++) {
+          if (visited.count(y(i)) == 0) {
+            visited.insert(y(i));
+          } else if (y(i - 1) != y(i)) {
+            return false;
+          }
+        }
+
+        return true;
+      }
+
       const Data<T> x;
       const std::set<G> groups;
 
@@ -35,11 +49,9 @@ namespace models::stats {
       std::map<G, Node> init_nodes(const DataColumn<G> &y) {
         std::map<G, Node> nodes;
 
-        G curr = -1;
-
         for (int i = 0; i < y.rows(); i++) {
           if (nodes.count(y(i)) == 0) {
-            curr = y(i);
+            G curr = y(i);
 
             nodes[curr] = Node{ .start = i };
 
@@ -50,12 +62,12 @@ namespace models::stats {
               nodes[prev].end  = i - 1;
               nodes[prev].size = i - nodes[prev].start;
             }
-          } else if (curr != y(i)) {
+          } else if (y(i - 1) != y(i)) {
             throw std::invalid_argument("DataSpec: data is not organized in contiguous groups");
           }
         }
 
-        nodes.at(curr).end = this->x.rows() - 1;
+        nodes.at(y(y.rows() - 1)).end = this->x.rows() - 1;
 
         return nodes;
       }
@@ -223,20 +235,6 @@ namespace models::stats {
 
       DataSpec<T, G> remap(const std::map<G, G> &mapping) const {
         return DataSpec<T, G>(this->x, this->nodes, mapping);
-      }
-
-      void inspect() const {
-        std::cout << "DataSpec" << std::endl;
-        std::cout << "  rows: " << this->rows() << std::endl;
-        std::cout << "  cols: " << this->cols() << std::endl;
-        std::cout << "  groups: " << this->groups << std::endl;
-        std::cout << "  supergroups: " << this->supergroups << std::endl;
-        std::cout << "  subgroups: " << this->subgroups << std::endl;
-        std::cout << "  nodes (" << this->nodes.size() << "):" << std::endl;
-
-        for (const auto &node : this->nodes) {
-          std::cout << "    " << node.first << ": " << node.second.start << " - " << node.second.end << std::endl;
-        }
       }
   };
 }

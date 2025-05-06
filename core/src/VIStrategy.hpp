@@ -94,7 +94,10 @@ namespace models {
   template <typename T, typename R>
   struct BaseVIStrategy : public VIStrategy<T, R> {
     virtual math::DVector<T> operator()(const Tree<T, R> &tree) const override {
-      Tree<T, R> std_tree = tree.retrain(models::stats::standardize(tree.x), tree.y);
+      stats::Data<T> x       = models::stats::standardize(tree.x);
+      stats::DataColumn<R> y = tree.y;
+
+      Tree<T, R> std_tree = tree.retrain(x, y);
 
       NodeSummarizer<T, R> summarizer(
         *this,
@@ -107,7 +110,10 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const BootstrapTree<T, R> &tree) const override {
-      BootstrapTreePtr<T, R> std_tree = tree.retrain(models::stats::standardize(tree.x), tree.y, tree.iob_indices);
+      stats::Data<T> x       = models::stats::standardize(tree.x);
+      stats::DataColumn<R> y = tree.y;
+
+      BootstrapTreePtr<T, R> std_tree = tree.retrain(x, y, tree.iob_indices);
 
       stats::Data<T> sampled_x       = std_tree->x(std_tree->iob_indices, Eigen::all);
       stats::DataColumn<R> sampled_y = std_tree->y(std_tree->iob_indices, Eigen::all);
@@ -123,7 +129,10 @@ namespace models {
     }
 
     virtual math::DVector<T> operator()(const Forest<T, R> &forest) const override {
-      Forest<T, R> std_forest = forest.retrain(models::stats::standardize(forest.x), forest.y);
+      stats::Data<T> x       = models::stats::standardize(forest.x);
+      stats::DataColumn<R> y = forest.y;
+
+      Forest<T, R> std_forest = forest.retrain(x, y);
 
       math::DVector<T> accumulated_importance = std::accumulate(
         std_forest.trees.begin(),
@@ -190,7 +199,6 @@ namespace models {
       const stats::DataColumn<R> & training_y) const override {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
-
 
       const float pp_index = condition.training_spec->pp_strategy->index(
         stats::DataSpec<T, R>(training_x, training_y).subset(condition.classes),

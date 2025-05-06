@@ -188,9 +188,13 @@ namespace models {
   template<typename T, typename R>
   Tree<T, R> Tree<T, R>::train(
     const TrainingSpec<T, R> & training_spec,
-    const Data<T>&             x,
-    const DataColumn<R>&       y) {
+    Data<T>&                   x,
+    DataColumn<R>&             y) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
+
+    if (!DataSpec<T, R>::is_contiguous(y)) {
+      models::stats::sort(x, y);
+    }
 
     DataSpec<T, R> training_data(x, y);
 
@@ -210,6 +214,6 @@ namespace models {
 
   template Tree<float, int> Tree<float, int>::train(
     const TrainingSpec<float, int> & training_spec,
-    const Data<float>&               x,
-    const DataColumn<int>&           y);
+    Data<float>&                     x,
+    DataColumn<int>&                 y);
 }
