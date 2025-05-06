@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
 
-#include "DataSpec.hpp"
+#include "GroupSpec.hpp"
 
 #include "Data.hpp"
 #include "Invariant.hpp"
@@ -48,9 +48,9 @@ namespace models::dr::strategy {
     virtual ~DRStrategy()                     = default;
     virtual DRStrategyPtr<T, G> clone() const = 0;
 
-    virtual DRSpec<T, G> select(const stats::Data<T> &x, const stats::DataSpec<G>& data_spec) const = 0;
+    virtual DRSpec<T, G> select(const stats::Data<T> &x, const stats::GroupSpec<G>& data_spec) const = 0;
 
-    DRSpec<T, G> operator()(const stats::Data<T> &x, const stats::DataSpec<G>& data_spec) const {
+    DRSpec<T, G> operator()(const stats::Data<T> &x, const stats::GroupSpec<G>& data_spec) const {
       return select(x, data_spec);
     }
   };

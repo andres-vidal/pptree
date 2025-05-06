@@ -14,8 +14,8 @@ using namespace utils;
 namespace models {
   template<typename T, typename R >
   std::map<R, int> binary_regroup(
-    const Data<T> &    x,
-    const DataSpec<R> &data_spec
+    const Data<T> &     x,
+    const GroupSpec<R> &data_spec
     ) {
     std::vector<std::tuple<R, T> > means;
 
@@ -74,7 +74,7 @@ namespace models {
   TreeConditionPtr<T, R> binary_step(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
-    const DataSpec<R> &        data_spec,
+    const GroupSpec<R> &       data_spec,
     const DRSpec<T, R>&        dr) {
     R group_1 = *data_spec.groups.begin();
     R group_2 = *std::next(data_spec.groups.begin());
@@ -138,7 +138,7 @@ namespace models {
   TreeNodePtr<T, R>   step(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
-    const DataSpec<R> &        data_spec) {
+    const GroupSpec<R> &       data_spec) {
     LOG_INFO << "Project-Pursuit Tree building step for " << data_spec.groups.size() << " groups: " << data_spec.groups << std::endl;
     LOG_INFO << "Dataset size: " << data_spec.rows(x) << " observations of " << x.cols() << " variables" << std::endl;
 
@@ -201,11 +201,11 @@ namespace models {
     DataColumn<R>&             y) {
     LOG_INFO << "Project-Pursuit Tree training." << std::endl;
 
-    if (!DataSpec<R>::is_contiguous(y)) {
+    if (!GroupSpec<R>::is_contiguous(y)) {
       models::stats::sort(x, y);
     }
 
-    DataSpec<R> data_spec(y);
+    GroupSpec<R> data_spec(y);
 
     LOG_INFO << "Root step." << std::endl;
     TreeNodePtr<T, R> root_ptr = step(training_spec, x, data_spec);

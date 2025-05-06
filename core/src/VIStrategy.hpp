@@ -200,7 +200,7 @@ namespace models {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
-      stats::DataSpec<R> data_spec(training_y);
+      stats::GroupSpec<R> data_spec(training_y);
 
       const float pp_index = condition.training_spec->pp_strategy->index(
         training_x,

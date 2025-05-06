@@ -1063,7 +1063,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
 }
 
 
-TEST(Forest, ErrorRateDataSpecMin) {
+TEST(Forest, ErrorRateGroupSpecMin) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1140,7 +1140,7 @@ TEST(Forest, ErrorRateDataSpecMin) {
   ASSERT_FLOAT_EQ(0.0, result);
 }
 
-TEST(Forest, ErrorRateDataSpecMax) {
+TEST(Forest, ErrorRateGroupSpecMax) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1216,7 +1216,7 @@ TEST(Forest, ErrorRateDataSpecMax) {
   ASSERT_FLOAT_EQ(1.0, result);
 }
 
-TEST(Forest, ErrorRateDataSpecGeneric) {
+TEST(Forest, ErrorRateGroupSpecGeneric) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1367,7 +1367,7 @@ TEST(Forest, ErrorRate) {
   ASSERT_NEAR(0.0, result, 0.1);
 }
 
-TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
+TEST(Forest, ConfusionMatrixGroupSpecDiagonal) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1453,7 +1453,7 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
   ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
-TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
+TEST(Forest, ConfusionMatrixGroupSpecZeroDiagonal) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,

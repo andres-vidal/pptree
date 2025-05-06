@@ -25,11 +25,11 @@ namespace models {
 
     Random::seed(seed);
 
-    if (!DataSpec<R>::is_contiguous(y)) {
+    if (!GroupSpec<R>::is_contiguous(y)) {
       stats::sort(x, y);
     }
 
-    DataSpec<R> data_spec(y);
+    GroupSpec<R> data_spec(y);
 
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
     LOG_INFO << "The seed is: " << seed << std::endl;

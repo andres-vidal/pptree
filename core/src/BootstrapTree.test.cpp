@@ -12,7 +12,7 @@ using namespace models::pp;
 using namespace models::stats;
 using namespace models::math;
 
-TEST(BootstrapTree, ErrorRateDataSpecMin) {
+TEST(BootstrapTree, ErrorRateGroupSpecMin) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -95,7 +95,7 @@ TEST(BootstrapTree, ErrorRateDataSpecMin) {
   ASSERT_FLOAT_EQ(0.0, result);
 }
 
-TEST(BootstrapTree, ErrorRateDataSpecMax) {
+TEST(BootstrapTree, ErrorRateGroupSpecMax) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -183,7 +183,7 @@ TEST(BootstrapTree, ErrorRateDataSpecMax) {
   ASSERT_FLOAT_EQ(1.0, result);
 }
 
-TEST(BootstrapTree, ErrorRateDataSpecGeneric) {
+TEST(BootstrapTree, ErrorRateGroupSpecGeneric) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -349,7 +349,7 @@ TEST(BootstrapTree, ErrorRate) {
   ASSERT_NEAR(0.8, result, 0.01);
 }
 
-TEST(BootstrapTree, ConfusionMatrixDataSpecDiagonal) {
+TEST(BootstrapTree, ConfusionMatrixGroupSpecDiagonal) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -441,7 +441,7 @@ TEST(BootstrapTree, ConfusionMatrixDataSpecDiagonal) {
   ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 } })), result.label_index);
 }
 
-TEST(BootstrapTree, ConfusionMatrixDataSpecZeroDiagonal) {
+TEST(BootstrapTree, ConfusionMatrixGroupSpecZeroDiagonal) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,

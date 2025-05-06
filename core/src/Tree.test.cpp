@@ -603,7 +603,7 @@ TEST(Tree, PredictDataMultivariateThreeGroups) {
   ASSERT_EQ(result, expected);
 }
 
-TEST(Tree, RetrainLDASameDataSpec) {
+TEST(Tree, RetrainLDASameGroupSpec) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -677,7 +677,7 @@ TEST(Tree, RetrainLDASameDataSpec) {
   ASSERT_EQ(tree, result);
 }
 
-TEST(Tree, RetrainLDADifferentDataSpec) {
+TEST(Tree, RetrainLDADifferentGroupSpec) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -785,7 +785,7 @@ TEST(Tree, RetrainLDADifferentDataSpec) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(Tree, RetrainPDASameDataSpec) {
+TEST(Tree, RetrainPDASameGroupSpec) {
   Data<float> x(10, 12);
   x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -819,7 +819,7 @@ TEST(Tree, RetrainPDASameDataSpec) {
   ASSERT_EQ(tree, result);
 }
 
-TEST(Tree, RetrainPDADifferentDataSpec) {
+TEST(Tree, RetrainPDADifferentGroupSpec) {
   Data<float> x(10, 1);
   x <<
     1, 1, 1, 1, 1,
@@ -1193,7 +1193,7 @@ TEST(Tree, VariableImportancePermutationPDAMultivariateTwoGroups) {
   ASSERT_THROW(tree.variable_importance(VIPermutationStrategy<float, int>()), std::invalid_argument);
 }
 
-TEST(Tree, ErrorRateDataSpecMin) {
+TEST(Tree, ErrorRateGroupSpecMin) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1268,7 +1268,7 @@ TEST(Tree, ErrorRateDataSpecMin) {
   ASSERT_FLOAT_EQ(0.0, result);
 }
 
-TEST(Tree, ErrorRateDataSpecMax) {
+TEST(Tree, ErrorRateGroupSpecMax) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1343,7 +1343,7 @@ TEST(Tree, ErrorRateDataSpecMax) {
   ASSERT_FLOAT_EQ(1.0, result);
 }
 
-TEST(Tree, ErrorRateDataSpecGeneric) {
+TEST(Tree, ErrorRateGroupSpecGeneric) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1418,7 +1418,7 @@ TEST(Tree, ErrorRateDataSpecGeneric) {
   ASSERT_NEAR(0.666, result, 0.1);
 }
 
-TEST(Tree, ConfusionMatrixDataSpecDiagonal) {
+TEST(Tree, ConfusionMatrixGroupSpecDiagonal) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1501,7 +1501,7 @@ TEST(Tree, ConfusionMatrixDataSpecDiagonal) {
   ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
-TEST(Tree, ConfusionMatrixDataSpecZeroDiagonal) {
+TEST(Tree, ConfusionMatrixGroupSpecZeroDiagonal) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,

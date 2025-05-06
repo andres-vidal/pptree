@@ -12,7 +12,7 @@ namespace models::stats {
   using Data = math::DMatrix<T>;
 
   template<typename G>
-  class DataSpec {
+  class GroupSpec {
     public:
 
       static bool is_contiguous(const DataColumn<G> &y) {
@@ -62,7 +62,7 @@ namespace models::stats {
               nodes[prev].size = i - nodes[prev].start;
             }
           } else if (y(i - 1) != y(i)) {
-            throw std::invalid_argument("DataSpec: data is not organized in contiguous groups");
+            throw std::invalid_argument("GroupSpec: data is not organized in contiguous groups");
           }
         }
 
@@ -83,7 +83,7 @@ namespace models::stats {
         return supergroups;
       }
 
-      DataSpec(
+      GroupSpec(
         const std::map<G, Node> &nodes,
         const std::set<G> &      groups) :
         groups(groups),
@@ -92,7 +92,7 @@ namespace models::stats {
         subgroups(utils::invert(supergroups)) {
       }
 
-      DataSpec(
+      GroupSpec(
         const std::map<G, Node> & nodes,
         const std::map<G, G> &    supergroups) :
         groups(utils::values(supergroups)),
@@ -101,7 +101,7 @@ namespace models::stats {
         subgroups(utils::invert(supergroups)) {
       }
 
-      DataSpec(
+      GroupSpec(
         const std::map<G, Node> & nodes,
         const std::set<G> &       groups,
         const std::map<G, G> &    supergroups) :
@@ -113,7 +113,7 @@ namespace models::stats {
 
     public:
 
-      DataSpec(const DataColumn<G> &y) :
+      GroupSpec(const DataColumn<G> &y) :
         groups(unique(y)),
         nodes(init_nodes(y)),
         supergroups(init_supergroups()),
@@ -200,7 +200,7 @@ namespace models::stats {
         return result;
       }
 
-      DataSpec<G> subset(std::set<G> groups) const {
+      GroupSpec<G> subset(std::set<G> groups) const {
         std::map<G, Node> subset_nodes;
 
         G prev = -1;
@@ -222,11 +222,11 @@ namespace models::stats {
           prev = group;
         }
 
-        return DataSpec<G>(subset_nodes, groups);
+        return GroupSpec<G>(subset_nodes, groups);
       }
 
-      DataSpec<G> remap(const std::map<G, G> &mapping) const {
-        return DataSpec<G>(this->nodes, mapping);
+      GroupSpec<G> remap(const std::map<G, G> &mapping) const {
+        return GroupSpec<G>(this->nodes, mapping);
       }
   };
 }

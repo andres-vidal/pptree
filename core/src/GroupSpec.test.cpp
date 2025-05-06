@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
-#include "DataSpec.hpp"
+#include "GroupSpec.hpp"
 
 using namespace models::stats;
 
 
-TEST(DataSpec, GroupSize) {
+TEST(GroupSpec, GroupSize) {
   Data<float> x(6, 3);
   x <<
     2, 2, 2,
@@ -24,14 +24,14 @@ TEST(DataSpec, GroupSize) {
     3,
     3;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   ASSERT_EQ(2, spec.group_size(1));
   ASSERT_EQ(2, spec.group_size(2));
   ASSERT_EQ(2, spec.group_size(3));
 }
 
-TEST(DataSpec, GroupStart) {
+TEST(GroupSpec, GroupStart) {
   Data<float> x(6, 3);
   x <<
     2, 2, 2,
@@ -50,14 +50,14 @@ TEST(DataSpec, GroupStart) {
     3,
     3;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   ASSERT_EQ(0, spec.group_start(1));
   ASSERT_EQ(2, spec.group_start(2));
   ASSERT_EQ(4, spec.group_start(3));
 }
 
-TEST(DataSpec, GroupEnd) {
+TEST(GroupSpec, GroupEnd) {
   Data<float> x(6, 3);
   x <<
     2, 2, 2,
@@ -76,14 +76,14 @@ TEST(DataSpec, GroupEnd) {
     3,
     3;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   ASSERT_EQ(1, spec.group_end(1));
   ASSERT_EQ(3, spec.group_end(2));
   ASSERT_EQ(5, spec.group_end(3));
 }
 
-TEST(DataSpec, Group) {
+TEST(GroupSpec, Group) {
   Data<float> x(6, 3);
   x <<
     2, 2, 2,
@@ -103,7 +103,7 @@ TEST(DataSpec, Group) {
     3,
     3;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.group(x, 1);
 
@@ -142,7 +142,7 @@ TEST(DataSpec, Group) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec, ErrorGroupsNotContiguous) {
+TEST(GroupSpec, ErrorGroupsNotContiguous) {
   Data<float> x(6, 3);
   x <<
     2, 2, 2,
@@ -161,10 +161,10 @@ TEST(DataSpec, ErrorGroupsNotContiguous) {
     2,
     3;
 
-  ASSERT_THROW((DataSpec<int>(y)), std::invalid_argument);
+  ASSERT_THROW((GroupSpec<int>(y)), std::invalid_argument);
 }
 
-TEST(DataSpec, Subset) {
+TEST(GroupSpec, Subset) {
   Data<float> x(6, 3);
   x <<
     1, 2, 2,
@@ -183,7 +183,7 @@ TEST(DataSpec, Subset) {
     3,
     3;
 
-  DataSpec<int> spec = DataSpec(y).subset({ 1, 3 });
+  GroupSpec<int> spec = GroupSpec(y).subset({ 1, 3 });
 
   ASSERT_EQ(2, spec.group_size(1));
   ASSERT_EQ(0, spec.group_start(1));
@@ -223,7 +223,7 @@ TEST(DataSpec, Subset) {
   ASSERT_EQ(expected_mean, spec.mean(x));
 }
 
-TEST(DataSpec, Remap) {
+TEST(GroupSpec, Remap) {
   Data<float> x(6, 3);
   x <<
     1, 1, 1,
@@ -242,7 +242,7 @@ TEST(DataSpec, Remap) {
     3,
     3;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   std::map<int, int> mapping = {
     { 1, 0 },
@@ -250,7 +250,7 @@ TEST(DataSpec, Remap) {
     { 3, 0 }
   };
 
-  DataSpec<int> remapped = spec.remap(mapping);
+  GroupSpec<int> remapped = spec.remap(mapping);
 
   Data<float> remapped_x = remapped.data(x);
 
@@ -258,7 +258,7 @@ TEST(DataSpec, Remap) {
   ASSERT_EQ(std::set<int>({ 0, 1 }), remapped.groups);
 }
 
-TEST(DataSpec,  BetweenGroupsSumOfSquaresSingleGroup) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresSingleGroup) {
   Data<float> x(3, 3);
   x <<
     1.0, 2.0, 6.0,
@@ -271,7 +271,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresSingleGroup) {
     0,
     0;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.bgss(x);
 
@@ -287,7 +287,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresSingleGroup) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
   Data<float> x(6, 3);
   x <<
     1.0, 2.0, 6.0,
@@ -306,7 +306,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
     1,
     1;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.bgss(x);
 
@@ -323,7 +323,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
   Data<float> x(8, 1);
   x <<
     23.0,
@@ -346,7 +346,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
     2,
     2;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.bgss(x);
 
@@ -360,7 +360,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
   Data<float> x(8, 1);
   x <<
     23.0,
@@ -383,7 +383,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGr
     3,
     3;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.bgss(x);
 
@@ -397,7 +397,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGr
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
   Data<float> x(8, 3);
   x <<
     23.0, 1.0, 1.0,
@@ -420,7 +420,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
     2,
     2;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.bgss(x);
 
@@ -436,7 +436,7 @@ TEST(DataSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
   Data<float> x(3, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -449,7 +449,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
     0,
     0;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.wgss(x);
 
@@ -465,7 +465,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
   Data<float> x(3, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -478,7 +478,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
     0,
     0;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.wgss(x);
 
@@ -494,7 +494,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
   Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -513,7 +513,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
     1,
     1;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.wgss(x);
 
@@ -529,7 +529,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
   Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -548,7 +548,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
     1,
     1;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.wgss(x);
 
@@ -564,7 +564,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
   Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -583,7 +583,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
     1,
     1;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.wgss(x);
 
@@ -599,7 +599,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
   Data<float> x(8, 3);
   x <<
     1.0, 2.0, 3.0,
@@ -623,7 +623,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
     2;
 
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.wgss(x);
 
@@ -639,7 +639,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
   Data<float> x(8, 4);
   x <<
     1.0, 2.0, 3.0, 0.0,
@@ -662,7 +662,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
     2,
     2;
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
   Data<float> actual = spec.wgss(x);
 
@@ -679,7 +679,7 @@ TEST(DataSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpecRemapped, Group) {
+TEST(GroupSpecRemapped, Group) {
   Data<float> x(6, 3);
   x <<
     2, 2, 2,
@@ -699,8 +699,8 @@ TEST(DataSpecRemapped, Group) {
     3,
     3;
 
-  DataSpec<int> base(y);
-  DataSpec<int> spec = base.remap({ { 1, 1 }, { 2, 1 }, { 3, 2 } });
+  GroupSpec<int> base(y);
+  GroupSpec<int> spec = base.remap({ { 1, 1 }, { 2, 1 }, { 3, 2 } });
 
   Data<float> actual = spec.group(x, 1);
 
@@ -729,7 +729,7 @@ TEST(DataSpecRemapped, Group) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
+TEST(GroupSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
   Data<float> x(8, 3);
   x <<
     23.0, 1.0, 1.0,
@@ -752,8 +752,8 @@ TEST(DataSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
     4, // 2
     4; // 2
 
-  DataSpec<int> spec(y);
-  DataSpec<int> remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
+  GroupSpec<int> spec(y);
+  GroupSpec<int> remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
 
   Data<float> actual = remapped.bgss(x);
 
@@ -769,7 +769,7 @@ TEST(DataSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(DataSpecRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
+TEST(GroupSpecRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
   Data<float> x(8, 3);
   x <<
     1.0, 2.0, 3.0,
@@ -793,9 +793,9 @@ TEST(DataSpecRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
     4;  // 2
 
 
-  DataSpec<int> spec(y);
+  GroupSpec<int> spec(y);
 
-  DataSpec<int> remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
+  GroupSpec<int> remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
 
   Data<float> actual = remapped.wgss(x);
 

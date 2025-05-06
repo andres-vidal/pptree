@@ -79,6 +79,7 @@ namespace pptree {
       std::cout << "Training random forest with " << params.trees << " trees" << std::endl;
       std::cout << "Using " << params.n_vars << " variables per split (" << (params.p_vars * 100) << "% of features)" << std::endl;
       std::cout << "Using " << params.threads << " threads" << std::endl;
+      std::cout << "Using " << params.seed << " seed" << std::endl;
     } else {
       std::cout << "Training single decision tree (using all features)" << std::endl;
     }
