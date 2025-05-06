@@ -83,7 +83,7 @@ namespace models {
       return !(*this == other);
     }
 
-    virtual float error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+    virtual double error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
       return stats::error_rate(predict(x), y);
     }
 

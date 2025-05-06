@@ -80,7 +80,7 @@ namespace models {
       return BootstrapTree<T, R>::train(*this->training_spec, x, y, iob_indices);
     }
 
-    float error_rate() const {
+    double error_rate() const {
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
 
       return error_rate(this->x(oob_indices_vec, Eigen::all), this->y(oob_indices_vec, Eigen::all));

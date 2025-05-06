@@ -37,11 +37,24 @@ namespace models::stats {
   }
 
   template<typename T>
-  float error_rate(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
+  double error_rate(const DataColumn<T> &predictions, const DataColumn<T> &actual) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("predictions and actual must have the same number of rows");
     }
 
     return 1 - accuracy(predictions, actual);
+  }
+
+  template<typename T>
+  double sd(const DataColumn<T> &data) {
+    if (data.rows() == 0) {
+      throw std::invalid_argument("sd: data must have at least one row");
+    }
+
+    if (data.rows() == 1) {
+      return 0;
+    }
+
+    return std::sqrt((data.array() - data.mean()).square().sum() / (data.rows() - 1));
   }
 }

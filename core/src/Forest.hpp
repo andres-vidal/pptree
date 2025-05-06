@@ -119,11 +119,11 @@ namespace models {
         n_threads);
     }
 
-    float error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+    double error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
       return stats::error_rate(predict(x), y);
     }
 
-    float error_rate() const {
+    double error_rate() const {
       std::set<int> oob_indices = get_oob_indices();
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
