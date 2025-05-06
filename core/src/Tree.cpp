@@ -81,7 +81,9 @@ namespace models {
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data)));
+    Data<T> reduced_x = training_data.x(Eigen::all, dr.selected_cols);
+
+    Projector<T> projector = dr.expand(pp_strategy(training_data.analog(reduced_x)));
 
     auto data_group_1 = training_data.group(group_1);
     auto data_group_2 = training_data.group(group_2);
@@ -152,9 +154,13 @@ namespace models {
 
     LOG_INFO << "Redefining a " << training_data.groups.size() << " group problem as binary:" << std::endl;
 
-    Projector<T> projector = dr.expand(pp_strategy(dr.reduce(training_data)));
+    Data<T> reduced_x = training_data.x(Eigen::all, dr.selected_cols);
 
-    std::map<R, int> binary_mapping = binary_regroup(training_data.analog(training_data.x * projector));
+    Projector<T> projector = dr.expand(pp_strategy(training_data.analog(reduced_x)));
+
+    Data<T> projected_x = training_data.x * projector;
+
+    std::map<R, int> binary_mapping = binary_regroup(training_data.analog(projected_x));
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 

@@ -29,7 +29,7 @@ namespace models::stats {
         return true;
       }
 
-      const Data<T> x;
+      const Data<T> &x;
       const std::set<G> groups;
 
     private:

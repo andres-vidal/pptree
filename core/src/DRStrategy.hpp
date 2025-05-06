@@ -41,10 +41,6 @@ namespace models::dr::strategy {
 
       return full_vector;
     }
-
-    stats::DataSpec<T, G> reduce(const stats::DataSpec<T, G>& spec) const {
-      return spec.analog(spec.x(Eigen::all, selected_cols));
-    }
   };
 
   template<typename T, typename G>
