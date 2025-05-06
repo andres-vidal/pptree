@@ -8,12 +8,12 @@
 
 namespace models::stats {
   template<typename T, typename G>
-  struct DataSpec {
+  struct DataPacket {
     const Data<T>  x;
     const DataColumn<G>  y;
     const std::set<G>  classes;
 
-    DataSpec(
+    DataPacket(
       const Data<T> &       x,
       const DataColumn<G> & y,
       const std::set<G> &   classes) :
@@ -22,7 +22,7 @@ namespace models::stats {
       classes(classes) {
     }
 
-    DataSpec(
+    DataPacket(
       const Data<T> &       x,
       const DataColumn<G> & y) :
       x(x),
@@ -30,7 +30,7 @@ namespace models::stats {
       classes(unique(y)) {
     }
 
-    DataSpec() :
+    DataPacket() :
       x(Data<T>()),
       y(DataColumn<G>()),
       classes(std::set<G>()) {

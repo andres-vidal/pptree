@@ -10,7 +10,7 @@
 #include <numeric>
 #include <string>
 
-#include "DataSpec.hpp"
+#include "DataPacket.hpp"
 #include "Normal.hpp"
 
 #include "CLIOptions.hpp"
@@ -29,7 +29,7 @@ struct SimulationParams {
   float sd              = 10.0f;
 };
 
-inline DataSpec<float, int> simulate(
+inline DataPacket<float, int> simulate(
   const int               n,
   const int               p,
   const int               G,
@@ -49,7 +49,7 @@ inline DataSpec<float, int> simulate(
     y[i] = i % G;
   }
 
-  return DataSpec<float, int>(x, y);
+  return DataPacket<float, int>(x, y);
 }
 
 struct Split {
@@ -57,7 +57,7 @@ struct Split {
   std::vector<int> te;
 };
 
-inline Split split(const DataSpec<float, int>& data, float train_ratio) {
+inline Split split(const DataPacket<float, int>& data, float train_ratio) {
   const int n          = data.x.rows();
   const int train_size = static_cast<int>(n * train_ratio);
 
@@ -115,7 +115,7 @@ void display_progress(int current, int total, int bar_width = 50) {
   }
 }
 
-DataSpec<float, int> read_data(const CLIOptions& params) {
+DataPacket<float, int> read_data(const CLIOptions& params) {
   if (!params.data_path.empty()) {
     try {
       return read_csv(params.data_path);

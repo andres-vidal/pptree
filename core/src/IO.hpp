@@ -10,7 +10,7 @@
 
 #include "Data.hpp"
 namespace pptree {
-  DataSpec<float, int> read_csv(const std::string& filename) {
+  DataPacket<float, int> read_csv(const std::string& filename) {
     csv::CSVReader reader(filename);
     std::vector<std::vector<float> > featureData;
     std::vector<std::string> rawLabels;
@@ -68,7 +68,7 @@ namespace pptree {
       y[i] = labels[i];
     }
 
-    return DataSpec<float, int>(x, y);
+    return DataPacket<float, int>(x, y);
   }
 
   void announce_configuration(
