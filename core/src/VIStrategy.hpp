@@ -200,8 +200,11 @@ namespace models {
       invariant(condition.training_spec != nullptr, "training_spec is null");
       invariant(condition.training_spec->pp_strategy != nullptr, "pp_strategy is null");
 
+      stats::DataSpec<R> data_spec(training_y);
+
       const float pp_index = condition.training_spec->pp_strategy->index(
-        stats::DataSpec<T, R>(training_x, training_y).subset(condition.classes),
+        training_x,
+        data_spec.subset(condition.classes),
         condition.projector);
 
       return (condition.projector.array().abs() * pp_index).matrix() + lower_importance + upper_importance;

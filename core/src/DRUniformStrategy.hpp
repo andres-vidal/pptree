@@ -19,24 +19,25 @@ namespace models::dr::strategy {
     }
 
     DRSpec<T, G> select(
-      const stats::DataSpec<T, G>& spec) const override {
-      invariant(n_vars <= spec.cols(), "The number of variables must be less than or equal to the number of columns in the data.");
+      const stats::Data<T> &    x,
+      const stats::DataSpec<G>& data_spec) const override {
+      invariant(n_vars <= x.cols(), "The number of variables must be less than or equal to the number of columns in the data.");
 
-      if (n_vars == spec.cols()) {
-        std::vector<int> all_indices(spec.cols());
+      if (n_vars == x.cols()) {
+        std::vector<int> all_indices(x.cols());
         std::iota(all_indices.begin(), all_indices.end(), 0);
 
-        return DRSpec<T, G>(all_indices, spec.cols());
+        return DRSpec<T, G>(all_indices, x.cols());
       }
 
       LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
 
-      stats::Uniform unif(0, spec.cols() - 1);
+      stats::Uniform unif(0, x.cols() - 1);
       std::vector<int> selected_indices = unif.distinct(n_vars);
 
       LOG_INFO << "Selected variables: " << selected_indices << std::endl;
 
-      return DRSpec<T, G>(selected_indices, spec.cols());
+      return DRSpec<T, G>(selected_indices, x.cols());
     }
   };
 

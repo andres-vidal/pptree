@@ -23,14 +23,15 @@ namespace models::pp::strategy {
     }
 
     T index(
-      const stats::DataSpec<T, G>& spec,
-      const Projector<T>&          projector) const override {
+      const stats::Data<T> &    x,
+      const stats::DataSpec<G>& data_spec,
+      const Projector<T>&       projector) const override {
       stats::Data<T> A = projector;
 
-      stats::Data<T> W      = spec.wgss();
+      stats::Data<T> W      = data_spec.wgss(x);
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
       stats::Data<T> W_pda  = W_diag + (1 - lambda) * (W - W_diag);
-      stats::Data<T> B      = spec.bgss();
+      stats::Data<T> B      = data_spec.bgss(x);
       stats::Data<T> WpB    = W_pda + B;
 
       T denominator = (A.transpose() * WpB * A).determinant();
@@ -44,13 +45,13 @@ namespace models::pp::strategy {
       return 1 - numerator / denominator;
     }
 
-    Projector<T> optimize(const stats::DataSpec<T, G>& spec) const override {
-      LOG_INFO << "Calculating PDA optimum projector for " << spec.groups.size() << " groups: " << spec.groups << std::endl;
-      LOG_INFO << "Dataset size: " << spec.rows() << " observations of " << spec.cols() << " variables:" << std::endl;
-      LOG_INFO << std::endl << (stats::Data<T>)spec.data() << std::endl;
+    Projector<T> optimize(const stats::Data<T> &x, const stats::DataSpec<G>& data_spec) const override {
+      LOG_INFO << "Calculating PDA optimum projector for " << data_spec.groups.size() << " groups: " << data_spec.groups << std::endl;
+      LOG_INFO << "Dataset size: " << data_spec.rows(x) << " observations of " << x.cols() << " variables:" << std::endl;
+      LOG_INFO << std::endl << (stats::Data<T>)data_spec.data(x) << std::endl;
 
-      stats::Data<T> B = spec.bgss();
-      stats::Data<T> W = spec.wgss();
+      stats::Data<T> B = data_spec.bgss(x);
+      stats::Data<T> W = data_spec.wgss(x);
 
       LOG_INFO << "B:" << std::endl << B << std::endl;
       LOG_INFO << "W:" << std::endl << W << std::endl;

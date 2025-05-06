@@ -61,7 +61,7 @@ inline Split split(const DataPacket<float, int>& data, float train_ratio) {
   const int n          = data.x.rows();
   const int train_size = static_cast<int>(n * train_ratio);
 
-  DataSpec<float, int> spec(data.x, data.y);
+  DataSpec<int> spec(data.y);
 
   std::vector<int> train_indices;
   std::vector<int> test_indices;
@@ -123,7 +123,7 @@ DataPacket<float, int> read_data(const CLIOptions& params) {
       Data<float> x     = data.x;
       DataColumn<int> y = data.y;
 
-      if (!DataSpec<float, int>::is_contiguous(y)) {
+      if (!DataSpec<int>::is_contiguous(y)) {
         models::stats::sort(x, y);
       }
 

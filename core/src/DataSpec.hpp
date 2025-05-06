@@ -11,7 +11,7 @@ namespace models::stats {
   template<typename T>
   using Data = math::DMatrix<T>;
 
-  template<typename T, typename G>
+  template<typename G>
   class DataSpec {
     public:
 
@@ -29,7 +29,6 @@ namespace models::stats {
         return true;
       }
 
-      const Data<T> &x;
       const std::set<G> groups;
 
     private:
@@ -85,10 +84,8 @@ namespace models::stats {
       }
 
       DataSpec(
-        const Data<T> &          x,
         const std::map<G, Node> &nodes,
         const std::set<G> &      groups) :
-        x(x),
         groups(groups),
         nodes(nodes),
         supergroups(init_supergroups()),
@@ -96,10 +93,8 @@ namespace models::stats {
       }
 
       DataSpec(
-        const Data<T> &          x,
-        const std::map<G, Node> &nodes,
-        const std::map<G, G> &   supergroups) :
-        x(x),
+        const std::map<G, Node> & nodes,
+        const std::map<G, G> &    supergroups) :
         groups(utils::values(supergroups)),
         nodes(nodes),
         supergroups(supergroups),
@@ -107,11 +102,9 @@ namespace models::stats {
       }
 
       DataSpec(
-        const Data<T> &          x,
-        const std::map<G, Node> &nodes,
-        const std::set<G> &      groups,
-        const std::map<G, G> &   supergroups) :
-        x(x),
+        const std::map<G, Node> & nodes,
+        const std::set<G> &       groups,
+        const std::map<G, G> &    supergroups) :
         groups(groups),
         nodes(nodes),
         supergroups(supergroups),
@@ -120,8 +113,7 @@ namespace models::stats {
 
     public:
 
-      DataSpec(const Data<T> &x, const DataColumn<G> &y) :
-        x(x),
+      DataSpec(const DataColumn<G> &y) :
         groups(unique(y)),
         nodes(init_nodes(y)),
         supergroups(init_supergroups()),
@@ -140,7 +132,8 @@ namespace models::stats {
         return nodes.at(group).size;
       }
 
-      auto group(const G &group) const {
+      template<typename T>
+      auto group(const Data<T> &x, const G &group) const {
         std::vector<int> indices;
 
         std::set<G> subgroups = this->subgroups.at(group);
@@ -151,10 +144,11 @@ namespace models::stats {
           }
         }
 
-        return this->x(indices, Eigen::all);
+        return x(indices, Eigen::all);
       }
 
-      auto data() const {
+      template<typename T>
+      auto data(const Data<T> &x) const {
         std::vector<int> indices;
 
         for (const auto &group : nodes) {
@@ -163,27 +157,26 @@ namespace models::stats {
           }
         }
 
-        return this->x(indices, Eigen::all);
+        return x(indices, Eigen::all);
       }
 
-      int rows() const {
-        return data().rows();
+      template<typename T>
+      DataColumn<T> mean(const Data<T> &x) const {
+        return data(x).colwise().mean();
       }
 
-      int cols() const {
-        return this->x.cols();
+      template<typename T>
+      int rows(const Data<T> &x) const {
+        return data(x).rows();
       }
 
-      DataColumn<T> mean() const {
-        return data().colwise().mean();
-      }
-
-      Data<T> bgss() const {
-        DataColumn<T> global_mean = this->mean();
-        Data<T> result            = Data<T>::Zero(this->cols(), this->cols());
+      template<typename T>
+      Data<T> bgss(const Data<T> &x) const {
+        DataColumn<T> global_mean = this->mean(x);
+        Data<T> result            = Data<T>::Zero(x.cols(), x.cols());
 
         for (const G &g : this->groups) {
-          auto group_data             = group(g);
+          auto group_data             = group(x, g);
           DataColumn<T> group_mean    = group_data.colwise().mean();
           DataColumn<T> centered_mean = group_mean - global_mean;
 
@@ -193,11 +186,12 @@ namespace models::stats {
         return result;
       }
 
-      Data<T> wgss() const {
-        Data<T> result = Data<T>::Zero(this->cols(), this->cols());
+      template<typename T>
+      Data<T> wgss(const Data<T> &x) const {
+        Data<T> result = Data<T>::Zero(x.cols(), x.cols());
 
         for (const G &g : this->groups) {
-          auto group_data          = group(g);
+          auto group_data          = group(x, g);
           auto centered_group_data = group_data.rowwise() - group_data.colwise().mean();
 
           result.noalias() += centered_group_data.transpose() * centered_group_data;
@@ -206,7 +200,7 @@ namespace models::stats {
         return result;
       }
 
-      DataSpec<T, G> subset(std::set<G> groups) const {
+      DataSpec<G> subset(std::set<G> groups) const {
         std::map<G, Node> subset_nodes;
 
         G prev = -1;
@@ -228,15 +222,11 @@ namespace models::stats {
           prev = group;
         }
 
-        return DataSpec<T, G>(this->x, subset_nodes, groups);
+        return DataSpec<G>(subset_nodes, groups);
       }
 
-      DataSpec<T, G> analog(const Data<T>& data) const {
-        return DataSpec<T, G>(data, this->nodes, this->groups, this->supergroups);
-      }
-
-      DataSpec<T, G> remap(const std::map<G, G> &mapping) const {
-        return DataSpec<T, G>(this->x, this->nodes, mapping);
+      DataSpec<G> remap(const std::map<G, G> &mapping) const {
+        return DataSpec<G>(this->nodes, mapping);
       }
   };
 }

@@ -73,7 +73,7 @@ namespace models::stats
     invariant(size > 0, "Sample size must be greater than 0.");
     invariant(size <= y.rows(), "Sample size cannot be larger than the number of rows in the data.");
 
-    DataSpec<T, G> spec(x, y);
+    DataSpec<G> spec(y);
 
     const int data_size = y.rows();
 

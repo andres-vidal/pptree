@@ -25,11 +25,11 @@ namespace models {
 
     Random::seed(seed);
 
-    if (!DataSpec<T, R>::is_contiguous(y)) {
+    if (!DataSpec<R>::is_contiguous(y)) {
       stats::sort(x, y);
     }
 
-    DataSpec<T, R> training_data(x, y);
+    DataSpec<R> data_spec(y);
 
     LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
     LOG_INFO << "The seed is: " << seed << std::endl;
@@ -40,11 +40,7 @@ namespace models {
 
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
-      std::vector<int> sample_indices = stratified_proportional_sample(
-        x,
-        y,
-        training_data.groups,
-        x.rows());
+      std::vector<int> sample_indices = stratified_proportional_sample(x, y, data_spec.groups, x.rows());
 
       trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, sample_indices);
     }
@@ -55,7 +51,7 @@ namespace models {
       training_spec.clone(),
       x,
       y,
-      training_data.groups,
+      data_spec.groups,
       seed,
       n_threads);
 

@@ -48,10 +48,10 @@ namespace models::dr::strategy {
     virtual ~DRStrategy()                     = default;
     virtual DRStrategyPtr<T, G> clone() const = 0;
 
-    virtual DRSpec<T, G> select(const stats::DataSpec<T, G>& spec) const = 0;
+    virtual DRSpec<T, G> select(const stats::Data<T> &x, const stats::DataSpec<G>& data_spec) const = 0;
 
-    DRSpec<T, G> operator()(const stats::DataSpec<T, G>& spec) const {
-      return select(spec);
+    DRSpec<T, G> operator()(const stats::Data<T> &x, const stats::DataSpec<G>& data_spec) const {
+      return select(x, data_spec);
     }
   };
 }

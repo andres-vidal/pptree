@@ -18,14 +18,16 @@ namespace models::pp::strategy {
     virtual PPStrategyPtr<T, G> clone() const = 0;
 
     virtual T index(
-      const stats::DataSpec<T, G>& spec,
-      const Projector<T>&          projector) const = 0;
+      const stats::Data<T> &    x,
+      const stats::DataSpec<G>& data_spec,
+      const Projector<T>&       projector) const = 0;
 
     virtual Projector<T> optimize(
-      const stats::DataSpec<T, G>& spec) const = 0;
+      const stats::Data<T> &    x,
+      const stats::DataSpec<G>& data_spec) const = 0;
 
-    Projector<T> operator()(const stats::DataSpec<T, G>& spec) const {
-      return optimize(spec);
+    Projector<T> operator()(const stats::Data<T> &x, const stats::DataSpec<G>& data_spec) const {
+      return optimize(x, data_spec);
     }
   };
 }

@@ -11,10 +11,11 @@ namespace models::dr::strategy {
     }
 
     DRSpec<T, G> select(
-      const stats::DataSpec<T, G>& spec) const override {
-      std::vector<int> all_indices(spec.cols());
+      const stats::Data<T> &    x,
+      const stats::DataSpec<G>& data_spec) const override {
+      std::vector<int> all_indices(x.cols());
       std::iota(all_indices.begin(), all_indices.end(), 0);
-      return DRSpec<T, G>(all_indices, spec.cols());
+      return DRSpec<T, G>(all_indices, x.cols());
     }
   };
 
