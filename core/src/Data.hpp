@@ -18,9 +18,6 @@ namespace models::stats
   using Data = math::DMatrix<T>;
 
   template <typename T>
-  using DataView = Eigen::Block<const Data<T> >;
-
-  template <typename T>
   Data<T> shuffle_column(
     const Data<T> &data,
     const int      column) {

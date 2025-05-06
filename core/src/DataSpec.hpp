@@ -11,9 +11,6 @@ namespace models::stats {
   template<typename T>
   using Data = math::DMatrix<T>;
 
-  template <typename T>
-  using DataView = Eigen::Block<const Data<T> >;
-
   template<typename T, typename G>
   class DataSpec {
     public:
