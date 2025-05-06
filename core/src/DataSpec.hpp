@@ -67,7 +67,9 @@ namespace models::stats {
           }
         }
 
-        nodes.at(y(y.rows() - 1)).end = this->x.rows() - 1;
+        G last_group = y(y.rows() - 1);
+        nodes.at(last_group).end  = y.rows() - 1;
+        nodes.at(last_group).size = y.rows() - nodes.at(last_group).start;
 
         return nodes;
       }
@@ -135,7 +137,7 @@ namespace models::stats {
       }
 
       int group_size(const G &group) const {
-        return 1 + group_end(group) - group_start(group);
+        return nodes.at(group).size;
       }
 
       auto group(const G &group) const {
