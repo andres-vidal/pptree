@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Node.hpp"
-#include "SortedDataSpec.hpp"
-#include "BootstrapDataSpec.hpp"
+#include "TreeNode.hpp"
+#include "TreeCondition.hpp"
+#include "TreeResponse.hpp"
+
 #include "TrainingSpec.hpp"
 #include "ConfusionMatrix.hpp"
 
@@ -15,28 +16,45 @@ namespace models {
   template <typename T, typename R>
   class VIStrategy;
 
-  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
-  struct BaseTree {
-    static DerivedTree<T, R> train(const TrainingSpec<T, R> &training_spec, const D &training_data);
+  template<typename T, typename R>
+  struct Tree {
+    static Tree<T, R> train(
+      const TrainingSpec<T, R> & training_spec,
+      stats::Data<T>&            x,
+      stats::DataColumn<R>&      y);
 
-    std::unique_ptr<Node<T, R> > root;
-    std::unique_ptr<TrainingSpec<T, R> > training_spec;
-    std::shared_ptr<D> training_data;
+    TreeNodePtr<T, R> root;
+    TrainingSpecPtr<T, R> training_spec;
 
-    explicit BaseTree(std::unique_ptr<Condition<T, R> > root) : root(std::move(root)) {
+    const stats::Data<T> x;
+    const stats::DataColumn<R> y;
+    const std::set<R> classes;
+
+    Tree(
+      TreeNodePtr<T, R> root) :
+      root(std::move(root)),
+      training_spec(TrainingSpecGLDA<T, R>::make(0.5)),
+      x(stats::Data<T>()),
+      y(stats::DataColumn<R>()),
+      classes(std::set<R>()) {
     }
 
-    BaseTree(
-      std::unique_ptr<Node<T, R> >         root,
-      std::unique_ptr<TrainingSpec<T, R> > training_spec,
-      std::shared_ptr<D >                  training_data)
-      : root(std::move(root)),
+    Tree(
+      TreeNodePtr<T, R>            root,
+      TrainingSpecPtr<T, R>        training_spec,
+      const stats::Data<T> &       x,
+      const stats::DataColumn<R> & y,
+      const std::set<R> &          classes) :
+
+      root(std::move(root)),
       training_spec(std::move(training_spec)),
-      training_data(training_data) {
+      x(x),
+      y(y),
+      classes(classes) {
     }
 
-    DerivedTree<T, R> retrain(const D &data) const {
-      return BaseTree::train(*this->training_spec, data);
+    Tree<T, R> retrain(stats::Data<T> &x, stats::DataColumn<R> &y) const {
+      return Tree<T, R>::train(*this->training_spec, x, y);
     }
 
     R predict(const stats::DataColumn<T> &data) const {
@@ -53,28 +71,24 @@ namespace models {
       return predictions;
     }
 
-    bool operator==(const BaseTree<T, R, D, DerivedTree> &other) const {
+    math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
+      return strategy(*this);
+    }
+
+    bool operator==(const Tree<T, R> &other) const {
       return *root == *other.root;
     }
 
-    bool operator!=(const BaseTree<T, R, D, DerivedTree> &other) const {
+    bool operator!=(const Tree<T, R> &other) const {
       return !(*this == other);
     }
 
-    virtual float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      return stats::error_rate(predict(data.x), data.y);
+    virtual double error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return stats::error_rate(predict(x), y);
     }
 
-    virtual float error_rate(const stats::BootstrapDataSpec<T, R> &data) const {
-      return error_rate(data.get_sample());
-    }
-
-    virtual stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      return stats::ConfusionMatrix(predict(data.x), data.y);
-    }
-
-    virtual stats::ConfusionMatrix confusion_matrix(const stats::BootstrapDataSpec<T, R> &data) const {
-      return confusion_matrix(data.get_sample());
+    virtual stats::ConfusionMatrix confusion_matrix(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return stats::ConfusionMatrix(predict(x), y);
     }
 
     json to_json() const {
@@ -84,27 +98,8 @@ namespace models {
     }
   };
 
-  template<typename T, typename R, typename D, template<typename, typename> class DerivedTree>
-  std::ostream& operator<<(std::ostream & ostream, const BaseTree<T, R, D, DerivedTree>& tree) {
+  template<typename T, typename R>
+  std::ostream& operator<<(std::ostream & ostream, const Tree<T, R>& tree) {
     return ostream << tree.to_json().dump(2, ' ', false);
   }
-
-  template<typename T, typename R>
-  struct Tree : public BaseTree<T, R, stats::SortedDataSpec<T, R>, Tree> {
-    using Base = BaseTree<T, R, stats::SortedDataSpec<T, R>, Tree >;
-    using Base::Base;
-
-    static Tree<T, R> train(const TrainingSpec<T, R> &training_spec, const stats::SortedDataSpec<T, R> &training_data) {
-      return Base::train(training_spec, training_data);
-    }
-
-    math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
-      return strategy(*this);
-    }
-
-    // cppcheck-suppress noExplicitConstructor
-    Tree(Base tree)
-      : Base(std::move(tree.root), std::move(tree.training_spec), std::move(tree.training_data)) {
-    }
-  };
 }

@@ -8,8 +8,9 @@
 #include <numeric>
 #include <cmath>
 
+#include "Data.hpp"
 namespace pptree {
-  SortedDataSpec<float, int> read_csv(const std::string& filename) {
+  DataPacket<float, int> read_csv(const std::string& filename) {
     csv::CSVReader reader(filename);
     std::vector<std::vector<float> > featureData;
     std::vector<std::string> rawLabels;
@@ -67,81 +68,62 @@ namespace pptree {
       y[i] = labels[i];
     }
 
-    return SortedDataSpec<float, int>(x, y);
+    return DataPacket<float, int>(x, y);
   }
 
   void announce_configuration(
-    const CLIOptions&                 params,
-    const SortedDataSpec<float, int>& train_data,
-    const SortedDataSpec<float, int>& test_data) {
+    const CLIOptions&    params,
+    const Data<float  >& tr_x,
+    const Data<float  >& te_x) {
     if (params.trees > 0) {
       std::cout << "Training random forest with " << params.trees << " trees" << std::endl;
       std::cout << "Using " << params.n_vars << " variables per split (" << (params.p_vars * 100) << "% of features)" << std::endl;
+      std::cout << "Using " << params.threads << " threads" << std::endl;
+      std::cout << "Using " << params.seed << " seed" << std::endl;
     } else {
       std::cout << "Training single decision tree (using all features)" << std::endl;
     }
 
-    std::cout << "Using " << (params.lambda == 0 ? "LDA" : "PDA") << " (lambda=" << params.lambda << ")" << std::endl;
-    std::cout << "\nData split into:\n"
-              << "Training set: " << train_data.x.rows() << " samples (" << (params.train_ratio * 100) << "%)\n"
-              << "Test set:     " << test_data.x.rows()  << " samples (" << ((1 - params.train_ratio) * 100) << "%)\n" << std::endl;
+    std::cout << "Using " << (params.lambda == 0 ? "LDA" : "PDA") << " (lambda=" << params.lambda << ")" << std::endl << std::endl;
+    std::cout << "Data split into:" << std::endl
+              << "Training set: " << tr_x.rows() << " samples (" << (params.train_ratio * 100) << "%)" << std::endl
+              << "Test set:     " << te_x.rows()  << " samples (" << ((1 - params.train_ratio) * 100) << "%)" << std::endl << std::endl;
   }
 
   struct ModelStats {
-    std::vector<double> train_times;
-    std::vector<double> train_errors;
-    std::vector<double> test_errors;
+    stats::DataColumn<double> tr_times;
+    stats::DataColumn<double> tr_error;
+    stats::DataColumn<double> te_error;
 
     double mean_time() const {
-      return std::accumulate(train_times.begin(), train_times.end(), 0.0) / train_times.size();
+      return tr_times.mean();
+    }
+
+    double mean_tr_error() const {
+      return tr_error.mean();
+    }
+
+    double mean_te_error() const {
+      return te_error.mean();
     }
 
     double std_time() const {
-      if (train_times.size() <= 1) return 0.0;
-
-      double mean   = mean_time();
-      double sq_sum = std::inner_product(train_times.begin(), train_times.end(), train_times.begin(), 0.0,
-          std::plus<>(), [mean](double x, double y) {
-            return (x - mean) * (y - mean);
-          });
-      return std::sqrt(sq_sum / (train_times.size() - 1));
+      return sd(tr_times);
     }
 
-    double mean_train_error() const {
-      return std::accumulate(train_errors.begin(), train_errors.end(), 0.0) / train_errors.size();
+    double std_tr_error() const {
+      return sd(tr_error);
     }
 
-    double mean_test_error() const {
-      return std::accumulate(test_errors.begin(), test_errors.end(), 0.0) / test_errors.size();
-    }
-
-    double std_train_error() const {
-      if (train_errors.size() <= 1) return 0.0;
-
-      double mean   = mean_train_error();
-      double sq_sum = std::inner_product(train_errors.begin(), train_errors.end(), train_errors.begin(), 0.0,
-          std::plus<>(), [mean](double x, double y) {
-            return (x - mean) * (y - mean);
-          });
-      return std::sqrt(sq_sum / (train_errors.size() - 1));
-    }
-
-    double std_test_error() const {
-      if (test_errors.size() <= 1) return 0.0;
-
-      double mean   = mean_test_error();
-      double sq_sum = std::inner_product(test_errors.begin(), test_errors.end(), test_errors.begin(), 0.0,
-          std::plus<>(), [mean](double x, double y) {
-            return (x - mean) * (y - mean);
-          });
-      return std::sqrt(sq_sum / (test_errors.size() - 1));
+    double std_te_error() const {
+      return sd(te_error);
     }
   };
 
   void announce_results(const ModelStats& stats) {
-    std::cout << "Evaluation Results (" << stats.train_times.size() << " runs):" << std::endl
+    std::cout << "Evaluation  esults (" << stats.tr_times.size() << " runs):" << std::endl
               << "Training Time: " << stats.mean_time() << "ms ± " << stats.std_time() << "ms" << std::endl
-              << "Train Error:   " << (stats.mean_train_error() * 100) << "% ± " << (stats.std_train_error() * 100) << "%" << std::endl
-              << "Test Error:    " << (stats.mean_test_error() * 100) << "% ± " << (stats.std_test_error() * 100) << "%" << std::endl;
+              << "Train Error:   " << (stats.mean_tr_error() * 100) << "% ± " << (stats.std_tr_error() * 100) << "%" << std::endl
+              << "Test Error:    " << (stats.mean_te_error() * 100) << "% ± " << (stats.std_te_error() * 100) << "%" << std::endl;
   }
 }

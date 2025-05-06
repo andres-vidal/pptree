@@ -1,34 +1,13 @@
 #include <gtest/gtest.h>
 
-#include "SortedDataSpec.hpp"
+#include "GroupSpec.hpp"
 
 using namespace models::stats;
 
-TEST(SortedDataSpec, Constructor) {
+
+TEST(GroupSpec, GroupSize) {
   Data<float> x(6, 3);
   x <<
-    1, 1, 1,
-    2, 2, 2,
-    3, 3, 3,
-    4, 4, 4,
-    5, 5, 5,
-    6, 6, 6;
-
-
-  DataColumn<int> y(6);
-  y <<
-    2,
-    1,
-    3,
-    1,
-    3,
-    2;
-
-  SortedDataSpec<float, int> actual(x, y);
-
-  Data<float> expected_x(6, 3);
-
-  expected_x <<
     2, 2, 2,
     4, 4, 4,
     1, 1, 1,
@@ -36,8 +15,8 @@ TEST(SortedDataSpec, Constructor) {
     3, 3, 3,
     5, 5, 5;
 
-  DataColumn<int> expected_y(6);
-  expected_y <<
+  DataColumn<int> y(6);
+  y <<
     1,
     1,
     2,
@@ -45,74 +24,88 @@ TEST(SortedDataSpec, Constructor) {
     3,
     3;
 
-  std::set<int> expected_classes       = { 1, 2, 3 };
-  std::vector<int> expected_boundaries = { 1, 3 };
+  GroupSpec<int> spec(y);
 
-  ASSERT_EQ(expected_x.size(), actual.x.size());
-  ASSERT_EQ(expected_x.rows(), actual.x.rows());
-  ASSERT_EQ(expected_x.cols(), actual.x.cols());
-  ASSERT_EQ(expected_x, actual.x);
-
-  ASSERT_EQ(expected_y.size(), actual.y.size());
-  ASSERT_EQ(expected_y.rows(), actual.y.rows());
-  ASSERT_EQ(expected_y.cols(), actual.y.cols());
-  ASSERT_EQ(expected_y, actual.y);
-
-  ASSERT_EQ(expected_classes, actual.classes);
+  ASSERT_EQ(2, spec.group_size(1));
+  ASSERT_EQ(2, spec.group_size(2));
+  ASSERT_EQ(2, spec.group_size(3));
 }
 
-TEST(SortedDataSpec, GroupSize) {
+TEST(GroupSpec, GroupStart) {
   Data<float> x(6, 3);
   x <<
-    1, 1, 1,
     2, 2, 2,
-    3, 3, 3,
     4, 4, 4,
-    5, 5, 5,
-    6, 6, 6;
+    1, 1, 1,
+    6, 6, 6,
+    3, 3, 3,
+    5, 5, 5;
+
+  DataColumn<int> y(6);
+  y <<
+    1,
+    1,
+    2,
+    2,
+    3,
+    3;
+
+  GroupSpec<int> spec(y);
+
+  ASSERT_EQ(0, spec.group_start(1));
+  ASSERT_EQ(2, spec.group_start(2));
+  ASSERT_EQ(4, spec.group_start(3));
+}
+
+TEST(GroupSpec, GroupEnd) {
+  Data<float> x(6, 3);
+  x <<
+    2, 2, 2,
+    4, 4, 4,
+    1, 1, 1,
+    6, 6, 6,
+    3, 3, 3,
+    5, 5, 5;
+
+  DataColumn<int> y(6);
+  y <<
+    1,
+    1,
+    2,
+    2,
+    3,
+    3;
+
+  GroupSpec<int> spec(y);
+
+  ASSERT_EQ(1, spec.group_end(1));
+  ASSERT_EQ(3, spec.group_end(2));
+  ASSERT_EQ(5, spec.group_end(3));
+}
+
+TEST(GroupSpec, Group) {
+  Data<float> x(6, 3);
+  x <<
+    2, 2, 2,
+    4, 4, 4,
+    1, 1, 1,
+    6, 6, 6,
+    3, 3, 3,
+    5, 5, 5;
 
 
   DataColumn<int> y(6);
-
   y <<
+    1,
+    1,
     2,
-    1,
-    3,
-    1,
-    3,
-    2;
-
-  SortedDataSpec<float, int> actual(x, y);
-
-  ASSERT_EQ(2, actual.group_size(1));
-  ASSERT_EQ(2, actual.group_size(2));
-  ASSERT_EQ(2, actual.group_size(3));
-}
-
-TEST(SortedDataSpec, Group) {
-  Data<float> x(6, 3);
-  x <<
-    1, 1, 1,
-    2, 2, 2,
-    3, 3, 3,
-    4, 4, 4,
-    5, 5, 5,
-    6, 6, 6;
-
-
-  DataColumn<int> y(6);
-
-  y <<
     2,
-    1,
     3,
-    1,
-    3,
-    2;
+    3;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.group(1);
+  Data<float> actual = spec.group(x, 1);
 
   Data<float> expected(2, 3);
   expected <<
@@ -124,7 +117,7 @@ TEST(SortedDataSpec, Group) {
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 
-  actual = data.group(2);
+  actual = spec.group(x, 2);
 
   expected.resize(2, 3);
   expected <<
@@ -136,7 +129,7 @@ TEST(SortedDataSpec, Group) {
   ASSERT_EQ(expected.cols(), actual.cols());
   ASSERT_EQ(expected, actual);
 
-  actual = data.group(3);
+  actual = spec.group(x, 3);
 
   expected.resize(2, 3);
   expected <<
@@ -149,30 +142,9 @@ TEST(SortedDataSpec, Group) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, Analog) {
+TEST(GroupSpec, ErrorGroupsNotContiguous) {
   Data<float> x(6, 3);
   x <<
-    1, 1, 1,
-    2, 2, 2,
-    3, 3, 3,
-    4, 4, 4,
-    5, 5, 5,
-    6, 6, 6;
-
-  DataColumn<int> y(6);
-  y <<
-    2,
-    1,
-    3,
-    1,
-    3,
-    2;
-
-  SortedDataSpec<float, int> data(x, y);
-
-  Data<float> new_x(6, 3);
-
-  new_x <<
     2, 2, 2,
     4, 4, 4,
     1, 1, 1,
@@ -180,22 +152,78 @@ TEST(SortedDataSpec, Analog) {
     3, 3, 3,
     5, 5, 5;
 
-  SortedDataSpec<float, int> actual = data.analog(new_x);
+  DataColumn<int> y(6);
+  y <<
+    1,
+    2,
+    3,
+    1,
+    2,
+    3;
 
-  ASSERT_EQ(new_x.size(), actual.x.size());
-  ASSERT_EQ(new_x.rows(), actual.x.rows());
-  ASSERT_EQ(new_x.cols(), actual.x.cols());
-  ASSERT_EQ(new_x, actual.x);
-
-  ASSERT_EQ(data.y.size(), actual.y.size());
-  ASSERT_EQ(data.y.rows(), actual.y.rows());
-  ASSERT_EQ(data.y.cols(), actual.y.cols());
-  ASSERT_EQ(data.y, actual.y);
-
-  ASSERT_EQ(data.classes, actual.classes);
+  ASSERT_THROW((GroupSpec<int>(y)), std::invalid_argument);
 }
 
-TEST(SortedDataSpec, Remap) {
+TEST(GroupSpec, Subset) {
+  Data<float> x(6, 3);
+  x <<
+    1, 2, 2,
+    1, 4, 4,
+    2, 1, 1,
+    2, 6, 6,
+    3, 3, 3,
+    3, 5, 5;
+
+  DataColumn<int> y(6);
+  y <<
+    1,
+    1,
+    2,
+    2,
+    3,
+    3;
+
+  GroupSpec<int> spec = GroupSpec(y).subset({ 1, 3 });
+
+  ASSERT_EQ(2, spec.group_size(1));
+  ASSERT_EQ(0, spec.group_start(1));
+  ASSERT_EQ(1, spec.group_end(1));
+
+  ASSERT_EQ(2, spec.group_size(3));
+  ASSERT_EQ(4, spec.group_start(3));
+  ASSERT_EQ(5, spec.group_end(3));
+
+  Data<float> expected_group_1(2, 3);
+  expected_group_1 <<
+    1, 2, 2,
+    1, 4, 4;
+
+  ASSERT_EQ(expected_group_1, spec.group(x, 1));
+
+  Data<float> expected_group_3(2, 3);
+  expected_group_3 <<
+    3, 3, 3,
+    3, 5, 5;
+
+  Data<float> expected_x(4, 3);
+  expected_x <<
+    1, 2, 2,
+    1, 4, 4,
+    3, 3, 3,
+    3, 5, 5;
+
+  ASSERT_EQ(expected_x, spec.data(x));
+
+  DataColumn<float> expected_mean(3);
+  expected_mean <<
+    2.0,
+    3.5,
+    3.5;
+
+  ASSERT_EQ(expected_mean, spec.mean(x));
+}
+
+TEST(GroupSpec, Remap) {
   Data<float> x(6, 3);
   x <<
     1, 1, 1,
@@ -214,7 +242,7 @@ TEST(SortedDataSpec, Remap) {
     3,
     3;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
   std::map<int, int> mapping = {
     { 1, 0 },
@@ -222,91 +250,15 @@ TEST(SortedDataSpec, Remap) {
     { 3, 0 }
   };
 
-  SortedDataSpec<float, int> actual = data.remap(mapping);
+  GroupSpec<int> remapped = spec.remap(mapping);
 
-  Data<float> new_x(6, 3);
-  new_x <<
-    1, 1, 1,
-    1, 2, 2,
-    3, 1, 1,
-    3, 2, 2,
-    2, 1, 1,
-    2, 2, 2;
+  Data<float> remapped_x = remapped.data(x);
 
-
-  DataColumn<int> new_y(6);
-  new_y <<
-    0,
-    0,
-    0,
-    0,
-    1,
-    1;
-
-  ASSERT_EQ(new_x.size(), actual.x.size());
-  ASSERT_EQ(new_x.rows(), actual.x.rows());
-  ASSERT_EQ(new_x.cols(), actual.x.cols());
-  ASSERT_EQ(new_x, actual.x);
-
-  ASSERT_EQ(new_y.size(), actual.y.size());
-  ASSERT_EQ(new_y.rows(), actual.y.rows());
-  ASSERT_EQ(new_y.cols(), actual.y.cols());
-  ASSERT_EQ(new_y, actual.y);
-
-  ASSERT_EQ(std::set<int>({ 0, 1 }), actual.classes);
+  ASSERT_EQ_MATRIX(x, remapped_x);
+  ASSERT_EQ(std::set<int>({ 0, 1 }), remapped.groups);
 }
 
-TEST(SortedDataSpec, Subset) {
-  Data<float> x(6, 3);
-  x <<
-    1, 1, 1,
-    1, 2, 2,
-    2, 1, 1,
-    2, 2, 2,
-    3, 1, 1,
-    3, 2, 2;
-
-  DataColumn<int> y(6);
-  y <<
-    1,
-    1,
-    2,
-    2,
-    3,
-    3;
-
-  SortedDataSpec<float, int> data(x, y);
-
-  SortedDataSpec<float, int> actual = data.subset({ 1, 3 });
-
-  Data<float> new_x(4, 3);
-  new_x <<
-    1, 1, 1,
-    1, 2, 2,
-    3, 1, 1,
-    3, 2, 2;
-
-  DataColumn<int> new_y(4);
-  new_y <<
-    1,
-    1,
-    3,
-    3;
-
-  ASSERT_EQ(new_x.size(), actual.x.size());
-  ASSERT_EQ(new_x.rows(), actual.x.rows());
-  ASSERT_EQ(new_x.cols(), actual.x.cols());
-  ASSERT_EQ(new_x, actual.x);
-
-  ASSERT_EQ(new_y.size(), actual.y.size());
-  ASSERT_EQ(new_y.rows(), actual.y.rows());
-  ASSERT_EQ(new_y.cols(), actual.y.cols());
-  ASSERT_EQ(new_y, actual.y);
-
-  ASSERT_EQ(std::set<int>({ 1, 3 }), actual.classes);
-}
-
-TEST(SortedDataSpec, BetweenGroupsSumOfSquaresSingleGroup) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresSingleGroup) {
   Data<float> x(3, 3);
   x <<
     1.0, 2.0, 6.0,
@@ -319,9 +271,9 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresSingleGroup) {
     0,
     0;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.bgss();
+  Data<float> actual = spec.bgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -335,7 +287,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresSingleGroup) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, BetweenGroupsSumOfSquaresTwoEqualGroups) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
   Data<float> x(6, 3);
   x <<
     1.0, 2.0, 6.0,
@@ -354,9 +306,9 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresTwoEqualGroups) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.bgss();
+  Data<float> actual = spec.bgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -371,7 +323,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresTwoEqualGroups) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
   Data<float> x(8, 1);
   x <<
     23.0,
@@ -394,9 +346,9 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.bgss();
+  Data<float> actual = spec.bgss(x);
 
   Data<float> expected(1, 1);
   expected <<
@@ -408,7 +360,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
   Data<float> x(8, 1);
   x <<
     23.0,
@@ -431,9 +383,9 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequent
     3,
     3;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.bgss();
+  Data<float> actual = spec.bgss(x);
 
   Data<float> expected(1, 1);
   expected <<
@@ -445,7 +397,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequent
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
+TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
   Data<float> x(8, 3);
   x <<
     23.0, 1.0, 1.0,
@@ -468,9 +420,9 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.bgss();
+  Data<float> actual = spec.bgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -484,7 +436,7 @@ TEST(SortedDataSpec, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
   Data<float> x(3, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -497,9 +449,9 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
     0,
     0;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.wgss();
+  Data<float> actual = spec.wgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -513,7 +465,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
   Data<float> x(3, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -526,9 +478,9 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
     0,
     0;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.wgss();
+  Data<float> actual = spec.wgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -542,7 +494,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoEqualGroups) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
   Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -561,9 +513,9 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoEqualGroups) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.wgss();
+  Data<float> actual = spec.wgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -577,7 +529,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoEqualGroups) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
   Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -596,9 +548,9 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.wgss();
+  Data<float> actual = spec.wgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -612,7 +564,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
   Data<float> x(6, 3);
   x <<
     1.0, 1.0, 1.0,
@@ -631,9 +583,9 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
     1,
     1;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.wgss();
+  Data<float> actual = spec.wgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -647,7 +599,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
   Data<float> x(8, 3);
   x <<
     1.0, 2.0, 3.0,
@@ -671,9 +623,9 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
     2;
 
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.wgss();
+  Data<float> actual = spec.wgss(x);
 
   Data<float> expected(3, 3);
   expected <<
@@ -687,7 +639,7 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
+TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
   Data<float> x(8, 4);
   x <<
     1.0, 2.0, 3.0, 0.0,
@@ -710,9 +662,9 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
+  GroupSpec<int> spec(y);
 
-  Data<float> actual = data.wgss();
+  Data<float> actual = spec.wgss(x);
 
   Data<float> expected(4, 4);
   expected <<
@@ -720,6 +672,138 @@ TEST(SortedDataSpec, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
     24.5, 24.5, 24.5, 0.0,
     24.5, 24.5, 24.5, 0.0,
     0.0,  0.0,  0.0,  0.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(GroupSpecRemapped, Group) {
+  Data<float> x(6, 3);
+  x <<
+    2, 2, 2,
+    4, 4, 4,
+    1, 1, 1,
+    6, 6, 6,
+    3, 3, 3,
+    5, 5, 5;
+
+
+  DataColumn<int> y(6);
+  y <<
+    1,
+    1,
+    2,
+    2,
+    3,
+    3;
+
+  GroupSpec<int> base(y);
+  GroupSpec<int> spec = base.remap({ { 1, 1 }, { 2, 1 }, { 3, 2 } });
+
+  Data<float> actual = spec.group(x, 1);
+
+  Data<float> expected(4, 3);
+  expected <<
+    2, 2, 2,
+    4, 4, 4,
+    1, 1, 1,
+    6, 6, 6;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+
+  actual = spec.group(x, 2);
+
+  expected.resize(2, 3);
+  expected <<
+    3, 3, 3,
+    5, 5, 5;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(GroupSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
+  Data<float> x(8, 3);
+  x <<
+    23.0, 1.0, 1.0,
+    25.0, 1.0, 1.0,
+    18.0, 1.0, 1.0,
+    29.0, 1.0, 1.0,
+    19.0, 1.0, 1.0,
+    21.0, 1.0, 1.0,
+    35.0, 1.0, 1.0,
+    17.0, 1.0, 1.0;
+
+  DataColumn<int> y(8);
+  y <<
+    0, // 0
+    0, // 0
+    1, // 0
+    2, // 1
+    2, // 1
+    3, // 1
+    4, // 2
+    4; // 2
+
+  GroupSpec<int> spec(y);
+  GroupSpec<int> remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
+
+  Data<float> actual = remapped.bgss(x);
+
+  Data<float> expected(3, 3);
+  expected <<
+    19.875, 0.0, 0.0,
+    0.0,    0.0, 0.0,
+    0.0,    0.0, 0.0;
+
+  ASSERT_EQ(expected.size(), actual.size());
+  ASSERT_EQ(expected.rows(), actual.rows());
+  ASSERT_EQ(expected.cols(), actual.cols());
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(GroupSpecRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
+  Data<float> x(8, 3);
+  x <<
+    1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0,
+    7.0, 8.0, 9.0,
+    3.0, 2.0, 1.0,
+    4.0, 3.0, 2.0,
+    5.0, 4.0, 3.0,
+    9.0, 8.0, 7.0,
+    6.0, 5.0, 4.0;
+
+  DataColumn<int> y(8);
+  y <<
+    0,  // 0
+    0,  // 0
+    1,  // 0
+    2,  // 1
+    2,  // 1
+    3,  // 1
+    4,  // 2
+    4;  // 2
+
+
+  GroupSpec<int> spec(y);
+
+  GroupSpec<int> remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
+
+  Data<float> actual = remapped.wgss(x);
+
+  Data<float> expected(3, 3);
+  expected <<
+    24.5, 24.5, 24.5,
+    24.5, 24.5, 24.5,
+    24.5, 24.5, 24.5;
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected.rows(), actual.rows());

@@ -3,6 +3,10 @@
 #include "Forest.hpp"
 #include "VIStrategy.hpp"
 
+#include "TrainingSpec.hpp"
+#include "TrainingSpecGLDA.hpp"
+#include "TrainingSpecUGLDA.hpp"
+
 #include "Macros.hpp"
 
 using namespace models;
@@ -16,8 +20,8 @@ static Projector<float> as_projector(std::vector<float> vector) {
 }
 
 TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -49,8 +53,8 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -82,79 +86,77 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
     2,
     2;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0;
   const int seed     = 0;
 
 
   Forest<float, int> result = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
-  Forest<float, int> expect(
-    TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
-    seed);
+  Forest<float, int> expect;
 
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9580563306808472, -0.1769358515739441, 0.006788997910916805, 0.10231061279773712, -0.2007693350315094 }),
         3.9684371948242188,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.037195101380348206, 0.9892118573188782, -0.038433052599430084, 0.03852792829275131, 0.13082443177700043 }),
           2.7188374996185303,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)
           ),
-        std::make_unique<Response<float, int> >(2)
+        TreeResponse<float, int>::make(2)
         ))
     );
 
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9805806875228882, -0.19611600041389465, -7.279736990994934e-08, 1.1245992226349699e-07, -9.458754135494019e-08 }),
         4.118439674377441,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 1.0, -1.9481838364754367e-08, 1.0491407920198981e-07, -4.4338150928524556e-08 }),
           2.5,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)
           ),
-        std::make_unique<Response<float, int> >(2)
+        TreeResponse<float, int>::make(2)
         ))
     );
 
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9729747772216797, -0.1960887610912323, -0.038586050271987915, 0.0533757247030735, -0.10262320935726166 }),
         3.9661753177642822,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.2779413163661957, 0.9268009662628174, -0.11087987571954727, 0.06655726581811905, 0.2169434279203415 }),
           3.0928874015808105,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)
           ),
-        std::make_unique<Response<float, int> >(2)
+        TreeResponse<float, int>::make(2)
         ))
     );
 
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9740977883338928, -0.19465802609920502, -0.022930234670639038, 0.08263365924358368, -0.07673182338476181 }),
         4.049604415893555,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.14019571244716644, 0.9772301912307739, 0.0012194644659757614, 0.025386467576026917, 0.157227024435997 }),
           2.9420154094696045,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)
           ),
-        std::make_unique<Response<float, int> >(2)
+        TreeResponse<float, int>::make(2)
         ))
     );
 
@@ -163,8 +165,8 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
 }
 
 TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -196,8 +198,8 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -235,8 +237,9 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   const int seed     = 1;
 
   Forest<float, int> result = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
@@ -245,47 +248,47 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   // First tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9023475646972656, 0.0, 0.0, 0.4310089647769928, 0.0 }),
         5.072210311889648,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 0.9889134764671326, 0.0, 0.14849309623241425, 0.0 }),
           2.7555019855499268,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)
           ),
-        std::make_unique<Response<float, int> >(2)
+        TreeResponse<float, int>::make(2)
         ))
     );
 
   // Second tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9626245498657227, 0.0, 0.0, 0.0, -0.2708394229412079 }),
         4.723257541656494,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
           2.5,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)
           ),
-        std::make_unique<Response<float, int> >(2)
+        TreeResponse<float, int>::make(2)
         ))
     );
 
   // Third tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.0, 0.0, 0.43462103605270386, 0.0, 0.9006133675575256 }),
         1.1528732776641846,
-        std::make_unique<Response<float, int> >(0),
-        std::make_unique<Condition<float, int> >(
+        TreeResponse<float, int>::make(0),
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 0.0, -0.9125092029571533, 0.0, 0.4090558588504791 }),
           0.10619720071554184,
-          std::make_unique<Response<float, int> >(1),
-          std::make_unique<Response<float, int> >(2)
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(2)
           ))
       )
     );
@@ -293,15 +296,15 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   // Fourth tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ -0.9543675780296326, 0.0, 0.2986343502998352, 0.0, 0.0 }),
         -4.9326019287109375,
-        std::make_unique<Response<float, int> >(2),
-        std::make_unique<Condition<float, int> >(
+        TreeResponse<float, int>::make(2),
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 0.9989996552467346, 0.0, 0.04471937566995621, 0.0 }),
           2.6413731575012207,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)
           ))
       )
     );
@@ -311,8 +314,8 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
 }
 
 TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
-  Data<float> data(10, 12);
-  data <<
+  Data<float> x(10, 12);
+  x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -324,8 +327,8 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
     4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
     4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -337,65 +340,63 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
     1,
     1;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0.1;
   const int seed     = 0;
 
   Forest<float, int> result = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
 
-  Forest<float, int> expect(
-    TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    std::make_shared<SortedDataSpec<float, int> >(data, groups, std::set<int>({ 0, 1, 2 })),
-    seed);
+  Forest<float, int> expect;
 
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }),
         2.5,
-        std::make_unique<Response<float, int> >(0),
-        std::make_unique<Response<float, int> >(1)
+        TreeResponse<float, int>::make(0),
+        TreeResponse<float, int>::make(1)
         ))
     );
 
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9404149055480957, 0.1384861171245575, 0.27520284056663513, -0.028697863221168518,
                        -0.04985111951828003, -0.04985113441944122, -0.04985114187002182, -0.04985113441944122,
                        -0.04985114559531212, -0.049851153045892715, -0.04985114559531212, -0.04985113441944122 }),
         2.056182384490967,
-        std::make_unique<Response<float, int> >(0),
-        std::make_unique<Response<float, int> >(1)
+        TreeResponse<float, int>::make(0),
+        TreeResponse<float, int>::make(1)
         ))
     );
 
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9504902362823486, -0.032086681574583054, -0.0, -0.0015316768549382687,
                        -0.10927978157997131, -0.10927978903055191, -0.10927974432706833, -0.10927967727184296,
                        -0.10927972197532654, -0.10927971452474594, -0.10927971452474594, -0.10927971452474594 }),
         1.0509742498397827,
-        std::make_unique<Response<float, int> >(0),
-        std::make_unique<Response<float, int> >(1)
+        TreeResponse<float, int>::make(0),
+        TreeResponse<float, int>::make(1)
         ))
     );
 
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 1.0, -1.4527107339290524e-07, -2.9038861271146743e-07, -9.766825570522997e-08,
                        8.5481985934166e-08, 8.548196461788393e-08, 8.54819361961745e-08, 8.54819361961745e-08,
                        8.54819361961745e-08, 8.54819361961745e-08, 8.54819361961745e-08, 8.54819361961745e-08 }),
         2.5,
-        std::make_unique<Response<float, int> >(0),
-        std::make_unique<Response<float, int> >(1)
+        TreeResponse<float, int>::make(0),
+        TreeResponse<float, int>::make(1)
         ))
     );
 
@@ -408,64 +409,64 @@ TEST(Forest, PredictDataColumnSomeVariablesMultivariateThreeGroups) {
 
   forest.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.0, 0.0, 0.0, 0.5982325379690726, -0.8013225508589422 }),
         -0.3483987096124312,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.999534397402818, 0.0, -0.030512102657559676, 0.0, 0.0 }),
           5.55339996020167,
-          std::make_unique<Response<float, int> >(1),
-          std::make_unique<Response<float, int> >(2)),
-        std::make_unique<Response<float, int> >(0)
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(2)),
+        TreeResponse<float, int>::make(0)
         ))
     );
 
 
   forest.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9998222455113714, 0.0, -0.018854107791118468, 0.0, 0.0 }),
         5.300417766337716,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.9989543519613864, 0.0, 0.0, 0.0457187346435417, 0.0 }),
           1.6094899541803496,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)),
-        std::make_unique<Response<float, int> >(2)))
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)),
+        TreeResponse<float, int>::make(2)))
     );
 
 
   forest.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9741975531020036, -0.2256969816591904, 0.0, 0.0, 0.0 }),
         3.9550147456664178,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 0.9995561292785718, -0.029791683766431428, 0.0, 0.0 }),
           2.6217629631670403,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)),
-        std::make_unique<Response<float, int> >(2)))
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)),
+        TreeResponse<float, int>::make(2)))
     );
 
 
   forest.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9615748657636985, 0.0, 0.0, 0.0, -0.2745428519038971 }),
         4.734758305714628,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 0.0, 0.3772334858435029, 0.0, -0.926118187467647 }),
           -0.8315603229605784,
-          std::make_unique<Response<float, int> >(1),
-          std::make_unique<Response<float, int> >(0)),
-        std::make_unique<Response<float, int> >(2)))
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(0)),
+        TreeResponse<float, int>::make(2)))
     );
 
-  DataColumn<float> data(5);
-  data << 9, 8, 1, 1, 1;
+  DataColumn<float> x(5);
+  x << 9, 8, 1, 1, 1;
 
-  int result = forest.predict(data);
+  int result = forest.predict(x);
 
   ASSERT_EQ(2, result);
 }
@@ -475,65 +476,65 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
 
   forest.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.0, 0.0, 0.0, 0.5982325379690726, -0.8013225508589422 }),
         -0.3483987096124312,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.999534397402818, 0.0, -0.030512102657559676, 0.0, 0.0 }),
           5.55339996020167,
-          std::make_unique<Response<float, int> >(1),
-          std::make_unique<Response<float, int> >(2)),
-        std::make_unique<Response<float, int> >(0))
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(2)),
+        TreeResponse<float, int>::make(0))
       )
     );
 
 
   forest.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9998222455113714, 0.0, -0.018854107791118468, 0.0, 0.0 }),
         5.300417766337716,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.9989543519613864, 0.0, 0.0, 0.0457187346435417, 0.0 }),
           1.6094899541803496,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)),
-        std::make_unique<Response<float, int> >(2))
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)),
+        TreeResponse<float, int>::make(2))
       )
     );
 
 
   forest.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9741975531020036, -0.2256969816591904, 0.0, 0.0, 0.0 }),
         3.9550147456664178,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 0.9995561292785718, -0.029791683766431428, 0.0, 0.0 }),
           2.6217629631670403,
-          std::make_unique<Response<float, int> >(0),
-          std::make_unique<Response<float, int> >(1)),
-        std::make_unique<Response<float, int> >(2))
+          TreeResponse<float, int>::make(0),
+          TreeResponse<float, int>::make(1)),
+        TreeResponse<float, int>::make(2))
       )
     );
 
 
   forest.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
-      std::make_unique<Condition<float, int> >(
+      TreeCondition<float, int>::make(
         as_projector({ 0.9615748657636985, 0.0, 0.0, 0.0, -0.2745428519038971 }),
         4.734758305714628,
-        std::make_unique<Condition<float, int> >(
+        TreeCondition<float, int>::make(
           as_projector({ 0.0, 0.0, 0.3772334858435029, 0.0, -0.926118187467647 }),
           -0.8315603229605784,
-          std::make_unique<Response<float, int> >(1),
-          std::make_unique<Response<float, int> >(0)),
-        std::make_unique<Response<float, int> >(2))
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(0)),
+        TreeResponse<float, int>::make(2))
       )
     );
 
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -565,8 +566,8 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -598,17 +599,17 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
     2,
     2;
 
-  DataColumn<int> result = forest.predict(data);
+  DataColumn<int> result = forest.predict(x);
 
-  ASSERT_EQ(groups.size(), result.size());
-  ASSERT_EQ(groups.cols(), result.cols());
-  ASSERT_EQ(groups.rows(), result.rows());
-  ASSERT_EQ(groups, result);
+  ASSERT_EQ(y.size(), result.size());
+  ASSERT_EQ(y.cols(), result.cols());
+  ASSERT_EQ(y.rows(), result.rows());
+  ASSERT_EQ(y, result);
 }
 
 TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -640,8 +641,8 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -679,8 +680,9 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
@@ -698,8 +700,8 @@ TEST(Forest, VariableImportanceProjectorLDASomeVariablesMultivariateThreeGroups)
 }
 
 TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
-  Data<float> data(10, 12);
-  data <<
+  Data<float> x(10, 12);
+  x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -711,8 +713,8 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
     4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
     4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -724,13 +726,14 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
     1,
     1;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0.1;
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
@@ -754,8 +757,8 @@ TEST(Forest, VariableImportanceProjectorPDAAllVariablesMultivariateTwoGroups) {
 }
 
 TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -787,8 +790,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -826,8 +829,9 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
@@ -846,8 +850,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedLDASomeVariablesMultivariateThre
 }
 
 TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGroups) {
-  Data<float> data(10, 12);
-  data <<
+  Data<float> x(10, 12);
+  x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -859,8 +863,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
     4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
     4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -872,13 +876,14 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
     1,
     1;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0.1;
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
@@ -903,8 +908,8 @@ TEST(Forest, VariableImportanceProjectorAdjustedPDAAllVariablesMultivariateTwoGr
 }
 
 TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroups) {
-  Data<float> data(30, 5);
-  data <<
+  Data<float> x(30, 5);
+  x <<
     1, 0, 1, 1, 1,
     1, 0, 1, 0, 0,
     1, 0, 0, 0, 1,
@@ -936,8 +941,8 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
     9, 8, 2, 1, 1,
     9, 8, 1, 1, 1;
 
-  DataColumn<int> groups(30);
-  groups <<
+  DataColumn<int> y(30);
+  y <<
     0,
     0,
     0,
@@ -975,8 +980,9 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
   const int seed     = 1;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
@@ -997,8 +1003,8 @@ TEST(Forest, VariableImportancePermutationLDASomeVariablesMultivariateThreeGroup
 }
 
 TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) {
-  Data<float> data(10, 12);
-  data <<
+  Data<float> x(10, 12);
+  x <<
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1010,8 +1016,8 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
     4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
     4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2;
 
-  DataColumn<int> groups(10);
-  groups <<
+  DataColumn<int> y(10);
+  y <<
     0,
     0,
     0,
@@ -1023,13 +1029,14 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
     1,
     1;
 
-  const int n_vars   = data.cols();
+  const int n_vars   = x.cols();
   const float lambda = 0.1;
   const int seed     = 0;
 
   Forest<float, int> forest = Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     4,
     seed);
 
@@ -1056,7 +1063,7 @@ TEST(Forest, VariableImportancePermutationPDAAllVariablesMultivariateTwoGroups) 
 }
 
 
-TEST(Forest, ErrorRateDataSpecMin) {
+TEST(Forest, ErrorRateGroupSpecMin) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1123,18 +1130,17 @@ TEST(Forest, ErrorRateDataSpecMin) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
-  DataColumn<int> predictions = forest.predict(data.x);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
+  DataColumn<int> predictions = forest.predict(x);
 
-  float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
+  float result = forest.error_rate(x, predictions);
 
   ASSERT_FLOAT_EQ(0.0, result);
 }
 
-TEST(Forest, ErrorRateDataSpecMax) {
+TEST(Forest, ErrorRateGroupSpecMax) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1201,18 +1207,16 @@ TEST(Forest, ErrorRateDataSpecMax) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
-
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
 
-  float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
+  float result = forest.error_rate(x, predictions);
 
   ASSERT_FLOAT_EQ(1.0, result);
 }
 
-TEST(Forest, ErrorRateDataSpecGeneric) {
+TEST(Forest, ErrorRateGroupSpecGeneric) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1279,258 +1283,13 @@ TEST(Forest, ErrorRateDataSpecGeneric) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
-
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
   DataColumn<int> predictions = DataColumn<int>::Zero(30);
 
-  float result = forest.error_rate(SortedDataSpec<float, int>(x, predictions));
+  float result = forest.error_rate(x, predictions);
 
   ASSERT_NEAR(0.666, result, 0.1);
-}
-
-TEST(Forest, ErrorRateBootstrapDataSpecMin) {
-  Data<float> x(30, 5);
-  x <<
-    1, 0, 1, 1, 1,
-    1, 0, 1, 0, 0,
-    1, 0, 0, 0, 1,
-    1, 0, 1, 2, 1,
-    1, 0, 0, 1, 1,
-    1, 1, 1, 1, 0,
-    1, 0, 0, 2, 1,
-    1, 0, 1, 1, 2,
-    1, 0, 0, 2, 0,
-    1, 0, 2, 1, 0,
-    2, 5, 0, 0, 1,
-    2, 5, 0, 0, 2,
-    3, 5, 1, 0, 2,
-    2, 5, 1, 0, 1,
-    2, 5, 0, 1, 1,
-    2, 5, 0, 1, 2,
-    2, 5, 2, 1, 1,
-    2, 5, 1, 1, 1,
-    2, 5, 1, 1, 2,
-    2, 5, 2, 1, 2,
-    2, 5, 1, 2, 1,
-    2, 5, 2, 1, 1,
-    9, 8, 0, 0, 1,
-    9, 8, 0, 0, 2,
-    9, 8, 1, 0, 2,
-    9, 8, 1, 0, 1,
-    9, 8, 0, 1, 1,
-    9, 8, 0, 1, 2,
-    9, 8, 2, 1, 1,
-    9, 8, 1, 1, 1;
-
-  DataColumn<int> y(30);
-  y <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
-
-  SortedDataSpec<float, int> data(x, y);
-
-  const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
-  DataColumn<int> predictions = forest.predict(data.x);
-
-  std::vector<int> sample_indices(10);
-  std::iota(sample_indices.begin(), sample_indices.end(), 0);
-
-  float result = forest.error_rate(BootstrapDataSpec<float, int>(x, predictions, sample_indices));
-
-  ASSERT_FLOAT_EQ(0.0, result);
-}
-
-TEST(Forest, ErrorRateBootstrapDataSpecMax) {
-  Data<float> x(30, 5);
-  x <<
-    1, 0, 1, 1, 1,
-    1, 0, 1, 0, 0,
-    1, 0, 0, 0, 1,
-    1, 0, 1, 2, 1,
-    1, 0, 0, 1, 1,
-    1, 1, 1, 1, 0,
-    1, 0, 0, 2, 1,
-    1, 0, 1, 1, 2,
-    1, 0, 0, 2, 0,
-    1, 0, 2, 1, 0,
-    2, 5, 0, 0, 1,
-    2, 5, 0, 0, 2,
-    3, 5, 1, 0, 2,
-    2, 5, 1, 0, 1,
-    2, 5, 0, 1, 1,
-    2, 5, 0, 1, 2,
-    2, 5, 2, 1, 1,
-    2, 5, 1, 1, 1,
-    2, 5, 1, 1, 2,
-    2, 5, 2, 1, 2,
-    2, 5, 1, 2, 1,
-    2, 5, 2, 1, 1,
-    9, 8, 0, 0, 1,
-    9, 8, 0, 0, 2,
-    9, 8, 1, 0, 2,
-    9, 8, 1, 0, 1,
-    9, 8, 0, 1, 1,
-    9, 8, 0, 1, 2,
-    9, 8, 2, 1, 1,
-    9, 8, 1, 1, 1;
-
-  DataColumn<int> y(30);
-  y <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
-
-  SortedDataSpec<float, int> data(x, y);
-
-  const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
-  DataColumn<int> predictions = DataColumn<int>::Constant(30, 3);
-
-  std::vector<int> sample_indices(10);
-  std::iota(sample_indices.begin(), sample_indices.end(), 0);
-
-  float result = forest.error_rate(BootstrapDataSpec<float, int>(x, predictions, sample_indices));
-
-  ASSERT_FLOAT_EQ(1.0, result);
-}
-
-TEST(Forest, ErrorRateBootstrapDataSpecGeneric) {
-  Data<float> x(30, 5);
-  x <<
-    1, 0, 1, 1, 1,
-    1, 0, 1, 0, 0,
-    1, 0, 0, 0, 1,
-    1, 0, 1, 2, 1,
-    1, 0, 0, 1, 1,
-    1, 1, 1, 1, 0,
-    1, 0, 0, 2, 1,
-    1, 0, 1, 1, 2,
-    1, 0, 0, 2, 0,
-    1, 0, 2, 1, 0,
-    2, 5, 0, 0, 1,
-    2, 5, 0, 0, 2,
-    3, 5, 1, 0, 2,
-    2, 5, 1, 0, 1,
-    2, 5, 0, 1, 1,
-    2, 5, 0, 1, 2,
-    2, 5, 2, 1, 1,
-    2, 5, 1, 1, 1,
-    2, 5, 1, 1, 2,
-    2, 5, 2, 1, 2,
-    2, 5, 1, 2, 1,
-    2, 5, 2, 1, 1,
-    9, 8, 0, 0, 1,
-    9, 8, 0, 0, 2,
-    9, 8, 1, 0, 2,
-    9, 8, 1, 0, 1,
-    9, 8, 0, 1, 1,
-    9, 8, 0, 1, 2,
-    9, 8, 2, 1, 1,
-    9, 8, 1, 1, 1;
-
-  DataColumn<int> y(30);
-  y <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
-
-  SortedDataSpec<float, int> data(x, y);
-
-  const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
-  DataColumn<int> predictions = DataColumn<int>::Zero(30);
-
-  std::vector<int> sample_indices(20);
-  std::iota(sample_indices.begin(), sample_indices.end(), 0);
-
-  float result = forest.error_rate(BootstrapDataSpec<float, int>(x, predictions, sample_indices));
-
-  ASSERT_NEAR(0.5, result, 0.1);
 }
 
 TEST(Forest, ErrorRate) {
@@ -1600,17 +1359,15 @@ TEST(Forest, ErrorRate) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
-
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
 
   float result = forest.error_rate();
 
   ASSERT_NEAR(0.0, result, 0.1);
 }
 
-TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
+TEST(Forest, ConfusionMatrixGroupSpecDiagonal) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1677,13 +1434,13 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
+
 
   const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
-  DataColumn<int> predictions = forest.predict(data.x);
+  Forest<float, int> forest   = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
+  DataColumn<int> predictions = forest.predict(x);
 
-  ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<float, int>(x, predictions));
+  ConfusionMatrix result = forest.confusion_matrix(x, predictions);
 
   Data<int> expected = Data<int>::Zero(3, 3);
   expected.diagonal() << 10, 12, 8;
@@ -1696,7 +1453,7 @@ TEST(Forest, ConfusionMatrixDataSpecDiagonal) {
   ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
-TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
+TEST(Forest, ConfusionMatrixGroupSpecZeroDiagonal) {
   Data<float> x(30, 5);
   x <<
     1, 0, 1, 1, 1,
@@ -1763,10 +1520,9 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
 
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
 
   DataColumn<int> predictions(30);
   predictions <<
@@ -1801,216 +1557,7 @@ TEST(Forest, ConfusionMatrixDataSpecZeroDiagonal) {
     0,
     0;
 
-  ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<float, int>(x, predictions));
-
-  Data<int> expected(3, 3);
-  expected <<
-    0, 0, 8,
-    10, 0, 0,
-    0, 12, 0;
-
-  ASSERT_EQ(expected.size(), result.values.size());
-  ASSERT_EQ(expected.rows(), result.values.rows());
-  ASSERT_EQ(expected.cols(), result.values.cols());
-  ASSERT_EQ(expected, result.values);
-
-  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
-}
-
-TEST(Forest, ConfusionMatrixBootstrapDataSpecDiagonal) {
-  Data<float> x(30, 5);
-  x <<
-    1, 0, 1, 1, 1,
-    1, 0, 1, 0, 0,
-    1, 0, 0, 0, 1,
-    1, 0, 1, 2, 1,
-    1, 0, 0, 1, 1,
-    1, 1, 1, 1, 0,
-    1, 0, 0, 2, 1,
-    1, 0, 1, 1, 2,
-    1, 0, 0, 2, 0,
-    1, 0, 2, 1, 0,
-    2, 5, 0, 0, 1,
-    2, 5, 0, 0, 2,
-    3, 5, 1, 0, 2,
-    2, 5, 1, 0, 1,
-    2, 5, 0, 1, 1,
-    2, 5, 0, 1, 2,
-    2, 5, 2, 1, 1,
-    2, 5, 1, 1, 1,
-    2, 5, 1, 1, 2,
-    2, 5, 2, 1, 2,
-    2, 5, 1, 2, 1,
-    2, 5, 2, 1, 1,
-    9, 8, 0, 0, 1,
-    9, 8, 0, 0, 2,
-    9, 8, 1, 0, 2,
-    9, 8, 1, 0, 1,
-    9, 8, 0, 1, 1,
-    9, 8, 0, 1, 2,
-    9, 8, 2, 1, 1,
-    9, 8, 1, 1, 1;
-
-  DataColumn<int> y(30);
-  y <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
-
-  SortedDataSpec<float, int> data(x, y);
-
-  const int seed              = 0;
-  Forest<float, int> forest   = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
-  DataColumn<int> predictions = forest.predict(data.x);
-
-  std::vector<int> sample_indices = { 0, 1, 2, 3, 13, 14, 15, 16, 26, 27, 28, 29 };
-
-  ConfusionMatrix result = forest.confusion_matrix(BootstrapDataSpec<float, int>(x, predictions, sample_indices));
-
-  Data<int> expected = Data<int>::Zero(3, 3);
-  expected.diagonal() << 4, 4, 4;
-
-  ASSERT_EQ(expected.size(), result.values.size());
-  ASSERT_EQ(expected.rows(), result.values.rows());
-  ASSERT_EQ(expected.cols(), result.values.cols());
-  ASSERT_EQ(expected, result.values);
-
-  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
-}
-
-TEST(Forest, ConfusionMatrixBootstrapDataSpecZeroDiagonal) {
-  Data<float> x(30, 5);
-  x <<
-    1, 0, 1, 1, 1,
-    1, 0, 1, 0, 0,
-    1, 0, 0, 0, 1,
-    1, 0, 1, 2, 1,
-    1, 0, 0, 1, 1,
-    1, 1, 1, 1, 0,
-    1, 0, 0, 2, 1,
-    1, 0, 1, 1, 2,
-    1, 0, 0, 2, 0,
-    1, 0, 2, 1, 0,
-    2, 5, 0, 0, 1,
-    2, 5, 0, 0, 2,
-    3, 5, 1, 0, 2,
-    2, 5, 1, 0, 1,
-    2, 5, 0, 1, 1,
-    2, 5, 0, 1, 2,
-    2, 5, 2, 1, 1,
-    2, 5, 1, 1, 1,
-    2, 5, 1, 1, 2,
-    2, 5, 2, 1, 2,
-    2, 5, 1, 2, 1,
-    2, 5, 2, 1, 1,
-    9, 8, 0, 0, 1,
-    9, 8, 0, 0, 2,
-    9, 8, 1, 0, 2,
-    9, 8, 1, 0, 1,
-    9, 8, 0, 1, 1,
-    9, 8, 0, 1, 2,
-    9, 8, 2, 1, 1,
-    9, 8, 1, 1, 1;
-
-  DataColumn<int> y(30);
-  y <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2;
-
-  SortedDataSpec<float, int> data(x, y);
-
-  const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
-
-  DataColumn<int> predictions(30);
-  predictions <<
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0;
-
-  ConfusionMatrix result = forest.confusion_matrix(SortedDataSpec<float, int>(x, predictions));
+  ConfusionMatrix result = forest.confusion_matrix(x, predictions);
 
   Data<int> expected(3, 3);
   expected <<
@@ -2093,10 +1640,8 @@ TEST(Forest, ConfusionMatrix) {
     2,
     2;
 
-  SortedDataSpec<float, int> data(x, y);
-
   const int seed            = 0;
-  Forest<float, int> forest = Forest<float, int>::train(*TrainingSpec<float, int>::lda(), data, 4, seed);
+  Forest<float, int> forest = Forest<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, 4, seed);
 
   ConfusionMatrix result = forest.confusion_matrix();
 

@@ -141,41 +141,39 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   gtest_discover_tests(pptree-test)
 endif()
 
-if(NOT PPTREE_SKIP_CLI)
-  # Add profiler executable and its dependencies
-  # Disable coverage for csv-parser on all platforms
-  set(CSV_PARSER_COVERAGE OFF CACHE BOOL "Disable coverage for csv-parser" FORCE)
-  set(BUILD_TESTS OFF CACHE BOOL "Disable csv-parser tests" FORCE)
 
-  # Fetch csv-parser
-  FetchContent_Declare(
-    csv
-    GIT_REPOSITORY https://github.com/vincentlaucsb/csv-parser.git
-    GIT_SHALLOW TRUE
-    GIT_TAG 2.2.1
-  )
+# Add profiler executable and its dependencies
+# Disable coverage for csv-parser on all platforms
+set(CSV_PARSER_COVERAGE OFF CACHE BOOL "Disable coverage for csv-parser" FORCE)
+set(BUILD_TESTS OFF CACHE BOOL "Disable csv-parser tests" FORCE)
 
-  FetchContent_GetProperties(csv)
-  if(NOT csv_POPULATED)
-    FetchContent_Populate(csv)
-    add_library(csv INTERFACE)
-    target_include_directories(csv INTERFACE ${csv_SOURCE_DIR}/single_include)
-  endif()
+# Fetch csv-parser
+FetchContent_Declare(
+  csv
+  GIT_REPOSITORY https://github.com/vincentlaucsb/csv-parser.git
+  GIT_SHALLOW TRUE
+  GIT_TAG 2.2.1
+)
 
-  # Fetch getopt for command line parsing
-  FetchContent_Declare(
-    getopt
-    GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
-    GIT_TAG master
-  )
-  FetchContent_MakeAvailable(getopt)
-
-  add_library(getopt_lib INTERFACE)
-  target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
-
-  # Setup cli executable
-  add_executable(pptree-cli src/CLI.cpp)
-  target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/single_include)
-  target_link_libraries(pptree-cli pptree csv getopt_lib)
-
+FetchContent_GetProperties(csv)
+if(NOT csv_POPULATED)
+  FetchContent_Populate(csv)
+  add_library(csv INTERFACE)
+  target_include_directories(csv INTERFACE ${csv_SOURCE_DIR}/single_include)
 endif()
+
+# Fetch getopt for command line parsing
+FetchContent_Declare(
+  getopt
+  GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
+  GIT_TAG master
+)
+FetchContent_MakeAvailable(getopt)
+
+add_library(getopt_lib INTERFACE)
+target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
+
+# Setup cli executable
+add_executable(pptree-cli src/CLI.cpp)
+target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/single_include)
+target_link_libraries(pptree-cli pptree csv getopt_lib)

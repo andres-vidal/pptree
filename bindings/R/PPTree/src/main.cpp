@@ -11,33 +11,36 @@ using namespace pptree;
 
 // [[Rcpp::export]]
 Tree<float, int> pptree_train_glda(
-  const Data<float> &     data,
-  const DataColumn<int> & groups,
-  const float             lambda) {
+  Data<float> &     x,
+  DataColumn<int> & y,
+  const float       lambda) {
   return Tree<float, int>::train(
-    *TrainingSpec<float, int>::glda(lambda),
-    SortedDataSpec<float, int>(data, groups));
+    TrainingSpecGLDA<float, int>(lambda),
+    x,
+    y);
 }
 
 // [[Rcpp::export]]
 Forest<float, int> pptree_train_forest_glda(
-  const Data<float> &     data,
-  const DataColumn<int> & groups,
-  const int               size,
-  const int               n_vars,
-  const float             lambda,
-  SEXP                    n_threads) {
+  Data<float> &     x,
+  DataColumn<int> & y,
+  const int         size,
+  const int         n_vars,
+  const float       lambda,
+  SEXP              n_threads) {
   if (n_threads == R_NilValue) {
     return Forest<float, int>::train(
-      *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-      SortedDataSpec<float, int>(data, groups),
+      TrainingSpecUGLDA<float, int>(n_vars, lambda),
+      x,
+      y,
       size,
       R::runif(0, INT_MAX));
   }
 
   return Forest<float, int>::train(
-    *TrainingSpec<float, int>::uniform_glda(n_vars, lambda),
-    SortedDataSpec<float, int>(data, groups),
+    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    x,
+    y,
     size,
     R::runif(0, INT_MAX),
     as<const int>(n_threads));
@@ -66,9 +69,9 @@ Data<float> pptree_variable_importance(
 // [[Rcpp::export]]
 Data<float> pptree_forest_variable_importance(
   const Forest<float, int> &forest) {
-  DataColumn<float> projector = forest.variable_importance(VIProjectorStrategy<float, int>());
+  DataColumn<float> projector          = forest.variable_importance(VIProjectorStrategy<float, int>());
   DataColumn<float> projector_adjusted = forest.variable_importance(VIProjectorAdjustedStrategy<float, int>());
-  DataColumn<float> permutation = forest.variable_importance(VIPermutationStrategy<float, int>());
+  DataColumn<float> permutation        = forest.variable_importance(VIPermutationStrategy<float, int>());
 
   Data<float> result = Data<float>(projector.size(), 3);
 
@@ -103,7 +106,7 @@ Data<float> parse_confusion_matrix(const ConfusionMatrix &confusion_matrix) {
 // [[Rcpp::export]]
 Data<float> pptree_confusion_matrix(
   const Tree<float, int> &tree) {
-  return parse_confusion_matrix(tree.confusion_matrix(*tree.training_data));
+  return parse_confusion_matrix(tree.confusion_matrix(tree.x, tree.y));
 }
 
 // [[Rcpp::export]]

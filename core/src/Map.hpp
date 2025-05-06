@@ -31,4 +31,26 @@ namespace utils {
 
     return result;
   }
+
+  template<typename K, typename V>
+  std::set<K> keys(const std::map<K, V> &map) {
+    std::set<K> result;
+
+    for (const auto&[key, value] : map) {
+      result.insert(key);
+    }
+
+    return result;
+  }
+
+  template<typename K, typename V>
+  std::set<V> values(const std::map<K, V> &map) {
+    std::set<V> result;
+
+    for (const auto&[key, value] : map) {
+      result.insert(value);
+    }
+
+    return result;
+  }
 }

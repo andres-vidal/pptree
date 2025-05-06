@@ -16,22 +16,22 @@ namespace models {
   template<typename T, typename R>
   struct Forest {
     static Forest<T, R> train(
-      const TrainingSpec<T, R> &          training_spec,
-      const stats::SortedDataSpec<T, R> & training_data,
-      const int                           size,
-      const int                           seed);
-
-    static Forest<T, R> train(
-      const TrainingSpec<T, R> &          training_spec,
-      const stats::SortedDataSpec<T, R> & training_data,
-      const int                           size,
-      const int                           seed,
-      const int                           n_threads);
+      const TrainingSpec<T, R> & training_spec,
+      stats::Data<T> &           x,
+      stats::DataColumn<R> &     y,
+      const int                  size,
+      const int                  seed,
+      const int                  n_threads = std::thread::hardware_concurrency());
 
 
     std::vector<std::unique_ptr<BootstrapTree<T, R> > > trees;
-    std::unique_ptr<TrainingSpec<T, R> > training_spec;
-    std::shared_ptr<stats::SortedDataSpec<T, R> > training_data;
+
+    TrainingSpecPtr<T, R> training_spec;
+
+    const stats::Data<T> x;
+    const stats::DataColumn<R> y;
+    const std::set<R> classes;
+
     const int seed      = 0;
     const int n_threads = 1;
 
@@ -39,22 +39,30 @@ namespace models {
     }
 
     Forest(
-      std::unique_ptr<TrainingSpec<T, R> > &&          training_spec,
-      std::shared_ptr<stats::SortedDataSpec<T, R> > && training_data,
-      const int                                        seed)
+      TrainingSpecPtr<T, R> &&     training_spec,
+      const stats::Data<T> &       x,
+      const stats::DataColumn<R> & y,
+      const std::set<R> &          classes,
+      const int                    seed)
       : training_spec(std::move(training_spec)),
-      training_data(training_data),
+      x(x),
+      y(y),
+      classes(classes),
       seed(seed),
       n_threads(std::thread::hardware_concurrency()) {
     }
 
     Forest(
-      std::unique_ptr<TrainingSpec<T, R> > &&          training_spec,
-      std::shared_ptr<stats::SortedDataSpec<T, R> > && training_data,
-      const int                                        seed,
-      const int                                        n_threads)
+      TrainingSpecPtr<T, R> &&     training_spec,
+      const stats::Data<T> &       x,
+      const stats::DataColumn<R> & y,
+      const std::set<R> &          classes,
+      const int                    seed,
+      const int                    n_threads)
       : training_spec(std::move(training_spec)),
-      training_data(training_data),
+      x(x),
+      y(y),
+      classes(classes),
       seed(seed),
       n_threads(std::clamp(n_threads, 1, (int) std::thread::hardware_concurrency())) {
     }
@@ -101,44 +109,37 @@ namespace models {
       return !(*this == other);
     }
 
-    Forest<T, R> retrain(const stats::SortedDataSpec<T, R> &data) const {
+    Forest<T, R> retrain(stats::Data<T> &x,  stats::DataColumn<R> &y) const {
       return Forest<T, R>::train(
         *training_spec,
-        data,
+        x,
+        y,
         trees.size(),
         seed,
         n_threads);
     }
 
-    float error_rate(const stats::SortedDataSpec<T, R> &data) const {
-      return stats::error_rate(predict(data.x), data.y);
+    double error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return stats::error_rate(predict(x), y);
     }
 
-    float error_rate(const stats::BootstrapDataSpec<T, R> &data) const {
-      return error_rate(data.get_sample());
-    }
-
-    float error_rate() const {
+    double error_rate() const {
       std::set<int> oob_indices = get_oob_indices();
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
-      stats::DataColumn<R> oob_y           = training_data->y(oob_indices_vec, Eigen::all);
+      stats::DataColumn<R> oob_y           = y(oob_indices_vec, Eigen::all);
       return stats::error_rate(oob_predictions, oob_y);
     }
 
-    stats::ConfusionMatrix confusion_matrix(const stats::SortedDataSpec<T, R> &data) const {
-      return stats::ConfusionMatrix(predict(data.x), data.y);
-    }
-
-    stats::ConfusionMatrix confusion_matrix(const stats::BootstrapDataSpec<T, R> &data) const {
-      return confusion_matrix(data.get_sample());
+    stats::ConfusionMatrix confusion_matrix(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
+      return stats::ConfusionMatrix(predict(x), y);
     }
 
     stats::ConfusionMatrix confusion_matrix() const {
       std::set<int> oob_indices = get_oob_indices();
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
-      stats::DataColumn<R> oob_y           = training_data->y(oob_indices_vec, Eigen::all);
+      stats::DataColumn<R> oob_y           = y(oob_indices_vec, Eigen::all);
       return stats::ConfusionMatrix(oob_predictions, oob_y);
     }
 
@@ -194,14 +195,14 @@ namespace models {
         std::set<int> oob_set = get_oob_indices();
 
         for (const auto& tree : trees) {
-          bool is_oob = tree->training_data->oob_indices.count(index);
+          bool is_oob = tree->oob_indices.count(index);
 
           if (is_oob) {
             tree_refs.push_back(*tree);
           }
         }
 
-        return predict(training_data->x.row(index), tree_refs);
+        return predict(x.row(index), tree_refs);
       }
 
       stats::DataColumn<R> oob_predict(const std::set<int> &indices) const {
@@ -221,7 +222,7 @@ namespace models {
         std::set<int> indices;
 
         for (const auto& tree : trees) {
-          std::set<int> oob_indices = tree->training_data->oob_indices;
+          std::set<int> oob_indices = tree->oob_indices;
 
           std::set<int> temp;
           std::set_union(
