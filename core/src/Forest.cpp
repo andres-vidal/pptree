@@ -36,14 +36,6 @@ namespace models {
 
     invariant(size > 0, "The forest size must be greater than 0.");
 
-    Forest<T, R> forest(
-      training_spec.clone(),
-      x,
-      y,
-      training_data.groups,
-      seed,
-      n_threads);
-
     std::vector<BootstrapTreePtr<T, R> > trees(size);
 
     #pragma omp parallel for schedule(static)
@@ -56,6 +48,16 @@ namespace models {
 
       trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, sample_indices);
     }
+
+    LOG_INFO << "Building forest" << std::endl;
+
+    Forest<T, R> forest(
+      training_spec.clone(),
+      x,
+      y,
+      training_data.groups,
+      seed,
+      n_threads);
 
     for (auto& tree : trees) {
       forest.add_tree(std::move(tree));
