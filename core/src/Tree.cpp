@@ -5,6 +5,8 @@
 #include "Invariant.hpp"
 #include "Map.hpp"
 
+#include <stack>
+
 using namespace models::pp;
 using namespace models::pp::strategy;
 using namespace models::dr::strategy;
@@ -158,55 +160,93 @@ namespace models {
     return data_spec.remap(binary_mapping);
   }
 
-  template<typename T, typename R >
-  TreeNodePtr<T, R>   recursive_step(
+  template<typename T, typename R>
+  struct Step {
+    GroupSpec<R> y;
+    TreeNodePtr<T, R> *node;
+
+    bool pop                = false;
+    TreeNodePtr<T, R> upper = nullptr;
+    TreeNodePtr<T, R> lower = nullptr;
+    Threshold<T> threshold  = 0;
+    Projector<T> projector;
+
+    Step(
+      const GroupSpec<R>& y,
+      TreeNodePtr<T, R>   *node,
+      const int           cols
+      ) :
+      y(y),
+      node(node),
+      projector(Projector<T>::Zero(cols)) {
+    }
+  };
+
+  template<typename T, typename R>
+  TreeNodePtr<T, R> build_root(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
-    const GroupSpec<R> &       data_spec) {
-    LOG_INFO << "Project-Pursuit Tree building recursive_step for " << data_spec.groups.size() << " groups: " << data_spec.groups << std::endl;
-    LOG_INFO << "Dataset size: " << data_spec.rows(x) << " observations of " << x.cols() << " variables" << std::endl;
-
+    const GroupSpec<R> &       y
+    ) {
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
     const DRStrategy<T, R> &dr_strategy = *(training_spec.dr_strategy);
 
-    if (data_spec.groups.size() == 1) {
-      return TreeResponse<T, R>::make(*data_spec.groups.begin());
+    std::stack<Step<T, R> > stack;
+
+    TreeNodePtr<T, R> root;
+
+    stack.emplace(y, &root, x.cols());
+
+    while (!stack.empty()) {
+      Step<T, R>& step = stack.top();
+
+      if (step.pop) {
+        *step.node = TreeCondition<T, R>::make(
+          step.projector,
+          step.threshold,
+          std::move(step.lower),
+          std::move(step.upper),
+          training_spec.clone(),
+          step.y.groups);
+
+        stack.pop();
+        continue;
+      }
+
+      if (step.y.groups.size() == 1) {
+        *step.node = TreeResponse<T, R>::make(*step.y.groups.begin());
+        stack.pop();
+        continue;
+      }
+
+      DRSpec<T, R> dr = dr_strategy(x, step.y);
+
+      if (step.y.groups.size() == 2) {
+        *step.node = binary_step(training_spec, x, step.y, dr);
+        stack.pop();
+        continue;
+      }
+
+      auto split     = binary_split(training_spec, x, step.y, dr);
+      auto temp_node = binary_step(training_spec, x, split, dr);
+
+      R binary_lower_group = temp_node->lower->response();
+      R binary_upper_group = temp_node->upper->response();
+
+      step.projector = temp_node->projector;
+      step.threshold = temp_node->threshold;
+
+      auto lower_y = split.subset(split.subgroups.at(binary_lower_group));
+      auto upper_y = split.subset(split.subgroups.at(binary_upper_group));
+
+      stack.emplace(lower_y, &step.lower, x.cols());
+      stack.emplace(upper_y, &step.upper, x.cols());
+
+      step.pop = true;
     }
 
-    DRSpec<T, R> dr = dr_strategy(x, data_spec);
-
-    if (data_spec.groups.size() == 2) {
-      return binary_step(training_spec, x, data_spec, dr);
-    }
-
-    GroupSpec<R> binary_data_spec = binary_split(training_spec, x, data_spec, dr);
-
-    TreeConditionPtr<T, R> temp_node = binary_step(training_spec, x, binary_data_spec, dr);
-
-    R binary_lower_group = temp_node->lower->response();
-    R binary_upper_group = temp_node->upper->response();
-
-    std::map<R, std::set<R> > inverse_mapping = binary_data_spec.subgroups;
-    std::set<R> lower_groups                  = inverse_mapping.at(binary_lower_group);
-    std::set<R> upper_groups                  = inverse_mapping.at(binary_upper_group);
-
-    LOG_INFO << "Build lower branch" << std::endl;
-    TreeNodePtr<T, R> lower_branch = recursive_step(training_spec, x, data_spec.subset(lower_groups));
-
-    LOG_INFO << "Build upper branch" << std::endl;
-    TreeNodePtr<T, R> upper_branch = recursive_step(training_spec, x, data_spec.subset(upper_groups));
-
-    auto condition = TreeCondition<T, R>::make(
-      temp_node->projector,
-      temp_node->threshold,
-      std::move(lower_branch),
-      std::move(upper_branch),
-      training_spec.clone(),
-      data_spec.groups);
-
-    LOG_INFO << "Condition: " << *condition << std::endl;
-    return condition;
-  };
+    return root;
+  }
 
   template<typename T, typename R>
   Tree<T, R> Tree<T, R>::train(
@@ -222,7 +262,7 @@ namespace models {
     GroupSpec<R> data_spec(y);
 
     LOG_INFO << "Root recursive_step." << std::endl;
-    TreeNodePtr<T, R> root_ptr = recursive_step(training_spec, x, data_spec);
+    TreeNodePtr<T, R> root_ptr = build_root(training_spec, x, data_spec);
 
     Tree<T, R> tree(
       std::move(root_ptr),
