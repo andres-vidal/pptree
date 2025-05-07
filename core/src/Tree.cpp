@@ -71,7 +71,7 @@ namespace models {
   }
 
   template<typename T, typename R >
-  TreeConditionPtr<T, R> recursive_step_binary(
+  TreeConditionPtr<T, R> binary_step(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
     const GroupSpec<R> &       data_spec,
@@ -135,6 +135,30 @@ namespace models {
   }
 
   template<typename T, typename R >
+  GroupSpec<R> binary_split(
+    const TrainingSpec<T, R> & training_spec,
+    const Data<T> &            x,
+    const GroupSpec<R> &       data_spec,
+    const DRSpec<T, R>&        dr
+    ) {
+    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+
+    LOG_INFO << "Redefining a " << data_spec.groups.size() << " group problem as binary:" << std::endl;
+
+    Data<T> reduced_x = x(Eigen::all, dr.selected_cols);
+
+    Projector<T> projector = dr.expand(pp_strategy(reduced_x, data_spec));
+
+    Data<T> projected_x = x * projector;
+
+    std::map<R, int> binary_mapping = binary_regroup(projected_x, data_spec);
+
+    LOG_INFO << "Mapping: " << binary_mapping << std::endl;
+
+    return data_spec.remap(binary_mapping);
+  }
+
+  template<typename T, typename R >
   TreeNodePtr<T, R>   recursive_step(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
@@ -152,27 +176,17 @@ namespace models {
     DRSpec<T, R> dr = dr_strategy(x, data_spec);
 
     if (data_spec.groups.size() == 2) {
-      return recursive_step_binary(training_spec, x, data_spec, dr);
+      return binary_step(training_spec, x, data_spec, dr);
     }
 
-    LOG_INFO << "Redefining a " << data_spec.groups.size() << " group problem as binary:" << std::endl;
+    GroupSpec<R> binary_data_spec = binary_split(training_spec, x, data_spec, dr);
 
-    Data<T> reduced_x = x(Eigen::all, dr.selected_cols);
-
-    Projector<T> projector = dr.expand(pp_strategy(reduced_x, data_spec));
-
-    Data<T> projected_x = x * projector;
-
-    std::map<R, int> binary_mapping = binary_regroup(projected_x, data_spec);
-
-    LOG_INFO << "Mapping: " << binary_mapping << std::endl;
-
-    TreeConditionPtr<T, R> temp_node = recursive_step_binary(training_spec, x, data_spec.remap(binary_mapping), dr);
+    TreeConditionPtr<T, R> temp_node = binary_step(training_spec, x, binary_data_spec, dr);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
 
-    std::map<R, std::set<R> > inverse_mapping = invert(binary_mapping);
+    std::map<R, std::set<R> > inverse_mapping = binary_data_spec.subgroups;
     std::set<R> lower_groups                  = inverse_mapping.at(binary_lower_group);
     std::set<R> upper_groups                  = inverse_mapping.at(binary_upper_group);
 

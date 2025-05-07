@@ -30,6 +30,8 @@ namespace models::stats {
       }
 
       const std::set<G> groups;
+      const std::map<G, G> supergroups;
+      const std::map<G, std::set<G> > subgroups;
 
     private:
 
@@ -42,8 +44,6 @@ namespace models::stats {
       };
 
       const std::map<G, Node> nodes;
-      const std::map<G, G> supergroups;
-      const std::map<G, std::set<G> > subgroups;
 
       std::map<G, Node> init_nodes(const DataColumn<G> &y) {
         std::map<G, Node> nodes;
