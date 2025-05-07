@@ -71,7 +71,7 @@ namespace models {
   }
 
   template<typename T, typename R >
-  TreeConditionPtr<T, R> binary_step(
+  TreeConditionPtr<T, R> recursive_step_binary(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
     const GroupSpec<R> &       data_spec,
@@ -79,7 +79,7 @@ namespace models {
     R group_1 = *data_spec.groups.begin();
     R group_2 = *std::next(data_spec.groups.begin());
 
-    LOG_INFO << "Project-Pursuit Tree building binary step for groups: " << data_spec.groups << std::endl;
+    LOG_INFO << "Project-Pursuit Tree building binary recursive_step for groups: " << data_spec.groups << std::endl;
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
@@ -135,11 +135,11 @@ namespace models {
   }
 
   template<typename T, typename R >
-  TreeNodePtr<T, R>   step(
+  TreeNodePtr<T, R>   recursive_step(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
     const GroupSpec<R> &       data_spec) {
-    LOG_INFO << "Project-Pursuit Tree building step for " << data_spec.groups.size() << " groups: " << data_spec.groups << std::endl;
+    LOG_INFO << "Project-Pursuit Tree building recursive_step for " << data_spec.groups.size() << " groups: " << data_spec.groups << std::endl;
     LOG_INFO << "Dataset size: " << data_spec.rows(x) << " observations of " << x.cols() << " variables" << std::endl;
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
@@ -152,7 +152,7 @@ namespace models {
     DRSpec<T, R> dr = dr_strategy(x, data_spec);
 
     if (data_spec.groups.size() == 2) {
-      return binary_step(training_spec, x, data_spec, dr);
+      return recursive_step_binary(training_spec, x, data_spec, dr);
     }
 
     LOG_INFO << "Redefining a " << data_spec.groups.size() << " group problem as binary:" << std::endl;
@@ -167,7 +167,7 @@ namespace models {
 
     LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
-    TreeConditionPtr<T, R> temp_node = binary_step(training_spec, x, data_spec.remap(binary_mapping), dr);
+    TreeConditionPtr<T, R> temp_node = recursive_step_binary(training_spec, x, data_spec.remap(binary_mapping), dr);
 
     R binary_lower_group = temp_node->lower->response();
     R binary_upper_group = temp_node->upper->response();
@@ -177,10 +177,10 @@ namespace models {
     std::set<R> upper_groups                  = inverse_mapping.at(binary_upper_group);
 
     LOG_INFO << "Build lower branch" << std::endl;
-    TreeNodePtr<T, R> lower_branch = step(training_spec, x, data_spec.subset(lower_groups));
+    TreeNodePtr<T, R> lower_branch = recursive_step(training_spec, x, data_spec.subset(lower_groups));
 
     LOG_INFO << "Build upper branch" << std::endl;
-    TreeNodePtr<T, R> upper_branch = step(training_spec, x, data_spec.subset(upper_groups));
+    TreeNodePtr<T, R> upper_branch = recursive_step(training_spec, x, data_spec.subset(upper_groups));
 
     auto condition = TreeCondition<T, R>::make(
       temp_node->projector,
@@ -207,8 +207,8 @@ namespace models {
 
     GroupSpec<R> data_spec(y);
 
-    LOG_INFO << "Root step." << std::endl;
-    TreeNodePtr<T, R> root_ptr = step(training_spec, x, data_spec);
+    LOG_INFO << "Root recursive_step." << std::endl;
+    TreeNodePtr<T, R> root_ptr = recursive_step(training_spec, x, data_spec);
 
     Tree<T, R> tree(
       std::move(root_ptr),
