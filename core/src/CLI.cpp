@@ -49,6 +49,8 @@ inline DataPacket<float, int> simulate(
     y[i] = i % G;
   }
 
+  models::stats::sort(x, y);
+
   return DataPacket<float, int>(x, y);
 }
 
