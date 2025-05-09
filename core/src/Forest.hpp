@@ -68,13 +68,9 @@ namespace models {
     }
 
     R predict(const stats::DataColumn<T> &data) const {
-      std::vector<std::reference_wrapper<BootstrapTree<T, R> > > tree_refs;
-
-      for (const auto& tree : trees) {
-        tree_refs.push_back(*tree);
-      }
-
-      return predict(data, tree_refs);
+      std::vector<int> indx(trees.size());
+      std::iota(indx.begin(), indx.end(), 0);
+      return predict(data, indx);
     }
 
     stats::DataColumn<R> predict(const stats::Data<T> &data) const {
@@ -161,13 +157,11 @@ namespace models {
 
     private:
 
-      R predict(
-        const stats::DataColumn<T>                                        data,
-        const std::vector<std::reference_wrapper<BootstrapTree<T, R> > > &tree_refs) const {
+      R predict(const stats::DataColumn<T> data, const std::vector<int>&    indx) const {
         std::map<R, int> votes_per_group;
 
-        for (const auto &tree_ref : tree_refs) {
-          R prediction = tree_ref.get().predict(data);
+        for (const auto &i : indx) {
+          R prediction = trees[i]->predict(data);
 
           if (votes_per_group.find(prediction) == votes_per_group.end()) {
             votes_per_group[prediction] = 1;
