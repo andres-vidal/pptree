@@ -1,21 +1,16 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
+#include <fstream>
+
 #include <map>
 #include <set>
 
 #include <nlohmann/json.hpp>
 
-
-
-#ifdef NDEBUG
-  #define LOG_INFO    if (false) std::cout
-  #define LOG_DEBUG   if (false) std::cout
-  #define LOG_WARNING if (false) std::cout
-#else
-  #define LOG_INFO    std::cout << "[INFO]" << "[" << __FUNCTION__ << "] "
-  #define LOG_DEBUG   std::cout << "[DEBUG]" << "[" << __FUNCTION__ << "] "
-  #define LOG_WARNING std::cout << "[WARNING]" << "[" << __FUNCTION__ << "] "
+#ifdef _OPENMP
+#include <omp.h>
 #endif
 
 namespace models {
@@ -49,5 +44,20 @@ namespace models {
 
     json json_map(string_map);
     return ostream << json_map.dump();
+  }
+
+  inline void log(std::stringstream &ss) {
+    #ifdef _OPENMP
+    std::string filename = "log/t" + std::to_string(omp_get_thread_num()) + ".txt";
+    std::ofstream debug_file(filename, std::ios::app);
+
+    if (debug_file.is_open()) {
+      debug_file << ss.str();
+      debug_file.close();
+    }
+
+    #else
+    std::cout << ss.str();
+    #endif
   }
 }

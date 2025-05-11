@@ -30,12 +30,8 @@ namespace models::dr::strategy {
         return DRSpec<T, G>(all_indices, x.cols());
       }
 
-      LOG_INFO << "Selecting " << n_vars << " variables uniformly." << std::endl;
-
       stats::Uniform unif(0, x.cols() - 1);
       std::vector<int> selected_indices = unif.distinct(n_vars);
-
-      LOG_INFO << "Selected variables: " << selected_indices << std::endl;
 
       return DRSpec<T, G>(selected_indices, x.cols());
     }

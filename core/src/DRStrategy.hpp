@@ -25,10 +25,6 @@ namespace models::dr::strategy {
     }
 
     stats::DataColumn<T> expand(const stats::DataColumn<T>& reduced_vector) const {
-      LOG_INFO << "Expanding reduced vector:" << reduced_vector.transpose() << std::endl;
-      LOG_INFO << "Full vector size:" << original_size << std::endl;
-      LOG_INFO << "Selected indices:" << selected_cols << std::endl;
-
       invariant(reduced_vector.size() == selected_cols.size(), "Reduced vector size must match number of selected variables");
 
       stats::DataColumn<T> full_vector = stats::DataColumn<T>::Zero(original_size);
@@ -36,8 +32,6 @@ namespace models::dr::strategy {
       for (int i = 0; i < selected_cols.size(); ++i) {
         full_vector(selected_cols[i]) = reduced_vector(i);
       }
-
-      LOG_INFO << "Expanded vector:" << full_vector.transpose() << std::endl;
 
       return full_vector;
     }
