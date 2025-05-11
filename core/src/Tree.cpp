@@ -38,35 +38,24 @@ namespace models {
 
     for (int i = 0; i < means.size() - 1; i++) {
       T gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);
-      LOG_INFO << "Gap between " << std::get<0>(means[i]) << " and " << std::get<0>(means[i + 1]) << ": " << gap << std::endl;
 
       if (gap > edge_gap) {
         edge_gap   = gap;
         edge_group = std::get<0>(means[i + 1]);
-
-        LOG_INFO << "New edge gap: " << edge_gap << std::endl;
-        LOG_INFO << "New edge group: " << edge_group << std::endl;
       }
     }
 
     if (edge_group == -1) {
-      LOG_INFO << "Edge group not found. Using first group." << std::endl;
       edge_group = std::get<0>(means.front());
     }
-
-    LOG_INFO << "Edge group: " << edge_group << std::endl;
 
     std::map<R, int > binary_mapping;
 
     bool edge_found = false;
     for (const auto&[group, mean] : means) {
-      LOG_INFO << "Remapping group " << group << std::endl;
-
       edge_found = edge_found || group == edge_group;
 
       binary_mapping[group] = edge_found ? 1 : 0;
-
-      LOG_INFO << "Mapping: " << group << " -> " << binary_mapping[group] << std::endl;
     }
 
     return binary_mapping;
@@ -81,8 +70,6 @@ namespace models {
     R group_1 = *data_spec.groups.begin();
     R group_2 = *std::next(data_spec.groups.begin());
 
-    LOG_INFO << "Project-Pursuit Tree building binary recursive_step for groups: " << data_spec.groups << std::endl;
-
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
     auto reduced_x = x(Eigen::all, dr.selected_cols);
@@ -95,18 +82,10 @@ namespace models {
     T mean_1 = (data_group_1 * projector).mean();
     T mean_2 = (data_group_2 * projector).mean();
 
-    LOG_INFO << "Mean for projected group " << group_1 << ": " << mean_1 << std::endl;
-    LOG_INFO << "Mean for projected group " << group_2 << ": " << mean_2 << std::endl;
-
     T threshold =  (mean_1 + mean_2) / 2;
-
-    LOG_INFO << "Threshold: " << threshold << std::endl;
 
     T projected_mean_1 = data_group_1.colwise().mean().dot(projector);
     T projected_mean_2 = data_group_2.colwise().mean().dot(projector);
-
-    LOG_INFO << "Projected mean for group " << group_1 << ": " << projected_mean_1 << std::endl;
-    LOG_INFO << "Projected mean for group " << group_2 << ": " << projected_mean_2 << std::endl;
 
     R lower_group, upper_group;
 
@@ -117,9 +96,6 @@ namespace models {
       lower_group = group_2;
       upper_group = group_1;
     }
-
-    LOG_INFO << "Lower group: " << lower_group << std::endl;
-    LOG_INFO << "Upper group: " << upper_group << std::endl;
 
     TreeResponsePtr<T, R> lower_response = TreeResponse<T, R>::make(lower_group);
     TreeResponsePtr<T, R> upper_response = TreeResponse<T, R>::make(upper_group);
@@ -132,7 +108,6 @@ namespace models {
       training_spec.clone(),
       data_spec.groups);
 
-    LOG_INFO << "Condition: " << *condition << std::endl;
     return condition;
   }
 
@@ -145,8 +120,6 @@ namespace models {
     ) {
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    LOG_INFO << "Redefining a " << data_spec.groups.size() << " group problem as binary:" << std::endl;
-
     Data<T> reduced_x = x(Eigen::all, dr.selected_cols);
 
     Projector<T> projector = dr.expand(pp_strategy(reduced_x, data_spec));
@@ -155,7 +128,6 @@ namespace models {
 
     std::map<R, int> binary_mapping = binary_regroup(projected_x, data_spec);
 
-    LOG_INFO << "Mapping: " << binary_mapping << std::endl;
 
     return data_spec.remap(binary_mapping);
   }
@@ -253,15 +225,12 @@ namespace models {
     const TrainingSpec<T, R> & training_spec,
     Data<T>&                   x,
     DataColumn<R>&             y) {
-    LOG_INFO << "Project-Pursuit Tree training." << std::endl;
-
     if (!GroupSpec<R>::is_contiguous(y)) {
       models::stats::sort(x, y);
     }
 
     GroupSpec<R> data_spec(y);
 
-    LOG_INFO << "Root recursive_step." << std::endl;
     TreeNodePtr<T, R> root_ptr = build_root(training_spec, x, data_spec);
 
     Tree<T, R> tree(
@@ -271,7 +240,6 @@ namespace models {
       y,
       data_spec.groups);
 
-    LOG_INFO << "Tree: " << tree << std::endl;
     return tree;
   }
 
