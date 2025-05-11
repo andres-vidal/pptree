@@ -3,6 +3,8 @@
 #include <random>
 #include "Random.hpp"
 
+#include "Invariant.hpp"
+
 namespace models::stats {
   class Uniform {
     private:
@@ -44,6 +46,9 @@ namespace models::stats {
 
     public:
       Uniform(int min, int max) : min(min), max(max) {
+        invariant(min >= 0, "Uniform: min must be greater than or equal to 0");
+        invariant(min <= max, "Uniform: min must be less than or equal to max");
+        invariant(max < std::numeric_limits<int>::max(), "Uniform: max must be less than the maximum value of an int");
       }
 
       int operator()() const {
@@ -75,9 +80,8 @@ namespace models::stats {
       std::vector<int> distinct(int count) {
         int range_size = max - min + 1;
 
-        if (count > range_size) {
-          throw std::invalid_argument("Count exceeds the number of unique values in the range");
-        }
+        invariant(count <= range_size, "Uniform::distinct: count must be less than or equal to the number of unique values in the range");
+        invariant(count >= 0, "Uniform::distinct: count must be greater than or equal to 0");
 
         std::vector<int> values(range_size);
         std::iota(values.begin(), values.end(), min);
