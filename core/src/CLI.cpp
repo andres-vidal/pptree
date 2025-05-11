@@ -71,22 +71,11 @@ inline Split split(const DataPacket<float, int>& data, float train_ratio) {
   train_indices.reserve(train_size);
   test_indices.reserve(n - train_size);
 
-  LOG_INFO << "Splitting data of size " << n << " into " << train_size << " training and " << n - train_size << " test samples:";
-  LOG_INFO << "Classes: " << data.classes << std::endl;
-  LOG_INFO << "X: " << std::endl << data.x << std::endl;
-  LOG_INFO << "Y: " << std::endl << data.y << std::endl;
-
   for (const auto& group : data.classes) {
     int group_start      = spec.group_start(group);
     int group_size       = spec.group_size(group);
     int group_end        = group_start + group_size - 1;
     int group_train_size = static_cast<int>(group_size * train_ratio);
-
-    LOG_INFO << "Group " << group
-             << ": start=" << group_start
-             << ": end=" << group_end
-             << ", size=" << group_size
-             << ", train_size=" << group_train_size << std::endl;
 
     Uniform unif(group_start, group_end);
     std::vector<int> group_indices = unif.distinct(group_size);
@@ -94,8 +83,6 @@ inline Split split(const DataPacket<float, int>& data, float train_ratio) {
     train_indices.insert(train_indices.end(), group_indices.begin(), group_indices.begin() + group_train_size);
     test_indices.insert(test_indices.end(), group_indices.begin() + group_train_size, group_indices.end());
   }
-
-  LOG_INFO << "Final split has " << train_indices.size() << " training and " << test_indices.size() << " test samples:";
 
   return {
     .tr = train_indices,

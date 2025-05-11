@@ -31,9 +31,6 @@ namespace models {
 
     GroupSpec<R> data_spec(y);
 
-    LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
-    LOG_INFO << "The seed is: " << seed << std::endl;
-
     invariant(size > 0, "The forest size must be greater than 0.");
 
     std::vector<BootstrapTreePtr<T, R> > trees(size);
@@ -44,8 +41,6 @@ namespace models {
 
       trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, sample_indices);
     }
-
-    LOG_INFO << "Building forest" << std::endl;
 
     Forest<T, R> forest(
       training_spec.clone(),
@@ -58,8 +53,6 @@ namespace models {
     for (auto& tree : trees) {
       forest.add_tree(std::move(tree));
     }
-
-    LOG_INFO << "Forest: " << forest << std::endl;
 
     return forest;
   }
