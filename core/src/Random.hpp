@@ -10,9 +10,9 @@ namespace models::stats::Random {
   extern pcg32 rng;
   #pragma omp threadprivate(rng)
 
-  uint_fast32_t min();
+  uint32_t min();
 
-  void seed(const uint_fast32_t value);
+  void seed(const int value);
 
-  uint_fast32_t gen();
+  uint32_t gen();
 }
