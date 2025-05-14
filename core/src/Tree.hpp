@@ -18,7 +18,8 @@ namespace models {
     static Tree<T, R> train(
       const TrainingSpec<T, R> & training_spec,
       stats::Data<T>&            x,
-      stats::DataColumn<R>&      y);
+      stats::DataColumn<R>&      y,
+      stats::RNG &               rng);
 
     TreeNodePtr<T, R> root;
     TrainingSpecPtr<T, R> training_spec;

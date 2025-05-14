@@ -202,9 +202,9 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
       1, 1, 1, 1, 1);
 
 
+  stats::RNG rng(0);
 
-
-  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y);
+  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, rng);
 
   Tree<float, int> expect = Tree<float, int>(
     TreeCondition<float, int>::make(
@@ -227,7 +227,9 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
       1, 1, 1, 1, 1,
       2, 2, 2, 2, 2);
 
-  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y);
+  stats::RNG rng(0);
+
+  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, rng);
 
   Tree<float, int> expect = Tree<float, int>(
     TreeCondition<float, int>::make(
@@ -269,7 +271,9 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
       1,
       1);
 
-  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y);
+  stats::RNG rng(0);
+
+  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, rng);
 
   Tree<float, int> expect = Tree<float, int>(
     TreeCondition<float, int>::make(
@@ -346,7 +350,9 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
       2,
       2);
 
-  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y);
+  stats::RNG rng(0);
+
+  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, rng);
 
   Tree<float, int> expect = Tree<float, int>(
     TreeCondition<float, int>::make(
@@ -371,7 +377,9 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
       0, 0, 0, 0, 0,
       1, 1, 1, 1, 1);
 
-  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y);
+  stats::RNG rng(0);
+
+  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.0), x, y, rng);
 
   Tree<float, int> expect = Tree<float, int>(
     TreeCondition<float, int>::make(
@@ -408,7 +416,9 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
       1,
       1);
 
-  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.5), x, y);
+  stats::RNG rng(0);
+
+  Tree<float, int> result = Tree<float, int>::train(TrainingSpecGLDA<float, int>(0.5), x, y, rng);
 
   Tree<float, int> expect = Tree<float, int>(
     TreeCondition<float, int>::make(
