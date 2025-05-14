@@ -20,7 +20,8 @@ namespace models::dr::strategy {
 
     DRSpec<T, G> select(
       const stats::Data<T> &     x,
-      const stats::GroupSpec<G>& data_spec) const override {
+      const stats::GroupSpec<G>& data_spec,
+      stats::RNG &               rng) const override {
       invariant(n_vars <= x.cols(), "The number of variables must be less than or equal to the number of columns in the data.");
 
       if (n_vars == x.cols()) {
@@ -31,7 +32,7 @@ namespace models::dr::strategy {
       }
 
       stats::Uniform unif(0, x.cols() - 1);
-      std::vector<int> selected_indices = unif.distinct(n_vars);
+      std::vector<int> selected_indices = unif.distinct(n_vars, rng);
 
       return DRSpec<T, G>(selected_indices, x.cols());
     }

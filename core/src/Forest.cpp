@@ -23,8 +23,6 @@ namespace models {
     omp_set_num_threads(n_threads);
     #endif
 
-    Random::seed(seed);
-
     if (!GroupSpec<R>::is_contiguous(y)) {
       stats::sort(x, y);
     }
@@ -37,6 +35,8 @@ namespace models {
 
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
+      stats::RNG rng(static_cast<uint64_t>(seed), static_cast<uint64_t>(i));
+
       std::vector<int> iob_indices;
       iob_indices.reserve(x.rows());
 
@@ -48,13 +48,13 @@ namespace models {
         const Uniform unif(min_index, max_index);
 
         for (int j = 0; j < group_size; j++) {
-          iob_indices.push_back(unif());
+          iob_indices.push_back(unif(rng));
         }
       }
 
       std::sort(iob_indices.begin(), iob_indices.end());
 
-      trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, iob_indices);
+      trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, iob_indices, rng);
     }
 
     Forest<T, R> forest(

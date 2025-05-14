@@ -89,7 +89,6 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
   const float lambda = 0;
   const int seed     = 0;
 
-
   Forest<float, int> result = Forest<float, int>::train(
     TrainingSpecUGLDA<float, int>(n_vars, lambda),
     x,

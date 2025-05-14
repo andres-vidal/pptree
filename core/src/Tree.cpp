@@ -158,7 +158,8 @@ namespace models {
   TreeNodePtr<T, R> build_root(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
-    const GroupSpec<R> &       y
+    const GroupSpec<R> &       y,
+    stats::RNG &               rng
     ) {
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
     const DRStrategy<T, R> &dr_strategy = *(training_spec.dr_strategy);
@@ -191,7 +192,7 @@ namespace models {
         continue;
       }
 
-      DRSpec<T, R> dr = dr_strategy(x, step.y);
+      DRSpec<T, R> dr = dr_strategy(x, step.y, rng);
 
       if (step.y.groups.size() == 2) {
         *step.node = binary_step(training_spec, x, step.y, dr);
@@ -224,14 +225,15 @@ namespace models {
   Tree<T, R> Tree<T, R>::train(
     const TrainingSpec<T, R> & training_spec,
     Data<T>&                   x,
-    DataColumn<R>&             y) {
+    DataColumn<R>&             y,
+    stats::RNG &               rng) {
     if (!GroupSpec<R>::is_contiguous(y)) {
       models::stats::sort(x, y);
     }
 
     GroupSpec<R> data_spec(y);
 
-    TreeNodePtr<T, R> root_ptr = build_root(training_spec, x, data_spec);
+    TreeNodePtr<T, R> root_ptr = build_root(training_spec, x, data_spec, rng);
 
     Tree<T, R> tree(
       std::move(root_ptr),
@@ -243,5 +245,6 @@ namespace models {
   template Tree<float, int> Tree<float, int>::train(
     const TrainingSpec<float, int> & training_spec,
     Data<float>&                     x,
-    DataColumn<int>&                 y);
+    DataColumn<int>&                 y,
+    stats::RNG &                     rng);
 }

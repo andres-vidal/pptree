@@ -18,11 +18,12 @@ namespace models {
       const TrainingSpec<T, R> &  training_spec,
       const stats::Data<T> &      x,
       const stats::DataColumn<R> &y,
-      const std::vector<int> &    iob_indices) {
+      const std::vector<int> &    iob_indices,
+      stats::RNG &                rng) {
       stats::Data<T> sampled_x       = x(iob_indices, Eigen::all);
       stats::DataColumn<R> sampled_y = y(iob_indices, Eigen::all);
 
-      Tree<T, R> tree = Tree<T, R>::train(training_spec, sampled_x, sampled_y);
+      Tree<T, R> tree = Tree<T, R>::train(training_spec, sampled_x, sampled_y, rng);
 
       std::set<int> oob_indices;
       std::set<int> iob_indices_set(iob_indices.begin(), iob_indices.end());
