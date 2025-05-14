@@ -235,10 +235,7 @@ namespace models {
 
     Tree<T, R> tree(
       std::move(root_ptr),
-      training_spec.clone(),
-      x,
-      y,
-      data_spec.groups);
+      training_spec.clone());
 
     return tree;
   }

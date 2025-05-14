@@ -13,9 +13,6 @@
 namespace models {
   using json = nlohmann::json;
 
-  template <typename T, typename R>
-  class VIStrategy;
-
   template<typename T, typename R>
   struct Tree {
     static Tree<T, R> train(
@@ -26,31 +23,17 @@ namespace models {
     TreeNodePtr<T, R> root;
     TrainingSpecPtr<T, R> training_spec;
 
-    const stats::Data<T> x;
-    const stats::DataColumn<R> y;
-    const std::set<R> classes;
-
     Tree(
       TreeNodePtr<T, R> root) :
       root(std::move(root)),
-      training_spec(TrainingSpecGLDA<T, R>::make(0.5)),
-      x(stats::Data<T>()),
-      y(stats::DataColumn<R>()),
-      classes(std::set<R>()) {
+      training_spec(TrainingSpecGLDA<T, R>::make(0.5)) {
     }
 
     Tree(
-      TreeNodePtr<T, R>            root,
-      TrainingSpecPtr<T, R>        training_spec,
-      const stats::Data<T> &       x,
-      const stats::DataColumn<R> & y,
-      const std::set<R> &          classes) :
-
+      TreeNodePtr<T, R>     root,
+      TrainingSpecPtr<T, R> training_spec) :
       root(std::move(root)),
-      training_spec(std::move(training_spec)),
-      x(x),
-      y(y),
-      classes(classes) {
+      training_spec(std::move(training_spec)) {
     }
 
     Tree<T, R> retrain(stats::Data<T> &x, stats::DataColumn<R> &y) const {
@@ -71,24 +54,12 @@ namespace models {
       return predictions;
     }
 
-    math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
-      return strategy(*this);
-    }
-
     bool operator==(const Tree<T, R> &other) const {
       return *root == *other.root;
     }
 
     bool operator!=(const Tree<T, R> &other) const {
       return !(*this == other);
-    }
-
-    virtual double error_rate(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
-      return stats::error_rate(predict(x), y);
-    }
-
-    virtual stats::ConfusionMatrix confusion_matrix(const stats::Data<T> &x, const stats::DataColumn<R> &y) const {
-      return stats::ConfusionMatrix(predict(x), y);
     }
 
     json to_json() const {
