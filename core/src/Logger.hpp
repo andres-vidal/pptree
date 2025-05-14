@@ -1,10 +1,16 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+
 #include <map>
 #include <set>
 
 #include <nlohmann/json.hpp>
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 namespace models {
   using json = nlohmann::json;
@@ -37,5 +43,20 @@ namespace models {
 
     json json_map(string_map);
     return ostream << json_map.dump();
+  }
+
+  inline void log(std::stringstream &ss) {
+    #ifdef _OPENMP
+    std::string filename = "log/t" + std::to_string(omp_get_thread_num()) + ".txt";
+    std::ofstream debug_file(filename, std::ios::app);
+
+    if (debug_file.is_open()) {
+      debug_file << ss.str();
+      debug_file.close();
+    }
+
+    #else
+    std::cout << ss.str();
+    #endif
   }
 }
