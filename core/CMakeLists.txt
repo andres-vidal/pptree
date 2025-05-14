@@ -1,33 +1,36 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 project(pptree VERSION 0.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_CXX_FLAGS "")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_DEBUG -DEIGEN_DONT_PARALLELIZE")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -DEIGEN_NO_DEBUG -DEIGEN_DONT_PARALLELIZE ")
+add_compile_definitions(-DEIGEN_DONT_PARALLELIZE)
+add_compile_definitions(-DEIGEN_NO_AUTOMATIC_RESIZING)
 
-# Configure Address Sanitizer in Unix systems
-if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address,undefined")
-  add_compile_options(-fsanitize=address,undefined)
-  add_link_options(-fsanitize=address,undefined)
-endif()
-
-# Append Release flags to CMAKE_CXX_FLAGS
-if(CMAKE_BUILD_TYPE MATCHES Release)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}")
-endif()
-
-# Append Debug flags to CMAKE_CXX_FLAGS
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-  if(WIN32)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wa,-mbig-obj")
-  else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
+  add_compile_options(-O0)
+  add_compile_options(-g)
+  add_compile_definitions(-D_GLIBCXX_DEBUG)
+  add_compile_definitions(-D_GLIBCXX_ASSERTIONS)
+  add_compile_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_NAN)
+  add_compile_definitions(-DEIGEN_INTERNAL_DEBUGGING)
+  add_compile_definitions(-DEIGEN_RUNTIME_NO_MALLOC)
+
+  if(UNIX AND NOT APPLE)
+    add_compile_options(-fsanitize=address,undefined)
+    add_link_options(-fsanitize=address,undefined)
   endif()
+
+  if(WIN32)
+    add_compile_options(-Wa,-mbig-obj)
+  endif()
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Release)
+  add_compile_options(-O3)
+  add_compile_definitions(-DNDEBUG)
+  add_compile_definitions(-DEIGEN_NO_DEBUG)
 endif()
 
 # Add search hints
@@ -40,7 +43,6 @@ find_package(OpenMP)
 
 if(NOT OpenMP_FOUND)
   message(WARNING "Could NOT find OpenMP. Parallelization will not be available.")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
 include(FetchContent)
@@ -142,11 +144,6 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
 endif()
 
 
-# Add profiler executable and its dependencies
-# Disable coverage for csv-parser on all platforms
-set(CSV_PARSER_COVERAGE OFF CACHE BOOL "Disable coverage for csv-parser" FORCE)
-set(BUILD_TESTS OFF CACHE BOOL "Disable csv-parser tests" FORCE)
-
 # Fetch csv-parser
 FetchContent_Declare(
   csv
@@ -177,3 +174,7 @@ target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
 add_executable(pptree-cli src/CLI.cpp)
 target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/single_include)
 target_link_libraries(pptree-cli pptree csv getopt_lib)
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  target_link_libraries(pptree-cli gcov)
+endif()
