@@ -14,15 +14,15 @@ namespace models::stats {
 
       std::optional<float> cached_z;
 
-      double gen_unif01() {
+      double gen_unif01(RNG &rng) {
         static constexpr uint64_t PRECISION = 53;
         static constexpr uint64_t MAX_BITS  = (1ULL << PRECISION) - 1;
 
         uint64_t bits = 0;
 
         while (bits == 0 || bits == MAX_BITS) {
-          uint64_t x = Random::gen();
-          uint64_t y = Random::gen();
+          uint64_t x = rng();
+          uint64_t y = rng();
           bits = ((x << 21) | (y >> 11)) & MAX_BITS;
         }
 
@@ -57,9 +57,9 @@ namespace models::stats {
        *
        * @return A random float from the normal distribution with specified mean and standard deviation
        */
-      float operator()() {
-        double u1 = gen_unif01();
-        double u2 = gen_unif01();
+      float operator()(RNG &rng) {
+        double u1 = gen_unif01(rng);
+        double u2 = gen_unif01(rng);
 
         double z;
 
@@ -79,11 +79,11 @@ namespace models::stats {
         return denormalize(z);
       }
 
-      std::vector<float> operator()(int count) {
+      std::vector<float> operator()(int count, RNG &rng) {
         std::vector<float> result(count);
 
         for (int i = 0; i < count; i++) {
-          result[i] = operator()();
+          result[i] = operator()(rng);
         }
 
         return result;
