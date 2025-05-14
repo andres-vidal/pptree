@@ -196,7 +196,12 @@ int main(int argc, char *argv[]) {
 
   init_params(params, full_data.x.cols());
 
+  #ifdef _OPENMP
+  omp_set_num_threads(params.threads);
+  #endif
+
   Random::seed(params.seed);
+
   auto data_split = split(full_data, params.train_ratio);
 
   Data<float> tr_x     = full_data.x(data_split.tr, Eigen::all);
@@ -207,6 +212,7 @@ int main(int argc, char *argv[]) {
   std::cout << std::endl;
 
   announce_configuration(params, tr_x, te_x);
+
 
   ModelStats stats;
 
