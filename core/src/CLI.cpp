@@ -175,8 +175,8 @@ ModelStats evaluate_model(
     const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
     stats.tr_times[i] = duration.count();
-    stats.tr_error[i] = model.error_rate(tr_x, tr_y);
-    stats.te_error[i] = model.error_rate(te_x, te_y);
+    stats.tr_error[i] = stats::error_rate(model.predict(tr_x), tr_y);
+    stats.te_error[i] = stats::error_rate(model.predict(te_x), te_y);
   }
 
   std::cout << std::endl;

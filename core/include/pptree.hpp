@@ -11,8 +11,6 @@
 #include "DRUniformStrategy.hpp"
 #include "DRNoopStrategy.hpp"
 
-#include "VIStrategy.hpp"
-
 namespace pptree {
   using namespace models;
   using namespace stats;

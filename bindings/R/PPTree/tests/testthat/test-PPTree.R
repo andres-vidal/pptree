@@ -88,28 +88,3 @@ describe("PPTree training spec", {
     expect_equal(model$training_spec$strategy, "glda")
   })
 })
-
-describe("PPTree training data", {
-  it("preserves the observations (x) as a matrix without metadata", {
-    model <- PPTree(Type ~ ., data = iris)
-
-    expected <- matrix(
-      as.vector(model$x),
-      nrow = nrow(model$x),
-      ncol = ncol(model$x)
-    )
-    expect_equal(model$training_data$x, expected, , tolerance = 0.1)
-  })
-
-  it("preserves the labels (y) as a vector without metadata", {
-    model <- PPTree(Type ~ ., data = iris)
-    expected <- as.vector(model$y)
-    expect_equal(model$training_data$y, expected)
-  })
-
-  it("preserves the classes as a vector without metadata", {
-    model <- PPTree(Type ~ ., data = iris)
-    expected <- as.integer(unique(iris$Type))
-    expect_equal(model$training_data$classes, expected)
-  })
-})
