@@ -4,6 +4,7 @@
 #include "DataColumn.hpp"
 
 #include "Map.hpp"
+#include "Invariant.hpp"
 
 #include <optional>
 
@@ -140,6 +141,7 @@ namespace models::stats {
 
         for (const auto &g : subgroups) {
           for (int i = group_start(g); i <= group_end(g); i++) {
+            invariant(i >= 0 && i < x.rows(), "GroupSpec::group: index out of bounds");
             indices.push_back(i);
           }
         }
