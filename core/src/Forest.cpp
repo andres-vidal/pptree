@@ -35,7 +35,7 @@ namespace models {
 
     std::vector<BootstrapTreePtr<T, R> > trees(size);
 
-    #pragma omp parallel for schedule(static) firstprivate(data_spec)
+    #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
       std::vector<int> iob_indices;
       iob_indices.reserve(x.rows());
