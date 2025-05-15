@@ -25,40 +25,26 @@ namespace models {
 
       Tree<T, R> tree = Tree<T, R>::train(training_spec, sampled_x, sampled_y, rng);
 
-      std::set<int> oob_indices;
-      std::set<int> iob_indices_set(iob_indices.begin(), iob_indices.end());
-
-      for (int i = 0; i < x.rows(); i++) {
-        if (iob_indices_set.count(i) == 0) {
-          oob_indices.insert(i);
-        }
-      }
-
       return std::make_unique<BootstrapTree<T, R> >(
         std::move(tree.root),
         training_spec.clone(),
-        iob_indices,
-        oob_indices);
+        iob_indices);
     }
 
     std::vector<int> iob_indices;
-    std::set<int> oob_indices;
 
     BootstrapTree(
       TreeNodePtr<T, R> root) :
       Base(std::move(root)),
-      iob_indices(),
-      oob_indices() {
+      iob_indices() {
     }
 
     BootstrapTree(
       TreeNodePtr<T, R>        root,
       TrainingSpecPtr<T, R>    training_spec,
-      const std::vector<int> & iob_indices,
-      const std::set<int> &    oob_indices) :
+      const std::vector<int> & iob_indices) :
       Base(std::move(root), std::move(training_spec)),
-      iob_indices(iob_indices),
-      oob_indices(oob_indices) {
+      iob_indices(iob_indices) {
     }
   };
 }
