@@ -44,6 +44,10 @@ list(APPEND CMAKE_PREFIX_PATH
 # Find OpenMP
 find_package(OpenMP)
 
+# Find Jemalloc using pkg-config
+include(FindPkgConfig)
+pkg_check_modules(Jemalloc IMPORTED_TARGET jemalloc)
+
 if(NOT OpenMP_FOUND)
   message(WARNING "Could NOT find OpenMP. Parallelization will not be available.")
 endif()
@@ -73,12 +77,11 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/imneme/pcg-cpp.git
   GIT_TAG v0.98.1
 )
-FetchContent_GetProperties(pcg)
-if(NOT pcg_POPULATED)
-  FetchContent_Populate(pcg)
-  add_library(pcg INTERFACE)
-  target_include_directories(pcg INTERFACE ${pcg_SOURCE_DIR}/include)
-endif()
+FetchContent_MakeAvailable(pcg)
+
+# Create interface library for PCG
+add_library(pcg_lib INTERFACE)
+target_include_directories(pcg_lib INTERFACE ${pcg_SOURCE_DIR}/include)
 
 # Collect all .cpp files from the specified directories
 file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
@@ -101,10 +104,17 @@ target_include_directories(pptree
 target_link_libraries(pptree
   Eigen3::Eigen
   nlohmann_json::nlohmann_json
-  pcg)
+  pcg_lib)
 
 if(OpenMP_FOUND)
   target_link_libraries(pptree OpenMP::OpenMP_CXX)
+endif()
+
+if(Jemalloc_FOUND)
+  message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")
+  target_link_libraries(pptree PkgConfig::Jemalloc)
+else()
+  message(WARNING "Jemalloc not found. Program could be unstable on high multi-threaded operations.")
 endif()
 
 # Test runner
@@ -119,7 +129,7 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   target_link_libraries(pptree_singlethreaded
     Eigen3::Eigen
     nlohmann_json::nlohmann_json
-    pcg)
+    pcg_lib)
 
   # Google Test
   FetchContent_Declare(
@@ -155,12 +165,7 @@ FetchContent_Declare(
   GIT_TAG 2.2.1
 )
 
-FetchContent_GetProperties(csv)
-if(NOT csv_POPULATED)
-  FetchContent_Populate(csv)
-  add_library(csv INTERFACE)
-  target_include_directories(csv INTERFACE ${csv_SOURCE_DIR}/single_include)
-endif()
+FetchContent_MakeAvailable(csv)
 
 # Fetch getopt for command line parsing
 # getopt_port requires cmake_minimum_required < 3.5, which CMake 3.31+ rejects.
@@ -182,5 +187,5 @@ target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
 
 # Setup cli executable
 add_executable(pptree-cli src/CLI.cpp)
-target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/single_include)
+target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/include)
 target_link_libraries(pptree-cli pptree csv getopt_lib)
