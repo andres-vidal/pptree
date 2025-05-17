@@ -14,10 +14,15 @@ Tree<float, int> pptree_train_glda(
   Data<float> &     x,
   DataColumn<int> & y,
   const float       lambda) {
+  const int seed = R::runif(0, INT_MAX);
+
+  RNG rng(seed);
+
   return Tree<float, int>::train(
     TrainingSpecGLDA<float, int>(lambda),
     x,
-    y);
+    y,
+    rng);
 }
 
 // [[Rcpp::export]]
@@ -28,13 +33,15 @@ Forest<float, int> pptree_train_forest_glda(
   const int         n_vars,
   const float       lambda,
   SEXP              n_threads) {
+  const int seed = R::runif(0, INT_MAX);
+
   if (n_threads == R_NilValue) {
     return Forest<float, int>::train(
       TrainingSpecUGLDA<float, int>(n_vars, lambda),
       x,
       y,
       size,
-      R::runif(0, INT_MAX));
+      seed);
   }
 
   return Forest<float, int>::train(
@@ -42,7 +49,7 @@ Forest<float, int> pptree_train_forest_glda(
     x,
     y,
     size,
-    R::runif(0, INT_MAX),
+    seed,
     as<const int>(n_threads));
 }
 

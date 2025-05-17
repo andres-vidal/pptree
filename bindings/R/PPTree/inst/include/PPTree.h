@@ -71,9 +71,7 @@ namespace Rcpp {
     return Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("root")          = Rcpp::wrap(*tree.root),
-      Rcpp::Named("training_data") = Rcpp::List::create(
-        Rcpp::Named("iob_indices") = Rcpp::wrap(tree.iob_indices),
-        Rcpp::Named("oob_indices") = Rcpp::wrap(tree.oob_indices)));
+      Rcpp::Named("iob_indices")   = Rcpp::wrap(tree.iob_indices));
   }
 
   SEXP wrap(const Forest<float, int> &forest) {
@@ -160,16 +158,11 @@ namespace Rcpp {
 
   template<> BootstrapTree<float, int> as(SEXP x) {
     Rcpp::List rtree(x);
-    Rcpp::List rtraining_spec(rtree["training_spec"]);
-    Rcpp::List rtraining_data(rtree["training_data"]);
-
-    std::vector<int> oob_indices = as<std::vector<int> >(rtraining_data["oob_indices"]);
 
     return BootstrapTree<float, int>(
       as<TreeCondition<float, int> >(rtree["root"]).clone(),
-      as<TrainingSpecPtr<float, int> >(rtraining_spec),
-      as<std::vector<int> >(rtraining_data["iob_indices"]),
-      std::set<int>(oob_indices.begin(), oob_indices.end()));
+      as<TrainingSpecPtr<float, int> >(rtree["training_spec"]),
+      as<std::vector<int> >(rtree["iob_indices"]));
   }
 
   template<> Forest<float, int> as(SEXP x) {
