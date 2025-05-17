@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
     display_progress(i + 1, reps);
 
 
-    #pragma omp parallel for schedule(dynamic)
+    #pragma omp parallel for schedule(dynamic) firstprivate(x)
     for (int i = 0; i < size; i++) {
       stats::RNG rng(static_cast<uint64_t>(seed), static_cast<uint64_t>(i));
 
