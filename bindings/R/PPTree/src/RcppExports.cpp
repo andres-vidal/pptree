@@ -13,26 +13,26 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // pptree_train_glda
-Tree<float, int> pptree_train_glda(Data<float>& x, DataColumn<int>& y, const float lambda);
+Tree<float, int> pptree_train_glda(Data<float> x, DataColumn<int> y, const float lambda);
 RcppExport SEXP _PPTree_pptree_train_glda(SEXP xSEXP, SEXP ySEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Data<float>& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< DataColumn<int>& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Data<float> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< DataColumn<int> >::type y(ySEXP);
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(pptree_train_glda(x, y, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
 // pptree_train_forest_glda
-Forest<float, int> pptree_train_forest_glda(Data<float>& x, DataColumn<int>& y, const int size, const int n_vars, const float lambda, SEXP n_threads);
+Forest<float, int> pptree_train_forest_glda(Data<float> x, DataColumn<int> y, const int size, const int n_vars, const float lambda, SEXP n_threads);
 RcppExport SEXP _PPTree_pptree_train_forest_glda(SEXP xSEXP, SEXP ySEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP n_threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Data<float>& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< DataColumn<int>& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Data<float> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< DataColumn<int> >::type y(ySEXP);
     Rcpp::traits::input_parameter< const int >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< const int >::type n_vars(n_varsSEXP);
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
