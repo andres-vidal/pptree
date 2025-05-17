@@ -7,7 +7,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_compile_definitions(-DEIGEN_DONT_PARALLELIZE)
 add_compile_definitions(-DEIGEN_NO_AUTOMATIC_RESIZING)
-add_compile_definitions(-DEIGEN_STACK_ALLOCATION_LIMIT=1)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_options(-O0)

@@ -10,7 +10,7 @@
 #include <numeric>
 #include <cmath>
 
-#define T float
+#define T double
 #define R int
 
 #ifdef _OPENMP
@@ -19,6 +19,7 @@
 
 using namespace pptree;
 using namespace models::stats;
+using namespace models;
 
 DataPacket<T, R> read_csv(const std::string& filename) {
   csv::CSVReader reader(filename);
@@ -62,7 +63,7 @@ DataPacket<T, R> read_csv(const std::string& filename) {
   const int n = featureData.size();
   const int p = featureData[0].size();
 
-  Data<float> x(n, p);
+  Data<T> x(n, p);
   for (int i = 0; i < n; ++i) {
     if (featureData[i].size() != p) {
       throw std::runtime_error("Inconsistent number of feature columns in CSV file.");
@@ -78,7 +79,7 @@ DataPacket<T, R> read_csv(const std::string& filename) {
     y[i] = labels[i];
   }
 
-  return DataPacket<float, int>(x, y);
+  return DataPacket<T, R>(x, y);
 }
 
 void display_progress(int current, int total, int bar_width = 50) {
@@ -96,7 +97,7 @@ void display_progress(int current, int total, int bar_width = 50) {
 
 int main(int argc, char *argv[]) {
   const int reps = 10000;
-  const int size = 500;
+  const int size = 100;
 
   DataPacket<T, R> data = read_csv("data/NCI60.csv");
 
@@ -127,39 +128,12 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < reps; i++) {
     display_progress(i + 1, reps);
 
-    std::vector<BootstrapTreePtr<T, R> > trees(size);
 
-    #pragma omp parallel for schedule(static)
+    #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < size; i++) {
       stats::RNG rng(static_cast<uint64_t>(seed), static_cast<uint64_t>(i));
 
-      std::vector<int> iob_indices;
-      iob_indices.reserve(x.rows());
-
-      for (const auto& group : data_spec.groups) {
-        const int group_size = data_spec.group_size(group);
-        const int min_index  = data_spec.group_start(group);
-        const int max_index  = data_spec.group_end(group);
-
-        const Uniform unif(min_index, max_index);
-
-        for (int j = 0; j < group_size; j++) {
-          iob_indices.push_back(unif(rng));
-        }
-      }
-
-      std::sort(iob_indices.begin(), iob_indices.end());
-
-      trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, iob_indices, rng);
-    }
-
-    Forest<T, R> forest(
-      training_spec.clone(),
-      seed,
-      24);
-
-    for (auto& tree : trees) {
-      forest.add_tree(std::move(tree));
+      Tree<T, R>::train(training_spec, x, y, rng);
     }
   }
 }

@@ -247,4 +247,10 @@ namespace models {
     Data<float>&                     x,
     DataColumn<int>&                 y,
     stats::RNG &                     rng);
+
+  template Tree<double, int> Tree<double, int>::train(
+    const TrainingSpec<double, int> & training_spec,
+    Data<double>&                     x,
+    DataColumn<int>&                  y,
+    stats::RNG &                      rng);
 }
