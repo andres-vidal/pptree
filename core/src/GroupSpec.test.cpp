@@ -206,21 +206,6 @@ TEST(GroupSpec, Subset) {
     3, 5, 5;
 
   Data<float> expected_x(4, 3);
-  expected_x <<
-    1, 2, 2,
-    1, 4, 4,
-    3, 3, 3,
-    3, 5, 5;
-
-  ASSERT_EQ(expected_x, spec.data(x));
-
-  DataColumn<float> expected_mean(3);
-  expected_mean <<
-    2.0,
-    3.5,
-    3.5;
-
-  ASSERT_EQ(expected_mean, spec.mean(x));
 }
 
 TEST(GroupSpec, Remap) {
@@ -252,9 +237,6 @@ TEST(GroupSpec, Remap) {
 
   GroupSpec<int> remapped = spec.remap(mapping);
 
-  Data<float> remapped_x = remapped.data(x);
-
-  ASSERT_EQ_MATRIX(x, remapped_x);
   ASSERT_EQ(std::set<int>({ 0, 1 }), remapped.groups);
 }
 

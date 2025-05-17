@@ -5,29 +5,32 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_CXX_FLAGS "")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_DEBUG -DEIGEN_DONT_PARALLELIZE")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -DEIGEN_NO_DEBUG -DEIGEN_DONT_PARALLELIZE ")
+add_compile_definitions(EIGEN_DONT_PARALLELIZE)
+add_compile_definitions(EIGEN_NO_AUTOMATIC_RESIZING)
 
-# Configure Address Sanitizer in Unix systems
-if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address,undefined")
-  add_compile_options(-fsanitize=address,undefined)
-  add_link_options(-fsanitize=address,undefined)
-endif()
-
-# Append Release flags to CMAKE_CXX_FLAGS
-if(CMAKE_BUILD_TYPE MATCHES Release)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}")
-endif()
-
-# Append Debug flags to CMAKE_CXX_FLAGS
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-  if(WIN32)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wa,-mbig-obj")
-  else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
+  add_compile_options(-O0)
+  add_compile_options(-g)
+  add_compile_definitions(_GLIBCXX_DEBUG)
+  add_compile_definitions(_GLIBCXX_ASSERTIONS)
+  add_compile_definitions(EIGEN_INITIALIZE_MATRICES_BY_NAN)
+  add_compile_definitions(EIGEN_INTERNAL_DEBUGGING)
+  add_compile_definitions(EIGEN_RUNTIME_NO_MALLOC)
+
+  if(UNIX AND NOT APPLE)
+    add_compile_options(-fsanitize=address,undefined)
+    add_link_options(-fsanitize=address,undefined)
   endif()
+
+  if(WIN32)
+    add_compile_options(-Wa,-mbig-obj)
+  endif()
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Release)
+  add_compile_options(-O3)
+  add_compile_definitions(NDEBUG)
+  add_compile_definitions(EIGEN_NO_DEBUG)
 endif()
 
 # Add search hints
@@ -38,9 +41,14 @@ list(APPEND CMAKE_PREFIX_PATH
 # Find OpenMP
 find_package(OpenMP)
 
+# Find Jemalloc using pkg-config
+include(FindPkgConfig)
+pkg_check_modules(Jemalloc IMPORTED_TARGET jemalloc)
+
 if(NOT OpenMP_FOUND)
   message(WARNING "Could NOT find OpenMP. Parallelization will not be available.")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
 include(FetchContent)
@@ -68,12 +76,11 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/imneme/pcg-cpp.git
   GIT_TAG v0.98.1
 )
-FetchContent_GetProperties(pcg)
-if(NOT pcg_POPULATED)
-  FetchContent_Populate(pcg)
-  add_library(pcg INTERFACE)
-  target_include_directories(pcg INTERFACE ${pcg_SOURCE_DIR}/include)
-endif()
+FetchContent_MakeAvailable(pcg)
+
+# Create interface library for PCG
+add_library(pcg_lib INTERFACE)
+target_include_directories(pcg_lib INTERFACE ${pcg_SOURCE_DIR}/include)
 
 # Collect all .cpp files from the specified directories
 file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
@@ -81,7 +88,7 @@ file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
 # Collect all .cpp files that are not test files
 set(NON_TEST_CPP_FILES "")
 foreach(file ${ALL_CPP_FILES})
-  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$")
+  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$" AND NOT file MATCHES "Test\\.cpp$")
     list(APPEND NON_TEST_CPP_FILES ${file})
   endif()
 endforeach()
@@ -96,10 +103,17 @@ target_include_directories(pptree
 target_link_libraries(pptree
   Eigen3::Eigen
   nlohmann_json::nlohmann_json
-  pcg)
+  pcg_lib)
 
 if(OpenMP_FOUND)
   target_link_libraries(pptree OpenMP::OpenMP_CXX)
+endif()
+
+if(Jemalloc_FOUND)
+  message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")
+  target_link_libraries(pptree PkgConfig::Jemalloc)
+else()
+  message(WARNING "Jemalloc not found. Program could be unstable on high multi-threaded operations.")
 endif()
 
 # Test runner
@@ -114,7 +128,7 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   target_link_libraries(pptree_singlethreaded
     Eigen3::Eigen
     nlohmann_json::nlohmann_json
-    pcg)
+    pcg_lib)
 
   # Google Test
   FetchContent_Declare(
@@ -142,11 +156,6 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
 endif()
 
 
-# Add profiler executable and its dependencies
-# Disable coverage for csv-parser on all platforms
-set(CSV_PARSER_COVERAGE OFF CACHE BOOL "Disable coverage for csv-parser" FORCE)
-set(BUILD_TESTS OFF CACHE BOOL "Disable csv-parser tests" FORCE)
-
 # Fetch csv-parser
 FetchContent_Declare(
   csv
@@ -155,12 +164,7 @@ FetchContent_Declare(
   GIT_TAG 2.2.1
 )
 
-FetchContent_GetProperties(csv)
-if(NOT csv_POPULATED)
-  FetchContent_Populate(csv)
-  add_library(csv INTERFACE)
-  target_include_directories(csv INTERFACE ${csv_SOURCE_DIR}/single_include)
-endif()
+FetchContent_MakeAvailable(csv)
 
 # Fetch getopt for command line parsing
 FetchContent_Declare(
@@ -175,5 +179,19 @@ target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
 
 # Setup cli executable
 add_executable(pptree-cli src/CLI.cpp)
-target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/single_include)
+target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/include)
 target_link_libraries(pptree-cli pptree csv getopt_lib)
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  target_link_libraries(pptree-cli gcov)
+endif()
+
+# Setup test executable
+add_executable(pptree-sandbox src/Test.cpp)
+target_include_directories(pptree-sandbox PRIVATE ${csv_SOURCE_DIR}/include)
+target_link_libraries(pptree-sandbox pptree csv)
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  target_link_libraries(pptree-sandbox gcov)
+endif()
+
