@@ -1,8 +1,8 @@
 CXX_STD = CXX17
 
 PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) @DARWIN_OPENMP_LIBS@ -L"../inst/lib" -lpptree 
-PKG_CPPFLAGS = -I"../inst/include" -I"core/include" -I"core/src" -DNDEBUG -DEIGEN_NO_DEBUG -DEIGEN_DONT_PARALLELIZE -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS @COMPILER_FLAGS@
-PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) @DARWIN_OPENMP_CXXFLAGS@ -march=native
+PKG_CPPFLAGS = -I"../inst/include" -I"core/include" -I"core/src" -DNDEBUG -DEIGEN_NO_DEBUG -DEIGEN_DONT_PARALLELIZE -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
+PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) @DARWIN_OPENMP_CXXFLAGS@ @COMPILER_FLAGS@ -march=native -O3
 
 BUILD_DIR = .build
 
@@ -26,7 +26,7 @@ pptree:
 
 	@if [ ! -f ../inst/lib/libpptree.a ]; then \
 		mkdir -p $(BUILD_DIR) ../inst/lib; \
-		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DPPTREE_SKIP_TESTS=true ../core && make && cd ..; \
+		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER="$(R CMD config CXX)" -DCMAKE_CXX_FLAGS="$(R CMD config CXXFLAGS)" -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../core && make && cd ..; \
 		cp $(BUILD_DIR)/libpptree.a ../inst/lib; \
 		rm -rf $(BUILD_DIR); \
 	else \
