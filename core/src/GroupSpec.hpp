@@ -172,7 +172,9 @@ namespace models::stats {
         DataColumn<T> global_mean = this->mean(x);
         Data<T> result            = Data<T>::Zero(x.cols(), x.cols());
 
-        for (const G &g : this->groups) {
+        std::set<G> groups = utils::values(this->supergroups);
+
+        for (const G &g : groups) {
           auto group_data    = group(x, g);
           auto group_mean    = group_data.colwise().mean().transpose();
           auto centered_mean = group_mean - global_mean;
@@ -187,7 +189,9 @@ namespace models::stats {
       Data<T> wgss(const Data<T> &x) const {
         Data<T> result = Data<T>::Zero(x.cols(), x.cols());
 
-        for (const G &g : this->groups) {
+        std::set<G> groups = utils::values(this->supergroups);
+
+        for (const G &g : groups) {
           auto group_data          = group(x, g);
           auto centered_group_data = group_data.rowwise() - group_data.colwise().mean();
 
