@@ -92,7 +92,7 @@ file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
 # Collect all .cpp files that are not test files
 set(NON_TEST_CPP_FILES "")
 foreach(file ${ALL_CPP_FILES})
-  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$")
+  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$" AND NOT file MATCHES "Sandbox\\.cpp$")
     list(APPEND NON_TEST_CPP_FILES ${file})
   endif()
 endforeach()
@@ -189,3 +189,13 @@ target_link_libraries(pptree-cli pptree csv getopt_lib)
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   target_link_libraries(pptree-cli gcov)
 endif()
+
+# Setup test executable
+# add_executable(pptree-sandbox src/Sandbox.cpp)
+# target_include_directories(pptree-sandbox PRIVATE ${csv_SOURCE_DIR}/include)
+# target_link_libraries(pptree-sandbox pptree csv)
+
+# if(CMAKE_BUILD_TYPE MATCHES Debug)
+#   target_link_libraries(pptree-sandbox gcov)
+# endif()
+
