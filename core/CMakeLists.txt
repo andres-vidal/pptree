@@ -4,9 +4,18 @@ project(pptree VERSION 0.0.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_compile_definitions(-DEIGEN_DONT_PARALLELIZE)
-add_compile_definitions(-DEIGEN_NO_AUTOMATIC_RESIZING)
+add_compile_definitions(EIGEN_DONT_PARALLELIZE)
+add_compile_definitions(EIGEN_NO_AUTOMATIC_RESIZING)
+
+if(WIN32)
+  # Disable vectorization to prevent alignment issues on Windows
+  # Affects performance on Windows
+  add_compile_definitions(EIGEN_DONT_VECTORIZE)
+endif()
+
+add_compile_options(-march=native)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_options(-O0)
@@ -32,8 +41,8 @@ endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Release)
   add_compile_options(-O3)
-  add_compile_definitions(-DNDEBUG)
-  add_compile_definitions(-DEIGEN_NO_DEBUG)
+  add_compile_definitions(NDEBUG)
+  add_compile_definitions(EIGEN_NO_DEBUG)
 endif()
 
 # Add search hints
