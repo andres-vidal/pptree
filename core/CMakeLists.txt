@@ -91,7 +91,7 @@ file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
 # Collect all .cpp files that are not test files
 set(NON_TEST_CPP_FILES "")
 foreach(file ${ALL_CPP_FILES})
-  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$")
+  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$" AND NOT file MATCHES "Sandbox\\.cpp$")
     list(APPEND NON_TEST_CPP_FILES ${file})
   endif()
 endforeach()
