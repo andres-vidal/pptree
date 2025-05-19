@@ -168,21 +168,16 @@ namespace models::stats {
       }
 
       template<typename T>
-      int rows(const Data<T> &x) const {
-        return data(x).rows();
-      }
-
-      template<typename T>
       Data<T> bgss(const Data<T> &x) const {
         DataColumn<T> global_mean = this->mean(x);
         Data<T> result            = Data<T>::Zero(x.cols(), x.cols());
 
         for (const G &g : this->groups) {
-          auto group_data             = group(x, g);
-          DataColumn<T> group_mean    = group_data.colwise().mean();
-          DataColumn<T> centered_mean = group_mean - global_mean;
+          auto group_data    = group(x, g);
+          auto group_mean    = group_data.colwise().mean().transpose();
+          auto centered_mean = group_mean - global_mean;
 
-          result.noalias() += group_data.rows() * (centered_mean * centered_mean.transpose());
+          result += group_data.rows() * (centered_mean * centered_mean.transpose());
         }
 
         return result;
@@ -196,7 +191,7 @@ namespace models::stats {
           auto group_data          = group(x, g);
           auto centered_group_data = group_data.rowwise() - group_data.colwise().mean();
 
-          result.noalias() += centered_group_data.transpose() * centered_group_data;
+          result += centered_group_data.transpose() * centered_group_data;
         }
 
         return result;
