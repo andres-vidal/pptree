@@ -11,9 +11,9 @@ using namespace pptree;
 
 // [[Rcpp::export]]
 Tree<float, int> pptree_train_glda(
-  Data<float> &     x,
-  DataColumn<int> & y,
-  const float       lambda) {
+  Data<float>     x,
+  DataColumn<int> y,
+  const float     lambda) {
   const int seed = R::runif(0, INT_MAX);
 
   RNG rng(seed);
@@ -27,12 +27,12 @@ Tree<float, int> pptree_train_glda(
 
 // [[Rcpp::export]]
 Forest<float, int> pptree_train_forest_glda(
-  Data<float> &     x,
-  DataColumn<int> & y,
-  const int         size,
-  const int         n_vars,
-  const float       lambda,
-  SEXP              n_threads) {
+  Data<float>     x,
+  DataColumn<int> y,
+  const int       size,
+  const int       n_vars,
+  const float     lambda,
+  SEXP            n_threads) {
   const int seed = R::runif(0, INT_MAX);
 
   if (n_threads == R_NilValue) {
