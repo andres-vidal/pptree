@@ -51,8 +51,6 @@ pkg_check_modules(Jemalloc IMPORTED_TARGET jemalloc)
 
 if(NOT OpenMP_FOUND)
   message(WARNING "Could NOT find OpenMP. Parallelization will not be available.")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
 include(FetchContent)
