@@ -20,10 +20,16 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_definitions(EIGEN_RUNTIME_NO_MALLOC)
   add_compile_options(-fno-omit-frame-pointer)
 
-
   if(UNIX AND NOT APPLE)
     add_compile_options(-fsanitize=address,undefined)
     add_link_options(-fsanitize=address,undefined)
+    add_compile_options(--coverage)
+    add_link_options(--coverage)
+  endif()
+
+  if(APPLE)
+    add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+    add_link_options(-fprofile-instr-generate -fcoverage-mapping)
   endif()
 
   if(WIN32)
@@ -183,10 +189,6 @@ target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
 add_executable(pptree-cli src/CLI.cpp)
 target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/include)
 target_link_libraries(pptree-cli pptree csv getopt_lib)
-
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-  target_link_libraries(pptree-cli gcov)
-endif()
 
 # Setup test executable
 # add_executable(pptree-sandbox src/Sandbox.cpp)
