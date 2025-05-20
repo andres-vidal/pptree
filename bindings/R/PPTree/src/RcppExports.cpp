@@ -13,26 +13,26 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // pptree_train_glda
-Tree<float, int> pptree_train_glda(Data<float>& x, DataColumn<int>& y, const float lambda);
+Tree<float, int> pptree_train_glda(Data<float> x, DataColumn<int> y, const float lambda);
 RcppExport SEXP _PPTree_pptree_train_glda(SEXP xSEXP, SEXP ySEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Data<float>& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< DataColumn<int>& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Data<float> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< DataColumn<int> >::type y(ySEXP);
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(pptree_train_glda(x, y, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
 // pptree_train_forest_glda
-Forest<float, int> pptree_train_forest_glda(Data<float>& x, DataColumn<int>& y, const int size, const int n_vars, const float lambda, SEXP n_threads);
+Forest<float, int> pptree_train_forest_glda(Data<float> x, DataColumn<int> y, const int size, const int n_vars, const float lambda, SEXP n_threads);
 RcppExport SEXP _PPTree_pptree_train_forest_glda(SEXP xSEXP, SEXP ySEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP n_threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Data<float>& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< DataColumn<int>& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Data<float> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< DataColumn<int> >::type y(ySEXP);
     Rcpp::traits::input_parameter< const int >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< const int >::type n_vars(n_varsSEXP);
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
@@ -65,60 +65,12 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// pptree_variable_importance
-Data<float> pptree_variable_importance(const Tree<float, int>& tree);
-RcppExport SEXP _PPTree_pptree_variable_importance(SEXP treeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree<float, int>& >::type tree(treeSEXP);
-    rcpp_result_gen = Rcpp::wrap(pptree_variable_importance(tree));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pptree_forest_variable_importance
-Data<float> pptree_forest_variable_importance(const Forest<float, int>& forest);
-RcppExport SEXP _PPTree_pptree_forest_variable_importance(SEXP forestSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest<float, int>& >::type forest(forestSEXP);
-    rcpp_result_gen = Rcpp::wrap(pptree_forest_variable_importance(forest));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pptree_confusion_matrix
-Data<float> pptree_confusion_matrix(const Tree<float, int>& tree);
-RcppExport SEXP _PPTree_pptree_confusion_matrix(SEXP treeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree<float, int>& >::type tree(treeSEXP);
-    rcpp_result_gen = Rcpp::wrap(pptree_confusion_matrix(tree));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pptree_forest_confusion_matrix
-Data<float> pptree_forest_confusion_matrix(const Forest<float, int>& forest);
-RcppExport SEXP _PPTree_pptree_forest_confusion_matrix(SEXP forestSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest<float, int>& >::type forest(forestSEXP);
-    rcpp_result_gen = Rcpp::wrap(pptree_forest_confusion_matrix(forest));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_glda", (DL_FUNC) &_PPTree_pptree_train_glda, 3},
     {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 6},
     {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
     {"_PPTree_pptree_predict_forest", (DL_FUNC) &_PPTree_pptree_predict_forest, 2},
-    {"_PPTree_pptree_variable_importance", (DL_FUNC) &_PPTree_pptree_variable_importance, 1},
-    {"_PPTree_pptree_forest_variable_importance", (DL_FUNC) &_PPTree_pptree_forest_variable_importance, 1},
-    {"_PPTree_pptree_confusion_matrix", (DL_FUNC) &_PPTree_pptree_confusion_matrix, 1},
-    {"_PPTree_pptree_forest_confusion_matrix", (DL_FUNC) &_PPTree_pptree_forest_confusion_matrix, 1},
     {NULL, NULL, 0}
 };
 

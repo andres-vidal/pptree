@@ -11,7 +11,7 @@
 #include "DRUniformStrategy.hpp"
 #include "DRNoopStrategy.hpp"
 
-#include "VIStrategy.hpp"
+#include "Random.hpp"
 
 namespace pptree {
   using namespace models;

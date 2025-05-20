@@ -121,7 +121,7 @@ namespace pptree {
   };
 
   void announce_results(const ModelStats& stats) {
-    std::cout << "Evaluation  esults (" << stats.tr_times.size() << " runs):" << std::endl
+    std::cout << "Evaluation results (" << stats.tr_times.size() << " runs):" << std::endl
               << "Training Time: " << stats.mean_time() << "ms ± " << stats.std_time() << "ms" << std::endl
               << "Train Error:   " << (stats.mean_tr_error() * 100) << "% ± " << (stats.std_tr_error() * 100) << "%" << std::endl
               << "Test Error:    " << (stats.mean_te_error() * 100) << "% ± " << (stats.std_te_error() * 100) << "%" << std::endl;

@@ -4,6 +4,7 @@
 #include "DataColumn.hpp"
 
 #include "Map.hpp"
+#include "Invariant.hpp"
 
 #include <optional>
 
@@ -140,6 +141,7 @@ namespace models::stats {
 
         for (const auto &g : subgroups) {
           for (int i = group_start(g); i <= group_end(g); i++) {
+            invariant(i >= 0 && i < x.rows(), "GroupSpec::group: index out of bounds");
             indices.push_back(i);
           }
         }
@@ -166,21 +168,18 @@ namespace models::stats {
       }
 
       template<typename T>
-      int rows(const Data<T> &x) const {
-        return data(x).rows();
-      }
-
-      template<typename T>
       Data<T> bgss(const Data<T> &x) const {
         DataColumn<T> global_mean = this->mean(x);
         Data<T> result            = Data<T>::Zero(x.cols(), x.cols());
 
-        for (const G &g : this->groups) {
-          auto group_data             = group(x, g);
-          DataColumn<T> group_mean    = group_data.colwise().mean();
-          DataColumn<T> centered_mean = group_mean - global_mean;
+        std::set<G> groups = utils::values(this->supergroups);
 
-          result.noalias() += group_data.rows() * (centered_mean * centered_mean.transpose());
+        for (const G &g : groups) {
+          auto group_data    = group(x, g);
+          auto group_mean    = group_data.colwise().mean().transpose();
+          auto centered_mean = group_mean - global_mean;
+
+          result += group_data.rows() * (centered_mean * centered_mean.transpose());
         }
 
         return result;
@@ -190,11 +189,13 @@ namespace models::stats {
       Data<T> wgss(const Data<T> &x) const {
         Data<T> result = Data<T>::Zero(x.cols(), x.cols());
 
-        for (const G &g : this->groups) {
+        std::set<G> groups = utils::values(this->supergroups);
+
+        for (const G &g : groups) {
           auto group_data          = group(x, g);
           auto centered_group_data = group_data.rowwise() - group_data.colwise().mean();
 
-          result.noalias() += centered_group_data.transpose() * centered_group_data;
+          result += centered_group_data.transpose() * centered_group_data;
         }
 
         return result;
