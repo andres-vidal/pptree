@@ -25,8 +25,7 @@ namespace models {
 
     TrainingSpecPtr<T, R> training_spec;
 
-    const int seed      = 0;
-    const int n_threads = 1;
+    const int seed = 0;
 
     Forest() {
     }
@@ -35,17 +34,7 @@ namespace models {
       TrainingSpecPtr<T, R> && training_spec,
       const int                seed)
       : training_spec(std::move(training_spec)),
-      seed(seed),
-      n_threads(std::thread::hardware_concurrency()) {
-    }
-
-    Forest(
-      TrainingSpecPtr<T, R> && training_spec,
-      const int                seed,
-      const int                n_threads)
-      : training_spec(std::move(training_spec)),
-      seed(seed),
-      n_threads(std::clamp(n_threads, 1, (int) std::thread::hardware_concurrency())) {
+      seed(seed) {
     }
 
     R predict(const stats::DataColumn<T> &data) const {
@@ -92,8 +81,7 @@ namespace models {
         x,
         y,
         trees.size(),
-        seed,
-        n_threads);
+        seed);
     }
 
     json to_json() const {

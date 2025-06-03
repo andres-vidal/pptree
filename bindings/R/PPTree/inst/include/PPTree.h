@@ -84,7 +84,6 @@ namespace Rcpp {
     return Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
       Rcpp::Named("seed")          = Rcpp::wrap(forest.seed),
-      Rcpp::Named("n_threads")     = Rcpp::wrap(forest.n_threads),
       Rcpp::Named("trees")         = trees);
   }
 
@@ -172,8 +171,7 @@ namespace Rcpp {
 
     Forest<float, int> forest(
       as<TrainingSpecPtr<float, int> >(rtraining_spec),
-      Rcpp::as<float>(rforest["seed"]),
-      Rcpp::as<int>(rforest["n_threads"]));
+      Rcpp::as<float>(rforest["seed"]));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree     = as<BootstrapTree<float, int> > (rtrees[i]);

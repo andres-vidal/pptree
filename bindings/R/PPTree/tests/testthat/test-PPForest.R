@@ -41,11 +41,6 @@ describe("PPForest formula interface", {
       Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 1
     )
   })
-
-  it("preserves the n_threads in the returned model", {
-    model <- PPForest(Type ~ ., data = iris, n_threads = 1)
-    expect_equal(model$n_threads, 1)
-  })
 })
 
 describe("PPForest matrix interface", {

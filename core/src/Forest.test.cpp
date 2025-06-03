@@ -101,10 +101,10 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 0.9580563306808472, -0.1769358515739441, 0.006788997910916805, 0.10231061279773712, -0.2007693350315094 }),
+        as_projector({ 0.9580563306808472, -0.1769358515739441, 0.006788954604417086, 0.10231059044599533, -0.2007693201303482 }),
         3.9684371948242188,
         TreeCondition<float, int>::make(
-          as_projector({ 0.037195101380348206, 0.9892118573188782, -0.038433052599430084, 0.03852792829275131, 0.13082443177700043 }),
+          as_projector({ 0.03719514608383179, 0.9892118573188782, -0.03843306005001068, 0.03852792829275131, 0.13082440197467804 }),
           2.7188374996185303,
           TreeResponse<float, int>::make(0),
           TreeResponse<float, int>::make(1)
@@ -116,11 +116,26 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 0.9805806875228882, -0.19611600041389465, -7.279736990994934e-08, 1.1245992226349699e-07, -9.458754135494019e-08 }),
-        4.118439674377441,
+        as_projector({ 0.39588773250579834, -0.912018895149231, -0.02612934447824955, 0.07246564328670502, -0.07456832379102707 }),
+        -1.714177131652832,
         TreeCondition<float, int>::make(
-          as_projector({ 0.0, 1.0, -1.9481838364754367e-08, 1.0491407920198981e-07, -4.4338150928524556e-08 }),
-          2.5,
+          as_projector({ -0.0, 1.0, -1.2741912559788293e-11, 5.284577636599508e-11, -2.1893145282780857e-11 }),
+          6.5,
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(2)
+          ),
+        TreeResponse<float, int>::make(0)
+        ))
+    );
+
+  expect.add_tree(
+    std::make_unique<BootstrapTree<float, int> >(
+      TreeCondition<float, int>::make(
+        as_projector({ 0.9647202491760254, -0.17297711968421936, -0.01983051560819149, 0.12365056574344635, -0.15398375689983368 }),
+        4.064751625061035,
+        TreeCondition<float, int>::make(
+          as_projector({ 0.05080557242035866, 0.9409289360046387, 0.11455754935741425, -0.1627458930015564, 0.2691875696182251 }),
+          2.7592363357543945,
           TreeResponse<float, int>::make(0),
           TreeResponse<float, int>::make(1)
           ),
@@ -131,30 +146,15 @@ TEST(Forest, TrainLDAAllVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 0.9729747772216797, -0.1960887610912323, -0.038586050271987915, 0.0533757247030735, -0.10262320935726166 }),
-        3.9661753177642822,
+        as_projector({ 0.39640840888023376, -0.9168400168418884, -0.015512045472860336, 0.027026182040572166, -0.0359681062400341 }),
+        -1.7061063051223755,
         TreeCondition<float, int>::make(
-          as_projector({ 0.2779413163661957, 0.9268009662628174, -0.11087987571954727, 0.06655726581811905, 0.2169434279203415 }),
-          3.0928874015808105,
-          TreeResponse<float, int>::make(0),
-          TreeResponse<float, int>::make(1)
+          as_projector({ -0.0, 1.0, -2.361130313488502e-08, 6.467465230031166e-09, 1.661359050331157e-08 }),
+          6.5,
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(2)
           ),
-        TreeResponse<float, int>::make(2)
-        ))
-    );
-
-  expect.add_tree(
-    std::make_unique<BootstrapTree<float, int> >(
-      TreeCondition<float, int>::make(
-        as_projector({ 0.9740977883338928, -0.19465802609920502, -0.022930234670639038, 0.08263365924358368, -0.07673182338476181 }),
-        4.049604415893555,
-        TreeCondition<float, int>::make(
-          as_projector({ 0.14019571244716644, 0.9772301912307739, 0.0012194644659757614, 0.025386467576026917, 0.157227024435997 }),
-          2.9420154094696045,
-          TreeResponse<float, int>::make(0),
-          TreeResponse<float, int>::make(1)
-          ),
-        TreeResponse<float, int>::make(2)
+        TreeResponse<float, int>::make(0)
         ))
     );
 
@@ -247,11 +247,11 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 0.9023475646972656, 0.0, 0.0, 0.4310089647769928, 0.0 }),
-        5.072210311889648,
+        as_projector({ 0.9023476243019104, 0.0, 0.0, 0.4310089647769928, 0.0 }),
+        5.072210788726807,
         TreeCondition<float, int>::make(
-          as_projector({ 0.0, 0.9889134764671326, 0.0, 0.14849309623241425, 0.0 }),
-          2.7555019855499268,
+          as_projector({ 0.0, 0.9889134764671326, 0.0, 0.14849308133125305, 0.0 }),
+          2.7555017471313477,
           TreeResponse<float, int>::make(0),
           TreeResponse<float, int>::make(1)
           ),
@@ -263,46 +263,46 @@ TEST(Forest, TrainLDASomeVariablesMultivariateThreeGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 0.9626245498657227, 0.0, 0.0, 0.0, -0.2708394229412079 }),
-        4.723257541656494,
+        as_projector({ -0.9785193204879761, 0.0, 0.0, 0.0, 0.20615507662296295 }),
+        -4.900600433349609,
+        TreeResponse<float, int>::make(2),
         TreeCondition<float, int>::make(
-          as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
-          2.5,
-          TreeResponse<float, int>::make(0),
-          TreeResponse<float, int>::make(1)
-          ),
-        TreeResponse<float, int>::make(2)
-        ))
+          as_projector({ 0.0, 0.0, 0.0, 0.477281779050827, -0.8787502646446228 }),
+          -0.4522837996482849,
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(0)
+          ))
+      )
     );
 
   // Third tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 0.0, 0.0, 0.43462103605270386, 0.0, 0.9006133675575256 }),
-        1.1528732776641846,
-        TreeResponse<float, int>::make(0),
+        as_projector({ 0.9749178290367126, -0.22256524860858917, 0.0, 0.0, 0.0 }),
+        3.98091459274292,
         TreeCondition<float, int>::make(
-          as_projector({ 0.0, 0.0, -0.9125092029571533, 0.0, 0.4090558588504791 }),
-          0.10619720071554184,
+          as_projector({ 0.0, 0.0, 0.0, 0.16338759660720825, -0.9865618944168091 }),
+          -0.7777230739593506,
           TreeResponse<float, int>::make(1),
-          TreeResponse<float, int>::make(2)
-          ))
-      )
+          TreeResponse<float, int>::make(0)
+          ),
+        TreeResponse<float, int>::make(2)
+        ))
     );
 
   // Fourth tree
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ -0.9543675780296326, 0.0, 0.2986343502998352, 0.0, 0.0 }),
-        -4.9326019287109375,
-        TreeResponse<float, int>::make(2),
+        as_projector({ 0.0, 0.0, 0.0, -0.6386693716049194, 0.7694813013076782 }),
+        0.23969349265098572,
+        TreeResponse<float, int>::make(0),
         TreeCondition<float, int>::make(
-          as_projector({ 0.0, 0.9989996552467346, 0.0, 0.04471937566995621, 0.0 }),
-          2.6413731575012207,
-          TreeResponse<float, int>::make(0),
-          TreeResponse<float, int>::make(1)
+          as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
+          6.5,
+          TreeResponse<float, int>::make(1),
+          TreeResponse<float, int>::make(2)
           ))
       )
     );
@@ -365,10 +365,10 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 0.9404149055480957, 0.1384861171245575, 0.27520284056663513, -0.028697863221168518,
-                       -0.04985111951828003, -0.04985113441944122, -0.04985114187002182, -0.04985113441944122,
-                       -0.04985114559531212, -0.049851153045892715, -0.04985114559531212, -0.04985113441944122 }),
-        2.056182384490967,
+        as_projector({ 0.9637967944145203, -0.02586924470961094, 0.10231951624155045, -0.1402283012866974,
+                       -0.07096929848194122, -0.0709693655371666, -0.07096933573484421, -0.070969358086586,
+                       -0.070969358086586, -0.0709693506360054, -0.07096933573484421, -0.07096933573484421 }),
+        1.499821662902832,
         TreeResponse<float, int>::make(0),
         TreeResponse<float, int>::make(1)
         ))
@@ -377,10 +377,10 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 0.9504902362823486, -0.032086681574583054, -0.0, -0.0015316768549382687,
-                       -0.10927978157997131, -0.10927978903055191, -0.10927974432706833, -0.10927967727184296,
-                       -0.10927972197532654, -0.10927971452474594, -0.10927971452474594, -0.10927971452474594 }),
-        1.0509742498397827,
+        as_projector({ 1.0, -1.1535910715565478e-07, -2.1619270285100356e-07, 1.0954755680359085e-07,
+                       6.949329645067337e-08, 6.949331066152808e-08, 6.949329645067337e-08, 6.949331066152808e-08,
+                       6.949331066152808e-08, 6.949331066152808e-08, 6.949331066152808e-08, 6.949331066152808e-08 }),
+        2.500000238418579,
         TreeResponse<float, int>::make(0),
         TreeResponse<float, int>::make(1)
         ))
@@ -389,9 +389,7 @@ TEST(Forest, TrainPDAAllVariablesMultivariateTwoGroups) {
   expect.add_tree(
     std::make_unique<BootstrapTree<float, int> >(
       TreeCondition<float, int>::make(
-        as_projector({ 1.0, -1.4527107339290524e-07, -2.9038861271146743e-07, -9.766825570522997e-08,
-                       8.5481985934166e-08, 8.548196461788393e-08, 8.54819361961745e-08, 8.54819361961745e-08,
-                       8.54819361961745e-08, 8.54819361961745e-08, 8.54819361961745e-08, 8.54819361961745e-08 }),
+        as_projector({ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }),
         2.5,
         TreeResponse<float, int>::make(0),
         TreeResponse<float, int>::make(1)

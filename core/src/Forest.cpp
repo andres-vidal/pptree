@@ -33,41 +33,31 @@ namespace models {
 
     std::vector<BootstrapTreePtr<T, R> > trees(size);
 
-    # pragma omp parallel
-    {
-      #ifdef _OPENMP
-      stats::RNG rng(static_cast<uint64_t>(seed), static_cast<uint64_t>(omp_get_thread_num()));
-      #else
-      stats::RNG rng(static_cast<uint64_t>(seed), 0u);
-      #endif
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < size; i++) {
+      stats::RNG rng(static_cast<uint64_t>(seed), static_cast<uint64_t>(i));
 
-      #pragma omp for schedule(static)
-      for (int i = 0; i < size; i++) {
-        std::vector<int> iob_indices;
-        iob_indices.reserve(x.rows());
+      std::vector<int> iob_indices;
+      iob_indices.reserve(x.rows());
 
-        for (const auto& group : data_spec.groups) {
-          const int group_size = data_spec.group_size(group);
-          const int min_index  = data_spec.group_start(group);
-          const int max_index  = data_spec.group_end(group);
+      for (const auto& group : data_spec.groups) {
+        const int group_size = data_spec.group_size(group);
+        const int min_index  = data_spec.group_start(group);
+        const int max_index  = data_spec.group_end(group);
 
-          const Uniform unif(min_index, max_index);
+        const Uniform unif(min_index, max_index);
 
-          for (int j = 0; j < group_size; j++) {
-            iob_indices.push_back(unif(rng));
-          }
+        for (int j = 0; j < group_size; j++) {
+          iob_indices.push_back(unif(rng));
         }
-
-        std::sort(iob_indices.begin(), iob_indices.end());
-
-        trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, iob_indices, rng);
       }
+
+      std::sort(iob_indices.begin(), iob_indices.end());
+
+      trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, iob_indices, rng);
     }
 
-    Forest<T, R> forest(
-      training_spec.clone(),
-      seed,
-      n_threads);
+    Forest<T, R> forest(training_spec.clone(), seed);
 
     for (auto& tree : trees) {
       forest.add_tree(std::move(tree));
