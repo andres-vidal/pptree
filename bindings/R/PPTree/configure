@@ -89,6 +89,6 @@ fi
 
 sed -e "s|@DARWIN_OPENMP_CXXFLAGS@|${DARWIN_OPENMP_CXXFLAGS}|" \
     -e "s|@DARWIN_OPENMP_LIBS@|${DARWIN_OPENMP_LIBS}|" \
-    -e "s|@COMPILER_FLAGS@|${COMPILER_FLAGS}|" \
+    -e "s|@COMPILER_FLAGS@|${COMPILER_FLAGS} -march=native -O3|" \
     src/Makevars.in > src/Makevars
 
