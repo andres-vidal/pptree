@@ -19,15 +19,15 @@ namespace models::pp::strategy {
 
     virtual T index(
       const stats::Data<T> &     x,
-      const stats::GroupSpec<G>& data_spec,
+      const stats::GroupSpec<G>& group_spec,
       const Projector<T>&        projector) const = 0;
 
     virtual Projector<T> optimize(
       const stats::Data<T> &     x,
-      const stats::GroupSpec<G>& data_spec) const = 0;
+      const stats::GroupSpec<G>& group_spec) const = 0;
 
-    Projector<T> operator()(const stats::Data<T> &x, const stats::GroupSpec<G>& data_spec) const {
-      return optimize(x, data_spec);
+    Projector<T> operator()(const stats::Data<T> &x, const stats::GroupSpec<G>& group_spec) const {
+      return optimize(x, group_spec);
     }
   };
 }
