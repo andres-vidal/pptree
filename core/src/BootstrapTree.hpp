@@ -15,15 +15,30 @@ namespace models {
     using Base::Base;
 
     static BootstrapTreePtr<T, R> train(
-      const TrainingSpec<T, R> &  training_spec,
-      const stats::Data<T> &      x,
-      const stats::DataColumn<R> &y,
-      const std::vector<int> &    iob_indices,
-      stats::RNG &                rng) {
-      stats::Data<T> sampled_x       = x(iob_indices, Eigen::all);
-      stats::DataColumn<R> sampled_y = y(iob_indices, Eigen::all);
+      const TrainingSpec<T, R> & training_spec,
+      const stats::Data<T> &     x,
+      const stats::GroupSpec<R> &group_spec,
+      stats::RNG &               rng) {
+      std::vector<int> iob_indices;
+      iob_indices.reserve(x.rows());
 
-      Tree<T, R> tree = Tree<T, R>::train(training_spec, sampled_x, sampled_y, rng);
+      for (const auto& group : group_spec.groups) {
+        const int group_size = group_spec.group_size(group);
+        const int min_index  = group_spec.group_start(group);
+        const int max_index  = group_spec.group_end(group);
+
+        const stats::Uniform unif(min_index, max_index);
+
+        for (int j = 0; j < group_size; j++) {
+          iob_indices.push_back(unif(rng));
+        }
+      }
+
+      std::sort(iob_indices.begin(), iob_indices.end());
+
+      stats::Data<T> sampled_x = x(iob_indices, Eigen::all);
+
+      Tree<T, R> tree = Tree<T, R>::train(training_spec, sampled_x, group_spec, rng);
 
       return std::make_unique<BootstrapTree<T, R> >(
         std::move(tree.root),

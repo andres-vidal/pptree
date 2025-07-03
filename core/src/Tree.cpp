@@ -17,14 +17,14 @@ namespace models {
   template<typename T, typename R >
   std::map<R, int> binary_regroup(
     const Data<T> &     x,
-    const GroupSpec<R> &data_spec
+    const GroupSpec<R> &group_spec
     ) {
     std::vector<std::tuple<R, T> > means;
 
     invariant(x.cols() == 1, "Binary regrouping requires a unidimensional data");
 
-    for (const R group : data_spec.groups) {
-      T group_mean = data_spec.group(x, group).mean();
+    for (const R group : group_spec.groups) {
+      T group_mean = group_spec.group(x, group).mean();
 
       means.push_back({ group, group_mean });
     }
@@ -65,19 +65,19 @@ namespace models {
   TreeConditionPtr<T, R> binary_step(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
-    const GroupSpec<R> &       data_spec,
+    const GroupSpec<R> &       group_spec,
     const DRSpec<T, R>&        dr) {
-    R group_1 = *data_spec.groups.begin();
-    R group_2 = *std::next(data_spec.groups.begin());
+    R group_1 = *group_spec.groups.begin();
+    R group_2 = *std::next(group_spec.groups.begin());
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
     auto reduced_x = x(Eigen::all, dr.selected_cols);
 
-    Projector<T> projector = dr.expand(pp_strategy(reduced_x, data_spec));
+    Projector<T> projector = dr.expand(pp_strategy(reduced_x, group_spec));
 
-    auto data_group_1 = data_spec.group(x, group_1);
-    auto data_group_2 = data_spec.group(x, group_2);
+    auto data_group_1 = group_spec.group(x, group_1);
+    auto data_group_2 = group_spec.group(x, group_2);
 
     T mean_1 = (data_group_1 * projector).mean();
     T mean_2 = (data_group_2 * projector).mean();
@@ -106,7 +106,7 @@ namespace models {
       std::move(lower_response),
       std::move(upper_response),
       training_spec.clone(),
-      data_spec.groups);
+      group_spec.groups);
 
     return condition;
   }
@@ -115,21 +115,21 @@ namespace models {
   GroupSpec<R> binary_split(
     const TrainingSpec<T, R> & training_spec,
     const Data<T> &            x,
-    const GroupSpec<R> &       data_spec,
+    const GroupSpec<R> &       group_spec,
     const DRSpec<T, R>&        dr
     ) {
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
     Data<T> reduced_x = x(Eigen::all, dr.selected_cols);
 
-    Projector<T> projector = dr.expand(pp_strategy(reduced_x, data_spec));
+    Projector<T> projector = dr.expand(pp_strategy(reduced_x, group_spec));
 
     Data<T> projected_x = x * projector;
 
-    std::map<R, int> binary_mapping = binary_regroup(projected_x, data_spec);
+    std::map<R, int> binary_mapping = binary_regroup(projected_x, group_spec);
 
 
-    return data_spec.remap(binary_mapping);
+    return group_spec.remap(binary_mapping);
   }
 
   template<typename T, typename R>
@@ -231,9 +231,18 @@ namespace models {
       models::stats::sort(x, y);
     }
 
-    GroupSpec<R> data_spec(y);
+    GroupSpec<R> group_spec(y);
 
-    TreeNodePtr<T, R> root_ptr = build_root(training_spec, x, data_spec, rng);
+    return Tree<T, R>::train(training_spec, x, group_spec, rng);
+  }
+
+  template<typename T, typename R>
+  Tree<T, R> Tree<T, R>::train(
+    const TrainingSpec<T, R> & training_spec,
+    Data<T>&                   x,
+    const GroupSpec<R>&        group_spec,
+    stats::RNG &               rng) {
+    TreeNodePtr<T, R> root_ptr = build_root(training_spec, x, group_spec, rng);
 
     Tree<T, R> tree(
       std::move(root_ptr),
@@ -246,5 +255,11 @@ namespace models {
     const TrainingSpec<float, int> & training_spec,
     Data<float>&                     x,
     DataColumn<int>&                 y,
+    stats::RNG &                     rng);
+
+  template Tree<float, int> Tree<float, int>::train(
+    const TrainingSpec<float, int> & training_spec,
+    Data<float>&                     x,
+    const GroupSpec<int>&            group_spec,
     stats::RNG &                     rng);
 }

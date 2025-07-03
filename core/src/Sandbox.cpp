@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
   Data<T>  x       = data.x;
   DataColumn<R>  y = data.y;
 
-  GroupSpec<R> data_spec(y);
+  GroupSpec<R> group_spec(y);
 
   TrainingSpecUGLDA<T, R> training_spec(30, 0.5);
 
