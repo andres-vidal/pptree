@@ -27,7 +27,7 @@ namespace models {
       stats::sort(x, y);
     }
 
-    GroupSpec<R> data_spec(y);
+    GroupSpec<R> group_spec(y);
 
     invariant(size > 0, "The forest size must be greater than 0.");
 
@@ -36,25 +36,7 @@ namespace models {
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
       stats::RNG rng(static_cast<uint64_t>(seed), static_cast<uint64_t>(i));
-
-      std::vector<int> iob_indices;
-      iob_indices.reserve(x.rows());
-
-      for (const auto& group : data_spec.groups) {
-        const int group_size = data_spec.group_size(group);
-        const int min_index  = data_spec.group_start(group);
-        const int max_index  = data_spec.group_end(group);
-
-        const Uniform unif(min_index, max_index);
-
-        for (int j = 0; j < group_size; j++) {
-          iob_indices.push_back(unif(rng));
-        }
-      }
-
-      std::sort(iob_indices.begin(), iob_indices.end());
-
-      trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, iob_indices, rng);
+      trees[i] = BootstrapTree<T, R>::train(training_spec, x, group_spec, rng);
     }
 
     Forest<T, R> forest(training_spec.clone(), seed);
