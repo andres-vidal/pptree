@@ -19,14 +19,14 @@ namespace models::pp::strategy {
 
     T index(
       const stats::Data<T> &     x,
-      const stats::GroupSpec<G>& data_spec,
+      const stats::GroupSpec<G>& group_spec,
       const Projector<T>&        projector) const override {
       stats::Data<T> A = projector;
 
-      stats::Data<T> W      = data_spec.wgss(x);
+      stats::Data<T> W      = group_spec.wgss(x);
       stats::Data<T> W_diag = W.diagonal().asDiagonal();
       stats::Data<T> W_pda  = W_diag + (1 - lambda) * (W - W_diag);
-      stats::Data<T> B      = data_spec.bgss(x);
+      stats::Data<T> B      = group_spec.bgss(x);
       stats::Data<T> WpB    = W_pda + B;
 
       T denominator = (A.transpose() * WpB * A).determinant();
@@ -40,9 +40,9 @@ namespace models::pp::strategy {
       return 1 - numerator / denominator;
     }
 
-    Projector<T> optimize(const stats::Data<T> &x, const stats::GroupSpec<G>& data_spec) const override {
-      stats::Data<T> B = data_spec.bgss(x);
-      stats::Data<T> W = data_spec.wgss(x);
+    Projector<T> optimize(const stats::Data<T> &x, const stats::GroupSpec<G>& group_spec) const override {
+      stats::Data<T> B = group_spec.bgss(x);
+      stats::Data<T> W = group_spec.wgss(x);
 
       stats::Data<T> W_pda = (1 - lambda) * W;
       W_pda.diagonal() = W.diagonal();
