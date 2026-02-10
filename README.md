@@ -1,5 +1,19 @@
 # pptree
 
+> 🚧 **Work in progress** — this repository contains ongoing research and development work. Interfaces and behavior are expected to evolve as the project matures.
+
+**pptree** is a fast, memory-efficient implementation of
+[Projection Pursuit Random Forests](https://www.tandfonline.com/doi/full/10.1080/10618600.2020.1870480),
+built on
+[Projection Pursuit (oblique) Decision Trees](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-7/issue-none/PPtree-Projection-pursuit-classification-tree/10.1214/13-EJS810.full).
+By learning linear projections at each split, the model captures complex structure that axis-aligned trees often miss, without sacrificing interpretability or scalability.
+
+The project provides a high-performance C++ core with planned interfaces for a command-line interface (CLI), **R**, and **Python**, and is designed with reproducibility and large-scale experimentation in mind. In the R ecosystem, it is intended as a modern successor to
+[`PPforest`](https://cran.r-project.org/web/packages/PPforest/index.html),
+offering the same statistical foundations with significantly improved computational performance.
+
+Developed as a Bachelor’s thesis project in Statistics at **Universidad de la República (Uruguay)**.
+
 ## Project Structure
 
 ```yaml
