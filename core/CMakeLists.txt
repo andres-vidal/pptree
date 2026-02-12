@@ -26,6 +26,8 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_link_options(-fsanitize=address,undefined)
   endif()
 
+  add_link_options(--coverage)
+
   if(WIN32)
     add_compile_options(-Wa,-mbig-obj)
   endif()
@@ -96,24 +98,24 @@ foreach(file ${ALL_CPP_FILES})
 endforeach()
 
 # Add library with all non-test files
-add_library(pptree ${NON_TEST_CPP_FILES})
+add_library(pptree-core ${NON_TEST_CPP_FILES})
 
-target_include_directories(pptree
+target_include_directories(pptree-core
   PUBLIC include
   PUBLIC src)
 
-target_link_libraries(pptree
+target_link_libraries(pptree-core
   Eigen3::Eigen
   nlohmann_json::nlohmann_json
   pcg_lib)
 
 if(OpenMP_FOUND)
-  target_link_libraries(pptree OpenMP::OpenMP_CXX)
+  target_link_libraries(pptree-core OpenMP::OpenMP_CXX)
 endif()
 
 if(Jemalloc_FOUND)
   message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")
-  target_link_libraries(pptree PkgConfig::Jemalloc)
+  target_link_libraries(pptree-core PkgConfig::Jemalloc)
 else()
   message(WARNING "Jemalloc not found. Program could be unstable on high multi-threaded operations.")
 endif()
@@ -146,12 +148,22 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   target_link_libraries(pptree-test
     pptree_singlethreaded
     gtest_main
-    gtest)
+    gtest
+    CLI11::CLI11
+    csv)
 
   target_include_directories(pptree-test
     PUBLIC src
+    PUBLIC include
     PUBLIC ${gtest_SOURCE_DIR}/include
-    PUBLIC ${gtest_SOURCE_DIR})
+    PUBLIC ${gtest_SOURCE_DIR}
+    PUBLIC ${csv_SOURCE_DIR}/include)
+
+  target_compile_definitions(pptree-test PRIVATE
+    PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
+    PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data")
+
+  add_dependencies(pptree-test pptree)
 
   include(GoogleTest)
   gtest_discover_tests(pptree-test)
@@ -168,32 +180,17 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(csv)
 
-# Fetch getopt for command line parsing
+# CLI11 for command line parsing
 FetchContent_Declare(
-  getopt
-  GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
-  GIT_TAG master
+  cli11
+  GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
+  GIT_TAG v2.6.1
 )
-FetchContent_MakeAvailable(getopt)
-
-add_library(getopt_lib INTERFACE)
-target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
+FetchContent_MakeAvailable(cli11)
 
 # Setup cli executable
-add_executable(pptree-cli src/CLI.cpp)
-target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/include)
-target_link_libraries(pptree-cli pptree csv getopt_lib)
+add_executable(pptree src/CLI.cpp)
+target_include_directories(pptree PRIVATE ${csv_SOURCE_DIR}/include)
+target_link_libraries(pptree pptree-core csv CLI11::CLI11)
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-  target_link_libraries(pptree-cli gcov)
-endif()
-
-# Setup test executable
-# add_executable(pptree-sandbox src/Sandbox.cpp)
-# target_include_directories(pptree-sandbox PRIVATE ${csv_SOURCE_DIR}/include)
-# target_link_libraries(pptree-sandbox pptree csv)
-
-# if(CMAKE_BUILD_TYPE MATCHES Debug)
-#   target_link_libraries(pptree-sandbox gcov)
-# endif()
 
