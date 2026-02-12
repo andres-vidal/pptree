@@ -13,15 +13,21 @@ static const std::string IRIS_PATH = std::string(PPTREE_DATA_DIR) + "/iris.csv";
 class ExitedWithNonZero {
   public:
     bool operator()(int exit_status) const {
+#ifdef _WIN32
+      return exit_status != 0;
+
+#else
       return testing::ExitedWithCode(0)(exit_status) == false
              && WIFEXITED(exit_status);
+
+#endif
     }
 };
 
 // Helper to build argv and call parse_args
-static CLIOptions parse(std::initializer_list<const char*> args_list) {
-  std::vector<const char*> args(args_list);
-  return parse_args(static_cast<int>(args.size()), const_cast<char**>(args.data()));
+static CLIOptions parse(std::initializer_list<const char *> args_list) {
+  std::vector<const char *> args(args_list);
+  return parse_args(static_cast<int>(args.size()), const_cast<char **>(args.data()));
 }
 
 // ---------------------------------------------------------------------------
@@ -29,35 +35,35 @@ static CLIOptions parse(std::initializer_list<const char*> args_list) {
 // ---------------------------------------------------------------------------
 
 TEST(ParseArgs, TrainSubcommand) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str()});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str() });
   EXPECT_EQ(opts.subcommand, Subcommand::train);
 }
 
 TEST(ParseArgs, EvaluateSubcommandWithSimulate) {
-  auto opts = parse({"pptree", "evaluate", "-s", "100x5x2"});
+  auto opts = parse({ "pptree", "evaluate", "-s", "100x5x2" });
   EXPECT_EQ(opts.subcommand, Subcommand::evaluate);
 }
 
 TEST(ParseArgs, EvaluateSubcommandWithData) {
-  auto opts = parse({"pptree", "evaluate", "-d", IRIS_PATH.c_str()});
+  auto opts = parse({ "pptree", "evaluate", "-d", IRIS_PATH.c_str() });
   EXPECT_EQ(opts.subcommand, Subcommand::evaluate);
   EXPECT_EQ(opts.data_path, IRIS_PATH);
 }
 
 TEST(ParseArgs, NoSubcommandExits) {
   EXPECT_EXIT(
-    parse({"pptree"}),
+    parse({ "pptree" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 TEST(ParseArgs, InvalidSubcommandExits) {
   EXPECT_EXIT(
-    parse({"pptree", "foobar"}),
+    parse({ "pptree", "foobar" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -65,7 +71,7 @@ TEST(ParseArgs, InvalidSubcommandExits) {
 // ---------------------------------------------------------------------------
 
 TEST(ParseArgs, TrainDefaultValues) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str()});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str() });
   EXPECT_EQ(opts.trees, 100);
   EXPECT_FLOAT_EQ(opts.lambda, 0.5f);
   EXPECT_EQ(opts.threads, -1);
@@ -76,67 +82,67 @@ TEST(ParseArgs, TrainDefaultValues) {
 }
 
 TEST(ParseArgs, TrainTreesOption) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-t", "50"});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-t", "50" });
   EXPECT_EQ(opts.trees, 50);
 }
 
 TEST(ParseArgs, TrainLambdaOption) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-l", "0.3"});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-l", "0.3" });
   EXPECT_FLOAT_EQ(opts.lambda, 0.3f);
 }
 
 TEST(ParseArgs, TrainThreadsOption) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-n", "4"});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-n", "4" });
   EXPECT_EQ(opts.threads, 4);
 }
 
 TEST(ParseArgs, TrainSeedOption) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-r", "42"});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-r", "42" });
   EXPECT_EQ(opts.seed, 42);
 }
 
 TEST(ParseArgs, TrainPVarsOption) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-v", "0.8"});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-v", "0.8" });
   EXPECT_FLOAT_EQ(opts.p_vars, 0.8f);
 }
 
 TEST(ParseArgs, TrainNVarsOption) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-m", "3"});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-m", "3" });
   EXPECT_EQ(opts.n_vars, 3);
 }
 
 TEST(ParseArgs, TrainSaveOption) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-o", "/tmp/model.json"});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-o", "/tmp/model.json" });
   EXPECT_EQ(opts.save_path, "/tmp/model.json");
 }
 
 TEST(ParseArgs, TrainZeroTrees) {
-  auto opts = parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-t", "0"});
+  auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-t", "0" });
   EXPECT_EQ(opts.trees, 0);
 }
 
 TEST(ParseArgs, TrainMissingDataExits) {
   EXPECT_EXIT(
-    parse({"pptree", "train"}),
+    parse({ "pptree", "train" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 TEST(ParseArgs, TrainNonexistentDataExits) {
   EXPECT_EXIT(
-    parse({"pptree", "train", "-d", "/nonexistent/file.csv"}),
+    parse({ "pptree", "train", "-d", "/nonexistent/file.csv" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 TEST(ParseArgs, TrainLambdaOutOfRangeExits) {
   EXPECT_EXIT(
-    parse({"pptree", "train", "-d", IRIS_PATH.c_str(), "-l", "2.0"}),
+    parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-l", "2.0" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -144,60 +150,60 @@ TEST(ParseArgs, TrainLambdaOutOfRangeExits) {
 // ---------------------------------------------------------------------------
 
 TEST(ParseArgs, EvaluateSimulateFormat) {
-  auto opts = parse({"pptree", "evaluate", "-s", "100x5x2"});
+  auto opts = parse({ "pptree", "evaluate", "-s", "100x5x2" });
   EXPECT_EQ(opts.rows, 100);
   EXPECT_EQ(opts.cols, 5);
   EXPECT_EQ(opts.classes, 2);
 }
 
 TEST(ParseArgs, EvaluateSimulateCustomParams) {
-  auto opts = parse({"pptree", "evaluate", "-s", "100x5x3",
-                      "--sim-mean", "200", "--sim-mean-separation", "25", "--sim-sd", "5"});
+  auto opts = parse({ "pptree", "evaluate", "-s", "100x5x3",
+                      "--sim-mean", "200", "--sim-mean-separation", "25", "--sim-sd", "5" });
   EXPECT_FLOAT_EQ(opts.sim_mean, 200.0f);
   EXPECT_FLOAT_EQ(opts.sim_mean_separation, 25.0f);
   EXPECT_FLOAT_EQ(opts.sim_sd, 5.0f);
 }
 
 TEST(ParseArgs, EvaluateTrainRatio) {
-  auto opts = parse({"pptree", "evaluate", "-s", "100x5x2", "-p", "0.8"});
+  auto opts = parse({ "pptree", "evaluate", "-s", "100x5x2", "-p", "0.8" });
   EXPECT_FLOAT_EQ(opts.train_ratio, 0.8f);
 }
 
 TEST(ParseArgs, EvaluateNRuns) {
-  auto opts = parse({"pptree", "evaluate", "-s", "100x5x2", "-e", "5"});
+  auto opts = parse({ "pptree", "evaluate", "-s", "100x5x2", "-e", "5" });
   EXPECT_EQ(opts.n_runs, 5);
 }
 
 TEST(ParseArgs, EvaluateInvalidSimulateFormatExits) {
   EXPECT_EXIT(
-    parse({"pptree", "evaluate", "-s", "100x5"}),
+    parse({ "pptree", "evaluate", "-s", "100x5" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 TEST(ParseArgs, EvaluateClassesMustBeGreaterThanOne) {
   EXPECT_EXIT(
-    parse({"pptree", "evaluate", "-s", "100x5x1"}),
+    parse({ "pptree", "evaluate", "-s", "100x5x1" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 TEST(ParseArgs, EvaluateNoDataSourceExits) {
   EXPECT_EXIT(
-    parse({"pptree", "evaluate"}),
+    parse({ "pptree", "evaluate" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 TEST(ParseArgs, EvaluateSimParamsNeedSimulate) {
   EXPECT_EXIT(
-    parse({"pptree", "evaluate", "-d", IRIS_PATH.c_str(), "--sim-mean", "200"}),
+    parse({ "pptree", "evaluate", "-d", IRIS_PATH.c_str(), "--sim-mean", "200" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -206,18 +212,18 @@ TEST(ParseArgs, EvaluateSimParamsNeedSimulate) {
 
 TEST(ParseArgs, PredictMissingModelExits) {
   EXPECT_EXIT(
-    parse({"pptree", "predict", "-d", IRIS_PATH.c_str()}),
+    parse({ "pptree", "predict", "-d", IRIS_PATH.c_str() }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 TEST(ParseArgs, PredictMissingDataExits) {
   EXPECT_EXIT(
-    parse({"pptree", "predict", "-M", IRIS_PATH.c_str()}),
+    parse({ "pptree", "predict", "-M", IRIS_PATH.c_str() }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -225,31 +231,31 @@ TEST(ParseArgs, PredictMissingDataExits) {
 // ---------------------------------------------------------------------------
 
 TEST(ParseArgs, OutputFormatJson) {
-  auto opts = parse({"pptree", "--output-format=json", "evaluate", "-s", "100x5x2"});
+  auto opts = parse({ "pptree", "--output-format=json", "evaluate", "-s", "100x5x2" });
   EXPECT_EQ(opts.output_format, OutputFormat::json);
   EXPECT_TRUE(opts.quiet);
 }
 
 TEST(ParseArgs, OutputFormatText) {
-  auto opts = parse({"pptree", "--output-format=text", "evaluate", "-s", "100x5x2"});
+  auto opts = parse({ "pptree", "--output-format=text", "evaluate", "-s", "100x5x2" });
   EXPECT_EQ(opts.output_format, OutputFormat::text);
 }
 
 TEST(ParseArgs, OutputFormatInvalidExits) {
   EXPECT_EXIT(
-    parse({"pptree", "--output-format=xml", "evaluate", "-s", "100x5x2"}),
+    parse({ "pptree", "--output-format=xml", "evaluate", "-s", "100x5x2" }),
     ExitedWithNonZero(),
     ""
-  );
+    );
 }
 
 TEST(ParseArgs, QuietShortFlag) {
-  auto opts = parse({"pptree", "-q", "evaluate", "-s", "100x5x2"});
+  auto opts = parse({ "pptree", "-q", "evaluate", "-s", "100x5x2" });
   EXPECT_TRUE(opts.quiet);
 }
 
 TEST(ParseArgs, QuietLongFlag) {
-  auto opts = parse({"pptree", "--quiet", "evaluate", "-s", "100x5x2"});
+  auto opts = parse({ "pptree", "--quiet", "evaluate", "-s", "100x5x2" });
   EXPECT_TRUE(opts.quiet);
 }
 
@@ -277,7 +283,7 @@ TEST(InitParams, InvalidTrainRatioZeroExits) {
   EXPECT_EXIT({
     CLIOptions params;
     params.train_ratio = 0;
-    params.quiet = true;
+    params.quiet       = true;
     init_params(params);
   }, ExitedWithNonZero(), "");
 }
@@ -286,7 +292,7 @@ TEST(InitParams, InvalidTrainRatioOneExits) {
   EXPECT_EXIT({
     CLIOptions params;
     params.train_ratio = 1.0f;
-    params.quiet = true;
+    params.quiet       = true;
     init_params(params);
   }, ExitedWithNonZero(), "");
 }
@@ -295,7 +301,7 @@ TEST(InitParams, InvalidTrainRatioNegativeExits) {
   EXPECT_EXIT({
     CLIOptions params;
     params.train_ratio = -0.5f;
-    params.quiet = true;
+    params.quiet       = true;
     init_params(params);
   }, ExitedWithNonZero(), "");
 }

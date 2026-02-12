@@ -5,7 +5,13 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+
+#ifdef _WIN32
+#include <io.h>
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 
 #include <nlohmann/json.hpp>
 
@@ -33,29 +39,47 @@ struct ProcessResult {
 };
 
 static ProcessResult run_pptree(const std::string& args) {
+#ifdef _WIN32
+  std::string cmd = BINARY + " " + args + " 2>NUL";
+  FILE *pipe      = _popen(cmd.c_str(), "r");
+#else
   std::string cmd = BINARY + " " + args + " 2>/dev/null";
+  FILE *pipe      = popen(cmd.c_str(), "r");
+#endif
 
-  FILE* pipe = popen(cmd.c_str(), "r");
   if (!pipe) {
-    return {-1, ""};
+    return { -1, "" };
   }
 
   std::string output;
   char buffer[4096];
 
-  while (fgets(buffer, sizeof(buffer), pipe)) {
+  while (fgets(buffer, sizeof(buffer), pipe))
     output += buffer;
-  }
 
-  int status = pclose(pipe);
+#ifdef _WIN32
+  int exit_code = _pclose(pipe);
+#else
+  int status    = pclose(pipe);
   int exit_code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+#endif
 
-  return {exit_code, output};
+  return { exit_code, output };
 }
 
 class TempFile {
   public:
     TempFile(const std::string& suffix = ".json") {
+#ifdef _WIN32
+      char tmp_dir[MAX_PATH];
+      GetTempPathA(MAX_PATH, tmp_dir);
+      char tmp_file[MAX_PATH];
+      GetTempFileNameA(tmp_dir, "ppt", 0, tmp_file);
+      std::string base = tmp_file;
+      std::remove(base.c_str());
+      path_ = base + suffix;
+      std::ofstream touch(path_);
+#else
       std::string tmpl = "/tmp/pptree_test_XXXXXX" + suffix;
       std::vector<char> tmpl_buf(tmpl.begin(), tmpl.end());
       tmpl_buf.push_back('\0');
@@ -66,6 +90,8 @@ class TempFile {
         path_ = tmpl_buf.data();
         close(fd);
       }
+
+#endif
     }
 
     ~TempFile() {
@@ -74,7 +100,9 @@ class TempFile {
       }
     }
 
-    const std::string& path() const { return path_; }
+    const std::string& path() const {
+      return path_;
+    }
 
     std::string read() const {
       std::ifstream in(path_);

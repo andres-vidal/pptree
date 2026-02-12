@@ -17,7 +17,8 @@ namespace pptree {
   class ConfigJSON : public CLI::Config {
     public:
       ConfigJSON(std::vector<std::string> subcommand_names = {})
-        : subcommand_names_(std::move(subcommand_names)) {}
+        : subcommand_names_(std::move(subcommand_names)) {
+      }
 
       std::string to_config(const CLI::App *app, bool default_also, bool, std::string) const override {
         nlohmann::json j;
@@ -27,12 +28,9 @@ namespace pptree {
             std::string name = opt->get_lnames()[0];
 
             if (opt->get_type_size() != 0) {
-              if (opt->count() == 1)
-                j[name] = opt->results().at(0);
-              else if (opt->count() > 1)
-                j[name] = opt->results();
-              else if (default_also && !opt->get_default_str().empty())
-                j[name] = opt->get_default_str();
+              if (opt->count() == 1) j[name] = opt->results().at(0);
+              else if (opt->count() > 1) j[name] = opt->results();
+              else if (default_also && !opt->get_default_str().empty()) j[name] = opt->get_default_str();
             } else if (opt->count() == 1) {
               j[name] = true;
             } else if (opt->count() > 1) {
@@ -43,8 +41,9 @@ namespace pptree {
           }
         }
 
-        for (const CLI::App *subcom : app->get_subcommands({}))
+        for (const CLI::App *subcom : app->get_subcommands({})) {
           j[subcom->get_name()] = nlohmann::json(to_config(subcom, default_also, false, ""));
+        }
 
         return j.dump(4);
       }
@@ -66,8 +65,7 @@ namespace pptree {
           for (auto item = j.begin(); item != j.end(); ++item) {
             auto copy_prefix = prefix;
 
-            if (!name.empty())
-              copy_prefix.push_back(name);
+            if (!name.empty()) copy_prefix.push_back(name);
 
             auto sub_results = _from_config(*item, item.key(), copy_prefix);
             results.insert(results.end(), sub_results.begin(), sub_results.end());
@@ -78,7 +76,7 @@ namespace pptree {
               results.emplace_back();
               CLI::ConfigItem &res = results.back();
               res.name    = name;
-              res.parents = {sub_name};
+              res.parents = { sub_name };
               _set_inputs(res, j);
             }
           } else {
@@ -95,16 +93,17 @@ namespace pptree {
 
       void _set_inputs(CLI::ConfigItem &res, const nlohmann::json &j) const {
         if (j.is_boolean()) {
-          res.inputs = {j.get<bool>() ? "true" : "false"};
+          res.inputs = { j.get<bool>() ? "true" : "false" };
         } else if (j.is_number()) {
           std::stringstream ss;
           ss << j.get<double>();
-          res.inputs = {ss.str()};
+          res.inputs = { ss.str() };
         } else if (j.is_string()) {
-          res.inputs = {j.get<std::string>()};
+          res.inputs = { j.get<std::string>() };
         } else if (j.is_array()) {
-          for (const auto &val : j)
+          for (const auto &val : j) {
             res.inputs.push_back(val.get<std::string>());
+          }
         } else {
           throw CLI::ConversionError("Failed to convert " + res.name);
         }
@@ -131,11 +130,11 @@ namespace pptree {
     float sim_mean_separation = 50.0f;
     float sim_sd              = 10.0f;
 
-    Subcommand subcommand       = Subcommand::none;
+    Subcommand subcommand = Subcommand::none;
     std::string save_path;
     std::string model_path;
-    OutputFormat output_format  = OutputFormat::text;
-    bool quiet                  = false;
+    OutputFormat output_format = OutputFormat::text;
+    bool quiet                 = false;
   };
 
   void warn_unused_params(const CLIOptions& params) {
@@ -214,71 +213,71 @@ namespace pptree {
   CLIOptions parse_args(int argc, char *argv[]) {
     CLIOptions params;
 
-    CLI::App app{"pptree - Projection Pursuit Trees and Forests"};
+    CLI::App app{ "pptree - Projection Pursuit Trees and Forests" };
     app.require_subcommand(1);
 
     // Global options
     std::string output_format_str = "text";
     app.add_option("--output-format", output_format_str, "Output format: text or json")
-       ->check(CLI::IsMember({"text", "json"}));
+    ->check(CLI::IsMember({ "text", "json" }));
     app.add_flag("--quiet,-q", params.quiet, "Suppress progress bars and informational output");
     app.config_formatter(std::make_shared<ConfigJSON>(
-      std::vector<std::string>{"train", "predict", "evaluate"}));
+        std::vector<std::string>{ "train", "predict", "evaluate" }));
     app.set_config("--config", "", "Read parameters from JSON config file");
 
     // Helper: add model training options shared by train and evaluate
-    auto add_model_options = [&](CLI::App* sub) {
-      sub->add_option("-t,--trees", params.trees, "Number of trees (default: 100, 0 for single tree)")
-         ->check(CLI::NonNegativeNumber);
-      sub->add_option("-l,--lambda", params.lambda, "Method selection (0=LDA, (0,1]=PDA)")
-         ->check(CLI::Range(0.0f, 1.0f));
-      sub->add_option("-n,--threads", params.threads, "Number of threads (default: CPU cores)")
-         ->check(CLI::PositiveNumber);
-      sub->add_option("-r,--seed", params.seed, "Random seed (default: random)");
-      sub->add_option("-v,--p-vars", params.p_vars, "Feature proportion for forest")
-         ->check(CLI::Range(0.0f, 1.0f));
-      sub->add_option("-m,--n-vars", params.n_vars, "Number of features per split")
-         ->check(CLI::PositiveNumber);
-    };
+    auto add_model_options = [&](CLI::App *sub) {
+        sub->add_option("-t,--trees", params.trees, "Number of trees (default: 100, 0 for single tree)")
+        ->check(CLI::NonNegativeNumber);
+        sub->add_option("-l,--lambda", params.lambda, "Method selection (0=LDA, (0,1]=PDA)")
+        ->check(CLI::Range(0.0f, 1.0f));
+        sub->add_option("-n,--threads", params.threads, "Number of threads (default: CPU cores)")
+        ->check(CLI::PositiveNumber);
+        sub->add_option("-r,--seed", params.seed, "Random seed (default: random)");
+        sub->add_option("-v,--p-vars", params.p_vars, "Feature proportion for forest")
+        ->check(CLI::Range(0.0f, 1.0f));
+        sub->add_option("-m,--n-vars", params.n_vars, "Number of features per split")
+        ->check(CLI::PositiveNumber);
+      };
 
     // Train subcommand
     auto train_sub = app.add_subcommand("train", "Train a model");
     train_sub->add_option("-d,--data", params.data_path, "CSV training data")
-             ->required()
-             ->check(CLI::ExistingFile);
+    ->required()
+    ->check(CLI::ExistingFile);
     add_model_options(train_sub);
     train_sub->add_option("-o,--save", params.save_path, "Save trained model to JSON file");
 
     // Predict subcommand
     auto predict_sub = app.add_subcommand("predict", "Load a model and predict on new data");
     predict_sub->add_option("-M,--model", params.model_path, "Saved model JSON file")
-               ->required()
-               ->check(CLI::ExistingFile);
+    ->required()
+    ->check(CLI::ExistingFile);
     predict_sub->add_option("-d,--data", params.data_path, "CSV data to predict on")
-               ->required()
-               ->check(CLI::ExistingFile);
+    ->required()
+    ->check(CLI::ExistingFile);
 
     // Evaluate subcommand
-    auto eval_sub = app.add_subcommand("evaluate", "Train and evaluate a model");
+    auto eval_sub      = app.add_subcommand("evaluate", "Train and evaluate a model");
     auto eval_data_opt = eval_sub->add_option("-d,--data", params.data_path, "CSV file")
-                                 ->check(CLI::ExistingFile);
-    auto eval_sim_opt  = eval_sub->add_option("-s,--simulate", params.simulate, "Simulate NxMxK data");
+      ->check(CLI::ExistingFile);
+    auto eval_sim_opt = eval_sub->add_option("-s,--simulate", params.simulate, "Simulate NxMxK data");
     eval_data_opt->excludes(eval_sim_opt);
     eval_sim_opt->excludes(eval_data_opt);
 
     add_model_options(eval_sub);
     eval_sub->add_option("-p,--train-ratio", params.train_ratio, "Train set ratio (default: 0.7)")
-            ->check(CLI::Range(0.01f, 0.99f));
+    ->check(CLI::Range(0.01f, 0.99f));
     eval_sub->add_option("-e,--n-runs", params.n_runs, "Number of training runs (default: 1)")
-            ->check(CLI::PositiveNumber);
+    ->check(CLI::PositiveNumber);
     eval_sub->add_option("--sim-mean", params.sim_mean, "Mean for simulated data (default: 100.0)")
-            ->needs(eval_sim_opt);
+    ->needs(eval_sim_opt);
     eval_sub->add_option("--sim-mean-separation", params.sim_mean_separation, "Mean separation between classes (default: 50.0)")
-            ->needs(eval_sim_opt)
-            ->check(CLI::PositiveNumber);
+    ->needs(eval_sim_opt)
+    ->check(CLI::PositiveNumber);
     eval_sub->add_option("--sim-sd", params.sim_sd, "Standard deviation for simulated data (default: 10.0)")
-            ->needs(eval_sim_opt)
-            ->check(CLI::PositiveNumber);
+    ->needs(eval_sim_opt)
+    ->check(CLI::PositiveNumber);
 
     // Parse
     try {
@@ -299,14 +298,14 @@ namespace pptree {
     // Post-parse: map output format
     if (output_format_str == "json") {
       params.output_format = OutputFormat::json;
-      params.quiet = true;
+      params.quiet         = true;
     }
 
     // Post-parse: validate simulate format
     if (!params.simulate.empty()) {
       std::string sim_str = params.simulate;
-      size_t x1 = sim_str.find('x');
-      size_t x2 = sim_str.find('x', x1 + 1);
+      size_t x1           = sim_str.find('x');
+      size_t x2           = sim_str.find('x', x1 + 1);
 
       if (x1 == std::string::npos || x2 == std::string::npos) {
         std::cerr << "Error: Simulate format must be NxMxK (e.g., 1000x10x2)" << std::endl;

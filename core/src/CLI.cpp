@@ -263,158 +263,158 @@ int main(int argc, char *argv[]) {
   #endif
 
   switch (params.subcommand) {
-    case Subcommand::train: {
-      stats::RNG rng(params.seed);
-      auto data = read_data(params, rng);
+      case Subcommand::train: {
+        stats::RNG rng(params.seed);
+        auto data = read_data(params, rng);
 
-      init_params(params, data.x.cols());
+        init_params(params, data.x.cols());
 
-      Data<float> x     = data.x;
-      DataColumn<int> y = data.y;
+        Data<float> x     = data.x;
+        DataColumn<int> y = data.y;
 
-      if (params.trees > 0) {
-        auto spec  = TrainingSpecUGLDA<float, int>(params.n_vars, params.lambda);
-        auto model = train_model<Forest<float, int> >(spec, x, y, params, rng);
+        if (params.trees > 0) {
+          auto spec  = TrainingSpecUGLDA<float, int>(params.n_vars, params.lambda);
+          auto model = train_model<Forest<float, int> >(spec, x, y, params, rng);
 
-        if (!params.save_path.empty()) {
-          save_model(model.to_json(), "forest", params, data.x.cols());
+          if (!params.save_path.empty()) {
+            save_model(model.to_json(), "forest", params, data.x.cols());
+          }
+
+          if (params.output_format == OutputFormat::json) {
+            json result;
+            result["model_type"] = "forest";
+            result["trees"]      = params.trees;
+            result["saved"]      = !params.save_path.empty();
+
+            if (!params.save_path.empty()) {
+              result["save_path"] = params.save_path;
+            }
+
+            std::cout << result.dump(2) << std::endl;
+          }
+        } else {
+          auto spec  = TrainingSpecGLDA<float, int>(params.lambda);
+          auto model = train_model<Tree<float, int> >(spec, x, y, params, rng);
+
+          if (!params.save_path.empty()) {
+            save_model(model.to_json(), "tree", params, data.x.cols());
+          }
+
+          if (params.output_format == OutputFormat::json) {
+            json result;
+            result["model_type"] = "tree";
+            result["saved"]      = !params.save_path.empty();
+
+            if (!params.save_path.empty()) {
+              result["save_path"] = params.save_path;
+            }
+
+            std::cout << result.dump(2) << std::endl;
+          }
+        }
+
+        break;
+      }
+
+      case Subcommand::predict: {
+        json model_data = load_model(params.model_path);
+
+        DataPacket<float, int> data = [&]() {
+            try {
+              const DataPacket<float, int> csv_data = read_csv(params.data_path);
+
+              Data<float> x     = csv_data.x;
+              DataColumn<int> y = csv_data.y;
+
+              if (!GroupSpec<int>::is_contiguous(y)) {
+                models::stats::sort(x, y);
+              }
+
+              return DataPacket<float, int>(x, y);
+            } catch (const std::exception& e) {
+              std::cerr << "Error reading CSV file: " << e.what() << std::endl;
+              std::exit(1);
+            }
+          }();
+
+        std::string model_type = model_data.value("model_type", "tree");
+        json model_json        = model_data.contains("model") ? model_data["model"] : model_data;
+
+        DataColumn<int> predictions;
+
+        if (model_type == "forest") {
+          auto model = Forest<float, int>::from_json(model_json);
+          predictions = model.predict(data.x);
+        } else {
+          auto model = Tree<float, int>::from_json(model_json);
+          predictions = model.predict(data.x);
         }
 
         if (params.output_format == OutputFormat::json) {
           json result;
-          result["model_type"] = "forest";
-          result["trees"]      = params.trees;
-          result["saved"]      = !params.save_path.empty();
+          std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
+          result["predictions"] = pred_vec;
 
-          if (!params.save_path.empty()) {
-            result["save_path"] = params.save_path;
+          if (data.y.size() > 0) {
+            result["error_rate"] = stats::error_rate(predictions, data.y);
           }
 
           std::cout << result.dump(2) << std::endl;
-        }
-      } else {
-        auto spec  = TrainingSpecGLDA<float, int>(params.lambda);
-        auto model = train_model<Tree<float, int> >(spec, x, y, params, rng);
+        } else {
+          for (int i = 0; i < predictions.size(); ++i) {
+            std::cout << predictions[i] << std::endl;
+          }
 
-        if (!params.save_path.empty()) {
-          save_model(model.to_json(), "tree", params, data.x.cols());
+          if (data.y.size() > 0) {
+            double error = stats::error_rate(predictions, data.y);
+            std::cout << std::endl << "Error rate: " << (error * 100) << "%" << std::endl;
+          }
+        }
+
+        break;
+      }
+
+      case Subcommand::evaluate: {
+        stats::RNG rng(params.seed);
+        auto full_data = read_data(params, rng);
+
+        init_params(params, full_data.x.cols());
+
+        auto data_split = split(full_data, params.train_ratio, rng);
+
+        Data<float> tr_x     = full_data.x(data_split.tr, Eigen::all);
+        Data<float> te_x     = full_data.x(data_split.te, Eigen::all);
+        DataColumn<int> tr_y = full_data.y(data_split.tr);
+        DataColumn<int> te_y = full_data.y(data_split.te);
+
+        if (!params.quiet) {
+          std::cout << std::endl;
+        }
+
+        announce_configuration(params, tr_x, te_x);
+
+        ModelStats model_stats;
+
+        if (params.trees > 0) {
+          auto spec = TrainingSpecUGLDA<float, int>(params.n_vars, params.lambda);
+          model_stats = evaluate_model<Forest<float, int> >(spec, tr_x, te_x, tr_y, te_y, params, rng);
+        } else {
+          auto spec = TrainingSpecGLDA<float, int>(params.lambda);
+          model_stats = evaluate_model<Tree<float, int> >(spec, tr_x, te_x, tr_y, te_y, params, rng);
         }
 
         if (params.output_format == OutputFormat::json) {
-          json result;
-          result["model_type"] = "tree";
-          result["saved"]      = !params.save_path.empty();
-
-          if (!params.save_path.empty()) {
-            result["save_path"] = params.save_path;
-          }
-
-          std::cout << result.dump(2) << std::endl;
-        }
-      }
-
-      break;
-    }
-
-    case Subcommand::predict: {
-      json model_data = load_model(params.model_path);
-
-      DataPacket<float, int> data = [&]() {
-        try {
-          const DataPacket<float, int> csv_data = read_csv(params.data_path);
-
-          Data<float> x     = csv_data.x;
-          DataColumn<int> y = csv_data.y;
-
-          if (!GroupSpec<int>::is_contiguous(y)) {
-            models::stats::sort(x, y);
-          }
-
-          return DataPacket<float, int>(x, y);
-        } catch (const std::exception& e) {
-          std::cerr << "Error reading CSV file: " << e.what() << std::endl;
-          std::exit(1);
-        }
-      }();
-
-      std::string model_type = model_data.value("model_type", "tree");
-      json model_json        = model_data.contains("model") ? model_data["model"] : model_data;
-
-      DataColumn<int> predictions;
-
-      if (model_type == "forest") {
-        auto model  = Forest<float, int>::from_json(model_json);
-        predictions = model.predict(data.x);
-      } else {
-        auto model  = Tree<float, int>::from_json(model_json);
-        predictions = model.predict(data.x);
-      }
-
-      if (params.output_format == OutputFormat::json) {
-        json result;
-        std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
-        result["predictions"] = pred_vec;
-
-        if (data.y.size() > 0) {
-          result["error_rate"] = stats::error_rate(predictions, data.y);
+          announce_results_json(model_stats);
+        } else {
+          announce_results(model_stats);
         }
 
-        std::cout << result.dump(2) << std::endl;
-      } else {
-        for (int i = 0; i < predictions.size(); ++i) {
-          std::cout << predictions[i] << std::endl;
-        }
-
-        if (data.y.size() > 0) {
-          double error = stats::error_rate(predictions, data.y);
-          std::cout << std::endl << "Error rate: " << (error * 100) << "%" << std::endl;
-        }
+        break;
       }
 
-      break;
-    }
-
-    case Subcommand::evaluate: {
-      stats::RNG rng(params.seed);
-      auto full_data = read_data(params, rng);
-
-      init_params(params, full_data.x.cols());
-
-      auto data_split = split(full_data, params.train_ratio, rng);
-
-      Data<float> tr_x     = full_data.x(data_split.tr, Eigen::all);
-      Data<float> te_x     = full_data.x(data_split.te, Eigen::all);
-      DataColumn<int> tr_y = full_data.y(data_split.tr);
-      DataColumn<int> te_y = full_data.y(data_split.te);
-
-      if (!params.quiet) {
-        std::cout << std::endl;
-      }
-
-      announce_configuration(params, tr_x, te_x);
-
-      ModelStats model_stats;
-
-      if (params.trees > 0) {
-        auto spec   = TrainingSpecUGLDA<float, int>(params.n_vars, params.lambda);
-        model_stats = evaluate_model<Forest<float, int> >(spec, tr_x, te_x, tr_y, te_y, params, rng);
-      } else {
-        auto spec   = TrainingSpecGLDA<float, int>(params.lambda);
-        model_stats = evaluate_model<Tree<float, int> >(spec, tr_x, te_x, tr_y, te_y, params, rng);
-      }
-
-      if (params.output_format == OutputFormat::json) {
-        announce_results_json(model_stats);
-      } else {
-        announce_results(model_stats);
-      }
-
-      break;
-    }
-
-    default:
-      std::cerr << "Error: No subcommand specified" << std::endl;
-      return 1;
+      default:
+        std::cerr << "Error: No subcommand specified" << std::endl;
+        return 1;
   }
 
   return 0;

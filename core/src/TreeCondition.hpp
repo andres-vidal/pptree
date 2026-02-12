@@ -122,11 +122,11 @@ namespace models {
       return TreeResponse<T, R>::make(j["value"].get<R>());
     }
 
-    auto proj_vec = j["projector"].get<std::vector<T> >();
+    auto proj_vec              = j["projector"].get<std::vector<T> >();
     pp::Projector<T> projector = Eigen::Map<pp::Projector<T> >(proj_vec.data(), proj_vec.size());
-    T threshold = j["threshold"].get<T>();
-    auto lower  = node_from_json<T, R>(j["lower"]);
-    auto upper  = node_from_json<T, R>(j["upper"]);
+    T threshold                = j["threshold"].get<T>();
+    auto lower                 = node_from_json<T, R>(j["lower"]);
+    auto upper                 = node_from_json<T, R>(j["upper"]);
 
     return TreeCondition<T, R>::make(projector, threshold, std::move(lower), std::move(upper));
   }

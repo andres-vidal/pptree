@@ -26,6 +26,8 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_link_options(-fsanitize=address,undefined)
   endif()
 
+  add_link_options(--coverage)
+
   if(WIN32)
     add_compile_options(-Wa,-mbig-obj)
   endif()
@@ -191,7 +193,4 @@ add_executable(pptree src/CLI.cpp)
 target_include_directories(pptree PRIVATE ${csv_SOURCE_DIR}/include)
 target_link_libraries(pptree pptree-core csv CLI11::CLI11)
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-  target_link_libraries(pptree gcov)
-endif()
 

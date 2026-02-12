@@ -101,7 +101,7 @@ namespace models {
 
       for (const auto& tree_json : j["trees"]) {
         forest.add_tree(std::make_unique<BootstrapTree<T, R> >(
-          node_from_json<T, R>(tree_json["root"])));
+            node_from_json<T, R>(tree_json["root"])));
       }
 
       return forest;

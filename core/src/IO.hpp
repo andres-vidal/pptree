@@ -125,13 +125,13 @@ namespace pptree {
 
     nlohmann::json to_json() const {
       return nlohmann::json{
-        {"runs",             tr_times.size()},
-        {"mean_time_ms",     mean_time()},
-        {"std_time_ms",      std_time()},
-        {"mean_train_error", mean_tr_error()},
-        {"std_train_error",  std_tr_error()},
-        {"mean_test_error",  mean_te_error()},
-        {"std_test_error",   std_te_error()}
+        { "runs",             tr_times.size() },
+        { "mean_time_ms",     mean_time() },
+        { "std_time_ms",      std_time() },
+        { "mean_train_error", mean_tr_error() },
+        { "std_train_error",  std_tr_error() },
+        { "mean_test_error",  mean_te_error() },
+        { "std_test_error",   std_te_error() }
       };
     }
   };
