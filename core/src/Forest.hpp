@@ -96,6 +96,17 @@ namespace models {
       };
     }
 
+    static Forest<T, R> from_json(const json& j) {
+      Forest<T, R> forest;
+
+      for (const auto& tree_json : j["trees"]) {
+        forest.add_tree(std::make_unique<BootstrapTree<T, R> >(
+          node_from_json<T, R>(tree_json["root"])));
+      }
+
+      return forest;
+    }
+
     private:
 
       R predict(const stats::DataColumn<T> data, const std::vector<int>&    indx) const {

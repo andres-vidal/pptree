@@ -1,21 +1,117 @@
 #pragma once
 
-#include "CLIOptions.hpp"
-#include "getopt.h"
+#include <CLI/CLI.hpp>
+#include <nlohmann/json.hpp>
 #include <iostream>
 #include <random>
 #include <fstream>
+#include <string>
+#include <sstream>
+#include <cmath>
 
 #ifdef _OPENMP
 #include <omp.h>
 #endif
 
 namespace pptree {
-  enum OptionIds {
-    OPT_SIM_MEAN = 256,
-    OPT_SIM_MEAN_SEPARATION,
-    OPT_SIM_SD
+  class ConfigJSON : public CLI::Config {
+    public:
+      ConfigJSON(std::vector<std::string> subcommand_names = {})
+        : subcommand_names_(std::move(subcommand_names)) {}
+
+      std::string to_config(const CLI::App *app, bool default_also, bool, std::string) const override {
+        nlohmann::json j;
+
+        for (const CLI::Option *opt : app->get_options({})) {
+          if (!opt->get_lnames().empty() && opt->get_configurable()) {
+            std::string name = opt->get_lnames()[0];
+
+            if (opt->get_type_size() != 0) {
+              if (opt->count() == 1)
+                j[name] = opt->results().at(0);
+              else if (opt->count() > 1)
+                j[name] = opt->results();
+              else if (default_also && !opt->get_default_str().empty())
+                j[name] = opt->get_default_str();
+            } else if (opt->count() == 1) {
+              j[name] = true;
+            } else if (opt->count() > 1) {
+              j[name] = opt->count();
+            } else if (opt->count() == 0 && default_also) {
+              j[name] = false;
+            }
+          }
+        }
+
+        for (const CLI::App *subcom : app->get_subcommands({}))
+          j[subcom->get_name()] = nlohmann::json(to_config(subcom, default_also, false, ""));
+
+        return j.dump(4);
+      }
+
+      std::vector<CLI::ConfigItem> from_config(std::istream &input) const override {
+        nlohmann::json j;
+        input >> j;
+        return _from_config(j);
+      }
+
+    private:
+      std::vector<std::string> subcommand_names_;
+
+      std::vector<CLI::ConfigItem>
+      _from_config(nlohmann::json j, std::string name = "", std::vector<std::string> prefix = {}) const {
+        std::vector<CLI::ConfigItem> results;
+
+        if (j.is_object()) {
+          for (auto item = j.begin(); item != j.end(); ++item) {
+            auto copy_prefix = prefix;
+
+            if (!name.empty())
+              copy_prefix.push_back(name);
+
+            auto sub_results = _from_config(*item, item.key(), copy_prefix);
+            results.insert(results.end(), sub_results.begin(), sub_results.end());
+          }
+        } else if (!name.empty()) {
+          if (prefix.empty() && !subcommand_names_.empty()) {
+            for (const auto& sub_name : subcommand_names_) {
+              results.emplace_back();
+              CLI::ConfigItem &res = results.back();
+              res.name    = name;
+              res.parents = {sub_name};
+              _set_inputs(res, j);
+            }
+          } else {
+            results.emplace_back();
+            CLI::ConfigItem &res = results.back();
+            res.name    = name;
+            res.parents = prefix;
+            _set_inputs(res, j);
+          }
+        }
+
+        return results;
+      }
+
+      void _set_inputs(CLI::ConfigItem &res, const nlohmann::json &j) const {
+        if (j.is_boolean()) {
+          res.inputs = {j.get<bool>() ? "true" : "false"};
+        } else if (j.is_number()) {
+          std::stringstream ss;
+          ss << j.get<double>();
+          res.inputs = {ss.str()};
+        } else if (j.is_string()) {
+          res.inputs = {j.get<std::string>()};
+        } else if (j.is_array()) {
+          for (const auto &val : j)
+            res.inputs.push_back(val.get<std::string>());
+        } else {
+          throw CLI::ConversionError("Failed to convert " + res.name);
+        }
+      }
   };
+  enum class OutputFormat { text, json };
+  enum class Subcommand { none, train, predict, evaluate };
 
   struct CLIOptions {
     int trees         = 100;
@@ -34,14 +130,17 @@ namespace pptree {
     float sim_mean            = 100.0f;
     float sim_mean_separation = 50.0f;
     float sim_sd              = 10.0f;
+
+    Subcommand subcommand       = Subcommand::none;
+    std::string save_path;
+    std::string model_path;
+    OutputFormat output_format  = OutputFormat::text;
+    bool quiet                  = false;
   };
 
-  bool file_exists(const std::string& path) {
-    std::ifstream f(path);
-    return f.good();
-  }
-
   void warn_unused_params(const CLIOptions& params) {
+    if (params.quiet) return;
+
     if (params.trees == 0) {
       bool has_warnings = false;
 
@@ -64,7 +163,10 @@ namespace pptree {
   void init_params(CLIOptions& params, int total_vars = 0) {
     if (params.lambda == -1) {
       params.lambda = 0.5;
-      std::cout << "Using default lambda: " << params.lambda << std::endl;
+
+      if (!params.quiet) {
+        std::cout << "Using default lambda: " << params.lambda << std::endl;
+      }
     }
 
     if (params.train_ratio <= 0 || params.train_ratio >= 1) {
@@ -75,7 +177,10 @@ namespace pptree {
     if (params.seed == -1) {
       std::random_device rd;
       params.seed = rd();
-      std::cout << "Using random seed: " << params.seed << std::endl;
+
+      if (!params.quiet) {
+        std::cout << "Using random seed: " << params.seed << std::endl;
+      }
     }
 
     if (params.threads == -1) {
@@ -84,14 +189,20 @@ namespace pptree {
      #else
       params.threads = 1;
      #endif
-      std::cout << "Using default thread count: " << params.threads << std::endl;
+
+      if (!params.quiet) {
+        std::cout << "Using default thread count: " << params.threads << std::endl;
+      }
     }
 
     if (total_vars > 0 && params.trees > 0) {
       if (params.p_vars == -1 && params.n_vars == -1) {
         params.p_vars = 0.5;
         params.n_vars = std::round(total_vars * params.p_vars);
-        std::cout << "Using default variable proportion: " << params.p_vars  << " (" << params.n_vars << " variables)" << std::endl;
+
+        if (!params.quiet) {
+          std::cout << "Using default variable proportion: " << params.p_vars  << " (" << params.n_vars << " variables)" << std::endl;
+        }
       } else if (params.p_vars != -1) {
         params.n_vars = std::round(total_vars * params.p_vars);
       } else {
@@ -100,252 +211,126 @@ namespace pptree {
     }
   }
 
-  void print_usage(const char *program) {
-    std::cout << "Usage: " << program << " [Options]\n"
-              << "\nOptions:\n"
-              << "  -s, --simulate=NxMxK          Simulate NxM data matrix with K classes (instead of reading from file)\n"
-              << "  -d, --data=PATH               CSV file to read (instead of simulating)\n"
-              << "  -t, --trees=N                 Number of trees (default: 100, 0 for single tree)\n"
-              << "  -l, --lambda=N                Method selection (0=LDA, (0,1]=PDA, default: 0.5)\n"
-              << "  -n, --threads=N               Number of threads (default: CPU cores)\n"
-              << "  -r, --seed=N                  Random seed (default: random)\n"
-              << "  -v, --p-vars=F                Feature proportion for forest (default: 0.5)\n"
-              << "  -m, --n-vars=N                Number of features to use per split\n"
-              << "  -p, --train-ratio=F           Train set ratio (default: 0.7)\n"
-              << "  -e, --n-runs=N                Number of training runs (default: 1)\n"
-              << "\nSimulation parameters (only used with --simulate):\n"
-              << "      --sim-mean=F              Mean for simulated data (default: 100.0)\n"
-              << "      --sim-mean-separation=F   Mean separation between classes (default: 50.0)\n"
-              << "      --sim-sd=F                Standard deviation for simulated data (default: 10.0)\n"
-              << "  -h, --help                    Show this help message\n\n";
-  }
-
   CLIOptions parse_args(int argc, char *argv[]) {
     CLIOptions params;
-    const struct option long_options[] = {
-      { "simulate",            required_argument,                0,                                's' },
-      { "data",                required_argument,                0,                                'd' },
-      { "trees",               required_argument,                0,                                't' },
-      { "lambda",              required_argument,                0,                                'l' },
-      { "threads",             required_argument,                0,                                'n' },
-      { "seed",                required_argument,                0,                                'r' },
-      { "p-vars",              required_argument,                0,                                'v' },
-      { "n-vars",              required_argument,                0,                                'm' },
-      { "train-ratio",         required_argument,                0,                                'p' },
-      { "n-runs",              required_argument,                0,                                'e' },
-      { "sim-mean",            required_argument,                0,                                OPT_SIM_MEAN },
-      { "sim-mean-separation", required_argument,                0,                                OPT_SIM_MEAN_SEPARATION },
-      { "sim-sd",              required_argument,                0,                                OPT_SIM_SD },
-      { "help",                no_argument,                      0,                                'h' },
-      { 0,                     0,                                0,                                0 }
+
+    CLI::App app{"pptree - Projection Pursuit Trees and Forests"};
+    app.require_subcommand(1);
+
+    // Global options
+    std::string output_format_str = "text";
+    app.add_option("--output-format", output_format_str, "Output format: text or json")
+       ->check(CLI::IsMember({"text", "json"}));
+    app.add_flag("--quiet,-q", params.quiet, "Suppress progress bars and informational output");
+    app.config_formatter(std::make_shared<ConfigJSON>(
+      std::vector<std::string>{"train", "predict", "evaluate"}));
+    app.set_config("--config", "", "Read parameters from JSON config file");
+
+    // Helper: add model training options shared by train and evaluate
+    auto add_model_options = [&](CLI::App* sub) {
+      sub->add_option("-t,--trees", params.trees, "Number of trees (default: 100, 0 for single tree)")
+         ->check(CLI::NonNegativeNumber);
+      sub->add_option("-l,--lambda", params.lambda, "Method selection (0=LDA, (0,1]=PDA)")
+         ->check(CLI::Range(0.0f, 1.0f));
+      sub->add_option("-n,--threads", params.threads, "Number of threads (default: CPU cores)")
+         ->check(CLI::PositiveNumber);
+      sub->add_option("-r,--seed", params.seed, "Random seed (default: random)");
+      sub->add_option("-v,--p-vars", params.p_vars, "Feature proportion for forest")
+         ->check(CLI::Range(0.0f, 1.0f));
+      sub->add_option("-m,--n-vars", params.n_vars, "Number of features per split")
+         ->check(CLI::PositiveNumber);
     };
 
-    bool has_simulate = false;
-    bool has_data     = false;
-    int option_index  = 0;
-    int c;
+    // Train subcommand
+    auto train_sub = app.add_subcommand("train", "Train a model");
+    train_sub->add_option("-d,--data", params.data_path, "CSV training data")
+             ->required()
+             ->check(CLI::ExistingFile);
+    add_model_options(train_sub);
+    train_sub->add_option("-o,--save", params.save_path, "Save trained model to JSON file");
 
-    do {
-      try {
-        switch (c = getopt_long(argc, argv, "s:d:t:l:n:r:v:m:p:e:h", long_options, &option_index)) {
-            case 's': {
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--simulate requires a format NxMxK");
-              }
+    // Predict subcommand
+    auto predict_sub = app.add_subcommand("predict", "Load a model and predict on new data");
+    predict_sub->add_option("-M,--model", params.model_path, "Saved model JSON file")
+               ->required()
+               ->check(CLI::ExistingFile);
+    predict_sub->add_option("-d,--data", params.data_path, "CSV data to predict on")
+               ->required()
+               ->check(CLI::ExistingFile);
 
-              has_simulate = true;
-              std::string sim_str = optarg;
-              size_t x1           = sim_str.find('x');
-              size_t x2           = sim_str.find('x', x1 + 1);
+    // Evaluate subcommand
+    auto eval_sub = app.add_subcommand("evaluate", "Train and evaluate a model");
+    auto eval_data_opt = eval_sub->add_option("-d,--data", params.data_path, "CSV file")
+                                 ->check(CLI::ExistingFile);
+    auto eval_sim_opt  = eval_sub->add_option("-s,--simulate", params.simulate, "Simulate NxMxK data");
+    eval_data_opt->excludes(eval_sim_opt);
+    eval_sim_opt->excludes(eval_data_opt);
 
-              if (x1 == std::string::npos || x2 == std::string::npos) {
-                throw std::invalid_argument("Simulate format must be NxMxK (e.g., 1000x10x2)");
-              }
+    add_model_options(eval_sub);
+    eval_sub->add_option("-p,--train-ratio", params.train_ratio, "Train set ratio (default: 0.7)")
+            ->check(CLI::Range(0.01f, 0.99f));
+    eval_sub->add_option("-e,--n-runs", params.n_runs, "Number of training runs (default: 1)")
+            ->check(CLI::PositiveNumber);
+    eval_sub->add_option("--sim-mean", params.sim_mean, "Mean for simulated data (default: 100.0)")
+            ->needs(eval_sim_opt);
+    eval_sub->add_option("--sim-mean-separation", params.sim_mean_separation, "Mean separation between classes (default: 50.0)")
+            ->needs(eval_sim_opt)
+            ->check(CLI::PositiveNumber);
+    eval_sub->add_option("--sim-sd", params.sim_sd, "Standard deviation for simulated data (default: 10.0)")
+            ->needs(eval_sim_opt)
+            ->check(CLI::PositiveNumber);
 
-              try {
-                params.rows    = std::stoi(sim_str.substr(0, x1));
-                params.cols    = std::stoi(sim_str.substr(x1 + 1, x2 - x1 - 1));
-                params.classes = std::stoi(sim_str.substr(x2 + 1));
-
-                if (params.rows <= 0 || params.cols <= 0 || params.classes <= 1) {
-                  throw std::out_of_range("Values must be positive and classes must be > 1");
-                }
-              } catch (const std::exception& e) {
-                throw std::invalid_argument(std::string("Invalid simulate values: ") + e.what());
-              }
-              break;
-            }
-
-            case 'd':
-
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--data requires a valid file path");
-              }
-
-              if (!file_exists(optarg)) {
-                throw std::invalid_argument(std::string("File not found: ") + optarg);
-              }
-
-              has_data         = true;
-              params.data_path = optarg;
-              break;
-
-            case 't':
-
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--trees requires a number");
-              }
-
-              try {
-                params.trees = std::stoi(optarg);
-
-                if (params.trees < 0) {
-                  throw std::out_of_range("Number of trees must be non-negative");
-                }
-              } catch (const std::exception& e) {
-                throw std::invalid_argument(std::string("Invalid trees value: ") + e.what());
-              }
-              break;
-
-            case 'l':
-
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--lambda requires a value between 0 and 1");
-              }
-
-              try {
-                params.lambda = std::stof(optarg);
-
-                if (params.lambda < 0 || params.lambda > 1) {
-                  throw std::out_of_range("Lambda must be between 0 and 1");
-                }
-              } catch (const std::exception& e) {
-                throw std::invalid_argument(std::string("Invalid lambda value: ") + e.what());
-              }
-              break;
-
-            case 'n':
-
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--threads requires a positive number");
-              }
-
-              try {
-                params.threads = std::stoi(optarg);
-
-                if (params.threads < 1) {
-                  throw std::out_of_range("Number of threads must be positive");
-                }
-              } catch (const std::exception& e) {
-                throw std::invalid_argument(std::string("Invalid threads value: ") + e.what());
-              }
-              break;
-
-            case 'r':
-              params.seed = std::stoi(optarg);
-              break;
-
-            case 'v':
-
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--p-vars requires a value between 0 and 1");
-              }
-
-              try {
-                params.p_vars = std::stof(optarg);
-
-                if (params.p_vars <= 0 || params.p_vars > 1) {
-                  throw std::out_of_range("Variable proportion must be between 0 and 1");
-                }
-              } catch (const std::exception& e) {
-                throw std::invalid_argument(std::string("Invalid variable proportion: ") + e.what());
-              }
-              break;
-
-            case 'm':
-              params.n_vars = std::stoi(optarg);
-              break;
-
-            case 'p':
-
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--train-ratio requires a value between 0 and 1");
-              }
-
-              try {
-                params.train_ratio = std::stof(optarg);
-
-                if (params.train_ratio <= 0 || params.train_ratio >= 1) {
-                  throw std::out_of_range("Train ratio must be between 0 and 1");
-                }
-              } catch (const std::exception& e) {
-                throw std::invalid_argument(std::string("Invalid train ratio: ") + e.what());
-              }
-              break;
-
-            case 'e':
-
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--n-runs requires a positive number");
-              }
-
-              try {
-                params.n_runs = std::stoi(optarg);
-
-                if (params.n_runs < 1) {
-                  throw std::out_of_range("Number of runs must be positive");
-                }
-              } catch (const std::exception& e) {
-                throw std::invalid_argument(std::string("Invalid number of runs: ") + e.what());
-              }
-              break;
-
-            case OPT_SIM_MEAN_SEPARATION:
-
-              if (!optarg || strlen(optarg) == 0) {
-                throw std::invalid_argument("--sim-mean-separation requires a numeric value");
-              }
-
-              try {
-                params.sim_mean_separation = std::stof(optarg);
-
-                if (params.sim_mean_separation <= 0) {
-                  throw std::out_of_range("Simulation mean separation must be positive");
-                }
-              } catch (const std::exception& e) {
-                throw std::invalid_argument(std::string("Invalid simulation mean separation: ") + e.what());
-              }
-              break;
-
-            case 'h':
-              print_usage(argv[0]);
-              exit(0);
-              break;
-
-            case -1:
-              break;
-
-            default:
-              std::cerr << "Error: Invalid option " << c << std::endl;
-              exit(1);
-        }
-      } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        std::cerr << "Use --help for usage information" << std::endl;
-        exit(1);
-      }
-    } while (c != -1);
-
-    if (!has_simulate && !has_data) {
-      std::cerr << "Error: Must specify either --simulate or --data" << std::endl;
-      std::cerr << "Use --help for usage information" << std::endl;
-      exit(1);
+    // Parse
+    try {
+      app.parse(argc, argv);
+    } catch (const CLI::ParseError &e) {
+      std::exit(app.exit(e));
     }
 
-    if (has_simulate && has_data) {
-      std::cerr << "Error: Cannot specify both --simulate and --data" << std::endl;
-      std::cerr << "Use --help for usage information" << std::endl;
-      exit(1);
+    // Post-parse: determine subcommand
+    if (train_sub->parsed()) {
+      params.subcommand = Subcommand::train;
+    } else if (predict_sub->parsed()) {
+      params.subcommand = Subcommand::predict;
+    } else if (eval_sub->parsed()) {
+      params.subcommand = Subcommand::evaluate;
+    }
+
+    // Post-parse: map output format
+    if (output_format_str == "json") {
+      params.output_format = OutputFormat::json;
+      params.quiet = true;
+    }
+
+    // Post-parse: validate simulate format
+    if (!params.simulate.empty()) {
+      std::string sim_str = params.simulate;
+      size_t x1 = sim_str.find('x');
+      size_t x2 = sim_str.find('x', x1 + 1);
+
+      if (x1 == std::string::npos || x2 == std::string::npos) {
+        std::cerr << "Error: Simulate format must be NxMxK (e.g., 1000x10x2)" << std::endl;
+        std::exit(1);
+      }
+
+      try {
+        params.rows    = std::stoi(sim_str.substr(0, x1));
+        params.cols    = std::stoi(sim_str.substr(x1 + 1, x2 - x1 - 1));
+        params.classes = std::stoi(sim_str.substr(x2 + 1));
+
+        if (params.rows <= 0 || params.cols <= 0 || params.classes <= 1) {
+          throw std::out_of_range("Values must be positive and classes must be > 1");
+        }
+      } catch (const std::exception& e) {
+        std::cerr << "Error: Invalid simulate values: " << e.what() << std::endl;
+        std::exit(1);
+      }
+    }
+
+    // Post-parse: evaluate requires data source
+    if (params.subcommand == Subcommand::evaluate && params.simulate.empty() && params.data_path.empty()) {
+      std::cerr << "Error: Must specify either --simulate or --data" << std::endl;
+      std::exit(1);
     }
 
     warn_unused_params(params);
