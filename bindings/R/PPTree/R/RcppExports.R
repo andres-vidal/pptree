@@ -17,19 +17,3 @@ pptree_predict_forest <- function(forest, data) {
     .Call('_PPTree_pptree_predict_forest', PACKAGE = 'PPTree', forest, data)
 }
 
-pptree_variable_importance <- function(tree) {
-    .Call('_PPTree_pptree_variable_importance', PACKAGE = 'PPTree', tree)
-}
-
-pptree_forest_variable_importance <- function(forest) {
-    .Call('_PPTree_pptree_forest_variable_importance', PACKAGE = 'PPTree', forest)
-}
-
-pptree_confusion_matrix <- function(tree) {
-    .Call('_PPTree_pptree_confusion_matrix', PACKAGE = 'PPTree', tree)
-}
-
-pptree_forest_confusion_matrix <- function(forest) {
-    .Call('_PPTree_pptree_forest_confusion_matrix', PACKAGE = 'PPTree', forest)
-}
-

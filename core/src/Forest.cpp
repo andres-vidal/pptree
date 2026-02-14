@@ -23,16 +23,11 @@ namespace models {
     omp_set_num_threads(n_threads);
     #endif
 
-    Random::seed(seed);
-
     if (!GroupSpec<R>::is_contiguous(y)) {
       stats::sort(x, y);
     }
 
-    GroupSpec<R> data_spec(y);
-
-    LOG_INFO << "Training a random forest of " << size << " Project-Pursuit Trees." << std::endl;
-    LOG_INFO << "The seed is: " << seed << std::endl;
+    GroupSpec<R> group_spec(y);
 
     invariant(size > 0, "The forest size must be greater than 0.");
 
@@ -40,26 +35,15 @@ namespace models {
 
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
-      std::vector<int> sample_indices = stratified_proportional_sample(x, y, data_spec.groups, x.rows());
-
-      trees[i] = BootstrapTree<T, R>::train(training_spec, x, y, sample_indices);
+      stats::RNG rng(static_cast<uint64_t>(seed), static_cast<uint64_t>(i));
+      trees[i] = BootstrapTree<T, R>::train(training_spec, x, group_spec, rng);
     }
 
-    LOG_INFO << "Building forest" << std::endl;
-
-    Forest<T, R> forest(
-      training_spec.clone(),
-      x,
-      y,
-      data_spec.groups,
-      seed,
-      n_threads);
+    Forest<T, R> forest(training_spec.clone(), seed);
 
     for (auto& tree : trees) {
       forest.add_tree(std::move(tree));
     }
-
-    LOG_INFO << "Forest: " << forest << std::endl;
 
     return forest;
   }

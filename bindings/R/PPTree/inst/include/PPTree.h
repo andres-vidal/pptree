@@ -63,24 +63,15 @@ namespace Rcpp {
 
   SEXP wrap(const Tree<float, int > &tree) {
     return Rcpp::List::create(
-      Rcpp::Named("training_data") = Rcpp::List::create(
-        Rcpp::Named("x")           = Rcpp::wrap(tree.x),
-        Rcpp::Named("y")           = Rcpp::wrap(tree.y),
-        Rcpp::Named("classes")     = Rcpp::wrap(tree.classes)),
       Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("root")          = Rcpp::wrap(*tree.root));
   }
 
   SEXP wrap(const BootstrapTree<float, int> &tree) {
     return Rcpp::List::create(
-      Rcpp::Named("training_data") = Rcpp::List::create(
-        Rcpp::Named("x")           = Rcpp::wrap(tree.x),
-        Rcpp::Named("y")           = Rcpp::wrap(tree.y),
-        Rcpp::Named("classes")     = Rcpp::wrap(tree.classes),
-        Rcpp::Named("iob_indices") = Rcpp::wrap(tree.iob_indices),
-        Rcpp::Named("oob_indices") = Rcpp::wrap(tree.oob_indices)),
-      Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
-      Rcpp::Named("root")          = Rcpp::wrap(*tree.root));
+      Rcpp::Named("training_spec")  = Rcpp::wrap(*tree.training_spec),
+      Rcpp::Named("root")           = Rcpp::wrap(*tree.root),
+      Rcpp::Named("sample_indices") = Rcpp::wrap(tree.sample_indices));
   }
 
   SEXP wrap(const Forest<float, int> &forest) {
@@ -92,12 +83,7 @@ namespace Rcpp {
 
     return Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
-      Rcpp::Named("training_data") = Rcpp::List::create(
-        Rcpp::Named("x")           = Rcpp::wrap(forest.x),
-        Rcpp::Named("y")           = Rcpp::wrap(forest.y),
-        Rcpp::Named("classes")     = Rcpp::wrap(forest.classes)),
       Rcpp::Named("seed")          = Rcpp::wrap(forest.seed),
-      Rcpp::Named("n_threads")     = Rcpp::wrap(forest.n_threads),
       Rcpp::Named("trees")         = trees);
   }
 
@@ -163,51 +149,29 @@ namespace Rcpp {
   template<> Tree<float, int > as(SEXP x) {
     Rcpp::List rtree(x);
     Rcpp::List rtraining_spec(rtree["training_spec"]);
-    Rcpp::List rtraining_data(rtree["training_data"]);
-
-    std::vector<int> classes = as<std::vector<int> >(rtraining_data["classes"]);
 
     return Tree<float, int >(
       as<TreeCondition<float, int> >(rtree["root"]).clone(),
-      as<TrainingSpecPtr<float, int> >(rtraining_spec),
-      as<Data<float> >(rtraining_data["x"]),
-      as<DataColumn<int> >(rtraining_data["y"]),
-      std::set<int>(classes.begin(), classes.end()));
+      as<TrainingSpecPtr<float, int> >(rtraining_spec));
   }
 
   template<> BootstrapTree<float, int> as(SEXP x) {
     Rcpp::List rtree(x);
-    Rcpp::List rtraining_spec(rtree["training_spec"]);
-    Rcpp::List rtraining_data(rtree["training_data"]);
-
-    std::vector<int> classes     = as<std::vector<int> >(rtraining_data["classes"]);
-    std::vector<int> oob_indices = as<std::vector<int> >(rtraining_data["oob_indices"]);
 
     return BootstrapTree<float, int>(
       as<TreeCondition<float, int> >(rtree["root"]).clone(),
-      as<TrainingSpecPtr<float, int> >(rtraining_spec),
-      as<Data<float> >(rtraining_data["x"]),
-      as<DataColumn<int> >(rtraining_data["y"]),
-      std::set<int>(classes.begin(), classes.end()),
-      as<std::vector<int> >(rtraining_data["iob_indices"]),
-      std::set<int>(oob_indices.begin(), oob_indices.end()));
+      as<TrainingSpecPtr<float, int> >(rtree["training_spec"]),
+      as<std::vector<int> >(rtree["sample_indices"]));
   }
 
   template<> Forest<float, int> as(SEXP x) {
     Rcpp::List rforest(x);
     Rcpp::List rtrees(rforest["trees"]);
     Rcpp::List rtraining_spec(rforest["training_spec"]);
-    Rcpp::List rtraining_data(rforest["training_data"]);
-
-    std::vector<int> classes = as<std::vector<int> >(rtraining_data["classes"]);
 
     Forest<float, int> forest(
       as<TrainingSpecPtr<float, int> >(rtraining_spec),
-      as<Data<float> >(rtraining_data["x"]),
-      as<DataColumn<int> >(rtraining_data["y"]),
-      std::set<int>(classes.begin(), classes.end()),
-      Rcpp::as<float>(rforest["seed"]),
-      Rcpp::as<int>(rforest["n_threads"]));
+      Rcpp::as<float>(rforest["seed"]));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree     = as<BootstrapTree<float, int> > (rtrees[i]);

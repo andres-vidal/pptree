@@ -160,14 +160,6 @@ print.PPForest <- function(x, ...) {
 #' @export
 summary.PPForest <- function(object, ...) {
   model <- object
-  model$variable_importance <- data.frame(pptree_forest_variable_importance(model))
-  rownames(model$variable_importance) <- colnames(model$x)
-  colnames(model$variable_importance) <- c("Proj.", "Proj. Adjusted", "Permutation")
-
-  model$confusion_matrix <- data.frame(pptree_forest_confusion_matrix(model))
-  colnames(model$confusion_matrix) <- c(model$classes, "Error")
-  rownames(model$confusion_matrix) <- c(model$classes, "Total")
-
 
   if (!is.null(formula(object))) {
     cat("\n")
@@ -182,10 +174,10 @@ summary.PPForest <- function(object, ...) {
     }
     cat("-------------------------------------\n")
     cat("Variable Importance:\n")
-    print(model$variable_importance)
+    cat("TODO")
     cat("-------------------------------------\n")
     cat("Confusion Matrix:\n")
-    print(model$confusion_matrix)
+    cat("TODO")
   }
   cat("\n")
 }

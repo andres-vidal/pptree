@@ -9,6 +9,7 @@ jobs:
   Mac:
     runs-on: macos-latest
     steps:
+      - run: brew install gcc
       - uses: actions/checkout@v4
       - run: make test-debug
   Windows:

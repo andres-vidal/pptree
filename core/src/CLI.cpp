@@ -33,6 +33,7 @@ inline DataPacket<float, int> simulate(
   const int               n,
   const int               p,
   const int               G,
+  stats::RNG&             rng,
   const SimulationParams& params = SimulationParams{}) {
   Data<float> x(n, p);
   DataColumn<int> y(n);
@@ -43,7 +44,7 @@ inline DataPacket<float, int> simulate(
     Normal norm(group_mean, params.sd);
 
     for (int j = 0; j < p; ++j) {
-      x(i, j) = norm();
+      x(i, j) = norm(rng);
     }
 
     y[i] = i % G;
@@ -59,7 +60,7 @@ struct Split {
   std::vector<int> te;
 };
 
-inline Split split(const DataPacket<float, int>& data, float train_ratio) {
+inline Split split(const DataPacket<float, int>& data, float train_ratio, stats::RNG& rng) {
   const int n          = data.x.rows();
   const int train_size = static_cast<int>(n * train_ratio);
 
@@ -71,31 +72,18 @@ inline Split split(const DataPacket<float, int>& data, float train_ratio) {
   train_indices.reserve(train_size);
   test_indices.reserve(n - train_size);
 
-  LOG_INFO << "Splitting data of size " << n << " into " << train_size << " training and " << n - train_size << " test samples:";
-  LOG_INFO << "Classes: " << data.classes << std::endl;
-  LOG_INFO << "X: " << std::endl << data.x << std::endl;
-  LOG_INFO << "Y: " << std::endl << data.y << std::endl;
-
   for (const auto& group : data.classes) {
     int group_start      = spec.group_start(group);
     int group_size       = spec.group_size(group);
     int group_end        = group_start + group_size - 1;
     int group_train_size = static_cast<int>(group_size * train_ratio);
 
-    LOG_INFO << "Group " << group
-             << ": start=" << group_start
-             << ": end=" << group_end
-             << ", size=" << group_size
-             << ", train_size=" << group_train_size << std::endl;
-
     Uniform unif(group_start, group_end);
-    std::vector<int> group_indices = unif.distinct(group_size);
+    std::vector<int> group_indices = unif.distinct(group_size, rng);
 
     train_indices.insert(train_indices.end(), group_indices.begin(), group_indices.begin() + group_train_size);
     test_indices.insert(test_indices.end(), group_indices.begin() + group_train_size, group_indices.end());
   }
-
-  LOG_INFO << "Final split has " << train_indices.size() << " training and " << test_indices.size() << " test samples:";
 
   return {
     .tr = train_indices,
@@ -117,7 +105,7 @@ void display_progress(int current, int total, int bar_width = 50) {
   }
 }
 
-DataPacket<float, int> read_data(const CLIOptions& params) {
+DataPacket<float, int> read_data(const CLIOptions& params, stats::RNG& rng) {
   if (!params.data_path.empty()) {
     try {
       const DataPacket<float, int> data = read_csv(params.data_path);
@@ -145,7 +133,7 @@ DataPacket<float, int> read_data(const CLIOptions& params) {
     simulation_params.sd              = params.sim_sd;
 
     try {
-      return simulate(params.rows, params.cols, params.classes, simulation_params);
+      return simulate(params.rows, params.cols, params.classes, rng, simulation_params);
     } catch (const std::exception& e) {
       std::cerr << "Error simulating data: " << e.what() << std::endl;
       exit(1);
@@ -160,14 +148,13 @@ ModelStats evaluate_model(
   Data<float>&                    te_x,
   DataColumn<int>&                tr_y,
   DataColumn<int>&                te_y,
-  const CLIOptions&               params) {
+  const CLIOptions&               params,
+  stats::RNG&                     rng) {
   ModelStats stats;
 
   stats.tr_times = DataColumn<double>(params.n_runs);
   stats.tr_error = DataColumn<double>(params.n_runs);
   stats.te_error = DataColumn<double>(params.n_runs);
-
-  Random::seed(params.seed);
 
   std::cout << "Running " << params.n_runs << " iterations:" << std::endl;
 
@@ -180,7 +167,7 @@ ModelStats evaluate_model(
         if constexpr (std::is_same_v<Model, Forest<float, int> >) {
           return Forest<float, int>::train(spec, tr_x, tr_y, params.trees, params.seed + i, params.threads);
         } else {
-          return Tree<float, int>::train(spec, tr_x, tr_y);
+          return Tree<float, int>::train(spec, tr_x, tr_y, rng);
         }
       }();
 
@@ -188,8 +175,8 @@ ModelStats evaluate_model(
     const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
     stats.tr_times[i] = duration.count();
-    stats.tr_error[i] = model.error_rate(tr_x, tr_y);
-    stats.te_error[i] = model.error_rate(te_x, te_y);
+    stats.tr_error[i] = stats::error_rate(model.predict(tr_x), tr_y);
+    stats.te_error[i] = stats::error_rate(model.predict(te_x), te_y);
   }
 
   std::cout << std::endl;
@@ -205,12 +192,17 @@ int main(int argc, char *argv[]) {
 
   CLIOptions params = parse_args(argc, argv);
 
-  auto full_data = read_data(params);
+  #ifdef _OPENMP
+  omp_set_num_threads(params.threads);
+  #endif
+
+  stats::RNG rng(params.seed);
+
+  auto full_data = read_data(params, rng);
 
   init_params(params, full_data.x.cols());
 
-  Random::seed(params.seed);
-  auto data_split = split(full_data, params.train_ratio);
+  auto data_split = split(full_data, params.train_ratio, rng);
 
   Data<float> tr_x     = full_data.x(data_split.tr, Eigen::all);
   Data<float> te_x     = full_data.x(data_split.te, Eigen::all);
@@ -221,14 +213,15 @@ int main(int argc, char *argv[]) {
 
   announce_configuration(params, tr_x, te_x);
 
+
   ModelStats stats;
 
   if (params.trees > 0) {
     auto spec = TrainingSpecUGLDA<float, int>(params.n_vars, params.lambda);
-    stats = evaluate_model<Forest<float, int> >(spec, tr_x, te_x, tr_y, te_y, params);
+    stats = evaluate_model<Forest<float, int> >(spec, tr_x, te_x, tr_y, te_y, params, rng);
   } else {
     auto spec = TrainingSpecGLDA<float, int>(params.lambda);
-    stats = evaluate_model<Tree<float, int> >(spec, tr_x, te_x, tr_y, te_y, params);
+    stats = evaluate_model<Tree<float, int> >(spec, tr_x, te_x, tr_y, te_y, params, rng);
   }
 
   announce_results(stats);
