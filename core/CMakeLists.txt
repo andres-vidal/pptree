@@ -168,13 +168,16 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(csv)
 
-# Fetch getopt for command line parsing
+# Fetch getopt for command line parsing (header-only usage, skip building its tests)
 FetchContent_Declare(
   getopt
   GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
   GIT_TAG master
 )
-FetchContent_MakeAvailable(getopt)
+FetchContent_GetProperties(getopt)
+if(NOT getopt_POPULATED)
+  FetchContent_Populate(getopt)
+endif()
 
 add_library(getopt_lib INTERFACE)
 target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
@@ -185,7 +188,7 @@ target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/include)
 target_link_libraries(pptree-cli pptree csv getopt_lib)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-  target_link_libraries(pptree-cli gcov)
+  target_link_options(pptree-cli PRIVATE --coverage)
 endif()
 
 # Setup test executable
