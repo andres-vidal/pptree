@@ -166,7 +166,7 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   add_dependencies(pptree-test pptree)
 
   include(GoogleTest)
-  gtest_discover_tests(pptree-test)
+  gtest_discover_tests(pptree-test DISCOVERY_MODE PRE_TEST)
 endif()
 
 
