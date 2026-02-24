@@ -3,7 +3,7 @@
 #include "pptree.hpp"
 #include "DataPacket.hpp"
 #include "CLIOptions.hpp"
-#include "IO.hpp"
+#include "ModelStats.hpp"
 
 using namespace pptree;
 

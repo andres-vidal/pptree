@@ -19,4 +19,15 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v4
-      - run: make test-debug
+      - name: Add MinGW runtime to PATH
+        run: |
+          GCC_DIR="$(dirname "$(which gcc)")"
+          echo "$GCC_DIR" >> $GITHUB_PATH
+          echo "MinGW bin: $GCC_DIR"
+          ls "$GCC_DIR"/libstdc++*.dll "$GCC_DIR"/libgcc*.dll "$GCC_DIR"/libwinpthread*.dll 2>/dev/null || true
+      - run: make build-debug
+      - name: Copy MinGW runtime DLLs to build directory
+        run: |
+          GCC_DIR="$(dirname "$(which gcc)")"
+          cp "$GCC_DIR"/libstdc++-6.dll "$GCC_DIR"/libgcc_s_seh-1.dll "$GCC_DIR"/libwinpthread-1.dll .debug/ 2>/dev/null || true
+      - run: cd .debug && ./pptree-test

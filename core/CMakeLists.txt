@@ -39,10 +39,6 @@ if(CMAKE_BUILD_TYPE MATCHES Release)
   add_compile_definitions(EIGEN_NO_DEBUG)
 endif()
 
-if(WIN32)
-  add_link_options(-static)
-endif()
-
 # Add search hints
 list(APPEND CMAKE_PREFIX_PATH
   /usr/local/opt/libomp
@@ -153,15 +149,13 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
     pptree_singlethreaded
     gtest_main
     gtest
-    CLI11::CLI11
-    csv)
+    CLI11::CLI11)
 
   target_include_directories(pptree-test
     PUBLIC src
     PUBLIC include
     PUBLIC ${gtest_SOURCE_DIR}/include
-    PUBLIC ${gtest_SOURCE_DIR}
-    PUBLIC ${csv_SOURCE_DIR}/include)
+    PUBLIC ${gtest_SOURCE_DIR})
 
   target_compile_definitions(pptree-test PRIVATE
     PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
