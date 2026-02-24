@@ -8,7 +8,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_compile_definitions(EIGEN_DONT_PARALLELIZE)
 add_compile_definitions(EIGEN_NO_AUTOMATIC_RESIZING)
-add_compile_options(-march=native)
+if(NOT WIN32)
+  add_compile_options(-march=native)
+endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_options(-O0)
