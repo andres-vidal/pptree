@@ -39,6 +39,10 @@ if(CMAKE_BUILD_TYPE MATCHES Release)
   add_compile_definitions(EIGEN_NO_DEBUG)
 endif()
 
+if(WIN32)
+  add_link_options(-static)
+endif()
+
 # Add search hints
 list(APPEND CMAKE_PREFIX_PATH
   /usr/local/opt/libomp
