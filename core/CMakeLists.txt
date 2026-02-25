@@ -184,13 +184,14 @@ target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/single_include)
 target_link_libraries(pptree-cli pptree csv getopt_lib)
 
 # Add executable for the tests
-add_executable(eigen-test EigenInit.test.cpp)
+add_executable(eigen-test src/EigenInit.test.cpp)
 
 target_link_libraries(eigen-test
   gtest_main
   gtest)
 
 target_include_directories(eigen-test
+  PUBLIC ${eigen_SOURCE_DIR}
   PUBLIC ${gtest_SOURCE_DIR}/include
   PUBLIC ${gtest_SOURCE_DIR})
 
