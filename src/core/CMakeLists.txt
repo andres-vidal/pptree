@@ -1,0 +1,186 @@
+cmake_minimum_required(VERSION 3.20)
+project(pptree VERSION 0.0.0)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+add_compile_definitions(-DEIGEN_DONT_PARALLELIZE)
+add_compile_definitions(-DEIGEN_NO_AUTOMATIC_RESIZING)
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  add_compile_options(-O0)
+  add_compile_options(-g)
+  add_compile_definitions(_GLIBCXX_DEBUG)
+  add_compile_definitions(_GLIBCXX_ASSERTIONS)
+  add_compile_definitions(EIGEN_INITIALIZE_MATRICES_BY_NAN)
+  add_compile_definitions(EIGEN_INTERNAL_DEBUGGING)
+  add_compile_definitions(EIGEN_RUNTIME_NO_MALLOC)
+  add_compile_options(-fno-omit-frame-pointer)
+
+  add_link_options(--coverage)
+
+  if(UNIX AND NOT APPLE)
+    add_compile_options(-fsanitize=address,undefined)
+    add_link_options(-fsanitize=address,undefined)
+  endif()
+
+  if(WIN32)
+    add_compile_options(-Wa,-mbig-obj)
+  endif()
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Release)
+  add_compile_options(-O3)
+  add_compile_definitions(-DNDEBUG)
+  add_compile_definitions(-DEIGEN_NO_DEBUG)
+endif()
+
+# Add search hints
+list(APPEND CMAKE_PREFIX_PATH
+  /usr/local/opt/libomp
+  /opt/homebrew/opt/libomp)
+
+# Find OpenMP
+find_package(OpenMP)
+
+if(NOT OpenMP_FOUND)
+  message(WARNING "Could NOT find OpenMP. Parallelization will not be available.")
+endif()
+
+include(FetchContent)
+
+# Eigen
+FetchContent_Declare(
+  eigen
+  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+  GIT_TAG 3.4.0
+)
+FetchContent_MakeAvailable(eigen)
+
+# nlohmann_json
+FetchContent_Declare(
+  json
+  URL
+  https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(json)
+
+# PCG Random Number Generation
+FetchContent_Declare(
+  pcg
+  GIT_REPOSITORY https://github.com/imneme/pcg-cpp.git
+  GIT_TAG v0.98.1
+)
+FetchContent_GetProperties(pcg)
+if(NOT pcg_POPULATED)
+  FetchContent_Populate(pcg)
+  add_library(pcg INTERFACE)
+  target_include_directories(pcg INTERFACE ${pcg_SOURCE_DIR}/include)
+endif()
+
+# Collect all .cpp files from the specified directories
+file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
+
+# Collect all .cpp files that are not test files
+set(NON_TEST_CPP_FILES "")
+foreach(file ${ALL_CPP_FILES})
+  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$")
+    list(APPEND NON_TEST_CPP_FILES ${file})
+  endif()
+endforeach()
+
+# Add library with all non-test files
+add_library(pptree ${NON_TEST_CPP_FILES})
+
+target_include_directories(pptree
+  PUBLIC include
+  PUBLIC src)
+
+target_link_libraries(pptree
+  Eigen3::Eigen
+  nlohmann_json::nlohmann_json
+  pcg)
+
+if(OpenMP_FOUND)
+  target_link_libraries(pptree OpenMP::OpenMP_CXX)
+endif()
+
+# Test runner
+enable_testing()
+
+# Collect all .test.cpp
+file(GLOB_RECURSE TEST_SOURCES ./**/*.test.cpp)
+
+if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
+  add_library(pptree_singlethreaded ${NON_TEST_CPP_FILES})
+
+  target_link_libraries(pptree_singlethreaded
+    Eigen3::Eigen
+    nlohmann_json::nlohmann_json
+    pcg)
+
+  # Google Test
+  FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG release-1.12.1
+  )
+  FetchContent_MakeAvailable(googletest)
+
+  # Add executable for the tests
+  add_executable(pptree-test ${TEST_SOURCES})
+
+  target_link_libraries(pptree-test
+    pptree_singlethreaded
+    gtest_main
+    gtest)
+
+  target_include_directories(pptree-test
+    PUBLIC src
+    PUBLIC ${gtest_SOURCE_DIR}/include
+    PUBLIC ${gtest_SOURCE_DIR})
+
+  include(GoogleTest)
+  gtest_discover_tests(pptree-test)
+endif()
+
+
+# Fetch csv-parser
+FetchContent_Declare(
+  csv
+  GIT_REPOSITORY https://github.com/vincentlaucsb/csv-parser.git
+  GIT_SHALLOW TRUE
+  GIT_TAG 2.2.1
+)
+
+FetchContent_GetProperties(csv)
+if(NOT csv_POPULATED)
+  FetchContent_Populate(csv)
+  add_library(csv INTERFACE)
+  target_include_directories(csv INTERFACE ${csv_SOURCE_DIR}/single_include)
+endif()
+
+# Fetch getopt for command line parsing
+# getopt_port requires cmake_minimum_required < 3.5, which CMake 3.31+ rejects.
+# Setting CMAKE_POLICY_VERSION_MINIMUM allows it to configure anyway.
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+FetchContent_Declare(
+  getopt
+  GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
+  GIT_TAG master
+)
+FetchContent_GetProperties(getopt)
+if(NOT getopt_POPULATED)
+  FetchContent_Populate(getopt)
+endif()
+unset(CMAKE_POLICY_VERSION_MINIMUM)
+
+add_library(getopt_lib INTERFACE)
+target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
+
+# Setup cli executable
+add_executable(pptree-cli src/CLI.cpp)
+target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/single_include)
+target_link_libraries(pptree-cli pptree csv getopt_lib)
