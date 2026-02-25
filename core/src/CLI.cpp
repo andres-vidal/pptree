@@ -1,7 +1,17 @@
+/**
+ * @file CLI.cpp
+ * @brief Main entry point for the pptree command-line tool.
+ *
+ * Implements the train, predict, and evaluate subcommands including
+ * data simulation, train/test splitting, progress display, model
+ * serialization, and experiment export.
+ */
 #include "pptree.hpp"
 #include "csv.hpp"
 
-#include <iostream>
+#include <fmt/format.h>
+#include <cstdio>
+#include <fstream>
 #include <vector>
 #include <chrono>
 #include <cmath>
@@ -10,13 +20,18 @@
 #include <numeric>
 #include <string>
 #include <Eigen/Dense>
+#include <filesystem>
 
 #include "Types.hpp"
+#include <nlohmann/json.hpp>
+
 #include "DataPacket.hpp"
 #include "Normal.hpp"
+#include "ConfusionMatrix.hpp"
 
 #include "CLIOptions.hpp"
 #include "IO.hpp"
+#include "Color.hpp"
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -24,13 +39,28 @@
 
 using namespace pptree;
 using namespace csv;
+using json = nlohmann::json;
 
+/** @brief Parameters for generating simulated classification data. */
 struct SimulationParams {
-  float mean            = 100.0f;
-  float mean_separation = 50.0f;
-  float sd              = 10.0f;
+  float mean            = 100.0f;   ///< Base mean for the first class.
+  float mean_separation = 50.0f;    ///< Mean shift between successive classes.
+  float sd              = 10.0f;    ///< Standard deviation within each class.
 };
 
+/**
+ * @brief Generate a simulated dataset with G classes, n rows, and p features.
+ *
+ * Each class is drawn from a normal distribution with a shifted mean.
+ * The resulting data is sorted by class label.
+ *
+ * @param n      Number of rows (observations).
+ * @param p      Number of feature columns.
+ * @param G      Number of classes (must be > 1).
+ * @param rng    Random number generator.
+ * @param params Simulation parameters (mean, separation, sd).
+ * @return A DataPacket with the simulated feature matrix and response vector.
+ */
 inline DataPacket simulate(
   const int               n,
   const int               p,
@@ -57,11 +87,23 @@ inline DataPacket simulate(
   return DataPacket(x, y);
 }
 
+/** @brief Indices for a train/test split. */
 struct Split {
-  std::vector<int> tr;
-  std::vector<int> te;
+  std::vector<int> tr;   ///< Training set indices.
+  std::vector<int> te;   ///< Test set indices.
 };
 
+/**
+ * @brief Perform a stratified random train/test split on a DataPacket.
+ *
+ * Samples indices within each class proportional to train_ratio so that
+ * class balance is preserved in both train and test sets.
+ *
+ * @param data        The full dataset.
+ * @param train_ratio Proportion of data to use for training (0, 1).
+ * @param rng         Random number generator.
+ * @return A Split containing train and test index vectors.
+ */
 inline Split split(const DataPacket& data, float train_ratio, stats::RNG& rng) {
   const int n          = data.x.rows();
   const int train_size = static_cast<int>(n * train_ratio);
@@ -93,20 +135,46 @@ inline Split split(const DataPacket& data, float train_ratio, stats::RNG& rng) {
   };
 }
 
-// Display a progress bar on the console
-void display_progress(int current, int total, int bar_width = 50) {
+/**
+ * @brief Display an in-place progress bar on stdout.
+ * @param current   Current iteration (0-based before increment).
+ * @param total     Total number of iterations.
+ * @param quiet     If true, suppress all output.
+ * @param bar_width Width of the progress bar in characters.
+ */
+void display_progress(int current, int total, bool quiet, int bar_width = 50) {
+  if (quiet) return;
+
   float progress = static_cast<float>(current) / total;
   int pos        = static_cast<int>(bar_width * progress);
 
-  std::cout << "\r" << std::string(pos, '-') << std::string(bar_width - pos, ' ')
-            << " | " << current << "/" << total
-            << " (" << static_cast<int>(progress * 100.0) << "%)     " << std::flush;
+  std::string bar_template = emphasis("\r{} |");
+  std::string bar          = std::string(pos, '-') + std::string(bar_width - pos, ' ');
 
   if (current == total) {
-    std::cout << std::endl;
+    bar_template = success(bar_template);
+  } else {
+    bar_template = info(bar_template);
+  }
+
+  fmt::print(bar_template + " {}/{} ({}%)     ", bar, current, total, static_cast<int>(progress * 100.0));
+  std::fflush(stdout);
+
+  if (current == total) {
+    fmt::print("\n");
   }
 }
 
+/**
+ * @brief Load or simulate data based on CLI options.
+ *
+ * If data_path is set, reads a CSV file; otherwise generates simulated data.
+ * Ensures the response vector is contiguous (sorted by class).
+ *
+ * @param params The CLI options (data_path, simulate, sim_* parameters).
+ * @param rng    Random number generator for simulation.
+ * @return A DataPacket with features and labels.
+ */
 DataPacket read_data(const CLIOptions& params, stats::RNG& rng) {
   if (!params.data_path.empty()) {
     try {
@@ -121,11 +189,11 @@ DataPacket read_data(const CLIOptions& params, stats::RNG& rng) {
 
       return DataPacket(x, y);
     } catch (const std::runtime_error& e) {
-      std::cerr << "Error reading CSV file: " << e.what() << std::endl;
-      std::cerr << "Please ensure the file exists and is properly formatted" << std::endl;
+      fmt::print(stderr, "Error reading CSV file: {}\n", e.what());
+      fmt::print(stderr, "Please ensure the file exists and is properly formatted\n");
       exit(1);
     } catch (const std::exception& e) {
-      std::cerr << "Unexpected error reading file: " << e.what() << std::endl;
+      fmt::print(stderr, "Unexpected error reading file: {}\n", e.what());
       exit(1);
     }
   } else {
@@ -137,14 +205,36 @@ DataPacket read_data(const CLIOptions& params, stats::RNG& rng) {
     try {
       return simulate(params.rows, params.cols, params.classes, rng, simulation_params);
     } catch (const std::exception& e) {
-      std::cerr << "Error simulating data: " << e.what() << std::endl;
+      fmt::print(stderr, "Error simulating data: {}\n", e.what());
       exit(1);
     }
   }
 }
 
+/** @brief Result of an evaluate run containing aggregated statistics. */
+struct EvaluateResult {
+  ModelStats stats;    ///< Per-iteration timing and error data.
+};
+
+/**
+ * @brief Train and evaluate a model over multiple iterations.
+ *
+ * For each iteration, trains a fresh model on the training set,
+ * records training time, train error, and test error. Displays
+ * a progress bar unless quiet mode is active.
+ *
+ * @tparam Model Either Forest or Tree.
+ * @param spec   The training specification (projection pursuit method).
+ * @param tr_x   Training features.
+ * @param te_x   Test features.
+ * @param tr_y   Training labels.
+ * @param te_y   Test labels.
+ * @param params CLI options (iterations, seed, threads, quiet).
+ * @param rng    Random number generator.
+ * @return An EvaluateResult with aggregated statistics.
+ */
 template<typename Model>
-ModelStats evaluate_model(
+EvaluateResult evaluate_model(
   const TrainingSpec& spec,
   FeatureMatrix&      tr_x,
   FeatureMatrix&      te_x,
@@ -152,16 +242,18 @@ ModelStats evaluate_model(
   ResponseVector&     te_y,
   const CLIOptions&   params,
   stats::RNG&         rng) {
-  ModelStats stats;
+  ModelStats model_stats;
 
-  stats.tr_times = Vector<float>(params.n_runs);
-  stats.tr_error = Vector<float>(params.n_runs);
-  stats.te_error = Vector<float>(params.n_runs);
+  model_stats.tr_times = Vector<float>(params.iterations);
+  model_stats.tr_error = Vector<float>(params.iterations);
+  model_stats.te_error = Vector<float>(params.iterations);
 
-  std::cout << "Running " << params.n_runs << " iterations:" << std::endl;
+  if (!params.quiet) {
+    fmt::print("Running {} iterations:\n", emphasis(std::to_string(params.iterations)));
+  }
 
-  for (int i = 0; i < params.n_runs; ++i) {
-    display_progress(i + 1, params.n_runs);
+  for (int i = 0; i < params.iterations; ++i) {
+    display_progress(i, params.iterations, params.quiet);
 
     const auto start = std::chrono::high_resolution_clock::now();
 
@@ -176,56 +268,403 @@ ModelStats evaluate_model(
     const auto end      = std::chrono::high_resolution_clock::now();
     const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    stats.tr_times[i] = duration.count();
-    stats.tr_error[i] = stats::error_rate(model.predict(tr_x), tr_y);
-    stats.te_error[i] = stats::error_rate(model.predict(te_x), te_y);
+    model_stats.tr_times[i] = duration.count();
+    model_stats.tr_error[i] = stats::error_rate(model.predict(tr_x), tr_y);
+    model_stats.te_error[i] = stats::error_rate(model.predict(te_x), te_y);
+
+    display_progress(i + 1, params.iterations, params.quiet);
   }
 
-  std::cout << std::endl;
+  if (!params.quiet) {
+    fmt::print("\n");
+  }
 
-  return stats;
+  return { model_stats };
+}
+
+/**
+ * @brief Train a single model (Forest or Tree) on the full dataset.
+ * @tparam Model Either Forest or Tree.
+ * @param spec   The training specification.
+ * @param x      Feature matrix.
+ * @param y      Response vector.
+ * @param params CLI options (trees, seed, threads).
+ * @param rng    Random number generator (used for single tree).
+ * @return The trained model.
+ */
+template<typename Model>
+Model train_model(
+  TrainingSpec const& spec,
+  FeatureMatrix&      x,
+  ResponseVector&     y,
+  CLIOptions const&   params,
+  stats::RNG&         rng) {
+  if constexpr (std::is_same_v<Model, Forest>) {
+    return Forest::train(spec, x, y, params.trees, params.seed, params.threads);
+  } else {
+    return Tree::train(spec, x, y, rng);
+  }
+}
+
+/**
+ * @brief Save a trained model to a JSON file with config metadata.
+ *
+ * Produces a JSON file with structure: { model_type, model, config }.
+ * The config block records all training parameters and the data path.
+ *
+ * @param model_json The serialized model JSON.
+ * @param model_type "forest" or "tree".
+ * @param params     CLI options for the config block.
+ * @param path       Output file path.
+ */
+void save_model(
+  const json&        model_json,
+  const std::string& model_type,
+  const CLIOptions&  params,
+  const std::string& path) {
+  json config;
+  config["trees"]   = params.trees;
+  config["lambda"]  = params.lambda;
+  config["seed"]    = params.seed;
+  config["threads"] = params.threads;
+
+  if (params.trees > 0 && params.n_vars > 0) {
+    config["vars"] = params.n_vars;
+  }
+
+  if (!params.data_path.empty()) {
+    config["data"] = params.data_path;
+  }
+
+  json output;
+  output["model_type"] = model_type;
+  output["model"]      = model_json;
+  output["config"]     = config;
+
+  write_json_file(output, path);
+
+  if (!params.quiet) {
+    fmt::print("Model saved to {}\n", path);
+  }
+}
+
+/**
+ * @brief Load a model JSON file from disk.
+ * @param path Path to the model JSON file.
+ * @return The parsed JSON object.
+ */
+json load_model(const std::string& path) {
+  std::ifstream in(path);
+
+  if (!in.is_open()) {
+    fmt::print(stderr, "Error: Could not open model file: {}\n", path);
+    std::exit(1);
+  }
+
+  try {
+    return json::parse(in);
+  } catch (const json::parse_error& e) {
+    fmt::print(stderr, "Error: Invalid JSON in model file: {}\n", e.what());
+    std::exit(1);
+  }
+}
+
+/**
+ * @brief Build the JSON result for the predict subcommand.
+ *
+ * Always includes "predictions". When labels are available and
+ * --no-metrics is not set, also includes "error_rate" and "confusion_matrix".
+ *
+ * @param predictions The predicted class labels.
+ * @param data        The input dataset (may include actual labels).
+ * @param no_metrics  If true, omit error_rate and confusion_matrix.
+ * @return A JSON object with prediction results.
+ */
+json build_predict_result(
+  const ResponseVector& predictions,
+  const DataPacket&     data,
+  bool                  no_metrics) {
+  json result;
+  std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
+  result["predictions"] = pred_vec;
+
+  bool has_labels   = data.y.size() > 0;
+  bool show_metrics = has_labels && !no_metrics;
+
+  if (show_metrics) {
+    stats::ConfusionMatrix cm(predictions, data.y);
+    result["error_rate"]       = cm.error();
+    result["confusion_matrix"] = cm.to_json();
+  }
+
+  return result;
+}
+
+/**
+ * @brief Build the config.json content for an experiment export bundle.
+ *
+ * Includes model parameters, evaluation parameters, and a relative
+ * data path ("data.csv") for reproducibility.
+ *
+ * @param params The CLI options.
+ * @return A JSON config object.
+ */
+json build_export_config(const CLIOptions& params) {
+  json config;
+
+  // Model parameters
+  config["trees"]   = params.trees;
+  config["lambda"]  = params.lambda;
+  config["seed"]    = params.seed;
+  config["threads"] = params.threads;
+
+  if (params.trees > 0 && params.n_vars > 0) {
+    config["vars"] = params.n_vars;
+  }
+
+  // Evaluation parameters
+  config["train-ratio"] = params.train_ratio;
+  config["iterations"]  = params.iterations;
+
+  // Data source - point to local CSV for re-runnability
+  config["data"] = "data.csv";
+
+  return config;
+}
+
+/**
+ * @brief Export a complete experiment bundle to a directory.
+ *
+ * Creates a directory containing:
+ * - config.json: full training/evaluation configuration
+ * - data.csv: the dataset used
+ * - results.json: evaluation statistics with per-iteration breakdown
+ *
+ * @param params      CLI options (export_path, quiet).
+ * @param full_data   The full dataset.
+ * @param eval_result The evaluation results.
+ */
+void export_experiment(
+  const CLIOptions&     params,
+  const DataPacket&     full_data,
+  const EvaluateResult& eval_result) {
+  std::string dir = params.export_path;
+
+  std::filesystem::create_directories(dir);
+
+  // config.json
+  json config = build_export_config(params);
+  write_json_file(config, dir + "/config.json");
+
+  // data.csv
+  write_csv(full_data, dir + "/data.csv");
+
+  // results.json
+  write_json_file(eval_result.stats.to_json(), dir + "/results.json");
+
+  if (!params.quiet) {
+    fmt::print("{}{}/\n", success("Experiment exported to "), dir);
+  }
 }
 
 int main(int argc, char *argv[]) {
-  if (argc < 2) {
-    print_usage(argv[0]);
-    return 1;
+  CLIOptions params = parse_args(argc, argv);
+
+  init_color(params.no_color);
+
+  // Post-parse: ensure .json extension on output paths
+  if (!params.save_path.empty()) {
+    params.save_path = ensure_json_extension(params.save_path);
   }
 
-  CLIOptions params = parse_args(argc, argv);
+  if (!params.output_path.empty()) {
+    params.output_path = ensure_json_extension(params.output_path);
+  }
 
   #ifdef _OPENMP
   omp_set_num_threads(params.threads);
   #endif
 
-  stats::RNG rng(params.seed);
+  switch (params.subcommand) {
+      case Subcommand::train: {
+        // Validate save path before training
+        if (!params.save_path.empty()) {
+          check_file_not_exists(params.save_path);
+        }
 
-  auto full_data = read_data(params, rng);
+        stats::RNG rng(params.seed);
+        auto data = read_data(params, rng);
 
-  init_params(params, full_data.x.cols());
+        init_params(params, data.x.cols());
+        announce_configuration(params);
 
-  auto data_split = split(full_data, params.train_ratio, rng);
+        FeatureMatrix x  = data.x;
+        ResponseVector y = data.y;
 
-  FeatureMatrix tr_x  = full_data.x(data_split.tr, Eigen::all);
-  FeatureMatrix te_x  = full_data.x(data_split.te, Eigen::all);
-  ResponseVector tr_y = full_data.y(data_split.tr);
-  ResponseVector te_y = full_data.y(data_split.te);
+        const auto start = std::chrono::high_resolution_clock::now();
 
-  std::cout << std::endl;
+        if (params.trees > 0) {
+          auto spec  = TrainingSpecUGLDA(params.n_vars, params.lambda);
+          auto model = train_model<Forest>(spec, x, y, params, rng);
 
-  announce_configuration(params, tr_x, te_x);
+          const auto end      = std::chrono::high_resolution_clock::now();
+          const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
+          if (!params.quiet) {
+            fmt::print("Trained in {}ms\n", emphasis(std::to_string(duration.count())));
+          }
 
-  ModelStats stats;
+          if (!params.save_path.empty()) {
+            save_model(model.to_json(), "forest", params, params.save_path);
+          }
+        } else {
+          auto spec  = TrainingSpecGLDA(params.lambda);
+          auto model = train_model<Tree>(spec, x, y, params, rng);
 
-  if (params.trees > 0) {
-    auto spec = TrainingSpecUGLDA(params.n_vars, params.lambda);
-    stats = evaluate_model<Forest>(spec, tr_x, te_x, tr_y, te_y, params, rng);
-  } else {
-    auto spec = TrainingSpecGLDA(params.lambda);
-    stats = evaluate_model<Tree>(spec, tr_x, te_x, tr_y, te_y, params, rng);
+          const auto end      = std::chrono::high_resolution_clock::now();
+          const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+          if (!params.quiet) {
+            fmt::print("Trained in {}ms\n", emphasis(std::to_string(duration.count())));
+          }
+
+          if (!params.save_path.empty()) {
+            save_model(model.to_json(), "tree", params, params.save_path);
+          }
+        }
+
+        break;
+      }
+
+      case Subcommand::predict: {
+        // Validate output path before doing work
+        if (!params.output_path.empty()) {
+          check_file_not_exists(params.output_path);
+        }
+
+        json model_data = load_model(params.model_path);
+
+        DataPacket data = [&]() {
+            try {
+              const DataPacket csv_data = read_csv(params.data_path);
+
+              FeatureMatrix x  = csv_data.x;
+              ResponseVector y = csv_data.y;
+
+              if (!GroupPartition::is_contiguous(y)) {
+                models::stats::sort(x, y);
+              }
+
+              return DataPacket(x, y);
+            } catch (const std::exception& e) {
+              fmt::print(stderr, "{} reading CSV file: {}\n", error("Error:"), e.what());
+              std::exit(1);
+            }
+          }();
+
+        std::string model_type = model_data.value("model_type", "tree");
+        json model_json        = model_data.contains("model") ? model_data["model"] : model_data;
+
+        ResponseVector predictions;
+
+        if (model_type == "forest") {
+          auto model = Forest::from_json(model_json);
+          predictions = model.predict(data.x);
+        } else {
+          auto model = Tree::from_json(model_json);
+          predictions = model.predict(data.x);
+        }
+
+        bool has_labels   = data.y.size() > 0;
+        bool show_metrics = has_labels && !params.no_metrics;
+
+        // Terminal output: only metrics
+        if (!params.quiet && show_metrics) {
+          stats::ConfusionMatrix cm(predictions, data.y);
+          fmt::print("\n{}{:.2f}%\n\n", emphasis("Error rate: "), cm.error() * 100);
+          cm.print();
+        }
+
+        // Hint about --output when not used
+        if (!params.quiet && show_metrics && params.output_path.empty()) {
+          fmt::print("\n{}\n", muted("Tip: use --output <file> to save individual predictions"));
+        }
+
+        // Save results to file if requested
+        if (!params.output_path.empty()) {
+          json file_result = build_predict_result(predictions, data, params.no_metrics);
+          write_json_file(file_result, params.output_path);
+
+          if (!params.quiet) {
+            fmt::print("{}{}\n", success("Results saved to "), params.output_path);
+          }
+        }
+
+        break;
+      }
+
+      case Subcommand::evaluate: {
+        // Validate output paths before doing work
+        if (!params.output_path.empty()) {
+          check_file_not_exists(params.output_path);
+        }
+
+        if (!params.export_path.empty()) {
+          check_dir_not_exists(params.export_path);
+        }
+
+        stats::RNG rng(params.seed);
+        auto full_data = read_data(params, rng);
+
+        init_params(params, full_data.x.cols());
+
+        auto data_split = split(full_data, params.train_ratio, rng);
+
+        FeatureMatrix tr_x  = full_data.x(data_split.tr, Eigen::all);
+        FeatureMatrix te_x  = full_data.x(data_split.te, Eigen::all);
+        ResponseVector tr_y = full_data.y(data_split.tr);
+        ResponseVector te_y = full_data.y(data_split.te);
+
+        announce_configuration(params, tr_x.rows(), te_x.rows());
+
+        EvaluateResult eval_result;
+
+        if (params.trees > 0) {
+          auto spec = TrainingSpecUGLDA(params.n_vars, params.lambda);
+          eval_result = evaluate_model<Forest>(spec, tr_x, te_x, tr_y, te_y, params, rng);
+        } else {
+          auto spec = TrainingSpecGLDA(params.lambda);
+          eval_result = evaluate_model<Tree>(spec, tr_x, te_x, tr_y, te_y, params, rng);
+        }
+
+        // Measure peak RSS after evaluation
+        eval_result.stats.peak_rss_bytes = get_peak_rss_bytes();
+
+        if (!params.quiet) {
+          announce_results(eval_result.stats);
+        }
+
+        // Save results to file if requested
+        if (!params.output_path.empty()) {
+          write_json_file(eval_result.stats.to_json(), params.output_path);
+
+          if (!params.quiet) {
+            fmt::print("{}{}\n", success("Results saved to "), params.output_path);
+          }
+        }
+
+        // Export experiment bundle if requested
+        if (!params.export_path.empty()) {
+          export_experiment(params, full_data, eval_result);
+        }
+
+        break;
+      }
+
+      default:
+        fmt::print(stderr, "Error: No subcommand specified\n");
+        return 1;
   }
 
-  announce_results(stats);
   return 0;
 }

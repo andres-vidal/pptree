@@ -1,12 +1,12 @@
 #pragma once
 
-#include <iostream>
 #include <sstream>
 #include <fstream>
 
 #include <map>
 #include <set>
 
+#include <fmt/format.h>
 #include <nlohmann/json.hpp>
 
 #ifdef _OPENMP
@@ -57,7 +57,7 @@ namespace models {
     }
 
     #else
-    std::cout << ss.str();
+    fmt::print("{}", ss.str());
     #endif
   }
 }

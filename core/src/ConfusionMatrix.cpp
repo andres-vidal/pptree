@@ -1,10 +1,18 @@
+/**
+ * @file ConfusionMatrix.cpp
+ * @brief Implementation of confusion matrix construction, error computation,
+ *        JSON serialization, and formatted terminal output.
+ */
 #include "ConfusionMatrix.hpp"
 
 #include "Stats.hpp"
 #include "Invariant.hpp"
+#include "Color.hpp"
 
 #include <set>
 #include <stdexcept>
+#include <sstream>
+#include <fmt/format.h>
 
 using namespace models::types;
 
@@ -54,5 +62,68 @@ namespace models::stats {
 
   float ConfusionMatrix::error() const {
     return 1.0f - static_cast<float>(values.trace()) / static_cast<float>(values.sum());
+  }
+
+  nlohmann::json ConfusionMatrix::to_json() const {
+    nlohmann::json j;
+
+    std::vector<std::vector<int> > matrix_data;
+    for (int i = 0; i < values.rows(); ++i) {
+      std::vector<int> row;
+      for (int col = 0; col < values.cols(); ++col) {
+        row.push_back(values(i, col));
+      }
+
+      matrix_data.push_back(row);
+    }
+
+    j["matrix"] = matrix_data;
+
+    std::vector<int> labels;
+    for (const auto& [label, idx] : label_index) {
+      labels.push_back(label);
+    }
+
+    j["labels"] = labels;
+
+    auto ce = class_errors();
+    std::vector<float> ce_vec(ce.data(), ce.data() + ce.size());
+    j["class_errors"] = ce_vec;
+
+    return j;
+  }
+
+  void ConfusionMatrix::print() const {
+    const int cell_width = 6;
+    auto ce              = class_errors();
+
+    fmt::print("Confusion Matrix:\n");
+
+    fmt::print("     ");
+    for (const auto& [label, idx] : label_index) {
+      fmt::print("{:>{}}", label, cell_width);
+    }
+
+    fmt::print("{:>{}}\n", "Error", cell_width + 2);
+
+    int row_idx = 0;
+    for (const auto& [label, idx] : label_index) {
+      fmt::print("{:>4} ", label);
+      for (int col = 0; col < values.cols(); ++col) {
+        std::string cell  = std::to_string(values(idx, col));
+        const int pad_len = std::max(0, cell_width - static_cast<int>(cell.size()));
+        std::string padded(static_cast<size_t>(pad_len), ' ');
+        padded += cell;
+
+        if (col == idx) {
+          fmt::print("{}", pptree::success(pptree::emphasis(padded)));
+        } else {
+          fmt::print("{}", padded);
+        }
+      }
+
+      fmt::print("{:>{}}\n", fmt::format("{:.1f}%", ce[row_idx] * 100), cell_width + 2);
+      row_idx++;
+    }
   }
 }
