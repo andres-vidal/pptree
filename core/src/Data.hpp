@@ -62,8 +62,8 @@ namespace models::stats
         return y(idx1) < y(idx2);
       });
 
-    x = x(indices, Eigen::all).eval();
-    y = y(indices, Eigen::all).eval();
+    x = x(indices, Eigen::placeholders::all).eval();
+    y = y(indices, Eigen::placeholders::all).eval();
   }
 
   template<typename T, typename G>

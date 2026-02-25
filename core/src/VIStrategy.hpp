@@ -115,8 +115,8 @@ namespace models {
 
       BootstrapTreePtr<T, R> std_tree = tree.retrain(x, y, tree.iob_indices);
 
-      stats::Data<T> sampled_x       = std_tree->x(std_tree->iob_indices, Eigen::all);
-      stats::DataColumn<R> sampled_y = std_tree->y(std_tree->iob_indices, Eigen::all);
+      stats::Data<T> sampled_x       = std_tree->x(std_tree->iob_indices, Eigen::placeholders::all);
+      stats::DataColumn<R> sampled_y = std_tree->y(std_tree->iob_indices, Eigen::placeholders::all);
 
       NodeSummarizer<T, R> summarizer(
         *this,
@@ -246,8 +246,8 @@ namespace models {
       const NodeSummarizer<T, R> & root_summary) const override {
       std::vector<int> oob_indices_vec(tree.oob_indices.begin(), tree.oob_indices.end());
 
-      const stats::Data<T> oob_x       = tree.x(oob_indices_vec, Eigen::all);
-      const stats::DataColumn<R> oob_y = tree.y(oob_indices_vec, Eigen::all);
+      const stats::Data<T> oob_x       = tree.x(oob_indices_vec, Eigen::placeholders::all);
+      const stats::DataColumn<R> oob_y = tree.y(oob_indices_vec, Eigen::placeholders::all);
 
       const stats::DataColumn<R> oob_predictions = tree.predict(oob_x);
 

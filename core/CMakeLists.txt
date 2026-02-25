@@ -54,7 +54,7 @@ include(FetchContent)
 FetchContent_Declare(
   eigen
   GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  GIT_TAG 3.4.0
+  GIT_TAG 5.0.0
 )
 FetchContent_MakeAvailable(eigen)
 
@@ -163,9 +163,6 @@ if(NOT csv_POPULATED)
 endif()
 
 # Fetch getopt for command line parsing
-# getopt_port requires cmake_minimum_required < 3.5, which CMake 3.31+ rejects.
-# Setting CMAKE_POLICY_VERSION_MINIMUM allows it to configure anyway.
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 FetchContent_Declare(
   getopt
   GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
@@ -174,11 +171,9 @@ FetchContent_Declare(
 FetchContent_GetProperties(getopt)
 if(NOT getopt_POPULATED)
   FetchContent_Populate(getopt)
+  add_library(getopt_lib INTERFACE)
+  target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
 endif()
-unset(CMAKE_POLICY_VERSION_MINIMUM)
-
-add_library(getopt_lib INTERFACE)
-target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
 
 # Setup cli executable
 add_executable(pptree-cli src/CLI.cpp)

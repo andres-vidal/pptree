@@ -24,8 +24,8 @@ namespace models {
       const stats::Data<T> &      x,
       const stats::DataColumn<R> &y,
       const std::vector<int> &    iob_indices) {
-      stats::Data<T> sampled_x       = x(iob_indices, Eigen::all);
-      stats::DataColumn<R> sampled_y = y(iob_indices, Eigen::all);
+      stats::Data<T> sampled_x       = x(iob_indices, Eigen::placeholders::all);
+      stats::DataColumn<R> sampled_y = y(iob_indices, Eigen::placeholders::all);
 
       Tree<T, R> tree = Tree<T, R>::train(training_spec, sampled_x, sampled_y);
 
@@ -83,13 +83,13 @@ namespace models {
     double error_rate() const {
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
 
-      return error_rate(this->x(oob_indices_vec, Eigen::all), this->y(oob_indices_vec, Eigen::all));
+      return error_rate(this->x(oob_indices_vec, Eigen::placeholders::all), this->y(oob_indices_vec, Eigen::placeholders::all));
     }
 
     stats::ConfusionMatrix confusion_matrix() const {
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
 
-      return confusion_matrix(this->x(oob_indices_vec, Eigen::all), this->y(oob_indices_vec, Eigen::all));
+      return confusion_matrix(this->x(oob_indices_vec, Eigen::placeholders::all), this->y(oob_indices_vec, Eigen::placeholders::all));
     }
 
     math::DVector<T> variable_importance(const VIStrategy<T, R> &strategy) const {
