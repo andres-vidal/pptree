@@ -7,19 +7,15 @@
 using namespace models::stats;
 
 TEST(ConfusionMatrix, Identity) {
-  DataColumn<int> actual(3);
-  actual << 0, 1, 2;
-
-  DataColumn<int> expected(3);
-  expected << 0, 1, 2;
+  DataColumn<int> actual   = DATA(int, 3, 0, 1, 2);
+  DataColumn<int> expected = DATA(int, 3, 0, 1, 2);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Data<int> expected_result_values(3, 3);
-  expected_result_values <<
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1;
+  Data<int> expected_result_values = DATA(int, 3,
+      1, 0, 0,
+      0, 1, 0,
+      0, 0, 1);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
@@ -28,19 +24,15 @@ TEST(ConfusionMatrix, Identity) {
 }
 
 TEST(ConfusionMatrix, Diagonal) {
-  DataColumn<int> actual(6);
-  actual << 0, 1, 1, 2, 2, 2;
-
-  DataColumn<int> expected(6);
-  expected << 0, 1, 1, 2, 2, 2;
+  DataColumn<int> actual   = DATA(int, 6, 0, 1, 1, 2, 2, 2);
+  DataColumn<int> expected = DATA(int, 6, 0, 1, 1, 2, 2, 2);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Data<int> expected_result_values(3, 3);
-  expected_result_values <<
-    1, 0, 0,
-    0, 2, 0,
-    0, 0, 3;
+  Data<int> expected_result_values = DATA(int, 3,
+      1, 0, 0,
+      0, 2, 0,
+      0, 0, 3);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
@@ -51,19 +43,15 @@ TEST(ConfusionMatrix, Diagonal) {
 }
 
 TEST(ConfusionMatrix, InverseDiagonal) {
-  DataColumn<int> actual(3);
-  actual << 0, 1, 2;
-
-  DataColumn<int> expected(3);
-  expected << 2, 1, 0;
+  DataColumn<int> actual   = DATA(int, 3, 0, 1, 2);
+  DataColumn<int> expected = DATA(int, 3, 2, 1, 0);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Data<int> expected_result_values(3, 3);
-  expected_result_values <<
-    0, 0, 1,
-    0, 1, 0,
-    1, 0, 0;
+  Data<int> expected_result_values = DATA(int, 3,
+      0, 0, 1,
+      0, 1, 0,
+      1, 0, 0);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
@@ -74,19 +62,15 @@ TEST(ConfusionMatrix, InverseDiagonal) {
 }
 
 TEST(ConfusionMatrix, ZeroDiagonal) {
-  DataColumn<int> actual(3);
-  actual << 0, 1, 2;
-
-  DataColumn<int> expected(3);
-  expected << 1, 2, 0;
+  DataColumn<int> actual   = DATA(int, 3, 0, 1, 2);
+  DataColumn<int> expected = DATA(int, 3, 1, 2, 0);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Data<int> expected_result_values(3, 3);
-  expected_result_values <<
-    0, 0, 1,
-    1, 0, 0,
-    0, 1, 0;
+  Data<int> expected_result_values = DATA(int, 3,
+      0, 0, 1,
+      1, 0, 0,
+      0, 1, 0);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
@@ -97,19 +81,15 @@ TEST(ConfusionMatrix, ZeroDiagonal) {
 }
 
 TEST(ConfusionMatrix, Generic) {
-  DataColumn<int> actual(6);
-  actual << 0, 1, 1, 2, 2, 2;
-
-  DataColumn<int> expected(6);
-  expected << 0, 1, 1, 2, 2, 0;
+  DataColumn<int> actual   = DATA(int, 6, 0, 1, 1, 2, 2, 2);
+  DataColumn<int> expected = DATA(int, 6, 0, 1, 1, 2, 2, 0);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Data<int> expected_result_values(3, 3);
-  expected_result_values <<
-    1, 0, 1,
-    0, 2, 0,
-    0, 0, 2;
+  Data<int> expected_result_values = DATA(int, 3,
+      1, 0, 1,
+      0, 2, 0,
+      0, 0, 2);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
@@ -120,31 +100,22 @@ TEST(ConfusionMatrix, Generic) {
 }
 
 TEST(ConfusionMatrix, MorePredictionsThanObservations) {
-  DataColumn<int> predictions(3);
-  predictions << 0, 1, 2;
-
-  DataColumn<int> observations(2);
-  observations << 0, 1;
+  DataColumn<int> predictions  = DATA(int, 3, 0, 1, 2);
+  DataColumn<int> observations = DATA(int, 2, 0, 1);
 
   ASSERT_THROW(ConfusionMatrix(predictions, observations), std::invalid_argument);
 }
 
 TEST(ConfusionMatrix, MoreObservationsThanPredictions) {
-  DataColumn<int> predictions(2);
-  predictions << 0, 1;
-
-  DataColumn<int> observations(3);
-  observations << 0, 1, 2;
+  DataColumn<int> predictions  = DATA(int, 2, 0, 1);
+  DataColumn<int> observations = DATA(int, 3, 0, 1, 2);
 
   ASSERT_THROW(ConfusionMatrix(predictions, observations), std::invalid_argument);
 }
 
 TEST(ConfusionMatrix, ErrorMin) {
-  DataColumn<int> actual(3);
-  actual << 0, 1, 2;
-
-  DataColumn<int> predictions(3);
-  predictions << 0, 1, 2;
+  DataColumn<int> actual      = DATA(int, 3, 0, 1, 2);
+  DataColumn<int> predictions = DATA(int, 3, 0, 1, 2);
 
   float result = ConfusionMatrix(predictions, actual).error();
 
@@ -152,11 +123,8 @@ TEST(ConfusionMatrix, ErrorMin) {
 }
 
 TEST(ConfusionMatrix, ErrorMax) {
-  DataColumn<int> actual(3);
-  actual << 0, 1, 2;
-
-  DataColumn<int> predictions(3);
-  predictions << 2, 0, 1;
+  DataColumn<int> actual      = DATA(int, 3, 0, 1, 2);
+  DataColumn<int> predictions = DATA(int, 3, 2, 0, 1);
 
   float result = ConfusionMatrix(predictions, actual).error();
 
@@ -164,11 +132,8 @@ TEST(ConfusionMatrix, ErrorMax) {
 }
 
 TEST(ConfusionMatrix, ErrorGeneric) {
-  DataColumn<int> actual(6);
-  actual << 0, 1, 1, 2, 2, 2;
-
-  DataColumn<int> predictions(6);
-  predictions << 0, 1, 2, 0, 1, 2;
+  DataColumn<int> actual      = DATA(int, 6, 0, 1, 1, 2, 2, 2);
+  DataColumn<int> predictions = DATA(int, 6, 0, 1, 2, 0, 1, 2);
 
   float result = ConfusionMatrix(predictions, actual).error();
 
@@ -176,48 +141,36 @@ TEST(ConfusionMatrix, ErrorGeneric) {
 }
 
 TEST(ConfusionMatrix, ClassErrorsAllZero) {
-  DataColumn<int> actual(3);
-  actual << 0, 1, 2;
-
-  DataColumn<int> predictions(3);
-  predictions << 0, 1, 2;
+  DataColumn<int> actual      = DATA(int, 3, 0, 1, 2);
+  DataColumn<int> predictions = DATA(int, 3, 0, 1, 2);
 
   DataColumn<float> result = ConfusionMatrix(predictions, actual).class_errors();
 
-  DataColumn<float> expected_errors(3);
-  expected_errors << 0, 0, 0;
+  DataColumn<float> expected_errors = DATA(float, 3, 0, 0, 0);
 
   ASSERT_EQ(expected_errors.size(), result.size());
   ASSERT_EQ(expected_errors, result);
 }
 
 TEST(ConfusionMatrix, ClassErrorsAllOne) {
-  DataColumn<int> actual(6);
-  actual << 0, 1, 1, 2, 2, 2;
-
-  DataColumn<int> predictions(6);
-  predictions << 1, 2, 2, 1, 1, 1;
+  DataColumn<int> actual      = DATA(int, 6, 0, 1, 1, 2, 2, 2);
+  DataColumn<int> predictions = DATA(int, 6, 1, 2, 2, 1, 1, 1);
 
   DataColumn<float> result = ConfusionMatrix(predictions, actual).class_errors();
 
-  DataColumn<float> expected_errors(3);
-  expected_errors << 1, 1, 1;
+  DataColumn<float> expected_errors = DATA(float, 3, 1, 1, 1);
 
   ASSERT_EQ(expected_errors.size(), result.size());
   ASSERT_EQ(expected_errors, result);
 }
 
 TEST(ConfusionMatrix, ClassErrorsMixed) {
-  DataColumn<int> actual(6);
-  actual << 0, 1, 1, 2, 2, 2;
-
-  DataColumn<int> predictions(6);
-  predictions << 0, 1, 2, 0, 1, 2;
+  DataColumn<int> actual      = DATA(int, 6, 0, 1, 1, 2, 2, 2);
+  DataColumn<int> predictions = DATA(int, 6, 0, 1, 2, 0, 1, 2);
 
   DataColumn<float> result = ConfusionMatrix(predictions, actual).class_errors();
 
-  DataColumn<float> expected_errors(3);
-  expected_errors << 0, 0.5, 0.666667;
+  DataColumn<float> expected_errors = DATA(float, 3, 0, 0.5, 0.666667);
 
   ASSERT_EQ(expected_errors.size(), result.size());
   ASSERT_APPROX(expected_errors, result);

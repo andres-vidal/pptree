@@ -9,19 +9,18 @@ using namespace models::stats;
 TEST(Data, ShuffleColumnOfDataFirstColumn) {
   Random::seed(0);
 
-  Data<float> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
+  Data<float> data = DATA(float, 3,
+      1.0, 2.0, 6.0,
+      2.0, 3.0, 7.0,
+      3.0, 4.0, 8.0);
 
   Data<float> shuffled = shuffle_column(data, 0);
 
-  Data<float> expected(3, 3);
-  expected <<
-    2.0, 2.0, 6.0,
-    1.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
+  Data<float> expected = DATA(float, 3,
+      2.0, 2.0, 6.0,
+      1.0, 3.0, 7.0,
+      3.0, 4.0, 8.0);
+
   ASSERT_EQ(expected.size(), shuffled.size());
   ASSERT_EQ(expected.rows(), shuffled.rows());
   ASSERT_EQ(expected.cols(), shuffled.cols());
@@ -31,19 +30,17 @@ TEST(Data, ShuffleColumnOfDataFirstColumn) {
 TEST(Data, ShuffleColumnOfDataMiddleColumn) {
   Random::seed(0);
 
-  Data<float> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
+  Data<float> data = DATA(float, 3,
+      1.0, 2.0, 6.0,
+      2.0, 3.0, 7.0,
+      3.0, 4.0, 8.0);
 
   Data<float> shuffled = shuffle_column(data, 1);
 
-  Data<float> expected(3, 3);
-  expected <<
-    1.0, 3.0, 6.0,
-    2.0, 2.0, 7.0,
-    3.0, 4.0, 8.0;
+  Data<float> expected = DATA(float, 3,
+      1.0, 3.0, 6.0,
+      2.0, 2.0, 7.0,
+      3.0, 4.0, 8.0);
 
   ASSERT_EQ(expected.size(), shuffled.size());
   ASSERT_EQ(expected.rows(), shuffled.rows());
@@ -54,19 +51,17 @@ TEST(Data, ShuffleColumnOfDataMiddleColumn) {
 TEST(Data, ShuffleColumnOfDataLastColumn) {
   Random::seed(0);
 
-  Data<float> data(3, 3);
-  data <<
-    1.0, 2.0, 6.0,
-    2.0, 3.0, 7.0,
-    3.0, 4.0, 8.0;
+  Data<float> data = DATA(float, 3,
+      1.0, 2.0, 6.0,
+      2.0, 3.0, 7.0,
+      3.0, 4.0, 8.0);
 
   Data<float> shuffled = shuffle_column(data, 2);
 
-  Data<float> expected(3, 3);
-  expected <<
-    1.0, 2.0, 7.0,
-    2.0, 3.0, 6.0,
-    3.0, 4.0, 8.0;
+  Data<float> expected = DATA(float, 3,
+      1.0, 2.0, 7.0,
+      2.0, 3.0, 6.0,
+      3.0, 4.0, 8.0);
 
   ASSERT_EQ(expected.size(), shuffled.size());
   ASSERT_EQ(expected.rows(), shuffled.rows());
@@ -75,19 +70,17 @@ TEST(Data, ShuffleColumnOfDataLastColumn) {
 }
 
 TEST(Data, Standardize) {
-  Data<float> data(3, 3);
-  data <<
-    1.0, 3.0, 1.0,
-    2.0, 2.0, 3.0,
-    3.0, 1.0, 2.0;
+  Data<float> data = DATA(float, 3,
+      1.0, 3.0, 1.0,
+      2.0, 2.0, 3.0,
+      3.0, 1.0, 2.0);
 
   Data<float> standardized = standardize(data);
 
-  Data<float> expected(3, 3);
-  expected <<
-    -1.0, 1.0, -1.0,
-    0.0, 0.0,  1.0,
-    1.0, -1.0, 0.0;
+  Data<float> expected = DATA(float, 3,
+      -1.0, 1.0, -1.0,
+      0.0, 0.0,  1.0,
+      1.0, -1.0, 0.0);
 
   ASSERT_EQ(expected.size(), standardized.size());
   ASSERT_EQ(expected.rows(), standardized.rows());
@@ -96,57 +89,39 @@ TEST(Data, Standardize) {
 }
 
 TEST(Data, Sort) {
-  Data<float> x(3, 3);
-  x <<
-    1.0, 3.0, 1.0,
-    2.0, 2.0, 3.0,
-    3.0, 1.0, 2.0;
+  Data<float> x = DATA(float, 3,
+      1.0, 3.0, 1.0,
+      2.0, 2.0, 3.0,
+      3.0, 1.0, 2.0);
 
-  DataColumn<int> y(3);
-  y <<
-    1.0,
-    2.0,
-    1.0;
+  DataColumn<int> y = DATA(int, 3, 1, 2, 1);
 
   sort(x, y);
 
-  Data<float> expected_x(3, 3);
-  expected_x <<
-    1.0, 3.0, 1.0,
-    3.0, 1.0, 2.0,
-    2.0, 2.0, 3.0;
+  Data<float> expected_x = DATA(float, 3,
+      1.0, 3.0, 1.0,
+      3.0, 1.0, 2.0,
+      2.0, 2.0, 3.0);
 
-  DataColumn<int> expected_y(3);
-  expected_y <<
-    1.0,
-    1.0,
-    2.0;
+  DataColumn<int> expected_y = DATA(int, 3, 1, 1, 2);
 
-  ASSERT_EQ_MATRIX(expected_x, x);
-  ASSERT_EQ_MATRIX(expected_y, y);
+  ASSERT_EQ_DATA(expected_x, x);
+  ASSERT_EQ_DATA(expected_y, y);
 }
 
 
 TEST(Data, StratifiedPorportionalSampleNegativeSampleSize) {
   Random::seed(0);
 
-  Data<float> x(6, 3);
-  x <<
-    1.0, 2.0, 3.0,
-    4.0, 5.0, 6.0,
-    7.0, 8.0, 9.0,
-    3.0, 1.0, 2.0,
-    6.0, 4.0, 5.0,
-    9.0, 7.0, 8.0;
+  Data<float> x = DATA(float, 6,
+      1.0, 2.0, 3.0,
+      4.0, 5.0, 6.0,
+      7.0, 8.0, 9.0,
+      3.0, 1.0, 2.0,
+      6.0, 4.0, 5.0,
+      9.0, 7.0, 8.0);
 
-  DataColumn<int> y(6);
-  y <<
-    0,
-    0,
-    0,
-    1,
-    1,
-    1;
+  DataColumn<int> y = DATA(int, 6, 0, 0, 0, 1, 1, 1);
 
   const std::set<int> classes = { 0, 1 };
 
@@ -156,23 +131,15 @@ TEST(Data, StratifiedPorportionalSampleNegativeSampleSize) {
 TEST(Data, StratifiedPorportionalSampleZeroSampleSize) {
   Random::seed(0);
 
-  Data<float> x(6, 3);
-  x <<
-    1.0, 2.0, 3.0,
-    4.0, 5.0, 6.0,
-    7.0, 8.0, 9.0,
-    3.0, 1.0, 2.0,
-    6.0, 4.0, 5.0,
-    9.0, 7.0, 8.0;
+  Data<float> x = DATA(float, 6,
+      1.0, 2.0, 3.0,
+      4.0, 5.0, 6.0,
+      7.0, 8.0, 9.0,
+      3.0, 1.0, 2.0,
+      6.0, 4.0, 5.0,
+      9.0, 7.0, 8.0);
 
-  DataColumn<int> y(6);
-  y <<
-    0,
-    0,
-    0,
-    1,
-    1,
-    1;
+  DataColumn<int> y = DATA(int, 6, 0, 0, 0, 1, 1, 1);
 
   const std::set<int> classes = { 0, 1 };
 
@@ -182,23 +149,15 @@ TEST(Data, StratifiedPorportionalSampleZeroSampleSize) {
 TEST(Data, StratifiedPorportionalSampleSampleSizeLargerThanRows) {
   Random::seed(0);
 
-  Data<float> x(6, 3);
-  x <<
-    1.0, 2.0, 3.0,
-    4.0, 5.0, 6.0,
-    7.0, 8.0, 9.0,
-    3.0, 1.0, 2.0,
-    6.0, 4.0, 5.0,
-    9.0, 7.0, 8.0;
+  Data<float> x = DATA(float, 6,
+      1.0, 2.0, 3.0,
+      4.0, 5.0, 6.0,
+      7.0, 8.0, 9.0,
+      3.0, 1.0, 2.0,
+      6.0, 4.0, 5.0,
+      9.0, 7.0, 8.0);
 
-  DataColumn<int> y(6);
-  y <<
-    0,
-    0,
-    0,
-    1,
-    1,
-    1;
+  DataColumn<int> y = DATA(int, 6, 0, 0, 0, 1, 1, 1);
 
   const std::set<int> classes = { 0, 1 };
 
@@ -208,23 +167,15 @@ TEST(Data, StratifiedPorportionalSampleSampleSizeLargerThanRows) {
 TEST(Data, StratifiedPorportionalSampleAssertCorrectSize) {
   Random::seed(0);
 
-  Data<float> x(6, 3);
-  x <<
-    1.0, 2.0, 3.0,
-    4.0, 5.0, 6.0,
-    7.0, 8.0, 9.0,
-    3.0, 1.0, 2.0,
-    6.0, 4.0, 5.0,
-    9.0, 7.0, 8.0;
+  Data<float> x = DATA(float, 6,
+      1.0, 2.0, 3.0,
+      4.0, 5.0, 6.0,
+      7.0, 8.0, 9.0,
+      3.0, 1.0, 2.0,
+      6.0, 4.0, 5.0,
+      9.0, 7.0, 8.0);
 
-  DataColumn<int> y(6);
-  y <<
-    0,
-    0,
-    0,
-    1,
-    1,
-    1;
+  DataColumn<int> y = DATA(int, 6, 0, 0, 0, 1, 1, 1);
 
   const std::set<int> classes = { 0, 1 };
 
@@ -236,23 +187,15 @@ TEST(Data, StratifiedPorportionalSampleAssertCorrectSize) {
 TEST(Data, StratifiedPorportionalSampleAssertCorrectSizePerStrata) {
   Random::seed(0);
 
-  Data<float> x(6, 3);
-  x <<
-    1.0, 2.0, 3.0,
-    4.0, 5.0, 6.0,
-    7.0, 8.0, 9.0,
-    3.0, 1.0, 2.0,
-    6.0, 4.0, 5.0,
-    9.0, 7.0, 8.0;
+  Data<float> x = DATA(float, 6,
+      1.0, 2.0, 3.0,
+      4.0, 5.0, 6.0,
+      7.0, 8.0, 9.0,
+      3.0, 1.0, 2.0,
+      6.0, 4.0, 5.0,
+      9.0, 7.0, 8.0);
 
-  DataColumn<int> y(6);
-  y <<
-    0,
-    0,
-    0,
-    1,
-    1,
-    1;
+  DataColumn<int> y = DATA(int, 6, 0, 0, 0, 1, 1, 1);
 
   const std::set<int> classes = { 0, 1 };
 
@@ -273,30 +216,18 @@ TEST(Data, StratifiedPorportionalSampleAssertCorrectSizePerStrata) {
 TEST(Data, StratifiedPorportionalSampleThreeGroupsEqualSize) {
   Random::seed(0);
 
-  Data<float> x(9, 3);
+  Data<float> x = DATA(float, 9,
+      1.0, 1.0, 1.0,
+      2.0, 2.0, 2.0,
+      3.0, 3.0, 3.0,
+      4.0, 4.0, 4.0,
+      5.0, 5.0, 5.0,
+      6.0, 6.0, 6.0,
+      7.0, 7.0, 7.0,
+      8.0, 8.0, 8.0,
+      9.0, 9.0, 9.0);
 
-  x <<
-    1.0, 1.0, 1.0,
-    2.0, 2.0, 2.0,
-    3.0, 3.0, 3.0,
-    4.0, 4.0, 4.0,
-    5.0, 5.0, 5.0,
-    6.0, 6.0, 6.0,
-    7.0, 7.0, 7.0,
-    8.0, 8.0, 8.0,
-    9.0, 9.0, 9.0;
-
-  DataColumn<int> y(9);
-  y <<
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2;
+  DataColumn<int> y = DATA(int, 9, 0, 0, 0, 1, 1, 1, 2, 2, 2);
 
   const std::set<int> classes = { 0, 1, 2 };
 
@@ -319,30 +250,18 @@ TEST(Data, StratifiedPorportionalSampleThreeGroupsEqualSize) {
 TEST(Data, StratifiedPorportionalSampleTwoGroupsDifferentSizeEvenSampleSize) {
   Random::seed(0);
 
-  Data<float> x(9, 3);
+  Data<float> x = DATA(float, 9,
+      1.0, 1.0, 1.0,
+      2.0, 2.0, 2.0,
+      3.0, 3.0, 3.0,
+      4.0, 4.0, 4.0,
+      5.0, 5.0, 5.0,
+      6.0, 6.0, 6.0,
+      7.0, 7.0, 7.0,
+      8.0, 8.0, 8.0,
+      9.0, 9.0, 9.0);
 
-  x <<
-    1.0, 1.0, 1.0,
-    2.0, 2.0, 2.0,
-    3.0, 3.0, 3.0,
-    4.0, 4.0, 4.0,
-    5.0, 5.0, 5.0,
-    6.0, 6.0, 6.0,
-    7.0, 7.0, 7.0,
-    8.0, 8.0, 8.0,
-    9.0, 9.0, 9.0;
-
-  DataColumn<int> y(9);
-  y <<
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1;
+  DataColumn<int> y = DATA(int, 9, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   const std::set<int> classes = { 0, 1 };
 
@@ -364,30 +283,18 @@ TEST(Data, StratifiedPorportionalSampleTwoGroupsDifferentSizeEvenSampleSize) {
 TEST(Data, StratifiedPorportionalSampleTwoGroupsDifferentSizeOddSampleSize) {
   Random::seed(0);
 
-  Data<float> x(9, 3);
+  Data<float> x = DATA(float, 9,
+      1.0, 1.0, 1.0,
+      2.0, 2.0, 2.0,
+      3.0, 3.0, 3.0,
+      4.0, 4.0, 4.0,
+      5.0, 5.0, 5.0,
+      6.0, 6.0, 6.0,
+      7.0, 7.0, 7.0,
+      8.0, 8.0, 8.0,
+      9.0, 9.0, 9.0);
 
-  x <<
-    1.0, 1.0, 1.0,
-    2.0, 2.0, 2.0,
-    3.0, 3.0, 3.0,
-    4.0, 4.0, 4.0,
-    5.0, 5.0, 5.0,
-    6.0, 6.0, 6.0,
-    7.0, 7.0, 7.0,
-    8.0, 8.0, 8.0,
-    9.0, 9.0, 9.0;
-
-  DataColumn<int> y(9);
-  y <<
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1;
+  DataColumn<int> y = DATA(int, 9, 0, 0, 1, 1, 1, 1, 1, 1, 1);
 
   const std::set<int> classes = { 0, 1 };
 
@@ -409,30 +316,18 @@ TEST(Data, StratifiedPorportionalSampleTwoGroupsDifferentSizeOddSampleSize) {
 TEST(Data, StratifiedPorportionalSampleAtLeastOneObservationPerGroup) {
   Random::seed(0);
 
-  Data<float> x(9, 3);
+  Data<float> x = DATA(float, 9,
+      1.0, 1.0, 1.0,
+      2.0, 2.0, 2.0,
+      3.0, 3.0, 3.0,
+      4.0, 4.0, 4.0,
+      5.0, 5.0, 5.0,
+      6.0, 6.0, 6.0,
+      7.0, 7.0, 7.0,
+      8.0, 8.0, 8.0,
+      9.0, 9.0, 9.0);
 
-  x <<
-    1.0, 1.0, 1.0,
-    2.0, 2.0, 2.0,
-    3.0, 3.0, 3.0,
-    4.0, 4.0, 4.0,
-    5.0, 5.0, 5.0,
-    6.0, 6.0, 6.0,
-    7.0, 7.0, 7.0,
-    8.0, 8.0, 8.0,
-    9.0, 9.0, 9.0;
-
-  DataColumn<int> y(9);
-  y <<
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2;
+  DataColumn<int> y = DATA(int, 9, 0, 0, 0, 1, 1, 1, 1, 1, 2);
 
   const std::set<int> classes = { 0, 1, 2 };
 
