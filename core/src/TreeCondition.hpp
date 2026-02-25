@@ -115,4 +115,19 @@ namespace models {
   std::ostream& operator<<(std::ostream & ostream, const TreeCondition<T, R>& condition) {
     return ostream << condition.to_json().dump(2, ' ', false);
   }
+
+  template<typename T, typename R>
+  TreeNodePtr<T, R> node_from_json(const json& j) {
+    if (j.contains("value")) {
+      return TreeResponse<T, R>::make(j["value"].get<R>());
+    }
+
+    auto proj_vec              = j["projector"].get<std::vector<T> >();
+    pp::Projector<T> projector = Eigen::Map<pp::Projector<T> >(proj_vec.data(), proj_vec.size());
+    T threshold                = j["threshold"].get<T>();
+    auto lower                 = node_from_json<T, R>(j["lower"]);
+    auto upper                 = node_from_json<T, R>(j["upper"]);
+
+    return TreeCondition<T, R>::make(projector, threshold, std::move(lower), std::move(upper));
+  }
 }

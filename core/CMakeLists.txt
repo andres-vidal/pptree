@@ -27,6 +27,8 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_link_options(-fsanitize=address,undefined)
   endif()
 
+  add_link_options(--coverage)
+
   if(WIN32)
     add_compile_options(-Wa,-mbig-obj)
   endif()
@@ -36,6 +38,10 @@ if(CMAKE_BUILD_TYPE MATCHES Release)
   add_compile_options(-O3)
   add_compile_definitions(NDEBUG)
   add_compile_definitions(EIGEN_NO_DEBUG)
+endif()
+
+if(WIN32)
+  add_link_options(-static)
 endif()
 
 # Add search hints
@@ -97,24 +103,24 @@ foreach(file ${ALL_CPP_FILES})
 endforeach()
 
 # Add library with all non-test files
-add_library(pptree ${NON_TEST_CPP_FILES})
+add_library(pptree-core ${NON_TEST_CPP_FILES})
 
-target_include_directories(pptree
+target_include_directories(pptree-core
   PUBLIC include
   PUBLIC src)
 
-target_link_libraries(pptree
+target_link_libraries(pptree-core
   Eigen3::Eigen
   nlohmann_json::nlohmann_json
   pcg_lib)
 
 if(OpenMP_FOUND)
-  target_link_libraries(pptree OpenMP::OpenMP_CXX)
+  target_link_libraries(pptree-core OpenMP::OpenMP_CXX)
 endif()
 
 if(Jemalloc_FOUND)
   message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")
-  target_link_libraries(pptree PkgConfig::Jemalloc)
+  target_link_libraries(pptree-core PkgConfig::Jemalloc)
 else()
   message(WARNING "Jemalloc not found. Program could be unstable on high multi-threaded operations.")
 endif()
@@ -147,15 +153,25 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   target_link_libraries(pptree-test
     pptree_singlethreaded
     gtest_main
-    gtest)
+    gtest
+    CLI11::CLI11
+    csv)
 
   target_include_directories(pptree-test
     PUBLIC src
+    PUBLIC include
     PUBLIC ${gtest_SOURCE_DIR}/include
-    PUBLIC ${gtest_SOURCE_DIR})
+    PUBLIC ${gtest_SOURCE_DIR}
+    PUBLIC ${csv_SOURCE_DIR}/include)
+
+  target_compile_definitions(pptree-test PRIVATE
+    PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
+    PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data")
+
+  add_dependencies(pptree-test pptree)
 
   include(GoogleTest)
-  gtest_discover_tests(pptree-test)
+  gtest_discover_tests(pptree-test DISCOVERY_MODE PRE_TEST)
 endif()
 
 
@@ -169,25 +185,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(csv)
 
-# Fetch getopt for command line parsing
-# getopt_port requires cmake_minimum_required < 3.5, which CMake 3.31+ rejects.
-# Setting CMAKE_POLICY_VERSION_MINIMUM allows it to configure anyway.
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+# CLI11 for command line parsing
 FetchContent_Declare(
-  getopt
-  GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
-  GIT_TAG master
+  cli11
+  GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
+  GIT_TAG v2.6.1
 )
-FetchContent_GetProperties(getopt)
-if(NOT getopt_POPULATED)
-  FetchContent_Populate(getopt)
-endif()
-unset(CMAKE_POLICY_VERSION_MINIMUM)
-
-add_library(getopt_lib INTERFACE)
-target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
+FetchContent_MakeAvailable(cli11)
 
 # Setup cli executable
-add_executable(pptree-cli src/CLI.cpp)
-target_include_directories(pptree-cli PRIVATE ${csv_SOURCE_DIR}/include)
-target_link_libraries(pptree-cli pptree csv getopt_lib)
+add_executable(pptree src/CLI.cpp)
+target_include_directories(pptree PRIVATE ${csv_SOURCE_DIR}/include)
+target_link_libraries(pptree pptree-core csv CLI11::CLI11)

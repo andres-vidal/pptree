@@ -8,6 +8,8 @@
 #include <numeric>
 #include <cmath>
 
+#include <nlohmann/json.hpp>
+
 #include "Data.hpp"
 namespace pptree {
   DataPacket<float, int> read_csv(const std::string& filename) {
@@ -75,6 +77,8 @@ namespace pptree {
     const CLIOptions&    params,
     const Data<float  >& tr_x,
     const Data<float  >& te_x) {
+    if (params.quiet) return;
+
     if (params.trees > 0) {
       std::cout << "Training random forest with " << params.trees << " trees" << std::endl;
       std::cout << "Using " << params.n_vars << " variables per split (" << (params.p_vars * 100) << "% of features)" << std::endl;
@@ -118,6 +122,18 @@ namespace pptree {
     double std_te_error() const {
       return sd(te_error);
     }
+
+    nlohmann::json to_json() const {
+      return nlohmann::json{
+        { "runs",             tr_times.size() },
+        { "mean_time_ms",     mean_time() },
+        { "std_time_ms",      std_time() },
+        { "mean_train_error", mean_tr_error() },
+        { "std_train_error",  std_tr_error() },
+        { "mean_test_error",  mean_te_error() },
+        { "std_test_error",   std_te_error() }
+      };
+    }
   };
 
   void announce_results(const ModelStats& stats) {
@@ -125,5 +141,9 @@ namespace pptree {
               << "Training Time: " << stats.mean_time() << "ms ± " << stats.std_time() << "ms" << std::endl
               << "Train Error:   " << (stats.mean_tr_error() * 100) << "% ± " << (stats.std_tr_error() * 100) << "%" << std::endl
               << "Test Error:    " << (stats.mean_te_error() * 100) << "% ± " << (stats.std_te_error() * 100) << "%" << std::endl;
+  }
+
+  void announce_results_json(const ModelStats& stats) {
+    std::cout << stats.to_json().dump(2) << std::endl;
   }
 }

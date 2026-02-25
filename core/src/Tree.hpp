@@ -74,6 +74,10 @@ namespace models {
         { "root", root->to_json() }
       };
     }
+
+    static Tree<T, R> from_json(const json& j) {
+      return Tree<T, R>(node_from_json<T, R>(j["root"]));
+    }
   };
 
   template<typename T, typename R>
