@@ -33,7 +33,7 @@ namespace models::dr::strategy {
 
       stats::DataColumn<T> full_vector = stats::DataColumn<T>::Zero(original_size);
 
-      for (int i = 0; i < selected_cols.size(); ++i) {
+      for (size_t i = 0; i < selected_cols.size(); ++i) {
         full_vector(selected_cols[i]) = reduced_vector(i);
       }
 

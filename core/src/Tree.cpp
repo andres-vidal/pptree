@@ -36,7 +36,7 @@ namespace models {
     T edge_gap   = -1;
     R edge_group = -1;
 
-    for (int i = 0; i < means.size() - 1; i++) {
+    for (size_t i = 0; i + 1 < means.size(); i++) {
       T gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);
       LOG_INFO << "Gap between " << std::get<0>(means[i]) << " and " << std::get<0>(means[i + 1]) << ": " << gap << std::endl;
 

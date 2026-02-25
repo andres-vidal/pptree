@@ -86,7 +86,7 @@ namespace models::pp::strategy {
             stats::DataColumn<T> vector1 = eigen_vec.col(idx1);
             stats::DataColumn<T> vector2 = eigen_vec.col(idx2);
 
-            for (int i = 0; i < vector1.size(); ++i) {
+            for (Eigen::Index i = 0; i < vector1.size(); ++i) {
               if (!math::is_module_approx(vector1[i], vector2[i]) ) {
                 return vector1[i] < vector2[i];
               }

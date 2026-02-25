@@ -42,6 +42,8 @@ namespace models::stats
 
   template <typename T>
   Data<T> standardize(const Data<T> &data) {
+    invariant(data.rows() >= 2, "standardize requires at least 2 rows");
+
     Data<T> centered = data.rowwise() - data.colwise().mean();
     DataColumn<T> sd = (centered.array().square().colwise().sum() / (data.rows() - 1)).sqrt();
 
