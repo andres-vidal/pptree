@@ -163,12 +163,16 @@ if(NOT csv_POPULATED)
 endif()
 
 # Fetch getopt for command line parsing
+# getopt_port requires cmake_minimum_required < 3.5, which CMake 3.31+ rejects.
+# Setting CMAKE_POLICY_VERSION_MINIMUM allows it to configure anyway.
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 FetchContent_Declare(
   getopt
   GIT_REPOSITORY https://github.com/kimgr/getopt_port.git
   GIT_TAG master
 )
 FetchContent_MakeAvailable(getopt)
+unset(CMAKE_POLICY_VERSION_MINIMUM)
 
 add_library(getopt_lib INTERFACE)
 target_include_directories(getopt_lib INTERFACE ${getopt_SOURCE_DIR})
