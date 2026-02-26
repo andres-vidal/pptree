@@ -144,7 +144,7 @@ namespace models::stats {
           }
         }
 
-        return x(indices, Eigen::all);
+        return x(indices, Eigen::placeholders::all);
       }
 
       template<typename T>
@@ -157,7 +157,7 @@ namespace models::stats {
           }
         }
 
-        return x(indices, Eigen::all);
+        return x(indices, Eigen::placeholders::all);
       }
 
       template<typename T>

@@ -86,7 +86,7 @@ TEST(BootstrapTree, ErrorRateGroupSpecMin) {
     y,
     sample_indices);
 
-  Data<float> test_x = x(sample_indices, Eigen::all);
+  Data<float> test_x = x(sample_indices, Eigen::placeholders::all);
 
   float result = tree->error_rate(test_x, tree->predict(test_x));
 
@@ -172,7 +172,7 @@ TEST(BootstrapTree, ErrorRateGroupSpecMax) {
   std::vector<int> test_indices(20);
   std::iota(test_indices.begin(), test_indices.end(), 0);;
 
-  Data<float> test_x = x(sample_indices, Eigen::all);
+  Data<float> test_x = x(sample_indices, Eigen::placeholders::all);
 
   float result = tree->error_rate(test_x, actual_y);
 
@@ -255,7 +255,7 @@ TEST(BootstrapTree, ErrorRateGroupSpecGeneric) {
 
   DataColumn<int> actual_y = DataColumn<int>::Zero(20);
 
-  Data<float> test_x = x(sample_indices, Eigen::all);
+  Data<float> test_x = x(sample_indices, Eigen::placeholders::all);
 
   float result = tree->error_rate(test_x, actual_y);
 
@@ -415,7 +415,7 @@ TEST(BootstrapTree, ConfusionMatrixGroupSpecDiagonal) {
     y,
     sample_indices);
 
-  Data<float> test_x = x(sample_indices, Eigen::all);
+  Data<float> test_x = x(sample_indices, Eigen::placeholders::all);
 
   ConfusionMatrix result = tree->confusion_matrix(test_x, tree->predict(test_x));
 
@@ -505,7 +505,7 @@ TEST(BootstrapTree, ConfusionMatrixGroupSpecZeroDiagonal) {
     y,
     sample_indices);
 
-  Data<float> test_x = x(sample_indices, Eigen::all);
+  Data<float> test_x = x(sample_indices, Eigen::placeholders::all);
 
   DataColumn<int> actual_y = DATA(int, 20,
       1,

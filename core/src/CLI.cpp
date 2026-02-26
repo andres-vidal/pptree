@@ -212,8 +212,8 @@ int main(int argc, char *argv[]) {
   Random::seed(params.seed);
   auto data_split = split(full_data, params.train_ratio);
 
-  Data<float> tr_x     = full_data.x(data_split.tr, Eigen::all);
-  Data<float> te_x     = full_data.x(data_split.te, Eigen::all);
+  Data<float> tr_x     = full_data.x(data_split.tr, Eigen::placeholders::all);
+  Data<float> te_x     = full_data.x(data_split.te, Eigen::placeholders::all);
   DataColumn<int> tr_y = full_data.y(data_split.tr);
   DataColumn<int> te_y = full_data.y(data_split.te);
 

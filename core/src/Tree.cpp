@@ -85,7 +85,7 @@ namespace models {
 
     const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
 
-    auto reduced_x = x(Eigen::all, dr.selected_cols);
+    auto reduced_x = x(Eigen::placeholders::all, dr.selected_cols);
 
     Projector<T> projector = dr.expand(pp_strategy(reduced_x, data_spec));
 
@@ -147,7 +147,7 @@ namespace models {
 
     LOG_INFO << "Redefining a " << data_spec.groups.size() << " group problem as binary:" << std::endl;
 
-    Data<T> reduced_x = x(Eigen::all, dr.selected_cols);
+    Data<T> reduced_x = x(Eigen::placeholders::all, dr.selected_cols);
 
     Projector<T> projector = dr.expand(pp_strategy(reduced_x, data_spec));
 

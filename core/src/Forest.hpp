@@ -123,7 +123,7 @@ namespace models {
       std::set<int> oob_indices = get_oob_indices();
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
-      stats::DataColumn<R> oob_y           = y(oob_indices_vec, Eigen::all);
+      stats::DataColumn<R> oob_y           = y(oob_indices_vec, Eigen::placeholders::all);
       return stats::error_rate(oob_predictions, oob_y);
     }
 
@@ -135,7 +135,7 @@ namespace models {
       std::set<int> oob_indices = get_oob_indices();
       std::vector<int> oob_indices_vec(oob_indices.begin(), oob_indices.end());
       stats::DataColumn<R> oob_predictions = oob_predict(oob_indices);
-      stats::DataColumn<R> oob_y           = y(oob_indices_vec, Eigen::all);
+      stats::DataColumn<R> oob_y           = y(oob_indices_vec, Eigen::placeholders::all);
       return stats::ConfusionMatrix(oob_predictions, oob_y);
     }
 
