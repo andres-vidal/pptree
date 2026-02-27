@@ -9,7 +9,9 @@
 #include <algorithm>
 #include <numeric>
 #include <string>
+#include <Eigen/Dense>
 
+#include "Types.hpp"
 #include "DataPacket.hpp"
 #include "Normal.hpp"
 
@@ -29,14 +31,14 @@ struct SimulationParams {
   float sd              = 10.0f;
 };
 
-inline DataPacket<float, int> simulate(
+inline DataPacket simulate(
   const int               n,
   const int               p,
   const int               G,
   stats::RNG&             rng,
   const SimulationParams& params = SimulationParams{}) {
-  Data<float> x(n, p);
-  DataColumn<int> y(n);
+  FeatureMatrix x(n, p);
+  ResponseVector y(n);
 
   for (int i = 0; i < n; ++i) {
     float group_mean = params.mean + (i % G) * params.mean_separation;
@@ -52,7 +54,7 @@ inline DataPacket<float, int> simulate(
 
   models::stats::sort(x, y);
 
-  return DataPacket<float, int>(x, y);
+  return DataPacket(x, y);
 }
 
 struct Split {
@@ -60,11 +62,11 @@ struct Split {
   std::vector<int> te;
 };
 
-inline Split split(const DataPacket<float, int>& data, float train_ratio, stats::RNG& rng) {
+inline Split split(const DataPacket& data, float train_ratio, stats::RNG& rng) {
   const int n          = data.x.rows();
   const int train_size = static_cast<int>(n * train_ratio);
 
-  GroupSpec<int> spec(data.y);
+  GroupPartition spec(data.y);
 
   std::vector<int> train_indices;
   std::vector<int> test_indices;
@@ -105,19 +107,19 @@ void display_progress(int current, int total, int bar_width = 50) {
   }
 }
 
-DataPacket<float, int> read_data(const CLIOptions& params, stats::RNG& rng) {
+DataPacket read_data(const CLIOptions& params, stats::RNG& rng) {
   if (!params.data_path.empty()) {
     try {
-      const DataPacket<float, int> data = read_csv(params.data_path);
+      const DataPacket data = read_csv(params.data_path);
 
-      Data<float> x     = data.x;
-      DataColumn<int> y = data.y;
+      FeatureMatrix x  = data.x;
+      ResponseVector y = data.y;
 
-      if (!GroupSpec<int>::is_contiguous(y)) {
+      if (!GroupPartition::is_contiguous(y)) {
         models::stats::sort(x, y);
       }
 
-      return DataPacket<float, int>(x, y);
+      return DataPacket(x, y);
     } catch (const std::runtime_error& e) {
       std::cerr << "Error reading CSV file: " << e.what() << std::endl;
       std::cerr << "Please ensure the file exists and is properly formatted" << std::endl;
@@ -143,18 +145,18 @@ DataPacket<float, int> read_data(const CLIOptions& params, stats::RNG& rng) {
 
 template<typename Model>
 ModelStats evaluate_model(
-  const TrainingSpec<float, int>& spec,
-  Data<float>&                    tr_x,
-  Data<float>&                    te_x,
-  DataColumn<int>&                tr_y,
-  DataColumn<int>&                te_y,
-  const CLIOptions&               params,
-  stats::RNG&                     rng) {
+  const TrainingSpec& spec,
+  FeatureMatrix&      tr_x,
+  FeatureMatrix&      te_x,
+  ResponseVector&     tr_y,
+  ResponseVector&     te_y,
+  const CLIOptions&   params,
+  stats::RNG&         rng) {
   ModelStats stats;
 
-  stats.tr_times = DataColumn<double>(params.n_runs);
-  stats.tr_error = DataColumn<double>(params.n_runs);
-  stats.te_error = DataColumn<double>(params.n_runs);
+  stats.tr_times = Vector<float>(params.n_runs);
+  stats.tr_error = Vector<float>(params.n_runs);
+  stats.te_error = Vector<float>(params.n_runs);
 
   std::cout << "Running " << params.n_runs << " iterations:" << std::endl;
 
@@ -164,10 +166,10 @@ ModelStats evaluate_model(
     const auto start = std::chrono::high_resolution_clock::now();
 
     const Model model = [&]() {
-        if constexpr (std::is_same_v<Model, Forest<float, int> >) {
-          return Forest<float, int>::train(spec, tr_x, tr_y, params.trees, params.seed + i, params.threads);
+        if constexpr (std::is_same_v<Model, Forest>) {
+          return Forest::train(spec, tr_x, tr_y, params.trees, params.seed + i, params.threads);
         } else {
-          return Tree<float, int>::train(spec, tr_x, tr_y, rng);
+          return Tree::train(spec, tr_x, tr_y, rng);
         }
       }();
 
@@ -204,10 +206,10 @@ int main(int argc, char *argv[]) {
 
   auto data_split = split(full_data, params.train_ratio, rng);
 
-  Data<float> tr_x     = full_data.x(data_split.tr, Eigen::all);
-  Data<float> te_x     = full_data.x(data_split.te, Eigen::all);
-  DataColumn<int> tr_y = full_data.y(data_split.tr);
-  DataColumn<int> te_y = full_data.y(data_split.te);
+  FeatureMatrix tr_x  = full_data.x(data_split.tr, Eigen::all);
+  FeatureMatrix te_x  = full_data.x(data_split.te, Eigen::all);
+  ResponseVector tr_y = full_data.y(data_split.tr);
+  ResponseVector te_y = full_data.y(data_split.te);
 
   std::cout << std::endl;
 
@@ -217,11 +219,11 @@ int main(int argc, char *argv[]) {
   ModelStats stats;
 
   if (params.trees > 0) {
-    auto spec = TrainingSpecUGLDA<float, int>(params.n_vars, params.lambda);
-    stats = evaluate_model<Forest<float, int> >(spec, tr_x, te_x, tr_y, te_y, params, rng);
+    auto spec = TrainingSpecUGLDA(params.n_vars, params.lambda);
+    stats = evaluate_model<Forest>(spec, tr_x, te_x, tr_y, te_y, params, rng);
   } else {
-    auto spec = TrainingSpecGLDA<float, int>(params.lambda);
-    stats = evaluate_model<Tree<float, int> >(spec, tr_x, te_x, tr_y, te_y, params, rng);
+    auto spec = TrainingSpecGLDA(params.lambda);
+    stats = evaluate_model<Tree>(spec, tr_x, te_x, tr_y, te_y, params, rng);
   }
 
   announce_results(stats);

@@ -6,6 +6,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(PPTREE_DOUBLE_PRECISION "Use double precision for feature data" OFF)
+if(PPTREE_DOUBLE_PRECISION)
+  add_compile_definitions(PPTREE_DOUBLE_PRECISION)
+endif()
+
 add_compile_definitions(EIGEN_DONT_PARALLELIZE)
 add_compile_definitions(EIGEN_NO_AUTOMATIC_RESIZING)
 
@@ -123,7 +128,7 @@ if(Jemalloc_FOUND)
   message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")
   target_link_libraries(pptree PkgConfig::Jemalloc)
 else()
-  message(WARNING "Jemalloc not found. Program could be unstable on high multi-threaded operations.")
+  message(WARNING "Jemalloc not found. Program could be unstable on highly multi-threaded operations.")
 endif()
 
 # Test runner
@@ -132,19 +137,12 @@ enable_testing()
 # Collect all .test.cpp
 file(GLOB_RECURSE TEST_SOURCES ./**/*.test.cpp)
 
-if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
-  add_library(pptree_singlethreaded ${NON_TEST_CPP_FILES})
-
-  target_link_libraries(pptree_singlethreaded
-    Eigen3::Eigen
-    nlohmann_json::nlohmann_json
-    pcg_lib)
-
+if(TEST_SOURCES)
   # Google Test
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG release-1.12.1
+    GIT_TAG v1.17.0
   )
   FetchContent_MakeAvailable(googletest)
 
@@ -152,7 +150,7 @@ if(TEST_SOURCES AND NOT PPTREE_SKIP_TESTS)
   add_executable(pptree-test ${TEST_SOURCES})
 
   target_link_libraries(pptree-test
-    pptree_singlethreaded
+    pptree
     gtest_main
     gtest)
 
@@ -171,7 +169,7 @@ FetchContent_Declare(
   csv
   GIT_REPOSITORY https://github.com/vincentlaucsb/csv-parser.git
   GIT_SHALLOW TRUE
-  GIT_TAG 2.2.1
+  GIT_TAG 2.5.1
 )
 
 FetchContent_MakeAvailable(csv)

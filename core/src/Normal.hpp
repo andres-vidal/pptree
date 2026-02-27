@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Random.hpp"
+#include "Stats.hpp"
 #include "Uniform.hpp"
 
 #include <optional>

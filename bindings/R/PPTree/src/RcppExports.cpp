@@ -13,26 +13,26 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // pptree_train_glda
-Tree<float, int> pptree_train_glda(Data<float> x, DataColumn<int> y, const float lambda);
+Tree pptree_train_glda(FeatureMatrix x, ResponseVector y, const float lambda);
 RcppExport SEXP _PPTree_pptree_train_glda(SEXP xSEXP, SEXP ySEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Data<float> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< DataColumn<int> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(pptree_train_glda(x, y, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
 // pptree_train_forest_glda
-Forest<float, int> pptree_train_forest_glda(Data<float> x, DataColumn<int> y, const int size, const int n_vars, const float lambda, SEXP n_threads);
+Forest pptree_train_forest_glda(FeatureMatrix x, ResponseVector y, const int size, const int n_vars, const float lambda, SEXP n_threads);
 RcppExport SEXP _PPTree_pptree_train_forest_glda(SEXP xSEXP, SEXP ySEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP n_threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Data<float> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< DataColumn<int> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< const int >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< const int >::type n_vars(n_varsSEXP);
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
@@ -42,25 +42,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // pptree_predict
-DataColumn<int> pptree_predict(const Tree<float, int>& tree, const Data<float>& data);
+ResponseVector pptree_predict(const Tree& tree, const FeatureMatrix& data);
 RcppExport SEXP _PPTree_pptree_predict(SEXP treeSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree<float, int>& >::type tree(treeSEXP);
-    Rcpp::traits::input_parameter< const Data<float>& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(pptree_predict(tree, data));
     return rcpp_result_gen;
 END_RCPP
 }
 // pptree_predict_forest
-DataColumn<int> pptree_predict_forest(const Forest<float, int>& forest, const Data<float>& data);
+ResponseVector pptree_predict_forest(const Forest& forest, const FeatureMatrix& data);
 RcppExport SEXP _PPTree_pptree_predict_forest(SEXP forestSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest<float, int>& >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< const Data<float>& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(pptree_predict_forest(forest, data));
     return rcpp_result_gen;
 END_RCPP

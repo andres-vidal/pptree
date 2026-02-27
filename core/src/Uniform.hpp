@@ -1,7 +1,7 @@
 #pragma once
 
 #include <random>
-#include "Random.hpp"
+#include "Stats.hpp"
 
 #include "Invariant.hpp"
 

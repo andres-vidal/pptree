@@ -4,27 +4,30 @@
 #include "Logger.hpp"
 #include "Invariant.hpp"
 #include "Map.hpp"
+#include "TrainingSpecGLDA.hpp"
 
 #include <stack>
+#include <ostream>
+#include <Eigen/Dense>
 
 using namespace models::pp;
 using namespace models::pp::strategy;
 using namespace models::dr::strategy;
 using namespace models::stats;
+using namespace models::types;
 using namespace utils;
 
 namespace models {
-  template<typename T, typename R >
-  std::map<R, int> binary_regroup(
-    const Data<T> &     x,
-    const GroupSpec<R> &group_spec
+  std::map<Response, int> binary_regroup(
+    const FeatureMatrix &  x,
+    const GroupPartition & group_spec
     ) {
-    std::vector<std::tuple<R, T> > means;
+    std::vector<std::tuple<Response, Feature> > means;
 
     invariant(x.cols() == 1, "Binary regrouping requires a unidimensional data");
 
-    for (const R group : group_spec.groups) {
-      T group_mean = group_spec.group(x, group).mean();
+    for (const Response group : group_spec.groups) {
+      Feature group_mean = group_spec.group(x, group).mean();
 
       means.push_back({ group, group_mean });
     }
@@ -33,11 +36,11 @@ namespace models {
         return std::get<1>(a) < std::get<1>(b);
       });
 
-    T edge_gap   = -1;
-    R edge_group = -1;
+    Feature edge_gap    = -1;
+    Response edge_group = -1;
 
     for (size_t i = 0; i + 1 < means.size(); i++) {
-      T gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);
+      Feature gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);
 
       if (gap > edge_gap) {
         edge_gap   = gap;
@@ -49,7 +52,7 @@ namespace models {
       edge_group = std::get<0>(means.front());
     }
 
-    std::map<R, int > binary_mapping;
+    std::map<Response, int > binary_mapping;
 
     bool edge_found = false;
     for (const auto&[group, mean] : means) {
@@ -61,33 +64,32 @@ namespace models {
     return binary_mapping;
   }
 
-  template<typename T, typename R >
-  TreeConditionPtr<T, R> binary_step(
-    const TrainingSpec<T, R> & training_spec,
-    const Data<T> &            x,
-    const GroupSpec<R> &       group_spec,
-    const DRSpec<T, R>&        dr) {
-    R group_1 = *group_spec.groups.begin();
-    R group_2 = *std::next(group_spec.groups.begin());
+  TreeCondition::Ptr binary_step(
+    const TrainingSpec &   training_spec,
+    const FeatureMatrix &  x,
+    const GroupPartition & group_spec,
+    const DRSpec&          dr) {
+    Response group_1 = *group_spec.groups.begin();
+    Response group_2 = *std::next(group_spec.groups.begin());
 
-    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+    const PPStrategy &pp_strategy = *(training_spec.pp_strategy);
 
     auto reduced_x = x(Eigen::all, dr.selected_cols);
 
-    Projector<T> projector = dr.expand(pp_strategy(reduced_x, group_spec));
+    Projector projector = dr.expand(pp_strategy(reduced_x, group_spec));
 
     auto data_group_1 = group_spec.group(x, group_1);
     auto data_group_2 = group_spec.group(x, group_2);
 
-    T mean_1 = (data_group_1 * projector).mean();
-    T mean_2 = (data_group_2 * projector).mean();
+    Feature mean_1 = (data_group_1 * projector).mean();
+    Feature mean_2 = (data_group_2 * projector).mean();
 
-    T threshold =  (mean_1 + mean_2) / 2;
+    Feature threshold =  (mean_1 + mean_2) / 2;
 
-    T projected_mean_1 = data_group_1.colwise().mean().dot(projector);
-    T projected_mean_2 = data_group_2.colwise().mean().dot(projector);
+    Feature projected_mean_1 = data_group_1.colwise().mean().dot(projector);
+    Feature projected_mean_2 = data_group_2.colwise().mean().dot(projector);
 
-    R lower_group, upper_group;
+    Response lower_group, upper_group;
 
     if (projected_mean_1 < projected_mean_2) {
       lower_group = group_1;
@@ -97,10 +99,10 @@ namespace models {
       upper_group = group_1;
     }
 
-    TreeResponsePtr<T, R> lower_response = TreeResponse<T, R>::make(lower_group);
-    TreeResponsePtr<T, R> upper_response = TreeResponse<T, R>::make(upper_group);
+    TreeResponse::Ptr lower_response = TreeResponse::make(lower_group);
+    TreeResponse::Ptr upper_response = TreeResponse::make(upper_group);
 
-    auto condition = TreeCondition<T, R>::make(
+    auto condition = TreeCondition::make(
       projector,
       threshold,
       std::move(lower_response),
@@ -111,70 +113,67 @@ namespace models {
     return condition;
   }
 
-  template<typename T, typename R >
-  GroupSpec<R> binary_split(
-    const TrainingSpec<T, R> & training_spec,
-    const Data<T> &            x,
-    const GroupSpec<R> &       group_spec,
-    const DRSpec<T, R>&        dr
+  GroupPartition binary_split(
+    const TrainingSpec &   training_spec,
+    const FeatureMatrix &  x,
+    const GroupPartition & group_spec,
+    const DRSpec&          dr
     ) {
-    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
+    const PPStrategy &pp_strategy = *(training_spec.pp_strategy);
 
-    Data<T> reduced_x = x(Eigen::all, dr.selected_cols);
+    FeatureMatrix reduced_x = x(Eigen::all, dr.selected_cols);
 
-    Projector<T> projector = dr.expand(pp_strategy(reduced_x, group_spec));
+    Projector projector = dr.expand(pp_strategy(reduced_x, group_spec));
 
-    Data<T> projected_x = x * projector;
+    FeatureMatrix projected_x = x * projector;
 
-    std::map<R, int> binary_mapping = binary_regroup(projected_x, group_spec);
+    std::map<Response, int> binary_mapping = binary_regroup(projected_x, group_spec);
 
 
     return group_spec.remap(binary_mapping);
   }
 
-  template<typename T, typename R>
   struct Step {
-    GroupSpec<R> y;
-    TreeNodePtr<T, R> *node;
+    GroupPartition y;
+    TreeNode::Ptr *node;
 
-    bool pop                = false;
-    TreeNodePtr<T, R> upper = nullptr;
-    TreeNodePtr<T, R> lower = nullptr;
-    Threshold<T> threshold  = 0;
-    Projector<T> projector;
+    bool pop            = false;
+    TreeNode::Ptr upper = nullptr;
+    TreeNode::Ptr lower = nullptr;
+    Threshold threshold = 0;
+    Projector projector;
 
     Step(
-      const GroupSpec<R>& y,
-      TreeNodePtr<T, R>   *node,
-      const int           cols
+      const GroupPartition& y,
+      TreeNode::Ptr         *node,
+      const int             cols
       ) :
       y(y),
       node(node),
-      projector(Projector<T>::Zero(cols)) {
+      projector(Projector::Zero(cols)) {
     }
   };
 
-  template<typename T, typename R>
-  TreeNodePtr<T, R> build_root(
-    const TrainingSpec<T, R> & training_spec,
-    const Data<T> &            x,
-    const GroupSpec<R> &       y,
-    stats::RNG &               rng
+  TreeNode::Ptr build_root(
+    const TrainingSpec &   training_spec,
+    const FeatureMatrix &  x,
+    const GroupPartition & y,
+    stats::RNG &           rng
     ) {
-    const PPStrategy<T, R> &pp_strategy = *(training_spec.pp_strategy);
-    const DRStrategy<T, R> &dr_strategy = *(training_spec.dr_strategy);
+    const PPStrategy &pp_strategy = *(training_spec.pp_strategy);
+    const DRStrategy &dr_strategy = *(training_spec.dr_strategy);
 
-    std::stack<Step<T, R> > stack;
+    std::stack<Step> stack;
 
-    TreeNodePtr<T, R> root;
+    TreeNode::Ptr root;
 
     stack.emplace(y, &root, x.cols());
 
     while (!stack.empty()) {
-      Step<T, R>& step = stack.top();
+      Step& step = stack.top();
 
       if (step.pop) {
-        *step.node = TreeCondition<T, R>::make(
+        *step.node = TreeCondition::make(
           step.projector,
           step.threshold,
           std::move(step.lower),
@@ -187,12 +186,12 @@ namespace models {
       }
 
       if (step.y.groups.size() == 1) {
-        *step.node = TreeResponse<T, R>::make(*step.y.groups.begin());
+        *step.node = TreeResponse::make(*step.y.groups.begin());
         stack.pop();
         continue;
       }
 
-      DRSpec<T, R> dr = dr_strategy(x, step.y, rng);
+      DRSpec dr = dr_strategy(x, step.y, rng);
 
       if (step.y.groups.size() == 2) {
         *step.node = binary_step(training_spec, x, step.y, dr);
@@ -203,8 +202,8 @@ namespace models {
       auto split     = binary_split(training_spec, x, step.y, dr);
       auto temp_node = binary_step(training_spec, x, split, dr);
 
-      R binary_lower_group = temp_node->lower->response();
-      R binary_upper_group = temp_node->upper->response();
+      Response binary_lower_group = temp_node->lower->response();
+      Response binary_upper_group = temp_node->upper->response();
 
       step.projector = temp_node->projector;
       step.threshold = temp_node->threshold;
@@ -221,45 +220,75 @@ namespace models {
     return root;
   }
 
-  template<typename T, typename R>
-  Tree<T, R> Tree<T, R>::train(
-    const TrainingSpec<T, R> & training_spec,
-    Data<T>&                   x,
-    DataColumn<R>&             y,
-    stats::RNG &               rng) {
-    if (!GroupSpec<R>::is_contiguous(y)) {
+  Tree Tree::train(
+    TrainingSpec const& training_spec,
+    FeatureMatrix&      x,
+    ResponseVector&     y,
+    stats::RNG &        rng) {
+    if (!GroupPartition::is_contiguous(y)) {
       models::stats::sort(x, y);
     }
 
-    GroupSpec<R> group_spec(y);
+    GroupPartition group_spec(y);
 
-    return Tree<T, R>::train(training_spec, x, group_spec, rng);
+    return Tree::train(training_spec, x, group_spec, rng);
   }
 
-  template<typename T, typename R>
-  Tree<T, R> Tree<T, R>::train(
-    const TrainingSpec<T, R> & training_spec,
-    Data<T>&                   x,
-    const GroupSpec<R>&        group_spec,
-    stats::RNG &               rng) {
-    TreeNodePtr<T, R> root_ptr = build_root(training_spec, x, group_spec, rng);
+  Tree Tree::train(
+    TrainingSpec const &  training_spec,
+    FeatureMatrix&        x,
+    GroupPartition const& group_spec,
+    stats::RNG &          rng) {
+    TreeNode::Ptr root_ptr = build_root(training_spec, x, group_spec, rng);
 
-    Tree<T, R> tree(
+    Tree tree(
       std::move(root_ptr),
       training_spec.clone());
 
     return tree;
   }
 
-  template Tree<float, int> Tree<float, int>::train(
-    const TrainingSpec<float, int> & training_spec,
-    Data<float>&                     x,
-    DataColumn<int>&                 y,
-    stats::RNG &                     rng);
+  Tree::Tree(TreeNode::Ptr root)
+    : root(std::move(root)),
+    training_spec(TrainingSpecGLDA::make(0.5)) {
+  }
 
-  template Tree<float, int> Tree<float, int>::train(
-    const TrainingSpec<float, int> & training_spec,
-    Data<float>&                     x,
-    const GroupSpec<int>&            group_spec,
-    stats::RNG &                     rng);
+  Tree::Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec)
+    : root(std::move(root)),
+    training_spec(std::move(training_spec)) {
+  }
+
+  Response Tree::predict(const FeatureVector& data) const {
+    return root->predict(data);
+  }
+
+  ResponseVector Tree::predict(const FeatureMatrix& data) const {
+    ResponseVector predictions(data.rows());
+
+    for (int i = 0; i < data.rows(); i++) {
+      predictions(i) = predict((FeatureVector)data.row(i));
+    }
+
+    return predictions;
+  }
+
+  bool Tree::operator==(const Tree& other) const {
+    return *root == *other.root;
+  }
+
+  bool Tree::operator!=(const Tree& other) const {
+    return !(*this == other);
+  }
+
+  json Tree::to_json() const {
+    return json{ { "root", root->to_json() } };
+  }
+
+  Tree Tree::from_json(const json& j) {
+    return Tree(node_from_json(j["root"]));
+  }
+
+  std::ostream& operator<<(std::ostream& ostream, const Tree& tree) {
+    return ostream << tree.to_json().dump(2, ' ', false);
+  }
 }

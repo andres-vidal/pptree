@@ -1,118 +1,44 @@
 #pragma once
 
+#include "Types.hpp"
 #include "TreeNode.hpp"
+#include "TrainingSpec.hpp"
+#include "Math.hpp"
 
 namespace models {
-  template<typename T, typename R>
-  using TreeConditionPtr = std::unique_ptr<TreeCondition<T, R> >;
-  template<typename T, typename R>
-  struct TreeCondition : public TreeNode<T, R> {
-    pp::Projector<T> projector;
-    T threshold;
-    TreeNodePtr<T, R> lower;
-    TreeNodePtr<T, R> upper;
-    TrainingSpecPtr<T, R> training_spec;
+  struct TreeCondition final : public TreeNode {
+    using Ptr = std::unique_ptr<TreeCondition>;
 
-    const std::set<R> classes;
+    pp::Projector projector;
+    Threshold threshold;
+    TreeNode::Ptr lower;
+    TreeNode::Ptr upper;
 
-    TreeCondition(
-      const pp::Projector<T>& projector,
-      const Threshold<T>&     threshold,
-      TreeNodePtr<T, R>       lower,
-      TreeNodePtr<T, R>       upper,
-      TrainingSpecPtr<T, R>   training_spec,
-      const std::set<R> &     classes) :
-      projector(projector),
-      threshold(threshold),
-      lower(std::move(lower)),
-      upper(std::move(upper)),
-      training_spec(std::move(training_spec)),
-      classes(classes) {
-    }
+    TrainingSpec::Ptr training_spec = nullptr;
+    std::set<types::Response> classes; // <- not const, so move/copy works cleanly
 
-    TreeCondition(
-      const pp::Projector<T>& projector,
-      const Threshold<T>&     threshold,
-      TreeNodePtr<T, R>       lower,
-      TreeNodePtr<T, R>       upper) :
-      projector(projector),
-      threshold(threshold),
-      lower(std::move(lower)),
-      upper(std::move(upper)) {
-    }
+    TreeCondition(pp::Projector projector,
+      Threshold                 threshold,
+      TreeNode::Ptr             lower,
+      TreeNode::Ptr             upper,
+      TrainingSpec::Ptr         training_spec = nullptr,
+      std::set<types::Response> classes       = {});
 
-    void accept(TreeNodeVisitor<T, R> &visitor) const override {
-      visitor.visit(*this);
-    }
+    void accept(TreeNodeVisitor& visitor) const override;
+    types::Response response() const override;
+    types::Response predict(const types::FeatureVector& data) const override;
 
-    R response() const override {
-      throw std::invalid_argument("Cannot get response from a condition node");
-    }
+    bool equals(const TreeNode& other) const override;
+    json to_json() const override;
+    TreeNode::Ptr clone() const override;
 
-    R predict(const stats::DataColumn<T> &data) const override {
-      T projected_data = data.dot(projector);
-
-      if (projected_data < threshold) {
-        return lower->predict(data);
-      } else {
-        return upper->predict(data);
-      }
-    }
-
-    bool equals(const TreeNode<T, R> &other) const override {
-      const auto *cond = dynamic_cast<const TreeCondition<T, R> *>(&other);
-
-      return cond
-             && math::collinear(projector, cond->projector)
-             && math::is_approx(threshold, cond->threshold)
-             && *lower == *(cond->lower)
-             && *upper == *(cond->upper);
-    }
-
-    json to_json() const override {
-      return json{
-        { "projector", projector },
-        { "threshold", threshold },
-        { "lower", lower->to_json() },
-        { "upper", upper->to_json() }
-      };
-    }
-
-    TreeNodePtr<T, R> clone() const override {
-      return make(projector, threshold, lower->clone(), upper->clone());
-    }
-
-    static TreeConditionPtr<T, R> make(
-      const pp::Projector<T>& projector,
-      const Threshold<T>&     threshold,
-      TreeNodePtr<T, R>       lower,
-      TreeNodePtr<T, R>       upper,
-      TrainingSpecPtr<T, R>   training_spec,
-      const std::set<R> &     classes) {
-      return std::make_unique<TreeCondition<T, R> >(
-        projector,
-        threshold,
-        std::move(lower),
-        std::move(upper),
-        std::move(training_spec),
-        classes);
-    }
-
-    static TreeConditionPtr<T, R> make(
-      const pp::Projector<T>& projector,
-      const Threshold<T>&     threshold,
-      TreeNodePtr<T, R>       lower,
-      TreeNodePtr<T, R>       upper) {
-      return std::make_unique<TreeCondition<T, R> >(
-        projector,
-        threshold,
-        std::move(lower),
-        std::move(upper));
-    }
+    static Ptr make(pp::Projector projector,
+      Threshold                   threshold,
+      TreeNode::Ptr               lower,
+      TreeNode::Ptr               upper,
+      TrainingSpec::Ptr           training_spec = nullptr,
+      std::set<types::Response>   classes       = {});
   };
 
-  template<typename T, typename R>
-  std::ostream& operator<<(std::ostream & ostream, const TreeCondition<T, R>& condition) {
-    return ostream << condition.to_json().dump(2, ' ', false);
-  }
+  std::ostream& operator<<(std::ostream& ostream, const TreeCondition& condition);
 }

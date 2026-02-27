@@ -3,27 +3,26 @@
 #include "TrainingSpec.hpp"
 
 namespace models {
-  template<typename T, typename R>
-  struct TrainingSpecUGLDA : public TrainingSpec<T, R> {
+  struct TrainingSpecUGLDA : public TrainingSpec {
     const int n_vars;
     const float lambda;
 
     TrainingSpecUGLDA(const int n_vars, const float lambda) :
-      TrainingSpec<T, R>(pp::strategy::glda<T, R>(lambda), dr::strategy::uniform<T, R>(n_vars)),
+      TrainingSpec(pp::strategy::glda(lambda), dr::strategy::uniform(n_vars)),
       n_vars(n_vars),
       lambda(lambda) {
     }
 
-    virtual void accept(TrainingSpecVisitor<T, R> &visitor) const override {
+    virtual void accept(TrainingSpecVisitor &visitor) const override {
       visitor.visit(*this);
     }
 
-    TrainingSpecPtr<T, R> clone() const override {
-      return std::make_unique<TrainingSpecUGLDA<T, R> >(*this);
+    TrainingSpec::Ptr clone() const override {
+      return std::make_unique<TrainingSpecUGLDA>(*this);
     }
 
-    static TrainingSpecPtr<T, R> make(const int n_vars, const float lambda) {
-      return std::make_unique<TrainingSpecUGLDA<T, R> >(n_vars, lambda);
+    static TrainingSpec::Ptr make(const int n_vars, const float lambda) {
+      return std::make_unique<TrainingSpecUGLDA>(n_vars, lambda);
     }
   };
 }

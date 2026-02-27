@@ -1,32 +1,28 @@
 #pragma once
 
 #include "Projector.hpp"
-#include "GroupSpec.hpp"
+#include "GroupPartition.hpp"
 #include <set>
 #include <vector>
+#include <memory>
 
 namespace models::pp::strategy {
-  template<typename T, typename G>
-  struct PPStrategy;
-
-  template<typename T, typename G>
-  using PPStrategyPtr = std::unique_ptr<PPStrategy<T, G> >;
-
-  template<typename T, typename G>
   struct PPStrategy {
-    virtual ~PPStrategy()                     = default;
-    virtual PPStrategyPtr<T, G> clone() const = 0;
+    using Ptr = std::unique_ptr<PPStrategy>;
 
-    virtual T index(
-      const stats::Data<T> &     x,
-      const stats::GroupSpec<G>& group_spec,
-      const Projector<T>&        projector) const = 0;
+    virtual ~PPStrategy()     = default;
+    virtual Ptr clone() const = 0;
 
-    virtual Projector<T> optimize(
-      const stats::Data<T> &     x,
-      const stats::GroupSpec<G>& group_spec) const = 0;
+    virtual types::Feature index(
+      const types::FeatureMatrix&  x,
+      const stats::GroupPartition& group_spec,
+      const Projector&             projector) const = 0;
 
-    Projector<T> operator()(const stats::Data<T> &x, const stats::GroupSpec<G>& group_spec) const {
+    virtual Projector optimize(
+      const types::FeatureMatrix&  x,
+      const stats::GroupPartition& group_spec) const = 0;
+
+    Projector operator()(const types::FeatureMatrix &x, const stats::GroupPartition& group_spec) const {
       return optimize(x, group_spec);
     }
   };

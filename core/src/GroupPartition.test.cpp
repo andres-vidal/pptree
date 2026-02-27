@@ -1,13 +1,16 @@
 #include <gtest/gtest.h>
 
-#include "GroupSpec.hpp"
+#include "GroupPartition.hpp"
+#include "Types.hpp"
+
 #include "Macros.hpp"
 
+using namespace models;
 using namespace models::stats;
+using namespace models::types;
 
-
-TEST(GroupSpec, GroupSize) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition, GroupSize) {
+  FeatureMatrix x = DATA(Feature, 6,
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -15,7 +18,7 @@ TEST(GroupSpec, GroupSize) {
       3, 3, 3,
       5, 5, 5);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       1,
       1,
       2,
@@ -23,15 +26,15 @@ TEST(GroupSpec, GroupSize) {
       3,
       3);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
   ASSERT_EQ(2, spec.group_size(1));
   ASSERT_EQ(2, spec.group_size(2));
   ASSERT_EQ(2, spec.group_size(3));
 }
 
-TEST(GroupSpec, GroupStart) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition, GroupStart) {
+  FeatureMatrix x = DATA(Feature, 6,
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -39,7 +42,7 @@ TEST(GroupSpec, GroupStart) {
       3, 3, 3,
       5, 5, 5);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       1,
       1,
       2,
@@ -47,15 +50,15 @@ TEST(GroupSpec, GroupStart) {
       3,
       3);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
   ASSERT_EQ(0, spec.group_start(1));
   ASSERT_EQ(2, spec.group_start(2));
   ASSERT_EQ(4, spec.group_start(3));
 }
 
-TEST(GroupSpec, GroupEnd) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition, GroupEnd) {
+  FeatureMatrix x = DATA(Feature, 6,
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -63,7 +66,7 @@ TEST(GroupSpec, GroupEnd) {
       3, 3, 3,
       5, 5, 5);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       1,
       1,
       2,
@@ -71,15 +74,15 @@ TEST(GroupSpec, GroupEnd) {
       3,
       3);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
   ASSERT_EQ(1, spec.group_end(1));
   ASSERT_EQ(3, spec.group_end(2));
   ASSERT_EQ(5, spec.group_end(3));
 }
 
-TEST(GroupSpec, Group) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition, Group) {
+  FeatureMatrix x = DATA(Feature, 6,
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -88,7 +91,7 @@ TEST(GroupSpec, Group) {
       5, 5, 5);
 
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       1,
       1,
       2,
@@ -96,11 +99,11 @@ TEST(GroupSpec, Group) {
       3,
       3);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.group(x, 1);
+  FeatureMatrix actual = spec.group(x, 1);
 
-  Data<float> expected = DATA(float, 2,
+  FeatureMatrix expected = DATA(Feature, 2,
       2, 2, 2,
       4, 4, 4);
 
@@ -111,7 +114,7 @@ TEST(GroupSpec, Group) {
 
   actual = spec.group(x, 2);
 
-  expected = DATA(float, 2,
+  expected = DATA(Feature, 2,
       1, 1, 1,
       6, 6, 6);
 
@@ -122,7 +125,7 @@ TEST(GroupSpec, Group) {
 
   actual = spec.group(x, 3);
 
-  expected = DATA(float, 2,
+  expected = DATA(Feature, 2,
       3, 3, 3,
       5, 5, 5);
 
@@ -132,8 +135,8 @@ TEST(GroupSpec, Group) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec, ErrorGroupsNotContiguous) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition, ErrorGroupsNotContiguous) {
+  FeatureMatrix x = DATA(Feature, 6,
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -141,7 +144,7 @@ TEST(GroupSpec, ErrorGroupsNotContiguous) {
       3, 3, 3,
       5, 5, 5);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       1,
       2,
       3,
@@ -149,11 +152,11 @@ TEST(GroupSpec, ErrorGroupsNotContiguous) {
       2,
       3);
 
-  ASSERT_THROW((GroupSpec<int>(y)), std::invalid_argument);
+  ASSERT_THROW((GroupPartition(y)), std::invalid_argument);
 }
 
-TEST(GroupSpec, Subset) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition, Subset) {
+  FeatureMatrix x = DATA(Feature, 6,
       1, 2, 2,
       1, 4, 4,
       2, 1, 1,
@@ -161,7 +164,7 @@ TEST(GroupSpec, Subset) {
       3, 3, 3,
       3, 5, 5);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       1,
       1,
       2,
@@ -169,7 +172,7 @@ TEST(GroupSpec, Subset) {
       3,
       3);
 
-  GroupSpec<int> spec = GroupSpec(y).subset({ 1, 3 });
+  GroupPartition spec = GroupPartition(y).subset({ 1, 3 });
 
   ASSERT_EQ(2, spec.group_size(1));
   ASSERT_EQ(0, spec.group_start(1));
@@ -179,17 +182,17 @@ TEST(GroupSpec, Subset) {
   ASSERT_EQ(4, spec.group_start(3));
   ASSERT_EQ(5, spec.group_end(3));
 
-  Data<float> expected_group_1 = DATA(float, 2,
+  FeatureMatrix expected_group_1 = DATA(Feature, 2,
       1, 2, 2,
       1, 4, 4);
 
   ASSERT_EQ_DATA(expected_group_1, spec.group(x, 1));
 
-  Data<float> expected_group_3 = DATA(float, 2,
+  FeatureMatrix expected_group_3 = DATA(Feature, 2,
       3, 3, 3,
       3, 5, 5);
 
-  Data<float> expected_x = DATA(float, 4,
+  FeatureMatrix expected_x = DATA(Feature, 4,
       1, 2, 2,
       1, 4, 4,
       3, 3, 3,
@@ -197,7 +200,7 @@ TEST(GroupSpec, Subset) {
 
   ASSERT_EQ_DATA(expected_x, spec.data(x));
 
-  DataColumn<float> expected_mean = DATA(float, 3,
+  FeatureVector expected_mean = DATA(Feature, 3,
       2.0,
       3.5,
       3.5);
@@ -205,8 +208,8 @@ TEST(GroupSpec, Subset) {
   ASSERT_EQ(expected_mean, spec.mean(x));
 }
 
-TEST(GroupSpec, Remap) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition, Remap) {
+  FeatureMatrix x = DATA(Feature, 6,
       1, 1, 1,
       1, 2, 2,
       2, 1, 1,
@@ -214,7 +217,7 @@ TEST(GroupSpec, Remap) {
       3, 1, 1,
       3, 2, 2);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       1,
       1,
       2,
@@ -222,7 +225,7 @@ TEST(GroupSpec, Remap) {
       3,
       3);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
   std::map<int, int> mapping = {
     { 1, 0 },
@@ -230,30 +233,30 @@ TEST(GroupSpec, Remap) {
     { 3, 0 }
   };
 
-  GroupSpec<int> remapped = spec.remap(mapping);
+  GroupPartition remapped = spec.remap(mapping);
 
-  Data<float> remapped_x = remapped.data(x);
+  FeatureMatrix remapped_x = remapped.data(x);
 
   ASSERT_EQ_DATA(x, remapped_x);
   ASSERT_EQ(std::set<int>({ 0, 1 }), remapped.groups);
 }
 
-TEST(GroupSpec,  BetweenGroupsSumOfSquaresSingleGroup) {
-  Data<float> x = DATA(float, 3,
+TEST(GroupPartition,  BetweenGroupsSumOfSquaresSingleGroup) {
+  FeatureMatrix x = DATA(Feature, 3,
       1.0, 2.0, 6.0,
       2.0, 3.0, 7.0,
       3.0, 4.0, 8.0);
 
-  DataColumn<int> y = DATA(int, 3,
+  ResponseVector y = DATA(Response, 3,
       0,
       0,
       0);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.bgss(x);
+  FeatureMatrix actual = spec.bgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0);
@@ -264,8 +267,8 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresSingleGroup) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
+  FeatureMatrix x = DATA(Feature, 6,
       1.0, 2.0, 6.0,
       2.0, 3.0, 7.0,
       3.0, 4.0, 8.0,
@@ -273,7 +276,7 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
       2.0, 3.0, 7.0,
       3.0, 4.0, 8.0);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       0,
       0,
       0,
@@ -281,11 +284,11 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
       1,
       1);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.bgss(x);
+  FeatureMatrix actual = spec.bgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0);
@@ -297,8 +300,8 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
-  Data<float> x = DATA(float, 8,
+TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
+  FeatureMatrix x = DATA(Feature, 8,
       23.0,
       25.0,
       18.0,
@@ -308,7 +311,7 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
       35.0,
       17.0);
 
-  DataColumn<int> y = DATA(int, 8,
+  ResponseVector y = DATA(Response, 8,
       0,
       0,
       0,
@@ -318,11 +321,11 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
       2,
       2);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.bgss(x);
+  FeatureMatrix actual = spec.bgss(x);
 
-  Data<float> expected = DATA(float, 1,
+  FeatureMatrix expected = DATA(Feature, 1,
       19.875);
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -331,8 +334,8 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
-  Data<float> x = DATA(float, 8,
+TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
+  FeatureMatrix x = DATA(Feature, 8,
       23.0,
       25.0,
       18.0,
@@ -342,7 +345,7 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialG
       35.0,
       17.0);
 
-  DataColumn<int> y = DATA(int, 8,
+  ResponseVector y = DATA(Response, 8,
       1,
       1,
       1,
@@ -352,11 +355,11 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialG
       3,
       3);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.bgss(x);
+  FeatureMatrix actual = spec.bgss(x);
 
-  Data<float> expected = DATA(float, 1,
+  FeatureMatrix expected = DATA(Feature, 1,
       19.875);
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -365,8 +368,8 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialG
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
-  Data<float> x = DATA(float, 8,
+TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
+  FeatureMatrix x = DATA(Feature, 8,
       23.0, 1.0, 1.0,
       25.0, 1.0, 1.0,
       18.0, 1.0, 1.0,
@@ -376,7 +379,7 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
       35.0, 1.0, 1.0,
       17.0, 1.0, 1.0);
 
-  DataColumn<int> y = DATA(int, 8,
+  ResponseVector y = DATA(Response, 8,
       0,
       0,
       0,
@@ -386,11 +389,11 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
       2,
       2);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.bgss(x);
+  FeatureMatrix actual = spec.bgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       19.875, 0.0, 0.0,
       0.0,    0.0, 0.0,
       0.0,    0.0, 0.0);
@@ -401,22 +404,22 @@ TEST(GroupSpec,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
-  Data<float> x = DATA(float, 3,
+TEST(GroupPartition,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
+  FeatureMatrix x = DATA(Feature, 3,
       1.0, 1.0, 1.0,
       1.0, 1.0, 1.0,
       1.0, 1.0, 1.0);
 
-  DataColumn<int> y = DATA(int, 3,
+  ResponseVector y = DATA(Response, 3,
       0,
       0,
       0);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.wgss(x);
+  FeatureMatrix actual = spec.wgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0);
@@ -427,22 +430,22 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
-  Data<float> x = DATA(float, 3,
+TEST(GroupPartition,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
+  FeatureMatrix x = DATA(Feature, 3,
       1.0, 1.0, 1.0,
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0);
 
-  DataColumn<int> y = DATA(int, 3,
+  ResponseVector y = DATA(Response, 3,
       0,
       0,
       0);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.wgss(x);
+  FeatureMatrix actual = spec.wgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       2.0, 2.0, 2.0,
       2.0, 2.0, 2.0,
       2.0, 2.0, 2.0);
@@ -453,8 +456,8 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoEqualGroups) {
+  FeatureMatrix x = DATA(Feature, 6,
       1.0, 1.0, 1.0,
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0,
@@ -462,7 +465,7 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       0,
       0,
       0,
@@ -470,11 +473,11 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
       1,
       1);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.wgss(x);
+  FeatureMatrix actual = spec.wgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       4.0, 4.0, 4.0,
       4.0, 4.0, 4.0,
       4.0, 4.0, 4.0);
@@ -485,8 +488,8 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoEqualGroups) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
+  FeatureMatrix x = DATA(Feature, 6,
       1.0, 1.0, 1.0,
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0,
@@ -494,7 +497,7 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
       5.0, 5.0, 5.0,
       6.0, 6.0, 6.0);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       0,
       0,
       0,
@@ -502,11 +505,11 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
       1,
       1);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.wgss(x);
+  FeatureMatrix actual = spec.wgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       4.0, 4.0, 4.0,
       4.0, 4.0, 4.0,
       4.0, 4.0, 4.0);
@@ -517,8 +520,8 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
+  FeatureMatrix x = DATA(Feature, 6,
       1.0, 1.0, 1.0,
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0,
@@ -526,7 +529,7 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
       5.0, 5.0, 5.0,
       6.0, 6.0, 6.0);
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       0,
       0,
       0,
@@ -534,11 +537,11 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
       1,
       1);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.wgss(x);
+  FeatureMatrix actual = spec.wgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       16.0, 16.0, 16.0,
       16.0, 16.0, 16.0,
       16.0, 16.0, 16.0);
@@ -549,8 +552,8 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
-  Data<float> x = DATA(float, 8,
+TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
+  FeatureMatrix x = DATA(Feature, 8,
       1.0, 2.0, 3.0,
       4.0, 5.0, 6.0,
       7.0, 8.0, 9.0,
@@ -560,7 +563,7 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
       9.0, 8.0, 7.0,
       6.0, 5.0, 4.0);
 
-  DataColumn<int> y = DATA(int, 8,
+  ResponseVector y = DATA(Response, 8,
       0,
       0,
       0,
@@ -571,11 +574,11 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
       2);
 
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.wgss(x);
+  FeatureMatrix actual = spec.wgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       24.5, 24.5, 24.5,
       24.5, 24.5, 24.5,
       24.5, 24.5, 24.5);
@@ -586,8 +589,8 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
-  Data<float> x = DATA(float, 8,
+TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
+  FeatureMatrix x = DATA(Feature, 8,
       1.0, 2.0, 3.0, 0.0,
       4.0, 5.0, 6.0, 0.0,
       7.0, 8.0, 9.0, 0.0,
@@ -597,7 +600,7 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
       9.0, 8.0, 7.0, 0.0,
       6.0, 5.0, 4.0, 0.0);
 
-  DataColumn<int> y = DATA(int, 8,
+  ResponseVector y = DATA(Response, 8,
       0,
       0,
       0,
@@ -607,11 +610,11 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
       2,
       2);
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  Data<float> actual = spec.wgss(x);
+  FeatureMatrix actual = spec.wgss(x);
 
-  Data<float> expected = DATA(float, 4,
+  FeatureMatrix expected = DATA(Feature, 4,
       24.5, 24.5, 24.5, 0.0,
       24.5, 24.5, 24.5, 0.0,
       24.5, 24.5, 24.5, 0.0,
@@ -623,8 +626,8 @@ TEST(GroupSpec,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpecRemapped, Group) {
-  Data<float> x = DATA(float, 6,
+TEST(GroupPartitionRemapped, Group) {
+  FeatureMatrix x = DATA(Feature, 6,
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -633,7 +636,7 @@ TEST(GroupSpecRemapped, Group) {
       5, 5, 5);
 
 
-  DataColumn<int> y = DATA(int, 6,
+  ResponseVector y = DATA(Response, 6,
       1,
       1,
       2,
@@ -641,12 +644,12 @@ TEST(GroupSpecRemapped, Group) {
       3,
       3);
 
-  GroupSpec<int> base(y);
-  GroupSpec<int> spec = base.remap({ { 1, 1 }, { 2, 1 }, { 3, 2 } });
+  GroupPartition base(y);
+  GroupPartition spec = base.remap({ { 1, 1 }, { 2, 1 }, { 3, 2 } });
 
-  Data<float> actual = spec.group(x, 1);
+  FeatureMatrix actual = spec.group(x, 1);
 
-  Data<float> expected = DATA(float, 4,
+  FeatureMatrix expected = DATA(Feature, 4,
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -659,7 +662,7 @@ TEST(GroupSpecRemapped, Group) {
 
   actual = spec.group(x, 2);
 
-  expected = DATA(float, 2,
+  expected = DATA(Feature, 2,
       3, 3, 3,
       5, 5, 5);
 
@@ -669,8 +672,8 @@ TEST(GroupSpecRemapped, Group) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
-  Data<float> x = DATA(float, 8,
+TEST(GroupPartitionRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
+  FeatureMatrix x = DATA(Feature, 8,
       23.0, 1.0, 1.0,
       25.0, 1.0, 1.0,
       18.0, 1.0, 1.0,
@@ -680,22 +683,22 @@ TEST(GroupSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
       35.0, 1.0, 1.0,
       17.0, 1.0, 1.0);
 
-  DataColumn<int> y = DATA(int, 8,
-      0, // 0
-      0, // 0
-      1, // 0
-      2, // 1
-      2, // 1
-      3, // 1
-      4, // 2
-      4); // 2
+  ResponseVector y = DATA(Response, 8,
+      0,
+      0,
+      1,
+      2,
+      2,
+      3,
+      4,
+      4);
 
-  GroupSpec<int> spec(y);
-  GroupSpec<int> remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
+  GroupPartition spec(y);
+  GroupPartition remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
 
-  Data<float> actual = remapped.bgss(x);
+  FeatureMatrix actual = remapped.bgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       19.875, 0.0, 0.0,
       0.0,    0.0, 0.0,
       0.0,    0.0, 0.0);
@@ -706,8 +709,8 @@ TEST(GroupSpecRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
   ASSERT_EQ(expected, actual);
 }
 
-TEST(GroupSpecRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
-  Data<float> x = DATA(float, 8,
+TEST(GroupPartitionRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
+  FeatureMatrix x = DATA(Feature, 8,
       1.0, 2.0, 3.0,
       4.0, 5.0, 6.0,
       7.0, 8.0, 9.0,
@@ -717,24 +720,24 @@ TEST(GroupSpecRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
       9.0, 8.0, 7.0,
       6.0, 5.0, 4.0);
 
-  DataColumn<int> y = DATA(int, 8,
-      0, // 0
-      0, // 0
-      1, // 0
-      2, // 1
-      2, // 1
-      3, // 1
-      4, // 2
-      4); // 2
+  ResponseVector y = DATA(Response, 8,
+      0,
+      0,
+      1,
+      2,
+      2,
+      3,
+      4,
+      4);
 
 
-  GroupSpec<int> spec(y);
+  GroupPartition spec(y);
 
-  GroupSpec<int> remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
+  GroupPartition remapped = spec.remap({ { 0, 0 }, { 1, 0 }, { 2, 1 }, { 3, 1 }, { 4, 2 } });
 
-  Data<float> actual = remapped.wgss(x);
+  FeatureMatrix actual = remapped.wgss(x);
 
-  Data<float> expected = DATA(float, 3,
+  FeatureMatrix expected = DATA(Feature, 3,
       24.5, 24.5, 24.5,
       24.5, 24.5, 24.5,
       24.5, 24.5, 24.5);

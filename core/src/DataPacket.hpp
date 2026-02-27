@@ -1,39 +1,39 @@
 #pragma once
 
-#include "Data.hpp"
-#include "DataColumn.hpp"
+#include "Stats.hpp"
+#include "Stats.hpp"
+#include "Types.hpp"
 
 #include <set>
 #include <vector>
 
 namespace models::stats {
-  template<typename T, typename G>
   struct DataPacket {
-    const Data<T>  x;
-    const DataColumn<G>  y;
-    const std::set<G>  classes;
+    const types::FeatureMatrix x;
+    const types::Vector<types::Response>  y;
+    const std::set<types::Response>  classes;
 
     DataPacket(
-      const Data<T> &       x,
-      const DataColumn<G> & y,
-      const std::set<G> &   classes) :
+      const types::FeatureMatrix &           x,
+      const types::Vector<types::Response> & y,
+      const std::set<types::Response> &      classes) :
       x(x),
       y(y),
       classes(classes) {
     }
 
     DataPacket(
-      const Data<T> &       x,
-      const DataColumn<G> & y) :
+      const types::FeatureMatrix &           x,
+      const types::Vector<types::Response> & y) :
       x(x),
       y(y),
       classes(unique(y)) {
     }
 
     DataPacket() :
-      x(Data<T>()),
-      y(DataColumn<G>()),
-      classes(std::set<G>()) {
+      x(types::FeatureMatrix()),
+      y(types::Vector<types::Response>()),
+      classes(std::set<types::Response>()) {
     }
   };
 }

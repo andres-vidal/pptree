@@ -2,14 +2,17 @@
 
 #include "PPStrategy.hpp"
 #include "PPGLDAStrategy.hpp"
+#include "Types.hpp"
 
 #include "Macros.hpp"
 
+using namespace models;
 using namespace models::pp::strategy;
 using namespace models::stats;
+using namespace models::types;
 
 TEST(Projector, LDAOptimumProjectorTwoGroups1) {
-  Data<float> x = DATA(float, 10,
+  FeatureMatrix x = DATA(Feature, 10,
       1, 0, 1, 1,
       1, 1, 0, 0,
       1, 0, 0, 1,
@@ -21,7 +24,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
       4, 0, 1, 1,
       4, 0, 1, 2);
 
-  DataColumn<int> y = DATA(int, 10,
+  ResponseVector y = DATA(Response, 10,
       0,
       0,
       0,
@@ -33,16 +36,16 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
       1,
       1);
 
-  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(x, GroupSpec<int>(y));
+  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
-  DataColumn<float> expected = DATA(float, 4,
+  FeatureVector expected = DATA(Feature, 4,
       -1, 0, 0, 0);
 
   ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups2) {
-  Data<float> x = DATA(float, 10,
+  FeatureMatrix x = DATA(Feature, 10,
       0, 1, 1, 1,
       1, 1, 0, 0,
       0, 1, 0, 1,
@@ -55,7 +58,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
       0, 4, 1, 2);
 
 
-  DataColumn<int> y = DATA(int, 10,
+  ResponseVector y = DATA(Response, 10,
       0,
       0,
       0,
@@ -67,9 +70,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
       1,
       1);
 
-  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(x, GroupSpec<int>(y));
+  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
-  DataColumn<float> expected = DATA(float, 4,
+  FeatureVector expected = DATA(Feature, 4,
       0, 1, 0, 0);
 
 
@@ -77,7 +80,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups3) {
-  Data<float> x = DATA(float, 10,
+  FeatureMatrix x = DATA(Feature, 10,
       0, 1, 1, 1,
       1, 0, 1, 0,
       0, 0, 1, 1,
@@ -90,7 +93,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
       0, 1, 4, 2);
 
 
-  DataColumn<int> y = DATA(int, 10,
+  ResponseVector y = DATA(Response, 10,
       0,
       0,
       0,
@@ -102,16 +105,16 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
       1,
       1);
 
-  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(x, GroupSpec<int>(y));
+  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
-  DataColumn<float> expected = DATA(float, 4,
+  FeatureVector expected = DATA(Feature, 4,
       0, 0, -1, 0);
 
   ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups4) {
-  Data<float> x = DATA(float, 10,
+  FeatureMatrix x = DATA(Feature, 10,
       0, 1, 1, 1,
       1, 0, 0, 1,
       0, 0, 1, 1,
@@ -123,7 +126,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
       0, 1, 1, 4,
       0, 1, 2, 4);
 
-  DataColumn<int> y = DATA(int, 10,
+  ResponseVector y = DATA(Response, 10,
       0,
       0,
       0,
@@ -135,9 +138,9 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
       1,
       1);
 
-  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(x, GroupSpec<int>(y));
+  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
-  DataColumn<float> expected = DATA(float, 4,
+  FeatureVector expected = DATA(Feature, 4,
       2.0965219514666735e-15,
       4.4408920985006262e-16,
       -2.4980018054066002e-16,
@@ -147,7 +150,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
 }
 
 TEST(Projector, LDAOptimumProjectorThreeGroups1) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -179,7 +182,7 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -211,9 +214,9 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
       2,
       2);
 
-  DataColumn<float> actual = PPGLDAStrategy<float, int>(0).optimize(x, GroupSpec<int>(y));
+  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
-  DataColumn<float> expected = DATA(float, 5,
+  FeatureVector expected = DATA(Feature, 5,
       1,
       0,
       0,
@@ -224,28 +227,28 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
 }
 
 TEST(Projector, LDAIndexZeroReturn) {
-  Data<float> x = DATA(float, 4,
+  FeatureMatrix x = DATA(Feature, 4,
       1, 0, 1, 1, 0, 1, 0, 1, 2, 3, 4, 5,
       1, 1, 0, 0, 0, 1, 0, 1, 2, 3, 4, 5,
       1, 1, 0, 1, 1, 0, 1, 0, 2, 3, 4, 5,
       1, 0, 1, 1, 1, 0, 1, 0, 2, 3, 4, 5);
 
-  DataColumn<int> y = DATA(int, 4,
+  ResponseVector y = DATA(Response, 4,
       0,
       0,
       1,
       1);
 
-  DataColumn<float> projector = DATA(float, 12,
+  FeatureVector projector = DATA(Feature, 12,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-  float actual = PPGLDAStrategy<float, int>(0).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_EQ(0.0, actual);
 }
 
 TEST(Projector, LDAIndexOptimal1) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -277,7 +280,7 @@ TEST(Projector, LDAIndexOptimal1) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -309,17 +312,17 @@ TEST(Projector, LDAIndexOptimal1) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       -0.12823, -0.99174, 0.0, 0.0, 0.0);
 
 
-  float actual = PPGLDAStrategy<float, int>(0).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
 
 TEST(Projector, LDAIndexOptimal2) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -351,7 +354,7 @@ TEST(Projector, LDAIndexOptimal2) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -383,16 +386,16 @@ TEST(Projector, LDAIndexOptimal2) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       0.78481, 0.61974, 0.0, 0.0, 0.0);
 
-  float actual = PPGLDAStrategy<float, int>(0).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
 
 TEST(Projector, LDAIndexOptimal3) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -424,7 +427,7 @@ TEST(Projector, LDAIndexOptimal3) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -456,16 +459,16 @@ TEST(Projector, LDAIndexOptimal3) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       -0.66808,  0.74409,  0.0,  0.0,  0.0);
 
-  float actual = PPGLDAStrategy<float, int>(0).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
 
 TEST(Projector, LDAIndexSuboptimal1) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -497,7 +500,7 @@ TEST(Projector, LDAIndexSuboptimal1) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -529,16 +532,16 @@ TEST(Projector, LDAIndexSuboptimal1) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       0, 0, 1, 1, 1);
 
-  float actual = PPGLDAStrategy<float, int>(0).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_NEAR(0.134985, actual, 0.00001);
 }
 
 TEST(Projector, LDAIndexSuboptimal2) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -570,7 +573,7 @@ TEST(Projector, LDAIndexSuboptimal2) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -602,80 +605,80 @@ TEST(Projector, LDAIndexSuboptimal2) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       -0.02965,  0.08452, -0.24243, -0.40089, -0.87892);
 
-  float actual = PPGLDAStrategy<float, int>(0).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
 
 TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
-  Data<float> x = DATA(float, 4,
+  FeatureMatrix x = DATA(Feature, 4,
       1, 0, 1, 1, 1, 4,
       2, 1, 0, 0, 0, 4,
       3, 0, 1, 1, 1, 1,
       4, 0, 1, 2, 2, 1);
 
-  DataColumn<int> y = DATA(int, 4,
+  ResponseVector y = DATA(Response, 4,
       0,
       0,
       1,
       1);
 
-  DataColumn<float> actual = PPGLDAStrategy<float, int>(0.5).optimize(x, GroupSpec<int>(y));
+  FeatureVector actual = PPGLDAStrategy(0.5).optimize(x, GroupPartition(y));
 
-  DataColumn<float> expected = DATA(float, 6,
+  FeatureVector expected = DATA(Feature, 6,
       0, 0, 0, 0, 0, 1);
 
   ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(Projector, GLDAOptimumProjectorZeroColumn) {
-  Data<float> x = DATA(float, 4,
+  FeatureMatrix x = DATA(Feature, 4,
       1, 0, 1, 1, 1, 4, 0,
       2, 1, 0, 0, 0, 4, 0,
       3, 0, 1, 1, 1, 1, 0,
       4, 0, 1, 2, 2, 1, 0);
 
-  DataColumn<int> y = DATA(int, 4,
+  ResponseVector y = DATA(Response, 4,
       0,
       0,
       1,
       1);
 
-  DataColumn<float> actual = PPGLDAStrategy<float, int>(0.1).optimize(x, GroupSpec<int>(y));
+  FeatureVector actual = PPGLDAStrategy(0.1).optimize(x, GroupPartition(y));
 
-  DataColumn<float> expected = DATA(float, 7,
+  FeatureVector expected = DATA(Feature, 7,
       0, 0, 0, 0, 0, 1, 0);
 
   ASSERT_COLLINEAR(expected, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
-  Data<float> x = DATA(float, 4,
+  FeatureMatrix x = DATA(Feature, 4,
       1, 0, 1, 1, 0, 1, 0, 1, 2, 3, 4, 5,
       1, 1, 0, 0, 0, 1, 0, 1, 2, 3, 4, 5,
       1, 1, 0, 1, 1, 0, 1, 0, 2, 3, 4, 5,
       1, 0, 1, 1, 1, 0, 1, 0, 2, 3, 4, 5);
 
-  DataColumn<int> y = DATA(int, 4,
+  ResponseVector y = DATA(Response, 4,
       0,
       0,
       1,
       1);
 
-  DataColumn<float> projector = DATA(float, 12,
+  FeatureVector projector = DATA(Feature, 12,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 
-  float actual = PPGLDAStrategy<float, int>(0.5).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_EQ(0.0, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -707,7 +710,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -739,16 +742,16 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       -0.12823, -0.99174, 0.0, 0.0, 0.0);
 
-  float actual = PPGLDAStrategy<float, int>(0.5).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -780,7 +783,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -812,16 +815,16 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       0.78481, 0.61974, 0.0, 0.0, 0.0);
 
-  float actual = PPGLDAStrategy<float, int>(0.5).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -853,7 +856,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -885,16 +888,16 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       -0.66808,  0.74409,  0.0,  0.0,  0.0);
 
-  float actual = PPGLDAStrategy<float, int>(0.5).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -926,7 +929,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -958,16 +961,16 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       0, 0, 1, 1, 1);
 
-  float actual = PPGLDAStrategy<float, int>(0.5).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_NEAR(0.12597, actual, 0.00001);
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
-  Data<float> x = DATA(float, 30,
+  FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -999,7 +1002,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  DataColumn<int> y = DATA(int, 30,
+  ResponseVector y = DATA(Response, 30,
       0,
       0,
       0,
@@ -1031,10 +1034,10 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
       2,
       2);
 
-  DataColumn<float> projector = DATA(float, 5,
+  FeatureVector projector = DATA(Feature, 5,
       -0.02965,  0.08452, -0.24243, -0.40089, -0.87892);
 
-  float actual = PPGLDAStrategy<float, int>(0.5).index(x, GroupSpec<int>(y), projector);
+  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }

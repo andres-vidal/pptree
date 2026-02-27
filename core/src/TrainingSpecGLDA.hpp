@@ -3,27 +3,26 @@
 #include "TrainingSpec.hpp"
 
 namespace models {
-  template<typename T, typename R>
-  struct TrainingSpecGLDA : public TrainingSpec<T, R> {
+  struct TrainingSpecGLDA : public TrainingSpec {
     const float lambda;
 
     explicit TrainingSpecGLDA(const float lambda) :
-      TrainingSpec<T, R>(
-        pp::strategy::glda<T, R>(lambda),
-        dr::strategy::noop<T, R>()),
+      TrainingSpec(
+        pp::strategy::glda(lambda),
+        dr::strategy::noop()),
       lambda(lambda) {
     }
 
-    virtual void accept(TrainingSpecVisitor<T, R> &visitor) const override {
+    virtual void accept(TrainingSpecVisitor &visitor) const override {
       visitor.visit(*this);
     }
 
-    TrainingSpecPtr<T, R> clone() const override {
-      return std::make_unique<TrainingSpecGLDA<T, R> >(*this);
+    TrainingSpec::Ptr clone() const override {
+      return std::make_unique<TrainingSpecGLDA>(*this);
     }
 
-    static TrainingSpecPtr<T, R> make(const float lambda) {
-      return std::make_unique<TrainingSpecGLDA<T, R> >(lambda);
+    static TrainingSpec::Ptr make(const float lambda) {
+      return std::make_unique<TrainingSpecGLDA>(lambda);
     }
   };
 }

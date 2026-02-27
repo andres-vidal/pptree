@@ -11,10 +11,11 @@
 #include "DRUniformStrategy.hpp"
 #include "DRNoopStrategy.hpp"
 
-#include "Random.hpp"
+#include "Stats.hpp"
 
 namespace pptree {
   using namespace models;
   using namespace stats;
   using namespace pp;
+  using namespace types;
 }

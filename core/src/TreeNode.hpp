@@ -1,46 +1,31 @@
 #pragma once
 
+#include "Types.hpp"
 #include "TreeNodeVisitor.hpp"
 
-#include "Data.hpp"
-#include "DataColumn.hpp"
-#include "Projector.hpp"
-#include "TrainingSpec.hpp"
-
 #include <nlohmann/json.hpp>
+#include <iosfwd>
 
 namespace models {
-  using json = nlohmann::json;
-  template<typename T>
-  using Threshold = T;
+  using json      = nlohmann::json;
+  using Threshold = types::Feature;
 
-  template<typename T, typename R>
-  struct TreeNode;
-  template<typename T, typename R>
-  using TreeNodePtr = std::unique_ptr<TreeNode<T, R> >;
-  template<typename T, typename R>
   struct TreeNode {
-    virtual ~TreeNode()                                       = default;
-    virtual void accept(TreeNodeVisitor<T, R> &visitor) const = 0;
-    virtual R predict(const stats::DataColumn<T> &data) const = 0;
-    virtual R response() const                                = 0;
-    virtual json to_json() const                              = 0;
+    using Ptr = std::unique_ptr<TreeNode>;
 
-    virtual bool equals(const TreeNode<T, R> &other) const = 0;
+    virtual ~TreeNode()                                                     = default;
+    virtual void accept(TreeNodeVisitor &visitor) const                     = 0;
+    virtual types::Response predict(const types::FeatureVector &data) const = 0;
+    virtual types::Response response() const                                = 0;
+    virtual json to_json() const                                            = 0;
 
-    virtual TreeNodePtr<T, R> clone() const = 0;
+    virtual bool equals(const TreeNode &other) const = 0;
+    virtual Ptr clone() const                        = 0;
 
-    bool operator==(const TreeNode<T, R> &other) const {
-      return this->equals(other);
-    }
-
-    bool operator!=(const TreeNode<T, R> &other) const {
-      return !this->equals(other);
-    }
+    bool operator==(const TreeNode &other) const;
+    bool operator!=(const TreeNode &other) const;
   };
 
-  template<typename T, typename R>
-  std::ostream& operator<<(std::ostream & ostream, const TreeNode<T, R> &node) {
-    return ostream << node.to_json().dump(2, ' ', false);
-  }
+  std::ostream& operator<<(std::ostream& ostream, const TreeNode& node);
+  TreeNode::Ptr node_from_json(const json& j);
 }

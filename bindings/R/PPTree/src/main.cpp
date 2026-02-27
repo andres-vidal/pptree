@@ -10,42 +10,42 @@ using namespace RcppEigen;
 using namespace pptree;
 
 // [[Rcpp::export]]
-Tree<float, int> pptree_train_glda(
-  Data<float>     x,
-  DataColumn<int> y,
-  const float     lambda) {
+Tree pptree_train_glda(
+  FeatureMatrix  x,
+  ResponseVector y,
+  const float    lambda) {
   const int seed = R::runif(0, INT_MAX);
 
   RNG rng(seed);
 
-  return Tree<float, int>::train(
-    TrainingSpecGLDA<float, int>(lambda),
+  return Tree::train(
+    TrainingSpecGLDA(lambda),
     x,
     y,
     rng);
 }
 
 // [[Rcpp::export]]
-Forest<float, int> pptree_train_forest_glda(
-  Data<float>     x,
-  DataColumn<int> y,
-  const int       size,
-  const int       n_vars,
-  const float     lambda,
-  SEXP            n_threads) {
+Forest pptree_train_forest_glda(
+  FeatureMatrix  x,
+  ResponseVector y,
+  const int      size,
+  const int      n_vars,
+  const float    lambda,
+  SEXP           n_threads) {
   const int seed = R::runif(0, INT_MAX);
 
   if (n_threads == R_NilValue) {
-    return Forest<float, int>::train(
-      TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    return Forest::train(
+      TrainingSpecUGLDA(n_vars, lambda),
       x,
       y,
       size,
       seed);
   }
 
-  return Forest<float, int>::train(
-    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+  return Forest::train(
+    TrainingSpecUGLDA(n_vars, lambda),
     x,
     y,
     size,
@@ -54,15 +54,15 @@ Forest<float, int> pptree_train_forest_glda(
 }
 
 // [[Rcpp::export]]
-DataColumn<int> pptree_predict(
-  const Tree<float, int> &tree,
-  const Data<float> &     data) {
+ResponseVector pptree_predict(
+  const Tree &          tree,
+  const FeatureMatrix & data) {
   return tree.predict(data);
 }
 
 // [[Rcpp::export]]
-DataColumn<int> pptree_predict_forest(
-  const Forest<float, int> &forest,
-  const Data<float> &       data) {
+ResponseVector pptree_predict_forest(
+  const Forest &        forest,
+  const FeatureMatrix & data) {
   return forest.predict(data);
 }

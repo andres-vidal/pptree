@@ -3,50 +3,24 @@
 #include "TreeNode.hpp"
 
 namespace models {
-  template<typename T, typename R>
-  using TreeResponsePtr = std::unique_ptr<TreeResponse<T, R> >;
+  struct TreeResponse : public TreeNode {
+    using Ptr = std::unique_ptr<TreeResponse>;
 
-  template<typename T, typename R>
-  struct TreeResponse : public TreeNode<T, R> {
-    R value;
+    types::Response value;
 
-    explicit TreeResponse(R value) : value(value) {
-    }
+    explicit TreeResponse(types::Response value);
 
-    void accept(TreeNodeVisitor<T, R> &visitor) const override {
-      visitor.visit(*this);
-    }
+    void accept(TreeNodeVisitor& visitor) const override;
+    types::Response response() const override;
+    types::Response predict(const types::FeatureVector& data) const override;
 
-    R response() const override {
-      return value;
-    }
+    bool equals(const TreeNode& other) const override;
+    json to_json() const override;
 
-    R predict(const stats::DataColumn<T> &data) const override {
-      return value;
-    }
+    TreeNode::Ptr clone() const override;
 
-    bool equals(const TreeNode<T, R> &other) const override {
-      const auto *resp = dynamic_cast<const TreeResponse<T, R> *>(&other);
-      return resp && (value == resp->value);
-    }
-
-    json to_json() const override {
-      return json{
-        { "value", value }
-      };
-    }
-
-    TreeNodePtr<T, R> clone() const override {
-      return std::make_unique<TreeResponse<T, R> >(*this);
-    }
-
-    static TreeResponsePtr<T, R> make(R value) {
-      return std::make_unique<TreeResponse<T, R> >(value);
-    }
+    static Ptr make(types::Response value);
   };
 
-  template<typename T, typename R>
-  std::ostream& operator<<(std::ostream & ostream, const TreeResponse<T, R>& response) {
-    return ostream << response.to_json().dump(2, ' ', false);
-  }
+  std::ostream& operator<<(std::ostream& ostream, const TreeResponse& response);
 }

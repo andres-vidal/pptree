@@ -8,11 +8,13 @@
 #include <numeric>
 #include <cmath>
 
-#include "Data.hpp"
+
+#include <nlohmann/json.hpp>
+#include "Stats.hpp"
 namespace pptree {
-  DataPacket<float, int> read_csv(const std::string& filename) {
+  DataPacket read_csv(const std::string& filename) {
     csv::CSVReader reader(filename);
-    std::vector<std::vector<float> > featureData;
+    std::vector<std::vector<types::Feature> > featureData;
     std::vector<std::string> rawLabels;
 
     for (csv::CSVRow& row : reader) {
@@ -20,9 +22,9 @@ namespace pptree {
         throw std::runtime_error("CSV row has no columns.");
       }
 
-      std::vector<float> currentFeatures;
+      std::vector<types::Feature> currentFeatures;
       for (int j = 0; j < row.size() - 1; ++j) {
-        currentFeatures.push_back(row[j].get<float>());
+        currentFeatures.push_back(row[j].get<types::Feature>());
       }
 
       featureData.push_back(std::move(currentFeatures));
@@ -52,7 +54,7 @@ namespace pptree {
     const int n = featureData.size();
     const int p = featureData[0].size();
 
-    Data<float> x(n, p);
+    types::FeatureMatrix x(n, p);
     for (int i = 0; i < n; ++i) {
       if (featureData[i].size() != p) {
         throw std::runtime_error("Inconsistent number of feature columns in CSV file.");
@@ -63,18 +65,18 @@ namespace pptree {
       }
     }
 
-    DataColumn<int> y(n);
+    types::ResponseVector y(n);
     for (int i = 0; i < n; ++i) {
       y[i] = labels[i];
     }
 
-    return DataPacket<float, int>(x, y);
+    return DataPacket(x, y);
   }
 
   void announce_configuration(
-    const CLIOptions&    params,
-    const Data<float  >& tr_x,
-    const Data<float  >& te_x) {
+    const CLIOptions&           params,
+    const types::FeatureMatrix& tr_x,
+    const types::FeatureMatrix& te_x) {
     if (params.trees > 0) {
       std::cout << "Training random forest with " << params.trees << " trees" << std::endl;
       std::cout << "Using " << params.n_vars << " variables per split (" << (params.p_vars * 100) << "% of features)" << std::endl;
@@ -91,9 +93,9 @@ namespace pptree {
   }
 
   struct ModelStats {
-    stats::DataColumn<double> tr_times;
-    stats::DataColumn<double> tr_error;
-    stats::DataColumn<double> te_error;
+    types::Vector<float> tr_times;
+    types::Vector<float> tr_error;
+    types::Vector<float> te_error;
 
     double mean_time() const {
       return tr_times.mean();
