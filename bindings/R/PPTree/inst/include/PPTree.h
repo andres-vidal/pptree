@@ -3,6 +3,9 @@
 #include <RcppCommon.h>
 
 using namespace pptree;
+using namespace pptree::types;
+using namespace pptree::stats;
+using namespace pptree::pp;
 
 namespace Rcpp {
   SEXP wrap(const TreeNode &);

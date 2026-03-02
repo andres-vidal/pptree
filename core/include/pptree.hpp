@@ -1,21 +1,16 @@
-#include "Forest.hpp"
-#include "Tree.hpp"
-#include "TrainingSpec.hpp"
-#include "TrainingSpecGLDA.hpp"
-#include "TrainingSpecUGLDA.hpp"
+#pragma once
 
-#include "PPStrategy.hpp"
-#include "PPGLDAStrategy.hpp"
+#include "models/Tree.hpp"
+#include "models/Forest.hpp"
+#include "models/TrainingSpec.hpp"
+#include "models/TrainingSpecGLDA.hpp"
+#include "models/TrainingSpecUGLDA.hpp"
 
-#include "DRStrategy.hpp"
-#include "DRUniformStrategy.hpp"
-#include "DRNoopStrategy.hpp"
+#include "models/PPStrategy.hpp"
+#include "models/PPGLDAStrategy.hpp"
 
-#include "Stats.hpp"
+#include "models/DRStrategy.hpp"
+#include "models/DRUniformStrategy.hpp"
+#include "models/DRNoopStrategy.hpp"
 
-namespace pptree {
-  using namespace models;
-  using namespace stats;
-  using namespace pp;
-  using namespace types;
-}
+#include "stats/Stats.hpp"

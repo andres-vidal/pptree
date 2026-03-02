@@ -8,6 +8,8 @@
 using namespace Rcpp;
 using namespace RcppEigen;
 using namespace pptree;
+using namespace pptree::types;
+using namespace pptree::stats;
 
 // [[Rcpp::export]]
 Tree pptree_train_glda(

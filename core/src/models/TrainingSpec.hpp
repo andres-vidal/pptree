@@ -1,0 +1,38 @@
+#pragma once
+
+#include "models/TrainingSpecVisitor.hpp"
+
+#include "models/PPGLDAStrategy.hpp"
+#include "models/DRUniformStrategy.hpp"
+#include "models/DRNoopStrategy.hpp"
+
+
+#include <memory>
+#include <map>
+
+namespace pptree {
+  struct TrainingSpec {
+    using Ptr = std::unique_ptr<TrainingSpec>;
+
+
+    const std::unique_ptr<pp::PPStrategy> pp_strategy;
+    const std::unique_ptr<dr::DRStrategy> dr_strategy;
+
+    TrainingSpec(
+      std::unique_ptr<pp::PPStrategy> pp_strategy,
+      std::unique_ptr<dr::DRStrategy> dr_strategy) :
+      pp_strategy(std::move(pp_strategy)),
+      dr_strategy(std::move(dr_strategy)) {
+    }
+
+    TrainingSpec(const TrainingSpec& other) :
+      pp_strategy(other.pp_strategy->clone()),
+      dr_strategy(other.dr_strategy->clone()) {
+    }
+
+    virtual ~TrainingSpec()                                 = default;
+    virtual void accept(TrainingSpecVisitor &visitor) const = 0;
+
+    virtual Ptr clone() const = 0;
+  };
+}

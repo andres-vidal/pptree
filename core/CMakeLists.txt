@@ -107,85 +107,6 @@ FetchContent_MakeAvailable(pcg)
 add_library(pcg_lib INTERFACE)
 target_include_directories(pcg_lib INTERFACE ${pcg_SOURCE_DIR}/include)
 
-# Collect all .cpp files from the specified directories
-file(GLOB_RECURSE ALL_CPP_FILES ./**/*.cpp)
-
-# Collect all .cpp files that are not test files
-set(NON_TEST_CPP_FILES "")
-foreach(file ${ALL_CPP_FILES})
-  if(NOT file MATCHES "\\.test\\.cpp$" AND NOT file MATCHES "\\CLI\\.cpp$" AND NOT file MATCHES "Sandbox\\.cpp$")
-    list(APPEND NON_TEST_CPP_FILES ${file})
-  endif()
-endforeach()
-
-# Add library with all non-test files
-add_library(pptree-core ${NON_TEST_CPP_FILES})
-
-target_include_directories(pptree-core
-  PUBLIC include
-  PUBLIC src)
-
-target_link_libraries(pptree-core
-  Eigen3::Eigen
-  nlohmann_json::nlohmann_json
-  pcg_lib
-  fmt::fmt)
-
-if(OpenMP_FOUND)
-  target_link_libraries(pptree-core OpenMP::OpenMP_CXX)
-endif()
-
-if(Jemalloc_FOUND)
-  message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")
-  target_link_libraries(pptree-core PkgConfig::Jemalloc)
-else()
-  message(WARNING "Jemalloc not found. Program could be unstable on highly multi-threaded operations.")
-endif()
-
-# Test runner
-enable_testing()
-
-# Collect all .test.cpp
-file(GLOB_RECURSE TEST_SOURCES ./**/*.test.cpp)
-
-if(TEST_SOURCES)
-  # Google Test
-  FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG v1.17.0
-  )
-  FetchContent_MakeAvailable(googletest)
-
-  # Add executable for the tests
-  add_executable(pptree-test ${TEST_SOURCES})
-
-  target_link_libraries(pptree-test
-    pptree-core
-    gtest_main
-    gtest
-    CLI11::CLI11
-    csv)
-
-  target_include_directories(pptree-test
-    PUBLIC src
-    PUBLIC include
-    PUBLIC ${gtest_SOURCE_DIR}/include
-    PUBLIC ${gtest_SOURCE_DIR}
-    PUBLIC ${csv_SOURCE_DIR}/include)
-
-  target_compile_definitions(pptree-test PRIVATE
-    PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
-    PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
-    PPTREE_VERSION="${PROJECT_VERSION}")
-
-  add_dependencies(pptree-test pptree)
-
-  include(GoogleTest)
-  gtest_discover_tests(pptree-test DISCOVERY_MODE PRE_TEST)
-endif()
-
-
 # Fetch csv-parser
 FetchContent_Declare(
   csv
@@ -193,7 +114,6 @@ FetchContent_Declare(
   GIT_SHALLOW TRUE
   GIT_TAG 2.5.1
 )
-
 FetchContent_MakeAvailable(csv)
 
 # CLI11 for command line parsing
@@ -212,8 +132,105 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(fmt)
 
-# Setup cli executable
-add_executable(pptree src/CLI.cpp)
+# ---------------------------------------------------------------------------
+# Common compile interface for all pptree OBJECT libraries
+# ---------------------------------------------------------------------------
+add_library(pptree-compile INTERFACE)
+
+target_include_directories(pptree-compile INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+target_link_libraries(pptree-compile INTERFACE
+  Eigen3::Eigen
+  pcg_lib)
+
+if(OpenMP_FOUND)
+  target_link_libraries(pptree-compile INTERFACE OpenMP::OpenMP_CXX)
+endif()
+
+# ---------------------------------------------------------------------------
+# OBJECT libraries (one per subfolder)
+# ---------------------------------------------------------------------------
+add_subdirectory(src/models)
+add_subdirectory(src/stats)
+add_subdirectory(src/serialization)
+add_subdirectory(src/utils)
+
+# ---------------------------------------------------------------------------
+# Core library (composed from OBJECT libraries)
+# ---------------------------------------------------------------------------
+add_library(pptree-core
+  $<TARGET_OBJECTS:pptree-models>
+  $<TARGET_OBJECTS:pptree-stats>
+  $<TARGET_OBJECTS:pptree-utils>)
+
+target_link_libraries(pptree-core PUBLIC pptree-compile)
+
+if(Jemalloc_FOUND)
+  message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")
+  target_link_libraries(pptree-core PRIVATE PkgConfig::Jemalloc)
+else()
+  message(WARNING "Jemalloc not found. Program could be unstable on highly multi-threaded operations.")
+endif()
+
+# ---------------------------------------------------------------------------
+# CLI executable
+# ---------------------------------------------------------------------------
+add_executable(pptree src/cli/CLI.cpp)
 target_include_directories(pptree PRIVATE ${csv_SOURCE_DIR}/include)
-target_link_libraries(pptree pptree-core csv CLI11::CLI11 fmt::fmt)
+target_link_libraries(pptree pptree-core pptree-serialization nlohmann_json::nlohmann_json csv CLI11::CLI11 fmt::fmt)
 target_compile_definitions(pptree PRIVATE PPTREE_VERSION="${PROJECT_VERSION}")
+
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+enable_testing()
+
+set(PPTREE_TEST_SRC
+  src/test.cpp
+  src/models/Tree.test.cpp
+  src/models/Forest.test.cpp
+  src/models/PPStrategy.test.cpp
+  src/stats/Stats.test.cpp
+  src/stats/GroupPartition.test.cpp
+  src/stats/ConfusionMatrix.test.cpp
+  src/utils/Math.test.cpp
+  src/utils/Invariant.test.cpp
+  src/cli/CLIOptions.test.cpp
+  src/cli/CLI.integration.test.cpp)
+
+# Google Test
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG v1.17.0
+)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(pptree-test ${PPTREE_TEST_SRC})
+
+target_link_libraries(pptree-test
+  pptree-core
+  pptree-serialization
+  nlohmann_json::nlohmann_json
+  gtest
+  CLI11::CLI11
+  csv
+  fmt::fmt)
+
+target_include_directories(pptree-test PRIVATE
+  ${csv_SOURCE_DIR}/include
+  ${gtest_SOURCE_DIR}/include
+  ${gtest_SOURCE_DIR})
+
+target_compile_definitions(pptree-test PRIVATE
+  PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
+  PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
+  PPTREE_VERSION="${PROJECT_VERSION}")
+
+add_dependencies(pptree-test pptree)
+
+include(GoogleTest)
+gtest_discover_tests(pptree-test DISCOVERY_MODE PRE_TEST)
