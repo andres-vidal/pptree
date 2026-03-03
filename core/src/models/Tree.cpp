@@ -1,5 +1,6 @@
 #include "models/Tree.hpp"
 
+#include "models/ModelVisitor.hpp"
 #include "models/BootstrapTree.hpp"
 #include "utils/Invariant.hpp"
 #include "utils/Map.hpp"
@@ -276,5 +277,9 @@ namespace pptree {
 
   bool Tree::operator!=(const Tree& other) const {
     return !(*this == other);
+  }
+
+  void Tree::accept(ModelVisitor& visitor) const {
+    visitor.visit(*this);
   }
 }

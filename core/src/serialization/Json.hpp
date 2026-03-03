@@ -4,6 +4,7 @@
 #include "models/TreeNode.hpp"
 #include "models/TreeCondition.hpp"
 #include "models/TreeResponse.hpp"
+#include "models/ModelVisitor.hpp"
 #include "models/Tree.hpp"
 #include "models/BootstrapTree.hpp"
 #include "models/Forest.hpp"
@@ -21,12 +22,20 @@ namespace pptree::serialization {
     void visit(const TreeResponse& node) override;
   };
 
+  struct JsonModelVisitor : public ModelVisitor {
+    json result;
+    void visit(const Tree& tree) override;
+    void visit(const Forest& forest) override;
+  };
+
+  json to_json(const Model& model);
   json to_json(const TreeNode& node);
   json to_json(const Tree& tree);
   json to_json(const BootstrapTree& tree);
   json to_json(const Forest& forest);
   json to_json(const stats::ConfusionMatrix& cm);
 
+  Model::Ptr model_from_json(const json& j);
   TreeNode::Ptr node_from_json(const json& j);
   Tree tree_from_json(const json& j);
   Forest forest_from_json(const json& j);

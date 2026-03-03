@@ -25,6 +25,20 @@ namespace pptree::serialization {
     result = json{ { "value", node.value } };
   }
 
+  void JsonModelVisitor::visit(const Tree& tree) {
+    result = json{ { "model_type", "tree" }, { "model", to_json(tree) } };
+  }
+
+  void JsonModelVisitor::visit(const Forest& forest) {
+    result = json{ { "model_type", "forest" }, { "model", to_json(forest) } };
+  }
+
+  json to_json(const Model& model) {
+    JsonModelVisitor visitor;
+    model.accept(visitor);
+    return visitor.result;
+  }
+
   json to_json(const TreeNode& node) {
     JsonNodeVisitor visitor;
     node.accept(visitor);
@@ -53,20 +67,23 @@ namespace pptree::serialization {
   json to_json(const stats::ConfusionMatrix& cm) {
     json j;
 
-    std::vector<std::vector<int>> matrix_data;
+    std::vector<std::vector<int> > matrix_data;
     for (int i = 0; i < cm.values.rows(); ++i) {
       std::vector<int> row;
       for (int col = 0; col < cm.values.cols(); ++col) {
         row.push_back(cm.values(i, col));
       }
+
       matrix_data.push_back(row);
     }
+
     j["matrix"] = matrix_data;
 
     std::vector<int> labels;
     for (const auto& [label, idx] : cm.label_index) {
       labels.push_back(label);
     }
+
     j["labels"] = labels;
 
     auto ce = cm.class_errors();
@@ -76,12 +93,24 @@ namespace pptree::serialization {
     return j;
   }
 
+  Model::Ptr model_from_json(const json& j) {
+    std::string model_type = j.value("model_type", "tree");
+
+    if (model_type == "forest") {
+      return std::make_unique<Forest>(forest_from_json(j["model"]));
+    } else if (model_type == "tree") {
+      return std::make_unique<Tree>(tree_from_json(j["model"]));
+    } else {
+      throw std::invalid_argument("Invalid model type: " + model_type);
+    }
+  }
+
   TreeNode::Ptr node_from_json(const json& j) {
     if (j.contains("value")) {
       return TreeResponse::make(j["value"].get<Response>());
     }
 
-    const auto proj_vec = j["projector"].get<std::vector<Feature>>();
+    const auto proj_vec = j["projector"].get<std::vector<Feature> >();
 
     pp::Projector projector = Eigen::Map<const pp::Projector>(
       proj_vec.data(),

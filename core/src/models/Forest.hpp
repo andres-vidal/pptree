@@ -1,5 +1,6 @@
 #pragma once
 
+#include "models/Model.hpp"
 #include "models/BootstrapTree.hpp"
 
 #include <map>
@@ -9,7 +10,7 @@
 #include <vector>
 
 namespace pptree {
-  struct Forest {
+  struct Forest : public Model {
     static Forest train(
       const TrainingSpec&    training_spec,
       types::FeatureMatrix&  x,
@@ -25,13 +26,15 @@ namespace pptree {
     Forest();
     Forest(TrainingSpec::Ptr&& training_spec, int seed);
 
-    types::Response predict(const types::FeatureVector& data) const;
-    types::ResponseVector predict(const types::FeatureMatrix& data) const;
+    types::Response predict(const types::FeatureVector& data) const override;
+    types::ResponseVector predict(const types::FeatureMatrix& data) const override;
 
     void add_tree(std::unique_ptr<BootstrapTree> tree);
 
     bool operator==(const Forest& other) const;
     bool operator!=(const Forest& other) const;
+
+    void accept(ModelVisitor& visitor) const override;
 
     private:
       types::Response predict(const types::FeatureVector& data, const std::vector<int>& indx) const;

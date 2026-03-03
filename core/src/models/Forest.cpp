@@ -1,4 +1,5 @@
 #include "models/Forest.hpp"
+#include "models/ModelVisitor.hpp"
 #include "utils/Types.hpp"
 #include "utils/Invariant.hpp"
 
@@ -116,5 +117,9 @@ namespace pptree {
     }
 
     return most_voted_group;
+  }
+
+  void Forest::accept(ModelVisitor& visitor) const {
+    visitor.visit(*this);
   }
 }

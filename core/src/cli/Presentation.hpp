@@ -163,23 +163,24 @@ namespace pptree::cli {
    * @param cm The confusion matrix to print.
    */
   inline void print_confusion_matrix(const stats::ConfusionMatrix& cm) {
-    int n = cm.values.rows();
+    int n          = cm.values.rows();
     auto class_err = cm.class_errors();
 
-    fmt::print("\n{}\n", emphasis("Confusion Matrix:"));
+    fmt::print("{}\n\n", emphasis("Confusion Matrix:"));
 
     // Header row: class labels
-    fmt::print("       ");
+    fmt::print("    ");
     for (const auto& [label, idx] : cm.label_index) {
       fmt::print("{:>5}", label);
     }
+
     fmt::print("  Error\n");
 
     // Data rows
     for (const auto& [label, row_idx] : cm.label_index) {
-      fmt::print("  {:>4}", label);
+      fmt::print("{:>4}", label);
       for (const auto& [col_label, col_idx] : cm.label_index) {
-        int val = cm.values(row_idx, col_idx);
+        int val          = cm.values(row_idx, col_idx);
         std::string cell = fmt::format("{:>4}", val);
 
         if (row_idx == col_idx) {
@@ -190,6 +191,7 @@ namespace pptree::cli {
           fmt::print(" {}", muted(cell));
         }
       }
+
       fmt::print("  {:.1f}%\n", class_err[row_idx] * 100);
     }
 
