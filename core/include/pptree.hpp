@@ -14,3 +14,5 @@
 #include "models/DRNoopStrategy.hpp"
 
 #include "stats/Stats.hpp"
+
+#include "models/VariableImportance.hpp"

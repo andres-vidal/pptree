@@ -21,7 +21,7 @@ namespace pptree {
     const FeatureMatrix &  x,
     const GroupPartition & group_spec
     ) {
-    std::vector<std::tuple<Response, Feature> > means;
+    std::vector<std::tuple<Response, Feature>> means;
 
     invariant(x.cols() == 1, "Binary regrouping requires a unidimensional data");
 
@@ -32,8 +32,8 @@ namespace pptree {
     }
 
     std::sort(means.begin(), means.end(), [](const auto &a, const auto &b) {
-        return std::get<1>(a) < std::get<1>(b);
-      });
+      return std::get<1>(a) < std::get<1>(b);
+    });
 
     Feature edge_gap    = -1;
     Response edge_group = -1;
@@ -75,7 +75,8 @@ namespace pptree {
 
     auto reduced_x = x(Eigen::all, dr.selected_cols);
 
-    Projector projector = dr.expand(pp_strategy(reduced_x, group_spec));
+    auto [reduced_projector, pp_index_value] = pp_strategy.optimize(reduced_x, group_spec);
+    Projector projector = dr.expand(reduced_projector);
 
     auto data_group_1 = group_spec.group(x, group_1);
     auto data_group_2 = group_spec.group(x, group_2);
@@ -107,7 +108,8 @@ namespace pptree {
       std::move(lower_response),
       std::move(upper_response),
       training_spec.clone(),
-      group_spec.groups);
+      group_spec.groups,
+      pp_index_value);
 
     return condition;
   }
@@ -136,10 +138,11 @@ namespace pptree {
     GroupPartition y;
     TreeNode::Ptr *node;
 
-    bool pop            = false;
-    TreeNode::Ptr upper = nullptr;
-    TreeNode::Ptr lower = nullptr;
-    Threshold threshold = 0;
+    bool pop               = false;
+    TreeNode::Ptr upper    = nullptr;
+    TreeNode::Ptr lower    = nullptr;
+    Threshold threshold    = 0;
+    Feature pp_index_value = 0;
     Projector projector;
 
     Step(
@@ -178,7 +181,8 @@ namespace pptree {
           std::move(step.lower),
           std::move(step.upper),
           training_spec.clone(),
-          step.y.groups);
+          step.y.groups,
+          step.pp_index_value);
 
         stack.pop();
         continue;
@@ -204,8 +208,9 @@ namespace pptree {
       Response binary_lower_group = temp_node->lower->response();
       Response binary_upper_group = temp_node->upper->response();
 
-      step.projector = temp_node->projector;
-      step.threshold = temp_node->threshold;
+      step.projector      = temp_node->projector;
+      step.threshold      = temp_node->threshold;
+      step.pp_index_value = temp_node->pp_index_value;
 
       auto lower_y = split.subset(split.subgroups.at(binary_lower_group));
       auto upper_y = split.subset(split.subgroups.at(binary_upper_group));
@@ -247,13 +252,13 @@ namespace pptree {
     return tree;
   }
 
-  Tree::Tree(TreeNode::Ptr root)
-    : root(std::move(root)),
+  Tree::Tree(TreeNode::Ptr root) :
+    root(std::move(root)),
     training_spec(TrainingSpecGLDA::make(0.5)) {
   }
 
-  Tree::Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec)
-    : root(std::move(root)),
+  Tree::Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec) :
+    root(std::move(root)),
     training_spec(std::move(training_spec)) {
   }
 

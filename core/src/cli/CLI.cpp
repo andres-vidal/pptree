@@ -47,6 +47,10 @@ using namespace pptree::io;
 using namespace csv;
 using json = nlohmann::json;
 
+using pptree::variable_importance_permuted;
+using pptree::variable_importance_projections;
+using pptree::variable_importance_weighted_projections;
+
 template<typename F>
 auto measure_time_ms(F&& f) {
   auto str = std::chrono::high_resolution_clock::now();
@@ -525,6 +529,48 @@ int main(int argc, char *argv[]) {
 
       if (!params.save_path.empty()) {
         save_model(*train_result.model, params, params.save_path);
+      }
+
+      if (!params.no_metrics) {
+        const auto *forest = dynamic_cast<const Forest *>(train_result.model.get());
+        const auto *tree   = dynamic_cast<const Tree *>(train_result.model.get());
+        FeatureVector vi1, vi2, vi3, scale;
+        double oob_err = -1.0;
+
+        const int n_vars = static_cast<int>(x.cols());
+
+        scale = stats::sd(x);
+        scale = (scale.array() > Feature(0)).select(scale, Feature(1));
+
+        if (forest != nullptr) {
+          oob_err = forest->oob_error(x, y);
+          vi1 = variable_importance_permuted(*forest, x, y, params.seed);
+          vi2 = variable_importance_projections(*forest, n_vars, &scale);
+          vi3 = variable_importance_weighted_projections(*forest, x, y, &scale);
+        } else if (tree != nullptr) {
+          vi2 = variable_importance_projections(*tree, n_vars, &scale);
+        }
+
+        if (!params.quiet) {
+          if (oob_err >= 0.0) {
+            fmt::print("OOB error: {}\n", emphasis(fmt::format("{:.2f}%", oob_err * 100)));
+          }
+
+          print_variable_importance(vi1, vi2, vi3, scale);
+        }
+
+        if (!params.save_path.empty()) {
+          std::ifstream in(params.save_path);
+          json saved = json::parse(in);
+          in.close();
+
+          if (oob_err >= 0.0) {
+            saved["oob_error"] = oob_err;
+          }
+
+          saved["variable_importance"] = vi_to_json(vi1, vi2, vi3, scale);
+          write_json_file(saved, params.save_path);
+        }
       }
 
       break;

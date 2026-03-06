@@ -87,6 +87,18 @@ PPForest <- function(
   model$x <- x
   model$y <- y
 
+  scale <- apply(x, 2, sd)
+  scale[scale == 0] <- 1
+  vi_seed <- sample.int(.Machine$integer.max, 1L)
+
+  model$vi <- list(
+    scale       = scale,
+    projections = pptree_vi_projections_forest(model, ncol(x), scale),
+    weighted    = pptree_vi_weighted(model, x, y, scale),
+    permuted    = pptree_vi_permuted(model, x, y, vi_seed)
+  )
+  model$oob_error <- pptree_oob_error(model, x, y)
+
   model
 }
 
@@ -161,7 +173,7 @@ print.PPForest <- function(x, ...) {
 summary.PPForest <- function(object, ...) {
   model <- object
 
-  if (!is.null(formula(object))) {
+  if (!is.null(model$x)) {
     cat("\n")
     cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
     cat("-------------------------------------\n")
@@ -172,9 +184,24 @@ summary.PPForest <- function(object, ...) {
     if (!is.null(model$formula)) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
+    if (model$oob_error >= 0) {
+      cat("OOB error:", round(model$oob_error * 100, 2), "%\n")
+    }
     cat("-------------------------------------\n")
-    cat("Variable Importance:\n")
-    cat("TODO")
+    cat("Variable Importance:\n\n")
+    p <- length(model$vi$projections)
+    vnames <- if (!is.null(colnames(model$x))) colnames(model$x) else paste0("x", seq_len(p))
+    ord <- order(model$vi$projections, decreasing = TRUE)
+    tbl <- data.frame(
+      Variable    = vnames[ord],
+      sigma       = model$vi$scale[ord],
+      Projection  = model$vi$projections[ord],
+      Weighted    = model$vi$weighted[ord],
+      Permuted    = model$vi$permuted[ord],
+      row.names   = seq_len(p)
+    )
+    names(tbl)[2] <- "\u03c3"
+    print(tbl)
     cat("-------------------------------------\n")
     cat("Confusion Matrix:\n")
     cat("TODO")

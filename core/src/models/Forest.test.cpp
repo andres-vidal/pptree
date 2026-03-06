@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 
+#include "models/BootstrapTree.hpp"
 #include "models/Forest.hpp"
+#include "models/TreeCondition.hpp"
+#include "models/TreeResponse.hpp"
 
 #include "models/TrainingSpec.hpp"
 #include "models/TrainingSpecGLDA.hpp"
@@ -589,4 +592,289 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
   ASSERT_EQ(y.cols(), result.cols());
   ASSERT_EQ(y.rows(), result.rows());
   ASSERT_EQ(y, result);
+}
+
+// ---------------------------------------------------------------------------
+// OOB error
+// ---------------------------------------------------------------------------
+
+TEST(OobError, PerfectSeparationGivesLowError) {
+  FeatureMatrix x = DATA(Feature, 20,
+      0.0f, 1.0f,
+      0.1f, 2.0f,
+      0.2f, 0.5f,
+      0.3f, 1.5f,
+      0.4f, 0.8f,
+      0.5f, 1.2f,
+      0.6f, 0.9f,
+      0.7f, 1.8f,
+      0.8f, 0.6f,
+      0.9f, 1.1f,
+      9.0f, 1.0f,
+      9.1f, 2.0f,
+      9.2f, 0.5f,
+      9.3f, 1.5f,
+      9.4f, 0.8f,
+      9.5f, 1.2f,
+      9.6f, 0.9f,
+      9.7f, 1.8f,
+      9.8f, 0.6f,
+      9.9f, 1.1f);
+
+  ResponseVector y = DATA(Response, 20,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
+  Forest forest = Forest::train(TrainingSpecGLDA(0.0f), x, y, 50, 42);
+
+  double err = forest.oob_error(x, y);
+
+  ASSERT_GE(err, 0.0);
+  ASSERT_LE(err, 0.1) << "Expected near-zero OOB error for perfectly separable data";
+}
+
+TEST(OobError, AllInBagReturnsNegative) {
+  FeatureMatrix x = DATA(Feature, 4,
+      0.0f, 0.0f,
+      0.1f, 0.1f,
+      9.9f, 0.0f,
+      9.8f, 0.1f);
+
+  ResponseVector y = DATA(Response, 4, 0, 0, 1, 1);
+
+  auto condition = TreeCondition::make(
+    as_projector({ 1.0f, 0.0f }),
+    5.0f,
+    TreeResponse::make(0),
+    TreeResponse::make(1),
+    nullptr,
+    { 0, 1 },
+    0.9f);
+
+  Forest forest;
+  forest.add_tree(
+    std::make_unique<BootstrapTree>(
+      std::move(condition),
+      TrainingSpecGLDA::make(0.0f),
+      std::vector<int>{ 0, 1, 2, 3 }));
+
+  double err = forest.oob_error(x, y);
+
+  ASSERT_DOUBLE_EQ(err, -1.0) << "No OOB observations, should return -1";
+}
+
+TEST(OobError, HandBuiltTreeWithKnownOob) {
+  FeatureMatrix x = DATA(Feature, 6,
+      0.0f, 0.5f,
+      0.1f, 0.3f,
+      0.2f, 0.7f,
+      9.8f, 0.4f,
+      9.9f, 0.6f,
+      9.7f, 0.2f);
+
+  ResponseVector y = DATA(Response, 6, 0, 0, 0, 1, 1, 1);
+
+  auto condition = TreeCondition::make(
+    as_projector({ 1.0f, 0.0f }),
+    5.0f,
+    TreeResponse::make(0),
+    TreeResponse::make(1),
+    nullptr,
+    { 0, 1 },
+    0.9f);
+
+  Forest forest;
+  forest.add_tree(
+    std::make_unique<BootstrapTree>(
+      std::move(condition),
+      TrainingSpecGLDA::make(0.0f),
+      std::vector<int>{ 0, 1, 4, 5 }));
+
+  double err = forest.oob_error(x, y);
+
+  ASSERT_DOUBLE_EQ(err, 0.0);
+}
+
+TEST(OobError, HandBuiltTreeWithOobMisclassification) {
+  FeatureMatrix x = DATA(Feature, 4,
+      0.0f, 0.0f,
+      0.1f, 0.1f,
+      9.9f, 0.0f,
+      9.8f, 0.1f);
+
+  ResponseVector y = DATA(Response, 4, 0, 1, 1, 1);
+
+  auto condition = TreeCondition::make(
+    as_projector({ 1.0f, 0.0f }),
+    5.0f,
+    TreeResponse::make(0),
+    TreeResponse::make(1),
+    nullptr,
+    { 0, 1 },
+    0.9f);
+
+  Forest forest;
+  forest.add_tree(
+    std::make_unique<BootstrapTree>(
+      std::move(condition),
+      TrainingSpecGLDA::make(0.0f),
+      std::vector<int>{ 0, 2 }));
+
+  double err = forest.oob_error(x, y);
+
+  ASSERT_DOUBLE_EQ(err, 0.5);
+}
+
+// ---------------------------------------------------------------------------
+// oob_predict
+// ---------------------------------------------------------------------------
+
+TEST(OobPredict, HandBuiltTreeWithKnownOob) {
+  FeatureMatrix x = DATA(Feature, 6,
+      0.0f, 0.5f,
+      0.1f, 0.3f,
+      0.2f, 0.7f,
+      9.8f, 0.4f,
+      9.9f, 0.6f,
+      9.7f, 0.2f);
+
+  auto condition = TreeCondition::make(
+    as_projector({ 1.0f, 0.0f }),
+    5.0f,
+    TreeResponse::make(0),
+    TreeResponse::make(1),
+    nullptr,
+    { 0, 1 },
+    0.9f);
+
+  Forest forest;
+  forest.add_tree(
+    std::make_unique<BootstrapTree>(
+      std::move(condition),
+      TrainingSpecGLDA::make(0.0f),
+      std::vector<int>{ 0, 1, 4, 5 }));
+
+  ResponseVector preds = forest.oob_predict(x);
+
+  ASSERT_EQ(preds.size(), 6);
+  EXPECT_EQ(preds(0), -1) << "Row 0 in bag";
+  EXPECT_EQ(preds(1), -1) << "Row 1 in bag";
+  EXPECT_EQ(preds(2), 0) << "Row 2 OOB, x[0]=0.2 < 5";
+  EXPECT_EQ(preds(3), 1) << "Row 3 OOB, x[0]=9.8 > 5";
+  EXPECT_EQ(preds(4), -1) << "Row 4 in bag";
+  EXPECT_EQ(preds(5), -1) << "Row 5 in bag";
+}
+
+TEST(OobPredict, AllInBagReturnsSentinel) {
+  FeatureMatrix x = DATA(Feature, 4,
+      0.0f, 0.0f,
+      0.1f, 0.1f,
+      9.9f, 0.0f,
+      9.8f, 0.1f);
+
+  auto condition = TreeCondition::make(
+    as_projector({ 1.0f, 0.0f }),
+    5.0f,
+    TreeResponse::make(0),
+    TreeResponse::make(1),
+    nullptr,
+    { 0, 1 },
+    0.9f);
+
+  Forest forest;
+  forest.add_tree(
+    std::make_unique<BootstrapTree>(
+      std::move(condition),
+      TrainingSpecGLDA::make(0.0f),
+      std::vector<int>{ 0, 1, 2, 3 }));
+
+  ResponseVector preds = forest.oob_predict(x);
+
+  ASSERT_EQ(preds.size(), 4);
+  EXPECT_EQ(preds(0), -1);
+  EXPECT_EQ(preds(1), -1);
+  EXPECT_EQ(preds(2), -1);
+  EXPECT_EQ(preds(3), -1);
+}
+
+TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
+  FeatureMatrix x = DATA(Feature, 4,
+      0.0f, 0.0f,
+      0.1f, 0.1f,
+      9.9f, 0.0f,
+      9.8f, 0.1f);
+
+  auto condition = TreeCondition::make(
+    as_projector({ 1.0f, 0.0f }),
+    5.0f,
+    TreeResponse::make(0),
+    TreeResponse::make(1),
+    nullptr,
+    { 0, 1 },
+    0.9f);
+
+  Forest forest;
+  forest.add_tree(
+    std::make_unique<BootstrapTree>(
+      std::move(condition),
+      TrainingSpecGLDA::make(0.0f),
+      std::vector<int>{ 0, 2 }));
+
+  ResponseVector preds = forest.oob_predict(x);
+
+  ASSERT_EQ(preds.size(), 4);
+  EXPECT_EQ(preds(0), -1) << "Row 0 in bag";
+  EXPECT_EQ(preds(1), 0) << "Row 1 OOB, x[0]=0.1 < 5 -> class 0";
+  EXPECT_EQ(preds(2), -1) << "Row 2 in bag";
+  EXPECT_EQ(preds(3), 1) << "Row 3 OOB, x[0]=9.8 > 5 -> class 1";
+}
+
+TEST(OobPredict, ConsistentWithOobError) {
+  FeatureMatrix x = DATA(Feature, 20,
+      0.0f, 1.0f,
+      0.1f, 2.0f,
+      0.2f, 0.5f,
+      0.3f, 1.5f,
+      0.4f, 0.8f,
+      0.5f, 1.2f,
+      0.6f, 0.9f,
+      0.7f, 1.8f,
+      0.8f, 0.6f,
+      0.9f, 1.1f,
+      9.0f, 1.0f,
+      9.1f, 2.0f,
+      9.2f, 0.5f,
+      9.3f, 1.5f,
+      9.4f, 0.8f,
+      9.5f, 1.2f,
+      9.6f, 0.9f,
+      9.7f, 1.8f,
+      9.8f, 0.6f,
+      9.9f, 1.1f);
+
+  ResponseVector y = DATA(Response, 20,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
+  Forest forest = Forest::train(TrainingSpecGLDA(0.0f), x, y, 50, 42);
+
+  ResponseVector preds = forest.oob_predict(x);
+  double err           = forest.oob_error(x, y);
+
+  int evaluated = 0;
+  int correct   = 0;
+
+  for (int i = 0; i < preds.size(); ++i) {
+    if (preds(i) >= 0) {
+      ++evaluated;
+
+      if (preds(i) == y(i)) {
+        ++correct;
+      }
+    }
+  }
+
+  double expected_err = (evaluated == 0) ? -1.0 : 1.0 - static_cast<double>(correct) / static_cast<double>(evaluated);
+
+  ASSERT_DOUBLE_EQ(err, expected_err) << "oob_error should match manual computation from oob_predict";
 }

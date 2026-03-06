@@ -9,25 +9,6 @@ using namespace pptree;
 using namespace pptree::stats;
 using namespace pptree::types;
 
-TEST(Stats, Standardize) {
-  FeatureMatrix data = DATA(Feature, 3,
-      1.0, 3.0, 1.0,
-      2.0, 2.0, 3.0,
-      3.0, 1.0, 2.0);
-
-  FeatureMatrix standardized = standardize(data);
-
-  FeatureMatrix expected = DATA(Feature, 3,
-      -1.0, 1.0, -1.0,
-      0.0, 0.0,  1.0,
-      1.0, -1.0, 0.0);
-
-  ASSERT_EQ(expected.size(), standardized.size());
-  ASSERT_EQ(expected.rows(), standardized.rows());
-  ASSERT_EQ(expected.cols(), standardized.cols());
-  ASSERT_EQ(expected, standardized);
-}
-
 TEST(Stats, Sort) {
   FeatureMatrix x = DATA(Feature, 3,
       1.0, 3.0, 1.0,
@@ -201,4 +182,59 @@ TEST(Stats, ErrorRateMoreObservationsThanPredictions) {
   ResponseVector observations = DATA(Response, 3, 0, 1, 2);
 
   ASSERT_THROW(error_rate(predictions, observations), std::invalid_argument);
+}
+
+TEST(Stats, SdVector) {
+  FeatureVector v = DATA(Feature, 4, 2.0f, 4.0f, 4.0f, 4.0f);
+  // mean = 3.5, var = ((−1.5)²+(0.5)²+(0.5)²+(0.5)²) / 3 = 3/3 = 1, sd = 1
+  ASSERT_NEAR(sd(v), 1.0, 1e-5);
+}
+
+TEST(Stats, SdVectorSingleElement) {
+  FeatureVector v = DATA(Feature, 1, 5.0f);
+  ASSERT_DOUBLE_EQ(sd(v), 0.0);
+}
+
+TEST(Stats, SdMatrixSingleColumn) {
+  FeatureMatrix m = DATA(Feature, 4,
+      2.0f,
+      4.0f,
+      4.0f,
+      4.0f);
+
+  FeatureVector result = sd(m);
+
+  ASSERT_EQ(result.size(), 1);
+  ASSERT_NEAR(result(0), 1.0f, 1e-5f);
+}
+
+TEST(Stats, SdMatrixMultipleColumns) {
+  // col 0: {1, 2, 3} → mean=2, var=1, sd=1
+  // col 1: {4, 4, 4} → mean=4, var=0, sd=0
+  // col 2: {0, 5, 10} → mean=5, var=25, sd=5
+  FeatureMatrix m = DATA(Feature, 3,
+      1.0f, 4.0f,  0.0f,
+      2.0f, 4.0f,  5.0f,
+      3.0f, 4.0f, 10.0f);
+
+  FeatureVector result = sd(m);
+
+  ASSERT_EQ(result.size(), 3);
+  ASSERT_NEAR(result(0), 1.0f, 1e-5f);
+  ASSERT_NEAR(result(1), 0.0f, 1e-5f);
+  ASSERT_NEAR(result(2), 5.0f, 1e-5f);
+}
+
+TEST(Stats, SdMatrixMatchesVectorSd) {
+  FeatureMatrix m = DATA(Feature, 5,
+      1.0f, 10.0f,
+      3.0f, 20.0f,
+      5.0f, 30.0f,
+      7.0f, 40.0f,
+      9.0f, 50.0f);
+
+  FeatureVector result = sd(m);
+
+  ASSERT_NEAR(result(0), static_cast<float>(sd(static_cast<FeatureVector>(m.col(0)))), 1e-5f);
+  ASSERT_NEAR(result(1), static_cast<float>(sd(static_cast<FeatureVector>(m.col(1)))), 1e-5f);
 }

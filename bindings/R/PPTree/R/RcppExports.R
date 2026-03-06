@@ -17,3 +17,23 @@ pptree_predict_forest <- function(forest, data) {
     .Call('_PPTree_pptree_predict_forest', PACKAGE = 'PPTree', forest, data)
 }
 
+pptree_vi_projections_tree <- function(tree, n_vars, scale) {
+    .Call('_PPTree_pptree_vi_projections_tree', PACKAGE = 'PPTree', tree, n_vars, scale)
+}
+
+pptree_vi_projections_forest <- function(forest, n_vars, scale) {
+    .Call('_PPTree_pptree_vi_projections_forest', PACKAGE = 'PPTree', forest, n_vars, scale)
+}
+
+pptree_vi_weighted <- function(forest, x, y, scale) {
+    .Call('_PPTree_pptree_vi_weighted', PACKAGE = 'PPTree', forest, x, y, scale)
+}
+
+pptree_vi_permuted <- function(forest, x, y, seed) {
+    .Call('_PPTree_pptree_vi_permuted', PACKAGE = 'PPTree', forest, x, y, seed)
+}
+
+pptree_oob_error <- function(forest, x, y) {
+    .Call('_PPTree_pptree_oob_error', PACKAGE = 'PPTree', forest, x, y)
+}
+

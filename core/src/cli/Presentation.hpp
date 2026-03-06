@@ -13,6 +13,9 @@
 
 #include <nlohmann/json.hpp>
 #include <fmt/format.h>
+#include <algorithm>
+#include <numeric>
+#include <vector>
 
 namespace pptree::cli {
   /**
@@ -152,6 +155,110 @@ namespace pptree::cli {
       double mb = static_cast<double>(stats.peak_rss_bytes) / (1024.0 * 1024.0);
       fmt::print("-- peak RSS:      {:.1f} MB\n", mb);
     }
+  }
+
+  /**
+   * @brief Print a ranked variable importance table to stdout.
+   *
+   * Columns: rank, variable name, σ (scale), VI2 (projections), VI3 (weighted),
+   * VI1 (permuted). Rows are sorted by VI2 descending. The VI1 column is
+   * omitted when its vector is empty. At most max_rows rows are printed.
+   *
+   * @param vi1       Permuted importance vector (size p, or size-0 to omit).
+   * @param vi2       Projections importance vector (size p).
+   * @param vi3       Weighted projections importance vector (size p).
+   * @param scale     Per-variable standard deviation used to scale VI2/VI3.
+   * @param max_rows  Maximum number of rows to print (0 = all).
+   */
+  inline void print_variable_importance(
+    const types::FeatureVector& vi1,
+    const types::FeatureVector& vi2,
+    const types::FeatureVector& vi3,
+    const types::FeatureVector& scale,
+    int                         max_rows = 20) {
+    const int p = static_cast<int>(vi2.size());
+
+    std::vector<int> order(static_cast<std::size_t>(p));
+    std::iota(order.begin(), order.end(), 0);
+    std::sort(order.begin(), order.end(), [&vi2](int a, int b) {
+      return vi2(a) > vi2(b);
+    });
+
+    const bool show_vi1 = vi1.size() == vi2.size();
+    const bool show_vi3 = vi3.size() == vi2.size();
+    const int rows      = (max_rows > 0 && p > max_rows) ? max_rows : p;
+
+    fmt::print("{}\n\n", emphasis("Variable Importance:"));
+
+    std::string sigma_hdr = muted(fmt::format("{:>10}", "σ"));
+
+    if (show_vi3 && show_vi1) {
+      fmt::print("{:>5}  {:<10}  {}  {:>12}  {:>12}  {:>12}\n", "Rank", "Variable", sigma_hdr, "Projection", "Weighted", "Permuted");
+      fmt::print("{:>5}  {:<10}  {:>10}  {:>12}  {:>12}  {:>12}\n", "----", "--------", "", "(VI2)", "(VI3)", "(VI1)");
+    } else if (show_vi3) {
+      fmt::print("{:>5}  {:<10}  {}  {:>12}  {:>12}\n",  "Rank", "Variable", sigma_hdr, "Projection", "Weighted");
+      fmt::print("{:>5}  {:<10}  {:>10}  {:>12}  {:>12}\n",  "----", "--------", "", "(VI2)", "(VI3)");
+    } else {
+      fmt::print("{:>5}  {:<10}  {}  {:>12}\n",  "Rank", "Variable", sigma_hdr, "Projection");
+      fmt::print("{:>5}  {:<10}  {:>10}  {:>12}\n", "----", "--------", "", "(VI2)");
+    }
+
+    for (int rank = 0; rank < rows; ++rank) {
+      int j         = order[static_cast<std::size_t>(rank)];
+      std::string v = fmt::format("x{}", j + 1);
+
+      if (show_vi3 && show_vi1) {
+        fmt::print("{:>5}  {:<10}  {:>10.4f}  {:>12.6f}  {:>12.6f}  {:>12.6f}\n", rank + 1, v, scale(j), vi2(j), vi3(j), vi1(j));
+      } else if (show_vi3) {
+        fmt::print("{:>5}  {:<10}  {:>10.4f}  {:>12.6f}  {:>12.6f}\n",  rank + 1, v, scale(j), vi2(j), vi3(j));
+      } else {
+        fmt::print("{:>5}  {:<10}  {:>10.4f}  {:>12.6f}\n", rank + 1, v, scale(j), vi2(j));
+      }
+    }
+
+    if (rows < p) {
+      fmt::print("{}\n", muted(fmt::format("  ... {} more variables not shown", p - rows)));
+    }
+
+    fmt::print("\n");
+  }
+
+  /**
+   * @brief Build a JSON object from VI vectors, suitable for embedding in the
+   *        saved model file.
+   *
+   * @param vi1    Permuted importance (size p, or size-0 to omit).
+   * @param vi2    Projections importance (size p).
+   * @param vi3    Weighted projections importance (size p).
+   * @param scale  Per-variable standard deviation used to scale VI2/VI3.
+   * @return JSON object with "scale", "projections", "weighted_projections",
+   *         and optionally "permuted" arrays (indexed by variable, 0-based).
+   */
+  inline nlohmann::json vi_to_json(
+    const types::FeatureVector& vi1,
+    const types::FeatureVector& vi2,
+    const types::FeatureVector& vi3,
+    const types::FeatureVector& scale) {
+    const int p = static_cast<int>(vi2.size());
+
+    std::vector<float> scale_vec(scale.data(), scale.data() + p);
+    std::vector<float> vi2_vec(vi2.data(), vi2.data() + p);
+
+    nlohmann::json j;
+    j["scale"]       = scale_vec;
+    j["projections"] = vi2_vec;
+
+    if (vi3.size() == vi2.size()) {
+      std::vector<float> vi3_vec(vi3.data(), vi3.data() + p);
+      j["weighted_projections"] = vi3_vec;
+    }
+
+    if (vi1.size() == vi2.size()) {
+      std::vector<float> vi1_vec(vi1.data(), vi1.data() + p);
+      j["permuted"] = vi1_vec;
+    }
+
+    return j;
   }
 
   /**

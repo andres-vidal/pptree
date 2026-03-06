@@ -18,13 +18,15 @@ namespace pptree {
 
     TrainingSpec::Ptr training_spec = nullptr;
     std::set<types::Response> classes; // <- not const, so move/copy works cleanly
+    types::Feature pp_index_value = 0;
 
     TreeCondition(pp::Projector projector,
       Threshold                 threshold,
       TreeNode::Ptr             lower,
       TreeNode::Ptr             upper,
-      TrainingSpec::Ptr         training_spec = nullptr,
-      std::set<types::Response> classes       = {});
+      TrainingSpec::Ptr         training_spec  = nullptr,
+      std::set<types::Response> classes        = {},
+      types::Feature            pp_index_value = 0);
 
     void accept(TreeNodeVisitor& visitor) const override;
     types::Response response() const override;
@@ -37,7 +39,8 @@ namespace pptree {
       Threshold                   threshold,
       TreeNode::Ptr               lower,
       TreeNode::Ptr               upper,
-      TrainingSpec::Ptr           training_spec = nullptr,
-      std::set<types::Response>   classes       = {});
+      TrainingSpec::Ptr           training_spec  = nullptr,
+      std::set<types::Response>   classes        = {},
+      types::Feature              pp_index_value = 0);
   };
 }

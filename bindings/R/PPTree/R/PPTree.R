@@ -66,6 +66,14 @@ PPTree <- function(
   model$x <- x
   model$y <- y
 
+  scale <- apply(x, 2, sd)
+  scale[scale == 0] <- 1
+
+  model$vi <- list(
+    scale       = scale,
+    projections = pptree_vi_projections_tree(model, ncol(x), scale)
+  )
+
   model
 }
 
@@ -167,7 +175,7 @@ print.PPTree <- function(x, ...) {
 summary.PPTree <- function(object, ...) {
   model <- object
 
-  if (!is.null(formula(object))) {
+  if (!is.null(model$x)) {
     cat("\n")
     cat("Project-Pursuit Oblique Decision Tree\n")
     cat("-------------------------------------\n")
@@ -178,8 +186,18 @@ summary.PPTree <- function(object, ...) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
     cat("-------------------------------------\n")
-    cat("Variable Importance:\n")
-    cat("TODO")
+    cat("Variable Importance:\n\n")
+    p <- length(model$vi$projections)
+    vnames <- if (!is.null(colnames(model$x))) colnames(model$x) else paste0("x", seq_len(p))
+    ord <- order(model$vi$projections, decreasing = TRUE)
+    tbl <- data.frame(
+      Variable   = vnames[ord],
+      sigma      = model$vi$scale[ord],
+      Projection = model$vi$projections[ord],
+      row.names  = seq_len(p)
+    )
+    names(tbl)[2] <- "\u03c3"
+    print(tbl)
     cat("-------------------------------------\n")
     cat("Confusion Matrix:\n")
     cat("TODO")

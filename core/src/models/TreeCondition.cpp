@@ -17,13 +17,15 @@ namespace pptree {
     TreeNode::Ptr      lower,
     TreeNode::Ptr      upper,
     TrainingSpec::Ptr  training_spec,
-    std::set<Response> classes)
-    : projector(std::move(projector)),
+    std::set<Response> classes,
+    Feature            pp_index_value) :
+    projector(std::move(projector)),
     threshold(std::move(threshold)),
     lower(std::move(lower)),
     upper(std::move(upper)),
     training_spec(std::move(training_spec)),
-    classes(std::move(classes)) {
+    classes(std::move(classes)),
+    pp_index_value(pp_index_value) {
   }
 
   void TreeCondition::accept(TreeNodeVisitor& visitor) const {
@@ -64,7 +66,8 @@ namespace pptree {
       lower->clone(),
       upper->clone(),
       std::move(spec_clone),
-      classes);
+      classes,
+      pp_index_value);
   }
 
   TreeCondition::Ptr TreeCondition::make(
@@ -73,14 +76,16 @@ namespace pptree {
     TreeNode::Ptr      lower,
     TreeNode::Ptr      upper,
     TrainingSpec::Ptr  training_spec,
-    std::set<Response> classes) {
+    std::set<Response> classes,
+    Feature            pp_index_value) {
     return std::make_unique<TreeCondition>(
       std::move(projector),
       std::move(threshold),
       std::move(lower),
       std::move(upper),
       std::move(training_spec),
-      std::move(classes)
+      std::move(classes),
+      pp_index_value
       );
   }
 }

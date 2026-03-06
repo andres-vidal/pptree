@@ -9,24 +9,14 @@
 using namespace pptree::types;
 
 namespace pptree::stats {
-  FeatureMatrix standardize(const FeatureMatrix& data) {
-    invariant(data.rows() >= 2, "standardize requires at least 2 rows");
-
-    FeatureMatrix centered = data.rowwise() - data.colwise().mean();
-    Vector<Feature> sd     =
-      (centered.array().square().colwise().sum() / (data.rows() - 1)).sqrt();
-
-    return centered.array().rowwise() / sd.transpose().array();
-  }
-
   void sort(FeatureMatrix& x, ResponseVector& y) {
     std::vector<int> indices(x.rows());
     std::iota(indices.begin(), indices.end(), 0);
 
     std::stable_sort(indices.begin(), indices.end(),
       [&y](int idx1, int idx2) {
-        return y(idx1) < y(idx2);
-      });
+      return y(idx1) < y(idx2);
+    });
 
     x = x(indices, Eigen::all).eval();
     y = y(indices, Eigen::all).eval();
@@ -75,5 +65,13 @@ namespace pptree::stats {
     }
 
     return std::sqrt((data.array() - data.mean()).square().sum() / (data.rows() - 1));
+  }
+
+  FeatureVector sd(const FeatureMatrix& data) {
+    invariant(data.rows() >= 2, "sd: matrix must have at least 2 rows");
+
+    FeatureMatrix centered = data.rowwise() - data.colwise().mean();
+
+    return (centered.array().square().colwise().sum() / static_cast<Feature>(data.rows() - 1)).sqrt();
   }
 }

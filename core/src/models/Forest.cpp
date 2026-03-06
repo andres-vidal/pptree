@@ -1,5 +1,6 @@
 #include "models/Forest.hpp"
 #include "models/ModelVisitor.hpp"
+#include "stats/Stats.hpp"
 #include "utils/Types.hpp"
 #include "utils/Invariant.hpp"
 
@@ -59,9 +60,24 @@ namespace pptree {
   }
 
   Response Forest::predict(const FeatureVector& data) const {
-    std::vector<int> indx(trees.size());
-    std::iota(indx.begin(), indx.end(), 0);
-    return predict(data, indx);
+    std::map<Response, int> votes_per_group;
+
+    for (const auto& tree : trees) {
+      Response prediction = tree->predict(data);
+      votes_per_group[prediction] += 1;
+    }
+
+    Response best  = 0;
+    int best_count = 0;
+
+    for (const auto& [key, votes] : votes_per_group) {
+      if (votes > best_count) {
+        best       = key;
+        best_count = votes;
+      }
+    }
+
+    return best;
   }
 
   ResponseVector Forest::predict(const FeatureMatrix& data) const {
@@ -96,30 +112,73 @@ namespace pptree {
     return !(*this == other);
   }
 
-  Response Forest::predict(
-    const FeatureVector&    data,
-    const std::vector<int>& indx) const {
-    std::map<Response, int> votes_per_group;
+  void Forest::accept(ModelVisitor& visitor) const {
+    visitor.visit(*this);
+  }
 
-    for (const auto& i : indx) {
-      Response prediction = trees[i]->predict(data);
-      votes_per_group[prediction] += 1;
-    }
+  ResponseVector Forest::oob_predict(const FeatureMatrix& x) const {
+    const int n_total = static_cast<int>(x.rows());
+    const int B       = static_cast<int>(trees.size());
 
-    int most_voted_group_votes = 0;
-    Response most_voted_group  = 0;
+    std::vector<std::map<Response, int>> votes(static_cast<std::size_t>(n_total));
 
-    for (const auto& [key, votes] : votes_per_group) {
-      if (votes > most_voted_group_votes) {
-        most_voted_group       = key;
-        most_voted_group_votes = votes;
+    for (int k = 0; k < B; ++k) {
+      const BootstrapTree& tree    = *trees[k];
+      std::vector<int>     oob_idx = tree.oob_indices(n_total);
+      ResponseVector preds         = tree.predict_oob(x, oob_idx);
+
+      for (int j = 0; j < static_cast<int>(oob_idx.size()); ++j) {
+        int i = oob_idx[static_cast<std::size_t>(j)];
+        votes[static_cast<std::size_t>(i)][preds(j)] += 1;
       }
     }
 
-    return most_voted_group;
+    ResponseVector out(n_total);
+    out.fill(-1);
+
+    for (int i = 0; i < n_total; ++i) {
+      const auto& obs_votes = votes[static_cast<std::size_t>(i)];
+
+      if (obs_votes.empty()) {
+        continue;
+      }
+
+      Response best  = 0;
+      int best_count = 0;
+
+      for (const auto& [cls, cnt] : obs_votes) {
+        if (cnt > best_count) {
+          best       = cls;
+          best_count = cnt;
+        }
+      }
+
+      out(i) = best;
+    }
+
+    return out;
   }
 
-  void Forest::accept(ModelVisitor& visitor) const {
-    visitor.visit(*this);
+  double Forest::oob_error(
+    const FeatureMatrix&  x,
+    const ResponseVector& y) const {
+    ResponseVector preds = oob_predict(x);
+
+    std::vector<int> oob_rows;
+
+    for (int i = 0; i < preds.size(); ++i) {
+      if (preds(i) >= 0) {
+        oob_rows.push_back(i);
+      }
+    }
+
+    if (oob_rows.empty()) {
+      return -1.0;
+    }
+
+    ResponseVector preds_oob = preds(oob_rows, Eigen::all).eval();
+    ResponseVector y_oob     = y(oob_rows, Eigen::all).eval();
+
+    return stats::error_rate(preds_oob, y_oob);
   }
 }

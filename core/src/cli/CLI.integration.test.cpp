@@ -282,6 +282,114 @@ TEST(CLIIntegration, TrainNonexistentFileFails) {
 }
 
 // ---------------------------------------------------------------------------
+// Variable importance (always-on for forests, disabled by --no-metrics)
+// ---------------------------------------------------------------------------
+
+/* Forest training prints OOB error and Variable Importance table by default. */
+TEST(CLIIntegration, TrainVIShownByDefault) {
+  auto result = run_pptree("train -d " + IRIS_CSV + " -t 5 -r 42 --no-save");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_NE(result.stdout_output.find("OOB error"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Variable Importance"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Projection"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Weighted"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Permuted"), std::string::npos);
+}
+
+/* --no-metrics suppresses OOB error and Variable Importance table. */
+TEST(CLIIntegration, TrainNoMetricsSuppressesVI) {
+  auto result = run_pptree("train -d " + IRIS_CSV + " -t 5 -r 42 --no-save --no-metrics");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stdout_output.find("OOB error"), std::string::npos);
+  EXPECT_EQ(result.stdout_output.find("Variable Importance"), std::string::npos);
+}
+
+/* Saved forest JSON contains oob_error and variable_importance. */
+TEST(CLIIntegration, TrainVISavedToJson) {
+  TempFile model;
+  model.clear();
+  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(model.read());
+
+  ASSERT_TRUE(j.contains("oob_error")) << "Expected oob_error key in saved JSON";
+  EXPECT_TRUE(j["oob_error"].is_number());
+  EXPECT_GE(j["oob_error"].get<double>(), 0.0);
+  EXPECT_LE(j["oob_error"].get<double>(), 1.0);
+
+  ASSERT_TRUE(j.contains("variable_importance")) << "Expected variable_importance key in saved JSON";
+
+  auto vi = j["variable_importance"];
+  EXPECT_TRUE(vi.contains("scale"));
+  EXPECT_TRUE(vi.contains("projections"));
+  EXPECT_TRUE(vi.contains("weighted_projections"));
+  EXPECT_TRUE(vi.contains("permuted"));
+
+  EXPECT_EQ(vi["scale"].size(), 4u);
+  EXPECT_EQ(vi["projections"].size(), 4u);
+  EXPECT_EQ(vi["weighted_projections"].size(), 4u);
+  EXPECT_EQ(vi["permuted"].size(), 4u);
+}
+
+/* With --no-metrics the saved JSON must not contain oob_error or variable_importance. */
+TEST(CLIIntegration, TrainNoMetricsNotInJson) {
+  TempFile model;
+  model.clear();
+  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-metrics -s " + model.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(model.read());
+  EXPECT_FALSE(j.contains("oob_error"));
+  EXPECT_FALSE(j.contains("variable_importance"));
+}
+
+/* Single tree training shows VI2 (projections) only, no OOB error. */
+TEST(CLIIntegration, TrainSingleTreeShowsVI2Only) {
+  auto result = run_pptree("train -d " + IRIS_CSV + " -t 0 --no-save");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stdout_output.find("OOB error"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Variable Importance"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Projection"), std::string::npos);
+  EXPECT_EQ(result.stdout_output.find("Weighted"), std::string::npos);
+  EXPECT_EQ(result.stdout_output.find("Permuted"), std::string::npos);
+}
+
+/* Single tree saved JSON contains only scale and projections (no weighted/permuted). */
+TEST(CLIIntegration, TrainSingleTreeVISavedToJson) {
+  TempFile model;
+  model.clear();
+  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 0 -s " + model.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(model.read());
+  ASSERT_TRUE(j.contains("variable_importance"));
+
+  auto vi = j["variable_importance"];
+  EXPECT_TRUE(vi.contains("scale"));
+  EXPECT_TRUE(vi.contains("projections"));
+  EXPECT_FALSE(vi.contains("weighted_projections"));
+  EXPECT_FALSE(vi.contains("permuted"));
+
+  EXPECT_EQ(vi["scale"].size(), 4u);
+  EXPECT_EQ(vi["projections"].size(), 4u);
+}
+
+/* Quiet mode suppresses the VI table but still saves it to JSON. */
+TEST(CLIIntegration, TrainVIQuietSuppressesTable) {
+  TempFile model;
+  model.clear();
+  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stdout_output.find("Variable Importance"), std::string::npos)
+    << "Expected no VI table in quiet mode";
+
+  // JSON must still contain VI.
+  auto j = json::parse(model.read());
+  EXPECT_TRUE(j.contains("variable_importance"));
+}
+
+// ---------------------------------------------------------------------------
 // Predict subcommand (fixture-based)
 // ---------------------------------------------------------------------------
 

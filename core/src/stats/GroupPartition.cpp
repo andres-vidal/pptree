@@ -56,8 +56,8 @@ namespace pptree::stats {
     return sg;
   }
 
-  GroupPartition::GroupPartition(const GroupVector& y)
-    : groups(unique(y)),
+  GroupPartition::GroupPartition(const GroupVector& y) :
+    groups(unique(y)),
     Blocks(init_Blocks(y)),
     supergroups(init_supergroups()),
     subgroups(utils::invert(supergroups)) {
@@ -65,8 +65,8 @@ namespace pptree::stats {
 
   GroupPartition::GroupPartition(
     const BlockMap& Blocks_,
-    const GroupSet& groups_)
-    : groups(groups_),
+    const GroupSet& groups_) :
+    groups(groups_),
     Blocks(Blocks_),
     supergroups(init_supergroups()),
     subgroups(utils::invert(supergroups)) {
@@ -74,8 +74,8 @@ namespace pptree::stats {
 
   GroupPartition::GroupPartition(
     const BlockMap& Blocks_,
-    const GroupMap& supergroups_)
-    : groups(utils::values(supergroups_)),
+    const GroupMap& supergroups_) :
+    groups(utils::values(supergroups_)),
     Blocks(Blocks_),
     supergroups(supergroups_),
     subgroups(utils::invert(supergroups)) {
@@ -84,8 +84,8 @@ namespace pptree::stats {
   GroupPartition::GroupPartition(
     const BlockMap& Blocks_,
     const GroupSet& groups_,
-    const GroupMap& supergroups_)
-    : groups(groups_),
+    const GroupMap& supergroups_) :
+    groups(groups_),
     Blocks(Blocks_),
     supergroups(supergroups_),
     subgroups(utils::invert(supergroups)) {

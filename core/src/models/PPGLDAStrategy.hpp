@@ -16,7 +16,7 @@ namespace pptree::pp {
       const stats::GroupPartition& group_spec,
       const Projector&             projector) const override;
 
-    Projector optimize(
+    PPResult optimize(
       const types::FeatureMatrix&  x,
       const stats::GroupPartition& group_spec) const override;
 

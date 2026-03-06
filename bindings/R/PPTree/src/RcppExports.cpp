@@ -65,12 +65,84 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pptree_vi_projections_tree
+FeatureVector pptree_vi_projections_tree(const Tree& tree, int n_vars, const FeatureVector& scale);
+RcppExport SEXP _PPTree_pptree_vi_projections_tree(SEXP treeSEXP, SEXP n_varsSEXP, SEXP scaleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< int >::type n_vars(n_varsSEXP);
+    Rcpp::traits::input_parameter< const FeatureVector& >::type scale(scaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_vi_projections_tree(tree, n_vars, scale));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_vi_projections_forest
+FeatureVector pptree_vi_projections_forest(const Forest& forest, int n_vars, const FeatureVector& scale);
+RcppExport SEXP _PPTree_pptree_vi_projections_forest(SEXP forestSEXP, SEXP n_varsSEXP, SEXP scaleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< int >::type n_vars(n_varsSEXP);
+    Rcpp::traits::input_parameter< const FeatureVector& >::type scale(scaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_vi_projections_forest(forest, n_vars, scale));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_vi_weighted
+FeatureVector pptree_vi_weighted(const Forest& forest, const FeatureMatrix& x, const ResponseVector& y, const FeatureVector& scale);
+RcppExport SEXP _PPTree_pptree_vi_weighted(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP, SEXP scaleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const ResponseVector& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const FeatureVector& >::type scale(scaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_vi_weighted(forest, x, y, scale));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_vi_permuted
+FeatureVector pptree_vi_permuted(const Forest& forest, const FeatureMatrix& x, const ResponseVector& y, int seed);
+RcppExport SEXP _PPTree_pptree_vi_permuted(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP, SEXP seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const ResponseVector& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_vi_permuted(forest, x, y, seed));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_oob_error
+double pptree_oob_error(const Forest& forest, const FeatureMatrix& x, const ResponseVector& y);
+RcppExport SEXP _PPTree_pptree_oob_error(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const ResponseVector& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_oob_error(forest, x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_glda", (DL_FUNC) &_PPTree_pptree_train_glda, 3},
     {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 6},
     {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
     {"_PPTree_pptree_predict_forest", (DL_FUNC) &_PPTree_pptree_predict_forest, 2},
+    {"_PPTree_pptree_vi_projections_tree", (DL_FUNC) &_PPTree_pptree_vi_projections_tree, 3},
+    {"_PPTree_pptree_vi_projections_forest", (DL_FUNC) &_PPTree_pptree_vi_projections_forest, 3},
+    {"_PPTree_pptree_vi_weighted", (DL_FUNC) &_PPTree_pptree_vi_weighted, 4},
+    {"_PPTree_pptree_vi_permuted", (DL_FUNC) &_PPTree_pptree_vi_permuted, 4},
+    {"_PPTree_pptree_oob_error", (DL_FUNC) &_PPTree_pptree_oob_error, 3},
     {NULL, NULL, 0}
 };
 

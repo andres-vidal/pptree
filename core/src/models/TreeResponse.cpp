@@ -5,8 +5,8 @@
 using namespace pptree::types;
 
 namespace pptree {
-  TreeResponse::TreeResponse(Response value)
-    : value(value) {
+  TreeResponse::TreeResponse(Response value) :
+    value(value) {
   }
 
   void TreeResponse::accept(TreeNodeVisitor& visitor) const {

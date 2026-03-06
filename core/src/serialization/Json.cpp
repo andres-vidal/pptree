@@ -14,10 +14,11 @@ namespace pptree::serialization {
     node.upper->accept(upper_visitor);
 
     result = json{
-      { "projector", node.projector },
-      { "threshold", node.threshold },
-      { "lower",     lower_visitor.result },
-      { "upper",     upper_visitor.result },
+      { "projector",      node.projector },
+      { "threshold",      node.threshold },
+      { "lower",          lower_visitor.result },
+      { "upper",          upper_visitor.result },
+      { "pp_index_value", node.pp_index_value },
     };
   }
 
@@ -116,12 +117,16 @@ namespace pptree::serialization {
       proj_vec.data(),
       static_cast<int>(proj_vec.size()));
 
-    const Feature threshold = j["threshold"].get<Feature>();
+    const Feature threshold      = j["threshold"].get<Feature>();
+    const Feature pp_index_value = j.value("pp_index_value", Feature(0));
 
     auto lower = node_from_json(j["lower"]);
     auto upper = node_from_json(j["upper"]);
 
-    return TreeCondition::make(projector, threshold, std::move(lower), std::move(upper));
+    return TreeCondition::make(
+      projector, threshold,
+      std::move(lower), std::move(upper),
+      nullptr, {}, pp_index_value);
   }
 
   Tree tree_from_json(const json& j) {

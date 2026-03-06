@@ -13,8 +13,8 @@ using namespace pptree::stats;
 
 
 namespace pptree::pp {
-  PPGLDAStrategy::PPGLDAStrategy(float lambda)
-    : lambda(lambda) {
+  PPGLDAStrategy::PPGLDAStrategy(float lambda) :
+    lambda(lambda) {
   }
 
   PPStrategy::Ptr PPGLDAStrategy::clone() const {
@@ -44,7 +44,7 @@ namespace pptree::pp {
     return Feature(1) - numerator / denominator;
   }
 
-  Projector PPGLDAStrategy::optimize(
+  PPResult PPGLDAStrategy::optimize(
     const FeatureMatrix&  x,
     const GroupPartition& group_spec) const {
     FeatureMatrix B = group_spec.bgss(x);
@@ -66,25 +66,27 @@ namespace pptree::pp {
 
     std::sort(indices.begin(), indices.end(),
       [&eigen_val, &eigen_vec](Eigen::Index idx1, Eigen::Index idx2) {
-        float value1_mod = std::fabs(eigen_val(idx1));
-        float value2_mod = std::fabs(eigen_val(idx2));
+      float value1_mod = std::fabs(eigen_val(idx1));
+      float value2_mod = std::fabs(eigen_val(idx2));
 
-        if (math::is_approx(value1_mod, value2_mod, 0.001f)) {
-          FeatureVector vector1 = eigen_vec.col(idx1);
-          FeatureVector vector2 = eigen_vec.col(idx2);
+      if (math::is_approx(value1_mod, value2_mod, 0.001f)) {
+        FeatureVector vector1 = eigen_vec.col(idx1);
+        FeatureVector vector2 = eigen_vec.col(idx2);
 
-          for (Eigen::Index i = 0; i < vector1.size(); ++i) {
-            if (!math::is_module_approx(vector1[i], vector2[i])) {
-              return vector1[i] < vector2[i];
-            }
+        for (Eigen::Index i = 0; i < vector1.size(); ++i) {
+          if (!math::is_module_approx(vector1[i], vector2[i])) {
+            return vector1[i] < vector2[i];
           }
         }
+      }
 
-        return value1_mod < value2_mod;
-      });
+      return value1_mod < value2_mod;
+    });
 
     FeatureVector max_eigen_vec = eigen_vec.col(indices.back());
-    return pp::normalize(max_eigen_vec);
+    Feature max_eigen_val       = eigen_val(indices.back());
+
+    return PPResult{ pp::normalize(max_eigen_vec), max_eigen_val };
   }
 
   PPStrategy::Ptr PPGLDAStrategy::make(float lambda) {

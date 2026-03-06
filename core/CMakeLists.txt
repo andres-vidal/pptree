@@ -193,6 +193,7 @@ set(PPTREE_TEST_SRC
   src/models/Tree.test.cpp
   src/models/Forest.test.cpp
   src/models/PPStrategy.test.cpp
+  src/models/VariableImportance.test.cpp
   src/stats/Stats.test.cpp
   src/stats/GroupPartition.test.cpp
   src/stats/ConfusionMatrix.test.cpp

@@ -273,21 +273,20 @@ namespace pptree::cli {
     // Global options
     app.add_flag("--quiet,-q", params.quiet, "Suppress all terminal output");
     app.add_flag("--no-color", params.no_color, "Disable colored output");
-    app.config_formatter(std::make_shared<ConfigJSON>(
-        std::vector<std::string>{ "train", "predict", "evaluate" }));
+    app.config_formatter(std::make_shared<ConfigJSON>(std::vector<std::string>{ "train", "predict", "evaluate" }));
     app.set_config("--config", "", "Read parameters from JSON config file");
 
     // Helper: add model training options shared by train and evaluate
     auto add_model_options = [&](CLI::App *sub) {
-        sub->add_option("-t,--trees", params.trees, "Number of trees (default: 100, 0 for single tree)")
-        ->check(CLI::NonNegativeNumber);
-        sub->add_option("-l,--lambda", params.lambda, "Method selection (0=LDA, (0,1]=PDA)")
-        ->check(CLI::Range(0.0f, 1.0f));
-        sub->add_option("--threads", params.threads, "Number of threads (default: CPU cores)")
-        ->check(CLI::PositiveNumber);
-        sub->add_option("-r,--seed", params.seed, "Random seed (default: random)");
-        sub->add_option("-v,--vars", params.vars_input, "Features per split (integer=count, decimal or fraction=proportion, default: 0.5)");
-      };
+      sub->add_option("-t,--trees", params.trees, "Number of trees (default: 100, 0 for single tree)")
+      ->check(CLI::NonNegativeNumber);
+      sub->add_option("-l,--lambda", params.lambda, "Method selection (0=LDA, (0,1]=PDA)")
+      ->check(CLI::Range(0.0f, 1.0f));
+      sub->add_option("--threads", params.threads, "Number of threads (default: CPU cores)")
+      ->check(CLI::PositiveNumber);
+      sub->add_option("-r,--seed", params.seed, "Random seed (default: random)");
+      sub->add_option("-v,--vars", params.vars_input, "Features per split (integer=count, decimal or fraction=proportion, default: 0.5)");
+    };
 
     // Train subcommand
     auto train_sub = app.add_subcommand("train", "Train a model");
@@ -299,6 +298,7 @@ namespace pptree::cli {
     auto train_no_save  = train_sub->add_flag("--no-save", params.no_save, "Skip saving the model (for benchmarking)");
     train_save_opt->excludes(train_no_save);
     train_no_save->excludes(train_save_opt);
+    train_sub->add_flag("--no-metrics", params.no_metrics, "Skip variable importance computation and output");
 
     // Predict subcommand
     auto predict_sub = app.add_subcommand("predict", "Load a model and predict on new data");

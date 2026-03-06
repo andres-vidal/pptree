@@ -68,3 +68,45 @@ ResponseVector pptree_predict_forest(
   const FeatureMatrix & data) {
   return forest.predict(data);
 }
+
+// [[Rcpp::export]]
+FeatureVector pptree_vi_projections_tree(
+  const Tree&          tree,
+  int                  n_vars,
+  const FeatureVector& scale) {
+  return variable_importance_projections(tree, n_vars, &scale);
+}
+
+// [[Rcpp::export]]
+FeatureVector pptree_vi_projections_forest(
+  const Forest&        forest,
+  int                 n_vars,
+  const FeatureVector& scale) {
+  return variable_importance_projections(forest, n_vars, &scale);
+}
+
+// [[Rcpp::export]]
+FeatureVector pptree_vi_weighted(
+  const Forest&        forest,
+  const FeatureMatrix& x,
+  const ResponseVector& y,
+  const FeatureVector& scale) {
+  return variable_importance_weighted_projections(forest, x, y, &scale);
+}
+
+// [[Rcpp::export]]
+FeatureVector pptree_vi_permuted(
+  const Forest&        forest,
+  const FeatureMatrix& x,
+  const ResponseVector& y,
+  int                  seed) {
+  return variable_importance_permuted(forest, x, y, seed);
+}
+
+// [[Rcpp::export]]
+double pptree_oob_error(
+  const Forest&        forest,
+  const FeatureMatrix& x,
+  const ResponseVector& y) {
+  return forest.oob_error(x, y);
+}

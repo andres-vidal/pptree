@@ -36,12 +36,13 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
       1,
       1);
 
-  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = DATA(Feature, 4,
       -1, 0, 0, 0);
 
   ASSERT_COLLINEAR(expected, actual);
+  ASSERT_FLOAT_EQ(1.0f, index) << "Optimal LDA projector for two groups has index 1";
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups2) {
@@ -70,13 +71,14 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
       1,
       1);
 
-  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = DATA(Feature, 4,
       0, 1, 0, 0);
 
 
   ASSERT_COLLINEAR(expected, actual);
+  ASSERT_FLOAT_EQ(1.0f, index) << "Optimal LDA projector for two groups has index 1";
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups3) {
@@ -105,12 +107,13 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
       1,
       1);
 
-  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = DATA(Feature, 4,
       0, 0, -1, 0);
 
   ASSERT_COLLINEAR(expected, actual);
+  ASSERT_FLOAT_EQ(1.0f, index) << "Optimal LDA projector for two groups has index 1";
 }
 
 TEST(Projector, LDAOptimumProjectorTwoGroups4) {
@@ -138,7 +141,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
       1,
       1);
 
-  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = DATA(Feature, 4,
       2.0965219514666735e-15,
@@ -147,6 +150,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
       1);
 
   ASSERT_COLLINEAR(expected, actual);
+  ASSERT_FLOAT_EQ(1.0f, index) << "Optimal LDA projector for two groups has index 1";
 }
 
 TEST(Projector, LDAOptimumProjectorThreeGroups1) {
@@ -214,7 +218,7 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
       2,
       2);
 
-  FeatureVector actual = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = DATA(Feature, 5,
       1,
@@ -224,6 +228,7 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
       0);
 
   ASSERT_COLLINEAR(expected, actual);
+  ASSERT_GT(index, 0.99f) << "Optimal LDA projector for three groups has index near 1";
 }
 
 TEST(Projector, LDAIndexZeroReturn) {
@@ -626,12 +631,13 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
       1,
       1);
 
-  FeatureVector actual = PPGLDAStrategy(0.5).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPGLDAStrategy(0.5).optimize(x, GroupPartition(y));
 
   FeatureVector expected = DATA(Feature, 6,
       0, 0, 0, 0, 0, 1);
 
   ASSERT_COLLINEAR(expected, actual);
+  ASSERT_GT(index, 0.0f) << "PDA optimal projector has positive index";
 }
 
 TEST(Projector, GLDAOptimumProjectorZeroColumn) {
@@ -647,12 +653,13 @@ TEST(Projector, GLDAOptimumProjectorZeroColumn) {
       1,
       1);
 
-  FeatureVector actual = PPGLDAStrategy(0.1).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPGLDAStrategy(0.1).optimize(x, GroupPartition(y));
 
   FeatureVector expected = DATA(Feature, 7,
       0, 0, 0, 0, 0, 1, 0);
 
   ASSERT_COLLINEAR(expected, actual);
+  ASSERT_GT(index, 0.0f) << "GLDA optimal projector has positive index";
 }
 
 TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
