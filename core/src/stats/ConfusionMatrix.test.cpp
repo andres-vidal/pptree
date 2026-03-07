@@ -10,8 +10,8 @@
 
 #include "stats/ConfusionMatrix.hpp"
 #include "utils/Types.hpp"
-#include "cli/Color.hpp"
-#include "cli/Presentation.hpp"
+#include "io/Color.hpp"
+#include "io/Presentation.hpp"
 #include "serialization/Json.hpp"
 
 #include "utils/Macros.hpp"

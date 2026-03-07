@@ -20,7 +20,7 @@
 #include <unistd.h>
 #endif
 
-namespace pptree::cli {
+namespace pptree::io {
   /**
    * @brief Global toggle for colored output.
    * @return Reference to the static enabled flag.
@@ -61,68 +61,60 @@ namespace pptree::cli {
   }
 
   /**
-   * @brief Format text in red (for error messages).
-   * @param s The string to colorize.
-   * @return The colored string, or the original string if color is disabled.
+   * @brief Apply a foreground color with a specific reset (\033[39m)
+   * instead of fmt's full reset, so that emphasis and other
+   * non-fg styles survive nesting.
    */
-  inline std::string error(const std::string& s) {
+  inline std::string styled(const std::string& s, fmt::terminal_color c) {
     if (!color_enabled()) return s;
 
-    return fmt::format(fg(fmt::terminal_color::red), "{}", s);
+    return fmt::format("\033[{}m{}\033[39m", static_cast<uint8_t>(c), s);
+  }
+
+  /**
+   * @brief Format text in red (for error messages).
+   */
+  inline std::string error(const std::string& s) {
+    return styled(s, fmt::terminal_color::red);
   }
 
   /**
    * @brief Format text in green (for success messages).
-   * @param s The string to colorize.
-   * @return The colored string, or the original string if color is disabled.
    */
   inline std::string success(const std::string& s) {
-    if (!color_enabled()) return s;
-
-    return fmt::format(fg(fmt::terminal_color::green), "{}", s);
+    return styled(s, fmt::terminal_color::green);
   }
 
   /**
    * @brief Format text in bold (for emphasis / labels).
-   * @param s The string to emphasize.
-   * @return The bold string, or the original string if color is disabled.
+   *
+   * Uses a specific bold-off code (\033[22m) so that fg colors survive
+   * nesting, e.g. success("total: " + emphasis("7")).
    */
   inline std::string emphasis(const std::string& s) {
     if (!color_enabled()) return s;
 
-    return fmt::format(fmt::emphasis::bold, "{}", s);
+    return fmt::format("\033[1m{}\033[22m", s);
   }
 
   /**
    * @brief Format text in dim gray (for hints and secondary info).
-   * @param s The string to dim.
-   * @return The dimmed string, or the original string if color is disabled.
    */
   inline std::string muted(const std::string& s) {
-    if (!color_enabled()) return s;
-
-    return fmt::format(fg(fmt::terminal_color::bright_black), "{}", s);
+    return styled(s, fmt::terminal_color::bright_black);
   }
 
   /**
    * @brief Format text in cyan (for informational highlights like progress bars).
-   * @param s The string to colorize.
-   * @return The colored string, or the original string if color is disabled.
    */
   inline std::string info(const std::string& s) {
-    if (!color_enabled()) return s;
-
-    return fmt::format(fg(fmt::terminal_color::cyan), "{}", s);
+    return styled(s, fmt::terminal_color::cyan);
   }
 
   /**
    * @brief Format text in yellow (for warnings).
-   * @param s The string to colorize.
-   * @return The colored string, or the original string if color is disabled.
    */
   inline std::string warning(const std::string& s) {
-    if (!color_enabled()) return s;
-
-    return fmt::format(fg(fmt::terminal_color::yellow), "{}", s);
+    return styled(s, fmt::terminal_color::yellow);
   }
 }

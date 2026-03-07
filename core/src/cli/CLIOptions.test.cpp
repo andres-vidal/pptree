@@ -13,8 +13,8 @@
 #include "pptree.hpp"
 #include "stats/DataPacket.hpp"
 #include "cli/CLIOptions.hpp"
-#include "cli/Color.hpp"
-#include "cli/Presentation.hpp"
+#include "io/Color.hpp"
+#include "io/Presentation.hpp"
 #include "io/IO.hpp"
 
 #include <filesystem>

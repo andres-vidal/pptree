@@ -156,6 +156,7 @@ add_subdirectory(src/models)
 add_subdirectory(src/stats)
 add_subdirectory(src/serialization)
 add_subdirectory(src/utils)
+add_subdirectory(src/io)
 
 # ---------------------------------------------------------------------------
 # Core library (composed from OBJECT libraries)
@@ -163,7 +164,8 @@ add_subdirectory(src/utils)
 add_library(pptree-core
   $<TARGET_OBJECTS:pptree-models>
   $<TARGET_OBJECTS:pptree-stats>
-  $<TARGET_OBJECTS:pptree-utils>)
+  $<TARGET_OBJECTS:pptree-utils>
+  $<TARGET_OBJECTS:pptree-io>)
 
 target_link_libraries(pptree-core PUBLIC pptree-compile)
 

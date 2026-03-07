@@ -31,8 +31,8 @@
 #include "stats/ConfusionMatrix.hpp"
 
 #include "cli/CLIOptions.hpp"
-#include "cli/Presentation.hpp"
-#include "cli/Color.hpp"
+#include "io/Presentation.hpp"
+#include "io/Color.hpp"
 #include "io/IO.hpp"
 #include "serialization/Json.hpp"
 
@@ -51,6 +51,40 @@ using json = nlohmann::json;
 using pptree::variable_importance_permuted;
 using pptree::variable_importance_projections;
 using pptree::variable_importance_weighted_projections;
+
+std::string default_tag(bool is_default) {
+  if (!is_default) return "";
+
+  return " " + muted("(default)");
+}
+
+void announce_configuration(
+  const CLIOptions& params,
+  int               n_train = 0,
+  int               n_test  = 0) {
+  if (params.quiet) return;
+
+  if (params.trees > 0) {
+    fmt::print("Training {} with {} trees\n", emphasis("random forest"), emphasis(std::to_string(params.trees)));
+    fmt::print("-- variables per split: {} ({}% of features){}\n", emphasis(std::to_string(params.n_vars)), params.p_vars * 100, default_tag(params.used_default_vars));
+    fmt::print("-- threads: {}{}\n", emphasis(std::to_string(params.threads)), default_tag(params.used_default_threads));
+    fmt::print("-- seed: {}{}\n", emphasis(std::to_string(params.seed)), default_tag(params.used_default_seed));
+  } else {
+    fmt::print("Training {} (using all features)\n", emphasis("single decision tree"));
+  }
+
+  fmt::print("-- method: {} (lambda={})\n", emphasis(params.lambda == 0 ? "LDA" : "PDA"), params.lambda);
+
+  if (n_train > 0 && n_test > 0) {
+    fmt::print("\nData split into:\n"
+      "-- training: {} samples ({}%)\n"
+      "-- test:     {} samples ({}%)\n",
+      emphasis(std::to_string(n_train)), params.train_ratio * 100,
+      emphasis(std::to_string(n_test)), (1 - params.train_ratio) * 100);
+  }
+
+  fmt::print("\n");
+}
 
 template<typename F>
 auto measure_time_ms(F&& f) {
@@ -106,16 +140,7 @@ void display_progress(int current, int total, bool quiet, int bar_width = 50) {
 DataPacket read_data(const CLIOptions& params, pptree::stats::RNG& rng) {
   if (!params.data_path.empty()) {
     try {
-      const DataPacket data = read_csv(params.data_path);
-
-      FeatureMatrix x  = data.x;
-      ResponseVector y = data.y;
-
-      if (!GroupPartition::is_contiguous(y)) {
-        pptree::stats::sort(x, y);
-      }
-
-      return DataPacket(x, y);
+      return read_csv_sorted(params.data_path);
     } catch (const std::runtime_error& e) {
       fmt::print(stderr, "Error reading CSV file: {}\n", e.what());
       fmt::print(stderr, "Please ensure the file exists and is properly formatted\n");
@@ -492,16 +517,7 @@ int main(int argc, char *argv[]) {
 
       DataPacket data = [&]() {
         try {
-          const DataPacket csv_data = read_csv(params.data_path);
-
-          FeatureMatrix x  = csv_data.x;
-          ResponseVector y = csv_data.y;
-
-          if (!GroupPartition::is_contiguous(y)) {
-            pptree::stats::sort(x, y);
-          }
-
-          return DataPacket(x, y);
+          return read_csv_sorted(params.data_path);
         } catch (const std::exception& e) {
           fmt::print(stderr, "{} reading CSV file: {}\n", error("Error:"), e.what());
           std::exit(1);
