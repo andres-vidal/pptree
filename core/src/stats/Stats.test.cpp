@@ -30,6 +30,54 @@ TEST(Stats, Sort) {
   ASSERT_EQ_DATA(expected_y, y);
 }
 
+TEST(Stats, SortAlreadySorted) {
+  FeatureMatrix x = DATA(Feature, 3,
+      1.0, 10.0,
+      2.0, 20.0,
+      3.0, 30.0);
+
+  ResponseVector y = DATA(Response, 3, 0, 0, 1);
+
+  sort(x, y);
+
+  ResponseVector expected_y = DATA(Response, 3, 0, 0, 1);
+
+  ASSERT_EQ(expected_y, y);
+}
+
+TEST(Stats, SortReverseSorted) {
+  FeatureMatrix x = DATA(Feature, 4,
+      4.0,
+      3.0,
+      2.0,
+      1.0);
+
+  ResponseVector y = DATA(Response, 4, 2, 1, 1, 0);
+
+  sort(x, y);
+
+  ResponseVector expected_y = DATA(Response, 4, 0, 1, 1, 2);
+
+  ASSERT_EQ(expected_y, y);
+  // Feature matrix should be reordered to match
+  ASSERT_FLOAT_EQ(1.0, x(0, 0));
+  ASSERT_FLOAT_EQ(4.0, x(3, 0));
+}
+
+TEST(Stats, SortLargerArray) {
+  FeatureMatrix x = DATA(Feature, 6,
+      6.0, 5.0, 4.0,
+      3.0, 2.0, 1.0);
+
+  ResponseVector y = DATA(Response, 6, 2, 1, 0, 2, 1, 0);
+
+  sort(x, y);
+
+  for (int i = 1; i < y.size(); ++i) {
+    ASSERT_LE(y[i - 1], y[i]);
+  }
+}
+
 TEST(Stats, UniqueEmptyResult) {
   ResponseVector column(0);
   std::set<int> actual = unique(column);
