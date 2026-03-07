@@ -6,6 +6,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Platform detection for golden files
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(PPTREE_OS "linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set(PPTREE_OS "macos")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(PPTREE_OS "windows")
+else()
+  set(PPTREE_OS "unknown")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set(PPTREE_COMPILER "gcc")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(PPTREE_COMPILER "clang")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  set(PPTREE_COMPILER "msvc")
+else()
+  set(PPTREE_COMPILER "unknown")
+endif()
+
+set(PPTREE_PLATFORM "${PPTREE_OS}-${PPTREE_COMPILER}")
+
 option(PPTREE_DOUBLE_PRECISION "Use double precision for feature data" OFF)
 if(PPTREE_DOUBLE_PRECISION)
   add_compile_definitions(PPTREE_DOUBLE_PRECISION)
@@ -205,6 +228,7 @@ set(PPTREE_TEST_SRC
   src/utils/Invariant.test.cpp
   src/cli/CLIOptions.test.cpp
   src/cli/CLI.integration.test.cpp
+  src/golden/Reproducibility.test.cpp
   src/golden/Threading.test.cpp)
 
 # Google Test
@@ -234,9 +258,31 @@ target_include_directories(pptree-test PRIVATE
 target_compile_definitions(pptree-test PRIVATE
   PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
   PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
+  PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
+  PPTREE_PLATFORM="${PPTREE_PLATFORM}"
   PPTREE_VERSION="${PROJECT_VERSION}")
 
 add_dependencies(pptree-test pptree)
 
 include(GoogleTest)
 gtest_discover_tests(pptree-test DISCOVERY_MODE PRE_TEST)
+
+# ---------------------------------------------------------------------------
+# Golden file generator
+# ---------------------------------------------------------------------------
+add_executable(pptree-golden-gen src/golden/GoldenGen.cpp)
+
+target_link_libraries(pptree-golden-gen
+  pptree-core
+  pptree-serialization
+  nlohmann_json::nlohmann_json
+  csv
+  fmt::fmt)
+
+target_include_directories(pptree-golden-gen PRIVATE
+  ${csv_SOURCE_DIR}/include)
+
+target_compile_definitions(pptree-golden-gen PRIVATE
+  PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
+  PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
+  PPTREE_PLATFORM="${PPTREE_PLATFORM}")

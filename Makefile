@@ -27,6 +27,9 @@ test: build
 test-debug: build-debug
 	@cd ./$(BUILD_DIR_DEBUG) && ./pptree-test
 
+golden-regen: build
+	@cd ./$(BUILD_DIR) && ./pptree-golden-gen
+
 # Targets for the Dev tools
 
 TOOLS_DIR = .tools
