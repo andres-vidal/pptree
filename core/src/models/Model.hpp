@@ -3,6 +3,7 @@
 #include "utils/Types.hpp"
 #include "models/ModelVisitor.hpp"
 
+#include <memory>
 namespace pptree {
   struct Model {
     using Ptr = std::unique_ptr<Model>;
