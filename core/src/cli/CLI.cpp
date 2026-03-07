@@ -467,21 +467,21 @@ int main(int argc, char *argv[]) {
       if (!params.no_metrics) {
         const auto *forest = dynamic_cast<const Forest *>(train_result.model.get());
         const auto *tree   = dynamic_cast<const Tree *>(train_result.model.get());
-        FeatureVector vi1, vi2, vi3, scale;
+        VariableImportance vi;
         double oob_err = -1.0;
 
         const int n_vars = static_cast<int>(x.cols());
 
-        scale = stats::sd(x);
-        scale = (scale.array() > Feature(0)).select(scale, Feature(1));
+        vi.scale = stats::sd(x);
+        vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
         if (forest != nullptr) {
-          oob_err = forest->oob_error(x, y);
-          vi1 = variable_importance_permuted(*forest, x, y, params.seed);
-          vi2 = variable_importance_projections(*forest, n_vars, &scale);
-          vi3 = variable_importance_weighted_projections(*forest, x, y, &scale);
+          oob_err              = forest->oob_error(x, y);
+          vi.permuted              = variable_importance_permuted(*forest, x, y, params.seed);
+          vi.projections           = variable_importance_projections(*forest, n_vars, &vi.scale);
+          vi.weighted_projections  = variable_importance_weighted_projections(*forest, x, y, &vi.scale);
         } else if (tree != nullptr) {
-          vi2 = variable_importance_projections(*tree, n_vars, &scale);
+          vi.projections = variable_importance_projections(*tree, n_vars, &vi.scale);
         }
 
         if (!params.quiet) {
@@ -489,7 +489,7 @@ int main(int argc, char *argv[]) {
             fmt::print("OOB error: {}\n", emphasis(fmt::format("{:.2f}%", oob_err * 100)));
           }
 
-          print_variable_importance(vi1, vi2, vi3, scale);
+          print_variable_importance(vi);
         }
 
         if (!params.save_path.empty()) {
@@ -501,7 +501,7 @@ int main(int argc, char *argv[]) {
             saved["oob_error"] = oob_err;
           }
 
-          saved["variable_importance"] = vi_to_json(vi1, vi2, vi3, scale);
+          saved["variable_importance"] = serialization::to_json(vi);
           write_json_file(saved, params.save_path);
         }
       }

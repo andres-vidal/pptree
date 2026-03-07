@@ -6,6 +6,7 @@
 #pragma once
 
 #include "io/Color.hpp"
+#include "models/VariableImportance.hpp"
 #include "stats/ConfusionMatrix.hpp"
 #include "stats/Stats.hpp"
 #include "utils/Types.hpp"
@@ -51,35 +52,12 @@ namespace pptree::cli {
    * VI1 (permuted). Rows are sorted by VI2 descending. The VI1 column is
    * omitted when its vector is empty. At most max_rows rows are printed.
    *
-   * @param vi1       Permuted importance vector (size p, or size-0 to omit).
-   * @param vi2       Projections importance vector (size p).
-   * @param vi3       Weighted projections importance vector (size p).
-   * @param scale     Per-variable standard deviation used to scale VI2/VI3.
+   * @param vi        Variable importance results.
    * @param max_rows  Maximum number of rows to print (0 = all).
    */
   void print_variable_importance(
-    const types::FeatureVector& vi1,
-    const types::FeatureVector& vi2,
-    const types::FeatureVector& vi3,
-    const types::FeatureVector& scale,
-    int                         max_rows = 20);
-
-  /**
-   * @brief Build a JSON object from VI vectors, suitable for embedding in the
-   *        saved model file.
-   *
-   * @param vi1    Permuted importance (size p, or size-0 to omit).
-   * @param vi2    Projections importance (size p).
-   * @param vi3    Weighted projections importance (size p).
-   * @param scale  Per-variable standard deviation used to scale VI2/VI3.
-   * @return JSON object with "scale", "projections", "weighted_projections",
-   *         and optionally "permuted" arrays (indexed by variable, 0-based).
-   */
-  nlohmann::json vi_to_json(
-    const types::FeatureVector& vi1,
-    const types::FeatureVector& vi2,
-    const types::FeatureVector& vi3,
-    const types::FeatureVector& scale);
+    const VariableImportance& vi,
+    int                       max_rows = 20);
 
   /**
    * @brief Print a formatted confusion matrix to stdout.

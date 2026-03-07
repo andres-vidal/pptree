@@ -6,6 +6,19 @@
 
 namespace pptree {
   /**
+   * @brief Grouped result of the three variable importance measures.
+   *
+   * For single trees only @c projections and @c scale are populated;
+   * @c permuted and @c weighted_projections remain empty (size 0).
+   */
+  struct VariableImportance {
+    types::FeatureVector permuted;
+    types::FeatureVector projections;
+    types::FeatureVector weighted_projections;
+    types::FeatureVector scale;
+  };
+
+  /**
    * @brief VI1 — Permuted importance.
    *
    * For each tree, measures the drop in OOB accuracy when each variable

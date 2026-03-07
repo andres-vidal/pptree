@@ -94,6 +94,29 @@ namespace pptree::serialization {
     return j;
   }
 
+  json to_json(const VariableImportance& vi) {
+    const int p = static_cast<int>(vi.projections.size());
+
+    std::vector<float> scale_vec(vi.scale.data(), vi.scale.data() + p);
+    std::vector<float> proj_vec(vi.projections.data(), vi.projections.data() + p);
+
+    json j;
+    j["scale"]       = scale_vec;
+    j["projections"] = proj_vec;
+
+    if (vi.weighted_projections.size() == p) {
+      std::vector<float> wp_vec(vi.weighted_projections.data(), vi.weighted_projections.data() + p);
+      j["weighted_projections"] = wp_vec;
+    }
+
+    if (vi.permuted.size() == p) {
+      std::vector<float> perm_vec(vi.permuted.data(), vi.permuted.data() + p);
+      j["permuted"] = perm_vec;
+    }
+
+    return j;
+  }
+
   Model::Ptr model_from_json(const json& j) {
     std::string model_type = j.value("model_type", "tree");
 

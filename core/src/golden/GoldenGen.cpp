@@ -18,8 +18,8 @@
 #include "models/TrainingSpecUGLDA.hpp"
 #include "models/VariableImportance.hpp"
 #include "serialization/Json.hpp"
+#include "io/Color.hpp"
 #include "io/IO.hpp"
-#include "io/Presentation.hpp"
 
 #include <nlohmann/json.hpp>
 #include <fmt/format.h>
@@ -146,14 +146,15 @@ static void generate_golden(const GoldenConfig& config) {
     result["oob_error"] = oob_err;
 
     // Variable importance
-    FeatureVector scale = stats::sd(data.x);
-    scale = (scale.array() > Feature(0)).select(scale, Feature(1));
+    VariableImportance vi;
+    vi.scale = stats::sd(data.x);
+    vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
-    FeatureVector vi1 = variable_importance_permuted(forest, data.x, data.y, config.seed);
-    FeatureVector vi2 = variable_importance_projections(forest, n_vars, &scale);
-    FeatureVector vi3 = variable_importance_weighted_projections(forest, data.x, data.y, &scale);
+    vi.permuted              = variable_importance_permuted(forest, data.x, data.y, config.seed);
+    vi.projections           = variable_importance_projections(forest, n_vars, &vi.scale);
+    vi.weighted_projections  = variable_importance_weighted_projections(forest, data.x, data.y, &vi.scale);
 
-    result["variable_importance"] = cli::vi_to_json(vi1, vi2, vi3, scale);
+    result["variable_importance"] = to_json(vi);
   } else {
     // Single tree
     RNG rng(config.seed);
@@ -170,13 +171,13 @@ static void generate_golden(const GoldenConfig& config) {
     result["confusion_matrix"] = to_json(cm);
 
     // VI2 only for single tree
-    FeatureVector scale = stats::sd(data.x);
-    scale = (scale.array() > Feature(0)).select(scale, Feature(1));
+    VariableImportance vi;
+    vi.scale = stats::sd(data.x);
+    vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
-    FeatureVector vi2 = variable_importance_projections(tree, n_vars, &scale);
-    FeatureVector empty;
+    vi.projections = variable_importance_projections(tree, n_vars, &vi.scale);
 
-    result["variable_importance"] = cli::vi_to_json(empty, vi2, empty, scale);
+    result["variable_importance"] = to_json(vi);
   }
 
   write_json_file(result, path);

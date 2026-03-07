@@ -61,12 +61,14 @@ namespace pptree::cli {
   }
 
   void print_variable_importance(
-    const types::FeatureVector& vi1,
-    const types::FeatureVector& vi2,
-    const types::FeatureVector& vi3,
-    const types::FeatureVector& scale,
-    int                         max_rows) {
+    const VariableImportance& vi,
+    int                       max_rows) {
     using namespace pptree::io;
+
+    const auto& vi1   = vi.permuted;
+    const auto& vi2   = vi.projections;
+    const auto& vi3   = vi.weighted_projections;
+    const auto& scale = vi.scale;
 
     const int p = static_cast<int>(vi2.size());
 
@@ -113,33 +115,6 @@ namespace pptree::cli {
     }
 
     fmt::print("\n");
-  }
-
-  nlohmann::json vi_to_json(
-    const types::FeatureVector& vi1,
-    const types::FeatureVector& vi2,
-    const types::FeatureVector& vi3,
-    const types::FeatureVector& scale) {
-    const int p = static_cast<int>(vi2.size());
-
-    std::vector<float> scale_vec(scale.data(), scale.data() + p);
-    std::vector<float> vi2_vec(vi2.data(), vi2.data() + p);
-
-    nlohmann::json j;
-    j["scale"]       = scale_vec;
-    j["projections"] = vi2_vec;
-
-    if (vi3.size() == vi2.size()) {
-      std::vector<float> vi3_vec(vi3.data(), vi3.data() + p);
-      j["weighted_projections"] = vi3_vec;
-    }
-
-    if (vi1.size() == vi2.size()) {
-      std::vector<float> vi1_vec(vi1.data(), vi1.data() + p);
-      j["permuted"] = vi1_vec;
-    }
-
-    return j;
   }
 
   void print_confusion_matrix(const stats::ConfusionMatrix& cm) {

@@ -8,6 +8,7 @@
 #include "models/Tree.hpp"
 #include "models/BootstrapTree.hpp"
 #include "models/Forest.hpp"
+#include "models/VariableImportance.hpp"
 #include "stats/ConfusionMatrix.hpp"
 
 #include <nlohmann/json.hpp>
@@ -34,6 +35,7 @@ namespace pptree::serialization {
   json to_json(const BootstrapTree& tree);
   json to_json(const Forest& forest);
   json to_json(const stats::ConfusionMatrix& cm);
+  json to_json(const VariableImportance& vi);
 
   Model::Ptr model_from_json(const json& j);
   TreeNode::Ptr node_from_json(const json& j);
