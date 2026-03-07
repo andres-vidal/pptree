@@ -25,11 +25,7 @@ using namespace pptree::types;
 
 
 
-// ---------------------------------------------------------------------------
-// Construction — verify the NxN matrix values and label_index map
-// ---------------------------------------------------------------------------
 
-/* Perfect predictions produce an identity matrix. */
 TEST(ConfusionMatrix, Identity) {
   ResponseVector actual   = DATA(Response, 3, 0, 1, 2);
   ResponseVector expected = DATA(Response, 3, 0, 1, 2);
@@ -67,7 +63,7 @@ TEST(ConfusionMatrix, Diagonal) {
   ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
-/* Reversed predictions produce an anti-diagonal matrix. */
+
 TEST(ConfusionMatrix, InverseDiagonal) {
   ResponseVector actual   = DATA(Response, 3, 0, 1, 2);
   ResponseVector expected = DATA(Response, 3, 2, 1, 0);
@@ -127,11 +123,7 @@ TEST(ConfusionMatrix, Generic) {
   ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
-// ---------------------------------------------------------------------------
-// Construction — size mismatch errors
-// ---------------------------------------------------------------------------
 
-/* Mismatched vector sizes must throw. */
 TEST(ConfusionMatrix, MorePredictionsThanObservations) {
   ResponseVector predictions  = DATA(Response, 3, 0, 1, 2);
   ResponseVector observations = DATA(Response, 2, 0, 1);
@@ -139,12 +131,30 @@ TEST(ConfusionMatrix, MorePredictionsThanObservations) {
   ASSERT_THROW(ConfusionMatrix(predictions, observations), std::invalid_argument);
 }
 
-/* Mismatched vector sizes (other direction) must also throw. */
 TEST(ConfusionMatrix, MoreObservationsThanPredictions) {
   ResponseVector predictions  = DATA(Response, 2, 0, 1);
   ResponseVector observations = DATA(Response, 3, 0, 1, 2);
 
   ASSERT_THROW(ConfusionMatrix(predictions, observations), std::invalid_argument);
+}
+
+TEST(ConfusionMatrix, NonConsecutiveLabels) {
+  ResponseVector actual      = DATA(Response, 6, 1, 1, 3, 3, 5, 5);
+  ResponseVector predictions = DATA(Response, 6, 1, 3, 3, 5, 5, 1);
+
+  ConfusionMatrix result = ConfusionMatrix(predictions, actual);
+
+  ASSERT_EQ(3, result.values.rows());
+  ASSERT_EQ(3, result.values.cols());
+
+  ASSERT_EQ((std::map<int, int>({ { 1, 0 }, { 3, 1 }, { 5, 2 } })), result.label_index);
+
+
+  ASSERT_EQ(1, result.values(0, 0));
+  ASSERT_EQ(1, result.values(0, 1));
+  ASSERT_EQ(0, result.values(0, 2));
+
+  ASSERT_NEAR(3.0 / 6.0, result.error(), 0.001);
 }
 
 // ---------------------------------------------------------------------------
