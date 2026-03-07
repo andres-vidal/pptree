@@ -976,6 +976,32 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
   ASSERT_NEAR(0.12597, actual, 0.00001);
 }
 
+TEST(Projector, PDALambdaOneBoundary) {
+  FeatureMatrix x = DATA(Feature, 10,
+      1, 0, 1, 1,
+      1, 1, 0, 0,
+      1, 0, 0, 1,
+      1, 1, 1, 1,
+      4, 0, 0, 1,
+      4, 0, 0, 2,
+      4, 0, 0, 3,
+      4, 1, 0, 1,
+      4, 0, 1, 1,
+      4, 0, 1, 2);
+
+  ResponseVector y = DATA(Response, 10,
+      0, 0, 0, 0,
+      1, 1, 1, 1, 1, 1);
+
+  auto [actual, index] = PPGLDAStrategy(1.0).optimize(x, GroupPartition(y));
+
+  // Lambda=1 means full penalization (diagonal covariance)
+  // Projector should still point in the discriminating direction
+  FeatureVector expected = DATA(Feature, 4, 1, 0, 0, 0);
+  ASSERT_COLLINEAR(expected, actual);
+  ASSERT_GT(index, 0.0f) << "PDA lambda=1 should still find a valid projector";
+}
+
 TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
   FeatureMatrix x = DATA(Feature, 30,
       1, 0, 0, 1, 1,
