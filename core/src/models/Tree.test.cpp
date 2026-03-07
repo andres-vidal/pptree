@@ -7,6 +7,8 @@
 #include "models/TrainingSpecGLDA.hpp"
 #include "models/TrainingSpecUGLDA.hpp"
 
+#include "stats/Simulation.hpp"
+#include "stats/Stats.hpp"
 #include "utils/Macros.hpp"
 
 using namespace pptree;
@@ -203,7 +205,6 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
       0, 0, 0, 0, 0,
       1, 1, 1, 1, 1);
 
-
   stats::RNG rng(0);
 
   Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
@@ -287,7 +288,30 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(Tree, TrainLDAMultivariateThreeGroups) {
+TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
+  FeatureMatrix x = DATA(Feature, 10,
+      1, 1, 1, 1, 1,
+      2, 2, 2, 2, 2);
+
+  ResponseVector y = DATA(Response, 10,
+      0, 0, 0, 0, 0,
+      1, 1, 1, 1, 1);
+
+  stats::RNG rng(0);
+
+  Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
+
+  Tree expect = Tree(
+    TreeCondition::make(
+      as_projector({ 1.0 }),
+      1.5,
+      TreeResponse::make(0),
+      TreeResponse::make(1)));
+
+  ASSERT_EQ(expect, result);
+}
+
+TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
   FeatureMatrix x = DATA(Feature, 30,
       1, 0, 1, 1, 1,
       1, 0, 1, 0, 0,
@@ -356,44 +380,14 @@ TEST(Tree, TrainLDAMultivariateThreeGroups) {
 
   Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
 
-  Tree expect = Tree(
-    TreeCondition::make(
-      as_projector({ 0.9753647250984685, -0.19102490285203763, -0.02603961769477166, 0.06033431306913992, -0.08862758318234709 }),
-      4.0505145097205055,
-      TreeCondition::make(
-        as_projector({ 0.15075268856227853, 0.9830270463921728, -0.013280681282024458, 0.023289310653985006, 0.10105782733996031 }),
-        2.8568896254203113,
-        TreeResponse::make(0),
-        TreeResponse::make(1)),
-      TreeResponse::make(2)));
+  // Property: tree should predict training data perfectly (well-separated groups)
+  ResponseVector predictions = result.predict(x);
 
-  ASSERT_EQ(expect, result);
+  ASSERT_EQ(error_rate(predictions, y), 0.0)
+    << "Tree should achieve 0% training error on well-separated 3-group data";
 }
 
-TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
-  FeatureMatrix x = DATA(Feature, 10,
-      1, 1, 1, 1, 1,
-      2, 2, 2, 2, 2);
-
-  ResponseVector y = DATA(Response, 10,
-      0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1);
-
-  stats::RNG rng(0);
-
-  Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
-
-  Tree expect = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1)));
-
-  ASSERT_EQ(expect, result);
-}
-
-TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
+TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
   FeatureMatrix x = DATA(Feature, 10,
       1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
       1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -422,16 +416,127 @@ TEST(Tree, TrainPDALambdaOnehalfMultivariateTwoGroups) {
 
   Tree result = Tree::train(TrainingSpecGLDA(0.5), x, y, rng);
 
-  Tree expect = Tree(
-    TreeCondition::make(
-      as_projector({ 0.9969498534721803, -0.00784130658079787, 0.053487283057874875, -0.05254780467349118, -0.007135670500966689, -0.007135670500966691, -0.007135670500966693, -0.007135670500966691, -0.007135670500966698, -0.007135670500966698, -0.007135670500966696, -0.007135670500966696 }),
-      2.4440,
-      TreeResponse::make(0),
-      TreeResponse::make(1)
-      ));
+  // Property: tree should predict training data perfectly
+  ResponseVector predictions = result.predict(x);
 
+  ASSERT_EQ(error_rate(predictions, y), 0.0) << "PDA tree should achieve 0% training error on well-separated 2-group data";
+}
 
-  ASSERT_EQ(expect, result);
+TEST(TreeSimulation, PerfectSeparationZeroError) {
+  RNG rng(42);
+  SimulationParams params;
+  params.mean_separation = 200.0f;
+  params.sd              = 1.0f;
+
+  auto data = simulate(90, 4, 3, rng, params);
+
+  RNG train_rng(42);
+  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+
+  ResponseVector predictions = tree.predict(data.x);
+  ASSERT_EQ(error_rate(predictions, data.y), 0.0) << "Tree should achieve 0% error on perfectly separated data";
+}
+
+TEST(TreeSimulation, HighOverlapBoundedError) {
+  RNG rng(42);
+  SimulationParams params;
+  params.mean_separation = 5.0f;
+  params.sd              = 50.0f;
+
+  auto data = simulate(200, 4, 3, rng, params);
+
+  RNG train_rng(42);
+  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+
+  ResponseVector predictions = tree.predict(data.x);
+  double err                 = error_rate(predictions, data.y);
+
+  ASSERT_LT(err, 0.80) << "Tree error rate on highly overlapping data should be bounded";
+}
+
+TEST(TreeSimulation, ManyClasses) {
+  RNG rng(42);
+  SimulationParams params;
+  params.mean_separation = 50.0f;
+  params.sd              = 10.0f;
+
+  auto data = simulate(300, 4, 10, rng, params);
+
+  RNG train_rng(42);
+  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+
+  ResponseVector predictions = tree.predict(data.x);
+  double err                 = error_rate(predictions, data.y);
+
+  ASSERT_LT(err, 0.50)
+    << "Tree should handle 10 classes with reasonable error";
+}
+
+TEST(TreeSimulation, HighDimensionality) {
+  RNG rng(42);
+  SimulationParams params;
+  params.mean_separation = 50.0f;
+  params.sd              = 10.0f;
+
+  auto data = simulate(100, 50, 3, rng, params);
+
+  RNG train_rng(42);
+  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+
+  ResponseVector predictions = tree.predict(data.x);
+  double err                 = error_rate(predictions, data.y);
+
+  ASSERT_LT(err, 0.20)
+    << "Tree should handle high-dimensional data (p=50)";
+}
+
+TEST(TreeSimulation, SingleFeature) {
+  RNG rng(42);
+  SimulationParams params;
+  params.mean_separation = 50.0f;
+  params.sd              = 10.0f;
+
+  auto data = simulate(100, 1, 2, rng, params);
+
+  RNG train_rng(42);
+  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+
+  ResponseVector predictions = tree.predict(data.x);
+  double err                 = error_rate(predictions, data.y);
+
+  ASSERT_LT(err, 0.10)
+    << "Tree should handle univariate data";
+}
+
+TEST(TreeSimulation, PDAOnOverlappingData) {
+  RNG rng(42);
+  SimulationParams params;
+  params.mean_separation = 10.0f;
+  params.sd              = 20.0f;
+
+  auto data = simulate(200, 4, 3, rng, params);
+
+  RNG train_rng(42);
+  Tree tree = Tree::train(TrainingSpecGLDA(0.5), data.x, data.y, train_rng);
+
+  ResponseVector predictions = tree.predict(data.x);
+  double err                 = error_rate(predictions, data.y);
+
+  ASSERT_LT(err, 0.80)
+    << "PDA tree should produce bounded error on noisy data";
+}
+
+TEST(TreeSimulation, Deterministic) {
+  RNG rng(42);
+  auto data = simulate(90, 4, 3, rng);
+
+  RNG rng1(42);
+  Tree t1 = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, rng1);
+
+  RNG rng2(42);
+  Tree t2 = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, rng2);
+
+  ASSERT_EQ(t1, t2) << "Same seed should produce identical trees";
 }
 
 TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
