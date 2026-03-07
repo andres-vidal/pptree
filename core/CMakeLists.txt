@@ -204,7 +204,8 @@ set(PPTREE_TEST_SRC
   src/utils/Math.test.cpp
   src/utils/Invariant.test.cpp
   src/cli/CLIOptions.test.cpp
-  src/cli/CLI.integration.test.cpp)
+  src/cli/CLI.integration.test.cpp
+  src/golden/Threading.test.cpp)
 
 # Google Test
 FetchContent_Declare(
