@@ -1,10 +1,17 @@
+/**
+ * @file Json.test.cpp
+ * @brief Tests for JSON serialization round-trips.
+ *
+ * Uses committed golden files as fixtures — loads model JSON, deserializes,
+ * re-serializes, and compares.  No training is performed.
+ */
 #include <gtest/gtest.h>
 
-#include "pptree.hpp"
 #include "serialization/Json.hpp"
-#include "stats/Simulation.hpp"
+#include "utils/Invariant.hpp"
 #include "utils/Macros.hpp"
 
+#include <filesystem>
 #include <fstream>
 
 using namespace pptree;
@@ -14,84 +21,68 @@ using namespace pptree::serialization;
 
 using json = nlohmann::json;
 
+#ifndef PPTREE_GOLDEN_DIR
+#error "PPTREE_GOLDEN_DIR must be defined"
+#endif
+
+#ifndef PPTREE_DATA_DIR
+#error "PPTREE_DATA_DIR must be defined"
+#endif
+
+static const std::string GOLDEN_DIR = PPTREE_GOLDEN_DIR;
+static const std::string DATA_DIR   = PPTREE_DATA_DIR;
+
+static json load_model_json(const std::string& path) {
+  std::ifstream in(path);
+  invariant(in.is_open(), "Required golden file missing: " + path);
+  json golden = json::parse(in);
+  return golden["model"];
+}
+
 TEST(JsonRoundTrip, Tree) {
-  RNG rng(42);
-  SimulationParams params;
-  params.mean_separation = 100.0f;
-  params.sd = 5.0f;
-  auto data = simulate(90, 4, 3, rng, params);
+  json model_json = load_model_json(GOLDEN_DIR + "/iris/tree-glda-s42.json");
 
-  RNG train_rng(42);
-  auto tree = Tree::train(TrainingSpecGLDA(0.0f), data.x, data.y, train_rng);
+  Tree tree = tree_from_json(model_json);
+  json roundtripped = to_json(tree);
 
-  json j = to_json(tree);
-  Tree restored = tree_from_json(j);
-
-  auto predictions_original = tree.predict(data.x);
-  auto predictions_restored = restored.predict(data.x);
-
-  ASSERT_EQ(predictions_original, predictions_restored);
+  ASSERT_EQ(model_json, roundtripped) << "Tree JSON should be identical after round-trip";
 }
 
 TEST(JsonRoundTrip, Forest) {
-  RNG rng(42);
-  SimulationParams params;
-  params.mean_separation = 100.0f;
-  params.sd = 5.0f;
-  auto data = simulate(90, 4, 3, rng, params);
+  json model_json = load_model_json(GOLDEN_DIR + "/iris/forest-glda-t5-s42.json");
 
-  auto forest = Forest::train(
-    TrainingSpecUGLDA(2, 0.0f),
-    data.x, data.y, 5, 42, 1);
+  Forest forest = forest_from_json(model_json);
+  json roundtripped = to_json(forest);
 
-  json j = to_json(forest);
-  Forest restored = forest_from_json(j);
-
-  auto predictions_original = forest.predict(data.x);
-  auto predictions_restored = restored.predict(data.x);
-
-  ASSERT_EQ(predictions_original, predictions_restored);
+  ASSERT_EQ(model_json, roundtripped) << "Forest JSON should be identical after round-trip";
 }
 
 TEST(JsonRoundTrip, ModelDispatchTree) {
-  RNG rng(42);
-  SimulationParams params;
-  params.mean_separation = 100.0f;
-  params.sd = 5.0f;
-  auto data = simulate(90, 4, 3, rng, params);
+  json model_json = load_model_json(GOLDEN_DIR + "/iris/tree-glda-s42.json");
 
-  RNG train_rng(42);
-  auto tree = Tree::train(TrainingSpecGLDA(0.0f), data.x, data.y, train_rng);
+  json wrapped;
+  wrapped["model_type"] = "tree";
+  wrapped["model"] = model_json;
 
-  json j = to_json(static_cast<const Model&>(tree));
-  ASSERT_EQ(j["model_type"], "tree");
+  auto restored = model_from_json(wrapped);
+  ASSERT_NE(restored, nullptr);
 
-  auto restored = model_from_json(j);
-  auto predictions_original = tree.predict(data.x);
-  auto predictions_restored = restored->predict(data.x);
-
-  ASSERT_EQ(predictions_original, predictions_restored);
+  json roundtripped = to_json(*restored);
+  ASSERT_EQ(roundtripped["model_type"], "tree");
 }
 
 TEST(JsonRoundTrip, ModelDispatchForest) {
-  RNG rng(42);
-  SimulationParams params;
-  params.mean_separation = 100.0f;
-  params.sd = 5.0f;
-  auto data = simulate(90, 4, 3, rng, params);
+  json model_json = load_model_json(GOLDEN_DIR + "/iris/forest-glda-t5-s42.json");
 
-  auto forest = Forest::train(
-    TrainingSpecUGLDA(2, 0.0f),
-    data.x, data.y, 5, 42, 1);
+  json wrapped;
+  wrapped["model_type"] = "forest";
+  wrapped["model"] = model_json;
 
-  json j = to_json(static_cast<const Model&>(forest));
-  ASSERT_EQ(j["model_type"], "forest");
+  auto restored = model_from_json(wrapped);
+  ASSERT_NE(restored, nullptr);
 
-  auto restored = model_from_json(j);
-  auto predictions_original = forest.predict(data.x);
-  auto predictions_restored = restored->predict(data.x);
-
-  ASSERT_EQ(predictions_original, predictions_restored);
+  json roundtripped = to_json(*restored);
+  ASSERT_EQ(roundtripped["model_type"], "forest");
 }
 
 TEST(JsonRoundTrip, ConfusionMatrix) {
@@ -113,30 +104,11 @@ TEST(JsonRoundTrip, ConfusionMatrix) {
   ASSERT_EQ(matrix[0].size(), 3);
 }
 
-TEST(JsonRoundTrip, TreePreservesStructure) {
-  RNG rng(42);
-  SimulationParams params;
-  params.mean_separation = 200.0f;
-  params.sd = 1.0f;
-  auto data = simulate(60, 2, 2, rng, params);
-
-  RNG train_rng(42);
-  auto tree = Tree::train(TrainingSpecGLDA(0.0f), data.x, data.y, train_rng);
-
-  json j1 = to_json(tree);
-  Tree restored = tree_from_json(j1);
-  json j2 = to_json(restored);
-
-  ASSERT_EQ(j1, j2) << "JSON should be identical after round-trip";
-}
-
 TEST(JsonRoundTrip, FromModelJsonFile) {
-  std::string model_path = std::string(PPTREE_DATA_DIR) + "/../model.json";
+  std::string model_path = DATA_DIR + "/../model.json";
   std::ifstream in(model_path);
 
-  if (!in.is_open()) {
-    GTEST_SKIP() << "model.json not found at " << model_path;
-  }
+  invariant(in.is_open(), "model.json not found at " + model_path);
 
   json j = json::parse(in);
   in.close();

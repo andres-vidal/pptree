@@ -99,15 +99,15 @@ TEST(BootstrapTreePredictOob, MatchesRowwisePredict) {
     std::vector<int>{ 0, 1, 4, 5 });
 
   FeatureMatrix x = MAT(Feature, rows(6),
-    0.0f, 0.5f,
-    0.1f, 0.3f,
-    0.2f, 0.7f,
-    9.8f, 0.4f,
-    9.9f, 0.6f,
-    9.7f, 0.2f);
+      0.0f, 0.5f,
+      0.1f, 0.3f,
+      0.2f, 0.7f,
+      9.8f, 0.4f,
+      9.9f, 0.6f,
+      9.7f, 0.2f);
 
   std::vector<int> oob_idx = { 2, 3 };
-  ResponseVector preds = bt.predict_oob(x, oob_idx);
+  ResponseVector preds     = bt.predict_oob(x, oob_idx);
 
   ASSERT_EQ(preds.size(), 2);
   EXPECT_EQ(preds(0), 0) << "Row 2 has x[0]=0.2 < 5";
@@ -149,15 +149,15 @@ struct IndexCollector : public TreeNodeVisitor {
 TEST(PpIndexValue, StoredAfterTraining) {
   // Two well-separated groups: col 0 discriminates.
   FeatureMatrix x = MAT(Feature, rows(6),
-    0.0f, 0.5f,
-    0.1f, 0.3f,
-    0.2f, 0.7f,
-    9.8f, 0.4f,
-    9.9f, 0.6f,
-    9.7f, 0.2f);
+      0.0f, 0.5f,
+      0.1f, 0.3f,
+      0.2f, 0.7f,
+      9.8f, 0.4f,
+      9.9f, 0.6f,
+      9.7f, 0.2f);
 
   ResponseVector y = VEC(Response,
-    0, 0, 0, 1, 1, 1);
+      0, 0, 0, 1, 1, 1);
 
   stats::RNG rng(42, 0);
   Tree tree = Tree::train(TrainingSpecGLDA(0.0f), x, y, rng);
@@ -351,10 +351,10 @@ TEST(VariableImportance3, HandBuiltSingleNodeTree) {
   // VI3[0] = 1.0 * 0.9 / 1 = 0.9,  VI3[1] = 0.0
 
   FeatureMatrix x = MAT(Feature, rows(4),
-    0.0f, 0.0f,
-    0.1f, 0.1f,
-    9.9f, 0.0f,
-    9.8f, 0.1f);
+      0.0f, 0.0f,
+      0.1f, 0.1f,
+      9.9f, 0.0f,
+      9.8f, 0.1f);
 
   ResponseVector y = VEC(Response, 0, 0, 1, 1);
 
@@ -388,30 +388,30 @@ TEST(VariableImportance1, DiscriminatingVariableHighestImportance) {
   // Col 0 perfectly separates the two groups.
   // Col 1 is pure noise (same values in both groups).
   FeatureMatrix x = MAT(Feature, rows(20),
-    0.0f, 1.0f,
-    0.1f, 2.0f,
-    0.2f, 0.5f,
-    0.3f, 1.5f,
-    0.4f, 0.8f,
-    0.5f, 1.2f,
-    0.6f, 0.9f,
-    0.7f, 1.8f,
-    0.8f, 0.6f,
-    0.9f, 1.1f,
-    9.0f, 1.0f,
-    9.1f, 2.0f,
-    9.2f, 0.5f,
-    9.3f, 1.5f,
-    9.4f, 0.8f,
-    9.5f, 1.2f,
-    9.6f, 0.9f,
-    9.7f, 1.8f,
-    9.8f, 0.6f,
-    9.9f, 1.1f);
+      0.0f, 1.0f,
+      0.1f, 2.0f,
+      0.2f, 0.5f,
+      0.3f, 1.5f,
+      0.4f, 0.8f,
+      0.5f, 1.2f,
+      0.6f, 0.9f,
+      0.7f, 1.8f,
+      0.8f, 0.6f,
+      0.9f, 1.1f,
+      9.0f, 1.0f,
+      9.1f, 2.0f,
+      9.2f, 0.5f,
+      9.3f, 1.5f,
+      9.4f, 0.8f,
+      9.5f, 1.2f,
+      9.6f, 0.9f,
+      9.7f, 1.8f,
+      9.8f, 0.6f,
+      9.9f, 1.1f);
 
   ResponseVector y = VEC(Response,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
   Forest forest = Forest::train(
     TrainingSpecGLDA(0.0f),

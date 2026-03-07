@@ -4,7 +4,7 @@
  *
  * Each test loads a golden JSON file, trains the same model configuration,
  * and compares predictions, error rates, confusion matrix, and (for forests)
- * OOB error and variable importance.  Tests SKIP when golden files are missing.
+ * OOB error and variable importance.
  */
 #include <gtest/gtest.h>
 
@@ -20,6 +20,7 @@
 #include "models/VariableImportance.hpp"
 #include "serialization/Json.hpp"
 #include "io/IO.hpp"
+#include "utils/Invariant.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -133,8 +134,7 @@ namespace {
 #define GOLDEN_TREE_TEST(TestName, dataset_name, slug_name, csv_file, lambda_val, seed_val) \
         TEST(Reproducibility, TestName) {                                                   \
           auto path = resolve_golden_path(dataset_name, slug_name);                         \
-          if (!std::filesystem::exists(path))                                               \
-          GTEST_SKIP() << "Golden file missing: " << path;                                  \
+          invariant(std::filesystem::exists(path), "Golden file missing: " + path);            \
                                                                                             \
           auto golden = load_golden(path);                                                  \
           auto data   = io::read_csv_sorted(DATA_DIR + "/" + csv_file);                     \
@@ -162,8 +162,7 @@ namespace {
           n_trees, lambda_val, n_vars_val, seed_val)                                            \
         TEST(Reproducibility, TestName) {                                                       \
           auto path = resolve_golden_path(dataset_name, slug_name);                             \
-          if (!std::filesystem::exists(path))                                                   \
-          GTEST_SKIP() << "Golden file missing: " << path;                                      \
+          invariant(std::filesystem::exists(path), "Golden file missing: " + path);               \
                                                                                                 \
           auto golden = load_golden(path);                                                      \
           auto data   = io::read_csv_sorted(DATA_DIR + "/" + csv_file);                         \
