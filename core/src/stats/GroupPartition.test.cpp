@@ -10,7 +10,7 @@ using namespace pptree::stats;
 using namespace pptree::types;
 
 TEST(GroupPartition, GroupSize) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -18,7 +18,7 @@ TEST(GroupPartition, GroupSize) {
       3, 3, 3,
       5, 5, 5);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       1,
       1,
       2,
@@ -34,7 +34,7 @@ TEST(GroupPartition, GroupSize) {
 }
 
 TEST(GroupPartition, GroupStart) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -42,7 +42,7 @@ TEST(GroupPartition, GroupStart) {
       3, 3, 3,
       5, 5, 5);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       1,
       1,
       2,
@@ -58,7 +58,7 @@ TEST(GroupPartition, GroupStart) {
 }
 
 TEST(GroupPartition, GroupEnd) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -66,7 +66,7 @@ TEST(GroupPartition, GroupEnd) {
       3, 3, 3,
       5, 5, 5);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       1,
       1,
       2,
@@ -82,7 +82,7 @@ TEST(GroupPartition, GroupEnd) {
 }
 
 TEST(GroupPartition, Group) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -91,7 +91,7 @@ TEST(GroupPartition, Group) {
       5, 5, 5);
 
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       1,
       1,
       2,
@@ -103,7 +103,7 @@ TEST(GroupPartition, Group) {
 
   FeatureMatrix actual = spec.group(x, 1);
 
-  FeatureMatrix expected = DATA(Feature, 2,
+  FeatureMatrix expected = MAT(Feature, rows(2),
       2, 2, 2,
       4, 4, 4);
 
@@ -114,7 +114,7 @@ TEST(GroupPartition, Group) {
 
   actual = spec.group(x, 2);
 
-  expected = DATA(Feature, 2,
+  expected = MAT(Feature, rows(2),
       1, 1, 1,
       6, 6, 6);
 
@@ -125,7 +125,7 @@ TEST(GroupPartition, Group) {
 
   actual = spec.group(x, 3);
 
-  expected = DATA(Feature, 2,
+  expected = MAT(Feature, rows(2),
       3, 3, 3,
       5, 5, 5);
 
@@ -136,7 +136,7 @@ TEST(GroupPartition, Group) {
 }
 
 TEST(GroupPartition, ErrorGroupsNotContiguous) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -144,7 +144,7 @@ TEST(GroupPartition, ErrorGroupsNotContiguous) {
       3, 3, 3,
       5, 5, 5);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       1,
       2,
       3,
@@ -156,7 +156,7 @@ TEST(GroupPartition, ErrorGroupsNotContiguous) {
 }
 
 TEST(GroupPartition, Subset) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       1, 2, 2,
       1, 4, 4,
       2, 1, 1,
@@ -164,7 +164,7 @@ TEST(GroupPartition, Subset) {
       3, 3, 3,
       3, 5, 5);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       1,
       1,
       2,
@@ -182,17 +182,17 @@ TEST(GroupPartition, Subset) {
   ASSERT_EQ(4, spec.group_start(3));
   ASSERT_EQ(5, spec.group_end(3));
 
-  FeatureMatrix expected_group_1 = DATA(Feature, 2,
+  FeatureMatrix expected_group_1 = MAT(Feature, rows(2),
       1, 2, 2,
       1, 4, 4);
 
   ASSERT_EQ_DATA(expected_group_1, spec.group(x, 1));
 
-  FeatureMatrix expected_group_3 = DATA(Feature, 2,
+  FeatureMatrix expected_group_3 = MAT(Feature, rows(2),
       3, 3, 3,
       3, 5, 5);
 
-  FeatureMatrix expected_x = DATA(Feature, 4,
+  FeatureMatrix expected_x = MAT(Feature, rows(4),
       1, 2, 2,
       1, 4, 4,
       3, 3, 3,
@@ -200,7 +200,7 @@ TEST(GroupPartition, Subset) {
 
   ASSERT_EQ_DATA(expected_x, spec.data(x));
 
-  FeatureVector expected_mean = DATA(Feature, 3,
+  FeatureVector expected_mean = VEC(Feature,
       2.0,
       3.5,
       3.5);
@@ -209,7 +209,7 @@ TEST(GroupPartition, Subset) {
 }
 
 TEST(GroupPartition, Remap) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       1, 1, 1,
       1, 2, 2,
       2, 1, 1,
@@ -217,7 +217,7 @@ TEST(GroupPartition, Remap) {
       3, 1, 1,
       3, 2, 2);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       1,
       1,
       2,
@@ -242,12 +242,12 @@ TEST(GroupPartition, Remap) {
 }
 
 TEST(GroupPartition,  BetweenGroupsSumOfSquaresSingleGroup) {
-  FeatureMatrix x = DATA(Feature, 3,
+  FeatureMatrix x = MAT(Feature, rows(3),
       1.0, 2.0, 6.0,
       2.0, 3.0, 7.0,
       3.0, 4.0, 8.0);
 
-  ResponseVector y = DATA(Response, 3,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0);
@@ -256,7 +256,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresSingleGroup) {
 
   FeatureMatrix actual = spec.bgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0);
@@ -268,7 +268,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresSingleGroup) {
 }
 
 TEST(GroupPartition,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       1.0, 2.0, 6.0,
       2.0, 3.0, 7.0,
       3.0, 4.0, 8.0,
@@ -276,7 +276,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
       2.0, 3.0, 7.0,
       3.0, 4.0, 8.0);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -288,7 +288,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
 
   FeatureMatrix actual = spec.bgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0);
@@ -301,7 +301,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresTwoEqualGroups) {
 }
 
 TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
-  FeatureMatrix x = DATA(Feature, 8,
+  FeatureMatrix x = MAT(Feature, rows(8),
       23.0,
       25.0,
       18.0,
@@ -311,7 +311,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
       35.0,
       17.0);
 
-  ResponseVector y = DATA(Response, 8,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -325,7 +325,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
 
   FeatureMatrix actual = spec.bgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 1,
+  FeatureMatrix expected = MAT(Feature, rows(1),
       19.875);
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -335,7 +335,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
 }
 
 TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
-  FeatureMatrix x = DATA(Feature, 8,
+  FeatureMatrix x = MAT(Feature, rows(8),
       23.0,
       25.0,
       18.0,
@@ -345,7 +345,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequen
       35.0,
       17.0);
 
-  ResponseVector y = DATA(Response, 8,
+  ResponseVector y = VEC(Response,
       1,
       1,
       1,
@@ -359,7 +359,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequen
 
   FeatureMatrix actual = spec.bgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 1,
+  FeatureMatrix expected = MAT(Feature, rows(1),
       19.875);
 
   ASSERT_EQ(expected.size(), actual.size());
@@ -369,7 +369,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequen
 }
 
 TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
-  FeatureMatrix x = DATA(Feature, 8,
+  FeatureMatrix x = MAT(Feature, rows(8),
       23.0, 1.0, 1.0,
       25.0, 1.0, 1.0,
       18.0, 1.0, 1.0,
@@ -379,7 +379,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
       35.0, 1.0, 1.0,
       17.0, 1.0, 1.0);
 
-  ResponseVector y = DATA(Response, 8,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -393,7 +393,7 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
 
   FeatureMatrix actual = spec.bgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       19.875, 0.0, 0.0,
       0.0,    0.0, 0.0,
       0.0,    0.0, 0.0);
@@ -405,12 +405,12 @@ TEST(GroupPartition,  BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
 }
 
 TEST(GroupPartition,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
-  FeatureMatrix x = DATA(Feature, 3,
+  FeatureMatrix x = MAT(Feature, rows(3),
       1.0, 1.0, 1.0,
       1.0, 1.0, 1.0,
       1.0, 1.0, 1.0);
 
-  ResponseVector y = DATA(Response, 3,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0);
@@ -419,7 +419,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
 
   FeatureMatrix actual = spec.wgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0);
@@ -431,12 +431,12 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresSingleGroupNoVariance) {
 }
 
 TEST(GroupPartition,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
-  FeatureMatrix x = DATA(Feature, 3,
+  FeatureMatrix x = MAT(Feature, rows(3),
       1.0, 1.0, 1.0,
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0);
 
-  ResponseVector y = DATA(Response, 3,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0);
@@ -445,7 +445,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
 
   FeatureMatrix actual = spec.wgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       2.0, 2.0, 2.0,
       2.0, 2.0, 2.0,
       2.0, 2.0, 2.0);
@@ -457,7 +457,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresSingleGroupWithVariance) {
 }
 
 TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoEqualGroups) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       1.0, 1.0, 1.0,
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0,
@@ -465,7 +465,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoEqualGroups) {
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -477,7 +477,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoEqualGroups) {
 
   FeatureMatrix actual = spec.wgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       4.0, 4.0, 4.0,
       4.0, 4.0, 4.0,
       4.0, 4.0, 4.0);
@@ -489,7 +489,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoEqualGroups) {
 }
 
 TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       1.0, 1.0, 1.0,
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0,
@@ -497,7 +497,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
       5.0, 5.0, 5.0,
       6.0, 6.0, 6.0);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -509,7 +509,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
 
   FeatureMatrix actual = spec.wgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       4.0, 4.0, 4.0,
       4.0, 4.0, 4.0,
       4.0, 4.0, 4.0);
@@ -521,7 +521,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
 }
 
 TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       1.0, 1.0, 1.0,
       2.0, 2.0, 2.0,
       3.0, 3.0, 3.0,
@@ -529,7 +529,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
       5.0, 5.0, 5.0,
       6.0, 6.0, 6.0);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -541,7 +541,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
 
   FeatureMatrix actual = spec.wgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       16.0, 16.0, 16.0,
       16.0, 16.0, 16.0,
       16.0, 16.0, 16.0);
@@ -553,7 +553,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
 }
 
 TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
-  FeatureMatrix x = DATA(Feature, 8,
+  FeatureMatrix x = MAT(Feature, rows(8),
       1.0, 2.0, 3.0,
       4.0, 5.0, 6.0,
       7.0, 8.0, 9.0,
@@ -563,7 +563,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
       9.0, 8.0, 7.0,
       6.0, 5.0, 4.0);
 
-  ResponseVector y = DATA(Response, 8,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -578,7 +578,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
 
   FeatureMatrix actual = spec.wgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       24.5, 24.5, 24.5,
       24.5, 24.5, 24.5,
       24.5, 24.5, 24.5);
@@ -590,7 +590,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
 }
 
 TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
-  FeatureMatrix x = DATA(Feature, 8,
+  FeatureMatrix x = MAT(Feature, rows(8),
       1.0, 2.0, 3.0, 0.0,
       4.0, 5.0, 6.0, 0.0,
       7.0, 8.0, 9.0, 0.0,
@@ -600,7 +600,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
       9.0, 8.0, 7.0, 0.0,
       6.0, 5.0, 4.0, 0.0);
 
-  ResponseVector y = DATA(Response, 8,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -614,7 +614,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
 
   FeatureMatrix actual = spec.wgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 4,
+  FeatureMatrix expected = MAT(Feature, rows(4),
       24.5, 24.5, 24.5, 0.0,
       24.5, 24.5, 24.5, 0.0,
       24.5, 24.5, 24.5, 0.0,
@@ -627,7 +627,7 @@ TEST(GroupPartition,  WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
 }
 
 TEST(GroupPartitionRemapped, Group) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -636,7 +636,7 @@ TEST(GroupPartitionRemapped, Group) {
       5, 5, 5);
 
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
       1,
       1,
       2,
@@ -649,7 +649,7 @@ TEST(GroupPartitionRemapped, Group) {
 
   FeatureMatrix actual = spec.group(x, 1);
 
-  FeatureMatrix expected = DATA(Feature, 4,
+  FeatureMatrix expected = MAT(Feature, rows(4),
       2, 2, 2,
       4, 4, 4,
       1, 1, 1,
@@ -662,7 +662,7 @@ TEST(GroupPartitionRemapped, Group) {
 
   actual = spec.group(x, 2);
 
-  expected = DATA(Feature, 2,
+  expected = MAT(Feature, rows(2),
       3, 3, 3,
       5, 5, 5);
 
@@ -673,7 +673,7 @@ TEST(GroupPartitionRemapped, Group) {
 }
 
 TEST(GroupPartitionRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
-  FeatureMatrix x = DATA(Feature, 8,
+  FeatureMatrix x = MAT(Feature, rows(8),
       23.0, 1.0, 1.0,
       25.0, 1.0, 1.0,
       18.0, 1.0, 1.0,
@@ -683,7 +683,7 @@ TEST(GroupPartitionRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate
       35.0, 1.0, 1.0,
       17.0, 1.0, 1.0);
 
-  ResponseVector y = DATA(Response, 8,
+  ResponseVector y = VEC(Response,
       0,
       0,
       1,
@@ -698,7 +698,7 @@ TEST(GroupPartitionRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate
 
   FeatureMatrix actual = remapped.bgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       19.875, 0.0, 0.0,
       0.0,    0.0, 0.0,
       0.0,    0.0, 0.0);
@@ -710,7 +710,7 @@ TEST(GroupPartitionRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate
 }
 
 TEST(GroupPartitionRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate) {
-  FeatureMatrix x = DATA(Feature, 8,
+  FeatureMatrix x = MAT(Feature, rows(8),
       1.0, 2.0, 3.0,
       4.0, 5.0, 6.0,
       7.0, 8.0, 9.0,
@@ -720,7 +720,7 @@ TEST(GroupPartitionRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate)
       9.0, 8.0, 7.0,
       6.0, 5.0, 4.0);
 
-  ResponseVector y = DATA(Response, 8,
+  ResponseVector y = VEC(Response,
       0,
       0,
       1,
@@ -737,7 +737,7 @@ TEST(GroupPartitionRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate)
 
   FeatureMatrix actual = remapped.wgss(x);
 
-  FeatureMatrix expected = DATA(Feature, 3,
+  FeatureMatrix expected = MAT(Feature, rows(3),
       24.5, 24.5, 24.5,
       24.5, 24.5, 24.5,
       24.5, 24.5, 24.5);

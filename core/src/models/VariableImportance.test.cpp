@@ -98,7 +98,7 @@ TEST(BootstrapTreePredictOob, MatchesRowwisePredict) {
     TrainingSpecGLDA::make(0.0f),
     std::vector<int>{ 0, 1, 4, 5 });
 
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
     0.0f, 0.5f,
     0.1f, 0.3f,
     0.2f, 0.7f,
@@ -148,7 +148,7 @@ struct IndexCollector : public TreeNodeVisitor {
 
 TEST(PpIndexValue, StoredAfterTraining) {
   // Two well-separated groups: col 0 discriminates.
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
     0.0f, 0.5f,
     0.1f, 0.3f,
     0.2f, 0.7f,
@@ -156,7 +156,7 @@ TEST(PpIndexValue, StoredAfterTraining) {
     9.9f, 0.6f,
     9.7f, 0.2f);
 
-  ResponseVector y = DATA(Response, 6,
+  ResponseVector y = VEC(Response,
     0, 0, 0, 1, 1, 1);
 
   stats::RNG rng(42, 0);
@@ -350,13 +350,13 @@ TEST(VariableImportance3, HandBuiltSingleNodeTree) {
   // denom = B * (G-1) = 1 * (2-1) = 1
   // VI3[0] = 1.0 * 0.9 / 1 = 0.9,  VI3[1] = 0.0
 
-  FeatureMatrix x = DATA(Feature, 4,
+  FeatureMatrix x = MAT(Feature, rows(4),
     0.0f, 0.0f,
     0.1f, 0.1f,
     9.9f, 0.0f,
     9.8f, 0.1f);
 
-  ResponseVector y = DATA(Response, 4, 0, 0, 1, 1);
+  ResponseVector y = VEC(Response, 0, 0, 1, 1);
 
   auto condition = TreeCondition::make(
     as_projector({ 1.0f, 0.0f }),
@@ -387,7 +387,7 @@ TEST(VariableImportance3, HandBuiltSingleNodeTree) {
 TEST(VariableImportance1, DiscriminatingVariableHighestImportance) {
   // Col 0 perfectly separates the two groups.
   // Col 1 is pure noise (same values in both groups).
-  FeatureMatrix x = DATA(Feature, 20,
+  FeatureMatrix x = MAT(Feature, rows(20),
     0.0f, 1.0f,
     0.1f, 2.0f,
     0.2f, 0.5f,
@@ -409,7 +409,7 @@ TEST(VariableImportance1, DiscriminatingVariableHighestImportance) {
     9.8f, 0.6f,
     9.9f, 1.1f);
 
-  ResponseVector y = DATA(Response, 20,
+  ResponseVector y = VEC(Response,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 

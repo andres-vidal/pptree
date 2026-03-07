@@ -27,12 +27,12 @@ using namespace pptree::types;
 
 
 TEST(ConfusionMatrix, Identity) {
-  ResponseVector actual   = DATA(Response, 3, 0, 1, 2);
-  ResponseVector expected = DATA(Response, 3, 0, 1, 2);
+  ResponseVector actual   = VEC(Response, 0, 1, 2);
+  ResponseVector expected = VEC(Response, 0, 1, 2);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = DATA(Response, 3,
+  Matrix<int> expected_result_values = MAT(Response, rows(3),
       1, 0, 0,
       0, 1, 0,
       0, 0, 1);
@@ -45,12 +45,12 @@ TEST(ConfusionMatrix, Identity) {
 
 /* Uneven class sizes with perfect predictions give a weighted diagonal. */
 TEST(ConfusionMatrix, Diagonal) {
-  ResponseVector actual   = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector expected = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
+  ResponseVector actual   = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector expected = VEC(Response, 0, 1, 1, 2, 2, 2);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = DATA(Response, 3,
+  Matrix<int> expected_result_values = MAT(Response, rows(3),
       1, 0, 0,
       0, 2, 0,
       0, 0, 3);
@@ -65,12 +65,12 @@ TEST(ConfusionMatrix, Diagonal) {
 
 
 TEST(ConfusionMatrix, InverseDiagonal) {
-  ResponseVector actual   = DATA(Response, 3, 0, 1, 2);
-  ResponseVector expected = DATA(Response, 3, 2, 1, 0);
+  ResponseVector actual   = VEC(Response, 0, 1, 2);
+  ResponseVector expected = VEC(Response, 2, 1, 0);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = DATA(Response, 3,
+  Matrix<int> expected_result_values = MAT(Response, rows(3),
       0, 0, 1,
       0, 1, 0,
       1, 0, 0);
@@ -85,12 +85,12 @@ TEST(ConfusionMatrix, InverseDiagonal) {
 
 /* Every prediction is shifted by one class — zero diagonal. */
 TEST(ConfusionMatrix, ZeroDiagonal) {
-  ResponseVector actual   = DATA(Response, 3, 0, 1, 2);
-  ResponseVector expected = DATA(Response, 3, 1, 2, 0);
+  ResponseVector actual   = VEC(Response, 0, 1, 2);
+  ResponseVector expected = VEC(Response, 1, 2, 0);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = DATA(Response, 3,
+  Matrix<int> expected_result_values = MAT(Response, rows(3),
       0, 0, 1,
       1, 0, 0,
       0, 1, 0);
@@ -105,12 +105,12 @@ TEST(ConfusionMatrix, ZeroDiagonal) {
 
 /* Mixed predictions with one misclassification in class 2. */
 TEST(ConfusionMatrix, Generic) {
-  ResponseVector actual   = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector expected = DATA(Response, 6, 0, 1, 1, 2, 2, 0);
+  ResponseVector actual   = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector expected = VEC(Response, 0, 1, 1, 2, 2, 0);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = DATA(Response, 3,
+  Matrix<int> expected_result_values = MAT(Response, rows(3),
       1, 0, 1,
       0, 2, 0,
       0, 0, 2);
@@ -125,22 +125,22 @@ TEST(ConfusionMatrix, Generic) {
 
 
 TEST(ConfusionMatrix, MorePredictionsThanObservations) {
-  ResponseVector predictions  = DATA(Response, 3, 0, 1, 2);
-  ResponseVector observations = DATA(Response, 2, 0, 1);
+  ResponseVector predictions  = VEC(Response, 0, 1, 2);
+  ResponseVector observations = VEC(Response, 0, 1);
 
   ASSERT_THROW(ConfusionMatrix(predictions, observations), std::invalid_argument);
 }
 
 TEST(ConfusionMatrix, MoreObservationsThanPredictions) {
-  ResponseVector predictions  = DATA(Response, 2, 0, 1);
-  ResponseVector observations = DATA(Response, 3, 0, 1, 2);
+  ResponseVector predictions  = VEC(Response, 0, 1);
+  ResponseVector observations = VEC(Response, 0, 1, 2);
 
   ASSERT_THROW(ConfusionMatrix(predictions, observations), std::invalid_argument);
 }
 
 TEST(ConfusionMatrix, NonConsecutiveLabels) {
-  ResponseVector actual      = DATA(Response, 6, 1, 1, 3, 3, 5, 5);
-  ResponseVector predictions = DATA(Response, 6, 1, 3, 3, 5, 5, 1);
+  ResponseVector actual      = VEC(Response, 1, 1, 3, 3, 5, 5);
+  ResponseVector predictions = VEC(Response, 1, 3, 3, 5, 5, 1);
 
   ConfusionMatrix result = ConfusionMatrix(predictions, actual);
 
@@ -163,8 +163,8 @@ TEST(ConfusionMatrix, NonConsecutiveLabels) {
 
 /* Perfect predictions -> 0% error. */
 TEST(ConfusionMatrix, ErrorMin) {
-  ResponseVector actual      = DATA(Response, 3, 0, 1, 2);
-  ResponseVector predictions = DATA(Response, 3, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2);
 
   float result = ConfusionMatrix(predictions, actual).error();
 
@@ -173,8 +173,8 @@ TEST(ConfusionMatrix, ErrorMin) {
 
 /* All predictions wrong -> 100% error. */
 TEST(ConfusionMatrix, ErrorMax) {
-  ResponseVector actual      = DATA(Response, 3, 0, 1, 2);
-  ResponseVector predictions = DATA(Response, 3, 2, 0, 1);
+  ResponseVector actual      = VEC(Response, 0, 1, 2);
+  ResponseVector predictions = VEC(Response, 2, 0, 1);
 
   float result = ConfusionMatrix(predictions, actual).error();
 
@@ -183,8 +183,8 @@ TEST(ConfusionMatrix, ErrorMax) {
 
 /* Half of observations misclassified -> 50% error. */
 TEST(ConfusionMatrix, ErrorGeneric) {
-  ResponseVector actual      = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector predictions = DATA(Response, 6, 0, 1, 2, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);
 
   float result = ConfusionMatrix(predictions, actual).error();
 
@@ -197,12 +197,12 @@ TEST(ConfusionMatrix, ErrorGeneric) {
 
 /* Perfect predictions -> every class has 0% error. */
 TEST(ConfusionMatrix, ClassErrorsAllZero) {
-  ResponseVector actual      = DATA(Response, 3, 0, 1, 2);
-  ResponseVector predictions = DATA(Response, 3, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2);
 
   FeatureVector result = ConfusionMatrix(predictions, actual).class_errors();
 
-  FeatureVector expected_errors = DATA(Feature, 3, 0, 0, 0);
+  FeatureVector expected_errors = VEC(Feature, 0, 0, 0);
 
   ASSERT_EQ(expected_errors.size(), result.size());
   ASSERT_EQ(expected_errors, result);
@@ -210,12 +210,12 @@ TEST(ConfusionMatrix, ClassErrorsAllZero) {
 
 /* Every single prediction is wrong -> every class has 100% error. */
 TEST(ConfusionMatrix, ClassErrorsAllOne) {
-  ResponseVector actual      = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector predictions = DATA(Response, 6, 1, 2, 2, 1, 1, 1);
+  ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector predictions = VEC(Response, 1, 2, 2, 1, 1, 1);
 
   FeatureVector result = ConfusionMatrix(predictions, actual).class_errors();
 
-  FeatureVector expected_errors = DATA(Feature, 3, 1, 1, 1);
+  FeatureVector expected_errors = VEC(Feature, 1, 1, 1);
 
   ASSERT_EQ(expected_errors.size(), result.size());
   ASSERT_EQ(expected_errors, result);
@@ -223,12 +223,12 @@ TEST(ConfusionMatrix, ClassErrorsAllOne) {
 
 /* Mixed results: class 0 perfect, class 1 at 50%, class 2 at ~67%. */
 TEST(ConfusionMatrix, ClassErrorsMixed) {
-  ResponseVector actual      = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector predictions = DATA(Response, 6, 0, 1, 2, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);
 
   FeatureVector result = ConfusionMatrix(predictions, actual).class_errors();
 
-  FeatureVector expected_errors = DATA(Feature, 3, 0, 0.5, 0.666667);
+  FeatureVector expected_errors = VEC(Feature, 0, 0.5, 0.666667);
 
   ASSERT_EQ(expected_errors.size(), result.size());
   ASSERT_APPROX(expected_errors, result);
@@ -244,8 +244,8 @@ TEST(ConfusionMatrix, ClassErrorsMixed) {
 
 /* Identity matrix: verify all expected keys present and "error" absent. */
 TEST(ConfusionMatrix, ToJsonIdentity) {
-  ResponseVector actual      = DATA(Response, 3, 0, 1, 2);
-  ResponseVector predictions = DATA(Response, 3, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2);
 
   auto j = serialization::to_json(ConfusionMatrix(predictions, actual));
 
@@ -264,8 +264,8 @@ TEST(ConfusionMatrix, ToJsonIdentity) {
 
 /* Confirm "error" key is absent for a non-trivial confusion matrix. */
 TEST(ConfusionMatrix, ToJsonNoErrorKey) {
-  ResponseVector actual      = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector predictions = DATA(Response, 6, 0, 1, 2, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);
 
   auto j = serialization::to_json(ConfusionMatrix(predictions, actual));
 
@@ -277,8 +277,8 @@ TEST(ConfusionMatrix, ToJsonNoErrorKey) {
 
 /* Verify the actual class_errors values in the serialized JSON. */
 TEST(ConfusionMatrix, ToJsonClassErrorsValues) {
-  ResponseVector actual      = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector predictions = DATA(Response, 6, 0, 1, 2, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);
 
   auto j = serialization::to_json(ConfusionMatrix(predictions, actual));
 
@@ -291,8 +291,8 @@ TEST(ConfusionMatrix, ToJsonClassErrorsValues) {
 
 /* Verify the labels array in the serialized JSON is sorted and complete. */
 TEST(ConfusionMatrix, ToJsonLabels) {
-  ResponseVector actual      = DATA(Response, 3, 0, 1, 2);
-  ResponseVector predictions = DATA(Response, 3, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2);
 
   auto j = serialization::to_json(ConfusionMatrix(predictions, actual));
 
@@ -305,8 +305,8 @@ TEST(ConfusionMatrix, ToJsonLabels) {
 
 /* Generic case: labels array has expected size. */
 TEST(ConfusionMatrix, ToJsonGeneric) {
-  ResponseVector actual      = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector predictions = DATA(Response, 6, 0, 1, 2, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);
 
   auto j = serialization::to_json(ConfusionMatrix(predictions, actual));
 
@@ -325,8 +325,8 @@ TEST(ConfusionMatrix, ToJsonGeneric) {
 
 /* Basic print: outputs the header and matrix values. */
 TEST(ConfusionMatrix, Print) {
-  ResponseVector actual      = DATA(Response, 3, 0, 1, 2);
-  ResponseVector predictions = DATA(Response, 3, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2);
 
   ConfusionMatrix cm(predictions, actual);
 
@@ -340,8 +340,8 @@ TEST(ConfusionMatrix, Print) {
 
 /* The "Error" column header appears in the printed output. */
 TEST(ConfusionMatrix, PrintIncludesErrorHeader) {
-  ResponseVector actual      = DATA(Response, 3, 0, 1, 2);
-  ResponseVector predictions = DATA(Response, 3, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2);
 
   ConfusionMatrix cm(predictions, actual);
 
@@ -354,8 +354,8 @@ TEST(ConfusionMatrix, PrintIncludesErrorHeader) {
 
 /* Each row shows a marginal error percentage matching class_errors(). */
 TEST(ConfusionMatrix, PrintIncludesPerRowError) {
-  ResponseVector actual      = DATA(Response, 6, 0, 1, 1, 2, 2, 2);
-  ResponseVector predictions = DATA(Response, 6, 0, 1, 2, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);
 
   ConfusionMatrix cm(predictions, actual);
 
@@ -372,8 +372,8 @@ TEST(ConfusionMatrix, PrintIncludesPerRowError) {
 
 /* Perfect predictions: every row shows "0.0%" (three occurrences total). */
 TEST(ConfusionMatrix, PrintPerfectPrediction) {
-  ResponseVector actual      = DATA(Response, 3, 0, 1, 2);
-  ResponseVector predictions = DATA(Response, 3, 0, 1, 2);
+  ResponseVector actual      = VEC(Response, 0, 1, 2);
+  ResponseVector predictions = VEC(Response, 0, 1, 2);
 
   ConfusionMatrix cm(predictions, actual);
 

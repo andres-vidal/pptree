@@ -197,11 +197,11 @@ TEST(Tree, EqualsDifferentTrees) {
 }
 
 TEST(Tree, TrainLDAUnivariateTwoGroups) {
-  FeatureMatrix x = DATA(Feature, 10,
+  FeatureMatrix x = MAT(Feature, rows(10),
       1, 1, 1, 1, 1,
       2, 2, 2, 2, 2);
 
-  ResponseVector y = DATA(Response, 10,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0, 0,
       1, 1, 1, 1, 1);
 
@@ -220,12 +220,12 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 }
 
 TEST(Tree, TrainLDAUnivariateThreeGroups) {
-  FeatureMatrix x = DATA(Feature, 15,
+  FeatureMatrix x = MAT(Feature, rows(15),
       1, 1, 1, 1, 1,
       2, 2, 2, 2, 2,
       3, 3, 3, 3, 3);
 
-  ResponseVector y = DATA(Response, 15,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0, 0,
       1, 1, 1, 1, 1,
       2, 2, 2, 2, 2);
@@ -250,7 +250,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
 }
 
 TEST(Tree, TrainLDAMultivariateTwoGroups) {
-  FeatureMatrix x = DATA(Feature, 10,
+  FeatureMatrix x = MAT(Feature, rows(10),
       1, 0, 1, 1,
       1, 1, 0, 0,
       1, 0, 0, 1,
@@ -262,7 +262,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
       4, 0, 1, 1,
       4, 0, 1, 2);
 
-  ResponseVector y = DATA(Response, 10,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -289,11 +289,11 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
 }
 
 TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
-  FeatureMatrix x = DATA(Feature, 10,
+  FeatureMatrix x = MAT(Feature, rows(10),
       1, 1, 1, 1, 1,
       2, 2, 2, 2, 2);
 
-  ResponseVector y = DATA(Response, 10,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0, 0,
       1, 1, 1, 1, 1);
 
@@ -312,7 +312,7 @@ TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
 }
 
 TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
-  FeatureMatrix x = DATA(Feature, 30,
+  FeatureMatrix x = MAT(Feature, rows(30),
       1, 0, 1, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -344,7 +344,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  ResponseVector y = DATA(Response, 30,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -388,7 +388,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
 }
 
 TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
-  FeatureMatrix x = DATA(Feature, 10,
+  FeatureMatrix x = MAT(Feature, rows(10),
       1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
       1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
       1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -400,7 +400,7 @@ TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
       4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
       4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
-  ResponseVector y = DATA(Response, 10,
+  ResponseVector y = VEC(Response,
       0,
       0,
       0,
@@ -548,10 +548,10 @@ TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
       TreeResponse::make(1)));
 
 
-  FeatureVector input = DATA(Feature, 1, 1.0);
+  FeatureVector input = VEC(Feature, 1.0);
   ASSERT_EQ(tree.predict(input), 0);
 
-  input = DATA(Feature, 1, 2.0);
+  input = VEC(Feature, 2.0);
   ASSERT_EQ(tree.predict(input), 1);
 }
 
@@ -567,13 +567,13 @@ TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
         TreeResponse::make(1),
         TreeResponse::make(2))));
 
-  FeatureVector input = DATA(Feature, 1, 1.0);
+  FeatureVector input = VEC(Feature, 1.0);
   ASSERT_EQ(tree.predict(input), 0);
 
-  input = DATA(Feature, 1, 2.0);
+  input = VEC(Feature, 2.0);
   ASSERT_EQ(tree.predict(input), 1);
 
-  input = DATA(Feature, 1, 3.0);
+  input = VEC(Feature, 3.0);
   ASSERT_EQ(tree.predict(input), 2);
 }
 
@@ -585,10 +585,10 @@ TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
       TreeResponse::make(0),
       TreeResponse::make(1)));
 
-  FeatureVector input = DATA(Feature, 4, 1, 0, 1, 1);
+  FeatureVector input = VEC(Feature, 1, 0, 1, 1);
   ASSERT_EQ(tree.predict(input), 0);
 
-  input = DATA(Feature, 4, 4, 0, 0, 1);
+  input = VEC(Feature, 4, 0, 0, 1);
   ASSERT_EQ(tree.predict(input), 1);
 }
 
@@ -604,13 +604,13 @@ TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
         TreeResponse::make(1)),
       TreeResponse::make(2)));
 
-  FeatureVector input = DATA(Feature, 5, 1, 0, 0, 1, 1);
+  FeatureVector input = VEC(Feature, 1, 0, 0, 1, 1);
   ASSERT_EQ(tree.predict(input), 0);
 
-  input = DATA(Feature, 5, 2, 5, 0, 0, 1);
+  input = VEC(Feature, 2, 5, 0, 0, 1);
   ASSERT_EQ(tree.predict(input), 1);
 
-  input = DATA(Feature, 5, 9, 8, 0, 0, 1);
+  input = VEC(Feature, 9, 8, 0, 0, 1);
   ASSERT_EQ(tree.predict(input), 2);
 }
 
@@ -622,11 +622,11 @@ TEST(Tree, PredictDataUnivariateTwoGroups) {
       TreeResponse::make(0),
       TreeResponse::make(1)));
 
-  FeatureMatrix input = DATA(Feature, 2, 1.0, 2.0);
+  FeatureMatrix input = MAT(Feature, rows(2), 1.0, 2.0);
 
   ResponseVector result = tree.predict(input);
 
-  ResponseVector expected = DATA(Response, 2, 0, 1);
+  ResponseVector expected = VEC(Response, 0, 1);
 
   ASSERT_EQ(result, expected);
 }
@@ -643,11 +643,11 @@ TEST(Tree, PredictDataUnivariateThreeGroups) {
         TreeResponse::make(1),
         TreeResponse::make(2))));
 
-  FeatureMatrix input = DATA(Feature, 3, 1.0, 2.0, 3.0);
+  FeatureMatrix input = MAT(Feature, rows(3), 1.0, 2.0, 3.0);
 
   ResponseVector result = tree.predict(input);
 
-  ResponseVector expected = DATA(Response, 3, 0, 1, 2);
+  ResponseVector expected = VEC(Response, 0, 1, 2);
 
   ASSERT_EQ(result, expected);
 }
@@ -660,13 +660,13 @@ TEST(Tree, PredictDataMultivariateTwoGroups) {
       TreeResponse::make(0),
       TreeResponse::make(1)));
 
-  FeatureMatrix input = DATA(Feature, 2,
+  FeatureMatrix input = MAT(Feature, rows(2),
       1, 0, 1, 1,
       4, 0, 0, 1);
 
   ResponseVector result = tree.predict(input);
 
-  ResponseVector expected = DATA(Response, 2, 0, 1);
+  ResponseVector expected = VEC(Response, 0, 1);
 
   ASSERT_EQ(result, expected);
 }
@@ -683,14 +683,14 @@ TEST(Tree, PredictDataMultivariateThreeGroups) {
         TreeResponse::make(1)),
       TreeResponse::make(2)));
 
-  FeatureMatrix input = DATA(Feature, 3,
+  FeatureMatrix input = MAT(Feature, rows(3),
       1, 0, 0, 1, 1,
       2, 5, 0, 0, 1,
       9, 8, 0, 0, 1);
 
   ResponseVector result = tree.predict(input);
 
-  ResponseVector expected = DATA(Response, 3, 0, 1, 2);
+  ResponseVector expected = VEC(Response, 0, 1, 2);
 
   ASSERT_EQ(result, expected);
 }

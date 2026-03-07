@@ -25,7 +25,7 @@ static Projector as_projector(std::vector<Feature> vector) {
 }
 
 TEST(Forest, TrainLDAAllVariablesProperties) {
-  FeatureMatrix x = DATA(Feature, 30,
+  FeatureMatrix x = MAT(Feature, rows(30),
       1, 0, 1, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -57,7 +57,7 @@ TEST(Forest, TrainLDAAllVariablesProperties) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  ResponseVector y = DATA(Response, 30,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
       2, 2, 2, 2, 2, 2, 2, 2);
@@ -80,7 +80,7 @@ TEST(Forest, TrainLDAAllVariablesProperties) {
 }
 
 TEST(Forest, TrainLDASomeVariablesProperties) {
-  FeatureMatrix x = DATA(Feature, 30,
+  FeatureMatrix x = MAT(Feature, rows(30),
       1, 0, 1, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -112,7 +112,7 @@ TEST(Forest, TrainLDASomeVariablesProperties) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  ResponseVector y = DATA(Response, 30,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
       2, 2, 2, 2, 2, 2, 2, 2);
@@ -120,6 +120,7 @@ TEST(Forest, TrainLDASomeVariablesProperties) {
   const int n_vars   = 2;
   const float lambda = 0;
   const int seed     = 1;
+
 
   Forest result = Forest::train(
     TrainingSpecUGLDA(n_vars, lambda),
@@ -135,7 +136,7 @@ TEST(Forest, TrainLDASomeVariablesProperties) {
 }
 
 TEST(Forest, TrainPDAAllVariablesProperties) {
-  FeatureMatrix x = DATA(Feature, 10,
+  FeatureMatrix x = MAT(Feature, rows(10),
       1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
       1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
       1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -147,7 +148,7 @@ TEST(Forest, TrainPDAAllVariablesProperties) {
       4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
       4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
-  ResponseVector y = DATA(Response, 10,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0,
       1, 1, 1, 1, 1, 1);
 
@@ -333,7 +334,7 @@ TEST(Forest, PredictDataColumnSomeVariablesMultivariateThreeGroups) {
         TreeResponse::make(2)))
     );
 
-  FeatureVector x = DATA(Feature, 5, 9, 8, 1, 1, 1);
+  FeatureVector x = VEC(Feature, 9, 8, 1, 1, 1);
 
   int result = forest.predict(x);
 
@@ -402,7 +403,7 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
       )
     );
 
-  FeatureMatrix x = DATA(Feature, 30,
+  FeatureMatrix x = MAT(Feature, rows(30),
       1, 0, 1, 1, 1,
       1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
@@ -434,7 +435,7 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
       9, 8, 2, 1, 1,
       9, 8, 1, 1, 1);
 
-  ResponseVector y = DATA(Response, 30,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0,
       2, 2, 2, 2, 2, 2, 2, 2);
@@ -452,7 +453,7 @@ TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
 // ---------------------------------------------------------------------------
 
 TEST(OobError, PerfectSeparationGivesLowError) {
-  FeatureMatrix x = DATA(Feature, 20,
+  FeatureMatrix x = MAT(Feature, rows(20),
       0.0f, 1.0f,
       0.1f, 2.0f,
       0.2f, 0.5f,
@@ -474,7 +475,7 @@ TEST(OobError, PerfectSeparationGivesLowError) {
       9.8f, 0.6f,
       9.9f, 1.1f);
 
-  ResponseVector y = DATA(Response, 20,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
@@ -487,13 +488,13 @@ TEST(OobError, PerfectSeparationGivesLowError) {
 }
 
 TEST(OobError, AllInBagReturnsNegative) {
-  FeatureMatrix x = DATA(Feature, 4,
+  FeatureMatrix x = MAT(Feature, rows(4),
       0.0f, 0.0f,
       0.1f, 0.1f,
       9.9f, 0.0f,
       9.8f, 0.1f);
 
-  ResponseVector y = DATA(Response, 4, 0, 0, 1, 1);
+  ResponseVector y = VEC(Response, 0, 0, 1, 1);
 
   auto condition = TreeCondition::make(
     as_projector({ 1.0f, 0.0f }),
@@ -517,7 +518,7 @@ TEST(OobError, AllInBagReturnsNegative) {
 }
 
 TEST(OobError, HandBuiltTreeWithKnownOob) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       0.0f, 0.5f,
       0.1f, 0.3f,
       0.2f, 0.7f,
@@ -525,7 +526,7 @@ TEST(OobError, HandBuiltTreeWithKnownOob) {
       9.9f, 0.6f,
       9.7f, 0.2f);
 
-  ResponseVector y = DATA(Response, 6, 0, 0, 0, 1, 1, 1);
+  ResponseVector y = VEC(Response, 0, 0, 0, 1, 1, 1);
 
   auto condition = TreeCondition::make(
     as_projector({ 1.0f, 0.0f }),
@@ -549,13 +550,13 @@ TEST(OobError, HandBuiltTreeWithKnownOob) {
 }
 
 TEST(OobError, HandBuiltTreeWithOobMisclassification) {
-  FeatureMatrix x = DATA(Feature, 4,
+  FeatureMatrix x = MAT(Feature, rows(4),
       0.0f, 0.0f,
       0.1f, 0.1f,
       9.9f, 0.0f,
       9.8f, 0.1f);
 
-  ResponseVector y = DATA(Response, 4, 0, 1, 1, 1);
+  ResponseVector y = VEC(Response, 0, 1, 1, 1);
 
   auto condition = TreeCondition::make(
     as_projector({ 1.0f, 0.0f }),
@@ -583,7 +584,7 @@ TEST(OobError, HandBuiltTreeWithOobMisclassification) {
 // ---------------------------------------------------------------------------
 
 TEST(OobPredict, HandBuiltTreeWithKnownOob) {
-  FeatureMatrix x = DATA(Feature, 6,
+  FeatureMatrix x = MAT(Feature, rows(6),
       0.0f, 0.5f,
       0.1f, 0.3f,
       0.2f, 0.7f,
@@ -619,7 +620,7 @@ TEST(OobPredict, HandBuiltTreeWithKnownOob) {
 }
 
 TEST(OobPredict, AllInBagReturnsSentinel) {
-  FeatureMatrix x = DATA(Feature, 4,
+  FeatureMatrix x = MAT(Feature, rows(4),
       0.0f, 0.0f,
       0.1f, 0.1f,
       9.9f, 0.0f,
@@ -651,7 +652,7 @@ TEST(OobPredict, AllInBagReturnsSentinel) {
 }
 
 TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
-  FeatureMatrix x = DATA(Feature, 4,
+  FeatureMatrix x = MAT(Feature, rows(4),
       0.0f, 0.0f,
       0.1f, 0.1f,
       9.9f, 0.0f,
@@ -683,7 +684,7 @@ TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
 }
 
 TEST(OobPredict, ConsistentWithOobError) {
-  FeatureMatrix x = DATA(Feature, 20,
+  FeatureMatrix x = MAT(Feature, rows(20),
       0.0f, 1.0f,
       0.1f, 2.0f,
       0.2f, 0.5f,
@@ -705,7 +706,7 @@ TEST(OobPredict, ConsistentWithOobError) {
       9.8f, 0.6f,
       9.9f, 1.1f);
 
-  ResponseVector y = DATA(Response, 20,
+  ResponseVector y = VEC(Response,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
