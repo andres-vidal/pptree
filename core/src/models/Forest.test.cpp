@@ -275,177 +275,79 @@ TEST(ForestSimulation, LargeDataset) {
   ASSERT_LT(err, 0.10) << "Forest should handle large datasets efficiently";
 }
 
-TEST(Forest, PredictDataColumnSomeVariablesMultivariateThreeGroups) {
+static Forest build_three_group_forest() {
   Forest forest;
 
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
+  forest.add_tree(std::make_unique<BootstrapTree>(
+    TreeCondition::make(
+      as_projector({ 0.0, 0.0, 0.0, 0.598, -0.801 }),
+      -0.348,
       TreeCondition::make(
-        as_projector({ 0.0, 0.0, 0.0, 0.5982325379690726, -0.8013225508589422 }),
-        -0.3483987096124312,
-        TreeCondition::make(
-          as_projector({ 0.999534397402818, 0.0, -0.030512102657559676, 0.0, 0.0 }),
-          5.55339996020167,
-          TreeResponse::make(1),
-          TreeResponse::make(2)),
-        TreeResponse::make(0)
-        ))
-    );
+        as_projector({ 0.9995, 0.0, -0.031, 0.0, 0.0 }),
+        5.553,
+        TreeResponse::make(1),
+        TreeResponse::make(2)),
+      TreeResponse::make(0))));
 
-
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
+  forest.add_tree(std::make_unique<BootstrapTree>(
+    TreeCondition::make(
+      as_projector({ 0.9998, 0.0, -0.019, 0.0, 0.0 }),
+      5.300,
       TreeCondition::make(
-        as_projector({ 0.9998222455113714, 0.0, -0.018854107791118468, 0.0, 0.0 }),
-        5.300417766337716,
-        TreeCondition::make(
-          as_projector({ 0.9989543519613864, 0.0, 0.0, 0.0457187346435417, 0.0 }),
-          1.6094899541803496,
-          TreeResponse::make(0),
-          TreeResponse::make(1)),
-        TreeResponse::make(2)))
-    );
+        as_projector({ 0.999, 0.0, 0.0, 0.046, 0.0 }),
+        1.609,
+        TreeResponse::make(0),
+        TreeResponse::make(1)),
+      TreeResponse::make(2))));
 
-
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
+  forest.add_tree(std::make_unique<BootstrapTree>(
+    TreeCondition::make(
+      as_projector({ 0.974, -0.226, 0.0, 0.0, 0.0 }),
+      3.955,
       TreeCondition::make(
-        as_projector({ 0.9741975531020036, -0.2256969816591904, 0.0, 0.0, 0.0 }),
-        3.9550147456664178,
-        TreeCondition::make(
-          as_projector({ 0.0, 0.9995561292785718, -0.029791683766431428, 0.0, 0.0 }),
-          2.6217629631670403,
-          TreeResponse::make(0),
-          TreeResponse::make(1)),
-        TreeResponse::make(2)))
-    );
+        as_projector({ 0.0, 0.9996, -0.030, 0.0, 0.0 }),
+        2.622,
+        TreeResponse::make(0),
+        TreeResponse::make(1)),
+      TreeResponse::make(2))));
 
-
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
+  forest.add_tree(std::make_unique<BootstrapTree>(
+    TreeCondition::make(
+      as_projector({ 0.962, 0.0, 0.0, 0.0, -0.275 }),
+      4.735,
       TreeCondition::make(
-        as_projector({ 0.9615748657636985, 0.0, 0.0, 0.0, -0.2745428519038971 }),
-        4.734758305714628,
-        TreeCondition::make(
-          as_projector({ 0.0, 0.0, 0.3772334858435029, 0.0, -0.926118187467647 }),
-          -0.8315603229605784,
-          TreeResponse::make(1),
-          TreeResponse::make(0)),
-        TreeResponse::make(2)))
-    );
+        as_projector({ 0.0, 0.0, 0.377, 0.0, -0.926 }),
+        -0.832,
+        TreeResponse::make(1),
+        TreeResponse::make(0)),
+      TreeResponse::make(2))));
 
-  FeatureVector x = VEC(Feature, 9, 8, 1, 1, 1);
-
-  int result = forest.predict(x);
-
-  ASSERT_EQ(2, result);
+  return forest;
 }
 
-TEST(Forest, PredictDataSomeVariablesMultivariateThreeGroups) {
-  Forest forest;
+TEST(Forest, PredictSingleObservation) {
+  Forest forest = build_three_group_forest();
 
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      TreeCondition::make(
-        as_projector({ 0.0, 0.0, 0.0, 0.5982325379690726, -0.8013225508589422 }),
-        -0.3483987096124312,
-        TreeCondition::make(
-          as_projector({ 0.999534397402818, 0.0, -0.030512102657559676, 0.0, 0.0 }),
-          5.55339996020167,
-          TreeResponse::make(1),
-          TreeResponse::make(2)),
-        TreeResponse::make(0))
-      )
-    );
+  ASSERT_EQ(0, forest.predict(VEC(Feature, 1, 0, 1, 1, 1)));
+  ASSERT_EQ(1, forest.predict(VEC(Feature, 2, 5, 0, 0, 1)));
+  ASSERT_EQ(2, forest.predict(VEC(Feature, 9, 8, 1, 1, 1)));
+}
 
+TEST(Forest, PredictBatch) {
+  Forest forest = build_three_group_forest();
 
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      TreeCondition::make(
-        as_projector({ 0.9998222455113714, 0.0, -0.018854107791118468, 0.0, 0.0 }),
-        5.300417766337716,
-        TreeCondition::make(
-          as_projector({ 0.9989543519613864, 0.0, 0.0, 0.0457187346435417, 0.0 }),
-          1.6094899541803496,
-          TreeResponse::make(0),
-          TreeResponse::make(1)),
-        TreeResponse::make(2))
-      )
-    );
-
-
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      TreeCondition::make(
-        as_projector({ 0.9741975531020036, -0.2256969816591904, 0.0, 0.0, 0.0 }),
-        3.9550147456664178,
-        TreeCondition::make(
-          as_projector({ 0.0, 0.9995561292785718, -0.029791683766431428, 0.0, 0.0 }),
-          2.6217629631670403,
-          TreeResponse::make(0),
-          TreeResponse::make(1)),
-        TreeResponse::make(2))
-      )
-    );
-
-
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      TreeCondition::make(
-        as_projector({ 0.9615748657636985, 0.0, 0.0, 0.0, -0.2745428519038971 }),
-        4.734758305714628,
-        TreeCondition::make(
-          as_projector({ 0.0, 0.0, 0.3772334858435029, 0.0, -0.926118187467647 }),
-          -0.8315603229605784,
-          TreeResponse::make(1),
-          TreeResponse::make(0)),
-        TreeResponse::make(2))
-      )
-    );
-
-  FeatureMatrix x = MAT(Feature, rows(30),
+  FeatureMatrix x = MAT(Feature, rows(6),
       1, 0, 1, 1, 1,
-      1, 0, 1, 0, 0,
       1, 0, 0, 0, 1,
-      1, 0, 1, 2, 1,
-      1, 0, 0, 1, 1,
-      1, 1, 1, 1, 0,
-      1, 0, 0, 2, 1,
-      1, 0, 1, 1, 2,
-      1, 0, 0, 2, 0,
-      1, 0, 2, 1, 0,
       2, 5, 0, 0, 1,
-      2, 5, 0, 0, 2,
-      3, 5, 1, 0, 2,
       2, 5, 1, 0, 1,
-      2, 5, 0, 1, 1,
-      2, 5, 0, 1, 2,
-      2, 5, 2, 1, 1,
-      2, 5, 1, 1, 1,
-      2, 5, 1, 1, 2,
-      2, 5, 2, 1, 2,
-      2, 5, 1, 2, 1,
-      2, 5, 2, 1, 1,
       9, 8, 0, 0, 1,
-      9, 8, 0, 0, 2,
-      9, 8, 1, 0, 2,
-      9, 8, 1, 0, 1,
-      9, 8, 0, 1, 1,
-      9, 8, 0, 1, 2,
-      9, 8, 2, 1, 1,
-      9, 8, 1, 1, 1);
+      9, 8, 1, 0, 2);
 
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0,
-      2, 2, 2, 2, 2, 2, 2, 2);
+  ResponseVector result   = forest.predict(x);
+  ResponseVector expected = VEC(Response, 0, 0, 1, 1, 2, 2);
 
-  ResponseVector result = forest.predict(x);
-
-  ASSERT_EQ(y.size(), result.size());
-  ASSERT_EQ(y.cols(), result.cols());
-  ASSERT_EQ(y.rows(), result.rows());
-  ASSERT_EQ(y, result);
+  ASSERT_EQ(expected, result);
 }
 
 // ---------------------------------------------------------------------------

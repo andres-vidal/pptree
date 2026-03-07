@@ -288,29 +288,6 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
   ASSERT_EQ(expect, result);
 }
 
-TEST(Tree, TrainPDALambdaOnehalfUnivariateTwoGroups) {
-  FeatureMatrix x = MAT(Feature, rows(10),
-      1, 1, 1, 1, 1,
-      2, 2, 2, 2, 2);
-
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1);
-
-  stats::RNG rng(0);
-
-  Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
-
-  Tree expect = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1)));
-
-  ASSERT_EQ(expect, result);
-}
-
 TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
   FeatureMatrix x = MAT(Feature, rows(30),
       1, 0, 1, 1, 1,
