@@ -2,10 +2,10 @@
 #include "models/VIVisitor.hpp"
 #include "stats/ConfusionMatrix.hpp"
 #include "stats/Stats.hpp"
+#include "stats/Uniform.hpp"
 
 #include <algorithm>
 #include <numeric>
-#include <random>
 #include <set>
 #include <vector>
 
@@ -55,31 +55,31 @@ namespace pptree {
 
       const float baseline_acc = stats::accuracy(baseline_pred, oob_labels);
 
-      std::mt19937 rng(static_cast<unsigned>(seed) ^ static_cast<unsigned>(k));
+      stats::RNG rng(static_cast<unsigned>(seed) ^ static_cast<unsigned>(k));
+      const int n_oob = static_cast<int>(oob_idx.size());
+      stats::Uniform uniform(0, n_oob - 1);
 
       for (int j = 0; j < n_vars; ++j) {
         // Build a permuted copy of the OOB rows with column j shuffled.
-        FeatureMatrix perm_x(static_cast<int>(oob_idx.size()), n_vars);
+        FeatureMatrix perm_x(n_oob, n_vars);
 
-        for (int i = 0; i < static_cast<int>(oob_idx.size()); ++i) {
+        for (int i = 0; i < n_oob; ++i) {
           perm_x.row(i) = x.row(oob_idx[i]);
         }
 
         // Permute column j in-place.
-        std::vector<int> row_order(oob_idx.size());
-        std::iota(row_order.begin(), row_order.end(), 0);
-        std::shuffle(row_order.begin(), row_order.end(), rng);
+        std::vector<int> row_order = uniform.distinct(n_oob, rng);
 
         FeatureVector col_copy = perm_x.col(j);
 
-        for (int i = 0; i < static_cast<int>(oob_idx.size()); ++i) {
+        for (int i = 0; i < n_oob; ++i) {
           perm_x(i, j) = col_copy(row_order[i]);
         }
 
         // Predict on permuted data.
-        ResponseVector perm_pred(static_cast<int>(oob_idx.size()));
+        ResponseVector perm_pred(n_oob);
 
-        for (int i = 0; i < static_cast<int>(oob_idx.size()); ++i) {
+        for (int i = 0; i < n_oob; ++i) {
           perm_pred(i) = tree.predict(static_cast<FeatureVector>(perm_x.row(i)));
         }
 
