@@ -27,6 +27,7 @@
 
 #include "stats/DataPacket.hpp"
 #include "stats/Normal.hpp"
+#include "stats/Simulation.hpp"
 #include "stats/ConfusionMatrix.hpp"
 
 #include "cli/CLIOptions.hpp"
@@ -61,99 +62,6 @@ auto measure_time_ms(F&& f) {
   return std::make_pair(std::move(res), dur.count());
 }
 
-/** @brief Parameters for generating simulated classification data. */
-struct SimulationParams {
-  float mean            = 100.0f;   ///< Base mean for the first class.
-  float mean_separation = 50.0f;    ///< Mean shift between successive classes.
-  float sd              = 10.0f;    ///< Standard deviation within each class.
-};
-
-/**
- * @brief Generate a simulated dataset with G classes, n rows, and p features.
- *
- * Each class is drawn from a normal distribution with a shifted mean.
- * The resulting data is sorted by class label.
- *
- * @param n      Number of rows (observations).
- * @param p      Number of feature columns.
- * @param G      Number of classes (must be > 1).
- * @param rng    Random number generator.
- * @param params Simulation parameters (mean, separation, sd).
- * @return A DataPacket with the simulated feature matrix and response vector.
- */
-inline DataPacket simulate(
-  const int               n,
-  const int               p,
-  const int               G,
-  pptree::stats::RNG&     rng,
-  const SimulationParams& params = SimulationParams{}) {
-  FeatureMatrix x(n, p);
-  ResponseVector y(n);
-
-  for (int i = 0; i < n; ++i) {
-    float group_mean = params.mean + (i % G) * params.mean_separation;
-
-    Normal norm(group_mean, params.sd);
-
-    for (int j = 0; j < p; ++j) {
-      x(i, j) = norm(rng);
-    }
-
-    y[i] = i % G;
-  }
-
-  pptree::stats::sort(x, y);
-
-  return DataPacket(x, y);
-}
-
-/** @brief Indices for a train/test split. */
-struct Split {
-  std::vector<int> tr;   ///< Training set indices.
-  std::vector<int> te;   ///< Test set indices.
-};
-
-/**
- * @brief Perform a stratified random train/test split on a DataPacket.
- *
- * Samples indices within each class proportional to train_ratio so that
- * class balance is preserved in both train and test sets.
- *
- * @param data        The full dataset.
- * @param train_ratio Proportion of data to use for training (0, 1).
- * @param rng         Random number generator.
- * @return A Split containing train and test index vectors.
- */
-inline Split split(const DataPacket& data, float train_ratio, pptree::stats::RNG& rng) {
-  const int n          = data.x.rows();
-  const int train_size = static_cast<int>(n * train_ratio);
-
-  GroupPartition spec(data.y);
-
-  std::vector<int> train_indices;
-  std::vector<int> test_indices;
-
-  train_indices.reserve(train_size);
-  test_indices.reserve(n - train_size);
-
-  for (const auto& group : data.classes) {
-    int group_start      = spec.group_start(group);
-    int group_size       = spec.group_size(group);
-    int group_end        = group_start + group_size - 1;
-    int group_train_size = static_cast<int>(group_size * train_ratio);
-
-    Uniform unif(group_start, group_end);
-    std::vector<int> group_indices = unif.distinct(group_size, rng);
-
-    train_indices.insert(train_indices.end(), group_indices.begin(), group_indices.begin() + group_train_size);
-    test_indices.insert(test_indices.end(), group_indices.begin() + group_train_size, group_indices.end());
-  }
-
-  return {
-    .tr = train_indices,
-    .te = test_indices
-  };
-}
 
 /**
  * @brief Display an in-place progress bar on stdout.
@@ -247,10 +155,10 @@ struct TrainResult {
  * @return The trained model.
  */
 TrainResult train_model(
-  FeatureMatrix&      x,
-  ResponseVector&     y,
-  CLIOptions const&   params,
-  pptree::stats::RNG& rng) {
+  const FeatureMatrix&  x,
+  const ResponseVector& y,
+  CLIOptions const&     params,
+  pptree::stats::RNG&   rng) {
   TrainingSpec::Ptr spec;
   std::function<Model::Ptr()> fact;
 

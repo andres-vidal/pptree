@@ -12,14 +12,14 @@
 namespace pptree {
   struct Tree : public Model {
     static Tree train(
-      TrainingSpec const&    training_spec,
-      types::FeatureMatrix&  x,
-      types::ResponseVector& y,
-      stats::RNG&            rng);
+      TrainingSpec const&          training_spec,
+      const types::FeatureMatrix&  x,
+      const types::ResponseVector& y,
+      stats::RNG&                  rng);
 
     static Tree train(
       TrainingSpec const&          training_spec,
-      types::FeatureMatrix&        x,
+      const types::FeatureMatrix&  x,
       stats::GroupPartition const& group_spec,
       stats::RNG&                  rng);
 

@@ -16,19 +16,15 @@ using namespace pptree::types;
 
 namespace pptree {
   Forest Forest::train(
-    const TrainingSpec & training_spec,
-    FeatureMatrix &      x,
-    ResponseVector &     y,
-    const int            size,
-    const int            seed,
-    const int            n_threads) {
+    const TrainingSpec &  training_spec,
+    const FeatureMatrix & x,
+    const ResponseVector& y,
+    const int             size,
+    const int             seed,
+    const int             n_threads) {
     #ifdef _OPENMP
     omp_set_num_threads(n_threads);
     #endif
-
-    if (!GroupPartition::is_contiguous(y)) {
-      sort(x, y);
-    }
 
     GroupPartition group_spec(y);
 

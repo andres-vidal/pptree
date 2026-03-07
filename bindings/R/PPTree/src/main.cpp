@@ -18,6 +18,10 @@ Tree pptree_train_glda(
   const float    lambda) {
   const int seed = R::runif(0, INT_MAX);
 
+  if (!GroupPartition::is_contiguous(y)) {
+    sort(x, y);
+  }
+
   RNG rng(seed);
 
   return Tree::train(
@@ -36,6 +40,10 @@ Forest pptree_train_forest_glda(
   const float    lambda,
   SEXP           n_threads) {
   const int seed = R::runif(0, INT_MAX);
+
+  if (!GroupPartition::is_contiguous(y)) {
+    sort(x, y);
+  }
 
   if (n_threads == R_NilValue) {
     return Forest::train(

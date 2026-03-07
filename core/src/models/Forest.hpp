@@ -23,12 +23,12 @@ namespace pptree {
      * @return               Trained forest.
      */
     static Forest train(
-      const TrainingSpec&    training_spec,
-      types::FeatureMatrix&  x,
-      types::ResponseVector& y,
-      int                    size,
-      int                    seed,
-      int                    n_threads = std::thread::hardware_concurrency());
+      const TrainingSpec&          training_spec,
+      const types::FeatureMatrix&  x,
+      const types::ResponseVector& y,
+      int                          size,
+      int                          seed,
+      int                          n_threads = std::thread::hardware_concurrency());
 
     std::vector<BootstrapTree::Ptr> trees;
     TrainingSpec::Ptr training_spec;

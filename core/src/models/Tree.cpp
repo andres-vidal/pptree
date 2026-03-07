@@ -225,24 +225,20 @@ namespace pptree {
   }
 
   Tree Tree::train(
-    TrainingSpec const& training_spec,
-    FeatureMatrix&      x,
-    ResponseVector&     y,
-    stats::RNG &        rng) {
-    if (!GroupPartition::is_contiguous(y)) {
-      stats::sort(x, y);
-    }
-
+    TrainingSpec const&   training_spec,
+    const FeatureMatrix&  x,
+    const ResponseVector& y,
+    stats::RNG &          rng) {
     GroupPartition group_spec(y);
 
     return Tree::train(training_spec, x, group_spec, rng);
   }
 
   Tree Tree::train(
-    TrainingSpec const &  training_spec,
-    FeatureMatrix&        x,
-    GroupPartition const& group_spec,
-    stats::RNG &          rng) {
+    TrainingSpec const &   training_spec,
+    const FeatureMatrix&   x,
+    GroupPartition const&  group_spec,
+    stats::RNG &           rng) {
     TreeNode::Ptr root_ptr = build_root(training_spec, x, group_spec, rng);
 
     Tree tree(
