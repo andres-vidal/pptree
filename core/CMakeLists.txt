@@ -198,6 +198,7 @@ set(PPTREE_TEST_SRC
   src/stats/GroupPartition.test.cpp
   src/stats/ConfusionMatrix.test.cpp
   src/stats/Simulation.test.cpp
+  src/serialization/Json.test.cpp
   src/utils/Math.test.cpp
   src/utils/Invariant.test.cpp
   src/cli/CLIOptions.test.cpp
