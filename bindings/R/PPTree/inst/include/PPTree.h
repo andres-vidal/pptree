@@ -57,11 +57,15 @@ namespace Rcpp {
   }
 
   SEXP wrap(const TreeCondition &node) {
+    Rcpp::IntegerVector classes(node.classes.begin(), node.classes.end());
+
     return Rcpp::List::create(
-      Rcpp::Named("projector") = Rcpp::wrap(node.projector),
-      Rcpp::Named("threshold") = Rcpp::wrap(node.threshold),
-      Rcpp::Named("lower")     = Rcpp::wrap(*node.lower),
-      Rcpp::Named("upper")     = Rcpp::wrap(*node.upper));
+      Rcpp::Named("projector")      = Rcpp::wrap(node.projector),
+      Rcpp::Named("threshold")      = Rcpp::wrap(node.threshold),
+      Rcpp::Named("pp_index_value") = Rcpp::wrap(node.pp_index_value),
+      Rcpp::Named("classes")        = classes,
+      Rcpp::Named("lower")          = Rcpp::wrap(*node.lower),
+      Rcpp::Named("upper")          = Rcpp::wrap(*node.upper));
   }
 
   SEXP wrap(const Tree &tree) {
@@ -142,11 +146,25 @@ namespace Rcpp {
     auto lower = as<std::unique_ptr<TreeNode> >(rcond["lower"]);
     auto upper = as<std::unique_ptr<TreeNode> >(rcond["upper"]);
 
+    std::set<Response> classes;
+    if (rcond.containsElementNamed("classes")) {
+      Rcpp::IntegerVector rclasses(rcond["classes"]);
+      classes.insert(rclasses.begin(), rclasses.end());
+    }
+
+    Feature pp_index_value = 0;
+    if (rcond.containsElementNamed("pp_index_value")) {
+      pp_index_value = Rcpp::as<Feature>(rcond["pp_index_value"]);
+    }
+
     return TreeCondition(
       Rcpp::as<Projector >(rcond["projector"]),
       Rcpp::as<Feature>(rcond["threshold"]),
       std::move(lower),
-      std::move(upper));
+      std::move(upper),
+      nullptr,
+      std::move(classes),
+      pp_index_value);
   }
 
   template<> Tree as(SEXP x) {
