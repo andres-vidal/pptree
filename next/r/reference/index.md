@@ -1,0 +1,54 @@
+# Package index
+
+## All functions
+
+- [`NCI60`](https://andres-vidal.github.io/pptree/main/r/reference/NCI60.md)
+  : NCI60 Dataset
+- [`PPForest()`](https://andres-vidal.github.io/pptree/main/r/reference/PPForest.md)
+  : Trains a Random Forest of Project-Pursuit oblique decision trees.
+- [`PPTree()`](https://andres-vidal.github.io/pptree/main/r/reference/PPTree.md)
+  : Trains a Project-Pursuit oblique decision tree.
+- [`crab`](https://andres-vidal.github.io/pptree/main/r/reference/crab.md)
+  : Australian Crabs Dataset
+- [`crabs`](https://andres-vidal.github.io/pptree/main/r/reference/crabs.md)
+  : Crabs Dataset
+- [`fishcatch`](https://andres-vidal.github.io/pptree/main/r/reference/fishcatch.md)
+  : Fish Catch Dataset
+- [`formula(`*`<PPForest>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/formula.PPForest.md)
+  : Extracts the formula used to train a PPForest model.
+- [`formula(`*`<PPTree>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/formula.PPTree.md)
+  : Extracts the formula used to train a PPTree model.
+- [`glass`](https://andres-vidal.github.io/pptree/main/r/reference/glass.md)
+  : Glass Dataset
+- [`image`](https://andres-vidal.github.io/pptree/main/r/reference/image.md)
+  : Image Dataset
+- [`iris`](https://andres-vidal.github.io/pptree/main/r/reference/iris.md)
+  : Iris Flower Dataset
+- [`leukemia`](https://andres-vidal.github.io/pptree/main/r/reference/leukemia.md)
+  : Leukemia Dataset
+- [`lymphoma`](https://andres-vidal.github.io/pptree/main/r/reference/lymphoma.md)
+  : Lymphoma Dataset
+- [`olive`](https://andres-vidal.github.io/pptree/main/r/reference/olive.md)
+  : Olive Dataset
+- [`parkinson`](https://andres-vidal.github.io/pptree/main/r/reference/parkinson.md)
+  : Parkinson Dataset
+- [`pp_forest()`](https://andres-vidal.github.io/pptree/main/r/reference/pp_forest.md)
+  : Parsnip model specification for PPForest.
+- [`pp_tree()`](https://andres-vidal.github.io/pptree/main/r/reference/pp_tree.md)
+  : Parsnip model specification for PPTree.
+- [`predict(`*`<PPForest>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/predict.PPForest.md)
+  : Predicts the labels or vote proportions of a set of observations
+  using a PPForest model.
+- [`predict(`*`<PPTree>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/predict.PPTree.md)
+  : Predicts the labels or class indicators of a set of observations
+  using a PPTree model.
+- [`print(`*`<PPForest>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/print.PPForest.md)
+  : Prints a PPForest model.
+- [`print(`*`<PPTree>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/print.PPTree.md)
+  : Prints a PPTree model.
+- [`summary(`*`<PPForest>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/summary.PPForest.md)
+  : Summarizes a PPForest model.
+- [`summary(`*`<PPTree>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/summary.PPTree.md)
+  : Summarizes a PPTree model.
+- [`wine`](https://andres-vidal.github.io/pptree/main/r/reference/wine.md)
+  : Wine Dataset
