@@ -18,6 +18,13 @@ describe("predict.PPForest", {
       predictions <- predict(model, iris)
       expect_equal(levels(predictions), levels(iris$Type))
     })
+
+    it("with new_data parameter returns the same result as positional", {
+      model <- PPForest(Type ~ ., data = iris, n_threads = 1)
+      pred_positional <- predict(model, iris)
+      pred_named <- predict(model, new_data = iris)
+      expect_equal(pred_positional, pred_named)
+    })
   })
 
   describe("on an object created with the matrix interface", {
@@ -35,6 +42,36 @@ describe("predict.PPForest", {
       model <- PPForest(x = x, y = crabs$Type, n_threads = 1)
       predictions <- predict(model, x)
       expect_equal(levels(predictions), levels(crabs$Type))
+    })
+  })
+
+  describe("with type = 'prob'", {
+    it("returns a data frame with one column per class", {
+      model <- PPForest(Type ~ ., data = iris, n_threads = 1)
+      probs <- predict(model, iris, type = "prob")
+      expect_true(is.data.frame(probs))
+      expect_equal(ncol(probs), length(levels(iris$Type)))
+      expect_equal(colnames(probs), levels(iris$Type))
+    })
+
+    it("returns rows that sum to 1", {
+      model <- PPForest(Type ~ ., data = iris, n_threads = 1)
+      probs <- predict(model, iris, type = "prob")
+      row_sums <- rowSums(probs)
+      expect_equal(row_sums, rep(1.0, nrow(iris)), tolerance = 1e-6)
+    })
+
+    it("returns values between 0 and 1", {
+      model <- PPForest(Type ~ ., data = iris, n_threads = 1)
+      probs <- predict(model, iris, type = "prob")
+      expect_true(all(probs >= 0))
+      expect_true(all(probs <= 1))
+    })
+
+    it("returns the correct number of rows", {
+      model <- PPForest(Type ~ ., data = iris, n_threads = 1)
+      probs <- predict(model, iris, type = "prob")
+      expect_equal(nrow(probs), nrow(iris))
     })
   })
 })

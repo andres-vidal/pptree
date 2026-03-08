@@ -75,6 +75,13 @@ ResponseVector pptree_predict_forest(
 }
 
 // [[Rcpp::export]]
+FeatureMatrix pptree_predict_forest_prob(
+  const Forest &        forest,
+  const FeatureMatrix & data) {
+  return forest.predict(data, Proportions{});
+}
+
+// [[Rcpp::export]]
 FeatureVector pptree_vi_projections_tree(
   const Tree&          tree,
   int                  n_vars,

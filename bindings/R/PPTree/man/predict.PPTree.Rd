@@ -2,20 +2,24 @@
 % Please edit documentation in R/PPTree.R
 \name{predict.PPTree}
 \alias{predict.PPTree}
-\title{Predicts the labels of a set of observations using a PPTree model.}
+\title{Predicts the labels or class indicators of a set of observations using a PPTree model.}
 \usage{
-\method{predict}{PPTree}(object, ...)
+\method{predict}{PPTree}(object, new_data = NULL, type = "class", ...)
 }
 \arguments{
 \item{object}{A PPTree model.}
 
-\item{...}{(unused) other parameters tipically passed to predict.}
+\item{new_data}{A data frame or matrix of new observations to predict. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.}
+
+\item{type}{The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame with 1.0 for the predicted class and 0.0 elsewhere.}
+
+\item{...}{For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.}
 }
 \value{
-A matrix containing the predicted labels for each observation.
+If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per class.
 }
 \description{
-Predicts the labels of a set of observations using a PPTree model.
+Predicts the labels or class indicators of a set of observations using a PPTree model.
 }
 \examples{
 # Example 1: with the `iris` dataset
@@ -26,4 +30,11 @@ predict(model, iris)
 model <- PPTree(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 predict(model, crabs)
 
+# Example 3: vote proportions
+model <- PPTree(Type ~ ., data = iris)
+predict(model, iris, type = "prob")
+
+}
+\seealso{
+\code{\link{PPTree}} for training, \code{\link{formula.PPTree}}, \code{\link{summary.PPTree}}
 }

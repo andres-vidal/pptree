@@ -1,6 +1,6 @@
 #' @useDynLib PPTree
 #' @importFrom Rcpp evalCpp
-#' @importFrom stats model.frame model.matrix model.response formula predict
+#' @importFrom stats model.frame model.matrix model.response formula predict sd terms update
 NULL
 
 #' Trains a Random Forest of Project-Pursuit oblique decision trees.
@@ -108,11 +108,14 @@ PPForest <- function(
   model
 }
 
-#' Predicts the labels of a set of observations using a PPForest model.
+#' Predicts the labels or vote proportions of a set of observations using a PPForest model.
 #'
 #' @param object A PPForest model.
-#' @param ... other parameters tipically passed to predict.
-#' @return A matrix containing the predicted labels for each observation.
+#' @param new_data A data frame or matrix of new observations to predict. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.
+#' @param type The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame of vote proportions.
+#' @param ... For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.
+#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per class, where each row sums to 1.
+#' @seealso \code{\link{PPForest}} for training, \code{\link{formula.PPForest}}, \code{\link{summary.PPForest}}
 #' @examples
 #' # Example 1: with the `iris` dataset
 #' model <- PPForest(Type ~ ., data = iris)
@@ -122,16 +125,22 @@ PPForest <- function(
 #' model <- PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 #' predict(model, crabs)
 #'
+#' # Example 3: vote proportions
+#' model <- PPForest(Type ~ ., data = iris)
+#' predict(model, iris, type = "prob")
+#'
 #' @export
-predict.PPForest <- function(object, ...) {
-  args <- list(...)
-  x <- args[[1]]
+predict.PPForest <- function(object, new_data = NULL, type = "class", ...) {
+  x <- process_predict_arguments(object, new_data, ...)
 
-  if (!is.null(object$formula)) {
-    x <- model.matrix(object$formula, x)
+  if (type == "prob") {
+    probs <- pptree_predict_forest_prob(object, x)
+    df <- as.data.frame(probs)
+    colnames(df) <- object$classes
+    return(df)
   }
 
-  y <- pptree_predict_forest(object, as.matrix(x))
+  y <- pptree_predict_forest(object, x)
   as.factor(object$classes[y])
 }
 

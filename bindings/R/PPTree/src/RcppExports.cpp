@@ -67,6 +67,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pptree_predict_forest_prob
+FeatureMatrix pptree_predict_forest_prob(const Forest& forest, const FeatureMatrix& data);
+RcppExport SEXP _PPTree_pptree_predict_forest_prob(SEXP forestSEXP, SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_predict_forest_prob(forest, data));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pptree_vi_projections_tree
 FeatureVector pptree_vi_projections_tree(const Tree& tree, int n_vars, const FeatureVector& scale);
 RcppExport SEXP _PPTree_pptree_vi_projections_tree(SEXP treeSEXP, SEXP n_varsSEXP, SEXP scaleSEXP) {
@@ -140,6 +152,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 7},
     {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
     {"_PPTree_pptree_predict_forest", (DL_FUNC) &_PPTree_pptree_predict_forest, 2},
+    {"_PPTree_pptree_predict_forest_prob", (DL_FUNC) &_PPTree_pptree_predict_forest_prob, 2},
     {"_PPTree_pptree_vi_projections_tree", (DL_FUNC) &_PPTree_pptree_vi_projections_tree, 3},
     {"_PPTree_pptree_vi_projections_forest", (DL_FUNC) &_PPTree_pptree_vi_projections_forest, 3},
     {"_PPTree_pptree_vi_weighted", (DL_FUNC) &_PPTree_pptree_vi_weighted, 4},

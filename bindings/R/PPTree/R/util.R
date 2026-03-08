@@ -1,3 +1,15 @@
+process_predict_arguments <- function(object, new_data, ...) {
+  if (is.null(new_data)) {
+    new_data <- list(...)[[1]]
+  }
+
+  if (!is.null(object$formula)) {
+    new_data <- model.matrix(object$formula, new_data)
+  }
+
+  as.matrix(new_data)
+}
+
 process_model_arguments <- function(formula, data, x, y) {
   if (!is.null(formula) && !is.null(data)) {
     if (!inherits(formula, "formula")) {

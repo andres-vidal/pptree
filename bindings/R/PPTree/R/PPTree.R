@@ -84,11 +84,14 @@ PPTree <- function(
   model
 }
 
-#' Predicts the labels of a set of observations using a PPTree model.
+#' Predicts the labels or class indicators of a set of observations using a PPTree model.
 #'
 #' @param object A PPTree model.
-#' @param ... (unused) other parameters tipically passed to predict.
-#' @return A matrix containing the predicted labels for each observation.
+#' @param new_data A data frame or matrix of new observations to predict. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.
+#' @param type The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame with 1.0 for the predicted class and 0.0 elsewhere.
+#' @param ... For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.
+#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per class.
+#' @seealso \code{\link{PPTree}} for training, \code{\link{formula.PPTree}}, \code{\link{summary.PPTree}}
 #' @examples
 #' # Example 1: with the `iris` dataset
 #' model <- PPTree(Type ~ ., data = iris)
@@ -97,18 +100,31 @@ PPTree <- function(
 #' # Example 2: with the `crabs` dataset
 #' model <- PPTree(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 #' predict(model, crabs)
+#' 
+#' # Example 3: vote proportions
+#' model <- PPTree(Type ~ ., data = iris)
+#' predict(model, iris, type = "prob")
 #'
 #' @export
-predict.PPTree <- function(object, ...) {
-  args <- list(...)
-  x <- args[[1]]
+predict.PPTree <- function(object, new_data = NULL, type = "class", ...) {
+  x <- process_predict_arguments(object, new_data, ...)
 
-  if (!is.null(object$formula)) {
-    x <- model.matrix(object$formula, x)
+  y <- pptree_predict(object, x)
+  predicted <- as.factor(object$classes[y])
+
+  if (type == "prob") {
+    n <- nrow(x)
+    df <- as.data.frame(matrix(0, nrow = n, ncol = length(object$classes)))
+    colnames(df) <- object$classes
+
+    for (i in seq_len(n)) {
+      df[i, as.character(predicted[i])] <- 1.0
+    }
+
+    return(df)
   }
 
-  y <- pptree_predict(object, as.matrix(x))
-  as.factor(object$classes[y])
+  predicted
 }
 
 #' Extracts the formula used to train a PPTree model.

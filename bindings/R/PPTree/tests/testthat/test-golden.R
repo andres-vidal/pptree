@@ -70,4 +70,12 @@ describe("Golden file: iris forest-glda-t5-s42", {
     expected <- golden$variable_importance$permuted
     expect_equal(model$vi$permuted, expected, tolerance = 1e-3)
   })
+
+  it("vote proportions match golden file", {
+    model <- PPForest(Type ~ ., data = iris, size = 5, n_vars = 2, seed = 42L, n_threads = 1)
+    probs <- predict(model, iris, type = "prob")
+    expected <- golden$vote_proportions
+    actual <- unname(as.matrix(probs))
+    expect_equal(actual, expected, tolerance = 1e-3)
+  })
 })

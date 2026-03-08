@@ -18,6 +18,13 @@ describe("predict.PPTree", {
       predictions <- predict(model, iris)
       expect_equal(levels(predictions), levels(iris$Type))
     })
+
+    it("with new_data parameter returns the same result as positional", {
+      model <- PPTree(Type ~ ., data = iris)
+      pred_positional <- predict(model, iris)
+      pred_named <- predict(model, new_data = iris)
+      expect_equal(pred_positional, pred_named)
+    })
   })
 
   describe("on an object created with the matrix interface", {
@@ -35,6 +42,33 @@ describe("predict.PPTree", {
       model <- PPTree(x = x, y = crabs$Type)
       predictions <- predict(model, x)
       expect_equal(levels(predictions), levels(crabs$Type))
+    })
+  })
+
+  describe("with type = 'prob'", {
+    it("returns a data frame with one column per class", {
+      model <- PPTree(Type ~ ., data = iris)
+      probs <- predict(model, iris, type = "prob")
+      expect_true(is.data.frame(probs))
+      expect_equal(ncol(probs), length(levels(iris$Type)))
+      expect_equal(colnames(probs), levels(iris$Type))
+    })
+
+    it("returns exactly one 1.0 per row and the rest 0.0", {
+      model <- PPTree(Type ~ ., data = iris)
+      probs <- predict(model, iris, type = "prob")
+      row_sums <- rowSums(probs)
+      expect_equal(row_sums, rep(1.0, nrow(iris)))
+      expect_true(all(probs == 0 | probs == 1))
+    })
+
+    it("the 1.0 column matches the class prediction", {
+      model <- PPTree(Type ~ ., data = iris)
+      class_preds <- predict(model, iris, type = "class")
+      prob_preds <- predict(model, iris, type = "prob")
+      for (i in seq_len(nrow(iris))) {
+        expect_equal(prob_preds[i, as.character(class_preds[i])], 1.0)
+      }
     })
   })
 })

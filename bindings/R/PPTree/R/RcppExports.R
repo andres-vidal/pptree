@@ -17,6 +17,10 @@ pptree_predict_forest <- function(forest, data) {
     .Call('_PPTree_pptree_predict_forest', PACKAGE = 'PPTree', forest, data)
 }
 
+pptree_predict_forest_prob <- function(forest, data) {
+    .Call('_PPTree_pptree_predict_forest_prob', PACKAGE = 'PPTree', forest, data)
+}
+
 pptree_vi_projections_tree <- function(tree, n_vars, scale) {
     .Call('_PPTree_pptree_vi_projections_tree', PACKAGE = 'PPTree', tree, n_vars, scale)
 }
