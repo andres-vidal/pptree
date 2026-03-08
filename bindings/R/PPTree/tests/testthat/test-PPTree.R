@@ -72,6 +72,34 @@ describe("PPTree matrix interface", {
   })
 })
 
+describe("PPTree reproducibility", {
+  it("produces identical predictions with set.seed", {
+    set.seed(42)
+    model1 <- PPTree(Type ~ ., data = iris)
+    set.seed(42)
+    model2 <- PPTree(Type ~ ., data = iris)
+    expect_equal(predict(model1, iris), predict(model2, iris))
+  })
+
+  it("produces identical predictions with explicit seed", {
+    model1 <- PPTree(Type ~ ., data = iris, seed = 123L)
+    model2 <- PPTree(Type ~ ., data = iris, seed = 123L)
+    expect_equal(predict(model1, iris), predict(model2, iris))
+  })
+
+  it("stores the explicit seed in the model", {
+    model <- PPTree(Type ~ ., data = iris, seed = 42L)
+    expect_equal(model$seed, 42L)
+  })
+
+  it("stores the generated seed when seed is NULL", {
+    set.seed(99)
+    model <- PPTree(Type ~ ., data = iris)
+    expect_true(is.numeric(model$seed))
+    expect_true(model$seed > 0)
+  })
+})
+
 describe("PPTree training spec", {
   it("preserves the lambda parameter in the returned model", {
     model <- PPTree(Type ~ ., data = iris, lambda = 0.5)
@@ -86,30 +114,5 @@ describe("PPTree training spec", {
   it("the training strategy is glda", {
     model <- PPTree(Type ~ ., data = iris)
     expect_equal(model$training_spec$strategy, "glda")
-  })
-})
-
-describe("PPTree training data", {
-  it("preserves the observations (x) as a matrix without metadata", {
-    model <- PPTree(Type ~ ., data = iris)
-
-    expected <- matrix(
-      as.vector(model$x),
-      nrow = nrow(model$x),
-      ncol = ncol(model$x)
-    )
-    expect_equal(model$training_data$x, expected, , tolerance = 0.1)
-  })
-
-  it("preserves the labels (y) as a vector without metadata", {
-    model <- PPTree(Type ~ ., data = iris)
-    expected <- as.vector(model$y)
-    expect_equal(model$training_data$y, expected)
-  })
-
-  it("preserves the classes as a vector without metadata", {
-    model <- PPTree(Type ~ ., data = iris)
-    expected <- as.integer(unique(iris$Type))
-    expect_equal(model$training_data$classes, expected)
   })
 })

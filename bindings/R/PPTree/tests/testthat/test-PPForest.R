@@ -41,11 +41,6 @@ describe("PPForest formula interface", {
       Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 1
     )
   })
-
-  it("preserves the n_threads in the returned model", {
-    model <- PPForest(Type ~ ., data = iris, n_threads = 1)
-    expect_equal(model$n_threads, 1)
-  })
 })
 
 describe("PPForest matrix interface", {
@@ -75,6 +70,40 @@ describe("PPForest matrix interface", {
   it("does not have a formula", {
     model <- PPForest(x = iris[, 1:4], y = iris[, 5], n_threads = 1)
     expect_equal(model$formula, NULL)
+  })
+})
+
+describe("PPForest reproducibility", {
+  it("produces identical predictions with set.seed", {
+    set.seed(42)
+    model1 <- PPForest(Type ~ ., data = iris, size = 3, n_threads = 1)
+    set.seed(42)
+    model2 <- PPForest(Type ~ ., data = iris, size = 3, n_threads = 1)
+    expect_equal(predict(model1, iris), predict(model2, iris))
+  })
+
+  it("produces identical predictions with explicit seed", {
+    model1 <- PPForest(Type ~ ., data = iris, size = 3, seed = 123L, n_threads = 1)
+    model2 <- PPForest(Type ~ ., data = iris, size = 3, seed = 123L, n_threads = 1)
+    expect_equal(predict(model1, iris), predict(model2, iris))
+  })
+
+  it("produces reproducible VI permuted importance", {
+    model1 <- PPForest(Type ~ ., data = iris, size = 3, seed = 42L, n_threads = 1)
+    model2 <- PPForest(Type ~ ., data = iris, size = 3, seed = 42L, n_threads = 1)
+    expect_equal(model1$vi$permuted, model2$vi$permuted)
+  })
+
+  it("stores the explicit seed in the model", {
+    model <- PPForest(Type ~ ., data = iris, size = 3, seed = 42L, n_threads = 1)
+    expect_equal(model$seed, 42L)
+  })
+
+  it("stores the generated seed when seed is NULL", {
+    set.seed(99)
+    model <- PPForest(Type ~ ., data = iris, size = 3, n_threads = 1)
+    expect_true(is.numeric(model$seed))
+    expect_true(model$seed > 0)
   })
 })
 
@@ -112,30 +141,5 @@ describe("PPForest training spec", {
   it("the training strategy is uniform_glda", {
     model <- PPForest(Type ~ ., data = iris, n_threads = 1)
     expect_equal(model$training_spec$strategy, "uniform_glda")
-  })
-})
-
-describe("PPForest training data", {
-  it("preserves the observations (x) as a matrix without metadata", {
-    model <- PPForest(Type ~ ., data = iris, n_threads = 1)
-
-    expected <- matrix(
-      as.vector(model$x),
-      nrow = nrow(model$x),
-      ncol = ncol(model$x)
-    )
-    expect_equal(model$training_data$x, expected, tolerance = 0.1)
-  })
-
-  it("preserves the labels (y) as a vector without metadata", {
-    model <- PPForest(Type ~ ., data = iris, n_threads = 1)
-    expected <- as.vector(model$y)
-    expect_equal(model$training_data$y, expected)
-  })
-
-  it("preserves the classes as a vector without metadata", {
-    model <- PPForest(Type ~ ., data = iris, n_threads = 1)
-    expected <- as.integer(unique(iris$Type))
-    expect_equal(model$training_data$classes, expected)
   })
 })

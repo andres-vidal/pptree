@@ -13,6 +13,7 @@ NULL
 #' @param x A matrix containing the features for each observation.
 #' @param y A matrix containing the labels for each observation.
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
+#' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly.
 #' @return A PPTree model trained on \code{x} and \code{y}.
 #' @examples
 #'
@@ -50,7 +51,8 @@ PPTree <- function(
     data = NULL,
     x = NULL,
     y = NULL,
-    lambda = 0) {
+    lambda = 0,
+    seed = NULL) {
   args <- process_model_arguments(formula, data, x, y)
 
   x <- args$x
@@ -58,13 +60,26 @@ PPTree <- function(
   classes <- args$classes
   formula <- args$formula
 
-  model <- pptree_train_glda(args$x, args$y, lambda)
+  if (is.null(seed)) {
+    seed <- sample.int(.Machine$integer.max, 1L)
+  }
+
+  model <- pptree_train_tree_glda(args$x, args$y, lambda, seed)
 
   class(model) <- "PPTree"
+  model$seed <- seed
   model$classes <- classes
   model$formula <- formula
   model$x <- x
   model$y <- y
+
+  scale <- apply(x, 2, sd)
+  scale[scale == 0] <- 1
+
+  model$vi <- list(
+    scale       = scale,
+    projections = pptree_vi_projections_tree(model, ncol(x), scale)
+  )
 
   model
 }
@@ -166,16 +181,8 @@ print.PPTree <- function(x, ...) {
 #' @export
 summary.PPTree <- function(object, ...) {
   model <- object
-  model$variable_importance <- data.frame(pptree_variable_importance(model))
-  rownames(model$variable_importance) <- colnames(model$x)
-  colnames(model$variable_importance) <- c("Proj.")
 
-  model$confusion_matrix <- data.frame(pptree_confusion_matrix(model))
-  colnames(model$confusion_matrix) <- c(model$classes, "Error")
-  rownames(model$confusion_matrix) <- c(model$classes, "Total")
-
-
-  if (!is.null(formula(object))) {
+  if (!is.null(model$x)) {
     cat("\n")
     cat("Project-Pursuit Oblique Decision Tree\n")
     cat("-------------------------------------\n")
@@ -186,11 +193,21 @@ summary.PPTree <- function(object, ...) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
     cat("-------------------------------------\n")
-    cat("Variable Importance:\n")
-    print(model$variable_importance)
+    cat("Variable Importance:\n\n")
+    p <- length(model$vi$projections)
+    vnames <- if (!is.null(colnames(model$x))) colnames(model$x) else paste0("x", seq_len(p))
+    ord <- order(model$vi$projections, decreasing = TRUE)
+    tbl <- data.frame(
+      Variable   = vnames[ord],
+      sigma      = model$vi$scale[ord],
+      Projection = model$vi$projections[ord],
+      row.names  = seq_len(p)
+    )
+    names(tbl)[2] <- "\u03c3"
+    print(tbl)
     cat("-------------------------------------\n")
     cat("Confusion Matrix:\n")
-    print(model$confusion_matrix)
+    cat("TODO")
   }
   cat("\n")
 }

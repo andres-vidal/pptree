@@ -1,116 +1,117 @@
 #include <Rcpp.h>
 #include <RcppEigen.h>
 #include "pptree.hpp"
-#include <random>
 
 // [[Rcpp::depends(RcppEigen)]]
 
 using namespace Rcpp;
 using namespace RcppEigen;
 using namespace pptree;
+using namespace pptree::types;
+using namespace pptree::stats;
 
 // [[Rcpp::export]]
-Tree<float, int> pptree_train_glda(
-  Data<float> &     x,
-  DataColumn<int> & y,
-  const float       lambda) {
-  return Tree<float, int>::train(
-    TrainingSpecGLDA<float, int>(lambda),
+Tree pptree_train_tree_glda(
+  FeatureMatrix  x,
+  ResponseVector y,
+  const float    lambda,
+  const int      seed) {
+  if (!GroupPartition::is_contiguous(y)) {
+    sort(x, y);
+  }
+
+  RNG rng(seed);
+
+  return Tree::train(
+    TrainingSpecGLDA(lambda),
     x,
-    y);
+    y,
+    rng);
 }
 
 // [[Rcpp::export]]
-Forest<float, int> pptree_train_forest_glda(
-  Data<float> &     x,
-  DataColumn<int> & y,
-  const int         size,
-  const int         n_vars,
-  const float       lambda,
-  SEXP              n_threads) {
+Forest pptree_train_forest_glda(
+  FeatureMatrix  x,
+  ResponseVector y,
+  const int      size,
+  const int      n_vars,
+  const float    lambda,
+  const int      seed,
+  SEXP           n_threads) {
+  if (!GroupPartition::is_contiguous(y)) {
+    sort(x, y);
+  }
+
   if (n_threads == R_NilValue) {
-    return Forest<float, int>::train(
-      TrainingSpecUGLDA<float, int>(n_vars, lambda),
+    return Forest::train(
+      TrainingSpecUGLDA(n_vars, lambda),
       x,
       y,
       size,
-      R::runif(0, INT_MAX));
+      seed);
   }
 
-  return Forest<float, int>::train(
-    TrainingSpecUGLDA<float, int>(n_vars, lambda),
+  return Forest::train(
+    TrainingSpecUGLDA(n_vars, lambda),
     x,
     y,
     size,
-    R::runif(0, INT_MAX),
+    seed,
     as<const int>(n_threads));
 }
 
 // [[Rcpp::export]]
-DataColumn<int> pptree_predict(
-  const Tree<float, int> &tree,
-  const Data<float> &     data) {
+ResponseVector pptree_predict(
+  const Tree &          tree,
+  const FeatureMatrix & data) {
   return tree.predict(data);
 }
 
 // [[Rcpp::export]]
-DataColumn<int> pptree_predict_forest(
-  const Forest<float, int> &forest,
-  const Data<float> &       data) {
+ResponseVector pptree_predict_forest(
+  const Forest &        forest,
+  const FeatureMatrix & data) {
   return forest.predict(data);
 }
 
 // [[Rcpp::export]]
-Data<float> pptree_variable_importance(
-  const Tree<float, int> &tree) {
-  return tree.variable_importance(VIProjectorStrategy<float, int>());
+FeatureVector pptree_vi_projections_tree(
+  const Tree&          tree,
+  int                  n_vars,
+  const FeatureVector& scale) {
+  return variable_importance_projections(tree, n_vars, &scale);
 }
 
 // [[Rcpp::export]]
-Data<float> pptree_forest_variable_importance(
-  const Forest<float, int> &forest) {
-  DataColumn<float> projector          = forest.variable_importance(VIProjectorStrategy<float, int>());
-  DataColumn<float> projector_adjusted = forest.variable_importance(VIProjectorAdjustedStrategy<float, int>());
-  DataColumn<float> permutation        = forest.variable_importance(VIPermutationStrategy<float, int>());
-
-  Data<float> result = Data<float>(projector.size(), 3);
-
-  result.col(0) = projector;
-  result.col(1) = projector_adjusted;
-  result.col(2) = permutation;
-
-  return result;
-}
-
-Data<float> parse_confusion_matrix(const ConfusionMatrix &confusion_matrix) {
-  Data<int> values = confusion_matrix.values;
-  Data<float> result(values.rows() + 1, values.cols() + 1);
-
-  DataColumn<float> class_errors = confusion_matrix.class_errors();
-
-  for (int i = 0; i < values.rows(); i++) {
-    for (int j = 0; j < values.cols(); j++) {
-      result(i, j) = values(i, j);
-    }
-  }
-
-  for (int i = 0; i < values.rows(); i++) {
-    result(i, values.cols()) = class_errors(i);
-  }
-
-  result(values.rows(), values.cols()) = confusion_matrix.error();
-
-  return result;
+FeatureVector pptree_vi_projections_forest(
+  const Forest&        forest,
+  int                 n_vars,
+  const FeatureVector& scale) {
+  return variable_importance_projections(forest, n_vars, &scale);
 }
 
 // [[Rcpp::export]]
-Data<float> pptree_confusion_matrix(
-  const Tree<float, int> &tree) {
-  return parse_confusion_matrix(tree.confusion_matrix(tree.x, tree.y));
+FeatureVector pptree_vi_weighted(
+  const Forest&        forest,
+  const FeatureMatrix& x,
+  const ResponseVector& y,
+  const FeatureVector& scale) {
+  return variable_importance_weighted_projections(forest, x, y, &scale);
 }
 
 // [[Rcpp::export]]
-Data<float> pptree_forest_confusion_matrix(
-  const Forest<float, int> &forest) {
-  return parse_confusion_matrix(forest.confusion_matrix());
+FeatureVector pptree_vi_permuted(
+  const Forest&        forest,
+  const FeatureMatrix& x,
+  const ResponseVector& y,
+  int                  seed) {
+  return variable_importance_permuted(forest, x, y, seed);
+}
+
+// [[Rcpp::export]]
+double pptree_oob_error(
+  const Forest&        forest,
+  const FeatureMatrix& x,
+  const ResponseVector& y) {
+  return forest.oob_error(x, y);
 }
