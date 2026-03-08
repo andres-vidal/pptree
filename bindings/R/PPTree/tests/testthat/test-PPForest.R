@@ -73,6 +73,40 @@ describe("PPForest matrix interface", {
   })
 })
 
+describe("PPForest reproducibility", {
+  it("produces identical predictions with set.seed", {
+    set.seed(42)
+    model1 <- PPForest(Type ~ ., data = iris, size = 3, n_threads = 1)
+    set.seed(42)
+    model2 <- PPForest(Type ~ ., data = iris, size = 3, n_threads = 1)
+    expect_equal(predict(model1, iris), predict(model2, iris))
+  })
+
+  it("produces identical predictions with explicit seed", {
+    model1 <- PPForest(Type ~ ., data = iris, size = 3, seed = 123L, n_threads = 1)
+    model2 <- PPForest(Type ~ ., data = iris, size = 3, seed = 123L, n_threads = 1)
+    expect_equal(predict(model1, iris), predict(model2, iris))
+  })
+
+  it("produces reproducible VI permuted importance", {
+    model1 <- PPForest(Type ~ ., data = iris, size = 3, seed = 42L, n_threads = 1)
+    model2 <- PPForest(Type ~ ., data = iris, size = 3, seed = 42L, n_threads = 1)
+    expect_equal(model1$vi$permuted, model2$vi$permuted)
+  })
+
+  it("stores the explicit seed in the model", {
+    model <- PPForest(Type ~ ., data = iris, size = 3, seed = 42L, n_threads = 1)
+    expect_equal(model$seed, 42L)
+  })
+
+  it("stores the generated seed when seed is NULL", {
+    set.seed(99)
+    model <- PPForest(Type ~ ., data = iris, size = 3, n_threads = 1)
+    expect_true(is.numeric(model$seed))
+    expect_true(model$seed > 0)
+  })
+})
+
 describe("PPForest training spec", {
   it("preserves the lambda parameter in the returned model", {
     model <- PPForest(Type ~ ., data = iris, lambda = 0.5, n_threads = 1)

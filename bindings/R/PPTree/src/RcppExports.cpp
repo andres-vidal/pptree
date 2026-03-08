@@ -12,22 +12,23 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// pptree_train_glda
-Tree pptree_train_glda(FeatureMatrix x, ResponseVector y, const float lambda);
-RcppExport SEXP _PPTree_pptree_train_glda(SEXP xSEXP, SEXP ySEXP, SEXP lambdaSEXP) {
+// pptree_train_tree_glda
+Tree pptree_train_tree_glda(FeatureMatrix x, ResponseVector y, const float lambda, const int seed);
+RcppExport SEXP _PPTree_pptree_train_tree_glda(SEXP xSEXP, SEXP ySEXP, SEXP lambdaSEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< FeatureMatrix >::type x(xSEXP);
     Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(pptree_train_glda(x, y, lambda));
+    Rcpp::traits::input_parameter< const int >::type seed(seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_train_tree_glda(x, y, lambda, seed));
     return rcpp_result_gen;
 END_RCPP
 }
 // pptree_train_forest_glda
-Forest pptree_train_forest_glda(FeatureMatrix x, ResponseVector y, const int size, const int n_vars, const float lambda, SEXP n_threads);
-RcppExport SEXP _PPTree_pptree_train_forest_glda(SEXP xSEXP, SEXP ySEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP n_threadsSEXP) {
+Forest pptree_train_forest_glda(FeatureMatrix x, ResponseVector y, const int size, const int n_vars, const float lambda, const int seed, SEXP n_threads);
+RcppExport SEXP _PPTree_pptree_train_forest_glda(SEXP xSEXP, SEXP ySEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP seedSEXP, SEXP n_threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,8 +37,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< const int >::type n_vars(n_varsSEXP);
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const int >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< SEXP >::type n_threads(n_threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(pptree_train_forest_glda(x, y, size, n_vars, lambda, n_threads));
+    rcpp_result_gen = Rcpp::wrap(pptree_train_forest_glda(x, y, size, n_vars, lambda, seed, n_threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -134,8 +136,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_PPTree_pptree_train_glda", (DL_FUNC) &_PPTree_pptree_train_glda, 3},
-    {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 6},
+    {"_PPTree_pptree_train_tree_glda", (DL_FUNC) &_PPTree_pptree_train_tree_glda, 4},
+    {"_PPTree_pptree_train_forest_glda", (DL_FUNC) &_PPTree_pptree_train_forest_glda, 7},
     {"_PPTree_pptree_predict", (DL_FUNC) &_PPTree_pptree_predict, 2},
     {"_PPTree_pptree_predict_forest", (DL_FUNC) &_PPTree_pptree_predict_forest, 2},
     {"_PPTree_pptree_vi_projections_tree", (DL_FUNC) &_PPTree_pptree_vi_projections_tree, 3},

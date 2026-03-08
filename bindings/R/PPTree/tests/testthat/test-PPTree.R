@@ -72,6 +72,34 @@ describe("PPTree matrix interface", {
   })
 })
 
+describe("PPTree reproducibility", {
+  it("produces identical predictions with set.seed", {
+    set.seed(42)
+    model1 <- PPTree(Type ~ ., data = iris)
+    set.seed(42)
+    model2 <- PPTree(Type ~ ., data = iris)
+    expect_equal(predict(model1, iris), predict(model2, iris))
+  })
+
+  it("produces identical predictions with explicit seed", {
+    model1 <- PPTree(Type ~ ., data = iris, seed = 123L)
+    model2 <- PPTree(Type ~ ., data = iris, seed = 123L)
+    expect_equal(predict(model1, iris), predict(model2, iris))
+  })
+
+  it("stores the explicit seed in the model", {
+    model <- PPTree(Type ~ ., data = iris, seed = 42L)
+    expect_equal(model$seed, 42L)
+  })
+
+  it("stores the generated seed when seed is NULL", {
+    set.seed(99)
+    model <- PPTree(Type ~ ., data = iris)
+    expect_true(is.numeric(model$seed))
+    expect_true(model$seed > 0)
+  })
+})
+
 describe("PPTree training spec", {
   it("preserves the lambda parameter in the returned model", {
     model <- PPTree(Type ~ ., data = iris, lambda = 0.5)

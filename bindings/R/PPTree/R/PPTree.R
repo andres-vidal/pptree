@@ -13,6 +13,7 @@ NULL
 #' @param x A matrix containing the features for each observation.
 #' @param y A matrix containing the labels for each observation.
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
+#' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly.
 #' @return A PPTree model trained on \code{x} and \code{y}.
 #' @examples
 #'
@@ -50,7 +51,8 @@ PPTree <- function(
     data = NULL,
     x = NULL,
     y = NULL,
-    lambda = 0) {
+    lambda = 0,
+    seed = NULL) {
   args <- process_model_arguments(formula, data, x, y)
 
   x <- args$x
@@ -58,9 +60,14 @@ PPTree <- function(
   classes <- args$classes
   formula <- args$formula
 
-  model <- pptree_train_glda(args$x, args$y, lambda)
+  if (is.null(seed)) {
+    seed <- sample.int(.Machine$integer.max, 1L)
+  }
+
+  model <- pptree_train_tree_glda(args$x, args$y, lambda, seed)
 
   class(model) <- "PPTree"
+  model$seed <- seed
   model$classes <- classes
   model$formula <- formula
   model$x <- x

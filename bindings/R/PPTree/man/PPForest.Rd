@@ -12,6 +12,7 @@ PPForest(
   size = 2,
   lambda = 0,
   n_vars = NULL,
+  seed = NULL,
   n_threads = NULL
 )
 }
@@ -29,6 +30,8 @@ PPForest(
 \item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).}
 
 \item{n_vars}{The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.}
+
+\item{seed}{An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.}
 
 \item{n_threads}{The number of threads to use. The default is the number of cores available.}
 }

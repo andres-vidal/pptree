@@ -17,6 +17,7 @@ NULL
 #' @param size The number of trees in the forest.
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
 #' @param n_vars The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.
+#' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.
 #' @param n_threads The number of threads to use. The default is the number of cores available.
 #' @return A PPForest model trained on \code{x} and \code{y}.
 #' @examples
@@ -58,6 +59,7 @@ PPForest <- function(
     size = 2,
     lambda = 0,
     n_vars = NULL,
+    seed = NULL,
     n_threads = NULL) {
   args <- process_model_arguments(formula, data, x, y)
 
@@ -66,12 +68,17 @@ PPForest <- function(
   classes <- args$classes
   formula <- args$formula
 
+  if (is.null(seed)) {
+    seed <- sample.int(.Machine$integer.max, 1L)
+  }
+
   model <- pptree_train_forest_glda(
     x,
     y,
     size,
     ifelse(is.null(n_vars), ncol(x), n_vars),
     lambda,
+    seed,
     n_threads
   )
 
@@ -89,13 +96,12 @@ PPForest <- function(
 
   scale <- apply(x, 2, sd)
   scale[scale == 0] <- 1
-  vi_seed <- sample.int(.Machine$integer.max, 1L)
 
   model$vi <- list(
     scale       = scale,
     projections = pptree_vi_projections_forest(model, ncol(x), scale),
     weighted    = pptree_vi_weighted(model, x, y, scale),
-    permuted    = pptree_vi_permuted(model, x, y, vi_seed)
+    permuted    = pptree_vi_permuted(model, x, y, seed)
   )
   model$oob_error <- pptree_oob_error(model, x, y)
 

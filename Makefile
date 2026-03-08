@@ -73,6 +73,7 @@ r-clean:
 		${R_PACKAGE_DIR}/inst/lib \
 		${R_PACKAGE_DIR}/inst/include/nlohmann \
 		${R_PACKAGE_DIR}/inst/include/pcg_* \
+		${R_PACKAGE_DIR}/inst/golden \
 		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
 		PPTree.Rcheck
 
@@ -80,6 +81,7 @@ r-prepare: r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 	@cp -r ${PCG_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
+	@cp -r golden ${R_PACKAGE_DIR}/inst/golden
 
 r-document:
 	@make r-prepare

@@ -1,7 +1,6 @@
 #include <Rcpp.h>
 #include <RcppEigen.h>
 #include "pptree.hpp"
-#include <random>
 
 // [[Rcpp::depends(RcppEigen)]]
 
@@ -12,12 +11,11 @@ using namespace pptree::types;
 using namespace pptree::stats;
 
 // [[Rcpp::export]]
-Tree pptree_train_glda(
+Tree pptree_train_tree_glda(
   FeatureMatrix  x,
   ResponseVector y,
-  const float    lambda) {
-  const int seed = R::runif(0, INT_MAX);
-
+  const float    lambda,
+  const int      seed) {
   if (!GroupPartition::is_contiguous(y)) {
     sort(x, y);
   }
@@ -38,9 +36,8 @@ Forest pptree_train_forest_glda(
   const int      size,
   const int      n_vars,
   const float    lambda,
+  const int      seed,
   SEXP           n_threads) {
-  const int seed = R::runif(0, INT_MAX);
-
   if (!GroupPartition::is_contiguous(y)) {
     sort(x, y);
   }
