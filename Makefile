@@ -63,6 +63,7 @@ r-install-deps:
 	@Rscript -e "install.packages('devtools', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
 	@Rscript -e "install.packages('jsonlite', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
 	@Rscript -e "install.packages('parsnip', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
+	@Rscript -e "install.packages('pkgdown', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
 
 r-clean:
 	@rm -rf \
@@ -110,7 +111,28 @@ r-install: r-build
 r-untar:
 	@tar -xvf ${R_PACKAGE_TARBALL}
 
+# Documentation
 
+DOCS_DIR = docs
+DOCS_BUILD_DIR = ${DOCS_DIR}/.build
+DOXYGEN = ${TOOLS_DIR}/doxygen/bin/doxygen
+
+docs-site:
+	@mkdir -p ${DOCS_BUILD_DIR}
+	@cp ${DOCS_DIR}/index.html ${DOCS_DIR}/style.css ${DOCS_BUILD_DIR}/
+
+docs-cpp:
+	@mkdir -p ${DOCS_BUILD_DIR}/cpp
+	@${DOXYGEN} ${DOCS_DIR}/Doxyfile
+
+docs-r:
+	@make r-prepare
+	@cp ${DOCS_DIR}/_pkgdown.yml ${R_PACKAGE_DIR}/_pkgdown.yml
+	@Rscript -e "pkgdown::build_site('${R_PACKAGE_DIR}', override=list(destination='../../../${DOCS_BUILD_DIR}/r'), preview=FALSE)"
+	@rm -f ${R_PACKAGE_DIR}/_pkgdown.yml
+	@make r-clean
+
+docs: docs-site docs-cpp docs-r
 
 # Profiling
 

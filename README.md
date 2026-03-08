@@ -59,7 +59,7 @@ Dependencies are downloaded automatically during the build process using CMake's
 
 ## Development Tools
 
-The project comes with development tools configured via the `tools/CMakeLists.txt` file. Namely, `uncrustify` is used for code formatting and `cppcheck` for static analysis. These can be installed running the `make install-tools` command from the project's root, which will make their binaries available in the `.tools` folder. Configure your IDE to use the binaries in this folder, instead of globally installed ones. The tools can be run via command line using `Makefile` targets:
+The project comes with development tools configured via the `tools/CMakeLists.txt` file. Namely, `uncrustify` is used for code formatting, `cppcheck` for static analysis, and `doxygen` for C++ documentation generation. These can be installed running the `make install-tools` command from the project's root, which will make their binaries available in the `.tools` folder. Configure your IDE to use the binaries in this folder, instead of globally installed ones. The tools can be run via command line using `Makefile` targets:
 
 - `make format`
 - `make format-dry`
@@ -108,3 +108,44 @@ The `Makefile` defines useful targets to build, check and install the R package 
 - `make r-document` updates the documentation based on source files
 
 **Do not check or install the package from the raw source files. Always run `make r-build` and use the generated tarball.** This is important, because that target copies the core library's code to the package so it can be compiled on install.
+
+## Documentation
+
+The project has a unified documentation site combining a static landing page, a C++ API reference (Doxygen), and R package documentation (pkgdown). The site is deployed to GitHub Pages with versioned directories for each branch and tag.
+
+### Building locally
+
+First, install the development tools (includes Doxygen and its dependencies):
+
+- `make install-tools`
+
+Then build the documentation:
+
+- `make docs` builds the full site into `docs/.build/`
+- `make docs-site` copies the landing page
+- `make docs-cpp` generates the C++ API reference (Doxygen)
+- `make docs-r` generates the R package site (pkgdown)
+
+Documentation source files (landing page, Doxyfile, Doxygen theme, pkgdown config) live in `docs/`. Build output goes to `docs/.build/` (gitignored).
+
+### Site structure
+
+```
+docs/.build/
+  index.html       Landing page with links to each section
+  cpp/             C++ API reference (Doxygen with doxygen-awesome theme)
+  r/               R package site (pkgdown)
+```
+
+### Deployment
+
+Documentation is automatically deployed to GitHub Pages on pushes to `main`, `next`, and version tags (`v*`). Each version gets its own directory:
+
+```
+/              Redirects to /main/
+/main/         Latest from the main branch
+/next/         Latest from the next branch
+/v1.0.0/       Tagged release
+```
+
+GitHub Pages must be configured to deploy from the `gh-pages` branch (root).

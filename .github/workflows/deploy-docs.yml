@@ -1,0 +1,78 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main, next]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+
+      - name: Install system dependencies
+        run: sudo apt install build-essential libcurl4-openssl-dev libxml2-dev libssl-dev libfribidi-dev libfreetype6-dev libharfbuzz-dev libfontconfig1-dev libpng-dev libtiff5-dev libgit2-dev
+
+      - name: Cache dev tools
+        uses: actions/cache@v4
+        with:
+          path: .tools
+          key: ${{ runner.os }}-tools-${{ hashFiles('tools/CMakeLists.txt') }}
+
+      - name: Install dev tools
+        run: make install-tools
+
+      - name: Cache R packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ hashFiles('Makefile') }}
+
+      - name: Install R dependencies
+        run: sudo make r-install-deps
+
+      - name: Determine version directory
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "dir=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          else
+            echo "dir=${GITHUB_REF#refs/heads/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build landing page
+        run: make docs-site
+
+      - name: Build C++ docs
+        run: make docs-cpp
+
+      - name: Build R docs
+        run: make docs-r
+
+      - name: Deploy version
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/.build
+          destination_dir: ${{ steps.version.outputs.dir }}
+          keep_files: true
+
+      - name: Deploy root redirect
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p /tmp/root-redirect
+          cp docs/redirect.html /tmp/root-redirect/index.html
+
+      - name: Publish root redirect
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/root-redirect
+          keep_files: true

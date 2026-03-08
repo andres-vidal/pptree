@@ -19,6 +19,8 @@ bindings/R/PPTree/src/Makevars
 bindings/R/PPTree/inst/include/nlohmann
 bindings/R/PPTree/inst/include/pcg_random
 
+docs/.build
+
 log
 .claude
 CLAUDE.md
