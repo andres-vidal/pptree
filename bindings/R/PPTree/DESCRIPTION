@@ -17,6 +17,8 @@ RoxygenNote: 7.3.2
 Encoding: UTF-8
 Suggests:
     jsonlite,
+    parsnip,
+    rlang,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Config/testthat/parallel: false

@@ -4,7 +4,14 @@
 \alias{PPTree}
 \title{Trains a Project-Pursuit oblique decision tree.}
 \usage{
-PPTree(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0, seed = NULL)
+PPTree(
+  formula = NULL,
+  data = NULL,
+  x = NULL,
+  y = NULL,
+  lambda = 0,
+  seed = NULL
+)
 }
 \arguments{
 \item{formula}{A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.}

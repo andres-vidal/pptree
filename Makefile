@@ -61,6 +61,8 @@ r-install-deps:
 	@Rscript -e "install.packages('Rcpp', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
 	@Rscript -e "install.packages('RcppEigen', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
 	@Rscript -e "install.packages('devtools', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
+	@Rscript -e "install.packages('jsonlite', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
+	@Rscript -e "install.packages('parsnip', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
 
 r-clean:
 	@rm -rf \
