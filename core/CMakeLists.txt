@@ -30,6 +30,7 @@ endif()
 set(PPTREE_PLATFORM "${PPTREE_OS}-${PPTREE_COMPILER}")
 
 option(PPTREE_DOUBLE_PRECISION "Use double precision for feature data" OFF)
+option(PPTREE_CORE_ONLY "Build only the core library, skip CLI, tests, and benchmarks" OFF)
 if(PPTREE_DOUBLE_PRECISION)
   add_compile_definitions(PPTREE_DOUBLE_PRECISION)
 endif()
@@ -99,61 +100,7 @@ if(NOT OpenMP_FOUND)
   message(WARNING "Could NOT find OpenMP. Parallelization will not be available.")
 endif()
 
-include(FetchContent)
-
-# Eigen
-FetchContent_Declare(
-  eigen
-  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  GIT_TAG 3.4.1
-)
-FetchContent_MakeAvailable(eigen)
-
-# nlohmann_json
-FetchContent_Declare(
-  json
-  URL
-  https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
-  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-)
-FetchContent_MakeAvailable(json)
-
-# PCG Random Number Generation
-FetchContent_Declare(
-  pcg
-  GIT_REPOSITORY https://github.com/imneme/pcg-cpp.git
-  GIT_TAG v0.98.1
-)
-FetchContent_MakeAvailable(pcg)
-
-# Create interface library for PCG
-add_library(pcg_lib INTERFACE)
-target_include_directories(pcg_lib INTERFACE ${pcg_SOURCE_DIR}/include)
-
-# Fetch csv-parser
-FetchContent_Declare(
-  csv
-  GIT_REPOSITORY https://github.com/vincentlaucsb/csv-parser.git
-  GIT_SHALLOW TRUE
-  GIT_TAG 2.5.1
-)
-FetchContent_MakeAvailable(csv)
-
-# CLI11 for command line parsing
-FetchContent_Declare(
-  cli11
-  GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
-  GIT_TAG v2.6.1
-)
-FetchContent_MakeAvailable(cli11)
-
-# fmt for formatted output and color
-FetchContent_Declare(
-  fmt
-  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG 12.1.0
-)
-FetchContent_MakeAvailable(fmt)
+include(Dependencies.cmake)
 
 # ---------------------------------------------------------------------------
 # Common compile interface for all pptree OBJECT libraries
@@ -199,90 +146,83 @@ else()
   message(WARNING "Jemalloc not found. Program could be unstable on highly multi-threaded operations.")
 endif()
 
-# ---------------------------------------------------------------------------
-# CLI executable
-# ---------------------------------------------------------------------------
-add_executable(pptree src/cli/CLI.cpp)
-target_include_directories(pptree PRIVATE ${csv_SOURCE_DIR}/include)
-target_link_libraries(pptree pptree-core pptree-serialization nlohmann_json::nlohmann_json csv CLI11::CLI11 fmt::fmt)
-target_compile_definitions(pptree PRIVATE PPTREE_VERSION="${PROJECT_VERSION}")
+if(NOT PPTREE_CORE_ONLY)
+  # ---------------------------------------------------------------------------
+  # CLI executable
+  # ---------------------------------------------------------------------------
+  add_executable(pptree src/cli/CLI.cpp)
+  target_include_directories(pptree PRIVATE ${csv_SOURCE_DIR}/include)
+  target_link_libraries(pptree pptree-core pptree-serialization nlohmann_json::nlohmann_json csv CLI11::CLI11 fmt::fmt)
+  target_compile_definitions(pptree PRIVATE PPTREE_VERSION="${PROJECT_VERSION}")
 
+  # ---------------------------------------------------------------------------
+  # Tests
+  # ---------------------------------------------------------------------------
+  enable_testing()
 
-# ---------------------------------------------------------------------------
-# Tests
-# ---------------------------------------------------------------------------
-enable_testing()
+  set(PPTREE_TEST_SRC
+    src/test.cpp
+    src/models/Tree.test.cpp
+    src/models/Forest.test.cpp
+    src/models/PPStrategy.test.cpp
+    src/models/VariableImportance.test.cpp
+    src/stats/Stats.test.cpp
+    src/stats/GroupPartition.test.cpp
+    src/stats/ConfusionMatrix.test.cpp
+    src/stats/Simulation.test.cpp
+    src/serialization/Json.test.cpp
+    src/utils/Math.test.cpp
+    src/utils/Invariant.test.cpp
+    src/cli/CLIOptions.test.cpp
+    src/cli/CLI.integration.test.cpp
+    src/golden/Reproducibility.test.cpp
+    src/golden/Threading.test.cpp)
 
-set(PPTREE_TEST_SRC
-  src/test.cpp
-  src/models/Tree.test.cpp
-  src/models/Forest.test.cpp
-  src/models/PPStrategy.test.cpp
-  src/models/VariableImportance.test.cpp
-  src/stats/Stats.test.cpp
-  src/stats/GroupPartition.test.cpp
-  src/stats/ConfusionMatrix.test.cpp
-  src/stats/Simulation.test.cpp
-  src/serialization/Json.test.cpp
-  src/utils/Math.test.cpp
-  src/utils/Invariant.test.cpp
-  src/cli/CLIOptions.test.cpp
-  src/cli/CLI.integration.test.cpp
-  src/golden/Reproducibility.test.cpp
-  src/golden/Threading.test.cpp)
+  add_executable(pptree-test ${PPTREE_TEST_SRC})
 
-# Google Test
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG v1.17.0
-)
-FetchContent_MakeAvailable(googletest)
+  target_link_libraries(pptree-test
+    pptree-core
+    pptree-serialization
+    nlohmann_json::nlohmann_json
+    gtest
+    CLI11::CLI11
+    csv
+    fmt::fmt)
 
-add_executable(pptree-test ${PPTREE_TEST_SRC})
+  target_include_directories(pptree-test PRIVATE
+    ${csv_SOURCE_DIR}/include
+    ${gtest_SOURCE_DIR}/include
+    ${gtest_SOURCE_DIR})
 
-target_link_libraries(pptree-test
-  pptree-core
-  pptree-serialization
-  nlohmann_json::nlohmann_json
-  gtest
-  CLI11::CLI11
-  csv
-  fmt::fmt)
+  target_compile_definitions(pptree-test PRIVATE
+    PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
+    PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
+    PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
+    PPTREE_PLATFORM="${PPTREE_PLATFORM}"
+    PPTREE_VERSION="${PROJECT_VERSION}")
 
-target_include_directories(pptree-test PRIVATE
-  ${csv_SOURCE_DIR}/include
-  ${gtest_SOURCE_DIR}/include
-  ${gtest_SOURCE_DIR})
+  add_dependencies(pptree-test pptree)
 
-target_compile_definitions(pptree-test PRIVATE
-  PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
-  PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
-  PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
-  PPTREE_PLATFORM="${PPTREE_PLATFORM}"
-  PPTREE_VERSION="${PROJECT_VERSION}")
+  include(GoogleTest)
+  gtest_discover_tests(pptree-test DISCOVERY_MODE PRE_TEST)
 
-add_dependencies(pptree-test pptree)
+  # ---------------------------------------------------------------------------
+  # Golden file generator
+  # ---------------------------------------------------------------------------
+  add_executable(pptree-golden-gen src/golden/GoldenGen.cpp)
 
-include(GoogleTest)
-gtest_discover_tests(pptree-test DISCOVERY_MODE PRE_TEST)
+  target_link_libraries(pptree-golden-gen
+    pptree-core
+    pptree-serialization
+    nlohmann_json::nlohmann_json
+    csv
+    fmt::fmt)
 
-# ---------------------------------------------------------------------------
-# Golden file generator
-# ---------------------------------------------------------------------------
-add_executable(pptree-golden-gen src/golden/GoldenGen.cpp)
+  target_include_directories(pptree-golden-gen PRIVATE
+    ${csv_SOURCE_DIR}/include)
 
-target_link_libraries(pptree-golden-gen
-  pptree-core
-  pptree-serialization
-  nlohmann_json::nlohmann_json
-  csv
-  fmt::fmt)
-
-target_include_directories(pptree-golden-gen PRIVATE
-  ${csv_SOURCE_DIR}/include)
-
-target_compile_definitions(pptree-golden-gen PRIVATE
-  PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
-  PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
-  PPTREE_PLATFORM="${PPTREE_PLATFORM}")
+  target_compile_definitions(pptree-golden-gen PRIVATE
+    PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
+    PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
+    PPTREE_PLATFORM="${PPTREE_PLATFORM}")
+endif()

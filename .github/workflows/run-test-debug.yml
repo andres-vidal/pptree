@@ -5,12 +5,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Cache CMake deps (debug)
+        uses: actions/cache@v4
+        with:
+          path: .debug/_deps
+          key: ${{ runner.os }}-cmake-deps-debug-${{ hashFiles('core/Dependencies.cmake') }}
       - run: make test-debug
   Mac:
     runs-on: macos-latest
     steps:
       - run: brew install gcc
       - uses: actions/checkout@v4
+      - name: Cache CMake deps (debug)
+        uses: actions/cache@v4
+        with:
+          path: .debug/_deps
+          key: ${{ runner.os }}-cmake-deps-debug-${{ hashFiles('core/Dependencies.cmake') }}
       - run: make test-debug
   Windows:
     runs-on: windows-latest
@@ -19,4 +29,9 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v4
+      - name: Cache CMake deps (debug)
+        uses: actions/cache@v4
+        with:
+          path: .debug/_deps
+          key: ${{ runner.os }}-cmake-deps-debug-${{ hashFiles('core/Dependencies.cmake') }}
       - run: make test-debug

@@ -26,7 +26,7 @@ pptree:
 
 	@if [ ! -f ../inst/lib/libpptree-core.a ]; then \
 		mkdir -p $(BUILD_DIR) ../inst/lib; \
-		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER="$(R CMD config CXX)" -DCMAKE_CXX_FLAGS="$(R CMD config CXXFLAGS)" -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../core && make && cd ..; \
+		cd $(BUILD_DIR) && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER="$(R CMD config CXX)" -DCMAKE_CXX_FLAGS="$(R CMD config CXXFLAGS)" -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPPTREE_CORE_ONLY=ON ../core && make pptree-core && cd ..; \
 		cp $(BUILD_DIR)/libpptree-core.a ../inst/lib; \
 		rm -rf $(BUILD_DIR); \
 	else \

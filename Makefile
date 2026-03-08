@@ -9,13 +9,12 @@ PCG_HEADERS_PATH = ${BUILD_DIR}/_deps/pcg-src/include
 clean:
 	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG}
 
-build:
+fetch-deps:
 	@mkdir -p ${BUILD_DIR}
-	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core && make
+	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core
 
-build-no-test:
-	@mkdir -p ${BUILD_DIR}
-	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DPPTREE_SKIP_TESTS=true ../core && make
+build: fetch-deps
+	@cd ${BUILD_DIR} && make
 
 build-debug:
 	@mkdir -p ${BUILD_DIR_DEBUG}
@@ -80,7 +79,7 @@ r-clean:
 		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
 		PPTree.Rcheck
 
-r-prepare: r-clean
+r-prepare: fetch-deps r-clean
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 	@cp -r ${PCG_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
@@ -91,7 +90,7 @@ r-document:
 	@Rscript -e "devtools::document('${R_PACKAGE_DIR}')"
 	@make r-clean
 
-r-build: build-no-test r-clean
+r-build: r-clean
 	@make r-prepare
 	@rm ${R_PACKAGE_DIR}/src/.core
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
@@ -127,6 +126,9 @@ docs-cpp:
 
 docs-r:
 	@make r-prepare
+	@cd ${BUILD_DIR} && make pptree-core
+	@mkdir -p ${R_PACKAGE_DIR}/inst/lib
+	@cp ${BUILD_DIR}/libpptree-core.a ${R_PACKAGE_DIR}/inst/lib/
 	@cp ${DOCS_DIR}/_pkgdown.yml ${R_PACKAGE_DIR}/_pkgdown.yml
 	@Rscript -e "pkgdown::build_site('${R_PACKAGE_DIR}', override=list(destination='../../../${DOCS_BUILD_DIR}/r'), preview=FALSE)"
 	@rm -f ${R_PACKAGE_DIR}/_pkgdown.yml

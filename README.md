@@ -81,7 +81,7 @@ predict(fit, iris, type = "prob")
 
 The project is organized into a shared C++ core and language-specific bindings:
 
-- **C++ core** (`core/`) — All models, training algorithms, statistics, serialization, and CLI live here. This is the single source of truth for the implementation. Dependencies (Eigen, nlohmann/json, pcg, GoogleTest, CLI11, fmt, csv-parser) are fetched automatically via CMake `FetchContent`.
+- **C++ core** (`core/`) — All models, training algorithms, statistics, serialization, and CLI live here. This is the single source of truth for the implementation. External dependencies (Eigen, nlohmann/json, pcg, GoogleTest, Google Benchmark, CLI11, fmt, csv-parser) are declared in `core/Dependencies.cmake` and fetched automatically via CMake `FetchContent`.
 
 - **R package** (`bindings/R/PPTree/`) — Thin Rcpp layer that exposes the C++ core to R. Type conversions between R and C++ types are defined in `inst/include/PPTree.h`. Roxygen documentation and parsnip integration are R-only.
 
