@@ -36,6 +36,7 @@ namespace pptree::serialization {
   json to_json(const Forest& forest);
   json to_json(const stats::ConfusionMatrix& cm);
   json to_json(const VariableImportance& vi);
+  json to_json(const types::FeatureMatrix& matrix);
 
   Model::Ptr model_from_json(const json& j);
   TreeNode::Ptr node_from_json(const json& j);

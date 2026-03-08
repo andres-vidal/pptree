@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <set>
 
 #include "utils/Types.hpp"
 #include "models/TreeNodeVisitor.hpp"
@@ -13,6 +14,16 @@ namespace pptree {
     virtual void accept(TreeNodeVisitor &visitor) const                     = 0;
     virtual types::Response predict(const types::FeatureVector &data) const = 0;
     virtual types::Response response() const                                = 0;
+
+    /**
+     * @brief Number of distinct classes reachable from this node.
+     */
+    virtual int class_count() const = 0;
+
+    /**
+     * @brief Sorted set of class labels reachable from this node.
+     */
+    virtual std::set<types::Response> node_classes() const = 0;
 
     virtual bool equals(const TreeNode &other) const = 0;
     virtual Ptr clone() const                        = 0;

@@ -117,6 +117,23 @@ namespace pptree::serialization {
     return j;
   }
 
+  json to_json(const FeatureMatrix& matrix) {
+    std::vector<std::vector<Feature> > rows;
+    rows.reserve(static_cast<std::size_t>(matrix.rows()));
+
+    for (int i = 0; i < matrix.rows(); ++i) {
+      std::vector<Feature> row(static_cast<std::size_t>(matrix.cols()));
+
+      for (int j = 0; j < matrix.cols(); ++j) {
+        row[static_cast<std::size_t>(j)] = matrix(i, j);
+      }
+
+      rows.push_back(std::move(row));
+    }
+
+    return json(rows);
+  }
+
   Model::Ptr model_from_json(const json& j) {
     std::string model_type = j.value("model_type", "tree");
 

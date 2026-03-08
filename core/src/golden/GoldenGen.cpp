@@ -138,6 +138,9 @@ static void generate_golden(const GoldenConfig& config) {
     std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
     result["predictions"] = pred_vec;
 
+    FeatureMatrix vote_proportions = forest.predict(data.x, Proportions{});
+    result["vote_proportions"] = to_json(vote_proportions);
+
     ConfusionMatrix cm(predictions, data.y);
     result["error_rate"]       = cm.error();
     result["confusion_matrix"] = to_json(cm);

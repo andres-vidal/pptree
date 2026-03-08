@@ -10,6 +10,14 @@
 #include <vector>
 
 namespace pptree {
+  /**
+   * @brief Tag type for requesting vote-proportion predictions.
+   *
+   * Pass an instance of this type to Forest::predict to get an (n × G)
+   * matrix of vote proportions instead of a single majority-vote response.
+   */
+  struct Proportions {};
+
   struct Forest : public Model {
     /**
      * @brief Train a random forest.
@@ -52,6 +60,18 @@ namespace pptree {
      * @return      Predictions (n).
      */
     types::ResponseVector predict(const types::FeatureMatrix& data) const override;
+
+    /**
+     * @brief Predict vote proportions for a matrix of observations.
+     *
+     * For each observation, counts votes from every tree and returns
+     * the proportion of trees that voted for each class.  The number
+     * of classes G is derived from the root node of the first tree.
+     *
+     * @param data  Feature matrix (n × p).
+     * @return      Vote proportions matrix (n × G), rows sum to 1.0.
+     */
+    types::FeatureMatrix predict(const types::FeatureMatrix& data, Proportions) const;
 
     /**
      * @brief Add a tree to the forest.

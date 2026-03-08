@@ -125,6 +125,19 @@ namespace {
       EXPECT_NEAR(expected[i], actual(i), tolerance) << "VI '" << key << "' mismatch at index " << i;
     }
   }
+
+  void compare_vote_proportions(const json& expected_json, const FeatureMatrix& actual, float tolerance) {
+    ASSERT_EQ(static_cast<int>(expected_json.size()), actual.rows()) << "Vote proportions row count mismatch";
+
+    for (int i = 0; i < actual.rows(); ++i) {
+      auto expected_row = expected_json[static_cast<std::size_t>(i)].get<std::vector<float>>();
+      ASSERT_EQ(static_cast<int>(expected_row.size()), actual.cols()) << "Vote proportions col count mismatch at row " << i;
+
+      for (int j = 0; j < actual.cols(); ++j) {
+        EXPECT_NEAR(expected_row[static_cast<std::size_t>(j)], actual(i, j), tolerance) << "Vote proportion mismatch at (" << i << ", " << j << ")";
+      }
+    }
+  }
 } // anonymous namespace
 
 // ---------------------------------------------------------------------------
@@ -158,45 +171,50 @@ namespace {
           }                                                                                 \
         }
 
-#define GOLDEN_FOREST_TEST(TestName, dataset_name, slug_name, csv_file,                    \
-          n_trees, lambda_val, n_vars_val, seed_val)                                       \
-        TEST(Reproducibility, TestName) {                                                  \
-          auto path = resolve_golden_path(dataset_name, slug_name);                        \
-          invariant(std::filesystem::exists(path), "Golden file missing: " + path);        \
-                                                                                           \
-          auto golden = load_golden(path);                                                 \
-          auto data   = io::read_csv_sorted(DATA_DIR + "/" + csv_file);                    \
-                                                                                           \
-          Forest forest = Forest::train(                                                   \
-            TrainingSpecUGLDA(n_vars_val, lambda_val),                                     \
-            data.x, data.y, n_trees, seed_val, 1);                                         \
-                                                                                           \
-          auto predictions = forest.predict(data.x);                                       \
-          compare_predictions(golden["predictions"], predictions);                         \
-                                                                                           \
-          ConfusionMatrix cm(predictions, data.y);                                         \
-          EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);               \
-          compare_confusion_matrix(golden["confusion_matrix"], cm);                        \
-                                                                                           \
-          if (golden.contains("oob_error")) {                                              \
-            double oob_err = forest.oob_error(data.x, data.y);                             \
-            EXPECT_NEAR(oob_err, golden["oob_error"].get<double>(), 1e-3);                 \
-          }                                                                                \
-                                                                                           \
-          if (golden.contains("variable_importance")) {                                    \
-            const int n_v       = static_cast<int>(data.x.cols());                         \
-            FeatureVector scale = stats::sd(data.x);                                       \
-            scale = (scale.array() > Feature(0)).select(scale, Feature(1));                \
-                                                                                           \
+#define GOLDEN_FOREST_TEST(TestName, dataset_name, slug_name, csv_file,                         \
+          n_trees, lambda_val, n_vars_val, seed_val)                                            \
+        TEST(Reproducibility, TestName) {                                                       \
+          auto path = resolve_golden_path(dataset_name, slug_name);                             \
+          invariant(std::filesystem::exists(path), "Golden file missing: " + path);             \
+                                                                                                \
+          auto golden = load_golden(path);                                                      \
+          auto data   = io::read_csv_sorted(DATA_DIR + "/" + csv_file);                         \
+                                                                                                \
+          Forest forest = Forest::train(                                                        \
+            TrainingSpecUGLDA(n_vars_val, lambda_val),                                          \
+            data.x, data.y, n_trees, seed_val, 1);                                              \
+                                                                                                \
+          auto predictions = forest.predict(data.x);                                            \
+          compare_predictions(golden["predictions"], predictions);                              \
+                                                                                                \
+          ConfusionMatrix cm(predictions, data.y);                                              \
+          EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                    \
+          compare_confusion_matrix(golden["confusion_matrix"], cm);                             \
+                                                                                                \
+          if (golden.contains("oob_error")) {                                                   \
+            double oob_err = forest.oob_error(data.x, data.y);                                  \
+            EXPECT_NEAR(oob_err, golden["oob_error"].get<double>(), 1e-3);                      \
+          }                                                                                     \
+                                                                                                \
+          if (golden.contains("variable_importance")) {                                         \
+            const int n_v       = static_cast<int>(data.x.cols());                              \
+            FeatureVector scale = stats::sd(data.x);                                            \
+            scale = (scale.array() > Feature(0)).select(scale, Feature(1));                     \
+                                                                                                \
             FeatureVector vi1 = variable_importance_permuted(forest, data.x, data.y, seed_val); \
-            FeatureVector vi2 = variable_importance_projections(forest, n_v, &scale);      \
-            FeatureVector vi3 = variable_importance_weighted_projections(                  \
-              forest, data.x, data.y, &scale);                                             \
-                                                                                           \
-            compare_vi(golden["variable_importance"], "permuted", vi1, 1e-3f);             \
-            compare_vi(golden["variable_importance"], "projections", vi2, 1e-3f);          \
-            compare_vi(golden["variable_importance"], "weighted_projections", vi3, 1e-3f); \
-          }                                                                                \
+            FeatureVector vi2 = variable_importance_projections(forest, n_v, &scale);           \
+            FeatureVector vi3 = variable_importance_weighted_projections(                       \
+              forest, data.x, data.y, &scale);                                                  \
+                                                                                                \
+            compare_vi(golden["variable_importance"], "permuted", vi1, 1e-3f);                  \
+            compare_vi(golden["variable_importance"], "projections", vi2, 1e-3f);               \
+            compare_vi(golden["variable_importance"], "weighted_projections", vi3, 1e-3f);      \
+          }                                                                                     \
+                                                                                                \
+          if (golden.contains("vote_proportions")) {                                            \
+            FeatureMatrix vote_props = forest.predict(data.x, Proportions{});                   \
+            compare_vote_proportions(golden["vote_proportions"], vote_props, 1e-3f);            \
+          }                                                                                     \
         }
 
 // ---------------------------------------------------------------------------
