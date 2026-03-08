@@ -18,3 +18,14 @@ A parsnip model specification.
 Creates a model specification for a single Projection Pursuit decision tree.
 Use \code{set_engine("PPTree")} to select the PPTree engine.
 }
+\examples{
+\dontrun{
+library(parsnip)
+spec <- pp_tree(penalty = 0) \%>\% set_engine("PPTree")
+fit <- spec \%>\% fit(Type ~ ., data = iris)
+predict(fit, iris)
+}
+}
+\seealso{
+\code{\link{PPTree}} for the underlying training function, \code{\link{pp_forest}} for forests
+}

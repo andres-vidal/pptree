@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{A PPForest model.}
 
-\item{...}{(unused) other parameters tipically passed to print}
+\item{...}{(unused) other parameters typically passed to summary.}
 }
 \description{
 Summarizes a PPForest model.
@@ -18,4 +18,7 @@ Summarizes a PPForest model.
 model <- PPForest(Type ~ ., data = iris)
 summary(model)
 
+}
+\seealso{
+\code{\link{PPForest}}, \code{\link{predict.PPForest}}, \code{\link{print.PPForest}}
 }

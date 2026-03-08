@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A PPTree model.}
 
-\item{...}{(unused) other parameters tipically passed to formula}
+\item{...}{(unused) other parameters typically passed to formula.}
 }
 \value{
 The formula used to train the model.
@@ -20,4 +20,7 @@ Extracts the formula used to train a PPTree model.
 \examples{
 model <- PPTree(Type ~ ., data = iris)
 formula(model)
+}
+\seealso{
+\code{\link{PPTree}} for training, \code{\link{predict.PPTree}}, \code{\link{summary.PPTree}}
 }

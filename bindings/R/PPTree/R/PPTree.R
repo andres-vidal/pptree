@@ -15,6 +15,7 @@ NULL
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
 #' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly.
 #' @return A PPTree model trained on \code{x} and \code{y}.
+#' @seealso \code{\link{predict.PPTree}}, \code{\link{formula.PPTree}}, \code{\link{summary.PPTree}}, \code{\link{print.PPTree}}, \code{\link{pp_tree}} for parsnip integration
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
@@ -40,7 +41,7 @@ NULL
 #' x$sex <- as.numeric(as.factor(crabs$sex))
 #' PPTree(x = x, y = crabs$Type)
 #'
-#' # Example 8: matrix interface with the `crabs` dataset with regulartion
+#' # Example 8: matrix interface with the `crabs` dataset with regularization
 #' x <- crabs[, 2:5]
 #' x$sex <- as.numeric(as.factor(crabs$sex))
 #' PPTree(x = x, y = crabs$Type, lambda = 0.5)
@@ -130,8 +131,9 @@ predict.PPTree <- function(object, new_data = NULL, type = "class", ...) {
 #' Extracts the formula used to train a PPTree model.
 #'
 #' @param x A PPTree model.
-#' @param ... (unused) other parameters tipically passed to formula
+#' @param ... (unused) other parameters typically passed to formula.
 #' @return The formula used to train the model.
+#' @seealso \code{\link{PPTree}} for training, \code{\link{predict.PPTree}}, \code{\link{summary.PPTree}}
 #' @examples
 #' model <- PPTree(Type ~ ., data = iris)
 #' formula(model)
@@ -170,7 +172,8 @@ print_node <- function(model, node, depth = 0) {
 
 #' Prints a PPTree model.
 #' @param x A PPTree model.
-#' @param ... (unused) other parameters tipically passed to print
+#' @param ... (unused) other parameters typically passed to print.
+#' @seealso \code{\link{PPTree}}, \code{\link{summary.PPTree}}
 #' @examples
 #' model <- PPTree(Type ~ ., data = iris)
 #' print(model)
@@ -189,7 +192,8 @@ print.PPTree <- function(x, ...) {
 
 #' Summarizes a PPTree model.
 #' @param object A PPTree model.
-#' @param ... (unused) other parameters tipically passed to print
+#' @param ... (unused) other parameters typically passed to summary.
+#' @seealso \code{\link{PPTree}}, \code{\link{predict.PPTree}}, \code{\link{print.PPTree}}
 #' @examples
 #' model <- PPTree(Type ~ ., data = iris)
 #' summary(model)

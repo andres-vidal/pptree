@@ -58,9 +58,12 @@ x <- crabs[, 2:5]
 x$sex <- as.numeric(as.factor(crabs$sex))
 PPTree(x = x, y = crabs$Type)
 
-# Example 8: matrix interface with the `crabs` dataset with regulartion
+# Example 8: matrix interface with the `crabs` dataset with regularization
 x <- crabs[, 2:5]
 x$sex <- as.numeric(as.factor(crabs$sex))
 PPTree(x = x, y = crabs$Type, lambda = 0.5)
 
+}
+\seealso{
+\code{\link{predict.PPTree}}, \code{\link{formula.PPTree}}, \code{\link{summary.PPTree}}, \code{\link{print.PPTree}}, \code{\link{pp_tree}} for parsnip integration
 }

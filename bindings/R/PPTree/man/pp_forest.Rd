@@ -22,3 +22,15 @@ A parsnip model specification.
 Creates a model specification for a Projection Pursuit random forest.
 Use \code{set_engine("PPTree")} to select the PPTree engine.
 }
+\examples{
+\dontrun{
+library(parsnip)
+spec <- pp_forest(trees = 50, mtry = 2) \%>\% set_engine("PPTree")
+fit <- spec \%>\% fit(Type ~ ., data = iris)
+predict(fit, iris)
+predict(fit, iris, type = "prob")
+}
+}
+\seealso{
+\code{\link{PPForest}} for the underlying training function, \code{\link{pp_tree}} for single trees
+}

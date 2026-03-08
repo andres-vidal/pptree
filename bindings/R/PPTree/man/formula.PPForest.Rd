@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A PPForest model.}
 
-\item{...}{(unused) other parameters tipically passed to formula}
+\item{...}{(unused) other parameters typically passed to formula.}
 }
 \value{
 The formula used to train the model.
@@ -20,4 +20,7 @@ Extracts the formula used to train a PPForest model.
 \examples{
 model <- PPForest(Type ~ ., data = iris)
 formula(model)
+}
+\seealso{
+\code{\link{PPForest}} for training, \code{\link{predict.PPForest}}, \code{\link{summary.PPForest}}
 }

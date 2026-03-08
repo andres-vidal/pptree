@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{A PPTree model.}
 
-\item{...}{(unused) other parameters tipically passed to print}
+\item{...}{(unused) other parameters typically passed to summary.}
 }
 \description{
 Summarizes a PPTree model.
@@ -18,4 +18,7 @@ Summarizes a PPTree model.
 model <- PPTree(Type ~ ., data = iris)
 summary(model)
 
+}
+\seealso{
+\code{\link{PPTree}}, \code{\link{predict.PPTree}}, \code{\link{print.PPTree}}
 }

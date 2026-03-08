@@ -20,6 +20,7 @@ NULL
 #' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.
 #' @param n_threads The number of threads to use. The default is the number of cores available.
 #' @return A PPForest model trained on \code{x} and \code{y}.
+#' @seealso \code{\link{predict.PPForest}}, \code{\link{formula.PPForest}}, \code{\link{summary.PPForest}}, \code{\link{print.PPForest}}, \code{\link{pp_forest}} for parsnip integration
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
@@ -45,7 +46,7 @@ NULL
 #' x$sex <- as.numeric(as.factor(crabs$sex))
 #' PPForest(x = x, y = crabs$Type)
 #'
-#' # Example 8: matrix interface with the `crabs` dataset with regulartion
+#' # Example 8: matrix interface with the `crabs` dataset with regularization
 #' x <- crabs[, 2:5]
 #' x$sex <- as.numeric(as.factor(crabs$sex))
 #' PPForest(x = x, y = crabs$Type, lambda = 0.5)
@@ -147,8 +148,9 @@ predict.PPForest <- function(object, new_data = NULL, type = "class", ...) {
 #' Extracts the formula used to train a PPForest model.
 #'
 #' @param x A PPForest model.
-#' @param ... (unused) other parameters tipically passed to formula
+#' @param ... (unused) other parameters typically passed to formula.
 #' @return The formula used to train the model.
+#' @seealso \code{\link{PPForest}} for training, \code{\link{predict.PPForest}}, \code{\link{summary.PPForest}}
 #' @examples
 #' model <- PPForest(Type ~ ., data = iris)
 #' formula(model)
@@ -159,7 +161,8 @@ formula.PPForest <- function(x, ...) {
 
 #' Prints a PPForest model.
 #' @param x A PPForest model.
-#' @param ... (unused) other parameters tipically passed to print
+#' @param ... (unused) other parameters typically passed to print.
+#' @seealso \code{\link{PPForest}}, \code{\link{summary.PPForest}}
 #' @examples
 #' model <- PPForest(Type ~ ., data = iris)
 #' print(model)
@@ -179,7 +182,8 @@ print.PPForest <- function(x, ...) {
 
 #' Summarizes a PPForest model.
 #' @param object A PPForest model.
-#' @param ... (unused) other parameters tipically passed to print
+#' @param ... (unused) other parameters typically passed to summary.
+#' @seealso \code{\link{PPForest}}, \code{\link{predict.PPForest}}, \code{\link{print.PPForest}}
 #' @examples
 #' model <- PPForest(Type ~ ., data = iris)
 #' summary(model)

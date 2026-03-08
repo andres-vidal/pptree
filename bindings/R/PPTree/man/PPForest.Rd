@@ -69,9 +69,12 @@ x <- crabs[, 2:5]
 x$sex <- as.numeric(as.factor(crabs$sex))
 PPForest(x = x, y = crabs$Type)
 
-# Example 8: matrix interface with the `crabs` dataset with regulartion
+# Example 8: matrix interface with the `crabs` dataset with regularization
 x <- crabs[, 2:5]
 x$sex <- as.numeric(as.factor(crabs$sex))
 PPForest(x = x, y = crabs$Type, lambda = 0.5)
 
+}
+\seealso{
+\code{\link{predict.PPForest}}, \code{\link{formula.PPForest}}, \code{\link{summary.PPForest}}, \code{\link{print.PPForest}}, \code{\link{pp_forest}} for parsnip integration
 }

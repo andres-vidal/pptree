@@ -19,6 +19,15 @@ utils::globalVariables(c("object", "new_data"))
 #' @param mtry The number of variables to consider at each split (maps to \code{n_vars}).
 #' @param penalty The regularization parameter (maps to \code{lambda}).
 #' @return A parsnip model specification.
+#' @seealso \code{\link{PPForest}} for the underlying training function, \code{\link{pp_tree}} for single trees
+#' @examples
+#' \dontrun{
+#' library(parsnip)
+#' spec <- pp_forest(trees = 50, mtry = 2) %>% set_engine("PPTree")
+#' fit <- spec %>% fit(Type ~ ., data = iris)
+#' predict(fit, iris)
+#' predict(fit, iris, type = "prob")
+#' }
 #' @export
 pp_forest <- function(mode = "classification", trees = NULL, mtry = NULL, penalty = NULL) {
   if (!requireNamespace("parsnip", quietly = TRUE)) {
@@ -49,6 +58,14 @@ pp_forest <- function(mode = "classification", trees = NULL, mtry = NULL, penalt
 #' @param mode A character string for the model type. Only \code{"classification"} is supported.
 #' @param penalty The regularization parameter (maps to \code{lambda}).
 #' @return A parsnip model specification.
+#' @seealso \code{\link{PPTree}} for the underlying training function, \code{\link{pp_forest}} for forests
+#' @examples
+#' \dontrun{
+#' library(parsnip)
+#' spec <- pp_tree(penalty = 0) %>% set_engine("PPTree")
+#' fit <- spec %>% fit(Type ~ ., data = iris)
+#' predict(fit, iris)
+#' }
 #' @export
 pp_tree <- function(mode = "classification", penalty = NULL) {
   if (!requireNamespace("parsnip", quietly = TRUE)) {
