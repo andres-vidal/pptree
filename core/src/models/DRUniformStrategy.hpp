@@ -6,7 +6,15 @@
 #include "utils/Invariant.hpp"
 
 namespace pptree::dr {
+  /**
+   * @brief Uniform random dimensionality reduction.
+   *
+   * Selects @c n_vars variables uniformly at random (without
+   * replacement) from the full set of features.  Used in random
+   * forests to introduce diversity between trees.
+   */
   struct DRUniformStrategy : public DRStrategy {
+    /** @brief Number of variables to select at each split. */
     const int n_vars;
 
     explicit DRUniformStrategy(const int n_vars) : n_vars(n_vars) {
@@ -37,7 +45,12 @@ namespace pptree::dr {
     }
   };
 
-
+  /**
+   * @brief Factory function for a uniform DR strategy.
+   *
+   * @param n_vars  Number of variables to select at each split.
+   * @return        Owned pointer to a DRUniformStrategy.
+   */
   inline DRStrategy::Ptr uniform(const int n_vars) {
     return std::make_unique<DRUniformStrategy>(n_vars);
   }

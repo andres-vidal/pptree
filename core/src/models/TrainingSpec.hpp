@@ -11,11 +11,20 @@
 #include <map>
 
 namespace pptree {
+  /**
+   * @brief Abstract training configuration for projection pursuit trees.
+   *
+   * Composes a projection pursuit strategy (PPStrategy) with a
+   * dimensionality reduction strategy (DRStrategy).  Concrete
+   * subclasses (TrainingSpecGLDA, TrainingSpecUGLDA) provide specific
+   * parameter combinations.
+   */
   struct TrainingSpec {
     using Ptr = std::unique_ptr<TrainingSpec>;
 
-
+    /** @brief Projection pursuit optimization strategy. */
     const std::unique_ptr<pp::PPStrategy> pp_strategy;
+    /** @brief Dimensionality reduction strategy. */
     const std::unique_ptr<dr::DRStrategy> dr_strategy;
 
     TrainingSpec(
@@ -30,9 +39,12 @@ namespace pptree {
       dr_strategy(other.dr_strategy->clone()) {
     }
 
-    virtual ~TrainingSpec()                                 = default;
+    virtual ~TrainingSpec() = default;
+
+    /** @brief Accept a training spec visitor (double dispatch). */
     virtual void accept(TrainingSpecVisitor &visitor) const = 0;
 
+    /** @brief Deep copy of this training specification. */
     virtual Ptr clone() const = 0;
   };
 }

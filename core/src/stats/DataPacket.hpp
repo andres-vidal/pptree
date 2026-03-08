@@ -7,9 +7,19 @@
 #include <vector>
 
 namespace pptree::stats {
+  /**
+   * @brief Bundled dataset: features, responses, and class labels.
+   *
+   * Convenience struct that groups a feature matrix, a response vector,
+   * and the set of unique class labels.  Used primarily for passing
+   * data through the training pipeline.
+   */
   struct DataPacket {
+    /** @brief Feature matrix (n × p). */
     const types::FeatureMatrix x;
+    /** @brief Response vector (n). */
     const types::Vector<types::Response>  y;
+    /** @brief Set of distinct class labels. */
     const std::set<types::Response>  classes;
 
     DataPacket(

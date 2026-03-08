@@ -6,25 +6,44 @@
 #include "utils/Invariant.hpp"
 
 namespace pptree::stats {
+  /**
+   * @brief Discrete uniform random integer generator over [min, max].
+   *
+   * All random integers are produced via Lemire's nearly-divisionless
+   * method, which replaces the classical modulo reduction with a
+   * multiply-and-shift, falling back to rejection sampling only when
+   * needed to eliminate bias.  This is both faster and provably
+   * unbiased.
+   *
+   * The distinct() method builds on this by performing a Fisher-Yates
+   * (Knuth) shuffle to sample without replacement — the foundation
+   * of bootstrap sampling and random variable selection in forests.
+   *
+   * @note This class is used instead of std::uniform_int_distribution
+   *       to guarantee identical output across compilers and platforms.
+   *
+   * @see https://arxiv.org/abs/1805.10941
+   */
   class Uniform {
     private:
       int min;
       int max;
 
       /**
-       * @brief Generates an unbiased random integer in range [0, s-1] using Lemire's method
+       * @brief Generate an unbiased random integer in [0, s) via Lemire's method.
        *
-       * Implementation of Daniel Lemire's fast and unbiased algorithm for random integers
-       * in an interval, as described in "Fast Random Integer Generation in an Interval"
-       * (ACM TOMS, 2019).
+       * Computes a 64-bit product x·s where x is a 32-bit pcg32 output.
+       * The upper 32 bits of the product give the result.  When the lower
+       * 32 bits (the remainder analogue) fall below s, rejection sampling
+       * kicks in to correct the bias — but this happens with probability
+       * < s / 2³², so for small s it is essentially free.
        *
-       * The algorithm uses multiplication and bit shifts instead of division or modulo
-       * for better performance. It employs rejection sampling when necessary to ensure
-       * unbiased results.
+       * @param s    Exclusive upper bound (must be > 0).
+       * @param rng  Random number generator (pcg32).
+       * @return     Uniformly distributed integer in [0, s−1].
        *
-       * @param s The exclusive upper bound for the generated numbers (must be > 0)
-       * @return A uniformly distributed random integer in [0, s-1]
-       * @see https://arxiv.org/abs/1805.10941
+       * @see Lemire, "Fast Random Integer Generation in an Interval"
+       *      (ACM TOMS, 2019). https://arxiv.org/abs/1805.10941
        */
       uint32_t gen_lemire(uint32_t s, RNG &rng) const {
         uint32_t x = rng();
@@ -49,16 +68,35 @@ namespace pptree::stats {
       }
 
     public:
+      /**
+       * @brief Construct a uniform integer generator over [min, max].
+       *
+       * @param min  Inclusive lower bound (must be ≥ 0).
+       * @param max  Inclusive upper bound (must be ≥ min).
+       */
       Uniform(int min, int max) : min(min), max(max) {
         invariant(min >= 0, "Uniform: min must be greater than or equal to 0");
         invariant(min <= max, "Uniform: min must be less than or equal to max");
         invariant(max < std::numeric_limits<int>::max(), "Uniform: max must be less than the maximum value of an int");
       }
 
+      /**
+       * @brief Generate a single uniform random integer in [min, max].
+       *
+       * @param rng  Random number generator (pcg32).
+       * @return     Uniformly distributed integer in [min, max].
+       */
       int operator()(RNG &rng) const {
         return min + gen_lemire(max + 1 - min, rng);
       }
 
+      /**
+       * @brief Generate multiple uniform random integers (with replacement).
+       *
+       * @param count  Number of samples to generate.
+       * @param rng    Random number generator (pcg32).
+       * @return       Vector of @p count i.i.d. integers from [min, max].
+       */
       std::vector<int> operator()(int count, RNG &rng) const {
         std::vector<int> result(count);
 
@@ -70,16 +108,20 @@ namespace pptree::stats {
       }
 
       /**
-       * @brief Generates a vector of distinct random integers from the uniform distribution
+       * @brief Sample without replacement from [min, max].
        *
-       * This method implements the Fisher-Yates (Knuth) shuffle algorithm to generate
-       * a specified number of unique random integers from the defined range [min, max].
-       * The resulting integers are uniformly distributed and guaranteed to be unique.
+       * Implements the Fisher-Yates (Knuth) shuffle: fills a vector
+       * with [min, max], shuffles it using gen_lemire() for each swap,
+       * and returns the first @p count elements.  The result is a
+       * uniformly distributed subset of size @p count with no repeats.
        *
-       * @param count The number of distinct integers to generate
-       * @return A vector containing count distinct integers from the range [min, max]
-       * @throws std::invalid_argument if count exceeds the number of possible unique values
-       *         in the range [min, max]
+       * This is the method used by DRUniformStrategy and bootstrap
+       * sampling, ensuring reproducible variable selection across
+       * platforms.
+       *
+       * @param count  Number of distinct integers to draw (≤ range size).
+       * @param rng    Random number generator (pcg32).
+       * @return       Vector of @p count distinct integers from [min, max].
        */
       std::vector<int> distinct(int count, RNG &rng) {
         int range_size = max - min + 1;
