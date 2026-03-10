@@ -10,6 +10,8 @@ var dir_8e76ed0efff60e6b272a3fbebc7bd454 =
     [ "PPGLDAStrategy.hpp", "PPGLDAStrategy_8hpp.html", "PPGLDAStrategy_8hpp" ],
     [ "PPStrategy.hpp", "PPStrategy_8hpp.html", "PPStrategy_8hpp" ],
     [ "Projector.hpp", "Projector_8hpp.html", "Projector_8hpp" ],
+    [ "SRMeanOfMeansStrategy.hpp", "SRMeanOfMeansStrategy_8hpp.html", "SRMeanOfMeansStrategy_8hpp" ],
+    [ "SRStrategy.hpp", "SRStrategy_8hpp.html", "SRStrategy_8hpp" ],
     [ "TrainingSpec.hpp", "TrainingSpec_8hpp.html", "TrainingSpec_8hpp" ],
     [ "TrainingSpecGLDA.hpp", "TrainingSpecGLDA_8hpp.html", "TrainingSpecGLDA_8hpp" ],
     [ "TrainingSpecUGLDA.hpp", "TrainingSpecUGLDA_8hpp.html", "TrainingSpecUGLDA_8hpp" ],

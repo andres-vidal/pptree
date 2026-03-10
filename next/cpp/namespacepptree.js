@@ -1,6 +1,5 @@
 var namespacepptree =
 [
-    [ "bench", "namespacepptree_1_1bench.html", "namespacepptree_1_1bench" ],
     [ "cli", "namespacepptree_1_1cli.html", "namespacepptree_1_1cli" ],
     [ "dr", "namespacepptree_1_1dr.html", "namespacepptree_1_1dr" ],
     [ "io", "namespacepptree_1_1io.html", "namespacepptree_1_1io" ],
@@ -12,6 +11,7 @@ var namespacepptree =
     ] ],
     [ "pp", "namespacepptree_1_1pp.html", "namespacepptree_1_1pp" ],
     [ "serialization", "namespacepptree_1_1serialization.html", "namespacepptree_1_1serialization" ],
+    [ "sr", "namespacepptree_1_1sr.html", "namespacepptree_1_1sr" ],
     [ "stats", "namespacepptree_1_1stats.html", "namespacepptree_1_1stats" ],
     [ "types", "namespacepptree_1_1types.html", [
       [ "Feature", "namespacepptree_1_1types.html#a3dd5e8450bd731998512c82ad422a94f", null ],

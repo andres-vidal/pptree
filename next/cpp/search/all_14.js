@@ -1,21 +1,11 @@
 var searchData=
 [
-  ['value_0',['value',['../structpptree_1_1cli_1_1VarsSpec.html#a461024a247bbb7a5b11962b108e00468',1,'pptree::cli::VarsSpec::value'],['../structpptree_1_1TreeResponse.html#a73c03e28ce5a44e192146a6152b5d295',1,'pptree::TreeResponse::value']]],
-  ['values_1',['values',['../structpptree_1_1stats_1_1ConfusionMatrix.html#a52f9856ac27209bc35f791516c0f855e',1,'pptree::stats::ConfusionMatrix::values'],['../namespacepptree_1_1utils.html#aecdc9c2335261d2c1dbdc82d2ed924a5',1,'pptree::utils::values()']]],
-  ['variable_5fimportance_5fpermuted_2',['variable_importance_permuted',['../namespacepptree.html#ac433aaa9cc1f5f6ee06876da6137f235',1,'pptree']]],
-  ['variable_5fimportance_5fprojections_3',['variable_importance_projections',['../namespacepptree.html#a45daf9d4022d1f0a3965532411ec9225',1,'pptree::variable_importance_projections(const Forest &amp;forest, int n_vars, const types::FeatureVector *scale=nullptr)'],['../namespacepptree.html#a0feae830ee7071f5e7a2490488a386bb',1,'pptree::variable_importance_projections(const Tree &amp;tree, int n_vars, const types::FeatureVector *scale=nullptr)']]],
-  ['variable_5fimportance_5fweighted_5fprojections_4',['variable_importance_weighted_projections',['../namespacepptree.html#a60519b808da430c26f871e868cee8765',1,'pptree']]],
-  ['variableimportance_5',['VariableImportance',['../structpptree_1_1VariableImportance.html',1,'pptree']]],
-  ['variableimportance_2ehpp_6',['VariableImportance.hpp',['../VariableImportance_8hpp.html',1,'']]],
-  ['vars_7',['vars',['../structpptree_1_1bench_1_1Scenario.html#a4edf1f94cfb7b407e1084788af9bfa48',1,'pptree::bench::Scenario::vars'],['../structpptree_1_1bench_1_1ScenarioResult.html#ae894a6411022e0cb168ff8fa80e0f964',1,'pptree::bench::ScenarioResult::vars']]],
-  ['vars_5finput_8',['vars_input',['../structpptree_1_1cli_1_1CLIOptions.html#a1a6ee4e111d759af63ca6354dbc9a2e4',1,'pptree::cli::CLIOptions']]],
-  ['varsspec_9',['VarsSpec',['../structpptree_1_1cli_1_1VarsSpec.html',1,'pptree::cli']]],
-  ['varsspec_2ehpp_10',['VarsSpec.hpp',['../VarsSpec_8hpp.html',1,'']]],
-  ['vec_11',['VEC',['../Macros_8hpp.html#ab810951a8a979526caa74d68de176862',1,'Macros.hpp']]],
-  ['vector_12',['Vector',['../namespacepptree_1_1types.html#ab3408cc3539f8f5423a3bdb9d7c3509e',1,'pptree::types']]],
-  ['vi2_5fcontributions_13',['vi2_contributions',['../structpptree_1_1VIVisitor.html#a821b5d5774107d3312e0315791b658ad',1,'pptree::VIVisitor']]],
-  ['vi3_5fcontributions_14',['vi3_contributions',['../structpptree_1_1VIVisitor.html#a9eaf092669d146be10352ab4b57ba3b3',1,'pptree::VIVisitor']]],
-  ['visit_15',['visit',['../structpptree_1_1ModelVisitor.html#a79e445e601ddab91b4dcb7ccd8acf03a',1,'pptree::ModelVisitor::visit(const Tree &amp;tree)=0'],['../structpptree_1_1ModelVisitor.html#a8988796a4f174d357e884e13012388d7',1,'pptree::ModelVisitor::visit(const Forest &amp;forest)=0'],['../structpptree_1_1TrainingSpecVisitor.html#a4c584b1e0836f3b242e5eb618630311b',1,'pptree::TrainingSpecVisitor::visit(const TrainingSpecGLDA &amp;spec)=0'],['../structpptree_1_1TrainingSpecVisitor.html#a7c45d1eadd5352c09b5bd5fce45580db',1,'pptree::TrainingSpecVisitor::visit(const TrainingSpecUGLDA &amp;spec)=0'],['../structpptree_1_1TreeNodeVisitor.html#ac4af63c02ea6c9f0432a798cbccb891a',1,'pptree::TreeNodeVisitor::visit(const TreeCondition &amp;condition)=0'],['../structpptree_1_1TreeNodeVisitor.html#a77037946f9d72c0853b6aa82c1f71f74',1,'pptree::TreeNodeVisitor::visit(const TreeResponse &amp;response)=0'],['../structpptree_1_1VIVisitor.html#a12b9e1031a024dafac332f06cc3d3d41',1,'pptree::VIVisitor::visit(const TreeCondition &amp;node) override'],['../structpptree_1_1VIVisitor.html#afad2611f0cd1e721dabe226eca8f0264',1,'pptree::VIVisitor::visit(const TreeResponse &amp;) override'],['../structpptree_1_1serialization_1_1JsonNodeVisitor.html#ab08c1e1c8ba0e96ad886200ad2894d8a',1,'pptree::serialization::JsonNodeVisitor::visit(const TreeCondition &amp;node) override'],['../structpptree_1_1serialization_1_1JsonNodeVisitor.html#aea8f8175003825427b23beb08654c3e4',1,'pptree::serialization::JsonNodeVisitor::visit(const TreeResponse &amp;node) override'],['../structpptree_1_1serialization_1_1JsonModelVisitor.html#aa7e6b20ef05d909df43640bc598a111d',1,'pptree::serialization::JsonModelVisitor::visit(const Tree &amp;tree) override'],['../structpptree_1_1serialization_1_1JsonModelVisitor.html#ad71ca2392da26630cf5741ff19a06ad5',1,'pptree::serialization::JsonModelVisitor::visit(const Forest &amp;forest) override']]],
-  ['vivisitor_16',['VIVisitor',['../structpptree_1_1VIVisitor.html',1,'pptree::VIVisitor'],['../structpptree_1_1VIVisitor.html#adb41a00463cb834b46cc4c49a661af09',1,'pptree::VIVisitor::VIVisitor()']]],
-  ['vivisitor_2ehpp_17',['VIVisitor.hpp',['../VIVisitor_8hpp.html',1,'']]]
+  ['uniform_0',['Uniform',['../classpptree_1_1stats_1_1Uniform.html',1,'pptree::stats::Uniform'],['../classpptree_1_1stats_1_1Uniform.html#a719f5add406af776681a6f5928e5f49d',1,'pptree::stats::Uniform::Uniform()']]],
+  ['uniform_1',['uniform',['../namespacepptree_1_1dr.html#a31c1433501a5c0b9c8e429185034d671',1,'pptree::dr']]],
+  ['uniform_2ehpp_2',['Uniform.hpp',['../Uniform_8hpp.html',1,'']]],
+  ['unique_3',['unique',['../namespacepptree_1_1stats.html#a6c77f93afd576715a4cef4b87eb0c1bb',1,'pptree::stats']]],
+  ['upper_4',['upper',['../structpptree_1_1TreeCondition.html#acd6c7fcb40f6576fa4eba3f0a3511ee2',1,'pptree::TreeCondition']]],
+  ['used_5fdefault_5fseed_5',['used_default_seed',['../structpptree_1_1cli_1_1CLIOptions.html#a5d18713b0aadf6c76ceb9b5e64fd32f0',1,'pptree::cli::CLIOptions']]],
+  ['used_5fdefault_5fthreads_6',['used_default_threads',['../structpptree_1_1cli_1_1CLIOptions.html#ad7b35021f7b90c588541c1f3ac2ffb04',1,'pptree::cli::CLIOptions']]],
+  ['used_5fdefault_5fvars_7',['used_default_vars',['../structpptree_1_1cli_1_1CLIOptions.html#abe1c4927748a2af8b36f6b14789ec754',1,'pptree::cli::CLIOptions']]]
 ];

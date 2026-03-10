@@ -110,7 +110,8 @@ $(function(){initNavTree('Benchmark_8hpp.html',''); initResizable(true); });
 
 <p>Benchmark scenario types, JSON parsing, and subprocess-based execution.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;nlohmann/json.hpp&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="CLIOptions_8hpp_source.html">cli/CLIOptions.hpp</a>&quot;</code><br />
+<code>#include &lt;nlohmann/json.hpp&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;optional&gt;</code><br />
@@ -120,52 +121,55 @@ $(function(){initNavTree('Benchmark_8hpp.html',''); initResizable(true); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1bench_1_1BenchmarkSuite.html">pptree::bench::BenchmarkSuite</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A suite of scenarios with shared defaults.  <a href="structpptree_1_1bench_1_1BenchmarkSuite.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1cli_1_1BenchmarkSuite.html">pptree::cli::BenchmarkSuite</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A suite of scenarios with shared defaults.  <a href="structpptree_1_1cli_1_1BenchmarkSuite.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1bench_1_1ConvergenceCriteria.html">pptree::bench::ConvergenceCriteria</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convergence criteria for adaptive stopping in benchmarks.  <a href="structpptree_1_1bench_1_1ConvergenceCriteria.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1cli_1_1ConvergenceCriteria.html">pptree::cli::ConvergenceCriteria</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convergence criteria for adaptive stopping in benchmarks.  <a href="structpptree_1_1cli_1_1ConvergenceCriteria.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1bench_1_1Scenario.html">pptree::bench::Scenario</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A single benchmark scenario: data shape + model config.  <a href="structpptree_1_1bench_1_1Scenario.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1cli_1_1Scenario.html">pptree::cli::Scenario</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A single benchmark scenario: data shape + model config.  <a href="structpptree_1_1cli_1_1Scenario.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1bench_1_1ScenarioResult.html">pptree::bench::ScenarioResult</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result of running a single benchmark scenario.  <a href="structpptree_1_1bench_1_1ScenarioResult.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1cli_1_1ScenarioResult.html">pptree::cli::ScenarioResult</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result of running a single benchmark scenario.  <a href="structpptree_1_1cli_1_1ScenarioResult.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1bench_1_1SuiteResult.html">pptree::bench::SuiteResult</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aggregated results for an entire suite run.  <a href="structpptree_1_1bench_1_1SuiteResult.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">pptree::cli::SuiteResult</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aggregated results for an entire suite run.  <a href="structpptree_1_1cli_1_1SuiteResult.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree.html">pptree</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1bench.html">pptree::bench</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html">pptree::cli</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:af3f7ef80521214c82e391270a19ff080" id="r_af3f7ef80521214c82e391270a19ff080"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1bench.html#af3f7ef80521214c82e391270a19ff080">pptree::bench::ProgressCallback</a> = std::function&lt;void(int scenario_index, int total, const std::string&amp; name)&gt;</td></tr>
-<tr class="memdesc:af3f7ef80521214c82e391270a19ff080"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for progress reporting during benchmark execution.  <br /></td></tr>
-<tr class="separator:af3f7ef80521214c82e391270a19ff080"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6653e461f1f4674add8e353327978b9" id="r_ae6653e461f1f4674add8e353327978b9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#ae6653e461f1f4674add8e353327978b9">pptree::cli::ProgressCallback</a> = std::function&lt;void(int scenario_index, int total, const std::string&amp; name)&gt;</td></tr>
+<tr class="memdesc:ae6653e461f1f4674add8e353327978b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for progress reporting during benchmark execution.  <br /></td></tr>
+<tr class="separator:ae6653e461f1f4674add8e353327978b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a3d9a655abc2e8c5e58f30017f90e9f33" id="r_a3d9a655abc2e8c5e58f30017f90e9f33"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1bench_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1bench.html#a3d9a655abc2e8c5e58f30017f90e9f33">pptree::bench::parse_results</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:a3d9a655abc2e8c5e58f30017f90e9f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structpptree_1_1bench_1_1SuiteResult.html" title="Aggregated results for an entire suite run.">SuiteResult</a> from a JSON file (for baseline comparison).  <br /></td></tr>
-<tr class="separator:a3d9a655abc2e8c5e58f30017f90e9f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a205d02d645d0d69142b75837ed90c40f" id="r_a205d02d645d0d69142b75837ed90c40f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1bench_1_1BenchmarkSuite.html">BenchmarkSuite</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1bench.html#a205d02d645d0d69142b75837ed90c40f">pptree::bench::parse_suite</a> (const nlohmann::json &amp;j)</td></tr>
-<tr class="memdesc:a205d02d645d0d69142b75837ed90c40f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structpptree_1_1bench_1_1BenchmarkSuite.html" title="A suite of scenarios with shared defaults.">BenchmarkSuite</a> from a JSON object.  <br /></td></tr>
-<tr class="separator:a205d02d645d0d69142b75837ed90c40f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c356ea031aada2544e7176b1c7096bb" id="r_a9c356ea031aada2544e7176b1c7096bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1bench_1_1BenchmarkSuite.html">BenchmarkSuite</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1bench.html#a9c356ea031aada2544e7176b1c7096bb">pptree::bench::parse_suite</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:a9c356ea031aada2544e7176b1c7096bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structpptree_1_1bench_1_1BenchmarkSuite.html" title="A suite of scenarios with shared defaults.">BenchmarkSuite</a> from a JSON file path.  <br /></td></tr>
-<tr class="separator:a9c356ea031aada2544e7176b1c7096bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c296c6d0913e51c1273785614b3a514" id="r_a5c296c6d0913e51c1273785614b3a514"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1bench_1_1ScenarioResult.html">ScenarioResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1bench.html#a5c296c6d0913e51c1273785614b3a514">pptree::bench::run_scenario</a> (const <a class="el" href="structpptree_1_1bench_1_1Scenario.html">Scenario</a> &amp;scenario, const std::string &amp;binary_path, bool quiet=false)</td></tr>
-<tr class="memdesc:a5c296c6d0913e51c1273785614b3a514"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a single scenario as a subprocess.  <br /></td></tr>
-<tr class="separator:a5c296c6d0913e51c1273785614b3a514"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9199e6598debd48a9662b95c29cbca5d" id="r_a9199e6598debd48a9662b95c29cbca5d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1bench_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1bench.html#a9199e6598debd48a9662b95c29cbca5d">pptree::bench::run_suite</a> (const <a class="el" href="structpptree_1_1bench_1_1BenchmarkSuite.html">BenchmarkSuite</a> &amp;suite, const std::string &amp;binary_path, bool quiet=false, <a class="el" href="namespacepptree_1_1bench.html#af3f7ef80521214c82e391270a19ff080">ProgressCallback</a> progress=nullptr)</td></tr>
-<tr class="memdesc:a9199e6598debd48a9662b95c29cbca5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run all scenarios in a suite via subprocess invocations.  <br /></td></tr>
-<tr class="separator:a9199e6598debd48a9662b95c29cbca5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d952f3bba5d7dd5b175178553719d2a" id="r_a3d952f3bba5d7dd5b175178553719d2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a3d952f3bba5d7dd5b175178553719d2a">pptree::cli::parse_results</a> (const std::string &amp;path)</td></tr>
+<tr class="memdesc:a3d952f3bba5d7dd5b175178553719d2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html" title="Aggregated results for an entire suite run.">SuiteResult</a> from a JSON file (for baseline comparison).  <br /></td></tr>
+<tr class="separator:a3d952f3bba5d7dd5b175178553719d2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dd234a915ab5eb389ad7d8cabbcd238" id="r_a7dd234a915ab5eb389ad7d8cabbcd238"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a7dd234a915ab5eb389ad7d8cabbcd238">pptree::cli::parse_suite</a> (const nlohmann::json &amp;j)</td></tr>
+<tr class="memdesc:a7dd234a915ab5eb389ad7d8cabbcd238"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structpptree_1_1cli_1_1BenchmarkSuite.html" title="A suite of scenarios with shared defaults.">BenchmarkSuite</a> from a JSON object.  <br /></td></tr>
+<tr class="separator:a7dd234a915ab5eb389ad7d8cabbcd238"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa05f02a83ff7afbd01207a7dc7ce11b5" id="r_aa05f02a83ff7afbd01207a7dc7ce11b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#aa05f02a83ff7afbd01207a7dc7ce11b5">pptree::cli::parse_suite</a> (const std::string &amp;path)</td></tr>
+<tr class="memdesc:aa05f02a83ff7afbd01207a7dc7ce11b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structpptree_1_1cli_1_1BenchmarkSuite.html" title="A suite of scenarios with shared defaults.">BenchmarkSuite</a> from a JSON file path.  <br /></td></tr>
+<tr class="separator:aa05f02a83ff7afbd01207a7dc7ce11b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a3adaf97468f3ade25c1288f374daf7" id="r_a6a3adaf97468f3ade25c1288f374daf7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a6a3adaf97468f3ade25c1288f374daf7">pptree::cli::run_benchmark</a> (<a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params, const std::string &amp;binary_path)</td></tr>
+<tr class="memdesc:a6a3adaf97468f3ade25c1288f374daf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the benchmark subcommand.  <br /></td></tr>
+<tr class="separator:a6a3adaf97468f3ade25c1288f374daf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdaf76dcf40755924f371dc92bf290dd" id="r_acdaf76dcf40755924f371dc92bf290dd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1ScenarioResult.html">ScenarioResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#acdaf76dcf40755924f371dc92bf290dd">pptree::cli::run_scenario</a> (const <a class="el" href="structpptree_1_1cli_1_1Scenario.html">Scenario</a> &amp;scenario, const std::string &amp;binary_path, bool quiet=false)</td></tr>
+<tr class="memdesc:acdaf76dcf40755924f371dc92bf290dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a single scenario as a subprocess.  <br /></td></tr>
+<tr class="separator:acdaf76dcf40755924f371dc92bf290dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeba5efa29f083576f8402451c143b539" id="r_aeba5efa29f083576f8402451c143b539"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#aeba5efa29f083576f8402451c143b539">pptree::cli::run_suite</a> (const <a class="el" href="structpptree_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a> &amp;suite, const std::string &amp;binary_path, bool quiet=false, <a class="el" href="namespacepptree_1_1cli.html#ae6653e461f1f4674add8e353327978b9">ProgressCallback</a> progress=nullptr)</td></tr>
+<tr class="memdesc:aeba5efa29f083576f8402451c143b539"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run all scenarios in a suite via subprocess invocations.  <br /></td></tr>
+<tr class="separator:aeba5efa29f083576f8402451c143b539"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Benchmark scenario types, JSON parsing, and subprocess-based execution. </p>

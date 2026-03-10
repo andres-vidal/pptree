@@ -108,9 +108,9 @@ $(function(){initNavTree('TreeNode_8hpp_source.html',''); initResizable(true); }
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;set&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="Types_8hpp.html">utils/Types.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="TreeNodeVisitor_8hpp.html">models/TreeNodeVisitor.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacepptree.html">pptree</a> {</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacepptree.html">pptree</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>  <span class="keyword">struct </span><a class="code hl_struct" href="structpptree_1_1TreeNodeVisitor.html">TreeNodeVisitor</a>;</div>
 <div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structpptree_1_1TreeNode.html">   17</a></span>  <span class="keyword">struct </span><a class="code hl_struct" href="structpptree_1_1TreeNode.html">TreeNode</a> {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structpptree_1_1TreeNode.html#a6a97a5860723f142a6a4c20d7daa40c7">   18</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="structpptree_1_1TreeNode.html#a6a97a5860723f142a6a4c20d7daa40c7">Ptr</a> = std::unique_ptr&lt;TreeNode&gt;;</div>
@@ -136,11 +136,10 @@ $(function(){initNavTree('TreeNode_8hpp_source.html',''); initResizable(true); }
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  };</div>
 </div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>}</div>
-<div class="ttc" id="aTreeNodeVisitor_8hpp_html"><div class="ttname"><a href="TreeNodeVisitor_8hpp.html">TreeNodeVisitor.hpp</a></div></div>
 <div class="ttc" id="aTypes_8hpp_html"><div class="ttname"><a href="Types_8hpp.html">Types.hpp</a></div></div>
 <div class="ttc" id="anamespacepptree_1_1types_html_a4609370e1866a39f047c354f469ebfc5"><div class="ttname"><a href="namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5">pptree::types::FeatureVector</a></div><div class="ttdeci">Eigen::Matrix&lt; Feature, Eigen::Dynamic, 1 &gt; FeatureVector</div><div class="ttdoc">Dynamic-size column vector of feature values.</div><div class="ttdef"><b>Definition</b> Types.hpp:26</div></div>
 <div class="ttc" id="anamespacepptree_1_1types_html_aae1233a987efa16d160ef36410a5467e"><div class="ttname"><a href="namespacepptree_1_1types.html#aae1233a987efa16d160ef36410a5467e">pptree::types::Response</a></div><div class="ttdeci">int Response</div><div class="ttdoc">Scalar type for class labels (integer).</div><div class="ttdef"><b>Definition</b> Types.hpp:21</div></div>
-<div class="ttc" id="anamespacepptree_html"><div class="ttname"><a href="namespacepptree.html">pptree</a></div><div class="ttdef"><b>Definition</b> Benchmark.hpp:16</div></div>
+<div class="ttc" id="anamespacepptree_html"><div class="ttname"><a href="namespacepptree.html">pptree</a></div><div class="ttdef"><b>Definition</b> Benchmark.hpp:18</div></div>
 <div class="ttc" id="astructpptree_1_1TreeNodeVisitor_html"><div class="ttname"><a href="structpptree_1_1TreeNodeVisitor.html">pptree::TreeNodeVisitor</a></div><div class="ttdoc">Visitor interface for tree node dispatch.</div><div class="ttdef"><b>Definition</b> TreeNodeVisitor.hpp:13</div></div>
 <div class="ttc" id="astructpptree_1_1TreeNode_html"><div class="ttname"><a href="structpptree_1_1TreeNode.html">pptree::TreeNode</a></div><div class="ttdoc">Abstract base class for nodes in a projection pursuit tree.</div><div class="ttdef"><b>Definition</b> TreeNode.hpp:17</div></div>
 <div class="ttc" id="astructpptree_1_1TreeNode_html_a00887ac5d1da4b80ec42d0220cb27a8d"><div class="ttname"><a href="structpptree_1_1TreeNode.html#a00887ac5d1da4b80ec42d0220cb27a8d">pptree::TreeNode::response</a></div><div class="ttdeci">virtual types::Response response() const =0</div><div class="ttdoc">The class label at this node (leaf value or majority class).</div></div>

@@ -1,12 +1,22 @@
 var searchData=
 [
-  ['warmup_0',['warmup',['../structpptree_1_1bench_1_1Scenario.html#a14175b68ee088bbba77c13a04012f5ac',1,'pptree::bench::Scenario::warmup'],['../structpptree_1_1cli_1_1CLIOptions.html#aeff57d9a0b2a9d4c86e81aaec085198e',1,'pptree::cli::CLIOptions::warmup']]],
-  ['warn_5funused_5fparams_1',['warn_unused_params',['../namespacepptree_1_1cli.html#a9f6bf17ee59d3f7e450e6b274d99b292',1,'pptree::cli']]],
-  ['warning_2',['warning',['../namespacepptree_1_1io.html#a3cb6da523b18b750e6757f5a123a1131',1,'pptree::io']]],
-  ['weighted_5fprojections_3',['weighted_projections',['../structpptree_1_1VariableImportance.html#ac1be05fb222a4de4020f358a62450fbb',1,'pptree::VariableImportance']]],
-  ['wgss_4',['wgss',['../classpptree_1_1stats_1_1GroupPartition.html#a11d4bc5e2fa79591d55cccbbb7a32bcb',1,'pptree::stats::GroupPartition']]],
-  ['write_5fcsv_5',['write_csv',['../namespacepptree_1_1io.html#ab5fa4ab9ed74ae21bfbd014699281aca',1,'pptree::io']]],
-  ['write_5fjson_5ffile_6',['write_json_file',['../namespacepptree_1_1io.html#a02251f7a65a89af4da5b86108cf281bb',1,'pptree::io']]],
-  ['write_5fresults_5fcsv_7',['write_results_csv',['../namespacepptree_1_1bench.html#ae1f17f6afdfe77416427ed3d85cbcd4a',1,'pptree::bench']]],
-  ['write_5fresults_5fjson_8',['write_results_json',['../namespacepptree_1_1bench.html#a901585c9808509c7ec62f006cfe53f67',1,'pptree::bench']]]
+  ['value_0',['value',['../structpptree_1_1cli_1_1VarsSpec.html#a461024a247bbb7a5b11962b108e00468',1,'pptree::cli::VarsSpec::value'],['../structpptree_1_1TreeResponse.html#a73c03e28ce5a44e192146a6152b5d295',1,'pptree::TreeResponse::value']]],
+  ['values_1',['values',['../structpptree_1_1stats_1_1ConfusionMatrix.html#a52f9856ac27209bc35f791516c0f855e',1,'pptree::stats::ConfusionMatrix::values'],['../namespacepptree_1_1utils.html#aecdc9c2335261d2c1dbdc82d2ed924a5',1,'pptree::utils::values()']]],
+  ['variable_5fimportance_5fpermuted_2',['variable_importance_permuted',['../namespacepptree.html#ac433aaa9cc1f5f6ee06876da6137f235',1,'pptree']]],
+  ['variable_5fimportance_5fprojections_3',['variable_importance_projections',['../namespacepptree.html#a45daf9d4022d1f0a3965532411ec9225',1,'pptree::variable_importance_projections(const Forest &amp;forest, int n_vars, const types::FeatureVector *scale=nullptr)'],['../namespacepptree.html#a0feae830ee7071f5e7a2490488a386bb',1,'pptree::variable_importance_projections(const Tree &amp;tree, int n_vars, const types::FeatureVector *scale=nullptr)']]],
+  ['variable_5fimportance_5fweighted_5fprojections_4',['variable_importance_weighted_projections',['../namespacepptree.html#a60519b808da430c26f871e868cee8765',1,'pptree']]],
+  ['variableimportance_5',['VariableImportance',['../structpptree_1_1VariableImportance.html',1,'pptree']]],
+  ['variableimportance_2ehpp_6',['VariableImportance.hpp',['../VariableImportance_8hpp.html',1,'']]],
+  ['vars_7',['vars',['../structpptree_1_1cli_1_1Scenario.html#a5ee87e14597cc78e2eb4d3c88c64b8a5',1,'pptree::cli::Scenario::vars'],['../structpptree_1_1cli_1_1ScenarioResult.html#ae7ece9e3d920f272c5de02201e149d55',1,'pptree::cli::ScenarioResult::vars']]],
+  ['vars_5finput_8',['vars_input',['../structpptree_1_1cli_1_1CLIOptions.html#a1a6ee4e111d759af63ca6354dbc9a2e4',1,'pptree::cli::CLIOptions']]],
+  ['varsspec_9',['VarsSpec',['../structpptree_1_1cli_1_1VarsSpec.html',1,'pptree::cli']]],
+  ['varsspec_2ehpp_10',['VarsSpec.hpp',['../VarsSpec_8hpp.html',1,'']]],
+  ['vec_11',['VEC',['../Macros_8hpp.html#ab810951a8a979526caa74d68de176862',1,'Macros.hpp']]],
+  ['vector_12',['Vector',['../namespacepptree_1_1types.html#ab3408cc3539f8f5423a3bdb9d7c3509e',1,'pptree::types']]],
+  ['vi2_5fcontributions_13',['vi2_contributions',['../structpptree_1_1VIVisitor.html#a821b5d5774107d3312e0315791b658ad',1,'pptree::VIVisitor']]],
+  ['vi3_5fcontributions_14',['vi3_contributions',['../structpptree_1_1VIVisitor.html#a9eaf092669d146be10352ab4b57ba3b3',1,'pptree::VIVisitor']]],
+  ['visit_15',['visit',['../structpptree_1_1ModelVisitor.html#a79e445e601ddab91b4dcb7ccd8acf03a',1,'pptree::ModelVisitor::visit(const Tree &amp;tree)=0'],['../structpptree_1_1ModelVisitor.html#a8988796a4f174d357e884e13012388d7',1,'pptree::ModelVisitor::visit(const Forest &amp;forest)=0'],['../structpptree_1_1TrainingSpecVisitor.html#a4c584b1e0836f3b242e5eb618630311b',1,'pptree::TrainingSpecVisitor::visit(const TrainingSpecGLDA &amp;spec)=0'],['../structpptree_1_1TrainingSpecVisitor.html#a7c45d1eadd5352c09b5bd5fce45580db',1,'pptree::TrainingSpecVisitor::visit(const TrainingSpecUGLDA &amp;spec)=0'],['../structpptree_1_1TreeNodeVisitor.html#ac4af63c02ea6c9f0432a798cbccb891a',1,'pptree::TreeNodeVisitor::visit(const TreeCondition &amp;condition)=0'],['../structpptree_1_1TreeNodeVisitor.html#a77037946f9d72c0853b6aa82c1f71f74',1,'pptree::TreeNodeVisitor::visit(const TreeResponse &amp;response)=0'],['../structpptree_1_1VIVisitor.html#a12b9e1031a024dafac332f06cc3d3d41',1,'pptree::VIVisitor::visit(const TreeCondition &amp;node) override'],['../structpptree_1_1VIVisitor.html#afad2611f0cd1e721dabe226eca8f0264',1,'pptree::VIVisitor::visit(const TreeResponse &amp;) override'],['../structpptree_1_1serialization_1_1JsonNodeVisitor.html#ab08c1e1c8ba0e96ad886200ad2894d8a',1,'pptree::serialization::JsonNodeVisitor::visit(const TreeCondition &amp;node) override'],['../structpptree_1_1serialization_1_1JsonNodeVisitor.html#aea8f8175003825427b23beb08654c3e4',1,'pptree::serialization::JsonNodeVisitor::visit(const TreeResponse &amp;node) override'],['../structpptree_1_1serialization_1_1JsonModelVisitor.html#aa7e6b20ef05d909df43640bc598a111d',1,'pptree::serialization::JsonModelVisitor::visit(const Tree &amp;tree) override'],['../structpptree_1_1serialization_1_1JsonModelVisitor.html#ad71ca2392da26630cf5741ff19a06ad5',1,'pptree::serialization::JsonModelVisitor::visit(const Forest &amp;forest) override']]],
+  ['visual_5fwidth_16',['visual_width',['../namespacepptree_1_1io.html#a0e7fce12d06e78f44fc8ab83a2ef76c1',1,'pptree::io']]],
+  ['vivisitor_17',['VIVisitor',['../structpptree_1_1VIVisitor.html',1,'pptree::VIVisitor'],['../structpptree_1_1VIVisitor.html#adb41a00463cb834b46cc4c49a661af09',1,'pptree::VIVisitor::VIVisitor()']]],
+  ['vivisitor_2ehpp_18',['VIVisitor.hpp',['../VIVisitor_8hpp.html',1,'']]]
 ];

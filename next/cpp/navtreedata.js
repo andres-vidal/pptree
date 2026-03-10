@@ -59,9 +59,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BenchmarkReport_8hpp.html",
-"namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a59a9f87755ec523b0db73207fc8362df",
-"structpptree_1_1TreeCondition.html#a9cde5cd655f952fb478d81972dfe4a21",
-"structpptree_1_1cli_1_1CLIOptions.html#ad7b35021f7b90c588541c1f3ac2ffb04"
+"namespacepptree_1_1cli.html#a3d952f3bba5d7dd5b175178553719d2a",
+"structpptree_1_1Tree.html#a222598e462ea0dd2241e1cf6caa94cf3",
+"structpptree_1_1cli_1_1ModelStats.html#ac263d3da3785d64df4a98a2da81c302e",
+"structpptree_1_1stats_1_1Split.html#a9fd040167887e190c2d21b96baa92025"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

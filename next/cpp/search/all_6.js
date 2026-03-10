@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['g_0',['g',['../structpptree_1_1bench_1_1Scenario.html#a1a98809a6a496a30fb1baec4563b6961',1,'pptree::bench::Scenario::g'],['../structpptree_1_1bench_1_1ScenarioResult.html#a3127f6b948cc501a7d85fee0a2401dfe',1,'pptree::bench::ScenarioResult::g']]],
+  ['g_0',['g',['../structpptree_1_1cli_1_1Scenario.html#a198d7602ee65efb73a4e99eac04aefc3',1,'pptree::cli::Scenario::g'],['../structpptree_1_1cli_1_1ScenarioResult.html#a02503a3ed35aedfc85163f78e0ce480f',1,'pptree::cli::ScenarioResult::g']]],
   ['get_5flabels_5fmap_1',['get_labels_map',['../namespacepptree_1_1stats.html#a50fe9765618d56728ffc8b6225cea78e',1,'pptree::stats']]],
   ['get_5fpeak_5frss_5fbytes_2',['get_peak_rss_bytes',['../namespacepptree_1_1io.html#a00ba7c7307a572e2566448cf70a74113',1,'pptree::io']]],
   ['glda_3',['glda',['../namespacepptree_1_1pp.html#a5a1beeb9f8cf594fc7e93c99d795dcb4',1,'pptree::pp']]],

@@ -98,7 +98,7 @@ PPForest(Type ~ ., data = iris)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.01 -0.82 0.53 0.2 ] * x) < -0.6616919:
+#> If ([ 0.01 -0.82 0.53 0.2 ] * x) < -0.6616913:
 #>   Predict: setosa 
 #> Else:
 #>  If ([ 0.09 0.48 -0.34 -0.8 ] * x) < -1.103081:
@@ -107,8 +107,8 @@ PPForest(Type ~ ., data = iris)
 #>    Predict: versicolor 
 #> 
 #> Tree 2:
-#> If ([ 0.34 0.63 -0.68 -0.15 ] * x) < 1.58635:
-#>  If ([ 0.15 0.38 -0.34 -0.85 ] * x) < -0.9924552:
+#> If ([ 0.34 0.63 -0.68 -0.15 ] * x) < 1.586351:
+#>  If ([ 0.15 0.38 -0.34 -0.85 ] * x) < -0.9924551:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -123,7 +123,7 @@ PPForest(Type ~ ., data = iris, lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.08 -0.72 0.43 0.53 ] * x) < 0.0375663:
+#> If ([ 0.08 -0.72 0.43 0.53 ] * x) < 0.03756618:
 #>   Predict: setosa 
 #> Else:
 #>  If ([ 0.05 0.11 -0.31 -0.94 ] * x) < -2.512249:
@@ -132,10 +132,10 @@ PPForest(Type ~ ., data = iris, lambda = 0.5)
 #>    Predict: versicolor 
 #> 
 #> Tree 2:
-#> If ([ 0.11 -0.63 0.55 0.53 ] * x) < 0.9280791:
+#> If ([ 0.11 -0.63 0.55 0.53 ] * x) < 0.9280792:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.01 -0.22 0.36 0.91 ] * x) < 2.788579:
+#>  If ([ 0.01 -0.22 0.36 0.91 ] * x) < 2.788582:
 #>    Predict: versicolor 
 #>  Else:
 #>    Predict: virginica 
@@ -148,8 +148,8 @@ PPForest(x = iris[, 1:4], y = iris[, 5])
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.27 0.63 -0.69 -0.21 ] * x) < 1.063239:
-#>  If ([ 0.31 0.08 -0.48 -0.82 ] * x) < -1.619432:
+#> If ([ 0.27 0.63 -0.69 -0.21 ] * x) < 1.063238:
+#>  If ([ 0.31 0.08 -0.48 -0.82 ] * x) < -1.619433:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -157,8 +157,8 @@ PPForest(x = iris[, 1:4], y = iris[, 5])
 #>   Predict: setosa 
 #> 
 #> Tree 2:
-#> If ([ 0.23 0.72 -0.65 -0.03 ] * x) < 1.453874:
-#>  If ([ 0.21 0.49 -0.55 -0.64 ] * x) < -1.026833:
+#> If ([ 0.23 0.72 -0.65 -0.03 ] * x) < 1.453875:
+#>  If ([ 0.21 0.49 -0.55 -0.64 ] * x) < -1.026834:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -173,10 +173,10 @@ PPForest(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.08 -0.67 0.43 0.6 ] * x) < 0.2777244:
+#> If ([ 0.08 -0.67 0.43 0.6 ] * x) < 0.2777239:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.02 0.05 -0.24 -0.97 ] * x) < -2.578497:
+#>  If ([ 0.02 0.05 -0.24 -0.97 ] * x) < -2.578496:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -185,7 +185,7 @@ PPForest(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #> If ([ 0.09 -0.68 0.46 0.56 ] * x) < 0.3777013:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.01 -0.15 0.33 0.93 ] * x) < 2.815653:
+#>  If ([ 0.01 -0.15 0.33 0.93 ] * x) < 2.815652:
 #>    Predict: versicolor 
 #>  Else:
 #>    Predict: virginica 
@@ -198,13 +198,13 @@ PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.64 0.06 -0.05 -0.47 0.59 0.13 ] * x) < 0.6518716:
+#> If ([ 0.64 0.06 -0.05 -0.47 0.59 0.13 ] * x) < 0.6518859:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.65 0.13 0.13 -0.58 0.42 0.17 ] * x) < 1.011429:
+#> If ([ 0.65 0.13 0.13 -0.58 0.42 0.17 ] * x) < 1.011468:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
@@ -217,13 +217,13 @@ PPForest(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.39 0.18 0 -0.07 0.37 -0.82 ] * x) < 9.471807:
+#> If ([ 0.39 0.18 0 -0.07 0.37 -0.82 ] * x) < 9.471808:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.55 0.12 0.01 -0.09 0.51 0.64 ] * x) < 15.25046:
+#> If ([ 0.55 0.12 0.01 -0.09 0.51 0.64 ] * x) < 15.25045:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
@@ -238,13 +238,13 @@ PPForest(x = x, y = crabs$Type)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.64 0.24 0.22 -0.53 0.45 ] * x) < 1.742548:
+#> If ([ 0.64 0.24 0.22 -0.53 0.45 ] * x) < 1.742541:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.75 0.16 0.25 -0.56 0.19 ] * x) < 1.374126:
+#> If ([ 0.75 0.16 0.25 -0.56 0.19 ] * x) < 1.37413:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
@@ -265,7 +265,7 @@ PPForest(x = x, y = crabs$Type, lambda = 0.5)
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.91 0.35 0.06 -0.08 -0.2 ] * x) < 17.40268:
+#> If ([ 0.91 0.35 0.06 -0.08 -0.2 ] * x) < 17.40269:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 

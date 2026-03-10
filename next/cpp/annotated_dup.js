@@ -1,16 +1,15 @@
 var annotated_dup =
 [
     [ "pptree", "namespacepptree.html", [
-      [ "bench", "namespacepptree_1_1bench.html", [
-        [ "BenchmarkSuite", "structpptree_1_1bench_1_1BenchmarkSuite.html", "structpptree_1_1bench_1_1BenchmarkSuite" ],
-        [ "ConvergenceCriteria", "structpptree_1_1bench_1_1ConvergenceCriteria.html", "structpptree_1_1bench_1_1ConvergenceCriteria" ],
-        [ "Scenario", "structpptree_1_1bench_1_1Scenario.html", "structpptree_1_1bench_1_1Scenario" ],
-        [ "ScenarioResult", "structpptree_1_1bench_1_1ScenarioResult.html", "structpptree_1_1bench_1_1ScenarioResult" ],
-        [ "SuiteResult", "structpptree_1_1bench_1_1SuiteResult.html", "structpptree_1_1bench_1_1SuiteResult" ]
-      ] ],
       [ "cli", "namespacepptree_1_1cli.html", [
+        [ "BenchmarkSuite", "structpptree_1_1cli_1_1BenchmarkSuite.html", "structpptree_1_1cli_1_1BenchmarkSuite" ],
         [ "CLIOptions", "structpptree_1_1cli_1_1CLIOptions.html", "structpptree_1_1cli_1_1CLIOptions" ],
+        [ "ConvergenceCriteria", "structpptree_1_1cli_1_1ConvergenceCriteria.html", "structpptree_1_1cli_1_1ConvergenceCriteria" ],
         [ "ModelStats", "structpptree_1_1cli_1_1ModelStats.html", "structpptree_1_1cli_1_1ModelStats" ],
+        [ "Scenario", "structpptree_1_1cli_1_1Scenario.html", "structpptree_1_1cli_1_1Scenario" ],
+        [ "ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", "structpptree_1_1cli_1_1ScenarioResult" ],
+        [ "SuiteResult", "structpptree_1_1cli_1_1SuiteResult.html", "structpptree_1_1cli_1_1SuiteResult" ],
+        [ "TrainResult", "structpptree_1_1cli_1_1TrainResult.html", "structpptree_1_1cli_1_1TrainResult" ],
         [ "VarsSpec", "structpptree_1_1cli_1_1VarsSpec.html", "structpptree_1_1cli_1_1VarsSpec" ]
       ] ],
       [ "dr", "namespacepptree_1_1dr.html", [
@@ -20,6 +19,8 @@ var annotated_dup =
         [ "DRUniformStrategy", "structpptree_1_1dr_1_1DRUniformStrategy.html", "structpptree_1_1dr_1_1DRUniformStrategy" ]
       ] ],
       [ "io", "namespacepptree_1_1io.html", [
+        [ "Column", "structpptree_1_1io_1_1Column.html", "structpptree_1_1io_1_1Column" ],
+        [ "Output", "structpptree_1_1io_1_1Output.html", "structpptree_1_1io_1_1Output" ],
         [ "TempDir", "classpptree_1_1io_1_1TempDir.html", "classpptree_1_1io_1_1TempDir" ],
         [ "TempFile", "classpptree_1_1io_1_1TempFile.html", "classpptree_1_1io_1_1TempFile" ]
       ] ],
@@ -31,6 +32,10 @@ var annotated_dup =
       [ "serialization", "namespacepptree_1_1serialization.html", [
         [ "JsonModelVisitor", "structpptree_1_1serialization_1_1JsonModelVisitor.html", "structpptree_1_1serialization_1_1JsonModelVisitor" ],
         [ "JsonNodeVisitor", "structpptree_1_1serialization_1_1JsonNodeVisitor.html", "structpptree_1_1serialization_1_1JsonNodeVisitor" ]
+      ] ],
+      [ "sr", "namespacepptree_1_1sr.html", [
+        [ "SRMeanOfMeansStrategy", "structpptree_1_1sr_1_1SRMeanOfMeansStrategy.html", "structpptree_1_1sr_1_1SRMeanOfMeansStrategy" ],
+        [ "SRStrategy", "structpptree_1_1sr_1_1SRStrategy.html", "structpptree_1_1sr_1_1SRStrategy" ]
       ] ],
       [ "stats", "namespacepptree_1_1stats.html", [
         [ "ConfusionMatrix", "structpptree_1_1stats_1_1ConfusionMatrix.html", "structpptree_1_1stats_1_1ConfusionMatrix" ],

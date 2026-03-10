@@ -106,10 +106,10 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-in"><span><span class="fu">PPTree</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Project-Pursuit Oblique Decision Tree:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.07 -0.68 0.45 0.58 ] * x) &lt; 0.2732363:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.07 -0.68 0.45 0.58 ] * x) &lt; 0.2732373:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.01 0.16 -0.34 -0.93 ] * x) &lt; -2.714732:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.01 0.16 -0.34 -0.93 ] * x) &lt; -2.714733:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
@@ -128,10 +128,10 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 4: matrix interface with the `iris` dataset with regularization</span></span></span>
 <span class="r-in"><span><span class="fu">PPTree</span><span class="op">(</span>x <span class="op">=</span> <span class="va">iris</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">iris</span><span class="op">[</span>, <span class="fl">5</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.07 -0.68 0.45 0.58 ] * x) &lt; 0.2732363:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.07 -0.68 0.45 0.58 ] * x) &lt; 0.2732373:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.01 0.16 -0.34 -0.93 ] * x) &lt; -2.714732:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.01 0.16 -0.34 -0.93 ] * x) &lt; -2.714733:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
@@ -141,7 +141,7 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-in"><span><span class="fu">PPTree</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">sex</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">crabs</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Project-Pursuit Oblique Decision Tree:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.59 0.17 0.09 -0.55 0.48 0.29 ] * x) &lt; 1.136017:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.59 0.17 0.09 -0.55 0.48 0.29 ] * x) &lt; 1.136014:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
@@ -161,7 +161,7 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">crabs</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">x</span><span class="op">$</span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">crabs</span><span class="op">$</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">PPTree</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">crabs</span><span class="op">$</span><span class="va">Type</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.67 0.16 0.31 -0.59 0.27 ] * x) &lt; 1.406607:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.67 0.16 0.31 -0.59 0.27 ] * x) &lt; 1.40659:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>

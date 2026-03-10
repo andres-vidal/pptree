@@ -1,26 +1,8 @@
 var searchData=
 [
-  ['macros_2ehpp_0',['Macros.hpp',['../Macros_8hpp.html',1,'']]],
-  ['make_1',['make',['../structpptree_1_1pp_1_1PPGLDAStrategy.html#a6887b3b89732c3678cf722fb8e4e02ba',1,'pptree::pp::PPGLDAStrategy::make()'],['../structpptree_1_1TrainingSpecGLDA.html#aba2454f056010e6fa1f7c94bb8f28ac2',1,'pptree::TrainingSpecGLDA::make()'],['../structpptree_1_1TrainingSpecUGLDA.html#a87af465629bf8e3e139e625953612439',1,'pptree::TrainingSpecUGLDA::make()'],['../structpptree_1_1TreeCondition.html#ab83b2361c1f359263dc68373a3022bba',1,'pptree::TreeCondition::make()'],['../structpptree_1_1TreeResponse.html#a01ee793f6dff012484af5c14aab99f7b',1,'pptree::TreeResponse::make()']]],
-  ['map_2ehpp_2',['Map.hpp',['../Map_8hpp.html',1,'']]],
-  ['mat_3',['MAT',['../Macros_8hpp.html#a4660d6ffcf62118b533a60baf351bd49',1,'Macros.hpp']]],
-  ['math_2ehpp_4',['Math.hpp',['../Math_8hpp.html',1,'']]],
-  ['matrix_5',['Matrix',['../namespacepptree_1_1types.html#ae29eaef8bcf46ae9ea8ede99898cb32e',1,'pptree::types']]],
-  ['max_5fiterations_6',['max_iterations',['../structpptree_1_1bench_1_1ConvergenceCriteria.html#a6ffaf1ef6f580a9f6c7f12790ef1fcde',1,'pptree::bench::ConvergenceCriteria::max_iterations'],['../structpptree_1_1cli_1_1CLIOptions.html#ac73637ec067fa3c9dd6bd9a4546c13ae',1,'pptree::cli::CLIOptions::max_iterations']]],
-  ['mean_7',['mean',['../structpptree_1_1stats_1_1SimulationParams.html#ac35f241d882bab9d4e5063a8822ba290',1,'pptree::stats::SimulationParams::mean'],['../classpptree_1_1stats_1_1GroupPartition.html#aae3e7922f72c5869610aa8eb3cef8d20',1,'pptree::stats::GroupPartition::mean()']]],
-  ['mean_5fseparation_8',['mean_separation',['../structpptree_1_1stats_1_1SimulationParams.html#ac8155a490b85578e409efbc25cec4292',1,'pptree::stats::SimulationParams']]],
-  ['mean_5fte_5ferror_9',['mean_te_error',['../structpptree_1_1bench_1_1ScenarioResult.html#a32bc203f70fe78f1c04cf877507307b8',1,'pptree::bench::ScenarioResult::mean_te_error'],['../structpptree_1_1cli_1_1ModelStats.html#a2af9467d3d5840949bdb85ccab4857e9',1,'pptree::cli::ModelStats::mean_te_error() const']]],
-  ['mean_5ftime_10',['mean_time',['../structpptree_1_1cli_1_1ModelStats.html#a7c2315f9fa32e9400e872b49bf18dc43',1,'pptree::cli::ModelStats']]],
-  ['mean_5ftime_5fms_11',['mean_time_ms',['../structpptree_1_1bench_1_1ScenarioResult.html#ada27548575f670e56b60d1fd313e72ef',1,'pptree::bench::ScenarioResult']]],
-  ['mean_5ftr_5ferror_12',['mean_tr_error',['../structpptree_1_1bench_1_1ScenarioResult.html#a14adb910365dc87b3734d412b6d438a1',1,'pptree::bench::ScenarioResult::mean_tr_error'],['../structpptree_1_1cli_1_1ModelStats.html#a207d3cf9fa379f8d4de9b12c46e0d5c3',1,'pptree::cli::ModelStats::mean_tr_error()']]],
-  ['measure_5ftime_5fms_13',['measure_time_ms',['../namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea',1,'pptree::io']]],
-  ['min_5fiterations_14',['min_iterations',['../structpptree_1_1bench_1_1ConvergenceCriteria.html#aacc78233290bac64c9c4295ec1719bd6',1,'pptree::bench::ConvergenceCriteria::min_iterations'],['../structpptree_1_1cli_1_1CLIOptions.html#a1a3b5dbf3399f46328423a3ecc1d57f9',1,'pptree::cli::CLIOptions::min_iterations']]],
-  ['model_15',['Model',['../structpptree_1_1Model.html',1,'pptree']]],
-  ['model_2ehpp_16',['Model.hpp',['../Model_8hpp.html',1,'']]],
-  ['model_5ffrom_5fjson_17',['model_from_json',['../namespacepptree_1_1serialization.html#ad389da240453e7e78f82f9523e48663c',1,'pptree::serialization']]],
-  ['model_5fpath_18',['model_path',['../structpptree_1_1cli_1_1CLIOptions.html#ae92c02dfabb2dd6c760f32a6913b319b',1,'pptree::cli::CLIOptions']]],
-  ['modelstats_19',['ModelStats',['../structpptree_1_1cli_1_1ModelStats.html',1,'pptree::cli']]],
-  ['modelvisitor_20',['ModelVisitor',['../structpptree_1_1ModelVisitor.html',1,'pptree']]],
-  ['modelvisitor_2ehpp_21',['ModelVisitor.hpp',['../ModelVisitor_8hpp.html',1,'']]],
-  ['muted_22',['muted',['../namespacepptree_1_1io.html#aab2771d227adf994e7c2ccfca1c77536',1,'pptree::io']]]
+  ['label_0',['label',['../structpptree_1_1io_1_1Column.html#a767f2ff97c32c71c9146f713c0500976',1,'pptree::io::Column']]],
+  ['label_5findex_1',['label_index',['../structpptree_1_1stats_1_1ConfusionMatrix.html#aa61fbe884e52f9cbd80e0af82f89ac09',1,'pptree::stats::ConfusionMatrix']]],
+  ['lambda_2',['lambda',['../structpptree_1_1cli_1_1Scenario.html#ac483ea20d5a4d0f7a0f95032d09eef85',1,'pptree::cli::Scenario::lambda'],['../structpptree_1_1cli_1_1CLIOptions.html#ab21a3512fdf02cf418e3c72e64ff3c13',1,'pptree::cli::CLIOptions::lambda'],['../structpptree_1_1pp_1_1PPGLDAStrategy.html#a7273c365457f42f8a373651458bc5c6d',1,'pptree::pp::PPGLDAStrategy::lambda'],['../structpptree_1_1TrainingSpecGLDA.html#aae25cb80f88d50d2782c44da352c8f61',1,'pptree::TrainingSpecGLDA::lambda'],['../structpptree_1_1TrainingSpecUGLDA.html#a2b660688d096449d7e9cea175a72b387',1,'pptree::TrainingSpecUGLDA::lambda']]],
+  ['left_3',['left',['../namespacepptree_1_1io.html#adab0ef61cd6661616ef875fece9277b3a811882fecd5c7618d7099ebbd39ea254',1,'pptree::io']]],
+  ['lower_4',['lower',['../structpptree_1_1TreeCondition.html#ada25e84d4498ebe16e85bee416a16fdd',1,'pptree::TreeCondition']]]
 ];

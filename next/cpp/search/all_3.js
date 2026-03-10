@@ -12,5 +12,6 @@ var searchData=
   ['drstrategy_9',['DRStrategy',['../structpptree_1_1dr_1_1DRStrategy.html',1,'pptree::dr']]],
   ['drstrategy_2ehpp_10',['DRStrategy.hpp',['../DRStrategy_8hpp.html',1,'']]],
   ['druniformstrategy_11',['DRUniformStrategy',['../structpptree_1_1dr_1_1DRUniformStrategy.html',1,'pptree::dr::DRUniformStrategy'],['../structpptree_1_1dr_1_1DRUniformStrategy.html#aafa125efd5aa38eff5f74d567e5c2143',1,'pptree::dr::DRUniformStrategy::DRUniformStrategy()']]],
-  ['druniformstrategy_2ehpp_12',['DRUniformStrategy.hpp',['../DRUniformStrategy_8hpp.html',1,'']]]
+  ['druniformstrategy_2ehpp_12',['DRUniformStrategy.hpp',['../DRUniformStrategy_8hpp.html',1,'']]],
+  ['duration_13',['duration',['../structpptree_1_1cli_1_1TrainResult.html#acbf19b5cacfa961294914f06664782d4',1,'pptree::cli::TrainResult']]]
 ];

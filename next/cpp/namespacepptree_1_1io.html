@@ -101,6 +101,8 @@ $(function(){initNavTree('namespacepptree_1_1io.html',''); initResizable(true); 
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">pptree::io Namespace Reference</div></div>
 </div><!--header-->
@@ -108,12 +110,31 @@ $(function(){initNavTree('namespacepptree_1_1io.html',''); initResizable(true); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1io_1_1Column.html">Column</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structpptree_1_1io_1_1Column.html" title="Column definition for table formatting.">Column</a> definition for table formatting.  <a href="structpptree_1_1io_1_1Column.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1io_1_1Output.html">Output</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quiet-aware output context for CLI subcommands.  <a href="structpptree_1_1io_1_1Output.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpptree_1_1io_1_1TempDir.html">TempDir</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII temporary directory with automatic cleanup.  <a href="classpptree_1_1io_1_1TempDir.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpptree_1_1io_1_1TempFile.html">TempFile</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII temporary file with automatic cleanup.  <a href="classpptree_1_1io_1_1TempFile.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:abe9d14d638204ed03238b2a739eb81f9" id="r_abe9d14d638204ed03238b2a739eb81f9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe9d14d638204ed03238b2a739eb81f9">Row</a> = std::vector&lt;std::string&gt;</td></tr>
+<tr class="memdesc:abe9d14d638204ed03238b2a739eb81f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">A row of pre-formatted cell strings.  <br /></td></tr>
+<tr class="separator:abe9d14d638204ed03238b2a739eb81f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:adab0ef61cd6661616ef875fece9277b3" id="r_adab0ef61cd6661616ef875fece9277b3"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adab0ef61cd6661616ef875fece9277b3">Align</a> { <a class="el" href="#adab0ef61cd6661616ef875fece9277b3a811882fecd5c7618d7099ebbd39ea254">left</a>
+, <a class="el" href="#adab0ef61cd6661616ef875fece9277b3a7c4f29407893c334a6cb7a87bf045c0d">right</a>
+ }</td></tr>
+<tr class="separator:adab0ef61cd6661616ef875fece9277b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -135,9 +156,24 @@ Functions</h2></td></tr>
 <tr class="memitem:abb20142e444d32b98d7eaf4a61532e55" id="r_abb20142e444d32b98d7eaf4a61532e55"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abb20142e444d32b98d7eaf4a61532e55">error</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:abb20142e444d32b98d7eaf4a61532e55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format text in red (for error messages).  <br /></td></tr>
 <tr class="separator:abb20142e444d32b98d7eaf4a61532e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abde664afeca8604974b1c7f983697f29" id="r_abde664afeca8604974b1c7f983697f29"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abde664afeca8604974b1c7f983697f29">format_md_row</a> (const <a class="el" href="#abe9d14d638204ed03238b2a739eb81f9">Row</a> &amp;cells)</td></tr>
+<tr class="memdesc:abde664afeca8604974b1c7f983697f29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format a row as a markdown table row.  <br /></td></tr>
+<tr class="separator:abde664afeca8604974b1c7f983697f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fe26a9a4244693b489dfa607bcde322" id="r_a5fe26a9a4244693b489dfa607bcde322"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fe26a9a4244693b489dfa607bcde322">format_md_separator</a> (const std::vector&lt; <a class="el" href="structpptree_1_1io_1_1Column.html">Column</a> &gt; &amp;columns)</td></tr>
+<tr class="memdesc:a5fe26a9a4244693b489dfa607bcde322"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a markdown alignment row.  <br /></td></tr>
+<tr class="separator:a5fe26a9a4244693b489dfa607bcde322"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad653adc1ad4e986f5a04220386ef256b" id="r_ad653adc1ad4e986f5a04220386ef256b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad653adc1ad4e986f5a04220386ef256b">format_row</a> (const std::vector&lt; <a class="el" href="structpptree_1_1io_1_1Column.html">Column</a> &gt; &amp;columns, const <a class="el" href="#abe9d14d638204ed03238b2a739eb81f9">Row</a> &amp;cells, const std::string &amp;sep=&quot;  &quot;)</td></tr>
+<tr class="memdesc:ad653adc1ad4e986f5a04220386ef256b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format a row of cells according to column definitions.  <br /></td></tr>
+<tr class="separator:ad653adc1ad4e986f5a04220386ef256b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e8c414cf2fe4d9af2d4599d20789393" id="r_a1e8c414cf2fe4d9af2d4599d20789393"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1e8c414cf2fe4d9af2d4599d20789393">format_separator</a> (const std::vector&lt; <a class="el" href="structpptree_1_1io_1_1Column.html">Column</a> &gt; &amp;columns, const std::string &amp;sep=&quot;  &quot;)</td></tr>
+<tr class="memdesc:a1e8c414cf2fe4d9af2d4599d20789393"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a separator line spanning the full table width.  <br /></td></tr>
+<tr class="separator:a1e8c414cf2fe4d9af2d4599d20789393"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00ba7c7307a572e2566448cf70a74113" id="r_a00ba7c7307a572e2566448cf70a74113"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00ba7c7307a572e2566448cf70a74113">get_peak_rss_bytes</a> ()</td></tr>
 <tr class="memdesc:a00ba7c7307a572e2566448cf70a74113"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the peak resident set size (RSS) of the current process in bytes.  <br /></td></tr>
 <tr class="separator:a00ba7c7307a572e2566448cf70a74113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a6d05c84683e6d6c0e28dd34627b543" id="r_a6a6d05c84683e6d6c0e28dd34627b543"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#abe9d14d638204ed03238b2a739eb81f9">Row</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a6d05c84683e6d6c0e28dd34627b543">header_labels</a> (const std::vector&lt; <a class="el" href="structpptree_1_1io_1_1Column.html">Column</a> &gt; &amp;columns)</td></tr>
+<tr class="memdesc:a6a6d05c84683e6d6c0e28dd34627b543"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract header labels from column definitions as a <a class="el" href="#abe9d14d638204ed03238b2a739eb81f9" title="A row of pre-formatted cell strings.">Row</a>.  <br /></td></tr>
+<tr class="separator:a6a6d05c84683e6d6c0e28dd34627b543"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1222c3910a83549514e15f27a153f47d" id="r_a1222c3910a83549514e15f27a153f47d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1222c3910a83549514e15f27a153f47d">info</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:a1222c3910a83549514e15f27a153f47d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format text in cyan (for informational highlights like progress bars).  <br /></td></tr>
 <tr class="separator:a1222c3910a83549514e15f27a153f47d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -154,6 +190,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7b370b1542eb16ec7e6d2eee5c64fe97" id="r_a7b370b1542eb16ec7e6d2eee5c64fe97"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7b370b1542eb16ec7e6d2eee5c64fe97">now_iso8601</a> ()</td></tr>
 <tr class="memdesc:a7b370b1542eb16ec7e6d2eee5c64fe97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current local time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SS).  <br /></td></tr>
 <tr class="separator:a7b370b1542eb16ec7e6d2eee5c64fe97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26cf2c53540b1d0f893f852e12d1db0c" id="r_a26cf2c53540b1d0f893f852e12d1db0c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a26cf2c53540b1d0f893f852e12d1db0c">pad</a> (const std::string &amp;s, int width, <a class="el" href="#adab0ef61cd6661616ef875fece9277b3">Align</a> align=<a class="el" href="#adab0ef61cd6661616ef875fece9277b3a7c4f29407893c334a6cb7a87bf045c0d">Align::right</a>)</td></tr>
+<tr class="memdesc:a26cf2c53540b1d0f893f852e12d1db0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pad a string to a target visual width, handling ANSI codes.  <br /></td></tr>
+<tr class="separator:a26cf2c53540b1d0f893f852e12d1db0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1e66c916b557283bd093964b09f9b3f" id="r_af1e66c916b557283bd093964b09f9b3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1stats_1_1DataPacket.html">stats::DataPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1e66c916b557283bd093964b09f9b3f">read_csv</a> (const std::string &amp;filename)</td></tr>
 <tr class="memdesc:af1e66c916b557283bd093964b09f9b3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a CSV file into a DataPacket.  <br /></td></tr>
 <tr class="separator:af1e66c916b557283bd093964b09f9b3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,6 +205,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ac6a7826839deb482d88bbee1a95cd67a" id="r_ac6a7826839deb482d88bbee1a95cd67a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6a7826839deb482d88bbee1a95cd67a">success</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:ac6a7826839deb482d88bbee1a95cd67a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format text in green (for success messages).  <br /></td></tr>
 <tr class="separator:ac6a7826839deb482d88bbee1a95cd67a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95b71cfde92a7d2e349b1ecce5418c1a" id="r_a95b71cfde92a7d2e349b1ecce5418c1a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95b71cfde92a7d2e349b1ecce5418c1a">try_or_fail</a> (const std::function&lt; void()&gt; &amp;f, const std::string &amp;context=&quot;&quot;)</td></tr>
+<tr class="memdesc:a95b71cfde92a7d2e349b1ecce5418c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a callable, catch std::exception, print error, return 1.  <br /></td></tr>
+<tr class="separator:a95b71cfde92a7d2e349b1ecce5418c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e7fce12d06e78f44fc8ab83a2ef76c1" id="r_a0e7fce12d06e78f44fc8ab83a2ef76c1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e7fce12d06e78f44fc8ab83a2ef76c1">visual_width</a> (const std::string &amp;s)</td></tr>
+<tr class="memdesc:a0e7fce12d06e78f44fc8ab83a2ef76c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the visual width of a string, ignoring ANSI escape codes.  <br /></td></tr>
+<tr class="separator:a0e7fce12d06e78f44fc8ab83a2ef76c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cb6da523b18b750e6757f5a123a1131" id="r_a3cb6da523b18b750e6757f5a123a1131"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cb6da523b18b750e6757f5a123a1131">warning</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:a3cb6da523b18b750e6757f5a123a1131"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format text in yellow (for warnings).  <br /></td></tr>
 <tr class="separator:a3cb6da523b18b750e6757f5a123a1131"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -176,6 +221,50 @@ Functions</h2></td></tr>
 <tr class="memdesc:a02251f7a65a89af4da5b86108cf281bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a JSON object to a file (pretty-printed with indent 2).  <br /></td></tr>
 <tr class="separator:a02251f7a65a89af4da5b86108cf281bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="abe9d14d638204ed03238b2a739eb81f9" name="abe9d14d638204ed03238b2a739eb81f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe9d14d638204ed03238b2a739eb81f9">&#9670;&#160;</a></span>Row</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#abe9d14d638204ed03238b2a739eb81f9">pptree::io::Row</a> = std::vector&lt;std::string&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>A row of pre-formatted cell strings. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="adab0ef61cd6661616ef875fece9277b3" name="adab0ef61cd6661616ef875fece9277b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adab0ef61cd6661616ef875fece9277b3">&#9670;&#160;</a></span>Align</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#adab0ef61cd6661616ef875fece9277b3">pptree::io::Align</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adab0ef61cd6661616ef875fece9277b3a811882fecd5c7618d7099ebbd39ea254" name="adab0ef61cd6661616ef875fece9277b3a811882fecd5c7618d7099ebbd39ea254"></a>left&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="adab0ef61cd6661616ef875fece9277b3a7c4f29407893c334a6cb7a87bf045c0d" name="adab0ef61cd6661616ef875fece9277b3a7c4f29407893c334a6cb7a87bf045c0d"></a>right&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a68f4a3ea8c66d91fe11b76811aea21e9" name="a68f4a3ea8c66d91fe11b76811aea21e9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a68f4a3ea8c66d91fe11b76811aea21e9">&#9670;&#160;</a></span>check_dir_not_exists()</h2>
@@ -336,6 +425,128 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="abde664afeca8604974b1c7f983697f29" name="abde664afeca8604974b1c7f983697f29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abde664afeca8604974b1c7f983697f29">&#9670;&#160;</a></span>format_md_row()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string pptree::io::format_md_row </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#abe9d14d638204ed03238b2a739eb81f9">Row</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>cells</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Format a row as a markdown table row. </p>
+
+</div>
+</div>
+<a id="a5fe26a9a4244693b489dfa607bcde322" name="a5fe26a9a4244693b489dfa607bcde322"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fe26a9a4244693b489dfa607bcde322">&#9670;&#160;</a></span>format_md_separator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string pptree::io::format_md_separator </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structpptree_1_1io_1_1Column.html">Column</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>columns</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generate a markdown alignment row. </p>
+
+</div>
+</div>
+<a id="ad653adc1ad4e986f5a04220386ef256b" name="ad653adc1ad4e986f5a04220386ef256b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad653adc1ad4e986f5a04220386ef256b">&#9670;&#160;</a></span>format_row()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string pptree::io::format_row </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structpptree_1_1io_1_1Column.html">Column</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>columns</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#abe9d14d638204ed03238b2a739eb81f9">Row</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>cells</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>sep</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&#160;&#160;&quot;</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Format a row of cells according to column definitions. </p>
+<p>Each cell is padded to its column's width using ANSI-safe padding. </p>
+
+</div>
+</div>
+<a id="a1e8c414cf2fe4d9af2d4599d20789393" name="a1e8c414cf2fe4d9af2d4599d20789393"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e8c414cf2fe4d9af2d4599d20789393">&#9670;&#160;</a></span>format_separator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string pptree::io::format_separator </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structpptree_1_1io_1_1Column.html">Column</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>columns</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>sep</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&#160;&#160;&quot;</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generate a separator line spanning the full table width. </p>
+
+</div>
+</div>
 <a id="a00ba7c7307a572e2566448cf70a74113" name="a00ba7c7307a572e2566448cf70a74113"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00ba7c7307a572e2566448cf70a74113">&#9670;&#160;</a></span>get_peak_rss_bytes()</h2>
 
@@ -354,6 +565,33 @@ Functions</h2></td></tr>
 <p>Get the peak resident set size (RSS) of the current process in bytes. </p>
 <p>Uses platform-specific APIs: <code>GetProcessMemoryInfo</code> on Windows, <code>getrusage</code> on POSIX (macOS reports bytes, Linux reports KB * 1024).</p>
 <dl class="section return"><dt>Returns</dt><dd>Peak RSS in bytes, or -1 on failure. </dd></dl>
+
+</div>
+</div>
+<a id="a6a6d05c84683e6d6c0e28dd34627b543" name="a6a6d05c84683e6d6c0e28dd34627b543"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a6d05c84683e6d6c0e28dd34627b543">&#9670;&#160;</a></span>header_labels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#abe9d14d638204ed03238b2a739eb81f9">Row</a> pptree::io::header_labels </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structpptree_1_1io_1_1Column.html">Column</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>columns</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Extract header labels from column definitions as a <a class="el" href="#abe9d14d638204ed03238b2a739eb81f9" title="A row of pre-formatted cell strings.">Row</a>. </p>
 
 </div>
 </div>
@@ -506,6 +744,43 @@ template&lt;typename F&gt; </div>
 
 </div>
 </div>
+<a id="a26cf2c53540b1d0f893f852e12d1db0c" name="a26cf2c53540b1d0f893f852e12d1db0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26cf2c53540b1d0f893f852e12d1db0c">&#9670;&#160;</a></span>pad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string pptree::io::pad </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>s</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>width</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#adab0ef61cd6661616ef875fece9277b3">Align</a></td>          <td class="paramname"><span class="paramname"><em>align</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="#adab0ef61cd6661616ef875fece9277b3a7c4f29407893c334a6cb7a87bf045c0d">Align::right</a></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Pad a string to a target visual width, handling ANSI codes. </p>
+<p>Unlike fmt::format width specifiers, this correctly handles strings containing ANSI escape codes by computing visual width separately. </p>
+
+</div>
+</div>
 <a id="af1e66c916b557283bd093964b09f9b3f" name="af1e66c916b557283bd093964b09f9b3f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af1e66c916b557283bd093964b09f9b3f">&#9670;&#160;</a></span>read_csv()</h2>
 
@@ -624,6 +899,74 @@ template&lt;typename F&gt; </div>
 
 </div>
 </div>
+<a id="a95b71cfde92a7d2e349b1ecce5418c1a" name="a95b71cfde92a7d2e349b1ecce5418c1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95b71cfde92a7d2e349b1ecce5418c1a">&#9670;&#160;</a></span>try_or_fail()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pptree::io::try_or_fail </td>
+          <td>(</td>
+          <td class="paramtype">const std::function&lt; void()&gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Run a callable, catch std::exception, print error, return 1. </p>
+<p>If the callable succeeds, returns 0. If it throws, prints the error message to stderr with red "Error:" prefix and returns 1.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>Callable that may throw. </td></tr>
+    <tr><td class="paramname">context</td><td>Optional prefix for the error message. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, 1 on caught exception. </dd></dl>
+
+</div>
+</div>
+<a id="a0e7fce12d06e78f44fc8ab83a2ef76c1" name="a0e7fce12d06e78f44fc8ab83a2ef76c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e7fce12d06e78f44fc8ab83a2ef76c1">&#9670;&#160;</a></span>visual_width()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pptree::io::visual_width </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>s</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Compute the visual width of a string, ignoring ANSI escape codes. </p>
+<p>Skips any ESC [ ... m (SGR) sequences when counting characters. </p>
+
+</div>
+</div>
 <a id="a3cb6da523b18b750e6757f5a123a1131" name="a3cb6da523b18b750e6757f5a123a1131"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3cb6da523b18b750e6757f5a123a1131">&#9670;&#160;</a></span>warning()</h2>
 
@@ -674,7 +1017,7 @@ template&lt;typename F&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>The DataPacket to write. </td></tr>
-    <tr><td class="paramname">filename</td><td>Output file path. </td></tr>
+    <tr><td class="paramname">filename</td><td><a class="el" href="structpptree_1_1io_1_1Output.html" title="Quiet-aware output context for CLI subcommands.">Output</a> file path. </td></tr>
   </table>
   </dd>
 </dl>

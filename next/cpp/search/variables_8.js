@@ -1,9 +1,12 @@
 var searchData=
 [
-  ['n_0',['n',['../structpptree_1_1bench_1_1Scenario.html#afed5db888468f42a1fb00c72fd8be2d4',1,'pptree::bench::Scenario::n'],['../structpptree_1_1bench_1_1ScenarioResult.html#ae9733063441c1b2bc0de9bd9fbeb0d5e',1,'pptree::bench::ScenarioResult::n']]],
-  ['n_5fvars_1',['n_vars',['../structpptree_1_1cli_1_1CLIOptions.html#adad81670e593f09b73d49dac5da3fb38',1,'pptree::cli::CLIOptions::n_vars'],['../structpptree_1_1dr_1_1DRUniformStrategy.html#afcb63f23a996a069f536491909e0ea17',1,'pptree::dr::DRUniformStrategy::n_vars'],['../structpptree_1_1TrainingSpecUGLDA.html#acc193ff040238578fe4bef0a251ab031',1,'pptree::TrainingSpecUGLDA::n_vars']]],
-  ['name_2',['name',['../structpptree_1_1bench_1_1Scenario.html#a321329bdc1bb20c8cf986cead1a53743',1,'pptree::bench::Scenario::name'],['../structpptree_1_1bench_1_1ScenarioResult.html#a5d2070d6218b49957a7ebd9c152861c7',1,'pptree::bench::ScenarioResult::name'],['../structpptree_1_1bench_1_1BenchmarkSuite.html#aa6a12eca2e628f983da03dc87dbb61bb',1,'pptree::bench::BenchmarkSuite::name']]],
-  ['no_5fcolor_3',['no_color',['../structpptree_1_1cli_1_1CLIOptions.html#adbd390afc212634756a1adca4e47171c',1,'pptree::cli::CLIOptions']]],
-  ['no_5fmetrics_4',['no_metrics',['../structpptree_1_1cli_1_1CLIOptions.html#aa43784b3f8ce5361c8dd0c9610bb0839',1,'pptree::cli::CLIOptions']]],
-  ['no_5fsave_5',['no_save',['../structpptree_1_1cli_1_1CLIOptions.html#a7dd727256638b098c7b457a399c08637',1,'pptree::cli::CLIOptions']]]
+  ['max_5fiterations_0',['max_iterations',['../structpptree_1_1cli_1_1ConvergenceCriteria.html#a9839d95f63d48bbfcf033ebfc6761209',1,'pptree::cli::ConvergenceCriteria::max_iterations'],['../structpptree_1_1cli_1_1CLIOptions.html#ac73637ec067fa3c9dd6bd9a4546c13ae',1,'pptree::cli::CLIOptions::max_iterations']]],
+  ['mean_1',['mean',['../structpptree_1_1stats_1_1SimulationParams.html#ac35f241d882bab9d4e5063a8822ba290',1,'pptree::stats::SimulationParams']]],
+  ['mean_5fseparation_2',['mean_separation',['../structpptree_1_1stats_1_1SimulationParams.html#ac8155a490b85578e409efbc25cec4292',1,'pptree::stats::SimulationParams']]],
+  ['mean_5fte_5ferror_3',['mean_te_error',['../structpptree_1_1cli_1_1ScenarioResult.html#a61283a18dd03d5b9d4a8c4950fe85414',1,'pptree::cli::ScenarioResult']]],
+  ['mean_5ftime_5fms_4',['mean_time_ms',['../structpptree_1_1cli_1_1ScenarioResult.html#abd0ed0ea12060c5dc3536e96bfe01433',1,'pptree::cli::ScenarioResult']]],
+  ['mean_5ftr_5ferror_5',['mean_tr_error',['../structpptree_1_1cli_1_1ScenarioResult.html#aa87875bf8ef1b6f757de42a377ff2a5f',1,'pptree::cli::ScenarioResult']]],
+  ['min_5fiterations_6',['min_iterations',['../structpptree_1_1cli_1_1ConvergenceCriteria.html#ab8260e76dcda286fddf46d46a3a2556f',1,'pptree::cli::ConvergenceCriteria::min_iterations'],['../structpptree_1_1cli_1_1CLIOptions.html#a1a3b5dbf3399f46328423a3ecc1d57f9',1,'pptree::cli::CLIOptions::min_iterations']]],
+  ['model_7',['model',['../structpptree_1_1cli_1_1TrainResult.html#a868f0b5e6045d726c70eafb6da220c93',1,'pptree::cli::TrainResult']]],
+  ['model_5fpath_8',['model_path',['../structpptree_1_1cli_1_1CLIOptions.html#ae92c02dfabb2dd6c760f32a6913b319b',1,'pptree::cli::CLIOptions']]]
 ];

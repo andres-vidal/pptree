@@ -88,10 +88,10 @@ PPTree(Type ~ ., data = iris)
 PPTree(Type ~ ., data = iris, lambda = 0.5)
 #> 
 #> Project-Pursuit Oblique Decision Tree:
-#> If ([ 0.07 -0.68 0.45 0.58 ] * x) < 0.2732363:
+#> If ([ 0.07 -0.68 0.45 0.58 ] * x) < 0.2732373:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.01 0.16 -0.34 -0.93 ] * x) < -2.714732:
+#>  If ([ 0.01 0.16 -0.34 -0.93 ] * x) < -2.714733:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -110,10 +110,10 @@ PPTree(x = iris[, 1:4], y = iris[, 5])
 
 # Example 4: matrix interface with the `iris` dataset with regularization
 PPTree(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
-#> If ([ 0.07 -0.68 0.45 0.58 ] * x) < 0.2732363:
+#> If ([ 0.07 -0.68 0.45 0.58 ] * x) < 0.2732373:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.01 0.16 -0.34 -0.93 ] * x) < -2.714732:
+#>  If ([ 0.01 0.16 -0.34 -0.93 ] * x) < -2.714733:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -123,7 +123,7 @@ PPTree(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 PPTree(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 #> 
 #> Project-Pursuit Oblique Decision Tree:
-#> If ([ 0.59 0.17 0.09 -0.55 0.48 0.29 ] * x) < 1.136017:
+#> If ([ 0.59 0.17 0.09 -0.55 0.48 0.29 ] * x) < 1.136014:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
@@ -143,7 +143,7 @@ PPTree(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
 x <- crabs[, 2:5]
 x$sex <- as.numeric(as.factor(crabs$sex))
 PPTree(x = x, y = crabs$Type)
-#> If ([ 0.67 0.16 0.31 -0.59 0.27 ] * x) < 1.406607:
+#> If ([ 0.67 0.16 0.31 -0.59 0.27 ] * x) < 1.40659:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 

@@ -1,8 +1,15 @@
 var namespacepptree_1_1cli =
 [
+    [ "BenchmarkSuite", "structpptree_1_1cli_1_1BenchmarkSuite.html", "structpptree_1_1cli_1_1BenchmarkSuite" ],
     [ "CLIOptions", "structpptree_1_1cli_1_1CLIOptions.html", "structpptree_1_1cli_1_1CLIOptions" ],
+    [ "ConvergenceCriteria", "structpptree_1_1cli_1_1ConvergenceCriteria.html", "structpptree_1_1cli_1_1ConvergenceCriteria" ],
     [ "ModelStats", "structpptree_1_1cli_1_1ModelStats.html", "structpptree_1_1cli_1_1ModelStats" ],
+    [ "Scenario", "structpptree_1_1cli_1_1Scenario.html", "structpptree_1_1cli_1_1Scenario" ],
+    [ "ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", "structpptree_1_1cli_1_1ScenarioResult" ],
+    [ "SuiteResult", "structpptree_1_1cli_1_1SuiteResult.html", "structpptree_1_1cli_1_1SuiteResult" ],
+    [ "TrainResult", "structpptree_1_1cli_1_1TrainResult.html", "structpptree_1_1cli_1_1TrainResult" ],
     [ "VarsSpec", "structpptree_1_1cli_1_1VarsSpec.html", "structpptree_1_1cli_1_1VarsSpec" ],
+    [ "ProgressCallback", "namespacepptree_1_1cli.html#ae6653e461f1f4674add8e353327978b9", null ],
     [ "Subcommand", "namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2", [
       [ "none", "namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a334c4a4c42fdb79d7ebc3e73b517e6f8", null ],
       [ "train", "namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a61b3a8faa9c1091806675c230a9abe64", null ],
@@ -10,12 +17,28 @@ var namespacepptree_1_1cli =
       [ "evaluate", "namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a94d2f2aabfda3169d54a9531cdb99890", null ],
       [ "benchmark", "namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a07978586e47c8709a63e895fbf3c3c7d", null ]
     ] ],
-    [ "announce_results", "namespacepptree_1_1cli.html#ae33d035ec9c76b39f2dcff6e62098bdb", null ],
+    [ "format_benchmark_markdown", "namespacepptree_1_1cli.html#a0e898bbef9bc8509ae646ae0fe42ccc0", null ],
     [ "init_params", "namespacepptree_1_1cli.html#a6edbd9529f4c9712812300fa08b07d7c", null ],
     [ "parse_args", "namespacepptree_1_1cli.html#a7ceebad5e5ddd8e7081eb6268a1002e9", null ],
+    [ "parse_results", "namespacepptree_1_1cli.html#a3d952f3bba5d7dd5b175178553719d2a", null ],
+    [ "parse_suite", "namespacepptree_1_1cli.html#a7dd234a915ab5eb389ad7d8cabbcd238", null ],
+    [ "parse_suite", "namespacepptree_1_1cli.html#aa05f02a83ff7afbd01207a7dc7ce11b5", null ],
     [ "parse_vars", "namespacepptree_1_1cli.html#a8bf5ab988401bf3ce7ba2f2aa4b2666b", null ],
     [ "parse_vars", "namespacepptree_1_1cli.html#af4cb3795222af14fab1cd0cff4740d2e", null ],
+    [ "print_benchmark_table", "namespacepptree_1_1cli.html#ad76326b4e92c2eef1b7c851616b52ba8", null ],
+    [ "print_configuration", "namespacepptree_1_1cli.html#ab61192e18f7534f0f5b5adfc6b299b67", null ],
     [ "print_confusion_matrix", "namespacepptree_1_1cli.html#ac0a17338648781d6b8b499db83b6905a", null ],
+    [ "print_results", "namespacepptree_1_1cli.html#a84c3d2d3f8274a7d808e5bb722734ee8", null ],
     [ "print_variable_importance", "namespacepptree_1_1cli.html#ada7326ea4198f85538016417272c88c8", null ],
-    [ "warn_unused_params", "namespacepptree_1_1cli.html#a9f6bf17ee59d3f7e450e6b274d99b292", null ]
+    [ "read_data", "namespacepptree_1_1cli.html#ad4875e4adc6a08fcc5db69e6028d8a80", null ],
+    [ "run_benchmark", "namespacepptree_1_1cli.html#a6a3adaf97468f3ade25c1288f374daf7", null ],
+    [ "run_evaluate", "namespacepptree_1_1cli.html#addd45ccfd034f270b6e99a42eefbdb4a", null ],
+    [ "run_predict", "namespacepptree_1_1cli.html#a44ba64ccd1958ca29282aaee713272de", null ],
+    [ "run_scenario", "namespacepptree_1_1cli.html#acdaf76dcf40755924f371dc92bf290dd", null ],
+    [ "run_suite", "namespacepptree_1_1cli.html#aeba5efa29f083576f8402451c143b539", null ],
+    [ "run_train", "namespacepptree_1_1cli.html#a9b65a61db6f8f71d1716467dd83e107f", null ],
+    [ "train_model", "namespacepptree_1_1cli.html#a3936c19a3680f9e7b4299e7e9ed591c0", null ],
+    [ "warn_unused_params", "namespacepptree_1_1cli.html#a9f6bf17ee59d3f7e450e6b274d99b292", null ],
+    [ "write_results_csv", "namespacepptree_1_1cli.html#a8349ee0f6743440e9de662f064958c04", null ],
+    [ "write_results_json", "namespacepptree_1_1cli.html#a3b0c6e81e5587fd3494a27a278acc1ac", null ]
 ];

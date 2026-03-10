@@ -122,8 +122,8 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad15b889adedbba88b2df14484e3fac25" id="r_ad15b889adedbba88b2df14484e3fac25"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad15b889adedbba88b2df14484e3fac25">TrainingSpec</a> (const <a class="el" href="structpptree_1_1TrainingSpec.html">TrainingSpec</a> &amp;other)</td></tr>
 <tr class="separator:ad15b889adedbba88b2df14484e3fac25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a435f52b1e61cf841ed298857f7cf348b" id="r_a435f52b1e61cf841ed298857f7cf348b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a435f52b1e61cf841ed298857f7cf348b">TrainingSpec</a> (std::unique_ptr&lt; <a class="el" href="structpptree_1_1pp_1_1PPStrategy.html">pp::PPStrategy</a> &gt; <a class="el" href="#a34440f4697b2f951d247496da813c19a">pp_strategy</a>, std::unique_ptr&lt; <a class="el" href="structpptree_1_1dr_1_1DRStrategy.html">dr::DRStrategy</a> &gt; <a class="el" href="#a275069565259df175dafea1cc82ce5d7">dr_strategy</a>)</td></tr>
-<tr class="separator:a435f52b1e61cf841ed298857f7cf348b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d2c0d40c3acae9e14758eaad758620b" id="r_a5d2c0d40c3acae9e14758eaad758620b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5d2c0d40c3acae9e14758eaad758620b">TrainingSpec</a> (std::unique_ptr&lt; <a class="el" href="structpptree_1_1pp_1_1PPStrategy.html">pp::PPStrategy</a> &gt; <a class="el" href="#a34440f4697b2f951d247496da813c19a">pp_strategy</a>, std::unique_ptr&lt; <a class="el" href="structpptree_1_1dr_1_1DRStrategy.html">dr::DRStrategy</a> &gt; <a class="el" href="#a275069565259df175dafea1cc82ce5d7">dr_strategy</a>, std::unique_ptr&lt; <a class="el" href="structpptree_1_1sr_1_1SRStrategy.html">sr::SRStrategy</a> &gt; <a class="el" href="#ab5202ba4bf9df41068b779a42143079e">split_strategy</a>)</td></tr>
+<tr class="separator:a5d2c0d40c3acae9e14758eaad758620b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfb3957ab8ae936d8dd35605313b8f49" id="r_acfb3957ab8ae936d8dd35605313b8f49"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acfb3957ab8ae936d8dd35605313b8f49">~TrainingSpec</a> ()=default</td></tr>
 <tr class="separator:acfb3957ab8ae936d8dd35605313b8f49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad03cc2f2575a14eca4a59169b4734c66" id="r_ad03cc2f2575a14eca4a59169b4734c66"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad03cc2f2575a14eca4a59169b4734c66">accept</a> (<a class="el" href="structpptree_1_1TrainingSpecVisitor.html">TrainingSpecVisitor</a> &amp;visitor) const =0</td></tr>
@@ -141,10 +141,13 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a34440f4697b2f951d247496da813c19a" id="r_a34440f4697b2f951d247496da813c19a"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="structpptree_1_1pp_1_1PPStrategy.html">pp::PPStrategy</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34440f4697b2f951d247496da813c19a">pp_strategy</a></td></tr>
 <tr class="memdesc:a34440f4697b2f951d247496da813c19a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Projection pursuit optimization strategy.  <br /></td></tr>
 <tr class="separator:a34440f4697b2f951d247496da813c19a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5202ba4bf9df41068b779a42143079e" id="r_ab5202ba4bf9df41068b779a42143079e"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="structpptree_1_1sr_1_1SRStrategy.html">sr::SRStrategy</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5202ba4bf9df41068b779a42143079e">split_strategy</a></td></tr>
+<tr class="memdesc:ab5202ba4bf9df41068b779a42143079e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group splitting rule strategy.  <br /></td></tr>
+<tr class="separator:ab5202ba4bf9df41068b779a42143079e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract training configuration for projection pursuit trees. </p>
-<p>Composes a projection pursuit strategy (PPStrategy) with a dimensionality reduction strategy (DRStrategy). Concrete subclasses (<a class="el" href="structpptree_1_1TrainingSpecGLDA.html" title="GLDA training specification using all variables.">TrainingSpecGLDA</a>, <a class="el" href="structpptree_1_1TrainingSpecUGLDA.html" title="UGLDA training specification with uniform variable selection.">TrainingSpecUGLDA</a>) provide specific parameter combinations. </p>
+<p>Composes a projection pursuit strategy (PPStrategy), a dimensionality reduction strategy (DRStrategy), and a split strategy (SRStrategy). Concrete subclasses (<a class="el" href="structpptree_1_1TrainingSpecGLDA.html" title="GLDA training specification using all variables.">TrainingSpecGLDA</a>, <a class="el" href="structpptree_1_1TrainingSpecUGLDA.html" title="UGLDA training specification with uniform variable selection.">TrainingSpecUGLDA</a>) provide specific parameter combinations. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="af06aa1c58d3f2fa6a02bba31ccd6afbd" name="af06aa1c58d3f2fa6a02bba31ccd6afbd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af06aa1c58d3f2fa6a02bba31ccd6afbd">&#9670;&#160;</a></span>Ptr</h2>
@@ -161,8 +164,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a435f52b1e61cf841ed298857f7cf348b" name="a435f52b1e61cf841ed298857f7cf348b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a435f52b1e61cf841ed298857f7cf348b">&#9670;&#160;</a></span>TrainingSpec() <span class="overload">[1/2]</span></h2>
+<a id="a5d2c0d40c3acae9e14758eaad758620b" name="a5d2c0d40c3acae9e14758eaad758620b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d2c0d40c3acae9e14758eaad758620b">&#9670;&#160;</a></span>TrainingSpec() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -178,7 +181,12 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structpptree_1_1dr_1_1DRStrategy.html">dr::DRStrategy</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>dr_strategy</em></span>&#160;)</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structpptree_1_1dr_1_1DRStrategy.html">dr::DRStrategy</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>dr_strategy</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structpptree_1_1sr_1_1SRStrategy.html">sr::SRStrategy</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>split_strategy</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -329,6 +337,22 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Projection pursuit optimization strategy. </p>
+
+</div>
+</div>
+<a id="ab5202ba4bf9df41068b779a42143079e" name="ab5202ba4bf9df41068b779a42143079e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5202ba4bf9df41068b779a42143079e">&#9670;&#160;</a></span>split_strategy</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::unique_ptr&lt;<a class="el" href="structpptree_1_1sr_1_1SRStrategy.html">sr::SRStrategy</a>&gt; pptree::TrainingSpec::split_strategy</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Group splitting rule strategy. </p>
 
 </div>
 </div>

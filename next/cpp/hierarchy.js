@@ -1,9 +1,10 @@
 var hierarchy =
 [
-    [ "pptree::bench::BenchmarkSuite", "structpptree_1_1bench_1_1BenchmarkSuite.html", null ],
+    [ "pptree::cli::BenchmarkSuite", "structpptree_1_1cli_1_1BenchmarkSuite.html", null ],
     [ "pptree::cli::CLIOptions", "structpptree_1_1cli_1_1CLIOptions.html", null ],
+    [ "pptree::io::Column", "structpptree_1_1io_1_1Column.html", null ],
     [ "pptree::stats::ConfusionMatrix", "structpptree_1_1stats_1_1ConfusionMatrix.html", null ],
-    [ "pptree::bench::ConvergenceCriteria", "structpptree_1_1bench_1_1ConvergenceCriteria.html", null ],
+    [ "pptree::cli::ConvergenceCriteria", "structpptree_1_1cli_1_1ConvergenceCriteria.html", null ],
     [ "pptree::stats::DataPacket", "structpptree_1_1stats_1_1DataPacket.html", null ],
     [ "pptree::dr::DRSpec", "structpptree_1_1dr_1_1DRSpec.html", null ],
     [ "pptree::dr::DRStrategy", "structpptree_1_1dr_1_1DRStrategy.html", [
@@ -22,16 +23,20 @@ var hierarchy =
       [ "pptree::serialization::JsonModelVisitor", "structpptree_1_1serialization_1_1JsonModelVisitor.html", null ]
     ] ],
     [ "pptree::stats::Normal", "classpptree_1_1stats_1_1Normal.html", null ],
+    [ "pptree::io::Output", "structpptree_1_1io_1_1Output.html", null ],
     [ "pptree::pp::PPResult", "structpptree_1_1pp_1_1PPResult.html", null ],
     [ "pptree::pp::PPStrategy", "structpptree_1_1pp_1_1PPStrategy.html", [
       [ "pptree::pp::PPGLDAStrategy", "structpptree_1_1pp_1_1PPGLDAStrategy.html", null ]
     ] ],
     [ "pptree::Proportions", "structpptree_1_1Proportions.html", null ],
-    [ "pptree::bench::Scenario", "structpptree_1_1bench_1_1Scenario.html", null ],
-    [ "pptree::bench::ScenarioResult", "structpptree_1_1bench_1_1ScenarioResult.html", null ],
+    [ "pptree::cli::Scenario", "structpptree_1_1cli_1_1Scenario.html", null ],
+    [ "pptree::cli::ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", null ],
     [ "pptree::stats::SimulationParams", "structpptree_1_1stats_1_1SimulationParams.html", null ],
     [ "pptree::stats::Split", "structpptree_1_1stats_1_1Split.html", null ],
-    [ "pptree::bench::SuiteResult", "structpptree_1_1bench_1_1SuiteResult.html", null ],
+    [ "pptree::sr::SRStrategy", "structpptree_1_1sr_1_1SRStrategy.html", [
+      [ "pptree::sr::SRMeanOfMeansStrategy", "structpptree_1_1sr_1_1SRMeanOfMeansStrategy.html", null ]
+    ] ],
+    [ "pptree::cli::SuiteResult", "structpptree_1_1cli_1_1SuiteResult.html", null ],
     [ "pptree::io::TempDir", "classpptree_1_1io_1_1TempDir.html", null ],
     [ "pptree::io::TempFile", "classpptree_1_1io_1_1TempFile.html", null ],
     [ "pptree::TrainingSpec", "structpptree_1_1TrainingSpec.html", [
@@ -39,6 +44,7 @@ var hierarchy =
       [ "pptree::TrainingSpecUGLDA", "structpptree_1_1TrainingSpecUGLDA.html", null ]
     ] ],
     [ "pptree::TrainingSpecVisitor", "structpptree_1_1TrainingSpecVisitor.html", null ],
+    [ "pptree::cli::TrainResult", "structpptree_1_1cli_1_1TrainResult.html", null ],
     [ "pptree::TreeNode", "structpptree_1_1TreeNode.html", [
       [ "pptree::TreeCondition", "structpptree_1_1TreeCondition.html", null ],
       [ "pptree::TreeResponse", "structpptree_1_1TreeResponse.html", null ]
