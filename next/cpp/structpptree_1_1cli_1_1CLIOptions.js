@@ -1,11 +1,20 @@
 var structpptree_1_1cli_1_1CLIOptions =
 [
+    [ "baseline_path", "structpptree_1_1cli_1_1CLIOptions.html#a834a42d7bc17b5ef6b99233050d7d9b6", null ],
+    [ "bench_csv", "structpptree_1_1cli_1_1CLIOptions.html#a0d249170ec11fa208a91d731f2fdaad4", null ],
+    [ "bench_format", "structpptree_1_1cli_1_1CLIOptions.html#a2e69ba7d46b39421e00f77ed2a1fb267", null ],
+    [ "bench_iterations", "structpptree_1_1cli_1_1CLIOptions.html#aa3b1a88727e9c14be2a4dfada78de6ab", null ],
+    [ "bench_output", "structpptree_1_1cli_1_1CLIOptions.html#afe7cdd6bdbf206f38bfee47b39b565a5", null ],
     [ "classes", "structpptree_1_1cli_1_1CLIOptions.html#a1cc4ed303dbb0c1d94711fa0f8f5a169", null ],
     [ "cols", "structpptree_1_1cli_1_1CLIOptions.html#ac1faf9f6e2f1aaa5d244e4247813fef6", null ],
+    [ "converge", "structpptree_1_1cli_1_1CLIOptions.html#aac018fc78e20659c060bd217a6ff020b", null ],
+    [ "cv_threshold", "structpptree_1_1cli_1_1CLIOptions.html#a51ae61b16005b3841fa0336b06ba1d92", null ],
     [ "data_path", "structpptree_1_1cli_1_1CLIOptions.html#a10fe2f9c52d0e7baf6a8c06076b0bf2e", null ],
     [ "export_path", "structpptree_1_1cli_1_1CLIOptions.html#ab4bbd4d1c38109d56df8afc9ba63f0cf", null ],
     [ "iterations", "structpptree_1_1cli_1_1CLIOptions.html#a5a1ef4742332ea20b903ebb328d8221a", null ],
     [ "lambda", "structpptree_1_1cli_1_1CLIOptions.html#ab21a3512fdf02cf418e3c72e64ff3c13", null ],
+    [ "max_iterations", "structpptree_1_1cli_1_1CLIOptions.html#ac73637ec067fa3c9dd6bd9a4546c13ae", null ],
+    [ "min_iterations", "structpptree_1_1cli_1_1CLIOptions.html#a1a3b5dbf3399f46328423a3ecc1d57f9", null ],
     [ "model_path", "structpptree_1_1cli_1_1CLIOptions.html#ae92c02dfabb2dd6c760f32a6913b319b", null ],
     [ "n_vars", "structpptree_1_1cli_1_1CLIOptions.html#adad81670e593f09b73d49dac5da3fb38", null ],
     [ "no_color", "structpptree_1_1cli_1_1CLIOptions.html#adbd390afc212634756a1adca4e47171c", null ],
@@ -16,11 +25,13 @@ var structpptree_1_1cli_1_1CLIOptions =
     [ "quiet", "structpptree_1_1cli_1_1CLIOptions.html#a81b96c8fcda2e58510bc33bf2555a1d4", null ],
     [ "rows", "structpptree_1_1cli_1_1CLIOptions.html#aa2fd984529690e85f9db22bf8f460c1b", null ],
     [ "save_path", "structpptree_1_1cli_1_1CLIOptions.html#aeee418e47cebf70f0930678aadf0a8e0", null ],
+    [ "scenarios_path", "structpptree_1_1cli_1_1CLIOptions.html#af708635ec12817d1cf485aad54c68614", null ],
     [ "seed", "structpptree_1_1cli_1_1CLIOptions.html#a681c5d2f0dea4e7cffbf997c2127875f", null ],
     [ "sim_mean", "structpptree_1_1cli_1_1CLIOptions.html#a3756ef3f684403a275817cb35251f4b4", null ],
     [ "sim_mean_separation", "structpptree_1_1cli_1_1CLIOptions.html#aad07522b823726dfdfa22f763e5e046c", null ],
     [ "sim_sd", "structpptree_1_1cli_1_1CLIOptions.html#a572f835cb9d571f035e223261f3394a9", null ],
     [ "simulate", "structpptree_1_1cli_1_1CLIOptions.html#a91f303e50d958bf0312bbcdcdf445e40", null ],
+    [ "stable_window", "structpptree_1_1cli_1_1CLIOptions.html#a168b1635098ca6d6e0d43bac039a175e", null ],
     [ "subcommand", "structpptree_1_1cli_1_1CLIOptions.html#aa7795fd2523135ea041cd4948df441cd", null ],
     [ "threads", "structpptree_1_1cli_1_1CLIOptions.html#a3f5e8ceb2cdf39efbb91f63220732350", null ],
     [ "train_ratio", "structpptree_1_1cli_1_1CLIOptions.html#a5e41cf9238f24a57a1e80b513f7d4e48", null ],
@@ -28,5 +39,6 @@ var structpptree_1_1cli_1_1CLIOptions =
     [ "used_default_seed", "structpptree_1_1cli_1_1CLIOptions.html#a5d18713b0aadf6c76ceb9b5e64fd32f0", null ],
     [ "used_default_threads", "structpptree_1_1cli_1_1CLIOptions.html#ad7b35021f7b90c588541c1f3ac2ffb04", null ],
     [ "used_default_vars", "structpptree_1_1cli_1_1CLIOptions.html#abe1c4927748a2af8b36f6b14789ec754", null ],
-    [ "vars_input", "structpptree_1_1cli_1_1CLIOptions.html#a1a6ee4e111d759af63ca6354dbc9a2e4", null ]
+    [ "vars_input", "structpptree_1_1cli_1_1CLIOptions.html#a1a6ee4e111d759af63ca6354dbc9a2e4", null ],
+    [ "warmup", "structpptree_1_1cli_1_1CLIOptions.html#aeff57d9a0b2a9d4c86e81aaec085198e", null ]
 ];

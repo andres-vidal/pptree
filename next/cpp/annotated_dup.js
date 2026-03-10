@@ -1,16 +1,27 @@
 var annotated_dup =
 [
     [ "pptree", "namespacepptree.html", [
+      [ "bench", "namespacepptree_1_1bench.html", [
+        [ "BenchmarkSuite", "structpptree_1_1bench_1_1BenchmarkSuite.html", "structpptree_1_1bench_1_1BenchmarkSuite" ],
+        [ "ConvergenceCriteria", "structpptree_1_1bench_1_1ConvergenceCriteria.html", "structpptree_1_1bench_1_1ConvergenceCriteria" ],
+        [ "Scenario", "structpptree_1_1bench_1_1Scenario.html", "structpptree_1_1bench_1_1Scenario" ],
+        [ "ScenarioResult", "structpptree_1_1bench_1_1ScenarioResult.html", "structpptree_1_1bench_1_1ScenarioResult" ],
+        [ "SuiteResult", "structpptree_1_1bench_1_1SuiteResult.html", "structpptree_1_1bench_1_1SuiteResult" ]
+      ] ],
       [ "cli", "namespacepptree_1_1cli.html", [
         [ "CLIOptions", "structpptree_1_1cli_1_1CLIOptions.html", "structpptree_1_1cli_1_1CLIOptions" ],
-        [ "ConfigJSON", "classpptree_1_1cli_1_1ConfigJSON.html", "classpptree_1_1cli_1_1ConfigJSON" ],
-        [ "ModelStats", "structpptree_1_1cli_1_1ModelStats.html", "structpptree_1_1cli_1_1ModelStats" ]
+        [ "ModelStats", "structpptree_1_1cli_1_1ModelStats.html", "structpptree_1_1cli_1_1ModelStats" ],
+        [ "VarsSpec", "structpptree_1_1cli_1_1VarsSpec.html", "structpptree_1_1cli_1_1VarsSpec" ]
       ] ],
       [ "dr", "namespacepptree_1_1dr.html", [
         [ "DRNoopStrategy", "structpptree_1_1dr_1_1DRNoopStrategy.html", "structpptree_1_1dr_1_1DRNoopStrategy" ],
         [ "DRSpec", "structpptree_1_1dr_1_1DRSpec.html", "structpptree_1_1dr_1_1DRSpec" ],
         [ "DRStrategy", "structpptree_1_1dr_1_1DRStrategy.html", "structpptree_1_1dr_1_1DRStrategy" ],
         [ "DRUniformStrategy", "structpptree_1_1dr_1_1DRUniformStrategy.html", "structpptree_1_1dr_1_1DRUniformStrategy" ]
+      ] ],
+      [ "io", "namespacepptree_1_1io.html", [
+        [ "TempDir", "classpptree_1_1io_1_1TempDir.html", "classpptree_1_1io_1_1TempDir" ],
+        [ "TempFile", "classpptree_1_1io_1_1TempFile.html", "classpptree_1_1io_1_1TempFile" ]
       ] ],
       [ "pp", "namespacepptree_1_1pp.html", [
         [ "PPGLDAStrategy", "structpptree_1_1pp_1_1PPGLDAStrategy.html", "structpptree_1_1pp_1_1PPGLDAStrategy" ],

@@ -112,19 +112,23 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">All CLI options and runtime parameters.  <a href="structpptree_1_1cli_1_1CLIOptions.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpptree_1_1cli_1_1ConfigJSON.html">ConfigJSON</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">JSON config file adapter for CLI11.  <a href="classpptree_1_1cli_1_1ConfigJSON.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1cli_1_1ModelStats.html">ModelStats</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aggregated statistics across multiple training iterations.  <a href="structpptree_1_1cli_1_1ModelStats.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1cli_1_1VarsSpec.html">VarsSpec</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result of parsing a vars specification.  <a href="structpptree_1_1cli_1_1VarsSpec.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a984adc2deae80ff21c9b6baab8820fd2" id="r_a984adc2deae80ff21c9b6baab8820fd2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a984adc2deae80ff21c9b6baab8820fd2">Subcommand</a> { <a class="el" href="#a984adc2deae80ff21c9b6baab8820fd2a334c4a4c42fdb79d7ebc3e73b517e6f8">none</a>
+<tr class="memitem:a984adc2deae80ff21c9b6baab8820fd2" id="r_a984adc2deae80ff21c9b6baab8820fd2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a984adc2deae80ff21c9b6baab8820fd2">Subcommand</a> { <br />
+&#160;&#160;<a class="el" href="#a984adc2deae80ff21c9b6baab8820fd2a334c4a4c42fdb79d7ebc3e73b517e6f8">none</a>
 , <a class="el" href="#a984adc2deae80ff21c9b6baab8820fd2a61b3a8faa9c1091806675c230a9abe64">train</a>
 , <a class="el" href="#a984adc2deae80ff21c9b6baab8820fd2a59a9f87755ec523b0db73207fc8362df">predict</a>
 , <a class="el" href="#a984adc2deae80ff21c9b6baab8820fd2a94d2f2aabfda3169d54a9531cdb99890">evaluate</a>
+, <br />
+&#160;&#160;<a class="el" href="#a984adc2deae80ff21c9b6baab8820fd2a07978586e47c8709a63e895fbf3c3c7d">benchmark</a>
+<br />
  }</td></tr>
 <tr class="memdesc:a984adc2deae80ff21c9b6baab8820fd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Available CLI subcommands.  <a href="#a984adc2deae80ff21c9b6baab8820fd2">More...</a><br /></td></tr>
 <tr class="separator:a984adc2deae80ff21c9b6baab8820fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,6 +144,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a7ceebad5e5ddd8e7081eb6268a1002e9" id="r_a7ceebad5e5ddd8e7081eb6268a1002e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ceebad5e5ddd8e7081eb6268a1002e9">parse_args</a> (int argc, char *argv[])</td></tr>
 <tr class="memdesc:a7ceebad5e5ddd8e7081eb6268a1002e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse command-line arguments into a <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html" title="All CLI options and runtime parameters.">CLIOptions</a> struct.  <br /></td></tr>
 <tr class="separator:a7ceebad5e5ddd8e7081eb6268a1002e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bf5ab988401bf3ce7ba2f2aa4b2666b" id="r_a8bf5ab988401bf3ce7ba2f2aa4b2666b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1VarsSpec.html">VarsSpec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8bf5ab988401bf3ce7ba2f2aa4b2666b">parse_vars</a> (const nlohmann::json &amp;j)</td></tr>
+<tr class="memdesc:a8bf5ab988401bf3ce7ba2f2aa4b2666b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse vars from a JSON value (benchmark scenarios).  <br /></td></tr>
+<tr class="separator:a8bf5ab988401bf3ce7ba2f2aa4b2666b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4cb3795222af14fab1cd0cff4740d2e" id="r_af4cb3795222af14fab1cd0cff4740d2e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1VarsSpec.html">VarsSpec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4cb3795222af14fab1cd0cff4740d2e">parse_vars</a> (const std::string &amp;input)</td></tr>
+<tr class="memdesc:af4cb3795222af14fab1cd0cff4740d2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse vars from a string (CLI input).  <br /></td></tr>
+<tr class="separator:af4cb3795222af14fab1cd0cff4740d2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0a17338648781d6b8b499db83b6905a" id="r_ac0a17338648781d6b8b499db83b6905a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0a17338648781d6b8b499db83b6905a">print_confusion_matrix</a> (const <a class="el" href="structpptree_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;cm)</td></tr>
 <tr class="memdesc:ac0a17338648781d6b8b499db83b6905a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted confusion matrix to stdout.  <br /></td></tr>
 <tr class="separator:ac0a17338648781d6b8b499db83b6905a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -177,6 +187,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a984adc2deae80ff21c9b6baab8820fd2a61b3a8faa9c1091806675c230a9abe64" name="a984adc2deae80ff21c9b6baab8820fd2a61b3a8faa9c1091806675c230a9abe64"></a>train&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a984adc2deae80ff21c9b6baab8820fd2a59a9f87755ec523b0db73207fc8362df" name="a984adc2deae80ff21c9b6baab8820fd2a59a9f87755ec523b0db73207fc8362df"></a>predict&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a984adc2deae80ff21c9b6baab8820fd2a94d2f2aabfda3169d54a9531cdb99890" name="a984adc2deae80ff21c9b6baab8820fd2a94d2f2aabfda3169d54a9531cdb99890"></a>evaluate&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a984adc2deae80ff21c9b6baab8820fd2a07978586e47c8709a63e895fbf3c3c7d" name="a984adc2deae80ff21c9b6baab8820fd2a07978586e47c8709a63e895fbf3c3c7d"></a>benchmark&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -212,9 +223,6 @@ Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void pptree::cli::init_params </td>
@@ -227,21 +235,9 @@ Functions</h2></td></tr>
           <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>total_vars</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Resolve sentinel values in <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html" title="All CLI options and runtime parameters.">CLIOptions</a> to concrete defaults. </p>
-<ul>
-<li>lambda: defaults to 0.5 if -1.</li>
-<li>seed: randomly generated if -1.</li>
-<li>threads: set to max OpenMP threads if -1.</li>
-<li>vars: computed from total_vars if neither p_vars nor n_vars was set.</li>
-</ul>
-<p>Also sets the <code>used_default_*</code> tracking flags.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">params</td><td>The CLI options to initialize (modified in place). </td></tr>
@@ -257,9 +253,6 @@ Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> pptree::cli::parse_args </td>
@@ -272,15 +265,9 @@ Functions</h2></td></tr>
           <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>argv</em></span>[]&#160;)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Parse command-line arguments into a <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html" title="All CLI options and runtime parameters.">CLIOptions</a> struct. </p>
-<p>Uses CLI11 to define and parse three subcommands (train, predict, evaluate) plus global options (&ndash;quiet, &ndash;no-color, &ndash;config, &ndash;version). Performs post-parse validation on &ndash;vars, &ndash;simulate format, and mutually exclusive options. Exits on parse errors.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">argc</td><td>Argument count from main(). </td></tr>
@@ -289,6 +276,66 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A populated <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html" title="All CLI options and runtime parameters.">CLIOptions</a> struct. </dd></dl>
+
+</div>
+</div>
+<a id="a8bf5ab988401bf3ce7ba2f2aa4b2666b" name="a8bf5ab988401bf3ce7ba2f2aa4b2666b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bf5ab988401bf3ce7ba2f2aa4b2666b">&#9670;&#160;</a></span>parse_vars() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structpptree_1_1cli_1_1VarsSpec.html">VarsSpec</a> pptree::cli::parse_vars </td>
+          <td>(</td>
+          <td class="paramtype">const nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parse vars from a JSON value (benchmark scenarios). </p>
+<p>Formats:</p><ul>
+<li>JSON string: delegates to parse_vars(string)</li>
+<li>JSON integer: count, is_proportion = false</li>
+<li>JSON float: proportion, is_proportion = true</li>
+</ul>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>on invalid input. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af4cb3795222af14fab1cd0cff4740d2e" name="af4cb3795222af14fab1cd0cff4740d2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4cb3795222af14fab1cd0cff4740d2e">&#9670;&#160;</a></span>parse_vars() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structpptree_1_1cli_1_1VarsSpec.html">VarsSpec</a> pptree::cli::parse_vars </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parse vars from a string (CLI input). </p>
+<p>Formats:</p><ul>
+<li>"1/3" → fraction, is_proportion = true, value = 0.333...</li>
+<li>"0.5" → decimal, is_proportion = true, value = 0.5</li>
+<li>"5" → count, is_proportion = false, value = 5</li>
+</ul>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>on invalid input. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -354,9 +401,6 @@ Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void pptree::cli::warn_unused_params </td>
@@ -365,21 +409,9 @@ Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Warn the user about parameters that are ignored for single-tree training. </p>
-<p>When trees==0 (single tree mode), threads and vars have no effect. Prints warnings to stdout unless quiet mode is active.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">params</td><td>The CLI options to check. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>

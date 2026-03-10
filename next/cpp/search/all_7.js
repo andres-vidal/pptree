@@ -12,5 +12,6 @@ var searchData=
   ['is_5fapprox_9',['is_approx',['../namespacepptree_1_1math.html#a70b43231e11e8cb6e239fe93884b2ed5',1,'pptree::math::is_approx(A a, B b, T threshold)'],['../namespacepptree_1_1math.html#a77db36f3fe890ab90a17cf3838d33437',1,'pptree::math::is_approx(A a, B b)']]],
   ['is_5fcontiguous_10',['is_contiguous',['../classpptree_1_1stats_1_1GroupPartition.html#a3a66a1cae87ab2ad41c81108d66fec47',1,'pptree::stats::GroupPartition']]],
   ['is_5fmodule_5fapprox_11',['is_module_approx',['../namespacepptree_1_1math.html#af945fa6da0cba82b3f93a33460ca663e',1,'pptree::math']]],
-  ['iterations_12',['iterations',['../structpptree_1_1cli_1_1CLIOptions.html#a5a1ef4742332ea20b903ebb328d8221a',1,'pptree::cli::CLIOptions']]]
+  ['is_5fproportion_12',['is_proportion',['../structpptree_1_1cli_1_1VarsSpec.html#a6c6787a5127346760f28c983860e32aa',1,'pptree::cli::VarsSpec']]],
+  ['iterations_13',['iterations',['../structpptree_1_1bench_1_1Scenario.html#a9508784b4f11bae68bdf0dcf481ee20b',1,'pptree::bench::Scenario::iterations'],['../structpptree_1_1cli_1_1CLIOptions.html#a5a1ef4742332ea20b903ebb328d8221a',1,'pptree::cli::CLIOptions::iterations']]]
 ];

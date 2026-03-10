@@ -5,6 +5,7 @@ var searchData=
   ['mean_5fte_5ferror_2',['mean_te_error',['../structpptree_1_1cli_1_1ModelStats.html#a2af9467d3d5840949bdb85ccab4857e9',1,'pptree::cli::ModelStats']]],
   ['mean_5ftime_3',['mean_time',['../structpptree_1_1cli_1_1ModelStats.html#a7c2315f9fa32e9400e872b49bf18dc43',1,'pptree::cli::ModelStats']]],
   ['mean_5ftr_5ferror_4',['mean_tr_error',['../structpptree_1_1cli_1_1ModelStats.html#a207d3cf9fa379f8d4de9b12c46e0d5c3',1,'pptree::cli::ModelStats']]],
-  ['model_5ffrom_5fjson_5',['model_from_json',['../namespacepptree_1_1serialization.html#ad389da240453e7e78f82f9523e48663c',1,'pptree::serialization']]],
-  ['muted_6',['muted',['../namespacepptree_1_1io.html#aab2771d227adf994e7c2ccfca1c77536',1,'pptree::io']]]
+  ['measure_5ftime_5fms_5',['measure_time_ms',['../namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea',1,'pptree::io']]],
+  ['model_5ffrom_5fjson_6',['model_from_json',['../namespacepptree_1_1serialization.html#ad389da240453e7e78f82f9523e48663c',1,'pptree::serialization']]],
+  ['muted_7',['muted',['../namespacepptree_1_1io.html#aab2771d227adf994e7c2ccfca1c77536',1,'pptree::io']]]
 ];

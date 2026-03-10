@@ -100,11 +100,21 @@ $(function(){initNavTree('namespacepptree_1_1io.html',''); initResizable(true); 
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">pptree::io Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpptree_1_1io_1_1TempDir.html">TempDir</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII temporary directory with automatic cleanup.  <a href="classpptree_1_1io_1_1TempDir.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpptree_1_1io_1_1TempFile.html">TempFile</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII temporary file with automatic cleanup.  <a href="classpptree_1_1io_1_1TempFile.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a68f4a3ea8c66d91fe11b76811aea21e9" id="r_a68f4a3ea8c66d91fe11b76811aea21e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68f4a3ea8c66d91fe11b76811aea21e9">check_dir_not_exists</a> (const std::string &amp;path)</td></tr>
@@ -134,9 +144,16 @@ Functions</h2></td></tr>
 <tr class="memitem:a0cc750cc7124a7dfa8aeb3180a2f98eb" id="r_a0cc750cc7124a7dfa8aeb3180a2f98eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0cc750cc7124a7dfa8aeb3180a2f98eb">init_color</a> (bool no_color)</td></tr>
 <tr class="memdesc:a0cc750cc7124a7dfa8aeb3180a2f98eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize color support based on TTY detection and user preference.  <br /></td></tr>
 <tr class="separator:a0cc750cc7124a7dfa8aeb3180a2f98eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bfe7762855a7a8d18287357aa3da3ea" id="r_a0bfe7762855a7a8d18287357aa3da3ea"><td class="memTemplParams" colspan="2">template&lt;typename F&gt; </td></tr>
+<tr class="memitem:a0bfe7762855a7a8d18287357aa3da3ea"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a0bfe7762855a7a8d18287357aa3da3ea">measure_time_ms</a> (F &amp;&amp;f)</td></tr>
+<tr class="memdesc:a0bfe7762855a7a8d18287357aa3da3ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Measure the wall-clock execution time of a callable in milliseconds.  <br /></td></tr>
+<tr class="separator:a0bfe7762855a7a8d18287357aa3da3ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab2771d227adf994e7c2ccfca1c77536" id="r_aab2771d227adf994e7c2ccfca1c77536"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab2771d227adf994e7c2ccfca1c77536">muted</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:aab2771d227adf994e7c2ccfca1c77536"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format text in dim gray (for hints and secondary info).  <br /></td></tr>
 <tr class="separator:aab2771d227adf994e7c2ccfca1c77536"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b370b1542eb16ec7e6d2eee5c64fe97" id="r_a7b370b1542eb16ec7e6d2eee5c64fe97"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7b370b1542eb16ec7e6d2eee5c64fe97">now_iso8601</a> ()</td></tr>
+<tr class="memdesc:a7b370b1542eb16ec7e6d2eee5c64fe97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current local time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SS).  <br /></td></tr>
+<tr class="separator:a7b370b1542eb16ec7e6d2eee5c64fe97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1e66c916b557283bd093964b09f9b3f" id="r_af1e66c916b557283bd093964b09f9b3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1stats_1_1DataPacket.html">stats::DataPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1e66c916b557283bd093964b09f9b3f">read_csv</a> (const std::string &amp;filename)</td></tr>
 <tr class="memdesc:af1e66c916b557283bd093964b09f9b3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a CSV file into a DataPacket.  <br /></td></tr>
 <tr class="separator:af1e66c916b557283bd093964b09f9b3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -401,6 +418,40 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a0bfe7762855a7a8d18287357aa3da3ea" name="a0bfe7762855a7a8d18287357aa3da3ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bfe7762855a7a8d18287357aa3da3ea">&#9670;&#160;</a></span>measure_time_ms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto pptree::io::measure_time_ms </td>
+          <td>(</td>
+          <td class="paramtype">F &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Measure the wall-clock execution time of a callable in milliseconds. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">F</td><td>A callable (lambda, function pointer, std::function, etc.) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>The callable to time. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A pair of (result, duration_ms) where result is the return value of f() and duration_ms is the elapsed time in milliseconds. </dd></dl>
+
+</div>
+</div>
 <a id="aab2771d227adf994e7c2ccfca1c77536" name="aab2771d227adf994e7c2ccfca1c77536"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aab2771d227adf994e7c2ccfca1c77536">&#9670;&#160;</a></span>muted()</h2>
 
@@ -425,6 +476,33 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Format text in dim gray (for hints and secondary info). </p>
+
+</div>
+</div>
+<a id="a7b370b1542eb16ec7e6d2eee5c64fe97" name="a7b370b1542eb16ec7e6d2eee5c64fe97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b370b1542eb16ec7e6d2eee5c64fe97">&#9670;&#160;</a></span>now_iso8601()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string pptree::io::now_iso8601 </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return the current local time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SS). </p>
 
 </div>
 </div>

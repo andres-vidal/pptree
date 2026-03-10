@@ -1,13 +1,22 @@
 var searchData=
 [
-  ['te_0',['te',['../structpptree_1_1stats_1_1Split.html#a9fd040167887e190c2d21b96baa92025',1,'pptree::stats::Split']]],
-  ['te_5ferror_1',['te_error',['../structpptree_1_1cli_1_1ModelStats.html#a4382e42c128fd89cba3282198bf83b60',1,'pptree::cli::ModelStats']]],
-  ['threads_2',['threads',['../structpptree_1_1cli_1_1CLIOptions.html#a3f5e8ceb2cdf39efbb91f63220732350',1,'pptree::cli::CLIOptions']]],
-  ['threshold_3',['threshold',['../structpptree_1_1TreeCondition.html#af90f1b5f40b69bee7915ea2d35f3f31a',1,'pptree::TreeCondition']]],
-  ['tr_4',['tr',['../structpptree_1_1stats_1_1Split.html#a669ec6c20b74e52b2a0e33e5a8a7d612',1,'pptree::stats::Split']]],
-  ['tr_5ferror_5',['tr_error',['../structpptree_1_1cli_1_1ModelStats.html#a5348a2358935f8aa2eab8ad8cda25f96',1,'pptree::cli::ModelStats']]],
-  ['tr_5ftimes_6',['tr_times',['../structpptree_1_1cli_1_1ModelStats.html#a4bb817359b7252f8739f8401b2703513',1,'pptree::cli::ModelStats']]],
-  ['train_5fratio_7',['train_ratio',['../structpptree_1_1cli_1_1CLIOptions.html#a5e41cf9238f24a57a1e80b513f7d4e48',1,'pptree::cli::CLIOptions']]],
-  ['training_5fspec_8',['training_spec',['../structpptree_1_1Forest.html#ab465e7ece613eb1ec00a4176f9458fe1',1,'pptree::Forest::training_spec'],['../structpptree_1_1Tree.html#a2fc65c8eaa6175f8e2304bdef12e0dcc',1,'pptree::Tree::training_spec'],['../structpptree_1_1TreeCondition.html#a8a893acd9f035dce0250b62d3476dadc',1,'pptree::TreeCondition::training_spec']]],
-  ['trees_9',['trees',['../structpptree_1_1cli_1_1CLIOptions.html#a160f67307bc7f041ad816375aa8f5ed3',1,'pptree::cli::CLIOptions::trees'],['../structpptree_1_1Forest.html#abf8e9c2b1c7858b6c8bf6c70f407e05b',1,'pptree::Forest::trees']]]
+  ['sample_5findices_0',['sample_indices',['../structpptree_1_1BootstrapTree.html#a2b0c845b5e40a1f8a71250e0d4f924c2',1,'pptree::BootstrapTree']]],
+  ['save_5fpath_1',['save_path',['../structpptree_1_1cli_1_1CLIOptions.html#aeee418e47cebf70f0930678aadf0a8e0',1,'pptree::cli::CLIOptions']]],
+  ['scale_2',['scale',['../structpptree_1_1VariableImportance.html#a87189489428a2007114bcff4000d3b6f',1,'pptree::VariableImportance::scale'],['../structpptree_1_1VIVisitor.html#acd1806c37f412bb25d828bee27db4f82',1,'pptree::VIVisitor::scale']]],
+  ['scenario_5ftime_5fms_3',['scenario_time_ms',['../structpptree_1_1bench_1_1ScenarioResult.html#acf1b8538e69ba8961d1a1321b5187fc8',1,'pptree::bench::ScenarioResult']]],
+  ['scenarios_4',['scenarios',['../structpptree_1_1bench_1_1BenchmarkSuite.html#aedc1922a1c59090797f60bc760193f6d',1,'pptree::bench::BenchmarkSuite']]],
+  ['scenarios_5fpath_5',['scenarios_path',['../structpptree_1_1cli_1_1CLIOptions.html#af708635ec12817d1cf485aad54c68614',1,'pptree::cli::CLIOptions']]],
+  ['sd_6',['sd',['../structpptree_1_1stats_1_1SimulationParams.html#aa5e88fdb2f3b7e9729b845cd66eb9ae1',1,'pptree::stats::SimulationParams']]],
+  ['seed_7',['seed',['../structpptree_1_1bench_1_1Scenario.html#ace9093b046d52a97b3cfe2a8a8bce683',1,'pptree::bench::Scenario::seed'],['../structpptree_1_1cli_1_1CLIOptions.html#a681c5d2f0dea4e7cffbf997c2127875f',1,'pptree::cli::CLIOptions::seed'],['../structpptree_1_1Forest.html#afea4f7838970cc0877c7c2455bd11350',1,'pptree::Forest::seed']]],
+  ['selected_5fcols_8',['selected_cols',['../structpptree_1_1dr_1_1DRSpec.html#a132f85403b531ece0b6be9da71bc5d61',1,'pptree::dr::DRSpec']]],
+  ['sim_5fmean_9',['sim_mean',['../structpptree_1_1cli_1_1CLIOptions.html#a3756ef3f684403a275817cb35251f4b4',1,'pptree::cli::CLIOptions']]],
+  ['sim_5fmean_5fseparation_10',['sim_mean_separation',['../structpptree_1_1cli_1_1CLIOptions.html#aad07522b823726dfdfa22f763e5e046c',1,'pptree::cli::CLIOptions']]],
+  ['sim_5fsd_11',['sim_sd',['../structpptree_1_1cli_1_1CLIOptions.html#a572f835cb9d571f035e223261f3394a9',1,'pptree::cli::CLIOptions']]],
+  ['simulate_12',['simulate',['../structpptree_1_1cli_1_1CLIOptions.html#a91f303e50d958bf0312bbcdcdf445e40',1,'pptree::cli::CLIOptions']]],
+  ['stable_5fwindow_13',['stable_window',['../structpptree_1_1bench_1_1ConvergenceCriteria.html#afa3653b1c89ce218389c7aa2d9fc0b2b',1,'pptree::bench::ConvergenceCriteria::stable_window'],['../structpptree_1_1cli_1_1CLIOptions.html#a168b1635098ca6d6e0d43bac039a175e',1,'pptree::cli::CLIOptions::stable_window']]],
+  ['std_5ftime_5fms_14',['std_time_ms',['../structpptree_1_1bench_1_1ScenarioResult.html#a0c6f2ced9f3259c988cd85da55234677',1,'pptree::bench::ScenarioResult']]],
+  ['subcommand_15',['subcommand',['../structpptree_1_1cli_1_1CLIOptions.html#aa7795fd2523135ea041cd4948df441cd',1,'pptree::cli::CLIOptions']]],
+  ['subgroups_16',['subgroups',['../classpptree_1_1stats_1_1GroupPartition.html#a870669502c5d3883e30759a1a8187995',1,'pptree::stats::GroupPartition']]],
+  ['suite_5fname_17',['suite_name',['../structpptree_1_1bench_1_1SuiteResult.html#a03cf0ac787cebd2974107e4140111c79',1,'pptree::bench::SuiteResult']]],
+  ['supergroups_18',['supergroups',['../classpptree_1_1stats_1_1GroupPartition.html#a6df8ac0d126aae43d6de77275d34a63f',1,'pptree::stats::GroupPartition']]]
 ];

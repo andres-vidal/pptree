@@ -4,5 +4,6 @@ var searchData=
   ['node_5ffrom_5fjson_1',['node_from_json',['../namespacepptree_1_1serialization.html#a662d9f2558a7e2ebea65e8793b186b73',1,'pptree::serialization']]],
   ['noop_2',['noop',['../namespacepptree_1_1dr.html#a77ca219c48491bdfcd2aa7144ce92108',1,'pptree::dr']]],
   ['normal_3',['Normal',['../classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8',1,'pptree::stats::Normal']]],
-  ['normalize_4',['normalize',['../namespacepptree_1_1pp.html#aba4d3a00fb4fd2cae1016271009e86b2',1,'pptree::pp']]]
+  ['normalize_4',['normalize',['../namespacepptree_1_1pp.html#aba4d3a00fb4fd2cae1016271009e86b2',1,'pptree::pp']]],
+  ['now_5fiso8601_5',['now_iso8601',['../namespacepptree_1_1io.html#a7b370b1542eb16ec7e6d2eee5c64fe97',1,'pptree::io']]]
 ];

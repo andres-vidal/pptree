@@ -1,4 +1,7 @@
 var dir_9f0ff4d550d1abc059642f8890f22cf1 =
 [
-    [ "CLIOptions.hpp", "CLIOptions_8hpp.html", "CLIOptions_8hpp" ]
+    [ "Benchmark.hpp", "Benchmark_8hpp.html", "Benchmark_8hpp" ],
+    [ "BenchmarkReport.hpp", "BenchmarkReport_8hpp.html", "BenchmarkReport_8hpp" ],
+    [ "CLIOptions.hpp", "CLIOptions_8hpp.html", "CLIOptions_8hpp" ],
+    [ "VarsSpec.hpp", "VarsSpec_8hpp.html", "VarsSpec_8hpp" ]
 ];
