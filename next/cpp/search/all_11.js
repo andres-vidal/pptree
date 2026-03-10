@@ -14,7 +14,7 @@ var searchData=
   ['rng_11',['RNG',['../namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926',1,'pptree::stats']]],
   ['root_12',['root',['../structpptree_1_1Tree.html#a0cebdb73e25a9323c87f53f66483970f',1,'pptree::Tree']]],
   ['row_13',['Row',['../namespacepptree_1_1io.html#abe9d14d638204ed03238b2a739eb81f9',1,'pptree::io']]],
-  ['rows_14',['rows',['../structpptree_1_1cli_1_1CLIOptions.html#aa2fd984529690e85f9db22bf8f460c1b',1,'pptree::cli::CLIOptions::rows'],['../Macros_8hpp.html#a71bf0955969d93eefeb1568ce5e8c0d2',1,'rows():&#160;Macros.hpp']]],
+  ['rows_14',['rows',['../structpptree_1_1cli_1_1SimulateParams.html#af2fddd8b65118c8635a9d4b05d9a1a41',1,'pptree::cli::SimulateParams::rows'],['../Macros_8hpp.html#a71bf0955969d93eefeb1568ce5e8c0d2',1,'rows():&#160;Macros.hpp']]],
   ['run_5fbenchmark_15',['run_benchmark',['../namespacepptree_1_1cli.html#a6a3adaf97468f3ade25c1288f374daf7',1,'pptree::cli']]],
   ['run_5fevaluate_16',['run_evaluate',['../namespacepptree_1_1cli.html#addd45ccfd034f270b6e99a42eefbdb4a',1,'pptree::cli']]],
   ['run_5fpredict_17',['run_predict',['../namespacepptree_1_1cli.html#a44ba64ccd1958ca29282aaee713272de',1,'pptree::cli']]],

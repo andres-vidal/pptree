@@ -1,7 +1,7 @@
 var searchData=
 [
   ['p_0',['p',['../structpptree_1_1cli_1_1Scenario.html#a510f60fa5afbfe5ff7cd26a88a6a97af',1,'pptree::cli::Scenario::p'],['../structpptree_1_1cli_1_1ScenarioResult.html#a322580898be2e873d6ef63221f495933',1,'pptree::cli::ScenarioResult::p']]],
-  ['p_5fvars_1',['p_vars',['../structpptree_1_1cli_1_1CLIOptions.html#a6c38b4742719a369ec3478e635957e84',1,'pptree::cli::CLIOptions']]],
+  ['p_5fvars_1',['p_vars',['../structpptree_1_1cli_1_1ModelParams.html#ac0f0e3e15026885b068dc0f1265bd540',1,'pptree::cli::ModelParams']]],
   ['pad_2',['pad',['../namespacepptree_1_1io.html#a26cf2c53540b1d0f893f852e12d1db0c',1,'pptree::io']]],
   ['parse_5fargs_3',['parse_args',['../namespacepptree_1_1cli.html#a7ceebad5e5ddd8e7081eb6268a1002e9',1,'pptree::cli']]],
   ['parse_5fresults_4',['parse_results',['../namespacepptree_1_1cli.html#a3d952f3bba5d7dd5b175178553719d2a',1,'pptree::cli']]],

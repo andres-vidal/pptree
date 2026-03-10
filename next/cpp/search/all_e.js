@@ -11,6 +11,7 @@ var searchData=
   ['optimize_8',['optimize',['../structpptree_1_1pp_1_1PPGLDAStrategy.html#a9766ed21ec1b573bafad75064553e1b2',1,'pptree::pp::PPGLDAStrategy::optimize()'],['../structpptree_1_1pp_1_1PPStrategy.html#a21c6b98971b15175dc8d6a087c35fbb9',1,'pptree::pp::PPStrategy::optimize()']]],
   ['original_5fsize_9',['original_size',['../structpptree_1_1dr_1_1DRSpec.html#ac0aa93e754b7900e3a252bbf8b06e637',1,'pptree::dr::DRSpec']]],
   ['output_10',['Output',['../structpptree_1_1io_1_1Output.html',1,'pptree::io::Output'],['../structpptree_1_1io_1_1Output.html#a4ad2d6cc3d7f3f26d067ed871db2479b',1,'pptree::io::Output::Output()']]],
-  ['output_2ehpp_11',['Output.hpp',['../Output_8hpp.html',1,'']]],
-  ['output_5fpath_12',['output_path',['../structpptree_1_1cli_1_1CLIOptions.html#a230f2d58768ab70a96d9cf0496d62ac4',1,'pptree::cli::CLIOptions']]]
+  ['output_11',['output',['../structpptree_1_1cli_1_1BenchmarkParams.html#a7b78737d3567a257d41458bcf6b11a2c',1,'pptree::cli::BenchmarkParams']]],
+  ['output_2ehpp_12',['Output.hpp',['../Output_8hpp.html',1,'']]],
+  ['output_5fpath_13',['output_path',['../structpptree_1_1cli_1_1CLIOptions.html#a230f2d58768ab70a96d9cf0496d62ac4',1,'pptree::cli::CLIOptions']]]
 ];

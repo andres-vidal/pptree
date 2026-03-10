@@ -8,7 +8,7 @@ var searchData=
   ['variableimportance_5',['VariableImportance',['../structpptree_1_1VariableImportance.html',1,'pptree']]],
   ['variableimportance_2ehpp_6',['VariableImportance.hpp',['../VariableImportance_8hpp.html',1,'']]],
   ['vars_7',['vars',['../structpptree_1_1cli_1_1Scenario.html#a5ee87e14597cc78e2eb4d3c88c64b8a5',1,'pptree::cli::Scenario::vars'],['../structpptree_1_1cli_1_1ScenarioResult.html#ae7ece9e3d920f272c5de02201e149d55',1,'pptree::cli::ScenarioResult::vars']]],
-  ['vars_5finput_8',['vars_input',['../structpptree_1_1cli_1_1CLIOptions.html#a1a6ee4e111d759af63ca6354dbc9a2e4',1,'pptree::cli::CLIOptions']]],
+  ['vars_5finput_8',['vars_input',['../structpptree_1_1cli_1_1ModelParams.html#a717d284213d0ada7ac1cc5c11d7a719c',1,'pptree::cli::ModelParams']]],
   ['varsspec_9',['VarsSpec',['../structpptree_1_1cli_1_1VarsSpec.html',1,'pptree::cli']]],
   ['varsspec_2ehpp_10',['VarsSpec.hpp',['../VarsSpec_8hpp.html',1,'']]],
   ['vec_11',['VEC',['../Macros_8hpp.html#ab810951a8a979526caa74d68de176862',1,'Macros.hpp']]],

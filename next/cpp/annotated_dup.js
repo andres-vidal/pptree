@@ -2,12 +2,17 @@ var annotated_dup =
 [
     [ "pptree", "namespacepptree.html", [
       [ "cli", "namespacepptree_1_1cli.html", [
+        [ "BenchmarkParams", "structpptree_1_1cli_1_1BenchmarkParams.html", "structpptree_1_1cli_1_1BenchmarkParams" ],
         [ "BenchmarkSuite", "structpptree_1_1cli_1_1BenchmarkSuite.html", "structpptree_1_1cli_1_1BenchmarkSuite" ],
         [ "CLIOptions", "structpptree_1_1cli_1_1CLIOptions.html", "structpptree_1_1cli_1_1CLIOptions" ],
         [ "ConvergenceCriteria", "structpptree_1_1cli_1_1ConvergenceCriteria.html", "structpptree_1_1cli_1_1ConvergenceCriteria" ],
+        [ "ConvergenceParams", "structpptree_1_1cli_1_1ConvergenceParams.html", "structpptree_1_1cli_1_1ConvergenceParams" ],
+        [ "EvaluateParams", "structpptree_1_1cli_1_1EvaluateParams.html", "structpptree_1_1cli_1_1EvaluateParams" ],
+        [ "ModelParams", "structpptree_1_1cli_1_1ModelParams.html", "structpptree_1_1cli_1_1ModelParams" ],
         [ "ModelStats", "structpptree_1_1cli_1_1ModelStats.html", "structpptree_1_1cli_1_1ModelStats" ],
         [ "Scenario", "structpptree_1_1cli_1_1Scenario.html", "structpptree_1_1cli_1_1Scenario" ],
         [ "ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", "structpptree_1_1cli_1_1ScenarioResult" ],
+        [ "SimulateParams", "structpptree_1_1cli_1_1SimulateParams.html", "structpptree_1_1cli_1_1SimulateParams" ],
         [ "SuiteResult", "structpptree_1_1cli_1_1SuiteResult.html", "structpptree_1_1cli_1_1SuiteResult" ],
         [ "TrainResult", "structpptree_1_1cli_1_1TrainResult.html", "structpptree_1_1cli_1_1TrainResult" ],
         [ "VarsSpec", "structpptree_1_1cli_1_1VarsSpec.html", "structpptree_1_1cli_1_1VarsSpec" ]

@@ -13,5 +13,5 @@ var searchData=
   ['is_5fcontiguous_10',['is_contiguous',['../classpptree_1_1stats_1_1GroupPartition.html#a3a66a1cae87ab2ad41c81108d66fec47',1,'pptree::stats::GroupPartition']]],
   ['is_5fmodule_5fapprox_11',['is_module_approx',['../namespacepptree_1_1math.html#af945fa6da0cba82b3f93a33460ca663e',1,'pptree::math']]],
   ['is_5fproportion_12',['is_proportion',['../structpptree_1_1cli_1_1VarsSpec.html#a6c6787a5127346760f28c983860e32aa',1,'pptree::cli::VarsSpec']]],
-  ['iterations_13',['iterations',['../structpptree_1_1cli_1_1Scenario.html#a2916f814d7e72cf18110f92e36ae9d12',1,'pptree::cli::Scenario::iterations'],['../structpptree_1_1cli_1_1CLIOptions.html#a5a1ef4742332ea20b903ebb328d8221a',1,'pptree::cli::CLIOptions::iterations']]]
+  ['iterations_13',['iterations',['../structpptree_1_1cli_1_1Scenario.html#a2916f814d7e72cf18110f92e36ae9d12',1,'pptree::cli::Scenario::iterations'],['../structpptree_1_1cli_1_1BenchmarkParams.html#a3e6acbf814a69a12460fc549d9dd85fa',1,'pptree::cli::BenchmarkParams::iterations'],['../structpptree_1_1cli_1_1EvaluateParams.html#a3fc17335eeabd27bf0313cb0ae5f6b11',1,'pptree::cli::EvaluateParams::iterations']]]
 ];

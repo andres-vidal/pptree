@@ -1,16 +1,19 @@
 var hierarchy =
 [
+    [ "pptree::cli::BenchmarkParams", "structpptree_1_1cli_1_1BenchmarkParams.html", null ],
     [ "pptree::cli::BenchmarkSuite", "structpptree_1_1cli_1_1BenchmarkSuite.html", null ],
     [ "pptree::cli::CLIOptions", "structpptree_1_1cli_1_1CLIOptions.html", null ],
     [ "pptree::io::Column", "structpptree_1_1io_1_1Column.html", null ],
     [ "pptree::stats::ConfusionMatrix", "structpptree_1_1stats_1_1ConfusionMatrix.html", null ],
     [ "pptree::cli::ConvergenceCriteria", "structpptree_1_1cli_1_1ConvergenceCriteria.html", null ],
+    [ "pptree::cli::ConvergenceParams", "structpptree_1_1cli_1_1ConvergenceParams.html", null ],
     [ "pptree::stats::DataPacket", "structpptree_1_1stats_1_1DataPacket.html", null ],
     [ "pptree::dr::DRSpec", "structpptree_1_1dr_1_1DRSpec.html", null ],
     [ "pptree::dr::DRStrategy", "structpptree_1_1dr_1_1DRStrategy.html", [
       [ "pptree::dr::DRNoopStrategy", "structpptree_1_1dr_1_1DRNoopStrategy.html", null ],
       [ "pptree::dr::DRUniformStrategy", "structpptree_1_1dr_1_1DRUniformStrategy.html", null ]
     ] ],
+    [ "pptree::cli::EvaluateParams", "structpptree_1_1cli_1_1EvaluateParams.html", null ],
     [ "pptree::stats::GroupPartition", "classpptree_1_1stats_1_1GroupPartition.html", null ],
     [ "pptree::Model", "structpptree_1_1Model.html", [
       [ "pptree::Forest", "structpptree_1_1Forest.html", null ],
@@ -18,6 +21,7 @@ var hierarchy =
         [ "pptree::BootstrapTree", "structpptree_1_1BootstrapTree.html", null ]
       ] ]
     ] ],
+    [ "pptree::cli::ModelParams", "structpptree_1_1cli_1_1ModelParams.html", null ],
     [ "pptree::cli::ModelStats", "structpptree_1_1cli_1_1ModelStats.html", null ],
     [ "pptree::ModelVisitor", "structpptree_1_1ModelVisitor.html", [
       [ "pptree::serialization::JsonModelVisitor", "structpptree_1_1serialization_1_1JsonModelVisitor.html", null ]
@@ -31,6 +35,7 @@ var hierarchy =
     [ "pptree::Proportions", "structpptree_1_1Proportions.html", null ],
     [ "pptree::cli::Scenario", "structpptree_1_1cli_1_1Scenario.html", null ],
     [ "pptree::cli::ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", null ],
+    [ "pptree::cli::SimulateParams", "structpptree_1_1cli_1_1SimulateParams.html", null ],
     [ "pptree::stats::SimulationParams", "structpptree_1_1stats_1_1SimulationParams.html", null ],
     [ "pptree::stats::Split", "structpptree_1_1stats_1_1Split.html", null ],
     [ "pptree::sr::SRStrategy", "structpptree_1_1sr_1_1SRStrategy.html", [

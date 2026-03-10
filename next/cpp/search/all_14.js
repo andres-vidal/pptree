@@ -5,7 +5,7 @@ var searchData=
   ['uniform_2ehpp_2',['Uniform.hpp',['../Uniform_8hpp.html',1,'']]],
   ['unique_3',['unique',['../namespacepptree_1_1stats.html#a6c77f93afd576715a4cef4b87eb0c1bb',1,'pptree::stats']]],
   ['upper_4',['upper',['../structpptree_1_1TreeCondition.html#acd6c7fcb40f6576fa4eba3f0a3511ee2',1,'pptree::TreeCondition']]],
-  ['used_5fdefault_5fseed_5',['used_default_seed',['../structpptree_1_1cli_1_1CLIOptions.html#a5d18713b0aadf6c76ceb9b5e64fd32f0',1,'pptree::cli::CLIOptions']]],
-  ['used_5fdefault_5fthreads_6',['used_default_threads',['../structpptree_1_1cli_1_1CLIOptions.html#ad7b35021f7b90c588541c1f3ac2ffb04',1,'pptree::cli::CLIOptions']]],
-  ['used_5fdefault_5fvars_7',['used_default_vars',['../structpptree_1_1cli_1_1CLIOptions.html#abe1c4927748a2af8b36f6b14789ec754',1,'pptree::cli::CLIOptions']]]
+  ['used_5fdefault_5fseed_5',['used_default_seed',['../structpptree_1_1cli_1_1ModelParams.html#aaac179fe40380e74927942871b6f7fe8',1,'pptree::cli::ModelParams']]],
+  ['used_5fdefault_5fthreads_6',['used_default_threads',['../structpptree_1_1cli_1_1ModelParams.html#a15754d49d8ebd1c7803f41960be5ea05',1,'pptree::cli::ModelParams']]],
+  ['used_5fdefault_5fvars_7',['used_default_vars',['../structpptree_1_1cli_1_1ModelParams.html#a3d08f825a2274ab751aa18988b0d2368',1,'pptree::cli::ModelParams']]]
 ];

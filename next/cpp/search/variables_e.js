@@ -1,23 +1,8 @@
 var searchData=
 [
-  ['sample_5findices_0',['sample_indices',['../structpptree_1_1BootstrapTree.html#a2b0c845b5e40a1f8a71250e0d4f924c2',1,'pptree::BootstrapTree']]],
-  ['save_5fpath_1',['save_path',['../structpptree_1_1cli_1_1CLIOptions.html#aeee418e47cebf70f0930678aadf0a8e0',1,'pptree::cli::CLIOptions']]],
-  ['scale_2',['scale',['../structpptree_1_1VariableImportance.html#a87189489428a2007114bcff4000d3b6f',1,'pptree::VariableImportance::scale'],['../structpptree_1_1VIVisitor.html#acd1806c37f412bb25d828bee27db4f82',1,'pptree::VIVisitor::scale']]],
-  ['scenario_5ftime_5fms_3',['scenario_time_ms',['../structpptree_1_1cli_1_1ScenarioResult.html#ace4edbc62478f9c99b6cd99687340e45',1,'pptree::cli::ScenarioResult']]],
-  ['scenarios_4',['scenarios',['../structpptree_1_1cli_1_1BenchmarkSuite.html#a52783b866eb67f7b22aa3a245e61bb89',1,'pptree::cli::BenchmarkSuite']]],
-  ['scenarios_5fpath_5',['scenarios_path',['../structpptree_1_1cli_1_1CLIOptions.html#af708635ec12817d1cf485aad54c68614',1,'pptree::cli::CLIOptions']]],
-  ['sd_6',['sd',['../structpptree_1_1stats_1_1SimulationParams.html#aa5e88fdb2f3b7e9729b845cd66eb9ae1',1,'pptree::stats::SimulationParams']]],
-  ['seed_7',['seed',['../structpptree_1_1cli_1_1Scenario.html#aaa5fed81555c199f321c2e59b5c3a559',1,'pptree::cli::Scenario::seed'],['../structpptree_1_1cli_1_1CLIOptions.html#a681c5d2f0dea4e7cffbf997c2127875f',1,'pptree::cli::CLIOptions::seed'],['../structpptree_1_1Forest.html#afea4f7838970cc0877c7c2455bd11350',1,'pptree::Forest::seed']]],
-  ['selected_5fcols_8',['selected_cols',['../structpptree_1_1dr_1_1DRSpec.html#a132f85403b531ece0b6be9da71bc5d61',1,'pptree::dr::DRSpec']]],
-  ['sim_5fmean_9',['sim_mean',['../structpptree_1_1cli_1_1CLIOptions.html#a3756ef3f684403a275817cb35251f4b4',1,'pptree::cli::CLIOptions']]],
-  ['sim_5fmean_5fseparation_10',['sim_mean_separation',['../structpptree_1_1cli_1_1CLIOptions.html#aad07522b823726dfdfa22f763e5e046c',1,'pptree::cli::CLIOptions']]],
-  ['sim_5fsd_11',['sim_sd',['../structpptree_1_1cli_1_1CLIOptions.html#a572f835cb9d571f035e223261f3394a9',1,'pptree::cli::CLIOptions']]],
-  ['simulate_12',['simulate',['../structpptree_1_1cli_1_1CLIOptions.html#a91f303e50d958bf0312bbcdcdf445e40',1,'pptree::cli::CLIOptions']]],
-  ['split_5fstrategy_13',['split_strategy',['../structpptree_1_1TrainingSpec.html#ab5202ba4bf9df41068b779a42143079e',1,'pptree::TrainingSpec']]],
-  ['stable_5fwindow_14',['stable_window',['../structpptree_1_1cli_1_1ConvergenceCriteria.html#a638f0e0d42ea3215643c40c631375473',1,'pptree::cli::ConvergenceCriteria::stable_window'],['../structpptree_1_1cli_1_1CLIOptions.html#a168b1635098ca6d6e0d43bac039a175e',1,'pptree::cli::CLIOptions::stable_window']]],
-  ['std_5ftime_5fms_15',['std_time_ms',['../structpptree_1_1cli_1_1ScenarioResult.html#a0e2ab9c80c654dae720bd80379c77b74',1,'pptree::cli::ScenarioResult']]],
-  ['subcommand_16',['subcommand',['../structpptree_1_1cli_1_1CLIOptions.html#aa7795fd2523135ea041cd4948df441cd',1,'pptree::cli::CLIOptions']]],
-  ['subgroups_17',['subgroups',['../classpptree_1_1stats_1_1GroupPartition.html#a870669502c5d3883e30759a1a8187995',1,'pptree::stats::GroupPartition']]],
-  ['suite_5fname_18',['suite_name',['../structpptree_1_1cli_1_1SuiteResult.html#ae8de42fd41d852ab4817506d0fed8858',1,'pptree::cli::SuiteResult']]],
-  ['supergroups_19',['supergroups',['../classpptree_1_1stats_1_1GroupPartition.html#a6df8ac0d126aae43d6de77275d34a63f',1,'pptree::stats::GroupPartition']]]
+  ['result_0',['result',['../structpptree_1_1serialization_1_1JsonNodeVisitor.html#a4d66900217c396b2b0e1809288232a5e',1,'pptree::serialization::JsonNodeVisitor::result'],['../structpptree_1_1serialization_1_1JsonModelVisitor.html#a1a3abeaeb1970bd938419edf25d5cead',1,'pptree::serialization::JsonModelVisitor::result']]],
+  ['results_1',['results',['../structpptree_1_1cli_1_1SuiteResult.html#ae6527af625d1c513437be0be06fa9aaf',1,'pptree::cli::SuiteResult']]],
+  ['root_2',['root',['../structpptree_1_1Tree.html#a0cebdb73e25a9323c87f53f66483970f',1,'pptree::Tree']]],
+  ['rows_3',['rows',['../structpptree_1_1cli_1_1SimulateParams.html#af2fddd8b65118c8635a9d4b05d9a1a41',1,'pptree::cli::SimulateParams']]],
+  ['runs_4',['runs',['../structpptree_1_1cli_1_1ScenarioResult.html#ad4b380f3d512bf20612fc7f5a0f64236',1,'pptree::cli::ScenarioResult']]]
 ];

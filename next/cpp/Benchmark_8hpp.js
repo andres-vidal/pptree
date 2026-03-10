@@ -11,5 +11,6 @@ var Benchmark_8hpp =
     [ "pptree::cli::parse_suite", "namespacepptree_1_1cli.html#aa05f02a83ff7afbd01207a7dc7ce11b5", null ],
     [ "pptree::cli::run_benchmark", "namespacepptree_1_1cli.html#a6a3adaf97468f3ade25c1288f374daf7", null ],
     [ "pptree::cli::run_scenario", "namespacepptree_1_1cli.html#acdaf76dcf40755924f371dc92bf290dd", null ],
-    [ "pptree::cli::run_suite", "namespacepptree_1_1cli.html#aeba5efa29f083576f8402451c143b539", null ]
+    [ "pptree::cli::run_suite", "namespacepptree_1_1cli.html#aeba5efa29f083576f8402451c143b539", null ],
+    [ "pptree::cli::setup_benchmark", "namespacepptree_1_1cli.html#a4f4df65c0420297a9cb7a33868d869de", null ]
 ];
