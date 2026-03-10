@@ -144,7 +144,10 @@ namespace {
       display_progress(iterations_run, max_iters, params.quiet);
 
       // Check convergence
-      if (params.converge && check_convergence(times, params.min_iterations, params.cv_threshold)) {
+      if (params.converge &&
+          check_convergence(times, params.min_iterations, params.cv_threshold) &&
+          check_convergence(tr_errors, params.min_iterations, params.cv_threshold) &&
+          check_convergence(te_errors, params.min_iterations, params.cv_threshold)) {
         stable_count++;
 
         if (stable_count >= params.stable_window) {

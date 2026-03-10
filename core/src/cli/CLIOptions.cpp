@@ -286,6 +286,8 @@ namespace pptree::cli {
     bench_sub->add_option("--csv", params.bench_csv, "Save results to CSV file");
     bench_sub->add_option("-i,--iterations", params.bench_iterations, "Override iteration count (forces fixed mode)")
     ->check(CLI::PositiveNumber);
+    bench_sub->add_option("-p,--train-ratio", params.bench_train_ratio, "Override train set ratio for all scenarios")
+    ->check(CLI::Range(0.01f, 0.99f));
     bench_sub->add_option("--format", params.bench_format, "Output format (table, markdown)")
     ->check(CLI::IsMember({"table", "markdown"}));
 

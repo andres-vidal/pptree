@@ -82,6 +82,7 @@ namespace pptree::cli {
     int n = 0, p = 0, g = 0;
     int trees = 0;
     float vars = 0;
+    float train_ratio = 0.7f;
 
     // Aggregated metrics
     int runs             = 0;

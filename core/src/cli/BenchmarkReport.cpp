@@ -98,6 +98,7 @@ namespace {
       { "g",          3, Align::right },
       { "trees",      6, Align::right },
       { "vars",       5, Align::right },
+      { "split",      5, Align::right },
       { "iters",      5, Align::right },
       { "Time (ms)", 18, Align::right },
     };
@@ -105,6 +106,7 @@ namespace {
     if (has_baseline) columns.push_back({ "delta", 8, Align::right });
     columns.push_back({ "Peak RSS", 12, Align::right });
     if (has_baseline) columns.push_back({ "delta", 8, Align::right });
+    columns.push_back({ "Train Err", 9, Align::right });
     columns.push_back({ "Test Err", 8, Align::right });
 
     // Header — style Scenario and delta labels
@@ -124,8 +126,10 @@ namespace {
       std::string vars_str = r.trees > 0
         ? fmt::format("{:.2f}", r.vars)
         : muted("--");
-      std::string rss_str  = format_rss(r.peak_rss_mb);
-      std::string err_str  = fmt::format("{:.1f}%", r.mean_te_error * 100);
+      std::string split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
+      std::string rss_str    = format_rss(r.peak_rss_mb);
+      std::string tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
+      std::string te_err_str = fmt::format("{:.1f}%", r.mean_te_error * 100);
 
       Row cells = {
         r.name,
@@ -134,6 +138,7 @@ namespace {
         fmt::format("{}", r.g),
         fmt::format("{}", r.trees),
         vars_str,
+        split_str,
         fmt::format("{}", r.runs),
         time_str,
       };
@@ -160,7 +165,8 @@ namespace {
         cells.push_back(rss_delta);
       }
 
-      cells.push_back(err_str);
+      cells.push_back(tr_err_str);
+      cells.push_back(te_err_str);
 
       fmt::print("  {}\n", format_row(columns, cells));
     }
@@ -205,6 +211,7 @@ namespace {
       { "g",         0, Align::right },
       { "trees",     0, Align::right },
       { "vars",      0, Align::right },
+      { "split",     0, Align::right },
       { "iters",     0, Align::right },
       { "Time (ms)", 0, Align::right },
     };
@@ -212,6 +219,7 @@ namespace {
     if (has_baseline) columns.push_back({ "\xCE\x94 Time", 0, Align::right });
     columns.push_back({ "Peak RSS", 0, Align::right });
     if (has_baseline) columns.push_back({ "\xCE\x94 RSS", 0, Align::right });
+    columns.push_back({ "Train Err", 0, Align::right });
     columns.push_back({ "Test Err", 0, Align::right });
 
     out << format_md_row(header_labels(columns)) << "\n";
@@ -219,10 +227,12 @@ namespace {
 
     // Data rows
     for (const auto& r : current.results) {
-      std::string time_str = fmt::format("{:.1f} \xC2\xB1 {:.1f}", r.mean_time_ms, r.std_time_ms);
-      std::string vars_str = r.trees > 0 ? fmt::format("{:.2f}", r.vars) : "--";
-      std::string rss_str  = format_rss(r.peak_rss_mb);
-      std::string err_str  = fmt::format("{:.1f}%", r.mean_te_error * 100);
+      std::string time_str   = fmt::format("{:.1f} \xC2\xB1 {:.1f}", r.mean_time_ms, r.std_time_ms);
+      std::string vars_str   = r.trees > 0 ? fmt::format("{:.2f}", r.vars) : "--";
+      std::string split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
+      std::string rss_str    = format_rss(r.peak_rss_mb);
+      std::string tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
+      std::string te_err_str = fmt::format("{:.1f}%", r.mean_te_error * 100);
 
       Row cells = {
         r.name,
@@ -231,6 +241,7 @@ namespace {
         fmt::format("{}", r.g),
         fmt::format("{}", r.trees),
         vars_str,
+        split_str,
         fmt::format("{}", r.runs),
         time_str,
       };
@@ -257,7 +268,8 @@ namespace {
         cells.push_back(rss_delta);
       }
 
-      cells.push_back(err_str);
+      cells.push_back(tr_err_str);
+      cells.push_back(te_err_str);
 
       out << format_md_row(cells) << "\n";
     }
@@ -274,13 +286,13 @@ namespace {
     invariant(file.is_open(), fmt::format("Failed to open CSV file for writing: {}", path));
 
     // Header
-    file << "scenario,n,p,g,trees,vars,runs,mean_time_ms,std_time_ms,"
+    file << "scenario,n,p,g,trees,vars,train_ratio,runs,mean_time_ms,std_time_ms,"
          << "mean_train_error,mean_test_error,peak_rss_mb,scenario_time_ms\n";
 
     // Data rows
     for (const auto& r : result.results) {
-      file << fmt::format("{},{},{},{},{},{:.2f},{},{:.2f},{:.2f},{:.4f},{:.4f},{:.1f},{:.0f}\n",
-      r.name, r.n, r.p, r.g, r.trees, r.vars, r.runs,
+      file << fmt::format("{},{},{},{},{},{:.2f},{:.2f},{},{:.2f},{:.2f},{:.4f},{:.4f},{:.1f},{:.0f}\n",
+      r.name, r.n, r.p, r.g, r.trees, r.vars, r.train_ratio, r.runs,
       r.mean_time_ms, r.std_time_ms,
       r.mean_tr_error, r.mean_te_error,
       r.peak_rss_mb, r.scenario_time_ms);

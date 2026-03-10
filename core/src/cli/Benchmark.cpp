@@ -187,8 +187,9 @@ namespace {
     result.n     = s.n;
     result.p     = s.p;
     result.g     = s.g;
-    result.trees = s.trees;
-    result.vars  = s.vars;
+    result.trees       = s.trees;
+    result.vars        = s.vars;
+    result.train_ratio = s.train_ratio;
 
     result.runs           = j.value("runs", 0);
     result.mean_time_ms   = j.value("mean_time_ms", 0.0);
@@ -267,6 +268,7 @@ namespace {
         sr.g              = r.value("g", 0);
         sr.trees          = r.value("trees", 0);
         sr.vars           = r.value("vars", 0.0f);
+        sr.train_ratio    = r.value("train_ratio", 0.7f);
         sr.runs           = r.value("runs", 0);
         sr.mean_time_ms   = r.value("mean_time_ms", 0.0);
         sr.std_time_ms    = r.value("std_time_ms", 0.0);
@@ -298,6 +300,7 @@ namespace {
       rj["g"]                = r.g;
       rj["trees"]            = r.trees;
       rj["vars"]             = r.vars;
+      rj["train_ratio"]      = r.train_ratio;
       rj["runs"]             = r.runs;
       rj["mean_time_ms"]     = r.mean_time_ms;
       rj["std_time_ms"]      = r.std_time_ms;
@@ -391,10 +394,16 @@ namespace {
       return rc;
     }
 
-    // Apply iteration override
+    // Apply overrides
     if (params.bench_iterations > 0) {
       for (auto& s : suite.scenarios) {
         s.iterations = params.bench_iterations;
+      }
+    }
+
+    if (params.bench_train_ratio > 0) {
+      for (auto& s : suite.scenarios) {
+        s.train_ratio = params.bench_train_ratio;
       }
     }
 

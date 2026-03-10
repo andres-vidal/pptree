@@ -53,7 +53,8 @@ namespace pptree::cli {
     std::string bench_output;
     std::string bench_csv;
     std::string bench_format;
-    int bench_iterations = -1;
+    int bench_iterations    = -1;
+    float bench_train_ratio = -1;
 
     Subcommand subcommand = Subcommand::none;
     std::string save_path = "model.json";
