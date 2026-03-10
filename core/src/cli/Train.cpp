@@ -12,6 +12,8 @@
 #include "stats/ConfusionMatrix.hpp"
 #include "io/Presentation.hpp"
 #include "io/Color.hpp"
+#include "io/Output.hpp"
+#include "io/Table.hpp"
 #include "io/IO.hpp"
 #include "io/Timing.hpp"
 #include "serialization/Json.hpp"
@@ -60,35 +62,50 @@ namespace {
 
     write_json_file(output, path);
 
-    if (!params.quiet) {
-      fmt::print("Model saved to {}\n", path);
-    }
+    Output out(params.quiet);
+    out.saved("model", path);
   }
 }
 
-  void announce_configuration(
+  void print_configuration(
     const CLIOptions& params,
     int               n_train,
     int               n_test) {
     if (params.quiet) return;
 
+    using namespace pptree::io;
+
+    std::string model_type = params.trees > 0 ? "random forest" : "single decision tree";
+    fmt::print("{}\n\n", emphasis("Training " + model_type));
+
+    std::vector<Column> columns = {
+      { "Parameter", 18, Align::left },
+      { "Value",     30, Align::left },
+    };
+
+    Row header = header_labels(columns);
+    fmt::print("  {}\n", format_row(columns, header));
+    fmt::print("  {}\n", muted(format_separator(columns)));
+
     if (params.trees > 0) {
-      fmt::print("Training {} with {} trees\n", emphasis("random forest"), emphasis(std::to_string(params.trees)));
-      fmt::print("-- variables per split: {} ({}% of features){}\n", emphasis(std::to_string(params.n_vars)), params.p_vars * 100, default_tag(params.used_default_vars));
-      fmt::print("-- threads: {}{}\n", emphasis(std::to_string(params.threads)), default_tag(params.used_default_threads));
-      fmt::print("-- seed: {}{}\n", emphasis(std::to_string(params.seed)), default_tag(params.used_default_seed));
-    } else {
-      fmt::print("Training {} (using all features)\n", emphasis("single decision tree"));
+      fmt::print("  {}\n", format_row(columns, { "trees", std::to_string(params.trees) }));
+      fmt::print("  {}\n", format_row(columns, { "variables/split",
+                                                 fmt::format("{} ({}%){}", params.n_vars, static_cast<int>(params.p_vars * 100), default_tag(params.used_default_vars)) }));
+      fmt::print("  {}\n", format_row(columns, { "threads",
+                                                 fmt::format("{}{}", params.threads, default_tag(params.used_default_threads)) }));
+      fmt::print("  {}\n", format_row(columns, { "seed",
+                                                 fmt::format("{}{}", params.seed, default_tag(params.used_default_seed)) }));
     }
 
-    fmt::print("-- method: {} (lambda={})\n", emphasis(params.lambda == 0 ? "LDA" : "PDA"), params.lambda);
+    std::string method = params.lambda == 0 ? "LDA" : "PDA";
+    fmt::print("  {}\n", format_row(columns, { "method",
+                                               fmt::format("{} (lambda={})", method, params.lambda) }));
 
     if (n_train > 0 && n_test > 0) {
-      fmt::print("\nData split into:\n"
-        "-- training: {} samples ({}%)\n"
-        "-- test:     {} samples ({}%)\n",
-        emphasis(std::to_string(n_train)), params.train_ratio * 100,
-        emphasis(std::to_string(n_test)), (1 - params.train_ratio) * 100);
+      fmt::print("  {}\n", format_row(columns, { "training samples",
+                                                 fmt::format("{} ({}%)", n_train, static_cast<int>(params.train_ratio * 100)) }));
+      fmt::print("  {}\n", format_row(columns, { "test samples",
+                                                 fmt::format("{} ({}%)", n_test, static_cast<int>((1 - params.train_ratio) * 100)) }));
     }
 
     fmt::print("\n");
@@ -147,6 +164,8 @@ namespace {
   }
 
   int run_train(CLIOptions& params) {
+    Output out(params.quiet);
+
     // Validate save path before training
     if (!params.save_path.empty()) {
       check_file_not_exists(params.save_path);
@@ -156,19 +175,19 @@ namespace {
     auto data = read_data(params, rng);
 
     init_params(params, data.x.cols());
-    announce_configuration(params);
+    print_configuration(params);
 
     FeatureMatrix x  = data.x;
     ResponseVector y = data.y;
 
     const auto train_result = train_model(x, y, params, rng);
 
-    if (!params.quiet) {
-      fmt::print("Trained in {}ms\n", emphasis(std::to_string(train_result.duration)));
-    }
+    out.print("  Trained in {}ms, ", emphasis(std::to_string(train_result.duration)));
 
     if (!params.save_path.empty()) {
       save_model(*train_result.model, params, params.save_path);
+    } else {
+      out.print("not saved {}\n", muted("(used --no-save)"));
     }
 
     if (!params.no_metrics) {
@@ -191,9 +210,9 @@ namespace {
         vi.projections = variable_importance_projections(*tree, n_vars, &vi.scale);
       }
 
-      if (!params.quiet) {
+      if (!out.quiet) {
         if (oob_err >= 0.0) {
-          fmt::print("OOB error: {}\n", emphasis(fmt::format("{:.2f}%", oob_err * 100)));
+          out.print("  OOB error: {}\n\n", emphasis(fmt::format("{:.2f}%", oob_err * 100)));
         }
 
         print_variable_importance(vi);

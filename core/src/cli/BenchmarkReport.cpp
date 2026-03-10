@@ -5,6 +5,7 @@
 #include "cli/BenchmarkReport.hpp"
 #include "io/Color.hpp"
 #include "io/IO.hpp"
+#include "io/Table.hpp"
 #include "utils/Invariant.hpp"
 
 #include <fmt/format.h>
@@ -21,12 +22,12 @@ namespace {
     return fmt::format("{:.1f} MB", mb);
   }
 
-  std::string format_delta(double current, double baseline, int width = 8) {
-    if (baseline <= 0) return fmt::format("{:>{}s}", "", width);
+  std::string format_delta(double current, double baseline) {
+    if (baseline <= 0) return "";
 
     double delta_pct = ((current - baseline) / baseline) * 100.0;
     std::string sign = delta_pct >= 0 ? "+" : "";
-    std::string text = fmt::format("{:>{}s}", fmt::format("{}{:.1f}%", sign, delta_pct), width);
+    std::string text = fmt::format("{}{:.1f}%", sign, delta_pct);
 
     // For time and RSS: negative = improvement (green), positive = regression (red)
     if (delta_pct < -1.0) {
@@ -74,7 +75,7 @@ namespace {
     bool has_baseline   = baseline.has_value();
     auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
 
-    // Header
+    // Title
     fmt::print("\n{}", emphasis(current.suite_name));
 
     if (!current.timestamp.empty()) {
@@ -89,37 +90,58 @@ namespace {
 
     fmt::print("\n");
 
-    // Column headers — apply styling after padding to avoid ANSI codes
-    // breaking fmt's width calculations.
-    if (has_baseline) {
-      fmt::print("  {} {:>6s} {:>4s} {:>3s} {:>6s} {:>5s} {:>5s} {:>18s} {:>8s} {:>12s} {:>8s} {:>8s}\n",
-      emphasis(fmt::format("{:<20s}", "Scenario")), "n", "p", "g", "trees", "vars", "iters",
-      "Time (ms)", muted(fmt::format("{:>8s}", "delta")), "Peak RSS", muted(fmt::format("{:>8s}", "delta")), "Test Err");
-    } else {
-      fmt::print("  {} {:>6s} {:>4s} {:>3s} {:>6s} {:>5s} {:>5s} {:>18s} {:>12s} {:>8s}\n",
-      emphasis(fmt::format("{:<20s}", "Scenario")), "n", "p", "g", "trees", "vars", "iters",
-      "Time (ms)", "Peak RSS", "Test Err");
+    // Build columns conditionally
+    std::vector<Column> columns = {
+      { "Scenario",  20, Align::left },
+      { "n",          6, Align::right },
+      { "p",          4, Align::right },
+      { "g",          3, Align::right },
+      { "trees",      6, Align::right },
+      { "vars",       5, Align::right },
+      { "iters",      5, Align::right },
+      { "Time (ms)", 18, Align::right },
+    };
+
+    if (has_baseline) columns.push_back({ "delta", 8, Align::right });
+    columns.push_back({ "Peak RSS", 12, Align::right });
+    if (has_baseline) columns.push_back({ "delta", 8, Align::right });
+    columns.push_back({ "Test Err", 8, Align::right });
+
+    // Header — style Scenario and delta labels
+    Row header = header_labels(columns);
+    header[0]  = emphasis(header[0]);
+
+    for (std::size_t i = 0; i < header.size(); ++i) {
+      if (header[i] == "delta") header[i] = muted("delta");
     }
 
-    // Separator
-    int sep_width = has_baseline ? 120 : 100;
-    std::string sep(sep_width, '-');
-    fmt::print("  {}\n", muted(sep));
+    fmt::print("  {}\n", format_row(columns, header));
+    fmt::print("  {}\n", muted(format_separator(columns)));
 
-    // Rows — styled strings (vars_str, deltas) are pre-padded before
-    // styling so ANSI codes don't break column alignment.
+    // Data rows
     for (const auto& r : current.results) {
-      std::string time_str = fmt::format("{:>18s}", fmt::format("{:.1f} +/- {:.1f}", r.mean_time_ms, r.std_time_ms));
+      std::string time_str = fmt::format("{:.1f} +/- {:.1f}", r.mean_time_ms, r.std_time_ms);
       std::string vars_str = r.trees > 0
-        ? fmt::format("{:>5s}", fmt::format("{:.2f}", r.vars))
-        : muted(fmt::format("{:>5s}", "--"));
-      std::string rss_str = fmt::format("{:>12s}", format_rss(r.peak_rss_mb));
-      std::string err_str = fmt::format("{:>8s}", fmt::format("{:.1f}%", r.mean_te_error * 100));
+        ? fmt::format("{:.2f}", r.vars)
+        : muted("--");
+      std::string rss_str  = format_rss(r.peak_rss_mb);
+      std::string err_str  = fmt::format("{:.1f}%", r.mean_te_error * 100);
+
+      Row cells = {
+        r.name,
+        fmt::format("{}", r.n),
+        fmt::format("{}", r.p),
+        fmt::format("{}", r.g),
+        fmt::format("{}", r.trees),
+        vars_str,
+        fmt::format("{}", r.runs),
+        time_str,
+      };
+
+      std::string time_delta, rss_delta;
 
       if (has_baseline) {
-        auto it                = baseline_index.find(r.name);
-        std::string time_delta = fmt::format("{:>8s}", "");
-        std::string rss_delta  = fmt::format("{:>8s}", "");
+        auto it = baseline_index.find(r.name);
 
         if (it != baseline_index.end()) {
           time_delta = format_delta(r.mean_time_ms, it->second->mean_time_ms);
@@ -129,14 +151,18 @@ namespace {
           }
         }
 
-        fmt::print("  {:<20s} {:>6d} {:>4d} {:>3d} {:>6d} {} {:>5d} {} {} {} {} {}\n",
-        r.name, r.n, r.p, r.g, r.trees, vars_str, r.runs,
-        time_str, time_delta, rss_str, rss_delta, err_str);
-      } else {
-        fmt::print("  {:<20s} {:>6d} {:>4d} {:>3d} {:>6d} {} {:>5d} {} {} {}\n",
-        r.name, r.n, r.p, r.g, r.trees, vars_str, r.runs,
-        time_str, rss_str, err_str);
+        cells.push_back(time_delta);
       }
+
+      cells.push_back(rss_str);
+
+      if (has_baseline) {
+        cells.push_back(rss_delta);
+      }
+
+      cells.push_back(err_str);
+
+      fmt::print("  {}\n", format_row(columns, cells));
     }
 
     // Footer
@@ -152,6 +178,8 @@ namespace {
   std::string format_benchmark_markdown(
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
+    using namespace pptree::io;
+
     bool has_baseline   = baseline.has_value();
     auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
 
@@ -169,26 +197,48 @@ namespace {
 
     out << "\n";
 
-    // Table header
-    if (has_baseline) {
-      out << "| Scenario | n | p | g | trees | vars | iters | Time (ms) | \xCE\x94 Time | Peak RSS | \xCE\x94 RSS | Test Err |\n";
-      out << "|----------|--:|--:|--:|------:|-----:|------:|----------:|------:|----------:|-----:|---------:|\n";
-    } else {
-      out << "| Scenario | n | p | g | trees | vars | iters | Time (ms) | Peak RSS | Test Err |\n";
-      out << "|----------|--:|--:|--:|------:|-----:|------:|----------:|----------:|---------:|\n";
-    }
+    // Build columns conditionally
+    std::vector<Column> columns = {
+      { "Scenario",  0, Align::left },
+      { "n",         0, Align::right },
+      { "p",         0, Align::right },
+      { "g",         0, Align::right },
+      { "trees",     0, Align::right },
+      { "vars",      0, Align::right },
+      { "iters",     0, Align::right },
+      { "Time (ms)", 0, Align::right },
+    };
 
-    // Rows
+    if (has_baseline) columns.push_back({ "\xCE\x94 Time", 0, Align::right });
+    columns.push_back({ "Peak RSS", 0, Align::right });
+    if (has_baseline) columns.push_back({ "\xCE\x94 RSS", 0, Align::right });
+    columns.push_back({ "Test Err", 0, Align::right });
+
+    out << format_md_row(header_labels(columns)) << "\n";
+    out << format_md_separator(columns) << "\n";
+
+    // Data rows
     for (const auto& r : current.results) {
       std::string time_str = fmt::format("{:.1f} \xC2\xB1 {:.1f}", r.mean_time_ms, r.std_time_ms);
       std::string vars_str = r.trees > 0 ? fmt::format("{:.2f}", r.vars) : "--";
       std::string rss_str  = format_rss(r.peak_rss_mb);
       std::string err_str  = fmt::format("{:.1f}%", r.mean_te_error * 100);
 
+      Row cells = {
+        r.name,
+        fmt::format("{}", r.n),
+        fmt::format("{}", r.p),
+        fmt::format("{}", r.g),
+        fmt::format("{}", r.trees),
+        vars_str,
+        fmt::format("{}", r.runs),
+        time_str,
+      };
+
+      std::string time_delta, rss_delta;
+
       if (has_baseline) {
-        auto it                = baseline_index.find(r.name);
-        std::string time_delta = "";
-        std::string rss_delta  = "";
+        auto it = baseline_index.find(r.name);
 
         if (it != baseline_index.end()) {
           time_delta = format_delta_markdown(r.mean_time_ms, it->second->mean_time_ms);
@@ -198,14 +248,18 @@ namespace {
           }
         }
 
-        out << fmt::format("| {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} |\n",
-        r.name, r.n, r.p, r.g, r.trees, vars_str, r.runs,
-        time_str, time_delta, rss_str, rss_delta, err_str);
-      } else {
-        out << fmt::format("| {} | {} | {} | {} | {} | {} | {} | {} | {} | {} |\n",
-        r.name, r.n, r.p, r.g, r.trees, vars_str, r.runs,
-        time_str, rss_str, err_str);
+        cells.push_back(time_delta);
       }
+
+      cells.push_back(rss_str);
+
+      if (has_baseline) {
+        cells.push_back(rss_delta);
+      }
+
+      cells.push_back(err_str);
+
+      out << format_md_row(cells) << "\n";
     }
 
     out << fmt::format("\n{} scenarios completed in {:.1f}s\n",

@@ -533,9 +533,9 @@ TEST(CLIIntegration, EvaluateTextOutput) {
   auto result = run_pptree("evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_NE(result.stdout_output.find("Evaluation results"), std::string::npos);
-  EXPECT_NE(result.stdout_output.find("train error"), std::string::npos);
-  EXPECT_NE(result.stdout_output.find("test error"), std::string::npos);
-  EXPECT_NE(result.stdout_output.find("peak RSS"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Train Err"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Test Err"), std::string::npos);
+  EXPECT_NE(result.stdout_output.find("Peak RSS"), std::string::npos);
 }
 
 /* Evaluation with a single tree (t=0) succeeds. */

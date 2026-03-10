@@ -18,6 +18,7 @@
 #include "io/Presentation.hpp"
 #include "io/Color.hpp"
 #include "io/IO.hpp"
+#include "io/Output.hpp"
 #include "io/Timing.hpp"
 #include "serialization/Json.hpp"
 
@@ -42,7 +43,7 @@ namespace {
     float progress = static_cast<float>(current) / total;
     int pos        = static_cast<int>(bar_width * progress);
 
-    std::string bar_template = emphasis("\r{} |");
+    std::string bar_template = emphasis("\r  {} |");
     std::string bar          = std::string(pos, '-') + std::string(bar_width - pos, ' ');
 
     if (current == total) {
@@ -61,8 +62,8 @@ namespace {
 
   bool check_convergence(
     const std::vector<float>& times,
-    int                       min_iters,
-    float                     cv_threshold) {
+    int min_iters,
+    float cv_threshold) {
     int n = static_cast<int>(times.size());
 
     if (n < min_iters) return false;
@@ -89,15 +90,17 @@ namespace {
   }
 
   EvaluateResult evaluate_model(
-    FeatureMatrix&      tr_x,
-    FeatureMatrix&      te_x,
-    ResponseVector&     tr_y,
-    ResponseVector&     te_y,
+    FeatureMatrix &      tr_x,
+    FeatureMatrix &      te_x,
+    ResponseVector &     tr_y,
+    ResponseVector &     te_y,
     const CLIOptions&   params,
     pptree::stats::RNG& rng) {
+    Output out(params.quiet);
+
     // Run warmup iterations (discarded)
-    if (params.warmup > 0 && !params.quiet) {
-      fmt::print("Running {} warmup iterations:\n", emphasis(std::to_string(params.warmup)));
+    if (params.warmup > 0) {
+      out.print("  Running {} warmup iterations:\n", emphasis(std::to_string(params.warmup)));
     }
 
     for (int i = 0; i < params.warmup; ++i) {
@@ -106,20 +109,18 @@ namespace {
       display_progress(i + 1, params.warmup, params.quiet);
     }
 
-    if (params.warmup > 0 && !params.quiet) {
-      fmt::print("\n");
+    if (params.warmup > 0) {
+      out.print("\n");
     }
 
     // Determine iteration mode
     int max_iters = params.converge ? params.max_iterations : params.iterations;
 
-    if (!params.quiet) {
-      if (params.converge) {
-        fmt::print("Running up to {} iterations (converge at CV < {:.0f}%):\n",
-          emphasis(std::to_string(max_iters)), params.cv_threshold * 100);
-      } else {
-        fmt::print("Running {} iterations:\n", emphasis(std::to_string(max_iters)));
-      }
+    if (params.converge) {
+      out.print("  Running up to {} iterations (converge at CV < {:.0f}%):\n",
+      emphasis(std::to_string(max_iters)), params.cv_threshold * 100);
+    } else {
+      out.print("  Running {} iterations:\n", emphasis(std::to_string(max_iters)));
     }
 
     // Measured iterations
@@ -147,10 +148,9 @@ namespace {
         stable_count++;
 
         if (stable_count >= params.stable_window) {
-          if (!params.quiet) {
-            fmt::print("\n");
-            fmt::print("{} after {} iterations (CV < {:.0f}%)\n", success("Converged"), iterations_run, params.cv_threshold * 100);
-          }
+          display_progress(iterations_run, iterations_run, params.quiet);
+          out.print("\n");
+          out.print("  Converged after {} iterations (CV < {:.0f}%)\n", iterations_run, params.cv_threshold * 100);
 
           break;
         }
@@ -159,11 +159,11 @@ namespace {
       }
     }
 
-    if (params.converge && stable_count < params.stable_window && !params.quiet) {
-      fmt::print("\n");
-      fmt::print("{} Did not converge after {} iterations\n", warning("Warning:"), iterations_run);
-    } else if (!params.quiet) {
-      fmt::print("\n");
+    if (params.converge && stable_count < params.stable_window) {
+      out.print("\n");
+      out.print("{} Did not converge after {} iterations\n", warning("Warning:"), iterations_run);
+    } else {
+      out.print("\n");
     }
 
     // Build ModelStats from collected vectors
@@ -216,9 +216,8 @@ namespace {
 
     write_json_file(eval_result.stats.to_json(), dir + "/results.json");
 
-    if (!params.quiet) {
-      fmt::print("{}{}/\n", success("Experiment exported to "), dir);
-    }
+    Output out(params.quiet);
+    out.print("{}{}/\n", success("Experiment exported to "), dir);
   }
 }
 
@@ -244,24 +243,23 @@ namespace {
     ResponseVector tr_y = full_data.y(data_split.tr);
     ResponseVector te_y = full_data.y(data_split.te);
 
-    announce_configuration(params, tr_x.rows(), te_x.rows());
+    Output out(params.quiet);
+
+    print_configuration(params, tr_x.rows(), te_x.rows());
 
     auto eval_result = evaluate_model(tr_x, te_x, tr_y, te_y, params, rng);
 
     // Measure peak RSS after evaluation
     eval_result.stats.peak_rss_bytes = get_peak_rss_bytes();
 
-    if (!params.quiet) {
-      announce_results(eval_result.stats);
+    if (!out.quiet) {
+      print_results(eval_result.stats);
     }
 
     // Save results to file if requested
     if (!params.output_path.empty()) {
       write_json_file(eval_result.stats.to_json(), params.output_path);
-
-      if (!params.quiet) {
-        fmt::print("{}{}\n", success("Results saved to "), params.output_path);
-      }
+      out.saved("Results", params.output_path);
     }
 
     // Export experiment bundle if requested

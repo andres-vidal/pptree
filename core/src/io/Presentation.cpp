@@ -4,6 +4,7 @@
  *        formatted terminal display for confusion matrices and VI tables.
  */
 #include "io/Presentation.hpp"
+#include "io/Table.hpp"
 
 #include <fmt/format.h>
 #include <algorithm>
@@ -42,22 +43,45 @@ namespace pptree::cli {
     return j;
   }
 
-  void announce_results(const ModelStats& stats) {
+  void print_results(const ModelStats& stats) {
     using namespace pptree::io;
 
-    fmt::print("{} ({} runs):\n"
-      "-- training time: {:.2f}ms \u00b1 {:.2f}ms\n"
-      "-- train error:   {:.2f}%  \u00b1 {:.2f}%\n"
-      "-- test error:    {:.2f}%  \u00b1 {:.2f}%\n",
-      emphasis("Evaluation results"), stats.tr_times.size(),
-      stats.mean_time(), stats.std_time(),
-      stats.mean_tr_error() * 100, stats.std_tr_error() * 100,
-      stats.mean_te_error() * 100, stats.std_te_error() * 100);
+    fmt::print("  {}\n\n", emphasis("Evaluation results"));
+
+    std::vector<Column> columns = {
+      { "Runs",       5,  Align::left },
+      { "Time (ms)", 18,  Align::right },
+      { "Train Err", 10,  Align::right },
+      { "Test Err",  10,  Align::right },
+    };
+
+    if (stats.peak_rss_bytes >= 0) {
+      columns.push_back({ "Peak RSS", 10, Align::right });
+    }
+
+    Row header = header_labels(columns);
+
+    fmt::print("  {}\n", format_row(columns, header));
+    fmt::print("  {}\n", muted(format_separator(columns)));
+
+    std::string time_str = fmt::format("{:.2f} +/- {:.2f}", stats.mean_time(), stats.std_time());
+    std::string tr_err   = fmt::format("{:.2f}%", stats.mean_tr_error() * 100);
+    std::string te_err   = fmt::format("{:.2f}%", stats.mean_te_error() * 100);
+
+    Row cells = {
+      fmt::format("{}", stats.tr_times.size()),
+      time_str,
+      tr_err,
+      te_err,
+    };
 
     if (stats.peak_rss_bytes >= 0) {
       double mb = static_cast<double>(stats.peak_rss_bytes) / (1024.0 * 1024.0);
-      fmt::print("-- peak RSS:      {:.1f} MB\n", mb);
+      cells.push_back(fmt::format("{:.1f} MB", mb));
     }
+
+    fmt::print("  {}\n", format_row(columns, cells));
+    fmt::print("\n");
   }
 
   void print_variable_importance(
@@ -75,43 +99,62 @@ namespace pptree::cli {
     std::vector<int> order(static_cast<std::size_t>(p));
     std::iota(order.begin(), order.end(), 0);
     std::sort(order.begin(), order.end(), [&vi2](int a, int b) {
-      return vi2(a) > vi2(b);
-    });
+        return vi2(a) > vi2(b);
+      });
 
     const bool show_vi1 = vi1.size() == vi2.size();
     const bool show_vi3 = vi3.size() == vi2.size();
     const int rows      = (max_rows > 0 && p > max_rows) ? max_rows : p;
 
-    fmt::print("{}\n\n", emphasis("Variable Importance:"));
+    fmt::print("{}\n\n", emphasis("  Variable Importance:"));
 
-    std::string sigma_hdr = muted(fmt::format("{:>10}", "\xcf\x83"));
+    // Build columns conditionally
+    std::vector<Column> columns = {
+      { "Rank",       5,  Align::left },
+      { "Variable",  10,  Align::left },
+      { "",          10,  Align::right },
+      { "Projection", 12, Align::right },
+    };
 
-    if (show_vi3 && show_vi1) {
-      fmt::print("{:>5}  {:<10}  {}  {:>12}  {:>12}  {:>12}\n", "Rank", "Variable", sigma_hdr, "Projection", "Weighted", "Permuted");
-      fmt::print("{:>5}  {:<10}  {:>10}  {:>12}  {:>12}  {:>12}\n", "----", "--------", "", "(VI2)", "(VI3)", "(VI1)");
-    } else if (show_vi3) {
-      fmt::print("{:>5}  {:<10}  {}  {:>12}  {:>12}\n",  "Rank", "Variable", sigma_hdr, "Projection", "Weighted");
-      fmt::print("{:>5}  {:<10}  {:>10}  {:>12}  {:>12}\n",  "----", "--------", "", "(VI2)", "(VI3)");
-    } else {
-      fmt::print("{:>5}  {:<10}  {}  {:>12}\n",  "Rank", "Variable", sigma_hdr, "Projection");
-      fmt::print("{:>5}  {:<10}  {:>10}  {:>12}\n", "----", "--------", "", "(VI2)");
-    }
+    if (show_vi3) columns.push_back({ "Weighted", 12, Align::right });
 
+    if (show_vi1) columns.push_back({ "Permuted", 12, Align::right });
+
+    // Header
+    Row header = header_labels(columns);
+    header[0] = emphasis(header[0]);
+    header[1] = emphasis(header[1]);
+    header[2] = muted(fmt::format("{}", "\xcf\x83"));
+    header[3] = emphasis(header[3]);
+
+    if (show_vi3) header[4] = emphasis(header[4]);
+
+    if (show_vi1) header[show_vi3 ? 5 : 4] = emphasis(header[show_vi3 ? 5 : 4]);
+
+    fmt::print("  {}\n", format_row(columns, header));
+    fmt::print("  {}\n", muted(format_separator(columns)));
+
+    // Data rows
     for (int rank = 0; rank < rows; ++rank) {
       int j         = order[static_cast<std::size_t>(rank)];
       std::string v = fmt::format("x{}", j + 1);
 
-      if (show_vi3 && show_vi1) {
-        fmt::print("{:>5}  {:<10}  {:>10.4f}  {:>12.6f}  {:>12.6f}  {:>12.6f}\n", rank + 1, v, scale(j), vi2(j), vi3(j), vi1(j));
-      } else if (show_vi3) {
-        fmt::print("{:>5}  {:<10}  {:>10.4f}  {:>12.6f}  {:>12.6f}\n",  rank + 1, v, scale(j), vi2(j), vi3(j));
-      } else {
-        fmt::print("{:>5}  {:<10}  {:>10.4f}  {:>12.6f}\n", rank + 1, v, scale(j), vi2(j));
-      }
+      Row cells = {
+        fmt::format("{}", rank + 1),
+        v,
+        fmt::format("{:.4f}", scale(j)),
+        fmt::format("{:.6f}", vi2(j)),
+      };
+
+      if (show_vi3) cells.push_back(fmt::format("{:.6f}", vi3(j)));
+
+      if (show_vi1) cells.push_back(fmt::format("{:.6f}", vi1(j)));
+
+      fmt::print("  {}\n", format_row(columns, cells));
     }
 
     if (rows < p) {
-      fmt::print("{}\n", muted(fmt::format("  ... {} more variables not shown", p - rows)));
+      fmt::print("  {}\n", muted(fmt::format("... {} more variables not shown", p - rows)));
     }
 
     fmt::print("\n");

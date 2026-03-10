@@ -11,7 +11,6 @@
 #include "utils/Invariant.hpp"
 #include "utils/Macros.hpp"
 
-#include <filesystem>
 #include <fstream>
 
 using namespace pptree;
@@ -25,12 +24,12 @@ using json = nlohmann::json;
 #error "PPTREE_GOLDEN_DIR must be defined"
 #endif
 
-#ifndef PPTREE_DATA_DIR
-#error "PPTREE_DATA_DIR must be defined"
+#ifndef PPTREE_FIXTURES_DIR
+#error "PPTREE_FIXTURES_DIR must be defined"
 #endif
 
-static const std::string GOLDEN_DIR = PPTREE_GOLDEN_DIR;
-static const std::string DATA_DIR   = PPTREE_DATA_DIR;
+static const std::string GOLDEN_DIR   = PPTREE_GOLDEN_DIR;
+static const std::string FIXTURES_DIR = PPTREE_FIXTURES_DIR;
 
 static json load_model_json(const std::string& path) {
   std::ifstream in(path);
@@ -104,8 +103,8 @@ TEST(JsonRoundTrip, ConfusionMatrix) {
   ASSERT_EQ(matrix[0].size(), 3);
 }
 
-TEST(JsonRoundTrip, FromModelJsonFile) {
-  std::string model_path = DATA_DIR + "/../model.json";
+TEST(JsonRoundTrip, ModelFromJsonFile) {
+  std::string model_path = FIXTURES_DIR + "/model.json";
   std::ifstream in(model_path);
 
   invariant(in.is_open(), "model.json not found at " + model_path);

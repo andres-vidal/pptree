@@ -198,6 +198,7 @@ namespace pptree::cli {
 
     CLI::App app{ "pptree - Projection Pursuit Trees and Forests" };
     app.require_subcommand(1);
+    app.fallthrough();
     app.set_version_flag("--version,-V", PPTREE_VERSION, "Print version and exit");
 
     // Global options

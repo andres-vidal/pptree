@@ -9,6 +9,7 @@
 #include "io/TempFile.hpp"
 #include "io/Timing.hpp"
 #include "io/Color.hpp"
+#include "io/Output.hpp"
 #include "utils/Invariant.hpp"
 
 #include <fmt/format.h>
@@ -374,19 +375,20 @@ namespace {
   int run_benchmark(CLIOptions& params, const std::string& binary_path) {
     using namespace pptree::io;
 
-    // Load scenarios
-    BenchmarkSuite suite;
+    Output out(params.quiet);
 
-    if (!params.scenarios_path.empty()) {
-      try {
-        suite = parse_suite(params.scenarios_path);
-      } catch (const std::exception& e) {
-        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
-        return 1;
-      }
-    } else {
+    // Load scenarios
+    if (params.scenarios_path.empty()) {
       fmt::print(stderr, "{} No scenarios file specified. Use -s/--scenarios <file>\n", error("Error:"));
       return 1;
+    }
+
+    BenchmarkSuite suite;
+
+    if (int rc = try_or_fail([&] {
+      suite = parse_suite(params.scenarios_path);
+    })) {
+      return rc;
     }
 
     // Apply iteration override
@@ -396,73 +398,52 @@ namespace {
       }
     }
 
-    if (!params.quiet) {
-      fmt::print("{} {} scenarios from {}\n\n",
-        emphasis("Benchmarking"), suite.scenarios.size(),
-        params.scenarios_path.empty() ? "built-in defaults" : params.scenarios_path);
-    }
+    out.print("{} {} scenarios from {}\n\n", emphasis("Benchmarking"), suite.scenarios.size(), params.scenarios_path);
 
     // Run scenarios
     SuiteResult result;
 
-    try {
+    if (int rc = try_or_fail([&] {
       result = run_suite(suite, binary_path, params.quiet,
-          [&](int idx, int total, const std::string& name) {
-        if (!params.quiet) {
-          if (idx < total) {
-            fmt::print("  [{}/{}] Running {}...\n", idx + 1, total, emphasis(name));
-          }
-        }
+      [&](int idx, int total, const std::string& name) {
+        if (idx < total) out.print("  [{}/{}] Running {}...\n", idx + 1, total, emphasis(name));
       });
-    } catch (const std::exception& e) {
-      fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
-      return 1;
+    })) {
+      return rc;
     }
 
     // Load baseline for comparison
     std::optional<SuiteResult> baseline;
 
     if (!params.baseline_path.empty()) {
-      try {
+      if (int rc = try_or_fail([&] {
         baseline = parse_results(params.baseline_path);
-      } catch (const std::exception& e) {
-        fmt::print(stderr, "{} Failed to load baseline: {}\n", error("Error:"), e.what());
-        return 1;
-      }
+      },
+      "Failed to load baseline")) return rc;
     }
 
     // Print results
     if (params.bench_format == "markdown") {
       fmt::print("{}", format_benchmark_markdown(result, baseline));
-    } else if (!params.quiet) {
+    } else if (!out.quiet) {
       print_benchmark_table(result, baseline);
     }
 
     // Export results
     if (!params.bench_output.empty()) {
-      try {
+      if (int rc = try_or_fail([&] {
         write_results_json(result, params.bench_output);
+      })) return rc;
 
-        if (!params.quiet) {
-          fmt::print("{}{}\n", success("Results saved to "), params.bench_output);
-        }
-      } catch (const std::exception& e) {
-        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
-        return 1;
-      }
+      out.saved("Results", params.bench_output);
     }
 
     if (!params.bench_csv.empty()) {
-      try {
+      if (int rc = try_or_fail([&] {
         write_results_csv(result, params.bench_csv);
+      })) return rc;
 
-        if (!params.quiet) {
-          fmt::print("{}{}\n", success("CSV saved to "), params.bench_csv);
-        }
-      } catch (const std::exception& e) {
-        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
-        return 1;
-      }
+      out.saved("CSV", params.bench_csv);
     }
 
     return 0;

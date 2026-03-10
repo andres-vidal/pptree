@@ -13,6 +13,7 @@
 #include "stats/ConfusionMatrix.hpp"
 #include "io/Presentation.hpp"
 #include "io/Color.hpp"
+#include "io/Output.hpp"
 #include "io/IO.hpp"
 #include "serialization/Json.hpp"
 
@@ -64,6 +65,8 @@ namespace {
 }
 
   int run_predict(CLIOptions& params) {
+    Output out(params.quiet);
+
     // Validate output path before doing work
     if (!params.output_path.empty()) {
       check_file_not_exists(params.output_path);
@@ -86,25 +89,22 @@ namespace {
     bool show_metrics = has_labels && !params.no_metrics;
 
     // Terminal output: only metrics
-    if (!params.quiet && show_metrics) {
+    if (!out.quiet && show_metrics) {
       ConfusionMatrix cm(predictions, data.y);
-      fmt::print("\n{}{:.2f}%\n\n", emphasis("Error rate: "), cm.error() * 100);
+      out.print("\n{}{:.2f}%\n\n", emphasis("Error rate: "), cm.error() * 100);
       print_confusion_matrix(cm);
     }
 
     // Hint about --output when not used
-    if (!params.quiet && show_metrics && params.output_path.empty()) {
-      fmt::print("{}\n", muted("Tip: use --output <file> to save individual predictions"));
+    if (!out.quiet && show_metrics && params.output_path.empty()) {
+      out.print("{}\n", muted("Tip: use --output <file> to save individual predictions"));
     }
 
     // Save results to file if requested
     if (!params.output_path.empty()) {
       json file_result = build_predict_result(predictions, data, params.no_metrics);
       write_json_file(file_result, params.output_path);
-
-      if (!params.quiet) {
-        fmt::print("{}{}\n", success("Results saved to "), params.output_path);
-      }
+      out.saved("Results", params.output_path);
     }
 
     return 0;

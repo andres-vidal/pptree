@@ -43,7 +43,7 @@ namespace pptree::cli {
   /**
    * @brief Print the training configuration summary.
    */
-  void announce_configuration(
+  void print_configuration(
     const CLIOptions& params,
     int               n_train = 0,
     int               n_test  = 0);

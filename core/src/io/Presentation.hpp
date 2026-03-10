@@ -43,7 +43,7 @@ namespace pptree::cli {
    * @brief Print evaluation results (timing, errors, memory) to stdout.
    * @param stats The aggregated model statistics.
    */
-  void announce_results(const ModelStats& stats);
+  void print_results(const ModelStats& stats);
 
   /**
    * @brief Print a ranked variable importance table to stdout.
