@@ -18,7 +18,8 @@ namespace pptree {
     explicit TrainingSpecGLDA(const float lambda) :
       TrainingSpec(
         pp::glda(lambda),
-        dr::noop()),
+        dr::noop(),
+        sr::mean_of_means()),
       lambda(lambda) {
     }
 

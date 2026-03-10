@@ -19,7 +19,10 @@ namespace pptree {
     const float lambda;
 
     TrainingSpecUGLDA(const int n_vars, const float lambda) :
-      TrainingSpec(pp::glda(lambda), dr::uniform(n_vars)),
+      TrainingSpec(
+        pp::glda(lambda),
+        dr::uniform(n_vars),
+        sr::mean_of_means()),
       n_vars(n_vars),
       lambda(lambda) {
     }

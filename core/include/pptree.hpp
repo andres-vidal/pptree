@@ -16,6 +16,9 @@
 #include "models/DRUniformStrategy.hpp"
 #include "models/DRNoopStrategy.hpp"
 
+#include "models/SRStrategy.hpp"
+#include "models/SRMeanOfMeansStrategy.hpp"
+
 #include "stats/Stats.hpp"
 
 #include "models/VariableImportance.hpp"

@@ -12,8 +12,8 @@
 #include <Eigen/Dense>
 
 using namespace pptree::pp;
-using namespace pptree::pp;
 using namespace pptree::dr;
+using namespace pptree::sr;
 using namespace pptree::stats;
 using namespace pptree::types;
 using namespace pptree::utils;
@@ -83,10 +83,8 @@ namespace pptree {
     auto data_group_1 = group_spec.group(x, group_1);
     auto data_group_2 = group_spec.group(x, group_2);
 
-    Feature mean_1 = (data_group_1 * projector).mean();
-    Feature mean_2 = (data_group_2 * projector).mean();
-
-    Feature threshold =  (mean_1 + mean_2) / 2;
+    const SRStrategy &split_strategy = *(training_spec.split_strategy);
+    Feature threshold = split_strategy.threshold(data_group_1, data_group_2, projector);
 
     Feature projected_mean_1 = data_group_1.colwise().mean().dot(projector);
     Feature projected_mean_2 = data_group_2.colwise().mean().dot(projector);
