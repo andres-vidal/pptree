@@ -34,7 +34,10 @@
 #include "io/Presentation.hpp"
 #include "io/Color.hpp"
 #include "io/IO.hpp"
+#include "io/Timing.hpp"
 #include "serialization/Json.hpp"
+#include "cli/Benchmark.hpp"
+#include "cli/BenchmarkReport.hpp"
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -86,15 +89,7 @@ void announce_configuration(
   fmt::print("\n");
 }
 
-template<typename F>
-auto measure_time_ms(F&& f) {
-  auto str = std::chrono::high_resolution_clock::now();
-  auto res = f();
-  auto end = std::chrono::high_resolution_clock::now();
-  auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(end - str);
-
-  return std::make_pair(std::move(res), dur.count());
-}
+using pptree::io::measure_time_ms;
 
 
 /**
@@ -206,22 +201,63 @@ TrainResult train_model(
 
 /** @brief Result of an evaluate run containing aggregated statistics. */
 struct EvaluateResult {
-  ModelStats stats;    ///< Per-iteration timing and error data.
+  /** Per-iteration timing and error data. */
+  ModelStats stats;
 };
+
+/**
+ * @brief Check if timing measurements have converged.
+ *
+ * Computes the coefficient of variation (std/mean) over the measurements
+ * and returns true if it is below the threshold.
+ *
+ * @param times         All timing measurements so far.
+ * @param min_iters     Minimum measurements before checking.
+ * @param cv_threshold  Target CV (e.g. 0.05 = 5%).
+ * @return True if the CV is below threshold.
+ */
+bool check_convergence(
+  const std::vector<float>& times,
+  int                       min_iters,
+  float                     cv_threshold) {
+  int n = static_cast<int>(times.size());
+
+  if (n < min_iters) return false;
+
+  double sum  = 0;
+  double sum2 = 0;
+
+  for (auto t : times) {
+    sum  += t;
+    sum2 += t * t;
+  }
+
+  double mean = sum / n;
+
+  if (mean <= 0) return true;
+
+  double variance = (sum2 / n) - (mean * mean);
+
+  if (variance < 0) variance = 0;
+
+  double cv = std::sqrt(variance) / mean;
+
+  return cv < cv_threshold;
+}
 
 /**
  * @brief Train and evaluate a model over multiple iterations.
  *
- * For each iteration, trains a fresh model on the training set,
- * records training time, train error, and test error. Displays
- * a progress bar unless quiet mode is active.
+ * Supports three modes:
+ * - Fixed iterations: runs exactly params.iterations times.
+ * - Convergence: runs until timing CV stabilizes below threshold.
+ * - Warmup: runs params.warmup discarded iterations before measuring.
  *
- * @tparam Model Either Forest or Tree.
  * @param tr_x   Training features.
  * @param te_x   Test features.
  * @param tr_y   Training labels.
  * @param te_y   Test labels.
- * @param params CLI options (iterations, seed, threads, quiet).
+ * @param params CLI options (iterations, seed, threads, quiet, converge, warmup, cv_threshold).
  * @param rng    Random number generator.
  * @return An EvaluateResult with aggregated statistics.
  */
@@ -232,31 +268,82 @@ EvaluateResult evaluate_model(
   ResponseVector&     te_y,
   const CLIOptions&   params,
   pptree::stats::RNG& rng) {
-  ModelStats model_stats;
-
-  model_stats.tr_times = Vector<float>(params.iterations);
-  model_stats.tr_error = Vector<float>(params.iterations);
-  model_stats.te_error = Vector<float>(params.iterations);
-
-  if (!params.quiet) {
-    fmt::print("Running {} iterations:\n", emphasis(std::to_string(params.iterations)));
+  // Run warmup iterations (discarded)
+  if (params.warmup > 0 && !params.quiet) {
+    fmt::print("Running {} warmup iterations:\n", emphasis(std::to_string(params.warmup)));
   }
 
-  for (int i = 0; i < params.iterations; ++i) {
-    display_progress(i, params.iterations, params.quiet);
+  for (int i = 0; i < params.warmup; ++i) {
+    display_progress(i, params.warmup, params.quiet);
+    train_model(tr_x, tr_y, params, rng);
+    display_progress(i + 1, params.warmup, params.quiet);
+  }
+
+  if (params.warmup > 0 && !params.quiet) {
+    fmt::print("\n");
+  }
+
+  // Determine iteration mode
+  int max_iters = params.converge ? params.max_iterations : params.iterations;
+
+  if (!params.quiet) {
+    if (params.converge) {
+      fmt::print("Running up to {} iterations (converge at CV < {:.0f}%):\n",
+        emphasis(std::to_string(max_iters)), params.cv_threshold * 100);
+    } else {
+      fmt::print("Running {} iterations:\n", emphasis(std::to_string(max_iters)));
+    }
+  }
+
+  // Measured iterations
+  std::vector<float> times;
+  std::vector<float> tr_errors;
+  std::vector<float> te_errors;
+
+  int stable_count   = 0;
+  int iterations_run = 0;
+
+  for (int i = 0; i < max_iters; ++i) {
+    display_progress(i, max_iters, params.quiet);
 
     const auto train_result = train_model(tr_x, tr_y, params, rng);
 
-    model_stats.tr_times[i] = train_result.duration;
-    model_stats.tr_error[i] = pptree::stats::error_rate(train_result.model->predict(tr_x), tr_y);
-    model_stats.te_error[i] = pptree::stats::error_rate(train_result.model->predict(te_x), te_y);
+    times.push_back(static_cast<float>(train_result.duration));
+    tr_errors.push_back(pptree::stats::error_rate(train_result.model->predict(tr_x), tr_y));
+    te_errors.push_back(pptree::stats::error_rate(train_result.model->predict(te_x), te_y));
 
-    display_progress(i + 1, params.iterations, params.quiet);
+    iterations_run = i + 1;
+    display_progress(iterations_run, max_iters, params.quiet);
+
+    // Check convergence
+    if (params.converge && check_convergence(times, params.min_iterations, params.cv_threshold)) {
+      stable_count++;
+
+      if (stable_count >= params.stable_window) {
+        if (!params.quiet) {
+          fmt::print("\n");
+          fmt::print("{} after {} iterations (CV < {:.0f}%)\n", success("Converged"), iterations_run, params.cv_threshold * 100);
+        }
+
+        break;
+      }
+    } else if (params.converge) {
+      stable_count = 0;
+    }
   }
 
-  if (!params.quiet) {
+  if (params.converge && stable_count < params.stable_window && !params.quiet) {
+    fmt::print("\n");
+    fmt::print("{} Did not converge after {} iterations\n", warning("Warning:"), iterations_run);
+  } else if (!params.quiet) {
     fmt::print("\n");
   }
+
+  // Build ModelStats from collected vectors
+  ModelStats model_stats;
+  model_stats.tr_times = Eigen::Map<const Vector<float>>(times.data(), times.size());
+  model_stats.tr_error = Eigen::Map<const Vector<float>>(tr_errors.data(), tr_errors.size());
+  model_stats.te_error = Eigen::Map<const Vector<float>>(te_errors.data(), te_errors.size());
 
   return { model_stats };
 }
@@ -377,7 +464,13 @@ json build_export_config(const CLIOptions& params) {
 
   // Evaluation parameters
   config["train-ratio"] = params.train_ratio;
-  config["iterations"]  = params.iterations;
+
+  if (params.converge) {
+    config["max-iterations"] = params.max_iterations;
+    config["cv-threshold"]   = params.cv_threshold;
+  } else {
+    config["iterations"] = params.iterations;
+  }
 
   // Data source - point to local CSV for re-runnability
   config["data"] = "data.csv";
@@ -476,10 +569,10 @@ int main(int argc, char *argv[]) {
         vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
         if (forest != nullptr) {
-          oob_err              = forest->oob_error(x, y);
-          vi.permuted              = variable_importance_permuted(*forest, x, y, params.seed);
-          vi.projections           = variable_importance_projections(*forest, n_vars, &vi.scale);
-          vi.weighted_projections  = variable_importance_weighted_projections(*forest, x, y, &vi.scale);
+          oob_err                 = forest->oob_error(x, y);
+          vi.permuted             = variable_importance_permuted(*forest, x, y, params.seed);
+          vi.projections          = variable_importance_projections(*forest, n_vars, &vi.scale);
+          vi.weighted_projections = variable_importance_weighted_projections(*forest, x, y, &vi.scale);
         } else if (tree != nullptr) {
           vi.projections = variable_importance_projections(*tree, n_vars, &vi.scale);
         }
@@ -601,6 +694,106 @@ int main(int argc, char *argv[]) {
       // Export experiment bundle if requested
       if (!params.export_path.empty()) {
         export_experiment(params, full_data, eval_result);
+      }
+
+      break;
+    }
+
+    case Subcommand::benchmark: {
+      using namespace pptree::bench;
+
+      // Load scenarios
+      BenchmarkSuite suite;
+
+      if (!params.scenarios_path.empty()) {
+        try {
+          suite = parse_suite(params.scenarios_path);
+        } catch (const std::exception& e) {
+          fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+          return 1;
+        }
+      } else {
+        fmt::print(stderr, "{} No scenarios file specified. Use -s/--scenarios <file>\n", error("Error:"));
+        return 1;
+      }
+
+      // Apply iteration override
+      if (params.bench_iterations > 0) {
+        for (auto& s : suite.scenarios) {
+          s.iterations = params.bench_iterations;
+        }
+      }
+
+      // Resolve binary path for subprocess invocations
+      std::string binary_path = argv[0];
+
+      if (!params.quiet) {
+        fmt::print("{} {} scenarios from {}\n\n",
+          emphasis("Benchmarking"), suite.scenarios.size(),
+          params.scenarios_path.empty() ? "built-in defaults" : params.scenarios_path);
+      }
+
+      // Run scenarios
+      SuiteResult result;
+
+      try {
+        result = run_suite(suite, binary_path, params.quiet,
+            [&](int idx, int total, const std::string& name) {
+          if (!params.quiet) {
+            if (idx < total) {
+              fmt::print("  [{}/{}] Running {}...\n", idx + 1, total, emphasis(name));
+            }
+          }
+        });
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+        return 1;
+      }
+
+      // Load baseline for comparison
+      std::optional<SuiteResult> baseline;
+
+      if (!params.baseline_path.empty()) {
+        try {
+          baseline = parse_results(params.baseline_path);
+        } catch (const std::exception& e) {
+          fmt::print(stderr, "{} Failed to load baseline: {}\n", error("Error:"), e.what());
+          return 1;
+        }
+      }
+
+      // Print results
+      if (params.bench_format == "markdown") {
+        fmt::print("{}", format_benchmark_markdown(result, baseline));
+      } else if (!params.quiet) {
+        print_benchmark_table(result, baseline);
+      }
+
+      // Export results
+      if (!params.bench_output.empty()) {
+        try {
+          write_results_json(result, params.bench_output);
+
+          if (!params.quiet) {
+            fmt::print("{}{}\n", success("Results saved to "), params.bench_output);
+          }
+        } catch (const std::exception& e) {
+          fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+          return 1;
+        }
+      }
+
+      if (!params.bench_csv.empty()) {
+        try {
+          write_results_csv(result, params.bench_csv);
+
+          if (!params.quiet) {
+            fmt::print("{}{}\n", success("CSV saved to "), params.bench_csv);
+          }
+        } catch (const std::exception& e) {
+          fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+          return 1;
+        }
       }
 
       break;

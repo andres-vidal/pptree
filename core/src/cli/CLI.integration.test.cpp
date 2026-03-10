@@ -8,19 +8,14 @@
  */
 #include <gtest/gtest.h>
 
+#include "io/TempFile.hpp"
+
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <filesystem>
-
-#ifdef _WIN32
-#include <io.h>
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
 
 #include <nlohmann/json.hpp>
 
@@ -99,116 +94,8 @@ static ProcessResult run_pptree(const std::string& args) {
   return { exit_code, output };
 }
 
-/**
- * @brief RAII temporary file with automatic cleanup.
- *
- * Creates a unique temporary file on construction and deletes it in
- * the destructor.  Provides helpers to read content back or clear()
- * the file so the path can be used as a fresh output target.
- */
-class TempFile {
-  public:
-    TempFile(const std::string& suffix = ".json") {
-      #ifdef _WIN32
-      char tmp_dir[MAX_PATH];
-      GetTempPathA(MAX_PATH, tmp_dir);
-      char tmp_file[MAX_PATH];
-      GetTempFileNameA(tmp_dir, "ppt", 0, tmp_file);
-      std::string base = tmp_file;
-      std::remove(base.c_str());
-      path_ = base + suffix;
-      std::ofstream touch(path_);
-      #else
-      std::string tmpl = "/tmp/pptree_test_XXXXXX" + suffix;
-      std::vector<char> tmpl_buf(tmpl.begin(), tmpl.end());
-      tmpl_buf.push_back('\0');
-
-      int fd = mkstemps(tmpl_buf.data(), static_cast<int>(suffix.size()));
-
-      if (fd != -1) {
-        path_ = tmpl_buf.data();
-        close(fd);
-      }
-
-      #endif
-    }
-
-    ~TempFile() {
-      if (!path_.empty()) {
-        std::remove(path_.c_str());
-      }
-    }
-
-    const std::string& path() const {
-      return path_;
-    }
-
-    // Remove the file so it can be used as a fresh output target
-    void clear() const {
-      std::remove(path_.c_str());
-    }
-
-    std::string read() const {
-      std::ifstream in(path_);
-      std::stringstream ss;
-      ss << in.rdbuf();
-      return ss.str();
-    }
-
-  private:
-    std::string path_;
-};
-
-/**
- * @brief RAII temporary directory with automatic cleanup.
- *
- * Creates a unique temporary directory via mkdtemp (POSIX) and
- * recursively removes it in the destructor.  file(name) returns a
- * path inside the directory suitable for output targets.
- */
-class TempDir {
-  public:
-    TempDir() {
-      #ifdef _WIN32
-      char tmp_dir[MAX_PATH];
-      GetTempPathA(MAX_PATH, tmp_dir);
-      char tmp_file[MAX_PATH];
-      GetTempFileNameA(tmp_dir, "ppd", 0, tmp_file);
-      // GetTempFileNameA creates a file; replace it with a directory
-      std::remove(tmp_file);
-      path_ = tmp_file;
-      std::filesystem::create_directories(path_);
-      #else
-      path_ = "/tmp/pptree_test_dir_XXXXXX";
-      std::vector<char> buf(path_.begin(), path_.end());
-      buf.push_back('\0');
-      char *result = mkdtemp(buf.data());
-
-      if (result) {
-        path_ = result;
-      }
-
-      #endif
-    }
-
-    ~TempDir() {
-      if (!path_.empty()) {
-        std::filesystem::remove_all(path_);
-      }
-    }
-
-    const std::string& path() const {
-      return path_;
-    }
-
-    // Return a path inside this temp dir that doesn't exist yet
-    std::string file(const std::string& name) const {
-      return path_ + "/" + name;
-    }
-
-  private:
-    std::string path_;
-};
+using pptree::io::TempFile;
+using pptree::io::TempDir;
 
 // ---------------------------------------------------------------------------
 // Golden test helpers — load reference files and compare fields
@@ -631,19 +518,19 @@ TEST(CLIIntegration, PredictNonexistentModelFails) {
 
 /* Basic evaluation with simulated data succeeds. */
 TEST(CLIIntegration, EvaluateWithSimulatedData) {
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42");
+  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
 }
 
 /* Evaluation with real iris data succeeds. */
 TEST(CLIIntegration, EvaluateWithIrisData) {
-  auto result = run_pptree("-q evaluate -d " + IRIS_CSV + " -t 5 -r 42");
+  auto result = run_pptree("-q evaluate -d " + IRIS_CSV + " -t 5 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
 }
 
 /* Non-quiet evaluate prints results header and error metrics. */
 TEST(CLIIntegration, EvaluateTextOutput) {
-  auto result = run_pptree("evaluate --simulate 50x3x2 -t 5 -r 42");
+  auto result = run_pptree("evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_NE(result.stdout_output.find("Evaluation results"), std::string::npos);
   EXPECT_NE(result.stdout_output.find("train error"), std::string::npos);
@@ -653,7 +540,7 @@ TEST(CLIIntegration, EvaluateTextOutput) {
 
 /* Evaluation with a single tree (t=0) succeeds. */
 TEST(CLIIntegration, EvaluateSingleTree) {
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 0 -r 42");
+  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 0 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -661,7 +548,7 @@ TEST(CLIIntegration, EvaluateSingleTree) {
 TEST(CLIIntegration, EvaluateOutputFile) {
   TempFile output;
   output.clear();
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -o " + output.path());
+  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -675,7 +562,7 @@ TEST(CLIIntegration, EvaluateExport) {
   TempDir dir;
   std::string export_path = dir.path() + "/exp1";
 
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -l 0.3 -e " + export_path);
+  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -l 0.3 -i 1 -e " + export_path);
   EXPECT_EQ(result.exit_code, 0);
 
   EXPECT_TRUE(std::filesystem::exists(export_path + "/config.json"));
@@ -698,7 +585,7 @@ TEST(CLIIntegration, EvaluateExport) {
 TEST(CLIIntegration, EvaluateOutputCollisionFails) {
   TempFile output;
   // Don't clear - file exists, should fail
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -o " + output.path());
+  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -706,7 +593,7 @@ TEST(CLIIntegration, EvaluateOutputCollisionFails) {
 TEST(CLIIntegration, EvaluateExportCollisionFails) {
   TempDir dir;
   // dir.path() already exists, should fail
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -e " + dir.path());
+  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -e " + dir.path());
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -714,12 +601,12 @@ TEST(CLIIntegration, EvaluateExportCollisionFails) {
 TEST(CLIIntegration, EvaluateOutputHasIterationsArray) {
   TempFile output;
   output.clear();
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -o " + output.path());
+  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
   EXPECT_TRUE(j.contains("iterations"));
-  EXPECT_EQ(j["iterations"].size(), 1u);  // default is 1 iteration
+  EXPECT_EQ(j["iterations"].size(), 1u);
   EXPECT_TRUE(j["iterations"][0].contains("train_time_ms"));
   EXPECT_TRUE(j["iterations"][0].contains("train_error"));
   EXPECT_TRUE(j["iterations"][0].contains("test_error"));
@@ -779,14 +666,14 @@ TEST(CLIIntegration, VersionFlag) {
 
 /* -q with evaluate produces completely empty stdout. */
 TEST(CLIIntegration, QuietSuppressesOutput) {
-  auto quiet_result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42");
+  auto quiet_result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(quiet_result.exit_code, 0);
   EXPECT_TRUE(quiet_result.stdout_output.empty());
 }
 
 /* -q suppresses "Evaluation results", "Train Error", "Test Error". */
 TEST(CLIIntegration, QuietSuppressesEvaluateResults) {
-  auto quiet_result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42");
+  auto quiet_result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(quiet_result.exit_code, 0);
   EXPECT_EQ(quiet_result.stdout_output.find("Evaluation results"), std::string::npos);
   EXPECT_EQ(quiet_result.stdout_output.find("Train Error"), std::string::npos);
@@ -813,7 +700,7 @@ TEST(CLIIntegration, ConfigFileApplied) {
 
   TempFile output;
   output.clear();
-  auto result = run_pptree("--config " + config.path() + " -q evaluate --simulate 50x3x2 -r 42 -o " + output.path());
+  auto result = run_pptree("--config " + config.path() + " -q evaluate --simulate 50x3x2 -r 42 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -854,7 +741,7 @@ TEST(CLIIntegration, TrainThenPredict) {
 
 /* Fraction "1/3" is accepted end-to-end for evaluate. */
 TEST(CLIIntegration, EvaluateWithFractionVars) {
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -v 1/3");
+  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -v 1/3");
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -1032,4 +919,142 @@ TEST(CLIIntegration, TrainPredictWine) {
   EXPECT_GT(j["predictions"].size(), 0u);
   EXPECT_TRUE(j.contains("error_rate"));
   EXPECT_TRUE(j.contains("confusion_matrix"));
+}
+
+// ---------------------------------------------------------------------------
+// Benchmark subcommand
+// ---------------------------------------------------------------------------
+
+static const std::string MINIMAL_SCENARIOS = R"({
+  "name": "integration-test",
+  "defaults": {
+    "train_ratio": 0.7,
+    "seed": 42,
+    "lambda": 0.5,
+    "iterations": 1
+  },
+  "scenarios": [
+    { "name": "tiny-forest", "n": 50, "p": 3, "g": 2, "trees": 5, "vars": 0.5 },
+    { "name": "tiny-tree",   "n": 50, "p": 3, "g": 2, "trees": 0 }
+  ]
+})";
+
+static TempFile write_scenarios() {
+  TempFile f;
+  {
+    std::ofstream out(f.path());
+    out << MINIMAL_SCENARIOS;
+  }
+  return f;
+}
+
+/* Benchmark runs successfully with a scenarios file. */
+TEST(CLIIntegration, BenchmarkRunsSuccessfully) {
+  auto scenarios = write_scenarios();
+  auto result = run_pptree("-q --no-color benchmark -s " + scenarios.path());
+  EXPECT_EQ(result.exit_code, 0);
+}
+
+/* Benchmark without -s must fail. */
+TEST(CLIIntegration, BenchmarkNoScenariosFails) {
+  auto result = run_pptree("-q --no-color benchmark");
+  EXPECT_NE(result.exit_code, 0);
+}
+
+/* Benchmark with invalid scenarios file must fail. */
+TEST(CLIIntegration, BenchmarkInvalidScenariosFails) {
+  TempFile bad;
+  {
+    std::ofstream out(bad.path());
+    out << "not valid json";
+  }
+  auto result = run_pptree("-q --no-color benchmark -s " + bad.path());
+  EXPECT_NE(result.exit_code, 0);
+}
+
+/* Benchmark -o produces valid JSON results. */
+TEST(CLIIntegration, BenchmarkJsonOutput) {
+  auto scenarios = write_scenarios();
+  TempFile output;
+  output.clear();
+
+  auto result = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " -o " + output.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(output.read());
+  EXPECT_TRUE(j.contains("suite_name"));
+  EXPECT_TRUE(j.contains("timestamp"));
+  EXPECT_TRUE(j.contains("total_time_ms"));
+  EXPECT_TRUE(j.contains("results"));
+  EXPECT_EQ(j["results"].size(), 2u);
+
+  for (const auto& r : j["results"]) {
+    EXPECT_TRUE(r.contains("name"));
+    EXPECT_TRUE(r.contains("n"));
+    EXPECT_TRUE(r.contains("p"));
+    EXPECT_TRUE(r.contains("g"));
+    EXPECT_TRUE(r.contains("trees"));
+    EXPECT_TRUE(r.contains("mean_time_ms"));
+    EXPECT_TRUE(r.contains("mean_test_error"));
+  }
+}
+
+/* Benchmark --csv produces valid CSV with header and data rows. */
+TEST(CLIIntegration, BenchmarkCsvOutput) {
+  auto scenarios = write_scenarios();
+  TempFile csv_out(".csv");
+  csv_out.clear();
+
+  auto result = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " --csv " + csv_out.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  std::ifstream in(csv_out.path());
+  std::string header;
+  std::getline(in, header);
+  EXPECT_NE(header.find("scenario"), std::string::npos);
+  EXPECT_NE(header.find("mean_time_ms"), std::string::npos);
+
+  // Two data rows (one per scenario)
+  std::string line;
+  int data_rows = 0;
+  while (std::getline(in, line)) {
+    if (!line.empty()) data_rows++;
+  }
+  EXPECT_EQ(data_rows, 2);
+}
+
+/* Benchmark -b compares against a baseline without error. */
+TEST(CLIIntegration, BenchmarkBaselineComparison) {
+  auto scenarios = write_scenarios();
+
+  // First run: produce baseline
+  TempFile baseline;
+  baseline.clear();
+  auto run1 = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " -o " + baseline.path());
+  ASSERT_EQ(run1.exit_code, 0);
+
+  // Second run: compare against baseline
+  auto run2 = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " -b " + baseline.path());
+  EXPECT_EQ(run2.exit_code, 0);
+}
+
+/* Benchmark -i overrides iteration count. */
+TEST(CLIIntegration, BenchmarkIterationOverride) {
+  auto scenarios = write_scenarios();
+  TempFile output;
+  output.clear();
+
+  auto result = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " -i 2 -o " + output.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(output.read());
+  for (const auto& r : j["results"]) {
+    EXPECT_EQ(r["runs"].get<int>(), 2);
+  }
+}
+
+/* Benchmark with missing scenarios file must fail. */
+TEST(CLIIntegration, BenchmarkMissingFileFails) {
+  auto result = run_pptree("-q --no-color benchmark -s /nonexistent/path.json");
+  EXPECT_NE(result.exit_code, 0);
 }

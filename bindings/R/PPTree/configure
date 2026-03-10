@@ -87,8 +87,16 @@ if [ "$(uname)" = "Darwin" ]; then
 
 fi
 
+NATIVE_ARCH="-march=native"
+CMAKE_NATIVE_ARCH=""
+if [ -n "${CI}" ]; then
+  NATIVE_ARCH=""
+  CMAKE_NATIVE_ARCH="-DPPTREE_NATIVE_ARCH=OFF"
+fi
+
 sed -e "s|@DARWIN_OPENMP_CXXFLAGS@|${DARWIN_OPENMP_CXXFLAGS}|" \
     -e "s|@DARWIN_OPENMP_LIBS@|${DARWIN_OPENMP_LIBS}|" \
-    -e "s|@COMPILER_FLAGS@|${COMPILER_FLAGS} -march=native -O3|" \
+    -e "s|@COMPILER_FLAGS@|${COMPILER_FLAGS} ${NATIVE_ARCH} -O3|" \
+    -e "s|@CMAKE_NATIVE_ARCH@|${CMAKE_NATIVE_ARCH}|" \
     src/Makevars.in > src/Makevars
 

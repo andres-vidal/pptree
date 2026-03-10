@@ -37,11 +37,17 @@ pptree train --data data.csv --trees 100 --lambda 0.5 --save model.json
 # Predict on new data using a saved model
 pptree predict --model model.json --data test.csv
 
-# Evaluate with train/test split and multiple iterations
-pptree evaluate --data data.csv --trees 100 --iterations 10 --train-ratio 0.7
+# Evaluate with smart convergence (default)
+pptree evaluate --data data.csv --trees 100 --train-ratio 0.7
+
+# Evaluate with fixed iterations (disables convergence)
+pptree evaluate --data data.csv --trees 100 -i 10 --train-ratio 0.7
 
 # Evaluate on simulated data (1000 rows, 10 features, 3 classes)
 pptree evaluate --simulate 1000x10x3 --trees 50
+
+# Run performance benchmarks across scenarios
+pptree benchmark -s bench/default-scenarios.json
 ```
 
 ### R
@@ -105,6 +111,84 @@ make test               # Build and run C++ tests
 make build-debug        # Debug build with AddressSanitizer
 make test-debug         # Run debug tests
 ```
+
+## Benchmarking
+
+Performance benchmarks run configurable scenarios on simulated data, measuring execution time and peak RSS. Each scenario runs as a separate process for accurate per-scenario memory measurement.
+
+### Running Benchmarks
+
+```bash
+make benchmark                     # Run default scenarios, print table
+make benchmark-save                # Run and save results to bench/results.json + bench/results.csv
+make benchmark-compare             # Run and compare against saved results
+make benchmark-vs REF=main         # Compare current branch against another ref (branch/tag/commit)
+```
+
+### CLI Usage
+
+```bash
+# Run scenarios from a JSON file
+pptree benchmark -s bench/default-scenarios.json
+
+# Save results as JSON and CSV
+pptree benchmark -s bench/default-scenarios.json -o results.json --csv results.csv
+
+# Compare against a baseline
+pptree benchmark -s bench/default-scenarios.json -b baseline.json
+
+# Override iteration count (forces fixed mode)
+pptree benchmark -s bench/default-scenarios.json -i 5
+```
+
+### Smart Convergence
+
+The `evaluate` subcommand uses smart convergence by default: it monitors the
+coefficient of variation (CV = std/mean) of timing measurements and stops once
+results are statistically stable.
+
+The algorithm:
+1. Run at least `--min-iterations` (default: 10) before checking.
+2. After each iteration, if CV < `--cv` threshold (default: 0.05), increment a stability counter; otherwise reset it.
+3. Stop when the counter reaches `--stable-window` (default: 3) consecutive checks.
+4. Never exceed `--max-iterations` (default: 200).
+
+Use `-i N` to disable convergence and run exactly N iterations instead.
+
+```bash
+# Default: smart convergence (runs until CV < 5%)
+pptree evaluate --simulate 1000x20x3 -t 50
+
+# Stricter threshold with warmup
+pptree evaluate --simulate 1000x20x3 -t 50 --warmup 2 --cv 0.03
+
+# Tune convergence parameters
+pptree evaluate --simulate 1000x20x3 -t 50 --min-iterations 20 --stable-window 5
+
+# Fixed iterations (disables convergence)
+pptree evaluate --simulate 1000x20x3 -t 50 -i 10
+```
+
+### Scenario Format
+
+Scenarios are defined in JSON with shared defaults and per-scenario overrides:
+
+```json
+{
+  "defaults": {
+    "trees": 100, "lambda": 0.5, "vars": 0.5,
+    "seed": 42, "warmup": 2,
+    "convergence": { "cv_threshold": 0.05, "max_iterations": 200 }
+  },
+  "scenarios": [
+    { "name": "small-forest",  "n": 200,  "p": 5,  "g": 2, "trees": 50 },
+    { "name": "medium-forest", "n": 1000, "p": 20, "g": 3 },
+    { "name": "fixed-5",       "n": 1000, "p": 20, "g": 3, "iterations": 5 }
+  ]
+}
+```
+
+Setting `"iterations"` forces fixed mode for that scenario; otherwise, smart convergence is used.
 
 ## R Package
 

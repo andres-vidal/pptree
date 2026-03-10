@@ -6,19 +6,26 @@ BUILD_DIR_DEBUG = .debug
 NLHOMANN_JSON_HEADERS_PATH = ${BUILD_DIR}/_deps/json-src/include
 PCG_HEADERS_PATH = ${BUILD_DIR}/_deps/pcg-src/include
 
+# In CI, disable -march=native to avoid mismatches between cached deps
+# and the current runner's CPU instruction set.
+CMAKE_EXTRA ?=
+ifdef CI
+CMAKE_EXTRA += -DPPTREE_NATIVE_ARCH=OFF
+endif
+
 clean:
 	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG}
 
 fetch-deps:
 	@mkdir -p ${BUILD_DIR}
-	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core
+	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ${CMAKE_EXTRA} ../core
 
 build: fetch-deps
 	@cd ${BUILD_DIR} && make
 
 build-debug:
 	@mkdir -p ${BUILD_DIR_DEBUG}
-	@cd ${BUILD_DIR_DEBUG} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../core && make
+	@cd ${BUILD_DIR_DEBUG} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ${CMAKE_EXTRA} ../core && make
 
 test: build
 	@cd ./$(BUILD_DIR) && ./pptree-test
@@ -135,6 +142,36 @@ docs-r:
 	@make r-clean
 
 docs: docs-site docs-cpp docs-r
+
+# Benchmarking
+
+BENCH_SCENARIOS = bench/default-scenarios.json
+BENCH_REF ?= main
+
+benchmark: build
+	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS}
+
+benchmark-save: build
+	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -o bench/results.json --csv bench/results.csv
+
+benchmark-compare: build
+	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -b bench/results.json
+
+benchmark-vs: build
+	@echo "Building and benchmarking current branch..."
+	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -o bench/.current-results.json -q
+	@echo "Setting up baseline (${BENCH_REF})..."
+	@git worktree add -f .bench-worktree ${BENCH_REF} 2>/dev/null || { echo "Error: Could not create worktree for ref '${BENCH_REF}'"; exit 1; }
+	@mkdir -p .bench-worktree/bench
+	@cp ${BENCH_SCENARIOS} .bench-worktree/bench/default-scenarios.json 2>/dev/null || true
+	@echo "Building baseline..."
+	@cd .bench-worktree && mkdir -p .build && cd .build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core > /dev/null 2>&1 && make -j > /dev/null 2>&1
+	@echo "Running baseline benchmarks..."
+	@cd .bench-worktree && .build/pptree benchmark -s bench/default-scenarios.json -o bench/.baseline-results.json -q
+	@echo ""
+	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -b .bench-worktree/bench/.baseline-results.json
+	@rm -f bench/.current-results.json
+	@git worktree remove -f .bench-worktree 2>/dev/null || true
 
 # Profiling
 

@@ -31,6 +31,7 @@ set(PPTREE_PLATFORM "${PPTREE_OS}-${PPTREE_COMPILER}")
 
 option(PPTREE_DOUBLE_PRECISION "Use double precision for feature data" OFF)
 option(PPTREE_CORE_ONLY "Build only the core library, skip CLI, tests, and benchmarks" OFF)
+option(PPTREE_NATIVE_ARCH "Use -march=native for CPU-specific optimization" ON)
 if(PPTREE_DOUBLE_PRECISION)
   add_compile_definitions(PPTREE_DOUBLE_PRECISION)
 endif()
@@ -41,12 +42,9 @@ add_compile_definitions(EIGEN_NO_AUTOMATIC_RESIZING)
 if(WIN32)
   # Disable vectorization to prevent alignment issues on Windows
   add_compile_definitions(EIGEN_DONT_VECTORIZE)
+endif()
 
-  if(NOT CMAKE_BUILD_TYPE MATCHES Debug)
-    # Disable native `march=native` on Windows/Debug due to issues with the fmt library
-    add_compile_options(-march=native)
-  endif()
-else()
+if(PPTREE_NATIVE_ARCH AND NOT CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_options(-march=native)
 endif()
 
@@ -148,9 +146,11 @@ endif()
 
 if(NOT PPTREE_CORE_ONLY)
   # ---------------------------------------------------------------------------
-  # CLI executable
+  # CLI
   # ---------------------------------------------------------------------------
-  add_executable(pptree src/cli/CLI.cpp)
+  add_subdirectory(src/cli)
+
+  add_executable(pptree src/cli/CLI.cpp $<TARGET_OBJECTS:pptree-cli>)
   target_include_directories(pptree PRIVATE ${csv_SOURCE_DIR}/include)
   target_link_libraries(pptree pptree-core pptree-serialization nlohmann_json::nlohmann_json csv CLI11::CLI11 fmt::fmt)
   target_compile_definitions(pptree PRIVATE PPTREE_VERSION="${PROJECT_VERSION}")
@@ -176,9 +176,12 @@ if(NOT PPTREE_CORE_ONLY)
     src/cli/CLIOptions.test.cpp
     src/cli/CLI.integration.test.cpp
     src/golden/Reproducibility.test.cpp
-    src/golden/Threading.test.cpp)
+    src/golden/Threading.test.cpp
+    src/cli/VarsSpec.test.cpp
+    src/cli/Benchmark.test.cpp
+    src/cli/BenchmarkReport.test.cpp)
 
-  add_executable(pptree-test ${PPTREE_TEST_SRC})
+  add_executable(pptree-test ${PPTREE_TEST_SRC} $<TARGET_OBJECTS:pptree-cli>)
 
   target_link_libraries(pptree-test
     pptree-core
@@ -198,6 +201,7 @@ if(NOT PPTREE_CORE_ONLY)
     PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
     PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
     PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
+    PPTREE_BENCH_SCENARIOS="${CMAKE_SOURCE_DIR}/../bench/default-scenarios.json"
     PPTREE_PLATFORM="${PPTREE_PLATFORM}"
     PPTREE_VERSION="${PROJECT_VERSION}")
 

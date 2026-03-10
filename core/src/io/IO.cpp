@@ -5,6 +5,7 @@
 #include "io/IO.hpp"
 #include "stats/GroupPartition.hpp"
 #include "stats/Stats.hpp"
+#include "utils/Invariant.hpp"
 
 #include "csv.hpp"
 
@@ -87,13 +88,11 @@ namespace pptree::io {
 
   stats::DataPacket read_csv(const std::string& filename) {
     csv::CSVReader reader(filename);
-    std::vector<std::vector<types::Feature> > featureData;
+    std::vector<std::vector<types::Feature>> featureData;
     std::vector<std::string> rawLabels;
 
     for (csv::CSVRow& row : reader) {
-      if (row.size() < 1) {
-        throw std::runtime_error("CSV row has no columns.");
-      }
+      invariant(row.size() >= 1, "CSV row has no features.");
 
       std::vector<types::Feature> currentFeatures;
       for (int j = 0; j < row.size() - 1; ++j) {
@@ -107,9 +106,7 @@ namespace pptree::io {
       rawLabels.push_back(labelStr);
     }
 
-    if (featureData.empty()) {
-      throw std::runtime_error("CSV file is empty.");
-    }
+    invariant(!featureData.empty(), "CSV file is empty.");
 
     // Map string labels to integer codes.
     std::unordered_map<std::string, int> labelMapping;
@@ -129,9 +126,7 @@ namespace pptree::io {
 
     types::FeatureMatrix x(n, p);
     for (int i = 0; i < n; ++i) {
-      if (featureData[i].size() != p) {
-        throw std::runtime_error("Inconsistent number of feature columns in CSV file.");
-      }
+      invariant(featureData[i].size() == p, "Inconsistent number of feature columns in CSV file.");
 
       for (int j = 0; j < p; ++j) {
         x(i, j) = featureData[i][j];
