@@ -15,7 +15,12 @@
 #include <optional>
 #include <functional>
 
+namespace CLI { class App; }
+
 namespace pptree::cli {
+  /** @brief Register benchmark subcommand options on @p app. */
+  CLI::App *setup_benchmark(CLI::App& app, CLIOptions& params);
+
   /**
    * @brief Convergence criteria for adaptive stopping in benchmarks.
    *

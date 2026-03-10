@@ -5,6 +5,7 @@
 #include "cli/Predict.hpp"
 #include "pptree.hpp"
 
+#include <CLI/CLI.hpp>
 #include <fmt/format.h>
 #include <fstream>
 #include <vector>
@@ -24,6 +25,21 @@ using namespace pptree::types;
 using namespace pptree::stats;
 using namespace pptree::io;
 using json = nlohmann::json;
+
+namespace pptree::cli {
+  CLI::App *setup_predict(CLI::App& app, CLIOptions& params) {
+    auto sub = app.add_subcommand("predict", "Load a model and predict on new data");
+    sub->add_option("-M,--model", params.model_path, "Saved model JSON file")
+    ->required()
+    ->check(CLI::ExistingFile);
+    sub->add_option("-d,--data", params.data_path, "CSV data to predict on")
+    ->required()
+    ->check(CLI::ExistingFile);
+    sub->add_option("-o,--output", params.output_path, "Save prediction results to JSON file");
+    sub->add_flag("--no-metrics", params.no_metrics, "Omit error rate and confusion matrix from output");
+    return sub;
+  }
+}
 
 namespace pptree::cli {
 namespace {

@@ -114,13 +114,13 @@ TEST(ParseArgs, InvalidSubcommandExits) {
 /* Verify all default values when only -d is supplied. */
 TEST(ParseArgs, TrainDefaultValues) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str() });
-  EXPECT_EQ(opts.trees, 100);
-  EXPECT_FLOAT_EQ(opts.lambda, 0.5f);
-  EXPECT_EQ(opts.threads, -1);
-  EXPECT_EQ(opts.seed, -1);
-  EXPECT_FLOAT_EQ(opts.p_vars, -1);
-  EXPECT_EQ(opts.n_vars, -1);
-  EXPECT_TRUE(opts.vars_input.empty());
+  EXPECT_EQ(opts.model.trees, 100);
+  EXPECT_FLOAT_EQ(opts.model.lambda, 0.5f);
+  EXPECT_EQ(opts.model.threads, -1);
+  EXPECT_EQ(opts.model.seed, -1);
+  EXPECT_FLOAT_EQ(opts.model.p_vars, -1);
+  EXPECT_EQ(opts.model.n_vars, -1);
+  EXPECT_TRUE(opts.model.vars_input.empty());
   EXPECT_EQ(opts.save_path, "model.json");
   EXPECT_FALSE(opts.no_save);
 }
@@ -128,25 +128,25 @@ TEST(ParseArgs, TrainDefaultValues) {
 /* -t overrides the default tree count. */
 TEST(ParseArgs, TrainTreesOption) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-t", "50" });
-  EXPECT_EQ(opts.trees, 50);
+  EXPECT_EQ(opts.model.trees, 50);
 }
 
 /* -l overrides the default lambda. */
 TEST(ParseArgs, TrainLambdaOption) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-l", "0.3" });
-  EXPECT_FLOAT_EQ(opts.lambda, 0.3f);
+  EXPECT_FLOAT_EQ(opts.model.lambda, 0.3f);
 }
 
 /* --threads sets the thread count explicitly. */
 TEST(ParseArgs, TrainThreadsOption) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "--threads", "4" });
-  EXPECT_EQ(opts.threads, 4);
+  EXPECT_EQ(opts.model.threads, 4);
 }
 
 /* -r sets the random seed. */
 TEST(ParseArgs, TrainSeedOption) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-r", "42" });
-  EXPECT_EQ(opts.seed, 42);
+  EXPECT_EQ(opts.model.seed, 42);
 }
 
 // ---------------------------------------------------------------------------
@@ -156,36 +156,36 @@ TEST(ParseArgs, TrainSeedOption) {
 /* A decimal value (0.8) is interpreted as a proportion. */
 TEST(ParseArgs, VarsAsProportion) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-v", "0.8" });
-  EXPECT_FLOAT_EQ(opts.p_vars, 0.8f);
-  EXPECT_EQ(opts.n_vars, -1);
+  EXPECT_FLOAT_EQ(opts.model.p_vars, 0.8f);
+  EXPECT_EQ(opts.model.n_vars, -1);
 }
 
 /* An integer (3) is interpreted as an absolute feature count. */
 TEST(ParseArgs, VarsAsAbsoluteCount) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-v", "3" });
-  EXPECT_EQ(opts.n_vars, 3);
-  EXPECT_FLOAT_EQ(opts.p_vars, -1);
+  EXPECT_EQ(opts.model.n_vars, 3);
+  EXPECT_FLOAT_EQ(opts.model.p_vars, -1);
 }
 
 /* A fraction "1/3" is parsed as a proportion. */
 TEST(ParseArgs, VarsAsFraction) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-v", "1/3" });
-  EXPECT_NEAR(opts.p_vars, 1.0f / 3.0f, 0.001f);
-  EXPECT_EQ(opts.n_vars, -1);
+  EXPECT_NEAR(opts.model.p_vars, 1.0f / 3.0f, 0.001f);
+  EXPECT_EQ(opts.model.n_vars, -1);
 }
 
 /* "1/2" parses to exactly 0.5. */
 TEST(ParseArgs, VarsAsFractionHalf) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-v", "1/2" });
-  EXPECT_FLOAT_EQ(opts.p_vars, 0.5f);
-  EXPECT_EQ(opts.n_vars, -1);
+  EXPECT_FLOAT_EQ(opts.model.p_vars, 0.5f);
+  EXPECT_EQ(opts.model.n_vars, -1);
 }
 
 /* "3/3" parses to 1.0 (use all features). */
 TEST(ParseArgs, VarsAsFractionFull) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-v", "3/3" });
-  EXPECT_FLOAT_EQ(opts.p_vars, 1.0f);
-  EXPECT_EQ(opts.n_vars, -1);
+  EXPECT_FLOAT_EQ(opts.model.p_vars, 1.0f);
+  EXPECT_EQ(opts.model.n_vars, -1);
 }
 
 /* Fraction > 1 (4/3) must exit. */
@@ -237,7 +237,7 @@ TEST(ParseArgs, TrainSaveOption) {
 /* Zero trees is accepted (means a single projection-pursuit tree). */
 TEST(ParseArgs, TrainZeroTrees) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-t", "0" });
-  EXPECT_EQ(opts.trees, 0);
+  EXPECT_EQ(opts.model.trees, 0);
 }
 
 /* Train without -d must exit. */
@@ -261,13 +261,13 @@ TEST(ParseArgs, TrainNonexistentDataExits) {
 /* Lambda = 0 is a valid boundary value (pure LDA). */
 TEST(ParseArgs, TrainLambdaZeroValid) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-l", "0" });
-  EXPECT_FLOAT_EQ(opts.lambda, 0.0f);
+  EXPECT_FLOAT_EQ(opts.model.lambda, 0.0f);
 }
 
 /* Lambda = 1 is a valid boundary value (pure PCA). */
 TEST(ParseArgs, TrainLambdaOneValid) {
   auto opts = parse({ "pptree", "train", "-d", IRIS_PATH.c_str(), "-l", "1.0" });
-  EXPECT_FLOAT_EQ(opts.lambda, 1.0f);
+  EXPECT_FLOAT_EQ(opts.model.lambda, 1.0f);
 }
 
 /* Negative lambda must exit. */
@@ -367,37 +367,37 @@ TEST(ParseArgs, EvaluateSavePathAlwaysEmpty) {
 /* -e sets the experiment export directory. */
 TEST(ParseArgs, EvaluateExportOption) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2", "-e", "/tmp/experiment" });
-  EXPECT_EQ(opts.export_path, "/tmp/experiment");
+  EXPECT_EQ(opts.evaluate.export_path, "/tmp/experiment");
 }
 
 /* --simulate "RxCxK" is parsed into rows, cols, and classes. */
 TEST(ParseArgs, EvaluateSimulateFormat) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2" });
-  EXPECT_EQ(opts.rows, 100);
-  EXPECT_EQ(opts.cols, 5);
-  EXPECT_EQ(opts.classes, 2);
+  EXPECT_EQ(opts.simulation.rows, 100);
+  EXPECT_EQ(opts.simulation.cols, 5);
+  EXPECT_EQ(opts.simulation.classes, 2);
 }
 
 /* Simulation generation parameters (mean, separation, sd) are captured. */
 TEST(ParseArgs, EvaluateSimulateCustomParams) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x3",
                       "--sim-mean", "200", "--sim-mean-separation", "25", "--sim-sd", "5" });
-  EXPECT_FLOAT_EQ(opts.sim_mean, 200.0f);
-  EXPECT_FLOAT_EQ(opts.sim_mean_separation, 25.0f);
-  EXPECT_FLOAT_EQ(opts.sim_sd, 5.0f);
+  EXPECT_FLOAT_EQ(opts.simulation.mean, 200.0f);
+  EXPECT_FLOAT_EQ(opts.simulation.mean_separation, 25.0f);
+  EXPECT_FLOAT_EQ(opts.simulation.sd, 5.0f);
 }
 
 /* -p sets the train/test split ratio. */
 TEST(ParseArgs, EvaluateTrainRatio) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2", "-p", "0.8" });
-  EXPECT_FLOAT_EQ(opts.train_ratio, 0.8f);
+  EXPECT_FLOAT_EQ(opts.evaluate.train_ratio, 0.8f);
 }
 
 /* -i sets fixed iteration count and disables convergence. */
 TEST(ParseArgs, EvaluateIterations) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2", "-i", "5" });
-  EXPECT_EQ(opts.iterations, 5);
-  EXPECT_FALSE(opts.converge);
+  EXPECT_EQ(opts.evaluate.iterations, 5);
+  EXPECT_FALSE(opts.convergence.enabled);
 }
 
 /* Malformed --simulate string (missing dimension) must exit. */
@@ -443,46 +443,46 @@ TEST(ParseArgs, EvaluateBothDataAndSimulateExits) {
 /* Evaluate defaults to convergence mode. */
 TEST(ParseArgs, EvaluateDefaultConvergence) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2" });
-  EXPECT_TRUE(opts.converge);
-  EXPECT_EQ(opts.max_iterations, 200);
-  EXPECT_FLOAT_EQ(opts.cv_threshold, 0.05f);
-  EXPECT_EQ(opts.min_iterations, 10);
-  EXPECT_EQ(opts.stable_window, 3);
+  EXPECT_TRUE(opts.convergence.enabled);
+  EXPECT_EQ(opts.convergence.max_iterations, 200);
+  EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.05f);
+  EXPECT_EQ(opts.convergence.min_iterations, 10);
+  EXPECT_EQ(opts.convergence.stable_window, 3);
 }
 
 /* -i disables convergence and sets fixed iteration count. */
 TEST(ParseArgs, IterationsDisablesConvergence) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2", "-i", "5" });
-  EXPECT_FALSE(opts.converge);
-  EXPECT_EQ(opts.iterations, 5);
+  EXPECT_FALSE(opts.convergence.enabled);
+  EXPECT_EQ(opts.evaluate.iterations, 5);
 }
 
 /* --max-iterations overrides convergence cap without disabling it. */
 TEST(ParseArgs, MaxIterationsOverride) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2", "--max-iterations", "500" });
-  EXPECT_TRUE(opts.converge);
-  EXPECT_EQ(opts.max_iterations, 500);
+  EXPECT_TRUE(opts.convergence.enabled);
+  EXPECT_EQ(opts.convergence.max_iterations, 500);
 }
 
 /* --cv overrides the convergence threshold. */
 TEST(ParseArgs, CvThresholdOverride) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2", "--cv", "0.01" });
-  EXPECT_TRUE(opts.converge);
-  EXPECT_FLOAT_EQ(opts.cv_threshold, 0.01f);
+  EXPECT_TRUE(opts.convergence.enabled);
+  EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.01f);
 }
 
 /* --min-iterations overrides the minimum before convergence checking. */
 TEST(ParseArgs, MinIterationsOverride) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2", "--min-iterations", "20" });
-  EXPECT_TRUE(opts.converge);
-  EXPECT_EQ(opts.min_iterations, 20);
+  EXPECT_TRUE(opts.convergence.enabled);
+  EXPECT_EQ(opts.convergence.min_iterations, 20);
 }
 
 /* --stable-window overrides the consecutive stable iterations required. */
 TEST(ParseArgs, StableWindowOverride) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2", "--stable-window", "5" });
-  EXPECT_TRUE(opts.converge);
-  EXPECT_EQ(opts.stable_window, 5);
+  EXPECT_TRUE(opts.convergence.enabled);
+  EXPECT_EQ(opts.convergence.stable_window, 5);
 }
 
 /* All convergence parameters can be set together. */
@@ -490,21 +490,21 @@ TEST(ParseArgs, AllConvergenceParams) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2",
                        "--cv", "0.02", "--max-iterations", "300",
                        "--min-iterations", "15", "--stable-window", "4" });
-  EXPECT_TRUE(opts.converge);
-  EXPECT_FLOAT_EQ(opts.cv_threshold, 0.02f);
-  EXPECT_EQ(opts.max_iterations, 300);
-  EXPECT_EQ(opts.min_iterations, 15);
-  EXPECT_EQ(opts.stable_window, 4);
+  EXPECT_TRUE(opts.convergence.enabled);
+  EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.02f);
+  EXPECT_EQ(opts.convergence.max_iterations, 300);
+  EXPECT_EQ(opts.convergence.min_iterations, 15);
+  EXPECT_EQ(opts.convergence.stable_window, 4);
 }
 
 /* -i takes precedence: convergence params are parsed but converge is false. */
 TEST(ParseArgs, IterationsOverridesConvergenceParams) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2",
                        "-i", "10", "--cv", "0.01" });
-  EXPECT_FALSE(opts.converge);
-  EXPECT_EQ(opts.iterations, 10);
+  EXPECT_FALSE(opts.convergence.enabled);
+  EXPECT_EQ(opts.evaluate.iterations, 10);
   // --cv is still parsed but converge is disabled
-  EXPECT_FLOAT_EQ(opts.cv_threshold, 0.01f);
+  EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.01f);
 }
 
 /* Simulation parameters without --simulate must exit. */
@@ -561,27 +561,27 @@ TEST(ParseArgs, VersionExits) {
 /* Sentinel lambda (-1) is replaced by the default 0.5. */
 TEST(InitParams, DefaultLambda) {
   CLIOptions params;
-  params.lambda = -1;
-  params.quiet  = true;
+  params.model.lambda = -1;
+  params.quiet        = true;
   init_params(params);
-  EXPECT_FLOAT_EQ(params.lambda, 0.5f);
+  EXPECT_FLOAT_EQ(params.model.lambda, 0.5f);
 }
 
 /* An explicitly set lambda is preserved. */
 TEST(InitParams, LambdaUnchangedIfSet) {
   CLIOptions params;
-  params.lambda = 0.3f;
-  params.quiet  = true;
+  params.model.lambda = 0.3f;
+  params.quiet        = true;
   init_params(params);
-  EXPECT_FLOAT_EQ(params.lambda, 0.3f);
+  EXPECT_FLOAT_EQ(params.model.lambda, 0.3f);
 }
 
 /* Train ratio of 0 must exit (no training data). */
 TEST(InitParams, InvalidTrainRatioZeroExits) {
   EXPECT_EXIT({
     CLIOptions params;
-    params.train_ratio = 0;
-    params.quiet       = true;
+    params.evaluate.train_ratio = 0;
+    params.quiet                = true;
     init_params(params);
   }, ExitedWithNonZero(), "");
 }
@@ -590,8 +590,8 @@ TEST(InitParams, InvalidTrainRatioZeroExits) {
 TEST(InitParams, InvalidTrainRatioOneExits) {
   EXPECT_EXIT({
     CLIOptions params;
-    params.train_ratio = 1.0f;
-    params.quiet       = true;
+    params.evaluate.train_ratio = 1.0f;
+    params.quiet                = true;
     init_params(params);
   }, ExitedWithNonZero(), "");
 }
@@ -600,8 +600,8 @@ TEST(InitParams, InvalidTrainRatioOneExits) {
 TEST(InitParams, InvalidTrainRatioNegativeExits) {
   EXPECT_EXIT({
     CLIOptions params;
-    params.train_ratio = -0.5f;
-    params.quiet       = true;
+    params.evaluate.train_ratio = -0.5f;
+    params.quiet                = true;
     init_params(params);
   }, ExitedWithNonZero(), "");
 }
@@ -613,59 +613,59 @@ TEST(InitParams, InvalidTrainRatioNegativeExits) {
 /* Sentinel seed (-1) sets used_default_seed to true. */
 TEST(InitParams, UsedDefaultSeedFlag) {
   CLIOptions params;
-  params.seed  = -1;
-  params.quiet = true;
+  params.model.seed = -1;
+  params.quiet      = true;
   init_params(params);
-  EXPECT_TRUE(params.used_default_seed);
+  EXPECT_TRUE(params.model.used_default_seed);
 }
 
 /* An explicit seed clears used_default_seed. */
 TEST(InitParams, UsedDefaultSeedFlagFalse) {
   CLIOptions params;
-  params.seed  = 42;
-  params.quiet = true;
+  params.model.seed = 42;
+  params.quiet      = true;
   init_params(params);
-  EXPECT_FALSE(params.used_default_seed);
+  EXPECT_FALSE(params.model.used_default_seed);
 }
 
 /* Sentinel threads (-1) sets used_default_threads to true. */
 TEST(InitParams, UsedDefaultThreadsFlag) {
   CLIOptions params;
-  params.threads = -1;
-  params.quiet   = true;
+  params.model.threads = -1;
+  params.quiet         = true;
   init_params(params);
-  EXPECT_TRUE(params.used_default_threads);
+  EXPECT_TRUE(params.model.used_default_threads);
 }
 
 /* An explicit thread count clears used_default_threads. */
 TEST(InitParams, UsedDefaultThreadsFlagFalse) {
   CLIOptions params;
-  params.threads = 8;
-  params.quiet   = true;
+  params.model.threads = 8;
+  params.quiet         = true;
   init_params(params);
-  EXPECT_FALSE(params.used_default_threads);
+  EXPECT_FALSE(params.model.used_default_threads);
 }
 
 /* Sentinel vars (-1/-1) sets used_default_vars to true. */
 TEST(InitParams, UsedDefaultVarsFlag) {
   CLIOptions params;
-  params.trees  = 10;
-  params.p_vars = -1;
-  params.n_vars = -1;
-  params.quiet  = true;
+  params.model.trees  = 10;
+  params.model.p_vars = -1;
+  params.model.n_vars = -1;
+  params.quiet        = true;
   init_params(params, 10);
-  EXPECT_TRUE(params.used_default_vars);
+  EXPECT_TRUE(params.model.used_default_vars);
 }
 
 /* An explicit p_vars clears used_default_vars. */
 TEST(InitParams, UsedDefaultVarsFlagFalse) {
   CLIOptions params;
-  params.trees  = 10;
-  params.p_vars = 0.8f;
-  params.n_vars = -1;
-  params.quiet  = true;
+  params.model.trees  = 10;
+  params.model.p_vars = 0.8f;
+  params.model.n_vars = -1;
+  params.quiet        = true;
   init_params(params, 10);
-  EXPECT_FALSE(params.used_default_vars);
+  EXPECT_FALSE(params.model.used_default_vars);
 }
 
 // ---------------------------------------------------------------------------
@@ -675,95 +675,95 @@ TEST(InitParams, UsedDefaultVarsFlagFalse) {
 /* Sentinel seed (-1) is replaced by a generated seed. */
 TEST(InitParams, AutoSeed) {
   CLIOptions params;
-  params.seed  = -1;
-  params.quiet = true;
+  params.model.seed = -1;
+  params.quiet      = true;
   init_params(params);
-  EXPECT_NE(params.seed, -1);
+  EXPECT_NE(params.model.seed, -1);
 }
 
 /* An explicit seed value is preserved. */
 TEST(InitParams, SeedPreservedIfSet) {
   CLIOptions params;
-  params.seed  = 42;
-  params.quiet = true;
+  params.model.seed = 42;
+  params.quiet      = true;
   init_params(params);
-  EXPECT_EQ(params.seed, 42);
+  EXPECT_EQ(params.model.seed, 42);
 }
 
 /* Sentinel threads (-1) auto-detects to >= 1 thread. */
 TEST(InitParams, DefaultThreads) {
   CLIOptions params;
-  params.threads = -1;
-  params.quiet   = true;
+  params.model.threads = -1;
+  params.quiet         = true;
   init_params(params);
-  EXPECT_GE(params.threads, 1);
+  EXPECT_GE(params.model.threads, 1);
 }
 
 /* An explicitly set thread count is preserved. */
 TEST(InitParams, ThreadsPreservedIfSet) {
   CLIOptions params;
-  params.threads = 8;
-  params.quiet   = true;
+  params.model.threads = 8;
+  params.quiet         = true;
   init_params(params);
-  EXPECT_EQ(params.threads, 8);
+  EXPECT_EQ(params.model.threads, 8);
 }
 
 /* n_vars is computed from p_vars * total_vars. */
 TEST(InitParams, NVarsFromPVars) {
   CLIOptions params;
-  params.trees  = 10;
-  params.p_vars = 0.5f;
-  params.n_vars = -1;
-  params.quiet  = true;
+  params.model.trees  = 10;
+  params.model.p_vars = 0.5f;
+  params.model.n_vars = -1;
+  params.quiet        = true;
   init_params(params, 10);
-  EXPECT_EQ(params.n_vars, 5);
+  EXPECT_EQ(params.model.n_vars, 5);
 }
 
 /* p_vars is back-computed from n_vars / total_vars. */
 TEST(InitParams, PVarsFromNVars) {
   CLIOptions params;
-  params.trees  = 10;
-  params.p_vars = -1;
-  params.n_vars = 3;
-  params.quiet  = true;
+  params.model.trees  = 10;
+  params.model.p_vars = -1;
+  params.model.n_vars = 3;
+  params.quiet        = true;
   init_params(params, 10);
-  EXPECT_FLOAT_EQ(params.p_vars, 0.3f);
+  EXPECT_FLOAT_EQ(params.model.p_vars, 0.3f);
 }
 
 /* Default vars: p_vars = 0.5, n_vars = half of total. */
 TEST(InitParams, DefaultPVarsAndNVars) {
   CLIOptions params;
-  params.trees  = 10;
-  params.p_vars = -1;
-  params.n_vars = -1;
-  params.quiet  = true;
+  params.model.trees  = 10;
+  params.model.p_vars = -1;
+  params.model.n_vars = -1;
+  params.quiet        = true;
   init_params(params, 10);
-  EXPECT_FLOAT_EQ(params.p_vars, 0.5f);
-  EXPECT_EQ(params.n_vars, 5);
+  EXPECT_FLOAT_EQ(params.model.p_vars, 0.5f);
+  EXPECT_EQ(params.model.n_vars, 5);
 }
 
 /* Vars computation is skipped for a single tree (trees = 0). */
 TEST(InitParams, NoVarsWhenSingleTree) {
   CLIOptions params;
-  params.trees  = 0;
-  params.p_vars = 0.8f;
-  params.n_vars = -1;
-  params.quiet  = true;
+  params.model.trees  = 0;
+  params.model.p_vars = 0.8f;
+  params.model.n_vars = -1;
+  params.quiet        = true;
   init_params(params, 10);
-  EXPECT_FLOAT_EQ(params.p_vars, 0.8f);
-  EXPECT_EQ(params.n_vars, -1);
+  EXPECT_FLOAT_EQ(params.model.p_vars, 0.8f);
+  EXPECT_EQ(params.model.n_vars, -1);
 }
 
 /* Vars computation is skipped when total_vars is 0 (unknown). */
 TEST(InitParams, NoVarsWhenZeroTotalVars) {
   CLIOptions params;
-  params.trees  = 10;
-  params.p_vars = -1;
-  params.n_vars = -1;
-  params.quiet  = true;
+  params.model.trees  = 10;
+  params.model.p_vars = -1;
+  params.model.n_vars = -1;
+  params.quiet        = true;
   init_params(params, 0);
-  EXPECT_FLOAT_EQ(params.p_vars, -1);
-  EXPECT_EQ(params.n_vars, -1);
+  EXPECT_FLOAT_EQ(params.model.p_vars, -1);
+  EXPECT_EQ(params.model.n_vars, -1);
 }
 
 // ---------------------------------------------------------------------------
@@ -773,9 +773,9 @@ TEST(InitParams, NoVarsWhenZeroTotalVars) {
 /* Single tree with --threads warns that threads is ignored. */
 TEST(WarnUnusedParams, TreesZeroThreadsWarning) {
   CLIOptions params;
-  params.trees   = 0;
-  params.threads = 4;
-  params.quiet   = false;
+  params.model.trees   = 0;
+  params.model.threads = 4;
+  params.quiet         = false;
 
   testing::internal::CaptureStdout();
   warn_unused_params(params);
@@ -787,9 +787,9 @@ TEST(WarnUnusedParams, TreesZeroThreadsWarning) {
 /* Single tree with --vars warns that vars is ignored. */
 TEST(WarnUnusedParams, TreesZeroVarsWarning) {
   CLIOptions params;
-  params.trees  = 0;
-  params.p_vars = 0.8f;
-  params.quiet  = false;
+  params.model.trees  = 0;
+  params.model.p_vars = 0.8f;
+  params.quiet        = false;
 
   testing::internal::CaptureStdout();
   warn_unused_params(params);
@@ -801,10 +801,10 @@ TEST(WarnUnusedParams, TreesZeroVarsWarning) {
 /* Single tree with both --threads and --vars emits both warnings. */
 TEST(WarnUnusedParams, TreesZeroBothWarnings) {
   CLIOptions params;
-  params.trees   = 0;
-  params.threads = 4;
-  params.n_vars  = 3;
-  params.quiet   = false;
+  params.model.trees   = 0;
+  params.model.threads = 4;
+  params.model.n_vars  = 3;
+  params.quiet         = false;
 
   testing::internal::CaptureStdout();
   warn_unused_params(params);
@@ -818,10 +818,10 @@ TEST(WarnUnusedParams, TreesZeroBothWarnings) {
 /* Forest mode (trees > 0) emits no warnings. */
 TEST(WarnUnusedParams, TreesNonZeroNoWarning) {
   CLIOptions params;
-  params.trees   = 10;
-  params.threads = 4;
-  params.p_vars  = 0.8f;
-  params.quiet   = false;
+  params.model.trees   = 10;
+  params.model.threads = 4;
+  params.model.p_vars  = 0.8f;
+  params.quiet         = false;
 
   testing::internal::CaptureStdout();
   warn_unused_params(params);
@@ -833,10 +833,10 @@ TEST(WarnUnusedParams, TreesNonZeroNoWarning) {
 /* Quiet mode suppresses all parameter warnings. */
 TEST(WarnUnusedParams, QuietSuppresses) {
   CLIOptions params;
-  params.trees   = 0;
-  params.threads = 4;
-  params.p_vars  = 0.8f;
-  params.quiet   = true;
+  params.model.trees   = 0;
+  params.model.threads = 4;
+  params.model.p_vars  = 0.8f;
+  params.quiet         = true;
 
   testing::internal::CaptureStdout();
   warn_unused_params(params);

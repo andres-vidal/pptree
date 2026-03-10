@@ -7,6 +7,10 @@
  */
 #pragma once
 
+#include "cli/ModelParams.hpp"
+#include "cli/EvaluateParams.hpp"
+#include "cli/BenchmarkParams.hpp"
+
 #include <string>
 
 namespace pptree::cli {
@@ -20,55 +24,23 @@ namespace pptree::cli {
    * "not set by the user" and will be resolved by init_params().
    */
   struct CLIOptions {
-    int trees    = 100;
-    float lambda = 0.5;
-    int threads  = -1;
-    int seed     = -1;
-    float p_vars = -1;
-    int n_vars   = -1;
-    std::string vars_input;
-    float train_ratio = 0.7;
-    int iterations    = 1;
-    std::string data_path;
-    std::string simulate;
-    int rows                  = 1000;
-    int cols                  = 10;
-    int classes               = 2;
-    float sim_mean            = 100.0f;
-    float sim_mean_separation = 50.0f;
-    float sim_sd              = 10.0f;
-
-    // Convergence and warmup (evaluate + benchmark).
-    // See ConvergenceCriteria in Benchmark.hpp for algorithm details.
-    bool converge      = true;    ///< Adaptive stopping (default on; -i disables).
-    int warmup         = 0;       ///< Warmup iterations discarded before measuring.
-    float cv_threshold = 0.05f;   ///< CV target (e.g. 0.05 = stop when std < 5% of mean).
-    int min_iterations = 10;      ///< Minimum iterations before checking convergence.
-    int stable_window  = 3;       ///< Consecutive checks below threshold before stopping.
-    int max_iterations = 200;     ///< Hard upper bound on iterations.
-
-    // Benchmark options
-    std::string scenarios_path;
-    std::string baseline_path;
-    std::string bench_output;
-    std::string bench_csv;
-    std::string bench_format;
-    int bench_iterations    = -1;
-    float bench_train_ratio = -1;
-
     Subcommand subcommand = Subcommand::none;
+
+    ModelParams model;
+    SimulateParams simulation;
+    ConvergenceParams convergence;
+    EvaluateParams evaluate;
+    BenchmarkParams benchmark;
+
+    std::string data_path;
     std::string save_path = "model.json";
     std::string model_path;
     std::string output_path;
-    std::string export_path;
+
     bool quiet      = false;
     bool no_save    = false;
     bool no_metrics = false;
     bool no_color   = false;
-
-    bool used_default_seed    = false;
-    bool used_default_threads = false;
-    bool used_default_vars    = false;
   };
 
   /**

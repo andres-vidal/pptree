@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   }
 
   #ifdef _OPENMP
-  omp_set_num_threads(params.threads);
+  omp_set_num_threads(params.model.threads);
   #endif
 
   switch (params.subcommand) {

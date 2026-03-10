@@ -6,6 +6,8 @@
 #include "cli/BenchmarkReport.hpp"
 #include "cli/CLIOptions.hpp"
 #include "cli/VarsSpec.hpp"
+
+#include <CLI/CLI.hpp>
 #include "io/TempFile.hpp"
 #include "io/Timing.hpp"
 #include "io/Color.hpp"
@@ -25,6 +27,23 @@
 #endif
 
 namespace pptree::cli {
+  CLI::App * setup_benchmark(CLI::App& app, CLIOptions& params) {
+    auto sub = app.add_subcommand("benchmark", "Run performance benchmarks across scenarios");
+    sub->add_option("-s,--scenarios", params.benchmark.scenarios_path, "JSON scenarios file")
+    ->check(CLI::ExistingFile);
+    sub->add_option("-b,--baseline", params.benchmark.baseline_path, "Baseline results JSON for comparison")
+    ->check(CLI::ExistingFile);
+    sub->add_option("-o,--output", params.benchmark.output, "Save results to JSON file");
+    sub->add_option("--csv", params.benchmark.csv, "Save results to CSV file");
+    sub->add_option("-i,--iterations", params.benchmark.iterations, "Override iteration count (forces fixed mode)")
+    ->check(CLI::PositiveNumber);
+    sub->add_option("-p,--train-ratio", params.benchmark.train_ratio, "Override train set ratio for all scenarios")
+    ->check(CLI::Range(0.01f, 0.99f));
+    sub->add_option("--format", params.benchmark.format, "Output format (table, markdown)")
+    ->check(CLI::IsMember({ "table", "markdown" }));
+    return sub;
+  }
+
 namespace {
   /**
    * @brief Parse a ConvergenceCriteria from a JSON object.
@@ -183,10 +202,10 @@ namespace {
     auto j = nlohmann::json::parse(file);
 
     ScenarioResult result;
-    result.name  = s.name;
-    result.n     = s.n;
-    result.p     = s.p;
-    result.g     = s.g;
+    result.name        = s.name;
+    result.n           = s.n;
+    result.p           = s.p;
+    result.g           = s.g;
     result.trees       = s.trees;
     result.vars        = s.vars;
     result.train_ratio = s.train_ratio;
@@ -381,7 +400,7 @@ namespace {
     Output out(params.quiet);
 
     // Load scenarios
-    if (params.scenarios_path.empty()) {
+    if (params.benchmark.scenarios_path.empty()) {
       fmt::print(stderr, "{} No scenarios file specified. Use -s/--scenarios <file>\n", error("Error:"));
       return 1;
     }
@@ -389,25 +408,25 @@ namespace {
     BenchmarkSuite suite;
 
     if (int rc = try_or_fail([&] {
-      suite = parse_suite(params.scenarios_path);
+      suite = parse_suite(params.benchmark.scenarios_path);
     })) {
       return rc;
     }
 
     // Apply overrides
-    if (params.bench_iterations > 0) {
+    if (params.benchmark.iterations > 0) {
       for (auto& s : suite.scenarios) {
-        s.iterations = params.bench_iterations;
+        s.iterations = params.benchmark.iterations;
       }
     }
 
-    if (params.bench_train_ratio > 0) {
+    if (params.benchmark.train_ratio > 0) {
       for (auto& s : suite.scenarios) {
-        s.train_ratio = params.bench_train_ratio;
+        s.train_ratio = params.benchmark.train_ratio;
       }
     }
 
-    out.print("{} {} scenarios from {}\n\n", emphasis("Benchmarking"), suite.scenarios.size(), params.scenarios_path);
+    out.print("{} {} scenarios from {}\n\n", emphasis("Benchmarking"), suite.scenarios.size(), params.benchmark.scenarios_path);
 
     // Run scenarios
     SuiteResult result;
@@ -424,35 +443,35 @@ namespace {
     // Load baseline for comparison
     std::optional<SuiteResult> baseline;
 
-    if (!params.baseline_path.empty()) {
+    if (!params.benchmark.baseline_path.empty()) {
       if (int rc = try_or_fail([&] {
-        baseline = parse_results(params.baseline_path);
+        baseline = parse_results(params.benchmark.baseline_path);
       },
       "Failed to load baseline")) return rc;
     }
 
     // Print results
-    if (params.bench_format == "markdown") {
+    if (params.benchmark.format == "markdown") {
       fmt::print("{}", format_benchmark_markdown(result, baseline));
     } else if (!out.quiet) {
       print_benchmark_table(result, baseline);
     }
 
     // Export results
-    if (!params.bench_output.empty()) {
+    if (!params.benchmark.output.empty()) {
       if (int rc = try_or_fail([&] {
-        write_results_json(result, params.bench_output);
+        write_results_json(result, params.benchmark.output);
       })) return rc;
 
-      out.saved("Results", params.bench_output);
+      out.saved("Results", params.benchmark.output);
     }
 
-    if (!params.bench_csv.empty()) {
+    if (!params.benchmark.csv.empty()) {
       if (int rc = try_or_fail([&] {
-        write_results_csv(result, params.bench_csv);
+        write_results_csv(result, params.benchmark.csv);
       })) return rc;
 
-      out.saved("CSV", params.bench_csv);
+      out.saved("CSV", params.benchmark.csv);
     }
 
     return 0;

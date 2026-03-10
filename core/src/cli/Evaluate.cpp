@@ -7,6 +7,7 @@
 #include "cli/Train.hpp"
 #include "pptree.hpp"
 
+#include <CLI/CLI.hpp>
 #include <fmt/format.h>
 #include <cmath>
 #include <vector>
@@ -31,6 +32,42 @@ using namespace pptree::io;
 using json = nlohmann::json;
 
 namespace pptree::cli {
+  CLI::App *setup_evaluate(CLI::App& app, CLIOptions& params) {
+    auto sub      = app.add_subcommand("evaluate", "Train and evaluate a model");
+    auto data_opt = sub->add_option("-d,--data", params.data_path, "CSV file")
+      ->check(CLI::ExistingFile);
+    auto sim_opt = sub->add_option("--simulate", params.simulation.format, "Simulate NxMxK data");
+    data_opt->excludes(sim_opt);
+    sim_opt->excludes(data_opt);
+
+    add_model_options(sub, params.model);
+    sub->add_option("-p,--train-ratio", params.evaluate.train_ratio, "Train set ratio (default: 0.7)")
+    ->check(CLI::Range(0.01f, 0.99f));
+    sub->add_option("-i,--iterations", params.evaluate.iterations, "Fixed iteration count (disables convergence)")
+    ->check(CLI::PositiveNumber);
+    sub->add_option("--max-iterations", params.convergence.max_iterations, "Max iterations for convergence (default: 200)")
+    ->check(CLI::PositiveNumber);
+    sub->add_option("--sim-mean", params.simulation.mean, "Mean for simulated data (default: 100.0)")
+    ->needs(sim_opt);
+    sub->add_option("--sim-mean-separation", params.simulation.mean_separation, "Mean separation between classes (default: 50.0)")
+    ->needs(sim_opt)
+    ->check(CLI::PositiveNumber);
+    sub->add_option("--sim-sd", params.simulation.sd, "Standard deviation for simulated data (default: 10.0)")
+    ->needs(sim_opt)
+    ->check(CLI::PositiveNumber);
+    sub->add_option("-o,--output", params.output_path, "Save evaluation results to JSON file");
+    sub->add_option("-e,--export", params.evaluate.export_path, "Export experiment bundle to directory");
+    sub->add_option("--warmup", params.convergence.warmup, "Warmup iterations to discard before measuring (default: 0)")
+    ->check(CLI::NonNegativeNumber);
+    sub->add_option("--cv", params.convergence.cv_threshold, "CV threshold for convergence (default: 0.05)")
+    ->check(CLI::Range(0.001f, 1.0f));
+    sub->add_option("--min-iterations", params.convergence.min_iterations, "Min iterations before checking convergence (default: 10)")
+    ->check(CLI::PositiveNumber);
+    sub->add_option("--stable-window", params.convergence.stable_window, "Consecutive stable checks to stop (default: 3)")
+    ->check(CLI::PositiveNumber);
+    return sub;
+  }
+
 namespace {
   /** @brief Result of an evaluate run containing aggregated statistics. */
   struct EvaluateResult {
@@ -99,26 +136,26 @@ namespace {
     Output out(params.quiet);
 
     // Run warmup iterations (discarded)
-    if (params.warmup > 0) {
-      out.print("  Running {} warmup iterations:\n", emphasis(std::to_string(params.warmup)));
+    if (params.convergence.warmup > 0) {
+      out.print("  Running {} warmup iterations:\n", emphasis(std::to_string(params.convergence.warmup)));
     }
 
-    for (int i = 0; i < params.warmup; ++i) {
-      display_progress(i, params.warmup, params.quiet);
+    for (int i = 0; i < params.convergence.warmup; ++i) {
+      display_progress(i, params.convergence.warmup, params.quiet);
       train_model(tr_x, tr_y, params, rng);
-      display_progress(i + 1, params.warmup, params.quiet);
+      display_progress(i + 1, params.convergence.warmup, params.quiet);
     }
 
-    if (params.warmup > 0) {
+    if (params.convergence.warmup > 0) {
       out.print("\n");
     }
 
     // Determine iteration mode
-    int max_iters = params.converge ? params.max_iterations : params.iterations;
+    int max_iters = params.convergence.enabled ? params.convergence.max_iterations : params.evaluate.iterations;
 
-    if (params.converge) {
+    if (params.convergence.enabled) {
       out.print("  Running up to {} iterations (converge at CV < {:.0f}%):\n",
-      emphasis(std::to_string(max_iters)), params.cv_threshold * 100);
+      emphasis(std::to_string(max_iters)), params.convergence.cv_threshold * 100);
     } else {
       out.print("  Running {} iterations:\n", emphasis(std::to_string(max_iters)));
     }
@@ -144,25 +181,25 @@ namespace {
       display_progress(iterations_run, max_iters, params.quiet);
 
       // Check convergence
-      if (params.converge &&
-          check_convergence(times, params.min_iterations, params.cv_threshold) &&
-          check_convergence(tr_errors, params.min_iterations, params.cv_threshold) &&
-          check_convergence(te_errors, params.min_iterations, params.cv_threshold)) {
+      if (params.convergence.enabled &&
+          check_convergence(times, params.convergence.min_iterations, params.convergence.cv_threshold) &&
+          check_convergence(tr_errors, params.convergence.min_iterations, params.convergence.cv_threshold) &&
+          check_convergence(te_errors, params.convergence.min_iterations, params.convergence.cv_threshold)) {
         stable_count++;
 
-        if (stable_count >= params.stable_window) {
+        if (stable_count >= params.convergence.stable_window) {
           display_progress(iterations_run, iterations_run, params.quiet);
           out.print("\n");
-          out.print("  Converged after {} iterations (CV < {:.0f}%)\n", iterations_run, params.cv_threshold * 100);
+          out.print("  Converged after {} iterations (CV < {:.0f}%)\n", iterations_run, params.convergence.cv_threshold * 100);
 
           break;
         }
-      } else if (params.converge) {
+      } else if (params.convergence.enabled) {
         stable_count = 0;
       }
     }
 
-    if (params.converge && stable_count < params.stable_window) {
+    if (params.convergence.enabled && stable_count < params.convergence.stable_window) {
       out.print("\n");
       out.print("{} Did not converge after {} iterations\n", warning("Warning:"), iterations_run);
     } else {
@@ -181,22 +218,22 @@ namespace {
   json build_export_config(const CLIOptions& params) {
     json config;
 
-    config["trees"]   = params.trees;
-    config["lambda"]  = params.lambda;
-    config["seed"]    = params.seed;
-    config["threads"] = params.threads;
+    config["trees"]   = params.model.trees;
+    config["lambda"]  = params.model.lambda;
+    config["seed"]    = params.model.seed;
+    config["threads"] = params.model.threads;
 
-    if (params.trees > 0 && params.n_vars > 0) {
-      config["vars"] = params.n_vars;
+    if (params.model.trees > 0 && params.model.n_vars > 0) {
+      config["vars"] = params.model.n_vars;
     }
 
-    config["train-ratio"] = params.train_ratio;
+    config["train-ratio"] = params.evaluate.train_ratio;
 
-    if (params.converge) {
-      config["max-iterations"] = params.max_iterations;
-      config["cv-threshold"]   = params.cv_threshold;
+    if (params.convergence.enabled) {
+      config["max-iterations"] = params.convergence.max_iterations;
+      config["cv-threshold"]   = params.convergence.cv_threshold;
     } else {
-      config["iterations"] = params.iterations;
+      config["iterations"] = params.evaluate.iterations;
     }
 
     config["data"] = "data.csv";
@@ -208,7 +245,7 @@ namespace {
     const CLIOptions&     params,
     const DataPacket&     full_data,
     const EvaluateResult& eval_result) {
-    std::string dir = params.export_path;
+    std::string dir = params.evaluate.export_path;
 
     std::filesystem::create_directories(dir);
 
@@ -230,16 +267,16 @@ namespace {
       check_file_not_exists(params.output_path);
     }
 
-    if (!params.export_path.empty()) {
-      check_dir_not_exists(params.export_path);
+    if (!params.evaluate.export_path.empty()) {
+      check_dir_not_exists(params.evaluate.export_path);
     }
 
-    pptree::stats::RNG rng(params.seed);
+    pptree::stats::RNG rng(params.model.seed);
     auto full_data = read_data(params, rng);
 
     init_params(params, full_data.x.cols());
 
-    auto data_split = split(full_data, params.train_ratio, rng);
+    auto data_split = split(full_data, params.evaluate.train_ratio, rng);
 
     FeatureMatrix tr_x  = full_data.x(data_split.tr, Eigen::all);
     FeatureMatrix te_x  = full_data.x(data_split.te, Eigen::all);
@@ -266,7 +303,7 @@ namespace {
     }
 
     // Export experiment bundle if requested
-    if (!params.export_path.empty()) {
+    if (!params.evaluate.export_path.empty()) {
       export_experiment(params, full_data, eval_result);
     }
 
