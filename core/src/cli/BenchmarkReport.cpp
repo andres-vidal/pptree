@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <cmath>
 
-namespace pptree::bench {
+namespace pptree::cli {
 namespace {
   std::string format_rss(double mb) {
     if (mb < 0) return "N/A";

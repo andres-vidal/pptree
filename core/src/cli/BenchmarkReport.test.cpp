@@ -10,7 +10,7 @@
 #include <filesystem>
 #include <sstream>
 
-using namespace pptree::bench;
+using namespace pptree::cli;
 
 class BenchmarkReportTest : public ::testing::Test {
   protected:

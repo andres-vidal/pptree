@@ -3,15 +3,19 @@
  * @brief Benchmark scenario parsing, validation, and subprocess execution.
  */
 #include "cli/Benchmark.hpp"
+#include "cli/BenchmarkReport.hpp"
+#include "cli/CLIOptions.hpp"
 #include "cli/VarsSpec.hpp"
 #include "io/TempFile.hpp"
 #include "io/Timing.hpp"
+#include "io/Color.hpp"
 #include "utils/Invariant.hpp"
 
 #include <fmt/format.h>
 #include <cstdlib>
 #include <chrono>
 #include <fstream>
+#include <optional>
 
 #ifdef _WIN32
 #include <process.h>
@@ -19,7 +23,7 @@
 #define pclose _pclose
 #endif
 
-namespace pptree::bench {
+namespace pptree::cli {
 namespace {
   /**
    * @brief Parse a ConvergenceCriteria from a JSON object.
@@ -365,5 +369,102 @@ namespace {
     result.total_time_ms = total_ms;
 
     return result;
+  }
+
+  int run_benchmark(CLIOptions& params, const std::string& binary_path) {
+    using namespace pptree::io;
+
+    // Load scenarios
+    BenchmarkSuite suite;
+
+    if (!params.scenarios_path.empty()) {
+      try {
+        suite = parse_suite(params.scenarios_path);
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+        return 1;
+      }
+    } else {
+      fmt::print(stderr, "{} No scenarios file specified. Use -s/--scenarios <file>\n", error("Error:"));
+      return 1;
+    }
+
+    // Apply iteration override
+    if (params.bench_iterations > 0) {
+      for (auto& s : suite.scenarios) {
+        s.iterations = params.bench_iterations;
+      }
+    }
+
+    if (!params.quiet) {
+      fmt::print("{} {} scenarios from {}\n\n",
+        emphasis("Benchmarking"), suite.scenarios.size(),
+        params.scenarios_path.empty() ? "built-in defaults" : params.scenarios_path);
+    }
+
+    // Run scenarios
+    SuiteResult result;
+
+    try {
+      result = run_suite(suite, binary_path, params.quiet,
+          [&](int idx, int total, const std::string& name) {
+        if (!params.quiet) {
+          if (idx < total) {
+            fmt::print("  [{}/{}] Running {}...\n", idx + 1, total, emphasis(name));
+          }
+        }
+      });
+    } catch (const std::exception& e) {
+      fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+      return 1;
+    }
+
+    // Load baseline for comparison
+    std::optional<SuiteResult> baseline;
+
+    if (!params.baseline_path.empty()) {
+      try {
+        baseline = parse_results(params.baseline_path);
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "{} Failed to load baseline: {}\n", error("Error:"), e.what());
+        return 1;
+      }
+    }
+
+    // Print results
+    if (params.bench_format == "markdown") {
+      fmt::print("{}", format_benchmark_markdown(result, baseline));
+    } else if (!params.quiet) {
+      print_benchmark_table(result, baseline);
+    }
+
+    // Export results
+    if (!params.bench_output.empty()) {
+      try {
+        write_results_json(result, params.bench_output);
+
+        if (!params.quiet) {
+          fmt::print("{}{}\n", success("Results saved to "), params.bench_output);
+        }
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+        return 1;
+      }
+    }
+
+    if (!params.bench_csv.empty()) {
+      try {
+        write_results_csv(result, params.bench_csv);
+
+        if (!params.quiet) {
+          fmt::print("{}{}\n", success("CSV saved to "), params.bench_csv);
+        }
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+        return 1;
+      }
+    }
+
+    return 0;
   }
 }

@@ -7,13 +7,15 @@
  */
 #pragma once
 
+#include "cli/CLIOptions.hpp"
+
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
 #include <optional>
 #include <functional>
 
-namespace pptree::bench {
+namespace pptree::cli {
   /**
    * @brief Convergence criteria for adaptive stopping in benchmarks.
    *
@@ -164,4 +166,12 @@ namespace pptree::bench {
     const Scenario&    scenario,
     const std::string& binary_path,
     bool               quiet = false);
+
+  /**
+   * @brief Run the benchmark subcommand.
+   * @param params      CLI options.
+   * @param binary_path Path to the pptree binary (typically argv[0]).
+   * @return Exit code.
+   */
+  int run_benchmark(CLIOptions& params, const std::string& binary_path);
 }

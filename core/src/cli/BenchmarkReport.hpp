@@ -8,7 +8,7 @@
 #include <string>
 #include <optional>
 
-namespace pptree::bench {
+namespace pptree::cli {
   /**
    * @brief Print a formatted results table to stdout.
    *

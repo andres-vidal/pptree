@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "cli/Benchmark.hpp"
 
-using namespace pptree::bench;
+using namespace pptree::cli;
 using json = nlohmann::json;
 
 class BenchmarkParsingTest : public ::testing::Test {};
