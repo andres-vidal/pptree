@@ -12,6 +12,7 @@ var structpptree_1_1cli_1_1ScenarioResult =
     [ "runs", "structpptree_1_1cli_1_1ScenarioResult.html#ad4b380f3d512bf20612fc7f5a0f64236", null ],
     [ "scenario_time_ms", "structpptree_1_1cli_1_1ScenarioResult.html#ace4edbc62478f9c99b6cd99687340e45", null ],
     [ "std_time_ms", "structpptree_1_1cli_1_1ScenarioResult.html#a0e2ab9c80c654dae720bd80379c77b74", null ],
+    [ "train_ratio", "structpptree_1_1cli_1_1ScenarioResult.html#a570fa46807f336199492f1b09edf6bae", null ],
     [ "trees", "structpptree_1_1cli_1_1ScenarioResult.html#a02faa4a4da2c9cdcc589426e3b83562c", null ],
     [ "vars", "structpptree_1_1cli_1_1ScenarioResult.html#ae7ece9e3d920f272c5de02201e149d55", null ]
 ];

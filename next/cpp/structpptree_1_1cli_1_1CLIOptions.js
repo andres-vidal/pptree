@@ -5,6 +5,7 @@ var structpptree_1_1cli_1_1CLIOptions =
     [ "bench_format", "structpptree_1_1cli_1_1CLIOptions.html#a2e69ba7d46b39421e00f77ed2a1fb267", null ],
     [ "bench_iterations", "structpptree_1_1cli_1_1CLIOptions.html#aa3b1a88727e9c14be2a4dfada78de6ab", null ],
     [ "bench_output", "structpptree_1_1cli_1_1CLIOptions.html#afe7cdd6bdbf206f38bfee47b39b565a5", null ],
+    [ "bench_train_ratio", "structpptree_1_1cli_1_1CLIOptions.html#af6a9eaed9af3b5eb54898c60797542b4", null ],
     [ "classes", "structpptree_1_1cli_1_1CLIOptions.html#a1cc4ed303dbb0c1d94711fa0f8f5a169", null ],
     [ "cols", "structpptree_1_1cli_1_1CLIOptions.html#ac1faf9f6e2f1aaa5d244e4247813fef6", null ],
     [ "converge", "structpptree_1_1cli_1_1CLIOptions.html#aac018fc78e20659c060bd217a6ff020b", null ],

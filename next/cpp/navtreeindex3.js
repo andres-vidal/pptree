@@ -1,5 +1,7 @@
 var NAVTREEINDEX3 =
 {
+"structpptree_1_1cli_1_1ModelStats.html#aaa365df8f27baefac692bfa189f35f2a":[0,0,0,0,3,7],
+"structpptree_1_1cli_1_1ModelStats.html#aaa365df8f27baefac692bfa189f35f2a":[1,0,0,0,3,7],
 "structpptree_1_1cli_1_1ModelStats.html#ac263d3da3785d64df4a98a2da81c302e":[0,0,0,0,3,4],
 "structpptree_1_1cli_1_1ModelStats.html#ac263d3da3785d64df4a98a2da81c302e":[1,0,0,0,3,4],
 "structpptree_1_1cli_1_1ModelStats.html#ae10dca0b55e8d201b011164863b6346a":[0,0,0,0,3,5],
@@ -38,14 +40,16 @@ var NAVTREEINDEX3 =
 "structpptree_1_1cli_1_1ScenarioResult.html":[1,0,0,0,5],
 "structpptree_1_1cli_1_1ScenarioResult.html#a02503a3ed35aedfc85163f78e0ce480f":[0,0,0,0,5,0],
 "structpptree_1_1cli_1_1ScenarioResult.html#a02503a3ed35aedfc85163f78e0ce480f":[1,0,0,0,5,0],
-"structpptree_1_1cli_1_1ScenarioResult.html#a02faa4a4da2c9cdcc589426e3b83562c":[0,0,0,0,5,12],
-"structpptree_1_1cli_1_1ScenarioResult.html#a02faa4a4da2c9cdcc589426e3b83562c":[1,0,0,0,5,12],
+"structpptree_1_1cli_1_1ScenarioResult.html#a02faa4a4da2c9cdcc589426e3b83562c":[0,0,0,0,5,13],
+"structpptree_1_1cli_1_1ScenarioResult.html#a02faa4a4da2c9cdcc589426e3b83562c":[1,0,0,0,5,13],
 "structpptree_1_1cli_1_1ScenarioResult.html#a0e2ab9c80c654dae720bd80379c77b74":[0,0,0,0,5,11],
 "structpptree_1_1cli_1_1ScenarioResult.html#a0e2ab9c80c654dae720bd80379c77b74":[1,0,0,0,5,11],
 "structpptree_1_1cli_1_1ScenarioResult.html#a1fccbda286e762d4e047477dca87a05b":[0,0,0,0,5,7],
 "structpptree_1_1cli_1_1ScenarioResult.html#a1fccbda286e762d4e047477dca87a05b":[1,0,0,0,5,7],
 "structpptree_1_1cli_1_1ScenarioResult.html#a322580898be2e873d6ef63221f495933":[0,0,0,0,5,6],
 "structpptree_1_1cli_1_1ScenarioResult.html#a322580898be2e873d6ef63221f495933":[1,0,0,0,5,6],
+"structpptree_1_1cli_1_1ScenarioResult.html#a570fa46807f336199492f1b09edf6bae":[0,0,0,0,5,12],
+"structpptree_1_1cli_1_1ScenarioResult.html#a570fa46807f336199492f1b09edf6bae":[1,0,0,0,5,12],
 "structpptree_1_1cli_1_1ScenarioResult.html#a61283a18dd03d5b9d4a8c4950fe85414":[0,0,0,0,5,1],
 "structpptree_1_1cli_1_1ScenarioResult.html#a61283a18dd03d5b9d4a8c4950fe85414":[1,0,0,0,5,1],
 "structpptree_1_1cli_1_1ScenarioResult.html#a7923a4650643df0f8bcec0678920b315":[0,0,0,0,5,4],
@@ -62,8 +66,8 @@ var NAVTREEINDEX3 =
 "structpptree_1_1cli_1_1ScenarioResult.html#ad4b380f3d512bf20612fc7f5a0f64236":[1,0,0,0,5,9],
 "structpptree_1_1cli_1_1ScenarioResult.html#ad50a894f09c4af229b2cc56fde3b84a9":[0,0,0,0,5,8],
 "structpptree_1_1cli_1_1ScenarioResult.html#ad50a894f09c4af229b2cc56fde3b84a9":[1,0,0,0,5,8],
-"structpptree_1_1cli_1_1ScenarioResult.html#ae7ece9e3d920f272c5de02201e149d55":[0,0,0,0,5,13],
-"structpptree_1_1cli_1_1ScenarioResult.html#ae7ece9e3d920f272c5de02201e149d55":[1,0,0,0,5,13],
+"structpptree_1_1cli_1_1ScenarioResult.html#ae7ece9e3d920f272c5de02201e149d55":[0,0,0,0,5,14],
+"structpptree_1_1cli_1_1ScenarioResult.html#ae7ece9e3d920f272c5de02201e149d55":[1,0,0,0,5,14],
 "structpptree_1_1cli_1_1SuiteResult.html":[0,0,0,0,6],
 "structpptree_1_1cli_1_1SuiteResult.html":[1,0,0,0,6],
 "structpptree_1_1cli_1_1SuiteResult.html#a3498866cf03ce262f0aea6b61814bb6f":[0,0,0,0,6,3],
@@ -245,9 +249,5 @@ var NAVTREEINDEX3 =
 "structpptree_1_1stats_1_1SimulationParams.html#ac35f241d882bab9d4e5063a8822ba290":[0,0,0,7,4,0],
 "structpptree_1_1stats_1_1SimulationParams.html#ac35f241d882bab9d4e5063a8822ba290":[1,0,0,6,4,0],
 "structpptree_1_1stats_1_1SimulationParams.html#ac8155a490b85578e409efbc25cec4292":[0,0,0,7,4,1],
-"structpptree_1_1stats_1_1SimulationParams.html#ac8155a490b85578e409efbc25cec4292":[1,0,0,6,4,1],
-"structpptree_1_1stats_1_1Split.html":[0,0,0,7,5],
-"structpptree_1_1stats_1_1Split.html":[1,0,0,6,5],
-"structpptree_1_1stats_1_1Split.html#a669ec6c20b74e52b2a0e33e5a8a7d612":[0,0,0,7,5,1],
-"structpptree_1_1stats_1_1Split.html#a669ec6c20b74e52b2a0e33e5a8a7d612":[1,0,0,6,5,1]
+"structpptree_1_1stats_1_1SimulationParams.html#ac8155a490b85578e409efbc25cec4292":[1,0,0,6,4,1]
 };
