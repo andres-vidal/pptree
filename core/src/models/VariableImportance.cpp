@@ -1,4 +1,6 @@
 #include "models/VariableImportance.hpp"
+#include "models/Tree.hpp"
+#include "models/Forest.hpp"
 #include "models/VIVisitor.hpp"
 #include "stats/ConfusionMatrix.hpp"
 #include "stats/Stats.hpp"

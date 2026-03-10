@@ -1,10 +1,11 @@
 #pragma once
 
 #include "utils/Types.hpp"
-#include "models/ModelVisitor.hpp"
 
 #include <memory>
+
 namespace pptree {
+  struct ModelVisitor;
   /**
    * @brief Abstract base class for predictive models (trees and forests).
    */

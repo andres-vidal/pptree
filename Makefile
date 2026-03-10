@@ -56,6 +56,21 @@ format-dry:
 analyze:
 	@cd ${TOOLS_DIR} && make analyze
 
+CPPCLEAN = $(shell python3 -c "import sysconfig; print(sysconfig.get_path('scripts'))")/cppclean
+
+cppclean: fetch-deps
+	@${CPPCLEAN} \
+		--include-path=core/src \
+		--include-path=core/include \
+		--include-path=${BUILD_DIR}/_deps/eigen-src \
+		--include-path=${BUILD_DIR}/_deps/json-src/include \
+		--include-path=${BUILD_DIR}/_deps/pcg-src/include \
+		--include-path=${BUILD_DIR}/_deps/csv-src/include \
+		--include-path=${BUILD_DIR}/_deps/fmt-src/include \
+		--include-path=${BUILD_DIR}/_deps/cli11-src/include \
+		--include-path=${BUILD_DIR}/_deps/googletest-src/googletest/include \
+		core/src 2>&1
+
 # Targets for the R package
 
 R_PACKAGE_DIR = bindings/R/PPTree

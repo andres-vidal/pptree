@@ -2,6 +2,8 @@
 #include <Eigen/Dense>
 
 #include "models/Tree.hpp"
+#include "models/TreeCondition.hpp"
+#include "models/TreeResponse.hpp"
 
 #include "models/TrainingSpec.hpp"
 #include "models/TrainingSpecGLDA.hpp"

@@ -4,9 +4,9 @@
 #include <set>
 
 #include "utils/Types.hpp"
-#include "models/TreeNodeVisitor.hpp"
 
 namespace pptree {
+  struct TreeNodeVisitor;
   /**
    * @brief Abstract base class for nodes in a projection pursuit tree.
    *

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "models/Tree.hpp"
-#include "models/Forest.hpp"
 #include "utils/Types.hpp"
 
 namespace pptree {
+  struct Tree;
+  struct Forest;
   /**
    * @brief Grouped result of the three variable importance measures.
    *

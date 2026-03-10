@@ -4,8 +4,6 @@
 
 #include "models/Model.hpp"
 #include "models/TreeNode.hpp"
-#include "models/TreeCondition.hpp"
-#include "models/TreeResponse.hpp"
 #include "models/TrainingSpec.hpp"
 
 

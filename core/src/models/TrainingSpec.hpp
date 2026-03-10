@@ -1,7 +1,5 @@
 #pragma once
 
-#include "models/TrainingSpecVisitor.hpp"
-
 #include "models/PPGLDAStrategy.hpp"
 #include "models/DRUniformStrategy.hpp"
 #include "models/DRNoopStrategy.hpp"
@@ -11,6 +9,7 @@
 #include <map>
 
 namespace pptree {
+  struct TrainingSpecVisitor;
   /**
    * @brief Abstract training configuration for projection pursuit trees.
    *

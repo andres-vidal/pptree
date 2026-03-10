@@ -1,6 +1,9 @@
 #pragma once
 
 #include "models/Tree.hpp"
+#include "models/TreeNodeVisitor.hpp"
+#include "models/TreeCondition.hpp"
+#include "models/TreeResponse.hpp"
 #include "models/Forest.hpp"
 #include "models/TrainingSpec.hpp"
 #include "models/TrainingSpecGLDA.hpp"

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "models/TrainingSpec.hpp"
+#include "models/TrainingSpecVisitor.hpp"
 
 namespace pptree {
   /**
