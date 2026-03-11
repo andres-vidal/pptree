@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/_deps
-          key: ${{ runner.os }}-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
+          key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
 
       - name: Determine version directory
         id: version

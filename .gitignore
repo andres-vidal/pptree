@@ -1,5 +1,6 @@
 .build
 .debug
+.r-build
 .tools
 .vscode
 *.trace
@@ -18,7 +19,7 @@ Rplots.pdf
 bindings/R/PPTree/src/core
 bindings/R/PPTree/src/Makevars
 bindings/R/PPTree/inst/include/nlohmann
-bindings/R/PPTree/inst/include/pcg_random
+bindings/R/PPTree/inst/include/pcg_*
 
 docs/.build
 

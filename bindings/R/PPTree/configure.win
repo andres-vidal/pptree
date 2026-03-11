@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+
+# Build libpptree-core.a
+if [ -f src/.core ]; then
+  # Dev path: build core using project Makefile
+  echo "* Development environment detected. Running r-build-core..."
+  PROJECT_ROOT="../../.."
+  cd "$PROJECT_ROOT"
+  make r-build-core
+  cd - > /dev/null
+
+  R_DEV_BUILD_DIR="$PROJECT_ROOT/.r-build"
+
+  cp -r "$R_DEV_BUILD_DIR/_deps/json-src/include/"* inst/include/
+  cp -r "$R_DEV_BUILD_DIR/_deps/pcg-src/include/"* inst/include/
+
+  mkdir -p src/core && cp -r "$PROJECT_ROOT/core/"* src/core/
+
+  mkdir -p inst/lib
+  cp "$R_DEV_BUILD_DIR/libpptree-core.a" inst/lib/
+
+elif [ ! -f inst/lib/libpptree-core.a ]; then
+  # Tarball path: build from bundled source
+  R_BUILD_DIR=src/.r-build
+  mkdir -p "$R_BUILD_DIR" inst/lib
+
+  FETCH_ARGS=""
+  if [ -n "$PPTREE_FETCH_CACHE" ]; then
+    for src_dir in "$PPTREE_FETCH_CACHE"/*-src; do
+      name=$(basename "$src_dir" -src | tr '[:lower:]' '[:upper:]')
+      FETCH_ARGS="$FETCH_ARGS -DFETCHCONTENT_SOURCE_DIR_${name}=${src_dir}"
+    done
+  fi
+
+  CMAKE_NATIVE_ARCH=""
+  if [ -n "$CI" ]; then CMAKE_NATIVE_ARCH="-DPPTREE_NATIVE_ARCH=OFF"; fi
+
+  # Split R's CXX17 into compiler path and extra flags
+  R_CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17)
+  R_CXX_COMPILER=$(echo "$R_CXX_FULL" | awk '{print $1}')
+  R_CXX_EXTRA=$(echo "$R_CXX_FULL" | awk '{$1=""; print}' | sed 's/^ *//')
+
+  R_CXX_STD=$("${R_HOME}/bin/R" CMD config CXX17STD)
+  R_CXX_FLAGS=$("${R_HOME}/bin/R" CMD config CXX17FLAGS)
+
+  cd "$R_BUILD_DIR" && cmake -G "Unix Makefiles" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_COMPILER="$R_CXX_COMPILER" \
+    -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXX_STD $R_CXX_FLAGS" \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DPPTREE_CORE_ONLY=ON \
+    $CMAKE_NATIVE_ARCH $FETCH_ARGS \
+    ../core && make pptree-core && cd ../..
+
+  cp "$R_BUILD_DIR/libpptree-core.a" inst/lib/
+  rm -rf "$R_BUILD_DIR"
+fi

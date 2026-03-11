@@ -15,7 +15,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/_deps
-          key: ${{ runner.os }}-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
+          key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
       - run: make r-check
       - name: Show Install Logs
         if: failure()
@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/_deps
-          key: ${{ runner.os }}-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
+          key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
       - run: make r-check
       - name: Show Install Logs
         if: failure()
@@ -54,7 +54,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/_deps
-          key: ${{ runner.os }}-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
+          key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
       - run: make r-check
       - name: Show Install Logs
         if: failure()
@@ -78,7 +78,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/_deps
-          key: ${{ runner.os }}-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
+          key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
       - run: make r-check
       - name: Show Install Logs
         if: failure()

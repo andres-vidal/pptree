@@ -2,6 +2,7 @@ MAKEFLAGS += --no-print-directory
 
 BUILD_DIR = .build
 BUILD_DIR_DEBUG = .debug
+R_BUILD_DIR = .r-build
 
 NLHOMANN_JSON_HEADERS_PATH = ${BUILD_DIR}/_deps/json-src/include
 PCG_HEADERS_PATH = ${BUILD_DIR}/_deps/pcg-src/include
@@ -14,14 +15,20 @@ CMAKE_EXTRA += -DPPTREE_NATIVE_ARCH=OFF
 endif
 
 clean:
-	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG}
+	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG} ${R_BUILD_DIR}
 
 fetch-deps:
 	@mkdir -p ${BUILD_DIR}
-	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ${CMAKE_EXTRA} ../core
+	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DPPTREE_CORE_ONLY=ON \
+		${CMAKE_EXTRA} ../core
 
-build: fetch-deps
-	@cd ${BUILD_DIR} && make
+build:
+	@mkdir -p ${BUILD_DIR}
+	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" \
+		-DCMAKE_BUILD_TYPE=Release -DPPTREE_CORE_ONLY=OFF \
+		${CMAKE_EXTRA} ../core && make
 
 build-debug:
 	@mkdir -p ${BUILD_DIR_DEBUG}
@@ -58,7 +65,7 @@ analyze:
 
 CPPCLEAN = $(shell python3 -c "import sysconfig; print(sysconfig.get_path('scripts'))")/cppclean
 
-cppclean: fetch-deps
+cppclean: build
 	@${CPPCLEAN} \
 		--include-path=core/src \
 		--include-path=core/include \
@@ -79,12 +86,27 @@ R_PACKAGE_TARBALL = PPTree_${R_PACKAGE_VERSION}.tar.gz
 R_CRAN_MIRROR = https://cran.rstudio.com/
 
 r-install-deps:
-	@Rscript -e "install.packages('Rcpp', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
-	@Rscript -e "install.packages('RcppEigen', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
-	@Rscript -e "install.packages('devtools', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
-	@Rscript -e "install.packages('jsonlite', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
-	@Rscript -e "install.packages('parsnip', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
-	@Rscript -e "install.packages('pkgdown', repos='${R_CRAN_MIRROR}', dependencies=TRUE)"
+	@Rscript -e "if (!requireNamespace('pak', quietly = TRUE)) install.packages('pak', repos = '${R_CRAN_MIRROR}')"
+	@Rscript -e "pak::local_install_deps('${R_PACKAGE_DIR}')"
+
+r-build-core: fetch-deps
+	@mkdir -p ${R_BUILD_DIR}/_deps
+	@for src_dir in ${BUILD_DIR}/_deps/*-src; do \
+		target=${R_BUILD_DIR}/_deps/$$(basename $$src_dir); \
+		[ ! -d "$$target" ] && cp -r "$$src_dir" "$$target" || true; \
+	done
+	@R_CXX_FULL="$$(R CMD config CXX17)"; \
+	R_CXX_COMPILER="$$(echo $$R_CXX_FULL | awk '{print $$1}')"; \
+	R_CXX_EXTRA="$$(echo $$R_CXX_FULL | awk '{$$1=""; print}' | sed 's/^ *//')"; \
+	cd ${R_BUILD_DIR} && cmake -G "Unix Makefiles" \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_CXX_COMPILER="$$R_CXX_COMPILER" \
+		-DCMAKE_CXX_FLAGS="$$R_CXX_EXTRA $$(R CMD config CXX17STD) $$(R CMD config CXX17FLAGS)" \
+		-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+		-DPPTREE_CORE_ONLY=ON ${CMAKE_EXTRA} \
+		../core
+	@cd ${R_BUILD_DIR} && make pptree-core
+	@strip -S ${R_BUILD_DIR}/libpptree-core.a
 
 r-clean:
 	@rm -rf \
@@ -101,7 +123,7 @@ r-clean:
 		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
 		PPTree.Rcheck
 
-r-prepare: fetch-deps r-clean
+r-prepare: r-clean fetch-deps
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 	@cp -r ${PCG_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
@@ -121,13 +143,13 @@ r-build: r-clean
 	@make r-clean
 
 r-check: r-build
-	@R CMD check ${R_PACKAGE_TARBALL}
+	@PPTREE_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD check ${R_PACKAGE_TARBALL}
 
 r-check-cran: r-build
-	@R CMD check ${R_PACKAGE_TARBALL} --as-cran
+	@PPTREE_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD check ${R_PACKAGE_TARBALL} --as-cran
 
 r-install: r-build
-	@R CMD INSTALL ${R_PACKAGE_TARBALL}
+	@PPTREE_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD INSTALL ${R_PACKAGE_TARBALL}
 
 r-untar:
 	@tar -xvf ${R_PACKAGE_TARBALL}
@@ -147,10 +169,10 @@ docs-cpp:
 	@${DOXYGEN} ${DOCS_DIR}/Doxyfile
 
 docs-r:
+	@make r-build-core
 	@make r-prepare
-	@cd ${BUILD_DIR} && make pptree-core
 	@mkdir -p ${R_PACKAGE_DIR}/inst/lib
-	@cp ${BUILD_DIR}/libpptree-core.a ${R_PACKAGE_DIR}/inst/lib/
+	@cp ${R_BUILD_DIR}/libpptree-core.a ${R_PACKAGE_DIR}/inst/lib/
 	@cp ${DOCS_DIR}/_pkgdown.yml ${R_PACKAGE_DIR}/_pkgdown.yml
 	@Rscript -e "pkgdown::build_site('${R_PACKAGE_DIR}', override=list(destination='../../../${DOCS_BUILD_DIR}/r'), preview=FALSE)"
 	@rm -f ${R_PACKAGE_DIR}/_pkgdown.yml
@@ -187,17 +209,3 @@ benchmark-vs: build
 	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -b .bench-worktree/bench/.baseline-results.json
 	@rm -f bench/.current-results.json
 	@git worktree remove -f .bench-worktree 2>/dev/null || true
-
-# Profiling
-
-PROFILE_OUTPUT = pptree-profile.trace
-PROFILE_OUTPUT_DEBUG = pptree-profile-debug.trace
-
-
-profile: build
-	@rm -rf ${PROFILE_OUTPUT}
-	@xcrun xctrace record --template 'Time Profiler' --output ${PROFILE_OUTPUT} --launch ${BUILD_DIR}/pptree-profile 12 2400 2 10 0.8 10
-
-profile-debug: build-debug
-	@rm -rf ${PROFILE_OUTPUT_DEBUG}
-	@xcrun xctrace record --template 'Time Profiler' --output ${PROFILE_OUTPUT_DEBUG} --launch ${BUILD_DIR_DEBUG}/pptree-profile 100 100 2 1 1

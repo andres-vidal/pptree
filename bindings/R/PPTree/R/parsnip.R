@@ -87,7 +87,7 @@ pp_tree <- function(mode = "classification", penalty = NULL) {
 }
 
 register_pp_forest <- function() {
-  parsnip::set_new_model("pp_forest")
+  try(parsnip::set_new_model("pp_forest"), silent = TRUE)
   parsnip::set_model_mode("pp_forest", "classification")
   parsnip::set_model_engine("pp_forest", mode = "classification", eng = "PPTree")
 
@@ -172,7 +172,7 @@ register_pp_forest <- function() {
 }
 
 register_pp_tree <- function() {
-  parsnip::set_new_model("pp_tree")
+  try(parsnip::set_new_model("pp_tree"), silent = TRUE)
   parsnip::set_model_mode("pp_tree", "classification")
   parsnip::set_model_engine("pp_tree", mode = "classification", eng = "PPTree")
 

@@ -237,6 +237,35 @@ make r-clean            # Remove compilation byproducts
 
 > **Important:** Always use `make r-build` before checking or installing. This target copies the C++ core source into the R package's `src/core/` so it can be compiled on install.
 
+### Build Process
+
+The R package wraps the C++ core via Rcpp. Because the core lives outside the R package directory, the build process assembles a self-contained source tarball that can be compiled anywhere.
+
+All workflows share a single dependency cache in `.build/_deps/`, populated by `make fetch-deps`. Dependencies are fetched once and reused across both the C++ and R build pipelines.
+
+#### Tarball pipeline (`make r-check`)
+
+1. **`fetch-deps`** — Runs a core-only cmake configure in `.build/` to download dependencies (Eigen, nlohmann/json, pcg, csv-parser, fmt) via FetchContent. No compilation.
+
+2. **`r-prepare`** — Copies the core source into `src/core/`, dependency headers (nlohmann/json, pcg) from `.build/_deps/` into `inst/include/`, and golden files into `inst/golden/`.
+
+3. **`r-build`** — Removes the `.core` sentinel, regenerates `RcppExports.cpp`/`RcppExports.R` via `Rcpp::compileAttributes()`, and runs `R CMD build` to produce a source tarball.
+
+4. **`configure` / `configure.win`** — During `R CMD check` or `R CMD INSTALL`, the configure script detects the compiler, runs cmake + compile on the bundled core source, and places the static library in `inst/lib/`. The `PPTREE_FETCH_CACHE` environment variable can point to pre-downloaded sources to avoid re-fetching.
+
+#### Development workflow (`devtools::load_all()`)
+
+For iterative development, the `.core` sentinel file in `src/` activates the dev path in Makevars. On each `devtools::load_all()`, Makevars delegates to `make r-build-core` which compiles the C++ core into `.r-build/` using R's compiler. cmake incremental builds ensure only changed files are recompiled. The static library, headers, and core source are copied into the R package for linking.
+
+```r
+devtools::load_all("bindings/R/PPTree")   # edit C++ -> reload -> test
+devtools::test("bindings/R/PPTree")        # run testthat suite
+```
+
+#### Compiler handling
+
+On macOS, `R CMD config CXX17` may return the compiler with architecture flags (e.g., `clang++ -arch arm64`). Since CMake's `CMAKE_CXX_COMPILER` expects only the compiler path, the build splits this value: the first word becomes the compiler, and any remaining flags are appended to `CMAKE_CXX_FLAGS`. This splitting is applied in the root Makefile (`r-build-core`), `configure`, and `configure.win`.
+
 ### How `install_github` Works
 
 R packages installed via `devtools::install_github()` must have the package source at the repository root. Since pptree is a monorepo, a CI workflow (`update-main-r.yml`) maintains a separate `main-r` branch for this purpose:
