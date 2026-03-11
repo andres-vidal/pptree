@@ -37,5 +37,5 @@ model <- PPForest(Type ~ ., data = iris)
 formula(model)
 #> Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 
 #>     1
-#> <environment: 0x5556d54176c0>
+#> <environment: 0x557265dc9bc0>
 ```
