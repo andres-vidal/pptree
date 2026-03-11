@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <numeric>
 
 #include "models/DRStrategy.hpp"
 #include "stats/Uniform.hpp"
