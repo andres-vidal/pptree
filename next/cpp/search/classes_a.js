@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['ppgldastrategy_0',['PPGLDAStrategy',['../structpptree_1_1pp_1_1PPGLDAStrategy.html',1,'pptree::pp']]],
-  ['ppresult_1',['PPResult',['../structpptree_1_1pp_1_1PPResult.html',1,'pptree::pp']]],
-  ['ppstrategy_2',['PPStrategy',['../structpptree_1_1pp_1_1PPStrategy.html',1,'pptree::pp']]],
-  ['proportions_3',['Proportions',['../structpptree_1_1Proportions.html',1,'pptree']]]
+  ['nodedata_0',['NodeData',['../structpptree_1_1NodeData.html',1,'pptree']]],
+  ['nodedatavisitor_1',['NodeDataVisitor',['../structpptree_1_1NodeDataVisitor.html',1,'pptree']]],
+  ['normal_2',['Normal',['../classpptree_1_1stats_1_1Normal.html',1,'pptree::stats']]]
 ];

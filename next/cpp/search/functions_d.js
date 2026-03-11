@@ -14,5 +14,6 @@ var searchData=
   ['print_5fconfiguration_11',['print_configuration',['../namespacepptree_1_1cli.html#ab61192e18f7534f0f5b5adfc6b299b67',1,'pptree::cli']]],
   ['print_5fconfusion_5fmatrix_12',['print_confusion_matrix',['../namespacepptree_1_1cli.html#ac0a17338648781d6b8b499db83b6905a',1,'pptree::cli']]],
   ['print_5fresults_13',['print_results',['../namespacepptree_1_1cli.html#a84c3d2d3f8274a7d808e5bb722734ee8',1,'pptree::cli']]],
-  ['print_5fvariable_5fimportance_14',['print_variable_importance',['../namespacepptree_1_1cli.html#ada7326ea4198f85538016417272c88c8',1,'pptree::cli']]]
+  ['print_5fvariable_5fimportance_14',['print_variable_importance',['../namespacepptree_1_1cli.html#ada7326ea4198f85538016417272c88c8',1,'pptree::cli']]],
+  ['project_5f2d_15',['project_2d',['../namespacepptree.html#a1c699ffb0b788d437a6008804ddd9bb0',1,'pptree']]]
 ];

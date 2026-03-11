@@ -2,6 +2,7 @@ var hierarchy =
 [
     [ "pptree::cli::BenchmarkParams", "structpptree_1_1cli_1_1BenchmarkParams.html", null ],
     [ "pptree::cli::BenchmarkSuite", "structpptree_1_1cli_1_1BenchmarkSuite.html", null ],
+    [ "pptree::BoundarySegment", "structpptree_1_1BoundarySegment.html", null ],
     [ "pptree::cli::CLIOptions", "structpptree_1_1cli_1_1CLIOptions.html", null ],
     [ "pptree::io::Column", "structpptree_1_1io_1_1Column.html", null ],
     [ "pptree::stats::ConfusionMatrix", "structpptree_1_1stats_1_1ConfusionMatrix.html", null ],
@@ -15,6 +16,10 @@ var hierarchy =
     ] ],
     [ "pptree::cli::EvaluateParams", "structpptree_1_1cli_1_1EvaluateParams.html", null ],
     [ "pptree::stats::GroupPartition", "classpptree_1_1stats_1_1GroupPartition.html", null ],
+    [ "pptree::HalfSpace", "structpptree_1_1HalfSpace.html", null ],
+    [ "pptree::LayoutEdge", "structpptree_1_1LayoutEdge.html", null ],
+    [ "pptree::LayoutNode", "structpptree_1_1LayoutNode.html", null ],
+    [ "pptree::LayoutParams", "structpptree_1_1LayoutParams.html", null ],
     [ "pptree::Model", "structpptree_1_1Model.html", [
       [ "pptree::Forest", "structpptree_1_1Forest.html", null ],
       [ "pptree::Tree", "structpptree_1_1Tree.html", [
@@ -26,6 +31,7 @@ var hierarchy =
     [ "pptree::ModelVisitor", "structpptree_1_1ModelVisitor.html", [
       [ "pptree::serialization::JsonModelVisitor", "structpptree_1_1serialization_1_1JsonModelVisitor.html", null ]
     ] ],
+    [ "pptree::NodeData", "structpptree_1_1NodeData.html", null ],
     [ "pptree::stats::Normal", "classpptree_1_1stats_1_1Normal.html", null ],
     [ "pptree::io::Output", "structpptree_1_1io_1_1Output.html", null ],
     [ "pptree::pp::PPResult", "structpptree_1_1pp_1_1PPResult.html", null ],
@@ -33,6 +39,7 @@ var hierarchy =
       [ "pptree::pp::PPGLDAStrategy", "structpptree_1_1pp_1_1PPGLDAStrategy.html", null ]
     ] ],
     [ "pptree::Proportions", "structpptree_1_1Proportions.html", null ],
+    [ "pptree::RegionPolygon", "structpptree_1_1RegionPolygon.html", null ],
     [ "pptree::cli::Scenario", "structpptree_1_1cli_1_1Scenario.html", null ],
     [ "pptree::cli::ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", null ],
     [ "pptree::cli::SimulateParams", "structpptree_1_1cli_1_1SimulateParams.html", null ],
@@ -50,11 +57,15 @@ var hierarchy =
     ] ],
     [ "pptree::TrainingSpecVisitor", "structpptree_1_1TrainingSpecVisitor.html", null ],
     [ "pptree::cli::TrainResult", "structpptree_1_1cli_1_1TrainResult.html", null ],
+    [ "pptree::TreeLayout", "structpptree_1_1TreeLayout.html", null ],
     [ "pptree::TreeNode", "structpptree_1_1TreeNode.html", [
       [ "pptree::TreeCondition", "structpptree_1_1TreeCondition.html", null ],
       [ "pptree::TreeResponse", "structpptree_1_1TreeResponse.html", null ]
     ] ],
     [ "pptree::TreeNodeVisitor", "structpptree_1_1TreeNodeVisitor.html", [
+      [ "pptree::BoundaryVisitor", "structpptree_1_1BoundaryVisitor.html", null ],
+      [ "pptree::NodeDataVisitor", "structpptree_1_1NodeDataVisitor.html", null ],
+      [ "pptree::RegionVisitor", "structpptree_1_1RegionVisitor.html", null ],
       [ "pptree::VIVisitor", "structpptree_1_1VIVisitor.html", null ],
       [ "pptree::serialization::JsonNodeVisitor", "structpptree_1_1serialization_1_1JsonNodeVisitor.html", null ]
     ] ],

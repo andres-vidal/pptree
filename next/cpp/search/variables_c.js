@@ -7,6 +7,8 @@ var searchData=
   ['permuted_4',['permuted',['../structpptree_1_1VariableImportance.html#a4ff36e1e33e34c22bed18d516ee50bd8',1,'pptree::VariableImportance']]],
   ['pp_5findex_5fvalue_5',['pp_index_value',['../structpptree_1_1TreeCondition.html#aa0393d7423785e755758123ae06d7593',1,'pptree::TreeCondition']]],
   ['pp_5fstrategy_6',['pp_strategy',['../structpptree_1_1TrainingSpec.html#a34440f4697b2f951d247496da813c19a',1,'pptree::TrainingSpec']]],
-  ['projections_7',['projections',['../structpptree_1_1VariableImportance.html#ad36c45300cf633a3b040232ed977a240',1,'pptree::VariableImportance']]],
-  ['projector_8',['projector',['../structpptree_1_1pp_1_1PPResult.html#a71cbfe024538bff18e0dbb08d2ad8713',1,'pptree::pp::PPResult::projector'],['../structpptree_1_1TreeCondition.html#a8980dd65484c4ce710926f21727f63be',1,'pptree::TreeCondition::projector']]]
+  ['predicted_5fclass_7',['predicted_class',['../structpptree_1_1RegionPolygon.html#a64d12b46d136a26414e44fad10c07b5a',1,'pptree::RegionPolygon']]],
+  ['projected_5fvalues_8',['projected_values',['../structpptree_1_1NodeData.html#abeec7ceb06546293a78f2c8678b8214c',1,'pptree::NodeData']]],
+  ['projections_9',['projections',['../structpptree_1_1VariableImportance.html#ad36c45300cf633a3b040232ed977a240',1,'pptree::VariableImportance']]],
+  ['projector_10',['projector',['../structpptree_1_1pp_1_1PPResult.html#a71cbfe024538bff18e0dbb08d2ad8713',1,'pptree::pp::PPResult::projector'],['../structpptree_1_1TreeCondition.html#a8980dd65484c4ce710926f21727f63be',1,'pptree::TreeCondition::projector'],['../structpptree_1_1NodeData.html#a522bdf094ed65e2ecf6ab1c0ceed03a5',1,'pptree::NodeData::projector'],['../structpptree_1_1HalfSpace.html#af8fba405be4f609926aa14e353758aec',1,'pptree::HalfSpace::projector']]]
 ];

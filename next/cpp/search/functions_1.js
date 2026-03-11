@@ -1,5 +1,6 @@
 var searchData=
 [
   ['bgss_0',['bgss',['../classpptree_1_1stats_1_1GroupPartition.html#ab2d2e9fae7d504f6397a2ac6339c0122',1,'pptree::stats::GroupPartition']]],
-  ['bootstraptree_1',['BootstrapTree',['../structpptree_1_1BootstrapTree.html#ac039492b5fc7709ea701988c6e79a513',1,'pptree::BootstrapTree']]]
+  ['bootstraptree_1',['BootstrapTree',['../structpptree_1_1BootstrapTree.html#ac039492b5fc7709ea701988c6e79a513',1,'pptree::BootstrapTree']]],
+  ['boundaryvisitor_2',['BoundaryVisitor',['../structpptree_1_1BoundaryVisitor.html#a1d5088032d87895cef10dbbd47ac8823',1,'pptree::BoundaryVisitor']]]
 ];

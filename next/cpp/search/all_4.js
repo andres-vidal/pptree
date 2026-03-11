@@ -1,15 +1,18 @@
 var searchData=
 [
-  ['emphasis_0',['emphasis',['../namespacepptree_1_1io.html#a42e68bb1754da1f385ec5e55417ca1c1',1,'pptree::io']]],
-  ['enabled_1',['enabled',['../structpptree_1_1cli_1_1ConvergenceParams.html#a98d4d5566e60ae8e8da4309eef8b816f',1,'pptree::cli::ConvergenceParams']]],
-  ['ensure_5fjson_5fextension_2',['ensure_json_extension',['../namespacepptree_1_1io.html#a14ad9eff26882ef01fc6a53d3da0a504',1,'pptree::io']]],
-  ['equals_3',['equals',['../structpptree_1_1TreeCondition.html#a265ca05a39b483294ade4e1819b80906',1,'pptree::TreeCondition::equals()'],['../structpptree_1_1TreeNode.html#ae9bf2c82f064a16241c9bde60c3a785c',1,'pptree::TreeNode::equals()'],['../structpptree_1_1TreeResponse.html#a885651a3b60fddf6df707f2855ce6527',1,'pptree::TreeResponse::equals()']]],
-  ['error_4',['error',['../structpptree_1_1stats_1_1ConfusionMatrix.html#af4e62203647cab4d1e35156df7ae0ba7',1,'pptree::stats::ConfusionMatrix::error()'],['../namespacepptree_1_1io.html#abb20142e444d32b98d7eaf4a61532e55',1,'pptree::io::error()']]],
-  ['error_5frate_5',['error_rate',['../namespacepptree_1_1stats.html#a641303facc19141d78831657e5925127',1,'pptree::stats']]],
-  ['evaluate_6',['evaluate',['../structpptree_1_1cli_1_1CLIOptions.html#a998ac0e706a0b4fc80d84fed6467d107',1,'pptree::cli::CLIOptions::evaluate'],['../namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a94d2f2aabfda3169d54a9531cdb99890',1,'pptree::cli::evaluate']]],
-  ['evaluate_2ehpp_7',['Evaluate.hpp',['../Evaluate_8hpp.html',1,'']]],
-  ['evaluateparams_8',['EvaluateParams',['../structpptree_1_1cli_1_1EvaluateParams.html',1,'pptree::cli']]],
-  ['evaluateparams_2ehpp_9',['EvaluateParams.hpp',['../EvaluateParams_8hpp.html',1,'']]],
-  ['expand_10',['expand',['../structpptree_1_1dr_1_1DRSpec.html#a9853df3806df2a532d6c8956859e070b',1,'pptree::dr::DRSpec']]],
-  ['export_5fpath_11',['export_path',['../structpptree_1_1cli_1_1EvaluateParams.html#aff03f9f0e110c0bfbd1cc77e20411b05',1,'pptree::cli::EvaluateParams']]]
+  ['data_0',['data',['../classpptree_1_1stats_1_1GroupPartition.html#ad5a4db0c6f137931d06d13e3c74921a3',1,'pptree::stats::GroupPartition']]],
+  ['data_5fpath_1',['data_path',['../structpptree_1_1cli_1_1CLIOptions.html#a10fe2f9c52d0e7baf6a8c06076b0bf2e',1,'pptree::cli::CLIOptions']]],
+  ['datapacket_2',['DataPacket',['../structpptree_1_1stats_1_1DataPacket.html',1,'pptree::stats::DataPacket'],['../structpptree_1_1stats_1_1DataPacket.html#aa850f27efc324721cb3b94ba034e623c',1,'pptree::stats::DataPacket::DataPacket(const types::FeatureMatrix &amp;x, const types::Vector&lt; types::Response &gt; &amp;y, const std::set&lt; types::Response &gt; &amp;classes)'],['../structpptree_1_1stats_1_1DataPacket.html#a8bbab759f003a05ac7a966a973eb735d',1,'pptree::stats::DataPacket::DataPacket(const types::FeatureMatrix &amp;x, const types::Vector&lt; types::Response &gt; &amp;y)'],['../structpptree_1_1stats_1_1DataPacket.html#a2ad524b17ff6a7665ee1c65c77985fd8',1,'pptree::stats::DataPacket::DataPacket()']]],
+  ['datapacket_2ehpp_3',['DataPacket.hpp',['../DataPacket_8hpp.html',1,'']]],
+  ['depth_4',['depth',['../structpptree_1_1NodeData.html#a27fb891b7351f9588c5b3934e350e94d',1,'pptree::NodeData::depth'],['../structpptree_1_1NodeDataVisitor.html#a4ae50f409c7eac90d04498ddc380f1ee',1,'pptree::NodeDataVisitor::depth'],['../structpptree_1_1BoundarySegment.html#ab87eebf351a9d15d9cc29fe4521aa15c',1,'pptree::BoundarySegment::depth'],['../structpptree_1_1BoundaryVisitor.html#a863b6793250e9a2100fd1edff7e85265',1,'pptree::BoundaryVisitor::depth']]],
+  ['distinct_5',['distinct',['../classpptree_1_1stats_1_1Uniform.html#a41002dcb9d137f6c384618eeb4c48fc8',1,'pptree::stats::Uniform']]],
+  ['dr_5fstrategy_6',['dr_strategy',['../structpptree_1_1TrainingSpec.html#a275069565259df175dafea1cc82ce5d7',1,'pptree::TrainingSpec']]],
+  ['drnoopstrategy_7',['DRNoopStrategy',['../structpptree_1_1dr_1_1DRNoopStrategy.html',1,'pptree::dr']]],
+  ['drnoopstrategy_2ehpp_8',['DRNoopStrategy.hpp',['../DRNoopStrategy_8hpp.html',1,'']]],
+  ['drspec_9',['DRSpec',['../structpptree_1_1dr_1_1DRSpec.html',1,'pptree::dr::DRSpec'],['../structpptree_1_1dr_1_1DRSpec.html#ad73706324bd86b04d863f1c05b5fb181',1,'pptree::dr::DRSpec::DRSpec()']]],
+  ['drstrategy_10',['DRStrategy',['../structpptree_1_1dr_1_1DRStrategy.html',1,'pptree::dr']]],
+  ['drstrategy_2ehpp_11',['DRStrategy.hpp',['../DRStrategy_8hpp.html',1,'']]],
+  ['druniformstrategy_12',['DRUniformStrategy',['../structpptree_1_1dr_1_1DRUniformStrategy.html',1,'pptree::dr::DRUniformStrategy'],['../structpptree_1_1dr_1_1DRUniformStrategy.html#aafa125efd5aa38eff5f74d567e5c2143',1,'pptree::dr::DRUniformStrategy::DRUniformStrategy()']]],
+  ['druniformstrategy_2ehpp_13',['DRUniformStrategy.hpp',['../DRUniformStrategy_8hpp.html',1,'']]],
+  ['duration_14',['duration',['../structpptree_1_1cli_1_1TrainResult.html#acbf19b5cacfa961294914f06664782d4',1,'pptree::cli::TrainResult']]]
 ];

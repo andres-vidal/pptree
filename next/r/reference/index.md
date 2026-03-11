@@ -32,6 +32,10 @@
   : Olive Dataset
 - [`parkinson`](https://andres-vidal.github.io/pptree/main/r/reference/parkinson.md)
   : Parkinson Dataset
+- [`plot(`*`<PPForest>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/plot.PPForest.md)
+  : Plot a PPForest model.
+- [`plot(`*`<PPTree>`*`)`](https://andres-vidal.github.io/pptree/main/r/reference/plot.PPTree.md)
+  : Plot a PPTree model.
 - [`pp_forest()`](https://andres-vidal.github.io/pptree/main/r/reference/pp_forest.md)
   : Parsnip model specification for PPForest.
 - [`pp_tree()`](https://andres-vidal.github.io/pptree/main/r/reference/pp_tree.md)

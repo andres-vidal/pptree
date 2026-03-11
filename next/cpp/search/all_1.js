@@ -1,13 +1,15 @@
 var searchData=
 [
-  ['baseline_5fpath_0',['baseline_path',['../structpptree_1_1cli_1_1BenchmarkParams.html#a5015ba2c6b7e7b8ad2d7736d95ce9815',1,'pptree::cli::BenchmarkParams']]],
-  ['benchmark_1',['benchmark',['../structpptree_1_1cli_1_1CLIOptions.html#a48d7cef50a360aa588f1c78cf96be3e4',1,'pptree::cli::CLIOptions::benchmark'],['../namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a07978586e47c8709a63e895fbf3c3c7d',1,'pptree::cli::benchmark']]],
-  ['benchmark_2ehpp_2',['Benchmark.hpp',['../Benchmark_8hpp.html',1,'']]],
-  ['benchmarkparams_3',['BenchmarkParams',['../structpptree_1_1cli_1_1BenchmarkParams.html',1,'pptree::cli']]],
-  ['benchmarkparams_2ehpp_4',['BenchmarkParams.hpp',['../BenchmarkParams_8hpp.html',1,'']]],
-  ['benchmarkreport_2ehpp_5',['BenchmarkReport.hpp',['../BenchmarkReport_8hpp.html',1,'']]],
-  ['benchmarksuite_6',['BenchmarkSuite',['../structpptree_1_1cli_1_1BenchmarkSuite.html',1,'pptree::cli']]],
-  ['bgss_7',['bgss',['../classpptree_1_1stats_1_1GroupPartition.html#ab2d2e9fae7d504f6397a2ac6339c0122',1,'pptree::stats::GroupPartition']]],
-  ['bootstraptree_8',['BootstrapTree',['../structpptree_1_1BootstrapTree.html',1,'pptree::BootstrapTree'],['../structpptree_1_1BootstrapTree.html#ac039492b5fc7709ea701988c6e79a513',1,'pptree::BootstrapTree::BootstrapTree()']]],
-  ['bootstraptree_2ehpp_9',['BootstrapTree.hpp',['../BootstrapTree_8hpp.html',1,'']]]
+  ['accept_0',['accept',['../structpptree_1_1Forest.html#a52af313d0167c6197f29d6cf35420773',1,'pptree::Forest::accept()'],['../structpptree_1_1Model.html#ab1aa28c5140f8f8b075a6327f2bbfeac',1,'pptree::Model::accept()'],['../structpptree_1_1TrainingSpec.html#ad03cc2f2575a14eca4a59169b4734c66',1,'pptree::TrainingSpec::accept()'],['../structpptree_1_1TrainingSpecGLDA.html#ac9f4da149dbb20374e0e1b3df0232dc7',1,'pptree::TrainingSpecGLDA::accept()'],['../structpptree_1_1TrainingSpecUGLDA.html#a4d98e337a6861aa9e490d6ab0bec79de',1,'pptree::TrainingSpecUGLDA::accept()'],['../structpptree_1_1Tree.html#a3fab502b5c9e194945eb982d115fbbe5',1,'pptree::Tree::accept()'],['../structpptree_1_1TreeCondition.html#a156fd4585feb9fb153987e52af21bd0f',1,'pptree::TreeCondition::accept()'],['../structpptree_1_1TreeNode.html#a488e9dabc0492d5132e54ccc3c74def0',1,'pptree::TreeNode::accept()'],['../structpptree_1_1TreeResponse.html#a912d3be6c347f7d524a6f7dd3dcbf6dd',1,'pptree::TreeResponse::accept()']]],
+  ['accuracy_1',['accuracy',['../namespacepptree_1_1stats.html#a92768aa7e1219e23ebcb44119ee746e8',1,'pptree::stats']]],
+  ['add_5fmodel_5foptions_2',['add_model_options',['../namespacepptree_1_1cli.html#a4214dc1188cbe3365e82b77fcf5818a0',1,'pptree::cli']]],
+  ['add_5ftree_3',['add_tree',['../structpptree_1_1Forest.html#a91733f78183caf059c2d5c96a3688480',1,'pptree::Forest']]],
+  ['adjust_5fthreshold_4',['adjust_threshold',['../namespacepptree.html#ac5c802bb1d3252f2739b8f4cd3c1be2c',1,'pptree']]],
+  ['align_5',['Align',['../namespacepptree_1_1io.html#adab0ef61cd6661616ef875fece9277b3',1,'pptree::io']]],
+  ['align_6',['align',['../structpptree_1_1io_1_1Column.html#acb5044255f24cfd7d43392784822479b',1,'pptree::io::Column']]],
+  ['approx_5fthreshold_7',['APPROX_THRESHOLD',['../Math_8hpp.html#adc749a0041f86b9a04fa05a27d8de53b',1,'Math.hpp']]],
+  ['architecture_8',['Architecture',['../Visualization_8hpp.html#arch',1,'']]],
+  ['assert_5fapprox_9',['ASSERT_APPROX',['../Macros_8hpp.html#a50b583dcfbd01ebb60f9d4191a73916c',1,'Macros.hpp']]],
+  ['assert_5fcollinear_10',['ASSERT_COLLINEAR',['../Macros_8hpp.html#a4341c518e43851f4123a726ac9569bd6',1,'Macros.hpp']]],
+  ['assert_5feq_5fdata_11',['ASSERT_EQ_DATA',['../Macros_8hpp.html#a8a74b1623b7806c08bf1fc5542103316',1,'Macros.hpp']]]
 ];

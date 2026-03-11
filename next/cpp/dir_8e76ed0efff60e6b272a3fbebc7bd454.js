@@ -22,5 +22,6 @@ var dir_8e76ed0efff60e6b272a3fbebc7bd454 =
     [ "TreeNodeVisitor.hpp", "TreeNodeVisitor_8hpp.html", "TreeNodeVisitor_8hpp" ],
     [ "TreeResponse.hpp", "TreeResponse_8hpp.html", "TreeResponse_8hpp" ],
     [ "VariableImportance.hpp", "VariableImportance_8hpp.html", "VariableImportance_8hpp" ],
+    [ "Visualization.hpp", "Visualization_8hpp.html", "Visualization_8hpp" ],
     [ "VIVisitor.hpp", "VIVisitor_8hpp.html", "VIVisitor_8hpp" ]
 ];

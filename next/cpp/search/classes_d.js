@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['uniform_0',['Uniform',['../classpptree_1_1stats_1_1Uniform.html',1,'pptree::stats']]]
+  ['regionpolygon_0',['RegionPolygon',['../structpptree_1_1RegionPolygon.html',1,'pptree']]],
+  ['regionvisitor_1',['RegionVisitor',['../structpptree_1_1RegionVisitor.html',1,'pptree']]]
 ];

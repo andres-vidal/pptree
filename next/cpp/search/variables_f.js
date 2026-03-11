@@ -8,13 +8,14 @@ var searchData=
   ['scenarios_5fpath_5',['scenarios_path',['../structpptree_1_1cli_1_1BenchmarkParams.html#a33a3a39f3e5a3609f0e7a5f137b19424',1,'pptree::cli::BenchmarkParams']]],
   ['sd_6',['sd',['../structpptree_1_1cli_1_1SimulateParams.html#a7083444bb7b3ccb4a3c2a4b3cdae2d5b',1,'pptree::cli::SimulateParams::sd'],['../structpptree_1_1stats_1_1SimulationParams.html#aa5e88fdb2f3b7e9729b845cd66eb9ae1',1,'pptree::stats::SimulationParams::sd']]],
   ['seed_7',['seed',['../structpptree_1_1cli_1_1Scenario.html#aaa5fed81555c199f321c2e59b5c3a559',1,'pptree::cli::Scenario::seed'],['../structpptree_1_1cli_1_1ModelParams.html#a8e714ef25781fa352fc5c802901ac125',1,'pptree::cli::ModelParams::seed'],['../structpptree_1_1Forest.html#afea4f7838970cc0877c7c2455bd11350',1,'pptree::Forest::seed']]],
-  ['selected_5fcols_8',['selected_cols',['../structpptree_1_1dr_1_1DRSpec.html#a132f85403b531ece0b6be9da71bc5d61',1,'pptree::dr::DRSpec']]],
-  ['simulation_9',['simulation',['../structpptree_1_1cli_1_1CLIOptions.html#a5928b1f12bd7adaf7735238a799d2212',1,'pptree::cli::CLIOptions']]],
-  ['split_5fstrategy_10',['split_strategy',['../structpptree_1_1TrainingSpec.html#ab5202ba4bf9df41068b779a42143079e',1,'pptree::TrainingSpec']]],
-  ['stable_5fwindow_11',['stable_window',['../structpptree_1_1cli_1_1ConvergenceCriteria.html#a638f0e0d42ea3215643c40c631375473',1,'pptree::cli::ConvergenceCriteria::stable_window'],['../structpptree_1_1cli_1_1ConvergenceParams.html#a7a931c8911db53bc65453bc6e3d07e03',1,'pptree::cli::ConvergenceParams::stable_window']]],
-  ['std_5ftime_5fms_12',['std_time_ms',['../structpptree_1_1cli_1_1ScenarioResult.html#a0e2ab9c80c654dae720bd80379c77b74',1,'pptree::cli::ScenarioResult']]],
-  ['subcommand_13',['subcommand',['../structpptree_1_1cli_1_1CLIOptions.html#aa7795fd2523135ea041cd4948df441cd',1,'pptree::cli::CLIOptions']]],
-  ['subgroups_14',['subgroups',['../classpptree_1_1stats_1_1GroupPartition.html#a870669502c5d3883e30759a1a8187995',1,'pptree::stats::GroupPartition']]],
-  ['suite_5fname_15',['suite_name',['../structpptree_1_1cli_1_1SuiteResult.html#ae8de42fd41d852ab4817506d0fed8858',1,'pptree::cli::SuiteResult']]],
-  ['supergroups_16',['supergroups',['../classpptree_1_1stats_1_1GroupPartition.html#a6df8ac0d126aae43d6de77275d34a63f',1,'pptree::stats::GroupPartition']]]
+  ['segments_8',['segments',['../structpptree_1_1BoundaryVisitor.html#ae7422ae8e4c2aab2984847c0e2c283c1',1,'pptree::BoundaryVisitor']]],
+  ['selected_5fcols_9',['selected_cols',['../structpptree_1_1dr_1_1DRSpec.html#a132f85403b531ece0b6be9da71bc5d61',1,'pptree::dr::DRSpec']]],
+  ['simulation_10',['simulation',['../structpptree_1_1cli_1_1CLIOptions.html#a5928b1f12bd7adaf7735238a799d2212',1,'pptree::cli::CLIOptions']]],
+  ['split_5fstrategy_11',['split_strategy',['../structpptree_1_1TrainingSpec.html#ab5202ba4bf9df41068b779a42143079e',1,'pptree::TrainingSpec']]],
+  ['stable_5fwindow_12',['stable_window',['../structpptree_1_1cli_1_1ConvergenceCriteria.html#a638f0e0d42ea3215643c40c631375473',1,'pptree::cli::ConvergenceCriteria::stable_window'],['../structpptree_1_1cli_1_1ConvergenceParams.html#a7a931c8911db53bc65453bc6e3d07e03',1,'pptree::cli::ConvergenceParams::stable_window']]],
+  ['std_5ftime_5fms_13',['std_time_ms',['../structpptree_1_1cli_1_1ScenarioResult.html#a0e2ab9c80c654dae720bd80379c77b74',1,'pptree::cli::ScenarioResult']]],
+  ['subcommand_14',['subcommand',['../structpptree_1_1cli_1_1CLIOptions.html#aa7795fd2523135ea041cd4948df441cd',1,'pptree::cli::CLIOptions']]],
+  ['subgroups_15',['subgroups',['../classpptree_1_1stats_1_1GroupPartition.html#a870669502c5d3883e30759a1a8187995',1,'pptree::stats::GroupPartition']]],
+  ['suite_5fname_16',['suite_name',['../structpptree_1_1cli_1_1SuiteResult.html#ae8de42fd41d852ab4817506d0fed8858',1,'pptree::cli::SuiteResult']]],
+  ['supergroups_17',['supergroups',['../classpptree_1_1stats_1_1GroupPartition.html#a6df8ac0d126aae43d6de77275d34a63f',1,'pptree::stats::GroupPartition']]]
 ];
