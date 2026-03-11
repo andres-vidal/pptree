@@ -98,13 +98,13 @@ namespace pptree {
       class_to_col[classes[static_cast<std::size_t>(g)]] = g;
     }
 
-    int n = static_cast<int>(data.rows());
+    int n                     = static_cast<int>(data.rows());
     FeatureMatrix proportions = FeatureMatrix::Zero(n, G);
 
     for (int i = 0; i < n; ++i) {
       for (const auto& tree : trees) {
         Response pred = tree->predict((FeatureVector)data.row(i));
-        auto it = class_to_col.find(pred);
+        auto it       = class_to_col.find(pred);
 
         if (it != class_to_col.end()) {
           proportions(i, it->second) += 1;

@@ -15,8 +15,8 @@ namespace pptree::stats {
 
     std::stable_sort(indices.begin(), indices.end(),
       [&y](int idx1, int idx2) {
-      return y(idx1) < y(idx2);
-    });
+        return y(idx1) < y(idx2);
+      });
 
     x = x(indices, Eigen::all).eval();
     y = y(indices, Eigen::all).eval();

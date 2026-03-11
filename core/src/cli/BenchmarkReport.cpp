@@ -104,14 +104,17 @@ namespace {
     };
 
     if (has_baseline) columns.push_back({ "delta", 8, Align::right });
+
     columns.push_back({ "Peak RSS", 12, Align::right });
+
     if (has_baseline) columns.push_back({ "delta", 8, Align::right });
+
     columns.push_back({ "Train Err", 9, Align::right });
     columns.push_back({ "Test Err", 8, Align::right });
 
     // Header — style Scenario and delta labels
     Row header = header_labels(columns);
-    header[0]  = emphasis(header[0]);
+    header[0] = emphasis(header[0]);
 
     for (std::size_t i = 0; i < header.size(); ++i) {
       if (header[i] == "delta") header[i] = muted("delta");
@@ -217,8 +220,11 @@ namespace {
     };
 
     if (has_baseline) columns.push_back({ "\xCE\x94 Time", 0, Align::right });
+
     columns.push_back({ "Peak RSS", 0, Align::right });
+
     if (has_baseline) columns.push_back({ "\xCE\x94 RSS", 0, Align::right });
+
     columns.push_back({ "Train Err", 0, Align::right });
     columns.push_back({ "Test Err", 0, Align::right });
 

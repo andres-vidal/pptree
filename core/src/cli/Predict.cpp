@@ -27,7 +27,7 @@ using namespace pptree::io;
 using json = nlohmann::json;
 
 namespace pptree::cli {
-  CLI::App *setup_predict(CLI::App& app, CLIOptions& params) {
+  CLI::App * setup_predict(CLI::App& app, CLIOptions& params) {
     auto sub = app.add_subcommand("predict", "Load a model and predict on new data");
     sub->add_option("-M,--model", params.model_path, "Saved model JSON file")
     ->required()
@@ -62,7 +62,7 @@ namespace {
   json build_predict_result(
     const ResponseVector& predictions,
     const DataPacket&     data,
-    bool                  no_metrics) {
+    bool no_metrics) {
     json result;
     std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
     result["predictions"] = pred_vec;

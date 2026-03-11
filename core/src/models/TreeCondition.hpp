@@ -59,8 +59,13 @@ namespace pptree {
      */
     types::Response predict(const types::FeatureVector& data) const override;
 
-    int class_count() const override { return static_cast<int>(classes.size()); }
-    std::set<types::Response> node_classes() const override { return classes; }
+    int class_count() const override {
+      return static_cast<int>(classes.size());
+    }
+
+    std::set<types::Response> node_classes() const override {
+      return classes;
+    }
 
     bool equals(const TreeNode& other) const override;
     TreeNode::Ptr clone() const override;

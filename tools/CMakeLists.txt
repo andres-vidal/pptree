@@ -46,14 +46,20 @@ add_custom_target(analyze
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
+file(GLOB_RECURSE FORMAT_SOURCES
+    "${CMAKE_SOURCE_DIR}/../core/src/*.cpp"
+    "${CMAKE_SOURCE_DIR}/../core/src/*.hpp"
+    "${CMAKE_SOURCE_DIR}/../core/include/*.hpp"
+)
+
 add_custom_target(format
-    COMMAND ${CMAKE_BINARY_DIR}/uncrustify/bin/uncrustify -c ${CMAKE_SOURCE_DIR}/../uncrustify.cfg  ${CMAKE_SOURCE_DIR}/../core/**/*.cpp  ${CMAKE_SOURCE_DIR}/../core/**/*.hpp --no-backup
+    COMMAND ${CMAKE_BINARY_DIR}/uncrustify/bin/uncrustify -c ${CMAKE_SOURCE_DIR}/../uncrustify.cfg ${FORMAT_SOURCES} --no-backup
     DEPENDS uncrustify
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
 add_custom_target(format-dry
-    COMMAND ${CMAKE_BINARY_DIR}/uncrustify/bin/uncrustify -c ${CMAKE_SOURCE_DIR}/../uncrustify.cfg ${CMAKE_SOURCE_DIR}/../core/**/*.cpp  ${CMAKE_SOURCE_DIR}/../core/**/*.hpp --check
+    COMMAND ${CMAKE_BINARY_DIR}/uncrustify/bin/uncrustify -c ${CMAKE_SOURCE_DIR}/../uncrustify.cfg ${FORMAT_SOURCES} --check
     DEPENDS uncrustify
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )

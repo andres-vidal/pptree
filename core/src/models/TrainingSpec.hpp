@@ -30,8 +30,8 @@ namespace pptree {
     const std::unique_ptr<sr::SRStrategy> split_strategy;
 
     TrainingSpec(
-      std::unique_ptr<pp::PPStrategy>       pp_strategy,
-      std::unique_ptr<dr::DRStrategy>       dr_strategy,
+      std::unique_ptr<pp::PPStrategy> pp_strategy,
+      std::unique_ptr<dr::DRStrategy> dr_strategy,
       std::unique_ptr<sr::SRStrategy> split_strategy) :
       pp_strategy(std::move(pp_strategy)),
       dr_strategy(std::move(dr_strategy)),

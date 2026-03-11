@@ -58,7 +58,7 @@ namespace pptree::io {
         }
       }
 
-      TempFile(const TempFile&) = delete;
+      TempFile(const TempFile&)            = delete;
       TempFile& operator=(const TempFile&) = delete;
 
       TempFile(TempFile&& other) noexcept : path_(std::move(other.path_)) {
@@ -68,16 +68,22 @@ namespace pptree::io {
       TempFile& operator=(TempFile&& other) noexcept {
         if (this != &other) {
           if (!path_.empty()) std::remove(path_.c_str());
+
           path_ = std::move(other.path_);
           other.path_.clear();
         }
+
         return *this;
       }
 
-      const std::string& path() const { return path_; }
+      const std::string& path() const {
+        return path_;
+      }
 
       /** @brief Remove the file so the path can be used as a fresh output target. */
-      void clear() const { std::remove(path_.c_str()); }
+      void clear() const {
+        std::remove(path_.c_str());
+      }
 
       /** @brief Read the entire file contents as a string. */
       std::string read() const {
@@ -128,10 +134,12 @@ namespace pptree::io {
         }
       }
 
-      TempDir(const TempDir&) = delete;
+      TempDir(const TempDir&)            = delete;
       TempDir& operator=(const TempDir&) = delete;
 
-      const std::string& path() const { return path_; }
+      const std::string& path() const {
+        return path_;
+      }
 
       /** @brief Return a path inside this directory (file need not exist yet). */
       std::string file(const std::string& name) const {

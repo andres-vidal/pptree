@@ -279,48 +279,48 @@ static Forest build_three_group_forest() {
   Forest forest;
 
   forest.add_tree(std::make_unique<BootstrapTree>(
-    TreeCondition::make(
-      as_projector({ 0.0, 0.0, 0.0, 0.598, -0.801 }),
-      -0.348,
       TreeCondition::make(
-        as_projector({ 0.9995, 0.0, -0.031, 0.0, 0.0 }),
-        5.553,
-        TreeResponse::make(1),
-        TreeResponse::make(2)),
-      TreeResponse::make(0))));
+        as_projector({ 0.0, 0.0, 0.0, 0.598, -0.801 }),
+        -0.348,
+        TreeCondition::make(
+          as_projector({ 0.9995, 0.0, -0.031, 0.0, 0.0 }),
+          5.553,
+          TreeResponse::make(1),
+          TreeResponse::make(2)),
+        TreeResponse::make(0))));
 
   forest.add_tree(std::make_unique<BootstrapTree>(
-    TreeCondition::make(
-      as_projector({ 0.9998, 0.0, -0.019, 0.0, 0.0 }),
-      5.300,
       TreeCondition::make(
-        as_projector({ 0.999, 0.0, 0.0, 0.046, 0.0 }),
-        1.609,
-        TreeResponse::make(0),
-        TreeResponse::make(1)),
-      TreeResponse::make(2))));
+        as_projector({ 0.9998, 0.0, -0.019, 0.0, 0.0 }),
+        5.300,
+        TreeCondition::make(
+          as_projector({ 0.999, 0.0, 0.0, 0.046, 0.0 }),
+          1.609,
+          TreeResponse::make(0),
+          TreeResponse::make(1)),
+        TreeResponse::make(2))));
 
   forest.add_tree(std::make_unique<BootstrapTree>(
-    TreeCondition::make(
-      as_projector({ 0.974, -0.226, 0.0, 0.0, 0.0 }),
-      3.955,
       TreeCondition::make(
-        as_projector({ 0.0, 0.9996, -0.030, 0.0, 0.0 }),
-        2.622,
-        TreeResponse::make(0),
-        TreeResponse::make(1)),
-      TreeResponse::make(2))));
+        as_projector({ 0.974, -0.226, 0.0, 0.0, 0.0 }),
+        3.955,
+        TreeCondition::make(
+          as_projector({ 0.0, 0.9996, -0.030, 0.0, 0.0 }),
+          2.622,
+          TreeResponse::make(0),
+          TreeResponse::make(1)),
+        TreeResponse::make(2))));
 
   forest.add_tree(std::make_unique<BootstrapTree>(
-    TreeCondition::make(
-      as_projector({ 0.962, 0.0, 0.0, 0.0, -0.275 }),
-      4.735,
       TreeCondition::make(
-        as_projector({ 0.0, 0.0, 0.377, 0.0, -0.926 }),
-        -0.832,
-        TreeResponse::make(1),
-        TreeResponse::make(0)),
-      TreeResponse::make(2))));
+        as_projector({ 0.962, 0.0, 0.0, 0.0, -0.275 }),
+        4.735,
+        TreeCondition::make(
+          as_projector({ 0.0, 0.0, 0.377, 0.0, -0.926 }),
+          -0.832,
+          TreeResponse::make(1),
+          TreeResponse::make(0)),
+        TreeResponse::make(2))));
 
   return forest;
 }

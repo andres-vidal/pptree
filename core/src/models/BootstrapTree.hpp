@@ -53,7 +53,7 @@ namespace pptree {
      * @return          Predictions for each row in row_idx.
      */
     types::ResponseVector predict_oob(
-      const types::FeatureMatrix&  x,
-      const std::vector<int>&      row_idx) const;
+      const types::FeatureMatrix& x,
+      const std::vector<int>&     row_idx) const;
   };
 }

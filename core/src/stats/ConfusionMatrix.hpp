@@ -46,6 +46,5 @@ namespace pptree::stats {
      * @return The proportion of misclassified samples.
      */
     float error() const;
-
   };
 }

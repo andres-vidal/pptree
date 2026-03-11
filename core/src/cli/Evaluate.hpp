@@ -11,7 +11,7 @@ namespace CLI { class App; }
 
 namespace pptree::cli {
   /** @brief Register evaluate subcommand options on @p app. */
-  CLI::App *setup_evaluate(CLI::App& app, CLIOptions& params);
+  CLI::App * setup_evaluate(CLI::App& app, CLIOptions& params);
 
   /**
    * @brief Run the evaluate subcommand.

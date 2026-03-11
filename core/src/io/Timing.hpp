@@ -29,6 +29,7 @@ namespace pptree::io {
     ss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S");
     return ss.str();
   }
+
   /**
    * @brief Measure the wall-clock execution time of a callable in milliseconds.
    *

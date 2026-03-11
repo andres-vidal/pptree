@@ -18,7 +18,7 @@ namespace CLI { class App; }
 
 namespace pptree::cli {
   /** @brief Register train subcommand options on @p app. */
-  CLI::App *setup_train(CLI::App& app, CLIOptions& params);
+  CLI::App * setup_train(CLI::App& app, CLIOptions& params);
 
   /** @brief Add shared model options (trees, lambda, threads, seed, vars) to @p sub. */
   void add_model_options(CLI::App *sub, ModelParams& model);

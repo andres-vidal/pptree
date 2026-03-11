@@ -153,9 +153,9 @@ static void generate_golden(const GoldenConfig& config) {
     vi.scale = stats::sd(data.x);
     vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
-    vi.permuted              = variable_importance_permuted(forest, data.x, data.y, config.seed);
-    vi.projections           = variable_importance_projections(forest, n_vars, &vi.scale);
-    vi.weighted_projections  = variable_importance_weighted_projections(forest, data.x, data.y, &vi.scale);
+    vi.permuted             = variable_importance_permuted(forest, data.x, data.y, config.seed);
+    vi.projections          = variable_importance_projections(forest, n_vars, &vi.scale);
+    vi.weighted_projections = variable_importance_weighted_projections(forest, data.x, data.y, &vi.scale);
 
     result["variable_importance"] = to_json(vi);
   } else {

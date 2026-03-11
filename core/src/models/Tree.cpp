@@ -34,8 +34,8 @@ namespace pptree {
     }
 
     std::sort(means.begin(), means.end(), [](const auto &a, const auto &b) {
-      return std::get<1>(a) < std::get<1>(b);
-    });
+        return std::get<1>(a) < std::get<1>(b);
+      });
 
     Feature edge_gap    = -1;
     Response edge_group = -1;
@@ -84,7 +84,7 @@ namespace pptree {
     auto data_group_2 = group_spec.group(x, group_2);
 
     const SRStrategy &split_strategy = *(training_spec.split_strategy);
-    Feature threshold = split_strategy.threshold(data_group_1, data_group_2, projector);
+    Feature threshold                = split_strategy.threshold(data_group_1, data_group_2, projector);
 
     Feature projected_mean_1 = data_group_1.colwise().mean().dot(projector);
     Feature projected_mean_2 = data_group_2.colwise().mean().dot(projector);

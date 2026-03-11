@@ -39,8 +39,11 @@ int main(int argc, char *argv[]) {
 
   switch (params.subcommand) {
     case Subcommand::train:     return run_train(params);
+
     case Subcommand::predict:   return run_predict(params);
+
     case Subcommand::evaluate:  return run_evaluate(params);
+
     case Subcommand::benchmark: return run_benchmark(params, argv[0]);
 
     default:

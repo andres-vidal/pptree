@@ -60,5 +60,4 @@ namespace pptree::stats {
   float ConfusionMatrix::error() const {
     return 1.0f - static_cast<float>(values.trace()) / static_cast<float>(values.sum());
   }
-
 }

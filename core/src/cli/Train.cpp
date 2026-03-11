@@ -43,7 +43,7 @@ namespace pptree::cli {
     sub->add_option("-v,--vars", model.vars_input, "Features per split (integer=count, decimal or fraction=proportion, default: 0.5)");
   }
 
-  CLI::App *setup_train(CLI::App& app, CLIOptions& params) {
+  CLI::App * setup_train(CLI::App& app, CLIOptions& params) {
     auto sub = app.add_subcommand("train", "Train a model");
     sub->add_option("-d,--data", params.data_path, "CSV training data")
     ->required()

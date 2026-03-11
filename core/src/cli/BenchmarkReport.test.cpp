@@ -21,35 +21,35 @@ class BenchmarkReportTest : public ::testing::Test {
       result.total_time_ms = 5000;
 
       ScenarioResult sr1;
-      sr1.name          = "small";
-      sr1.n             = 100;
-      sr1.p             = 5;
-      sr1.g             = 2;
-      sr1.trees         = 50;
-      sr1.vars          = 0.5f;
-      sr1.runs          = 10;
-      sr1.mean_time_ms  = 12.3;
-      sr1.std_time_ms   = 1.2;
-      sr1.mean_tr_error = 0.01;
-      sr1.mean_te_error = 0.05;
-      sr1.peak_rss_bytes = 5 * 1024 * 1024;
-      sr1.peak_rss_mb   = 5.0;
+      sr1.name             = "small";
+      sr1.n                = 100;
+      sr1.p                = 5;
+      sr1.g                = 2;
+      sr1.trees            = 50;
+      sr1.vars             = 0.5f;
+      sr1.runs             = 10;
+      sr1.mean_time_ms     = 12.3;
+      sr1.std_time_ms      = 1.2;
+      sr1.mean_tr_error    = 0.01;
+      sr1.mean_te_error    = 0.05;
+      sr1.peak_rss_bytes   = 5 * 1024 * 1024;
+      sr1.peak_rss_mb      = 5.0;
       sr1.scenario_time_ms = 2500;
 
       ScenarioResult sr2;
-      sr2.name          = "large";
-      sr2.n             = 5000;
-      sr2.p             = 50;
-      sr2.g             = 5;
-      sr2.trees         = 200;
-      sr2.vars          = 0.5f;
-      sr2.runs          = 5;
-      sr2.mean_time_ms  = 500.0;
-      sr2.std_time_ms   = 25.0;
-      sr2.mean_tr_error = 0.02;
-      sr2.mean_te_error = 0.10;
-      sr2.peak_rss_bytes = 100 * 1024 * 1024;
-      sr2.peak_rss_mb   = 100.0;
+      sr2.name             = "large";
+      sr2.n                = 5000;
+      sr2.p                = 50;
+      sr2.g                = 5;
+      sr2.trees            = 200;
+      sr2.vars             = 0.5f;
+      sr2.runs             = 5;
+      sr2.mean_time_ms     = 500.0;
+      sr2.std_time_ms      = 25.0;
+      sr2.mean_tr_error    = 0.02;
+      sr2.mean_te_error    = 0.10;
+      sr2.peak_rss_bytes   = 100 * 1024 * 1024;
+      sr2.peak_rss_mb      = 100.0;
       sr2.scenario_time_ms = 2500;
 
       result.results.push_back(sr1);
@@ -60,7 +60,7 @@ class BenchmarkReportTest : public ::testing::Test {
 };
 
 TEST_F(BenchmarkReportTest, WriteAndReadJson) {
-  auto result = make_sample_result();
+  auto result      = make_sample_result();
   std::string path = (std::filesystem::temp_directory_path() / "pptree-test-report.json").string();
 
   write_results_json(result, path);
@@ -79,7 +79,7 @@ TEST_F(BenchmarkReportTest, WriteAndReadJson) {
 }
 
 TEST_F(BenchmarkReportTest, WriteCsv) {
-  auto result = make_sample_result();
+  auto result      = make_sample_result();
   std::string path = (std::filesystem::temp_directory_path() / "pptree-test-report.csv").string();
 
   write_results_csv(result, path);
@@ -112,7 +112,7 @@ TEST_F(BenchmarkReportTest, WriteCsv) {
 
 TEST_F(BenchmarkReportTest, FormatMarkdownWithoutBaseline) {
   auto result = make_sample_result();
-  auto md = format_benchmark_markdown(result);
+  auto md     = format_benchmark_markdown(result);
 
   // Header
   EXPECT_TRUE(md.find("## test suite") != std::string::npos);
@@ -140,7 +140,7 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithBaseline) {
 
   // Baseline with different timing to produce deltas
   auto baseline = make_sample_result();
-  baseline.timestamp = "2026-01-01T00:00:00-baseline";
+  baseline.timestamp               = "2026-01-01T00:00:00-baseline";
   baseline.results[0].mean_time_ms = 15.0;   // current is 12.3 → improvement
   baseline.results[1].mean_time_ms = 400.0;  // current is 500.0 → regression
 

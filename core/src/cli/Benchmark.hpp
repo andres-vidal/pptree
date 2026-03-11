@@ -19,7 +19,7 @@ namespace CLI { class App; }
 
 namespace pptree::cli {
   /** @brief Register benchmark subcommand options on @p app. */
-  CLI::App *setup_benchmark(CLI::App& app, CLIOptions& params);
+  CLI::App * setup_benchmark(CLI::App& app, CLIOptions& params);
 
   /**
    * @brief Convergence criteria for adaptive stopping in benchmarks.
@@ -39,13 +39,13 @@ namespace pptree::cli {
    */
   struct ConvergenceCriteria {
     /** Target CV threshold (e.g., 0.05 = stop when std < 5% of mean). */
-    float cv_threshold  = 0.05f;
+    float cv_threshold = 0.05f;
     /** Number of consecutive iterations that must stay below cv_threshold. */
-    int stable_window   = 3;
+    int stable_window = 3;
     /** Minimum iterations before convergence checks begin. */
-    int min_iterations  = 10;
+    int min_iterations = 10;
     /** Hard upper bound on iterations (stops even if not converged). */
-    int max_iterations  = 200;
+    int max_iterations = 200;
   };
 
   /**
@@ -55,15 +55,15 @@ namespace pptree::cli {
     std::string name;
 
     // Data parameters
-    int n       = 1000;
-    int p       = 10;
-    int g       = 3;
+    int n = 1000;
+    int p = 10;
+    int g = 3;
 
     // Model parameters
-    int trees     = 100;
-    float vars    = 0.5f;
-    float lambda  = 0.5f;
-    int threads   = -1;
+    int trees    = 100;
+    float vars   = 0.5f;
+    float lambda = 0.5f;
+    int threads  = -1;
 
     // Evaluation parameters
     float train_ratio = 0.7f;
@@ -85,8 +85,8 @@ namespace pptree::cli {
 
     // Data shape (copied from scenario for reporting)
     int n = 0, p = 0, g = 0;
-    int trees = 0;
-    float vars = 0;
+    int trees         = 0;
+    float vars        = 0;
     float train_ratio = 0.7f;
 
     // Aggregated metrics
@@ -145,7 +145,7 @@ namespace pptree::cli {
    * @param total           Total number of scenarios.
    * @param name            Name of the current scenario.
    */
-  using ProgressCallback = std::function<void(int scenario_index, int total, const std::string& name)>;
+  using ProgressCallback = std::function<void (int scenario_index, int total, const std::string& name)>;
 
   /**
    * @brief Run all scenarios in a suite via subprocess invocations.

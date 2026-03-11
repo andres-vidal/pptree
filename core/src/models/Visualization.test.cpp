@@ -52,7 +52,7 @@ static Tree make_test_tree() {
 // Make a deeper tree (depth 4) to stress-test memory management
 static Tree make_deep_tree() {
   auto make_subtree = [](int left_class, int right_class,
-                          std::vector<Feature> proj, Feature thr) {
+    std::vector<Feature> proj, Feature thr) {
       return TreeCondition::make(
         make_proj(proj), thr,
         TreeResponse::make(left_class),
@@ -61,7 +61,7 @@ static Tree make_deep_tree() {
         { left_class, right_class });
     };
 
-  auto left_subtree = make_subtree(0, 1, { 0.6f, 0.4f }, 1.0f);
+  auto left_subtree  = make_subtree(0, 1, { 0.6f, 0.4f }, 1.0f);
   auto right_subtree = make_subtree(2, 3, { 0.3f, 0.7f }, 2.0f);
 
   auto mid_left = TreeCondition::make(
@@ -89,26 +89,26 @@ static Tree make_deep_tree() {
 }
 
 class VisualizationTest : public ::testing::Test {
-protected:
-  FeatureMatrix x;
-  ResponseVector y;
-  Tree tree = make_test_tree();
+  protected:
+    FeatureMatrix x;
+    ResponseVector y;
+    Tree tree = make_test_tree();
 
-  void SetUp() override {
-    // 30 observations, 4 features
-    x.resize(30, 4);
-    y.resize(30);
+    void SetUp() override {
+      // 30 observations, 4 features
+      x.resize(30, 4);
+      y.resize(30);
 
-    RNG rng(42);
+      RNG rng(42);
 
-    for (int i = 0; i < 30; ++i) {
-      for (int j = 0; j < 4; ++j) {
-        x(i, j) = static_cast<Feature>(i * 0.1f + j * 0.5f + (rng() % 100) * 0.01f);
+      for (int i = 0; i < 30; ++i) {
+        for (int j = 0; j < 4; ++j) {
+          x(i, j) = static_cast<Feature>(i * 0.1f + j * 0.5f + (rng() % 100) * 0.01f);
+        }
+
+        y(i) = i % 3;
       }
-
-      y(i) = i % 3;
     }
-  }
 };
 
 TEST_F(VisualizationTest, NodeDataVisitorCollectsAllNodes) {
@@ -232,7 +232,7 @@ TEST_F(VisualizationTest, ComputeTreeLayoutProducesCorrectCounts) {
   for (size_t i = 0; i < layout.nodes.size(); ++i) {
     for (size_t j = i + 1; j < layout.nodes.size(); ++j) {
       bool same_pos = (layout.nodes[i].x == layout.nodes[j].x &&
-                        layout.nodes[i].y == layout.nodes[j].y);
+        layout.nodes[i].y == layout.nodes[j].y);
       EXPECT_FALSE(same_pos) << "Nodes " << i << " and " << j << " overlap";
     }
   }
@@ -242,7 +242,7 @@ TEST_F(VisualizationTest, ComputeTreeLayoutLeafAndInternalFlags) {
   TreeLayout layout = compute_tree_layout(*tree.root);
 
   int n_internal = 0;
-  int n_leaf = 0;
+  int n_leaf     = 0;
 
   for (const auto& node : layout.nodes) {
     if (node.is_leaf) n_leaf++;
@@ -271,7 +271,7 @@ TEST(VisualizationDeepTree, NodeDataVisitor) {
   for (int i = 0; i < 20; ++i) {
     x(i, 0) = static_cast<Feature>(i * 0.2f);
     x(i, 1) = static_cast<Feature>(i * 0.3f);
-    y(i) = i % 4;
+    y(i)    = i % 4;
   }
 
   NodeDataVisitor visitor(x, y);

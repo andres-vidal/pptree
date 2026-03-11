@@ -21,7 +21,7 @@ namespace pptree::io {
    * Skips any ESC [ ... m (SGR) sequences when counting characters.
    */
   inline int visual_width(const std::string& s) {
-    int width     = 0;
+    int width      = 0;
     bool in_escape = false;
 
     for (char c : s) {
@@ -58,8 +58,8 @@ namespace pptree::io {
    */
   struct Column {
     std::string label;
-    int         width;
-    Align       align = Align::right;
+    int width;
+    Align align = Align::right;
   };
 
   /** @brief A row of pre-formatted cell strings. */

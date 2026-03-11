@@ -41,7 +41,7 @@ static json load_model_json(const std::string& path) {
 TEST(JsonRoundTrip, Tree) {
   json model_json = load_model_json(GOLDEN_DIR + "/iris/tree-glda-s42.json");
 
-  Tree tree = tree_from_json(model_json);
+  Tree tree         = tree_from_json(model_json);
   json roundtripped = to_json(tree);
 
   ASSERT_EQ(model_json, roundtripped) << "Tree JSON should be identical after round-trip";
@@ -50,7 +50,7 @@ TEST(JsonRoundTrip, Tree) {
 TEST(JsonRoundTrip, Forest) {
   json model_json = load_model_json(GOLDEN_DIR + "/iris/forest-glda-t5-s42.json");
 
-  Forest forest = forest_from_json(model_json);
+  Forest forest     = forest_from_json(model_json);
   json roundtripped = to_json(forest);
 
   ASSERT_EQ(model_json, roundtripped) << "Forest JSON should be identical after round-trip";
@@ -61,7 +61,7 @@ TEST(JsonRoundTrip, ModelDispatchTree) {
 
   json wrapped;
   wrapped["model_type"] = "tree";
-  wrapped["model"] = model_json;
+  wrapped["model"]      = model_json;
 
   auto restored = model_from_json(wrapped);
   ASSERT_NE(restored, nullptr);
@@ -75,7 +75,7 @@ TEST(JsonRoundTrip, ModelDispatchForest) {
 
   json wrapped;
   wrapped["model_type"] = "forest";
-  wrapped["model"] = model_json;
+  wrapped["model"]      = model_json;
 
   auto restored = model_from_json(wrapped);
   ASSERT_NE(restored, nullptr);

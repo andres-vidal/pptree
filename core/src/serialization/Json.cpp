@@ -68,7 +68,7 @@ namespace pptree::serialization {
   json to_json(const stats::ConfusionMatrix& cm) {
     json j;
 
-    std::vector<std::vector<int> > matrix_data;
+    std::vector<std::vector<int>> matrix_data;
     for (int i = 0; i < cm.values.rows(); ++i) {
       std::vector<int> row;
       for (int col = 0; col < cm.values.cols(); ++col) {
@@ -118,7 +118,7 @@ namespace pptree::serialization {
   }
 
   json to_json(const FeatureMatrix& matrix) {
-    std::vector<std::vector<Feature> > rows;
+    std::vector<std::vector<Feature>> rows;
     rows.reserve(static_cast<std::size_t>(matrix.rows()));
 
     for (int i = 0; i < matrix.rows(); ++i) {
@@ -151,7 +151,7 @@ namespace pptree::serialization {
       return TreeResponse::make(j["value"].get<Response>());
     }
 
-    const auto proj_vec = j["projector"].get<std::vector<Feature> >();
+    const auto proj_vec = j["projector"].get<std::vector<Feature>>();
 
     pp::Projector projector = Eigen::Map<const pp::Projector>(
       proj_vec.data(),

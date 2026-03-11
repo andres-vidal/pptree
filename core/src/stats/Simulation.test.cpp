@@ -72,9 +72,9 @@ TEST(Simulate, SingleFeature) {
 TEST(Simulate, CustomParams) {
   RNG rng(42);
   SimulationParams params;
-  params.mean = 0.0f;
+  params.mean            = 0.0f;
   params.mean_separation = 100.0f;
-  params.sd = 1.0f;
+  params.sd              = 1.0f;
 
   auto data = simulate(60, 2, 3, rng, params);
 
@@ -129,6 +129,7 @@ TEST(Split, IndicesAreValid) {
     ASSERT_GE(idx, 0);
     ASSERT_LT(idx, 60);
   }
+
   for (int idx : s.te) {
     ASSERT_GE(idx, 0);
     ASSERT_LT(idx, 60);

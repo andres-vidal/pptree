@@ -27,13 +27,29 @@ namespace pptree::cli {
     types::Vector<float> te_error;
     long peak_rss_bytes = -1;
 
-    double mean_time() const { return tr_times.mean(); }
-    double mean_tr_error() const { return tr_error.mean(); }
-    double mean_te_error() const { return te_error.mean(); }
+    double mean_time() const {
+      return tr_times.mean();
+    }
 
-    double std_time() const { return stats::sd(tr_times); }
-    double std_tr_error() const { return stats::sd(tr_error); }
-    double std_te_error() const { return stats::sd(te_error); }
+    double mean_tr_error() const {
+      return tr_error.mean();
+    }
+
+    double mean_te_error() const {
+      return te_error.mean();
+    }
+
+    double std_time() const {
+      return stats::sd(tr_times);
+    }
+
+    double std_tr_error() const {
+      return stats::sd(tr_error);
+    }
+
+    double std_te_error() const {
+      return stats::sd(te_error);
+    }
 
     /** @brief Serialize to JSON including per-iteration breakdown. */
     nlohmann::json to_json() const;

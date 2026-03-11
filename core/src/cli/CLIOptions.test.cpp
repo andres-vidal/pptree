@@ -488,8 +488,8 @@ TEST(ParseArgs, StableWindowOverride) {
 /* All convergence parameters can be set together. */
 TEST(ParseArgs, AllConvergenceParams) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2",
-                       "--cv", "0.02", "--max-iterations", "300",
-                       "--min-iterations", "15", "--stable-window", "4" });
+                      "--cv", "0.02", "--max-iterations", "300",
+                      "--min-iterations", "15", "--stable-window", "4" });
   EXPECT_TRUE(opts.convergence.enabled);
   EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.02f);
   EXPECT_EQ(opts.convergence.max_iterations, 300);
@@ -500,7 +500,7 @@ TEST(ParseArgs, AllConvergenceParams) {
 /* -i takes precedence: convergence params are parsed but converge is false. */
 TEST(ParseArgs, IterationsOverridesConvergenceParams) {
   auto opts = parse({ "pptree", "evaluate", "--simulate", "100x5x2",
-                       "-i", "10", "--cv", "0.01" });
+                      "-i", "10", "--cv", "0.01" });
   EXPECT_FALSE(opts.convergence.enabled);
   EXPECT_EQ(opts.evaluate.iterations, 10);
   // --cv is still parsed but converge is disabled

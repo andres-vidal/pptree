@@ -32,7 +32,7 @@ using namespace pptree::io;
 using json = nlohmann::json;
 
 namespace pptree::cli {
-  CLI::App *setup_evaluate(CLI::App& app, CLIOptions& params) {
+  CLI::App * setup_evaluate(CLI::App& app, CLIOptions& params) {
     auto sub      = app.add_subcommand("evaluate", "Train and evaluate a model");
     auto data_opt = sub->add_option("-d,--data", params.data_path, "CSV file")
       ->check(CLI::ExistingFile);
@@ -182,9 +182,9 @@ namespace {
 
       // Check convergence
       if (params.convergence.enabled &&
-          check_convergence(times, params.convergence.min_iterations, params.convergence.cv_threshold) &&
-          check_convergence(tr_errors, params.convergence.min_iterations, params.convergence.cv_threshold) &&
-          check_convergence(te_errors, params.convergence.min_iterations, params.convergence.cv_threshold)) {
+      check_convergence(times, params.convergence.min_iterations, params.convergence.cv_threshold) &&
+      check_convergence(tr_errors, params.convergence.min_iterations, params.convergence.cv_threshold) &&
+      check_convergence(te_errors, params.convergence.min_iterations, params.convergence.cv_threshold)) {
         stable_count++;
 
         if (stable_count >= params.convergence.stable_window) {

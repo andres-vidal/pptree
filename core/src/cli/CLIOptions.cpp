@@ -28,198 +28,198 @@
 #endif
 
 namespace pptree::cli {
-  namespace {
-    /**
-     * @brief JSON config file adapter for CLI11.
-     *
-     * Reads and writes CLI11 options from/to JSON files.
-     * Supports broadcasting top-level keys to all subcommands
-     * listed in `subcommand_names_`.
-     */
-    class ConfigJSON : public CLI::Config {
-      public:
-        ConfigJSON(std::vector<std::string> subcommand_names = {})
-          : subcommand_names_(std::move(subcommand_names)) {
-        }
+namespace {
+  /**
+   * @brief JSON config file adapter for CLI11.
+   *
+   * Reads and writes CLI11 options from/to JSON files.
+   * Supports broadcasting top-level keys to all subcommands
+   * listed in `subcommand_names_`.
+   */
+  class ConfigJSON : public CLI::Config {
+    public:
+      ConfigJSON(std::vector<std::string> subcommand_names = {})
+        : subcommand_names_(std::move(subcommand_names)) {
+      }
 
-        std::string to_config(const CLI::App *app, bool default_also, bool, std::string) const override {
-          nlohmann::json j;
+      std::string to_config(const CLI::App * app, bool default_also, bool, std::string) const override {
+        nlohmann::json j;
 
-          for (const CLI::Option *opt : app->get_options({})) {
-            if (!opt->get_lnames().empty() && opt->get_configurable()) {
-              std::string name = opt->get_lnames()[0];
+        for (const CLI::Option *opt : app->get_options({})) {
+          if (!opt->get_lnames().empty() && opt->get_configurable()) {
+            std::string name = opt->get_lnames()[0];
 
-              if (opt->get_type_size() != 0) {
-                if (opt->count() == 1) j[name] = opt->results().at(0);
-                else if (opt->count() > 1) j[name] = opt->results();
-                else if (default_also && !opt->get_default_str().empty()) j[name] = opt->get_default_str();
-              } else if (opt->count() == 1) {
-                j[name] = true;
-              } else if (opt->count() > 1) {
-                j[name] = opt->count();
-              } else if (opt->count() == 0 && default_also) {
-                j[name] = false;
-              }
+            if (opt->get_type_size() != 0) {
+              if (opt->count() == 1) j[name] = opt->results().at(0);
+              else if (opt->count() > 1) j[name] = opt->results();
+              else if (default_also && !opt->get_default_str().empty()) j[name] = opt->get_default_str();
+            } else if (opt->count() == 1) {
+              j[name] = true;
+            } else if (opt->count() > 1) {
+              j[name] = opt->count();
+            } else if (opt->count() == 0 && default_also) {
+              j[name] = false;
             }
           }
+        }
 
-          for (const CLI::App *subcom : app->get_subcommands({})) {
-            j[subcom->get_name()] = nlohmann::json(to_config(subcom, default_also, false, ""));
+        for (const CLI::App *subcom : app->get_subcommands({})) {
+          j[subcom->get_name()] = nlohmann::json(to_config(subcom, default_also, false, ""));
+        }
+
+        return j.dump(4);
+      }
+
+      std::vector<CLI::ConfigItem> from_config(std::istream &input) const override {
+        nlohmann::json j;
+        input >> j;
+        return _from_config(j);
+      }
+
+    private:
+      std::vector<std::string> subcommand_names_;
+
+      std::vector<CLI::ConfigItem>
+      _from_config(nlohmann::json j, std::string name = "", std::vector<std::string> prefix = {}) const {
+        std::vector<CLI::ConfigItem> results;
+
+        if (j.is_object()) {
+          for (auto item = j.begin(); item != j.end(); ++item) {
+            auto copy_prefix = prefix;
+
+            if (!name.empty()) copy_prefix.push_back(name);
+
+            // Normalize: accept both snake_case and kebab-case keys
+            std::string key = item.key();
+            std::replace(key.begin(), key.end(), '_', '-');
+
+            auto sub_results = _from_config(*item, key, copy_prefix);
+            results.insert(results.end(), sub_results.begin(), sub_results.end());
           }
-
-          return j.dump(4);
-        }
-
-        std::vector<CLI::ConfigItem> from_config(std::istream &input) const override {
-          nlohmann::json j;
-          input >> j;
-          return _from_config(j);
-        }
-
-      private:
-        std::vector<std::string> subcommand_names_;
-
-        std::vector<CLI::ConfigItem>
-        _from_config(nlohmann::json j, std::string name = "", std::vector<std::string> prefix = {}) const {
-          std::vector<CLI::ConfigItem> results;
-
-          if (j.is_object()) {
-            for (auto item = j.begin(); item != j.end(); ++item) {
-              auto copy_prefix = prefix;
-
-              if (!name.empty()) copy_prefix.push_back(name);
-
-              // Normalize: accept both snake_case and kebab-case keys
-              std::string key = item.key();
-              std::replace(key.begin(), key.end(), '_', '-');
-
-              auto sub_results = _from_config(*item, key, copy_prefix);
-              results.insert(results.end(), sub_results.begin(), sub_results.end());
-            }
-          } else if (!name.empty()) {
-            if (prefix.empty() && !subcommand_names_.empty()) {
-              for (const auto& sub_name : subcommand_names_) {
-                results.emplace_back();
-                CLI::ConfigItem &res = results.back();
-                res.name    = name;
-                res.parents = { sub_name };
-                _set_inputs(res, j);
-              }
-            } else {
+        } else if (!name.empty()) {
+          if (prefix.empty() && !subcommand_names_.empty()) {
+            for (const auto& sub_name : subcommand_names_) {
               results.emplace_back();
               CLI::ConfigItem &res = results.back();
               res.name    = name;
-              res.parents = prefix;
+              res.parents = { sub_name };
               _set_inputs(res, j);
             }
-          }
-
-          return results;
-        }
-
-        void _set_inputs(CLI::ConfigItem &res, const nlohmann::json &j) const {
-          if (j.is_boolean()) {
-            res.inputs = { j.get<bool>() ? "true" : "false" };
-          } else if (j.is_number()) {
-            std::stringstream ss;
-            ss << j.get<double>();
-            res.inputs = { ss.str() };
-          } else if (j.is_string()) {
-            res.inputs = { j.get<std::string>() };
-          } else if (j.is_array()) {
-            for (const auto &val : j) {
-              res.inputs.push_back(val.get<std::string>());
-            }
           } else {
-            throw CLI::ConversionError("Failed to convert " + res.name);
+            results.emplace_back();
+            CLI::ConfigItem &res = results.back();
+            res.name    = name;
+            res.parents = prefix;
+            _set_inputs(res, j);
           }
         }
-    };
 
-    void post_parse(CLIOptions& params, CLI::App& app) {
-      auto *train_sub   = app.get_subcommand("train");
-      auto *predict_sub = app.get_subcommand("predict");
-      auto *eval_sub    = app.get_subcommand("evaluate");
-      auto *bench_sub   = app.get_subcommand("benchmark");
-
-      // Determine subcommand
-      if (train_sub->parsed()) {
-        params.subcommand = Subcommand::train;
-      } else if (predict_sub->parsed()) {
-        params.subcommand = Subcommand::predict;
-      } else if (eval_sub->parsed()) {
-        params.subcommand = Subcommand::evaluate;
-      } else if (bench_sub->parsed()) {
-        params.subcommand = Subcommand::benchmark;
+        return results;
       }
 
-      // Handle --no-save for train
-      if (params.subcommand == Subcommand::train && params.no_save) {
-        params.save_path.clear();
-      }
-
-      // Evaluate has no --save
-      if (params.subcommand == Subcommand::evaluate) {
-        params.save_path.clear();
-      }
-
-      // Interpret --vars input
-      if (!params.model.vars_input.empty()) {
-        try {
-          auto spec = parse_vars(params.model.vars_input);
-
-          if (spec.is_proportion) {
-            params.model.p_vars = spec.value;
-          } else {
-            params.model.n_vars = static_cast<int>(spec.value);
+      void _set_inputs(CLI::ConfigItem &res, const nlohmann::json &j) const {
+        if (j.is_boolean()) {
+          res.inputs = { j.get<bool>() ? "true" : "false" };
+        } else if (j.is_number()) {
+          std::stringstream ss;
+          ss << j.get<double>();
+          res.inputs = { ss.str() };
+        } else if (j.is_string()) {
+          res.inputs = { j.get<std::string>() };
+        } else if (j.is_array()) {
+          for (const auto &val : j) {
+            res.inputs.push_back(val.get<std::string>());
           }
-        } catch (const std::exception& e) {
-          fmt::print(stderr, "Error: Invalid --vars value: {}\n", e.what());
-          std::exit(1);
+        } else {
+          throw CLI::ConversionError("Failed to convert " + res.name);
         }
       }
+  };
 
-      // Validate simulate format
-      if (!params.simulation.format.empty()) {
-        std::string sim_str = params.simulation.format;
-        size_t x1           = sim_str.find('x');
-        size_t x2           = sim_str.find('x', x1 + 1);
+  void post_parse(CLIOptions & params, CLI::App& app) {
+    auto *train_sub   = app.get_subcommand("train");
+    auto *predict_sub = app.get_subcommand("predict");
+    auto *eval_sub    = app.get_subcommand("evaluate");
+    auto *bench_sub   = app.get_subcommand("benchmark");
 
-        if (x1 == std::string::npos || x2 == std::string::npos) {
-          fmt::print(stderr, "Error: Simulate format must be NxMxK (e.g., 1000x10x2)\n");
-          std::exit(1);
+    // Determine subcommand
+    if (train_sub->parsed()) {
+      params.subcommand = Subcommand::train;
+    } else if (predict_sub->parsed()) {
+      params.subcommand = Subcommand::predict;
+    } else if (eval_sub->parsed()) {
+      params.subcommand = Subcommand::evaluate;
+    } else if (bench_sub->parsed()) {
+      params.subcommand = Subcommand::benchmark;
+    }
+
+    // Handle --no-save for train
+    if (params.subcommand == Subcommand::train && params.no_save) {
+      params.save_path.clear();
+    }
+
+    // Evaluate has no --save
+    if (params.subcommand == Subcommand::evaluate) {
+      params.save_path.clear();
+    }
+
+    // Interpret --vars input
+    if (!params.model.vars_input.empty()) {
+      try {
+        auto spec = parse_vars(params.model.vars_input);
+
+        if (spec.is_proportion) {
+          params.model.p_vars = spec.value;
+        } else {
+          params.model.n_vars = static_cast<int>(spec.value);
         }
-
-        try {
-          params.simulation.rows    = std::stoi(sim_str.substr(0, x1));
-          params.simulation.cols    = std::stoi(sim_str.substr(x1 + 1, x2 - x1 - 1));
-          params.simulation.classes = std::stoi(sim_str.substr(x2 + 1));
-
-          if (params.simulation.rows <= 0 || params.simulation.cols <= 0 || params.simulation.classes <= 1) {
-            throw std::out_of_range("Values must be positive and classes must be > 1");
-          }
-        } catch (const std::exception& e) {
-          fmt::print(stderr, "Error: Invalid simulate values: {}\n", e.what());
-          std::exit(1);
-        }
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "Error: Invalid --vars value: {}\n", e.what());
+        std::exit(1);
       }
+    }
 
-      // Evaluate requires data source
-      if (params.subcommand == Subcommand::evaluate && params.simulation.format.empty() && params.data_path.empty()) {
-        fmt::print(stderr, "Error: Must specify either --simulate or --data\n");
+    // Validate simulate format
+    if (!params.simulation.format.empty()) {
+      std::string sim_str = params.simulation.format;
+      size_t x1           = sim_str.find('x');
+      size_t x2           = sim_str.find('x', x1 + 1);
+
+      if (x1 == std::string::npos || x2 == std::string::npos) {
+        fmt::print(stderr, "Error: Simulate format must be NxMxK (e.g., 1000x10x2)\n");
         std::exit(1);
       }
 
-      // -i disables convergence; without -i, convergence is on
-      if (params.subcommand == Subcommand::evaluate) {
-        if (eval_sub->get_option("--iterations")->count() > 0) {
-          params.convergence.enabled = false;
-        }
-      }
+      try {
+        params.simulation.rows    = std::stoi(sim_str.substr(0, x1));
+        params.simulation.cols    = std::stoi(sim_str.substr(x1 + 1, x2 - x1 - 1));
+        params.simulation.classes = std::stoi(sim_str.substr(x2 + 1));
 
-      warn_unused_params(params);
+        if (params.simulation.rows <= 0 || params.simulation.cols <= 0 || params.simulation.classes <= 1) {
+          throw std::out_of_range("Values must be positive and classes must be > 1");
+        }
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "Error: Invalid simulate values: {}\n", e.what());
+        std::exit(1);
+      }
     }
+
+    // Evaluate requires data source
+    if (params.subcommand == Subcommand::evaluate && params.simulation.format.empty() && params.data_path.empty()) {
+      fmt::print(stderr, "Error: Must specify either --simulate or --data\n");
+      std::exit(1);
+    }
+
+    // -i disables convergence; without -i, convergence is on
+    if (params.subcommand == Subcommand::evaluate) {
+      if (eval_sub->get_option("--iterations")->count() > 0) {
+        params.convergence.enabled = false;
+      }
+    }
+
+    warn_unused_params(params);
   }
+}
 
   void warn_unused_params(const CLIOptions& params) {
     if (params.quiet) return;

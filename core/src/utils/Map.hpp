@@ -13,8 +13,8 @@ namespace pptree::utils {
    * @return     Inverted map {V → set<K>}.
    */
   template<typename K, typename V>
-  std::map<V, std::set<K> > invert(const std::map<K, V> &map) {
-    std::map<V, std::set<K> > result;
+  std::map<V, std::set<K>> invert(const std::map<K, V> &map) {
+    std::map<V, std::set<K>> result;
 
     for (const auto&[key, value] : map) {
       result[value].insert(key);

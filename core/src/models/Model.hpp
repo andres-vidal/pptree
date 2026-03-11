@@ -23,7 +23,7 @@ namespace pptree {
      * @param data  Feature vector (p).
      * @return      Predicted class label.
      */
-    virtual types::Response predict(const types::FeatureVector& data) const       = 0;
+    virtual types::Response predict(const types::FeatureVector& data) const = 0;
 
     /**
      * @brief Predict a matrix of observations.

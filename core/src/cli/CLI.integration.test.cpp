@@ -951,7 +951,7 @@ static TempFile write_scenarios() {
 /* Benchmark runs successfully with a scenarios file. */
 TEST(CLIIntegration, BenchmarkRunsSuccessfully) {
   auto scenarios = write_scenarios();
-  auto result = run_pptree("-q --no-color benchmark -s " + scenarios.path());
+  auto result    = run_pptree("-q --no-color benchmark -s " + scenarios.path());
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -1017,9 +1017,10 @@ TEST(CLIIntegration, BenchmarkCsvOutput) {
   // Two data rows (one per scenario)
   std::string line;
   int data_rows = 0;
-  while (std::getline(in, line)) {
+
+  while (std::getline(in, line))
     if (!line.empty()) data_rows++;
-  }
+
   EXPECT_EQ(data_rows, 2);
 }
 
