@@ -104,88 +104,37 @@ $(function(){initNavTree('Normal_8hpp_source.html',''); initResizable(true); });
 <div class="contents">
 <a href="Normal_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="Stats_8hpp.html">stats/Stats.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="Uniform_8hpp.html">stats/Uniform.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="Stats_8hpp.html">stats/Stats.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacepptree_1_1stats.html">pptree::stats</a> {</div>
-<div class="foldopen" id="foldopen00023" data-start="{" data-end="};">
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classpptree_1_1stats_1_1Normal.html">   23</a></span>  <span class="keyword">class </span><a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8">Normal</a> {</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>      <span class="keywordtype">float</span> mean;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>      <span class="keywordtype">float</span> std_dev;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>      std::optional&lt;float&gt; cached_z;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>      <span class="keywordtype">double</span> gen_unif01(<a class="code hl_typedef" href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">RNG</a> &amp;rng) {</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="keyword">static</span> <span class="keyword">constexpr</span> uint64_t PRECISION = 53;</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        <span class="keyword">static</span> <span class="keyword">constexpr</span> uint64_t MAX_BITS  = (1ULL &lt;&lt; PRECISION) - 1;</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        uint64_t bits = 0;</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <span class="keywordflow">while</span> (bits == 0 || bits == MAX_BITS) {</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>          uint64_t x = rng();</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>          uint64_t y = rng();</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>          bits = ((x &lt;&lt; 21) | (y &gt;&gt; 11)) &amp; MAX_BITS;</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        }</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(bits) / <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(MAX_BITS + 1);</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>      }</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span></div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>      <span class="keywordtype">float</span> denormalize(<span class="keywordtype">float</span> z) {</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        <span class="keywordflow">return</span> mean + std_dev * z;</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>      }</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keyword">public</span>:</div>
-<div class="foldopen" id="foldopen00071" data-start="{" data-end="}">
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8">   71</a></span>      <a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8">Normal</a>(<span class="keywordtype">float</span> mean, <span class="keywordtype">float</span> std_dev) : mean(mean), std_dev(std_dev) {</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>      }</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacepptree_1_1stats.html">pptree::stats</a> {</div>
+<div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classpptree_1_1stats_1_1Normal.html">   22</a></span>  <span class="keyword">class </span><a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8">Normal</a> {</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>      <span class="keywordtype">float</span> mean;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>      <span class="keywordtype">float</span> std_dev;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>      std::optional&lt;float&gt; cached_z;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>      <span class="keywordtype">double</span> gen_unif01(<a class="code hl_typedef" href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">RNG</a> &amp;rng);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>      <span class="keywordtype">float</span> denormalize(<span class="keywordtype">float</span> z);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8">   56</a></span>      <a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8">Normal</a>(<span class="keywordtype">float</span> mean, <span class="keywordtype">float</span> std_dev);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classpptree_1_1stats_1_1Normal.html#a7d96ded32a93654ab30d978bd73491c9">   74</a></span>      <span class="keywordtype">float</span> <a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a7d96ded32a93654ab30d978bd73491c9">operator()</a>(<a class="code hl_typedef" href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">RNG</a> &amp;rng);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classpptree_1_1stats_1_1Normal.html#a829fbbb5764049041541ba2cfdbdfb2b">   83</a></span>      std::vector&lt;float&gt; <a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a829fbbb5764049041541ba2cfdbdfb2b">operator()</a>(<span class="keywordtype">int</span> count, <a class="code hl_typedef" href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">RNG</a> &amp;rng);</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>  };</div>
 </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span></div>
-<div class="foldopen" id="foldopen00090" data-start="{" data-end="}">
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="classpptree_1_1stats_1_1Normal.html#a7d96ded32a93654ab30d978bd73491c9">   90</a></span>      <span class="keywordtype">float</span> <a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a7d96ded32a93654ab30d978bd73491c9">operator()</a>(<a class="code hl_typedef" href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">RNG</a> &amp;rng) {</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <span class="keywordtype">double</span> u1 = gen_unif01(rng);</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        <span class="keywordtype">double</span> u2 = gen_unif01(rng);</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <span class="keywordtype">double</span> z;</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keywordflow">if</span> (!cached_z.has_value()) {</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>          <span class="keywordtype">double</span> r     = std::sqrt(-2.0 * std::log(u1));</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>          <span class="keywordtype">double</span> theta = 2.0 * M_PI * u2;</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>          z = r * std::cos(theta);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>          <span class="keywordtype">double</span> z2 = r * std::sin(theta);</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>          cached_z = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(z2);</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>          z = cached_z.value();</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        }</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keywordflow">return</span> denormalize(z);</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>      }</div>
-</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span></div>
-<div class="foldopen" id="foldopen00119" data-start="{" data-end="}">
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno"><a class="line" href="classpptree_1_1stats_1_1Normal.html#a829fbbb5764049041541ba2cfdbdfb2b">  119</a></span>      std::vector&lt;float&gt; <a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a829fbbb5764049041541ba2cfdbdfb2b">operator()</a>(<span class="keywordtype">int</span> count, <a class="code hl_typedef" href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">RNG</a> &amp;rng) {</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        std::vector&lt;float&gt; result(count);</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; count; i++) {</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>          result[i] = <a class="code hl_function" href="classpptree_1_1stats_1_1Normal.html#a7d96ded32a93654ab30d978bd73491c9">operator()</a>(rng);</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        }</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>      }</div>
-</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>  };</div>
-</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>}</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>}</div>
 <div class="ttc" id="aStats_8hpp_html"><div class="ttname"><a href="Stats_8hpp.html">Stats.hpp</a></div></div>
-<div class="ttc" id="aUniform_8hpp_html"><div class="ttname"><a href="Uniform_8hpp.html">Uniform.hpp</a></div></div>
-<div class="ttc" id="aclasspptree_1_1stats_1_1Normal_html_a009643eb77857a6f3308ab1676b73fd8"><div class="ttname"><a href="classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8">pptree::stats::Normal::Normal</a></div><div class="ttdeci">Normal(float mean, float std_dev)</div><div class="ttdoc">Construct a Normal generator.</div><div class="ttdef"><b>Definition</b> Normal.hpp:71</div></div>
-<div class="ttc" id="aclasspptree_1_1stats_1_1Normal_html_a7d96ded32a93654ab30d978bd73491c9"><div class="ttname"><a href="classpptree_1_1stats_1_1Normal.html#a7d96ded32a93654ab30d978bd73491c9">pptree::stats::Normal::operator()</a></div><div class="ttdeci">float operator()(RNG &amp;rng)</div><div class="ttdoc">Generate a single normal variate via the Box-Muller transform.</div><div class="ttdef"><b>Definition</b> Normal.hpp:90</div></div>
-<div class="ttc" id="aclasspptree_1_1stats_1_1Normal_html_a829fbbb5764049041541ba2cfdbdfb2b"><div class="ttname"><a href="classpptree_1_1stats_1_1Normal.html#a829fbbb5764049041541ba2cfdbdfb2b">pptree::stats::Normal::operator()</a></div><div class="ttdeci">std::vector&lt; float &gt; operator()(int count, RNG &amp;rng)</div><div class="ttdoc">Generate multiple normal variates.</div><div class="ttdef"><b>Definition</b> Normal.hpp:119</div></div>
+<div class="ttc" id="aclasspptree_1_1stats_1_1Normal_html_a009643eb77857a6f3308ab1676b73fd8"><div class="ttname"><a href="classpptree_1_1stats_1_1Normal.html#a009643eb77857a6f3308ab1676b73fd8">pptree::stats::Normal::Normal</a></div><div class="ttdeci">Normal(float mean, float std_dev)</div><div class="ttdoc">Construct a Normal generator.</div></div>
+<div class="ttc" id="aclasspptree_1_1stats_1_1Normal_html_a7d96ded32a93654ab30d978bd73491c9"><div class="ttname"><a href="classpptree_1_1stats_1_1Normal.html#a7d96ded32a93654ab30d978bd73491c9">pptree::stats::Normal::operator()</a></div><div class="ttdeci">float operator()(RNG &amp;rng)</div><div class="ttdoc">Generate a single normal variate via the Box-Muller transform.</div></div>
+<div class="ttc" id="aclasspptree_1_1stats_1_1Normal_html_a829fbbb5764049041541ba2cfdbdfb2b"><div class="ttname"><a href="classpptree_1_1stats_1_1Normal.html#a829fbbb5764049041541ba2cfdbdfb2b">pptree::stats::Normal::operator()</a></div><div class="ttdeci">std::vector&lt; float &gt; operator()(int count, RNG &amp;rng)</div><div class="ttdoc">Generate multiple normal variates.</div></div>
 <div class="ttc" id="anamespacepptree_1_1stats_html"><div class="ttname"><a href="namespacepptree_1_1stats.html">pptree::stats</a></div><div class="ttdef"><b>Definition</b> ConfusionMatrix.hpp:11</div></div>
 <div class="ttc" id="anamespacepptree_1_1stats_html_af911152f523c174265b99e6c6e538926"><div class="ttname"><a href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">pptree::stats::RNG</a></div><div class="ttdeci">pcg32 RNG</div><div class="ttdef"><b>Definition</b> Stats.hpp:11</div></div>
 </div><!-- fragment --></div><!-- contents -->
