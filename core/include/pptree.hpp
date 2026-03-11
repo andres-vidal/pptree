@@ -22,3 +22,4 @@
 #include "stats/Stats.hpp"
 
 #include "models/VariableImportance.hpp"
+#include "models/Visualization.hpp"

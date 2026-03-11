@@ -146,6 +146,64 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pptree_tree_node_data
+Rcpp::List pptree_tree_node_data(const Tree& tree, const FeatureMatrix& x, const ResponseVector& y);
+RcppExport SEXP _PPTree_pptree_tree_node_data(SEXP treeSEXP, SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const ResponseVector& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_tree_node_data(tree, x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_boundary_segments
+Rcpp::DataFrame pptree_boundary_segments(const Tree& tree, Rcpp::IntegerVector var_indices, Rcpp::NumericVector fixed_values, double x_min, double x_max, double y_min, double y_max);
+RcppExport SEXP _PPTree_pptree_boundary_segments(SEXP treeSEXP, SEXP var_indicesSEXP, SEXP fixed_valuesSEXP, SEXP x_minSEXP, SEXP x_maxSEXP, SEXP y_minSEXP, SEXP y_maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type var_indices(var_indicesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type fixed_values(fixed_valuesSEXP);
+    Rcpp::traits::input_parameter< double >::type x_min(x_minSEXP);
+    Rcpp::traits::input_parameter< double >::type x_max(x_maxSEXP);
+    Rcpp::traits::input_parameter< double >::type y_min(y_minSEXP);
+    Rcpp::traits::input_parameter< double >::type y_max(y_maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_boundary_segments(tree, var_indices, fixed_values, x_min, x_max, y_min, y_max));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_decision_regions
+Rcpp::List pptree_decision_regions(const Tree& tree, Rcpp::IntegerVector var_indices, Rcpp::NumericVector fixed_values, double x_min, double x_max, double y_min, double y_max);
+RcppExport SEXP _PPTree_pptree_decision_regions(SEXP treeSEXP, SEXP var_indicesSEXP, SEXP fixed_valuesSEXP, SEXP x_minSEXP, SEXP x_maxSEXP, SEXP y_minSEXP, SEXP y_maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type var_indices(var_indicesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type fixed_values(fixed_valuesSEXP);
+    Rcpp::traits::input_parameter< double >::type x_min(x_minSEXP);
+    Rcpp::traits::input_parameter< double >::type x_max(x_maxSEXP);
+    Rcpp::traits::input_parameter< double >::type y_min(y_minSEXP);
+    Rcpp::traits::input_parameter< double >::type y_max(y_maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_decision_regions(tree, var_indices, fixed_values, x_min, x_max, y_min, y_max));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pptree_tree_layout
+Rcpp::List pptree_tree_layout(const Tree& tree);
+RcppExport SEXP _PPTree_pptree_tree_layout(SEXP treeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    rcpp_result_gen = Rcpp::wrap(pptree_tree_layout(tree));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_train_tree_glda", (DL_FUNC) &_PPTree_pptree_train_tree_glda, 4},
@@ -158,6 +216,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_PPTree_pptree_vi_weighted", (DL_FUNC) &_PPTree_pptree_vi_weighted, 4},
     {"_PPTree_pptree_vi_permuted", (DL_FUNC) &_PPTree_pptree_vi_permuted, 4},
     {"_PPTree_pptree_oob_error", (DL_FUNC) &_PPTree_pptree_oob_error, 3},
+    {"_PPTree_pptree_tree_node_data", (DL_FUNC) &_PPTree_pptree_tree_node_data, 3},
+    {"_PPTree_pptree_boundary_segments", (DL_FUNC) &_PPTree_pptree_boundary_segments, 7},
+    {"_PPTree_pptree_decision_regions", (DL_FUNC) &_PPTree_pptree_decision_regions, 7},
+    {"_PPTree_pptree_tree_layout", (DL_FUNC) &_PPTree_pptree_tree_layout, 1},
     {NULL, NULL, 0}
 };
 

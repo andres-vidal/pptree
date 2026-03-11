@@ -129,10 +129,32 @@ namespace Rcpp {
     Rcpp::List rnode(x);
 
     if (rnode.containsElementNamed("value")) {
-      return as<TreeResponse>(x).clone();
+      return std::make_unique<TreeResponse>(
+        Rcpp::as<Feature>(rnode["value"]));
     }
 
-    return as<TreeCondition>(x).clone();
+    auto lower = as<std::unique_ptr<TreeNode> >(rnode["lower"]);
+    auto upper = as<std::unique_ptr<TreeNode> >(rnode["upper"]);
+
+    std::set<Response> classes;
+    if (rnode.containsElementNamed("classes")) {
+      Rcpp::IntegerVector rclasses(rnode["classes"]);
+      classes.insert(rclasses.begin(), rclasses.end());
+    }
+
+    Feature pp_index_value = 0;
+    if (rnode.containsElementNamed("pp_index_value")) {
+      pp_index_value = Rcpp::as<Feature>(rnode["pp_index_value"]);
+    }
+
+    return TreeCondition::make(
+      Rcpp::as<Projector >(rnode["projector"]),
+      Rcpp::as<Feature>(rnode["threshold"]),
+      std::move(lower),
+      std::move(upper),
+      nullptr,
+      std::move(classes),
+      pp_index_value);
   }
 
   template<> TreeResponse as(SEXP x) {
@@ -169,18 +191,17 @@ namespace Rcpp {
 
   template<> Tree as(SEXP x) {
     Rcpp::List rtree(x);
-    Rcpp::List rtraining_spec(rtree["training_spec"]);
 
     return Tree(
-      as<TreeCondition>(rtree["root"]).clone(),
-      as<TrainingSpec::Ptr>(rtraining_spec));
+      as<std::unique_ptr<TreeNode> >(rtree["root"]),
+      as<TrainingSpec::Ptr>(rtree["training_spec"]));
   }
 
   template<> BootstrapTree as(SEXP x) {
     Rcpp::List rtree(x);
 
     return BootstrapTree(
-      as<TreeCondition>(rtree["root"]).clone(),
+      as<std::unique_ptr<TreeNode> >(rtree["root"]),
       as<TrainingSpec::Ptr>(rtree["training_spec"]),
       as<std::vector<int> >(rtree["sample_indices"]));
   }

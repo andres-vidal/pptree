@@ -41,3 +41,19 @@ pptree_oob_error <- function(forest, x, y) {
     .Call('_PPTree_pptree_oob_error', PACKAGE = 'PPTree', forest, x, y)
 }
 
+pptree_tree_node_data <- function(tree, x, y) {
+    .Call('_PPTree_pptree_tree_node_data', PACKAGE = 'PPTree', tree, x, y)
+}
+
+pptree_boundary_segments <- function(tree, var_indices, fixed_values, x_min, x_max, y_min, y_max) {
+    .Call('_PPTree_pptree_boundary_segments', PACKAGE = 'PPTree', tree, var_indices, fixed_values, x_min, x_max, y_min, y_max)
+}
+
+pptree_decision_regions <- function(tree, var_indices, fixed_values, x_min, x_max, y_min, y_max) {
+    .Call('_PPTree_pptree_decision_regions', PACKAGE = 'PPTree', tree, var_indices, fixed_values, x_min, x_max, y_min, y_max)
+}
+
+pptree_tree_layout <- function(tree) {
+    .Call('_PPTree_pptree_tree_layout', PACKAGE = 'PPTree', tree)
+}
+

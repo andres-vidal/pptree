@@ -166,6 +166,7 @@ if(NOT PPTREE_CORE_ONLY)
     src/models/Forest.test.cpp
     src/models/PPStrategy.test.cpp
     src/models/VariableImportance.test.cpp
+    src/models/Visualization.test.cpp
     src/stats/Stats.test.cpp
     src/stats/GroupPartition.test.cpp
     src/stats/ConfusionMatrix.test.cpp

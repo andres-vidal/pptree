@@ -13,6 +13,7 @@
 PPTree_*.tar.gz
 
 .DS_Store
+Rplots.pdf
 
 bindings/R/PPTree/src/core
 bindings/R/PPTree/src/Makevars

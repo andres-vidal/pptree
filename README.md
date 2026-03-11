@@ -73,6 +73,31 @@ predict(forest, iris, type = "prob")   # vote proportions
 summary(forest)                        # variable importance & model info
 ```
 
+Visualize models (requires `ggplot2`):
+
+```r
+# Mosaic overview: tree structure + variable importance + decision boundaries
+plot(model)
+
+# Individual plot types
+plot(model, type = "structure")     # tree diagram with histograms at each node
+plot(model, type = "importance")    # variable importance bar chart
+plot(model, type = "projection")    # projected data at the root split
+plot(model, type = "boundaries")    # decision boundaries in feature space
+
+# Decision boundaries adapt to the number of features:
+#   - 1 feature:  number-line plot with colored decision regions
+#   - 2 features: scatterplot with polygon regions and boundary lines
+#   - 3+ features: pairwise scatterplot matrix (lower triangle)
+model2 <- PPTree(x = iris[, 1:2], y = iris$Type)
+plot(model2, type = "boundaries")   # 2D boundary plot
+
+# Forest: importance across all trees, or inspect individual trees
+plot(forest)                                         # variable importance
+plot(forest, type = "structure", tree_index = 1)     # structure of tree #1
+plot(forest, type = "boundaries", tree_index = 1)    # boundaries of tree #1
+```
+
 Works with [parsnip](https://parsnip.tidymodels.org/) / tidymodels:
 
 ```r
@@ -90,6 +115,8 @@ The project is organized into a shared C++ core and language-specific bindings:
 - **C++ core** (`core/`) — All models, training algorithms, statistics, serialization, and CLI live here. This is the single source of truth for the implementation. External dependencies (Eigen, nlohmann/json, pcg, GoogleTest, Google Benchmark, CLI11, fmt, csv-parser) are declared in `core/Dependencies.cmake` and fetched automatically via CMake `FetchContent`.
 
 - **R package** (`bindings/R/PPTree/`) — Thin Rcpp layer that exposes the C++ core to R. Type conversions between R and C++ types are defined in `inst/include/PPTree.h`. Roxygen documentation and parsnip integration are R-only.
+
+- **Visualization** (`core/src/models/Visualization.hpp/cpp` + `bindings/R/PPTree/R/plot.R`) — Split between C++ and R. C++ handles geometry: tree traversal visitors collect per-node data, clip decision boundary lines via parametric line clipping, and compute convex decision region polygons via Sutherland–Hodgman polygon clipping. R handles rendering via ggplot2, translating the C++ output into layers and assembling composite layouts (mosaic, pairwise facets, tree diagrams).
 
 - **Python bindings** — Planned.
 

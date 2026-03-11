@@ -7,6 +7,7 @@ add_library(pptree-models OBJECT
   TreeResponse.cpp
   PPGLDAStrategy.cpp
   Projector.cpp
-  VariableImportance.cpp)
+  VariableImportance.cpp
+  Visualization.cpp)
 
 target_link_libraries(pptree-models PRIVATE pptree-compile)
