@@ -110,7 +110,12 @@ namespace {
     if (has_baseline) columns.push_back({ "delta", 8, Align::right });
 
     columns.push_back({ "Train Err", 9, Align::right });
+
+    if (has_baseline) columns.push_back({ "delta", 8, Align::right });
+
     columns.push_back({ "Test Err", 8, Align::right });
+
+    if (has_baseline) columns.push_back({ "delta", 8, Align::right });
 
     // Header — style Scenario and delta labels
     Row header = header_labels(columns);
@@ -146,7 +151,7 @@ namespace {
         time_str,
       };
 
-      std::string time_delta, rss_delta;
+      std::string time_delta, rss_delta, tr_err_delta, te_err_delta;
 
       if (has_baseline) {
         auto it = baseline_index.find(r.name);
@@ -156,6 +161,14 @@ namespace {
 
           if (r.peak_rss_mb >= 0 && it->second->peak_rss_mb >= 0) {
             rss_delta = format_delta(r.peak_rss_mb, it->second->peak_rss_mb);
+          }
+
+          if (it->second->mean_tr_error > 0) {
+            tr_err_delta = format_delta(r.mean_tr_error, it->second->mean_tr_error);
+          }
+
+          if (it->second->mean_te_error > 0) {
+            te_err_delta = format_delta(r.mean_te_error, it->second->mean_te_error);
           }
         }
 
@@ -169,7 +182,16 @@ namespace {
       }
 
       cells.push_back(tr_err_str);
+
+      if (has_baseline) {
+        cells.push_back(tr_err_delta);
+      }
+
       cells.push_back(te_err_str);
+
+      if (has_baseline) {
+        cells.push_back(te_err_delta);
+      }
 
       fmt::print("  {}\n", format_row(columns, cells));
     }
@@ -226,7 +248,12 @@ namespace {
     if (has_baseline) columns.push_back({ "\xCE\x94 RSS", 0, Align::right });
 
     columns.push_back({ "Train Err", 0, Align::right });
+
+    if (has_baseline) columns.push_back({ "\xCE\x94 Train", 0, Align::right });
+
     columns.push_back({ "Test Err", 0, Align::right });
+
+    if (has_baseline) columns.push_back({ "\xCE\x94 Test", 0, Align::right });
 
     out << format_md_row(header_labels(columns)) << "\n";
     out << format_md_separator(columns) << "\n";
@@ -252,7 +279,7 @@ namespace {
         time_str,
       };
 
-      std::string time_delta, rss_delta;
+      std::string time_delta, rss_delta, tr_err_delta, te_err_delta;
 
       if (has_baseline) {
         auto it = baseline_index.find(r.name);
@@ -262,6 +289,14 @@ namespace {
 
           if (r.peak_rss_mb >= 0 && it->second->peak_rss_mb >= 0) {
             rss_delta = format_delta_markdown(r.peak_rss_mb, it->second->peak_rss_mb);
+          }
+
+          if (it->second->mean_tr_error > 0) {
+            tr_err_delta = format_delta_markdown(r.mean_tr_error, it->second->mean_tr_error);
+          }
+
+          if (it->second->mean_te_error > 0) {
+            te_err_delta = format_delta_markdown(r.mean_te_error, it->second->mean_te_error);
           }
         }
 
@@ -275,7 +310,16 @@ namespace {
       }
 
       cells.push_back(tr_err_str);
+
+      if (has_baseline) {
+        cells.push_back(tr_err_delta);
+      }
+
       cells.push_back(te_err_str);
+
+      if (has_baseline) {
+        cells.push_back(te_err_delta);
+      }
 
       out << format_md_row(cells) << "\n";
     }
