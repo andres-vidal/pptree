@@ -401,13 +401,13 @@ namespace {
 
     // Load scenarios
     if (params.benchmark.scenarios_path.empty()) {
-      fmt::print(stderr, "{} No scenarios file specified. Use -s/--scenarios <file>\n", error("Error:"));
+      out.errorln("{} No scenarios file specified. Use -s/--scenarios <file>", error("Error:"));
       return 1;
     }
 
     BenchmarkSuite suite;
 
-    if (int rc = try_or_fail([&] {
+    if (int rc = out.try_or_fail([&] {
       suite = parse_suite(params.benchmark.scenarios_path);
     })) {
       return rc;
@@ -426,15 +426,20 @@ namespace {
       }
     }
 
-    out.print("{} {} scenarios from {}\n\n", emphasis("Benchmarking"), suite.scenarios.size(), params.benchmark.scenarios_path);
+    out.println("{} {} scenarios from {}", emphasis("Benchmarking"), suite.scenarios.size(), params.benchmark.scenarios_path);
+    out.newline();
 
     // Run scenarios
     SuiteResult result;
 
-    if (int rc = try_or_fail([&] {
+    if (int rc = out.try_or_fail([&] {
       result = run_suite(suite, binary_path, params.quiet,
       [&](int idx, int total, const std::string& name) {
-        if (idx < total) out.print("  [{}/{}] Running {}...\n", idx + 1, total, emphasis(name));
+        if (idx < total) {
+          out.indent();
+          out.println("[{}/{}] Running {}...", idx + 1, total, emphasis(name));
+          out.dedent();
+        }
       });
     })) {
       return rc;
@@ -444,7 +449,7 @@ namespace {
     std::optional<SuiteResult> baseline;
 
     if (!params.benchmark.baseline_path.empty()) {
-      if (int rc = try_or_fail([&] {
+      if (int rc = out.try_or_fail([&] {
         baseline = parse_results(params.benchmark.baseline_path);
       },
       "Failed to load baseline")) return rc;
@@ -452,14 +457,15 @@ namespace {
 
     // Print results
     if (params.benchmark.format == "markdown") {
-      fmt::print("{}", format_benchmark_markdown(result, baseline));
-    } else if (!out.quiet) {
-      print_benchmark_table(result, baseline);
+      Output md_out(false);
+      print_benchmark_markdown(md_out, result, baseline);
+    } else {
+      print_benchmark_table(out, result, baseline);
     }
 
     // Export results
     if (!params.benchmark.output.empty()) {
-      if (int rc = try_or_fail([&] {
+      if (int rc = out.try_or_fail([&] {
         write_results_json(result, params.benchmark.output);
       })) return rc;
 
@@ -467,7 +473,7 @@ namespace {
     }
 
     if (!params.benchmark.csv.empty()) {
-      if (int rc = try_or_fail([&] {
+      if (int rc = out.try_or_fail([&] {
         write_results_csv(result, params.benchmark.csv);
       })) return rc;
 

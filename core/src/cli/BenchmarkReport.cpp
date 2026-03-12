@@ -10,7 +10,6 @@
 
 #include <fmt/format.h>
 #include <fstream>
-#include <sstream>
 #include <unordered_map>
 #include <cmath>
 
@@ -68,6 +67,7 @@ namespace {
 }
 
   void print_benchmark_table(
+    pptree::io::Output&               out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
     using namespace pptree::io;
@@ -76,19 +76,20 @@ namespace {
     auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
 
     // Title
-    fmt::print("\n{}", emphasis(current.suite_name));
+    std::string title = emphasis(current.suite_name);
 
     if (!current.timestamp.empty()) {
-      fmt::print(" {}", muted("(" + current.timestamp + ")"));
+      title += " " + muted("(" + current.timestamp + ")");
     }
 
-    fmt::print("\n");
+    out.newline();
+    out.println("{}", title);
 
     if (has_baseline && !baseline->timestamp.empty()) {
-      fmt::print("Baseline: {}\n", muted(baseline->timestamp));
+      out.println("Baseline: {}", muted(baseline->timestamp));
     }
 
-    fmt::print("\n");
+    out.newline();
 
     // Build columns conditionally
     std::vector<Column> columns = {
@@ -125,8 +126,9 @@ namespace {
       if (header[i] == "delta") header[i] = muted("delta");
     }
 
-    fmt::print("  {}\n", format_row(columns, header));
-    fmt::print("  {}\n", muted(format_separator(columns)));
+    out.indent();
+    out.println("{}", format_row(columns, header));
+    out.println("{}", muted(format_separator(columns)));
 
     // Data rows
     for (const auto& r : current.results) {
@@ -193,20 +195,27 @@ namespace {
         cells.push_back(te_err_delta);
       }
 
-      fmt::print("  {}\n", format_row(columns, cells));
+      out.println("{}", format_row(columns, cells));
     }
 
+    out.dedent();
+
     // Footer
-    fmt::print("\n  {} scenarios completed in {:.1f}s\n\n",
-    emphasis(std::to_string(current.results.size())),
-    current.total_time_ms / 1000.0);
+    out.newline();
+    out.indent();
+    out.println("{} scenarios completed in {:.1f}s",
+      emphasis(std::to_string(current.results.size())),
+      current.total_time_ms / 1000.0);
+    out.dedent();
+    out.newline();
   }
 
   void write_results_json(const SuiteResult& result, const std::string& path) {
     pptree::io::write_json_file(result.to_json(), path);
   }
 
-  std::string format_benchmark_markdown(
+  void print_benchmark_markdown(
+    pptree::io::Output&               out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
     using namespace pptree::io;
@@ -214,19 +223,18 @@ namespace {
     bool has_baseline   = baseline.has_value();
     auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
 
-    std::ostringstream out;
-
-    out << "## " << current.suite_name << "\n\n";
+    out.println("## {}", current.suite_name);
+    out.newline();
 
     if (!current.timestamp.empty()) {
-      out << "Current: " << current.timestamp << "\n";
+      out.println("Current: {}", current.timestamp);
     }
 
     if (has_baseline && !baseline->timestamp.empty()) {
-      out << "Baseline: " << baseline->timestamp << "\n";
+      out.println("Baseline: {}", baseline->timestamp);
     }
 
-    out << "\n";
+    out.newline();
 
     // Build columns conditionally
     std::vector<Column> columns = {
@@ -255,8 +263,8 @@ namespace {
 
     if (has_baseline) columns.push_back({ "\xCE\x94 Test", 0, Align::right });
 
-    out << format_md_row(header_labels(columns)) << "\n";
-    out << format_md_separator(columns) << "\n";
+    out.println("{}", format_md_row(header_labels(columns)));
+    out.println("{}", format_md_separator(columns));
 
     // Data rows
     for (const auto& r : current.results) {
@@ -321,13 +329,12 @@ namespace {
         cells.push_back(te_err_delta);
       }
 
-      out << format_md_row(cells) << "\n";
+      out.println("{}", format_md_row(cells));
     }
 
-    out << fmt::format("\n{} scenarios completed in {:.1f}s\n",
-    current.results.size(), current.total_time_ms / 1000.0);
-
-    return out.str();
+    out.newline();
+    out.println("{} scenarios completed in {:.1f}s",
+      current.results.size(), current.total_time_ms / 1000.0);
   }
 
   void write_results_csv(const SuiteResult& result, const std::string& path) {

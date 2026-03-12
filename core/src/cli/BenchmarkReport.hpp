@@ -5,6 +5,7 @@
 #pragma once
 
 #include "cli/Benchmark.hpp"
+#include "io/Output.hpp"
 #include <string>
 #include <optional>
 
@@ -15,10 +16,12 @@ namespace pptree::cli {
    * Without a baseline, prints absolute numbers. With a baseline,
    * adds delta columns (green = faster/less memory, red = slower/more memory).
    *
+   * @param out       Output context.
    * @param current   Results from the current run.
    * @param baseline  Optional baseline results for comparison.
    */
   void print_benchmark_table(
+    pptree::io::Output&               out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline = std::nullopt);
 
@@ -33,12 +36,18 @@ namespace pptree::cli {
   void write_results_csv(const SuiteResult& result, const std::string& path);
 
   /**
-   * @brief Format results as a GitHub-flavored markdown table.
+   * @brief Print results as a GitHub-flavored markdown table.
    *
-   * Returns a string suitable for posting as a PR comment.
+   * Prints directly via Output (no indentation). Suitable for
+   * piping to a file or posting as a PR comment.
    * With a baseline, includes delta columns with emoji indicators.
+   *
+   * @param out       Output context.
+   * @param current   Results from the current run.
+   * @param baseline  Optional baseline results for comparison.
    */
-  std::string format_benchmark_markdown(
+  void print_benchmark_markdown(
+    pptree::io::Output&               out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline = std::nullopt);
 }

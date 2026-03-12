@@ -6,6 +6,7 @@
 #pragma once
 
 #include "io/Color.hpp"
+#include "io/Output.hpp"
 #include "models/VariableImportance.hpp"
 #include "stats/ConfusionMatrix.hpp"
 #include "stats/Stats.hpp"
@@ -59,7 +60,7 @@ namespace pptree::cli {
    * @brief Print evaluation results (timing, errors, memory) to stdout.
    * @param stats The aggregated model statistics.
    */
-  void print_results(const ModelStats& stats);
+  void print_results(pptree::io::Output& out, const ModelStats& stats);
 
   /**
    * @brief Print a ranked variable importance table to stdout.
@@ -68,10 +69,12 @@ namespace pptree::cli {
    * VI1 (permuted). Rows are sorted by VI2 descending. The VI1 column is
    * omitted when its vector is empty. At most max_rows rows are printed.
    *
+   * @param out       Output context.
    * @param vi        Variable importance results.
    * @param max_rows  Maximum number of rows to print (0 = all).
    */
   void print_variable_importance(
+    pptree::io::Output&       out,
     const VariableImportance& vi,
     int                       max_rows = 20);
 
@@ -81,7 +84,8 @@ namespace pptree::cli {
    * Displays the confusion matrix with class labels, diagonal highlighting,
    * and per-class error rates.
    *
-   * @param cm The confusion matrix to print.
+   * @param out Output context.
+   * @param cm  The confusion matrix to print.
    */
-  void print_confusion_matrix(const stats::ConfusionMatrix& cm);
+  void print_confusion_matrix(pptree::io::Output& out, const stats::ConfusionMatrix& cm);
 }

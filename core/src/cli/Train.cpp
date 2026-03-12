@@ -67,6 +67,7 @@ namespace {
   }
 
   void save_model(
+    Output&            out,
     const Model&       model,
     const CLIOptions&  params,
     const std::string& path) {
@@ -90,53 +91,53 @@ namespace {
 
     write_json_file(output, path);
 
-    Output out(params.quiet);
     out.saved("model", path);
   }
 }
 
   void print_configuration(
+    Output&           out,
     const CLIOptions& params,
     int               n_train,
     int               n_test) {
-    if (params.quiet) return;
-
-    using namespace pptree::io;
-
     std::string model_type = params.model.trees > 0 ? "random forest" : "single decision tree";
-    fmt::print("{}\n\n", emphasis("Training " + model_type));
+    out.println("{}", emphasis("Training " + model_type));
+    out.newline();
 
     std::vector<Column> columns = {
       { "Parameter", 18, Align::left },
       { "Value",     30, Align::left },
     };
 
+    out.indent();
+
     Row header = header_labels(columns);
-    fmt::print("  {}\n", format_row(columns, header));
-    fmt::print("  {}\n", muted(format_separator(columns)));
+    out.println("{}", format_row(columns, header));
+    out.println("{}", muted(format_separator(columns)));
 
     if (params.model.trees > 0) {
-      fmt::print("  {}\n", format_row(columns, { "trees", std::to_string(params.model.trees) }));
-      fmt::print("  {}\n", format_row(columns, { "variables/split",
-                                                 fmt::format("{} ({}%){}", params.model.n_vars, static_cast<int>(params.model.p_vars * 100), default_tag(params.model.used_default_vars)) }));
-      fmt::print("  {}\n", format_row(columns, { "threads",
-                                                 fmt::format("{}{}", params.model.threads, default_tag(params.model.used_default_threads)) }));
-      fmt::print("  {}\n", format_row(columns, { "seed",
-                                                 fmt::format("{}{}", params.model.seed, default_tag(params.model.used_default_seed)) }));
+      out.println("{}", format_row(columns, { "trees", std::to_string(params.model.trees) }));
+      out.println("{}", format_row(columns, { "variables/split",
+                                              fmt::format("{} ({}%){}", params.model.n_vars, static_cast<int>(params.model.p_vars * 100), default_tag(params.model.used_default_vars)) }));
+      out.println("{}", format_row(columns, { "threads",
+                                              fmt::format("{}{}", params.model.threads, default_tag(params.model.used_default_threads)) }));
+      out.println("{}", format_row(columns, { "seed",
+                                              fmt::format("{}{}", params.model.seed, default_tag(params.model.used_default_seed)) }));
     }
 
     std::string method = params.model.lambda == 0 ? "LDA" : "PDA";
-    fmt::print("  {}\n", format_row(columns, { "method",
-                                               fmt::format("{} (lambda={})", method, params.model.lambda) }));
+    out.println("{}", format_row(columns, { "method",
+                                            fmt::format("{} (lambda={})", method, params.model.lambda) }));
 
     if (n_train > 0 && n_test > 0) {
-      fmt::print("  {}\n", format_row(columns, { "training samples",
-                                                 fmt::format("{} ({}%)", n_train, static_cast<int>(params.evaluate.train_ratio * 100)) }));
-      fmt::print("  {}\n", format_row(columns, { "test samples",
-                                                 fmt::format("{} ({}%)", n_test, static_cast<int>((1 - params.evaluate.train_ratio) * 100)) }));
+      out.println("{}", format_row(columns, { "training samples",
+                                              fmt::format("{} ({}%)", n_train, static_cast<int>(params.evaluate.train_ratio * 100)) }));
+      out.println("{}", format_row(columns, { "test samples",
+                                              fmt::format("{} ({}%)", n_test, static_cast<int>((1 - params.evaluate.train_ratio) * 100)) }));
     }
 
-    fmt::print("\n");
+    out.dedent();
+    out.newline();
   }
 
   DataPacket read_data(const CLIOptions& params, pptree::stats::RNG& rng) {
@@ -203,20 +204,22 @@ namespace {
     auto data = read_data(params, rng);
 
     init_params(params, data.x.cols());
-    print_configuration(params);
+    print_configuration(out, params);
 
     FeatureMatrix x  = data.x;
     ResponseVector y = data.y;
 
     const auto train_result = train_model(x, y, params, rng);
 
-    out.print("  Trained in {}ms, ", emphasis(std::to_string(train_result.duration)));
+    out.indent();
+    out.println("Trained in {}ms", emphasis(std::to_string(train_result.duration)));
 
     if (!params.save_path.empty()) {
-      save_model(*train_result.model, params, params.save_path);
+      save_model(out, *train_result.model, params, params.save_path);
     } else {
-      out.print("not saved {}\n", muted("(used --no-save)"));
+      out.println("not saved {}", muted("(used --no-save)"));
     }
+    out.dedent();
 
     if (!params.no_metrics) {
       const auto *forest = dynamic_cast<const Forest *>(train_result.model.get());
@@ -238,13 +241,14 @@ namespace {
         vi.projections = variable_importance_projections(*tree, n_vars, &vi.scale);
       }
 
-      if (!out.quiet) {
-        if (oob_err >= 0.0) {
-          out.print("  OOB error: {}\n\n", emphasis(fmt::format("{:.2f}%", oob_err * 100)));
-        }
-
-        print_variable_importance(vi);
+      if (oob_err >= 0.0) {
+        out.indent();
+        out.println("OOB error: {}", emphasis(fmt::format("{:.2f}%", oob_err * 100)));
+        out.dedent();
+        out.newline();
       }
+
+      print_variable_importance(out, vi);
 
       if (!params.save_path.empty()) {
         std::ifstream in(params.save_path);

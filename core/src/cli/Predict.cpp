@@ -105,15 +105,17 @@ namespace {
     bool show_metrics = has_labels && !params.no_metrics;
 
     // Terminal output: only metrics
-    if (!out.quiet && show_metrics) {
+    if (show_metrics) {
       ConfusionMatrix cm(predictions, data.y);
-      out.print("\n{}{:.2f}%\n\n", emphasis("Error rate: "), cm.error() * 100);
-      print_confusion_matrix(cm);
+      out.newline();
+      out.println("{}{:.2f}%", emphasis("Error rate: "), cm.error() * 100);
+      out.newline();
+      print_confusion_matrix(out, cm);
     }
 
     // Hint about --output when not used
-    if (!out.quiet && show_metrics && params.output_path.empty()) {
-      out.print("{}\n", muted("Tip: use --output <file> to save individual predictions"));
+    if (show_metrics && params.output_path.empty()) {
+      out.println("{}", muted("Tip: use --output <file> to save individual predictions"));
     }
 
     // Save results to file if requested

@@ -331,7 +331,8 @@ TEST(ConfusionMatrix, Print) {
   ConfusionMatrix cm(predictions, actual);
 
   testing::internal::CaptureStdout();
-  cli::print_confusion_matrix(cm);
+  pptree::io::Output out(false);
+  cli::print_confusion_matrix(out, cm);
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_NE(output.find("Confusion Matrix:"), std::string::npos);
@@ -346,7 +347,8 @@ TEST(ConfusionMatrix, PrintIncludesErrorHeader) {
   ConfusionMatrix cm(predictions, actual);
 
   testing::internal::CaptureStdout();
-  cli::print_confusion_matrix(cm);
+  pptree::io::Output out(false);
+  cli::print_confusion_matrix(out, cm);
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_NE(output.find("Error"), std::string::npos);
@@ -360,7 +362,8 @@ TEST(ConfusionMatrix, PrintIncludesPerRowError) {
   ConfusionMatrix cm(predictions, actual);
 
   testing::internal::CaptureStdout();
-  cli::print_confusion_matrix(cm);
+  pptree::io::Output out(false);
+  cli::print_confusion_matrix(out, cm);
   std::string output = testing::internal::GetCapturedStdout();
 
   // Each row should have a percentage error marker
@@ -378,7 +381,8 @@ TEST(ConfusionMatrix, PrintPerfectPrediction) {
   ConfusionMatrix cm(predictions, actual);
 
   testing::internal::CaptureStdout();
-  cli::print_confusion_matrix(cm);
+  pptree::io::Output out(false);
+  cli::print_confusion_matrix(out, cm);
   std::string output = testing::internal::GetCapturedStdout();
 
   // All rows should show 0.0% error

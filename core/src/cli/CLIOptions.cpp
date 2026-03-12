@@ -217,28 +217,27 @@ namespace {
       }
     }
 
-    warn_unused_params(params);
+    pptree::io::Output out(params.quiet);
+    warn_unused_params(out, params);
   }
 }
 
-  void warn_unused_params(const CLIOptions& params) {
-    if (params.quiet) return;
-
+  void warn_unused_params(pptree::io::Output& out, const CLIOptions& params) {
     if (params.model.trees == 0) {
       bool has_warnings = false;
 
       if (params.model.threads != -1) {
-        fmt::print("Warning: threads parameter is ignored when training a single tree\n");
+        out.println("Warning: threads parameter is ignored when training a single tree");
         has_warnings = true;
       }
 
       if (params.model.p_vars != -1 || params.model.n_vars != -1) {
-        fmt::print("Warning: --vars parameter is ignored when training a single tree\n");
+        out.println("Warning: --vars parameter is ignored when training a single tree");
         has_warnings = true;
       }
 
       if (has_warnings) {
-        fmt::print("Single trees always use all features for splitting\n");
+        out.println("Single trees always use all features for splitting");
       }
     }
   }

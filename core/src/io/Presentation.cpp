@@ -43,10 +43,11 @@ namespace pptree::cli {
     return j;
   }
 
-  void print_results(const ModelStats& stats) {
+  void print_results(pptree::io::Output& out, const ModelStats& stats) {
     using namespace pptree::io;
 
-    fmt::print("  {}\n\n", emphasis("Evaluation results"));
+    out.println("{}", emphasis("Evaluation results"));
+    out.newline();
 
     std::vector<Column> columns = {
       { "Runs",       5,  Align::left },
@@ -61,8 +62,8 @@ namespace pptree::cli {
 
     Row header = header_labels(columns);
 
-    fmt::print("  {}\n", format_row(columns, header));
-    fmt::print("  {}\n", muted(format_separator(columns)));
+    out.println("{}", format_row(columns, header));
+    out.println("{}", muted(format_separator(columns)));
 
     std::string time_str = fmt::format("{:.2f} +/- {:.2f}", stats.mean_time(), stats.std_time());
     std::string tr_err   = fmt::format("{:.2f}%", stats.mean_tr_error() * 100);
@@ -80,11 +81,12 @@ namespace pptree::cli {
       cells.push_back(fmt::format("{:.1f} MB", mb));
     }
 
-    fmt::print("  {}\n", format_row(columns, cells));
-    fmt::print("\n");
+    out.println("{}", format_row(columns, cells));
+    out.newline();
   }
 
   void print_variable_importance(
+    pptree::io::Output&       out,
     const VariableImportance& vi,
     int                       max_rows) {
     using namespace pptree::io;
@@ -106,7 +108,8 @@ namespace pptree::cli {
     const bool show_vi3 = vi3.size() == vi2.size();
     const int rows      = (max_rows > 0 && p > max_rows) ? max_rows : p;
 
-    fmt::print("{}\n\n", emphasis("  Variable Importance:"));
+    out.println("{}", emphasis("Variable Importance:"));
+    out.newline();
 
     // Build columns conditionally
     std::vector<Column> columns = {
@@ -131,8 +134,8 @@ namespace pptree::cli {
 
     if (show_vi1) header[show_vi3 ? 5 : 4] = emphasis(header[show_vi3 ? 5 : 4]);
 
-    fmt::print("  {}\n", format_row(columns, header));
-    fmt::print("  {}\n", muted(format_separator(columns)));
+    out.println("{}", format_row(columns, header));
+    out.println("{}", muted(format_separator(columns)));
 
     // Data rows
     for (int rank = 0; rank < rows; ++rank) {
@@ -150,51 +153,53 @@ namespace pptree::cli {
 
       if (show_vi1) cells.push_back(fmt::format("{:.6f}", vi1(j)));
 
-      fmt::print("  {}\n", format_row(columns, cells));
+      out.println("{}", format_row(columns, cells));
     }
 
     if (rows < p) {
-      fmt::print("  {}\n", muted(fmt::format("... {} more variables not shown", p - rows)));
+      out.println("{}", muted(fmt::format("... {} more variables not shown", p - rows)));
     }
 
-    fmt::print("\n");
+    out.newline();
   }
 
-  void print_confusion_matrix(const stats::ConfusionMatrix& cm) {
+  void print_confusion_matrix(pptree::io::Output& out, const stats::ConfusionMatrix& cm) {
     using namespace pptree::io;
 
-    int n          = cm.values.rows();
     auto class_err = cm.class_errors();
 
-    fmt::print("{}\n\n", emphasis("Confusion Matrix:"));
+    out.println("{}", emphasis("Confusion Matrix:"));
+    out.newline();
 
     // Header row: class labels
-    fmt::print("    ");
+    std::string header = "    ";
     for (const auto& [label, idx] : cm.label_index) {
-      fmt::print("{:>5}", label);
+      header += fmt::format("{:>5}", label);
     }
-
-    fmt::print("  Error\n");
+    header += "  Error";
+    out.println("{}", header);
 
     // Data rows
     for (const auto& [label, row_idx] : cm.label_index) {
-      fmt::print("{:>4}", label);
+      std::string row = fmt::format("{:>4}", label);
+
       for (const auto& [col_label, col_idx] : cm.label_index) {
         int val          = cm.values(row_idx, col_idx);
         std::string cell = fmt::format("{:>4}", val);
 
         if (row_idx == col_idx) {
-          fmt::print(" {}", success(cell));
+          row += " " + success(cell);
         } else if (val > 0) {
-          fmt::print(" {}", error(cell));
+          row += " " + error(cell);
         } else {
-          fmt::print(" {}", muted(cell));
+          row += " " + muted(cell);
         }
       }
 
-      fmt::print("  {:.1f}%\n", class_err[row_idx] * 100);
+      row += fmt::format("  {:.1f}%", class_err[row_idx] * 100);
+      out.println("{}", row);
     }
 
-    fmt::print("\n");
+    out.newline();
   }
 }

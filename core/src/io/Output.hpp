@@ -1,80 +1,166 @@
 /**
  * @file Output.hpp
- * @brief Quiet-aware output helpers for CLI subcommands.
+ * @brief Quiet-aware output context for CLI subcommands.
  *
- * Thin wrapper around fmt::print that respects the --quiet flag,
- * plus convenience methods for common CLI output patterns (file
- * save confirmations, error-catch wrappers).
+ * Central output abstraction that handles indentation, quiet-mode
+ * suppression, stderr error reporting, and progress display. All CLI
+ * printing should go through an Output instance.
  */
 #pragma once
 
 #include "io/Color.hpp"
 
 #include <fmt/format.h>
+#include <cstdio>
 #include <functional>
 #include <string>
 
 namespace pptree::io {
   /**
-   * @brief Quiet-aware output context for CLI subcommands.
+   * @brief Quiet-aware, indentation-aware output context.
    *
-   * Wraps a single boolean and provides methods that suppress output
-   * when quiet mode is active. Construct once per subcommand from
-   * CLIOptions::quiet and use throughout.
+   * Construct once per subcommand from CLIOptions::quiet and thread
+   * through all printing functions. Stdout methods respect quiet mode
+   * and prepend the current indentation. Stderr methods always print.
    */
   struct Output {
     bool quiet;
+    int indent_level = 0;
 
     explicit Output(bool quiet) : quiet(quiet) {
     }
 
+    // -- stdout (quiet-aware, indented) ----------------------------------
+
     /**
-     * @brief Print a formatted message, suppressed in quiet mode.
+     * @brief Print indent + formatted content + newline. The workhorse.
+     */
+    template<typename ... Args>
+    void println(fmt::format_string<Args...> fmt_str, Args&&... args) const {
+      if (!quiet) {
+        print_indent();
+        fmt::print(fmt_str, std::forward<Args>(args)...);
+        fmt::print("\n");
+      }
+    }
+
+    /**
+     * @brief Print indent + formatted content, no newline.
+     *
+     * Use for starting a partial line that will be continued.
      */
     template<typename ... Args>
     void print(fmt::format_string<Args...> fmt_str, Args&&... args) const {
       if (!quiet) {
+        print_indent();
         fmt::print(fmt_str, std::forward<Args>(args)...);
       }
     }
 
     /**
-     * @brief Print a file-save confirmation in the standard format.
-     *
-     * Produces: "{label} saved to {path}" with green prefix.
-     * Suppressed in quiet mode.
+     * @brief Print a blank line. For visual separation between sections.
+     */
+    void newline() const {
+      if (!quiet) {
+        fmt::print("\n");
+      }
+    }
+
+    /**
+     * @brief Flush stdout. For interactive output like progress bars.
+     */
+    void flush() const {
+      std::fflush(stdout);
+    }
+
+    // -- stderr (always prints, no indent) -------------------------------
+
+    /**
+     * @brief Print formatted content + newline to stderr. Always prints.
+     */
+    template<typename ... Args>
+    void errorln(fmt::format_string<Args...> fmt_str, Args&&... args) const {
+      fmt::print(stderr, fmt_str, std::forward<Args>(args)...);
+      fmt::print(stderr, "\n");
+    }
+
+    // -- indentation -----------------------------------------------------
+
+    void indent() {
+      ++indent_level;
+    }
+
+    void dedent() {
+      if (indent_level > 0) --indent_level;
+    }
+
+    // -- high-level patterns ---------------------------------------------
+
+    /**
+     * @brief Print a file-save confirmation: "label saved to path".
      */
     void saved(const std::string& label, const std::string& path) const {
-      if (!quiet) {
-        fmt::print("{} saved to {}\n", label, path);
+      println("{} saved to {}", label, path);
+    }
+
+    /**
+     * @brief Display a carriage-return progress bar.
+     *
+     * Overwrites the current line with a bar showing current/total.
+     * Prints a final newline when current == total.
+     */
+    void progress(int current, int total, int bar_width = 50) const {
+      if (quiet) return;
+
+      float pct = static_cast<float>(current) / total;
+      int pos   = static_cast<int>(bar_width * pct);
+
+      std::string bar_tpl = emphasis("{} |");
+      std::string bar     = std::string(pos, '-') + std::string(bar_width - pos, ' ');
+
+      if (current == total) {
+        bar_tpl = success(bar_tpl);
+      } else {
+        bar_tpl = info(bar_tpl);
+      }
+
+      fmt::print("\r{:{}}" + bar_tpl + " {}/{} ({}%)     ",
+        "", indent_level * 2, bar, current, total, static_cast<int>(pct * 100.0));
+      std::fflush(stdout);
+
+      if (current == total) {
+        fmt::print("\n");
+      }
+    }
+
+    /**
+     * @brief Run a callable, catch std::exception, print error, return 1.
+     *
+     * If the callable succeeds, returns 0. If it throws, prints the
+     * error message to stderr with red "Error:" prefix and returns 1.
+     */
+    int try_or_fail(
+      const std::function<void()>& f,
+      const std::string&           context = "") const {
+      try {
+        f();
+        return 0;
+      } catch (const std::exception& e) {
+        if (context.empty()) {
+          errorln("{} {}", error("Error:"), e.what());
+        } else {
+          errorln("{} {}: {}", error("Error:"), context, e.what());
+        }
+
+        return 1;
+      }
+    }
+
+  private:
+    void print_indent() const {
+      if (indent_level > 0) {
+        fmt::print("{:{}}", "", indent_level * 2);
       }
     }
   };
-
-  /**
-   * @brief Run a callable, catch std::exception, print error, return 1.
-   *
-   * If the callable succeeds, returns 0. If it throws, prints the
-   * error message to stderr with red "Error:" prefix and returns 1.
-   *
-   * @param f       Callable that may throw.
-   * @param context Optional prefix for the error message.
-   * @return 0 on success, 1 on caught exception.
-   */
-  inline int try_or_fail(
-    const std::function<void()>& f,
-    const std::string&           context = "") {
-    try {
-      f();
-      return 0;
-    } catch (const std::exception& e) {
-      if (context.empty()) {
-        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
-      } else {
-        fmt::print(stderr, "{} {}: {}\n", error("Error:"), context, e.what());
-      }
-
-      return 1;
-    }
-  }
 }

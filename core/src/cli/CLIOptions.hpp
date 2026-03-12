@@ -10,6 +10,7 @@
 #include "cli/ModelParams.hpp"
 #include "cli/EvaluateParams.hpp"
 #include "cli/BenchmarkParams.hpp"
+#include "io/Output.hpp"
 
 #include <string>
 
@@ -46,7 +47,7 @@ namespace pptree::cli {
   /**
    * @brief Warn the user about parameters that are ignored for single-tree training.
    */
-  void warn_unused_params(const CLIOptions& params);
+  void warn_unused_params(pptree::io::Output& out, const CLIOptions& params);
 
   /**
    * @brief Resolve sentinel values in CLIOptions to concrete defaults.

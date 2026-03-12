@@ -778,7 +778,8 @@ TEST(WarnUnusedParams, TreesZeroThreadsWarning) {
   params.quiet         = false;
 
   testing::internal::CaptureStdout();
-  warn_unused_params(params);
+  pptree::io::Output out(params.quiet);
+  warn_unused_params(out, params);
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_NE(output.find("threads parameter is ignored"), std::string::npos);
@@ -792,7 +793,8 @@ TEST(WarnUnusedParams, TreesZeroVarsWarning) {
   params.quiet        = false;
 
   testing::internal::CaptureStdout();
-  warn_unused_params(params);
+  pptree::io::Output out(params.quiet);
+  warn_unused_params(out, params);
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_NE(output.find("--vars parameter is ignored"), std::string::npos);
@@ -807,7 +809,8 @@ TEST(WarnUnusedParams, TreesZeroBothWarnings) {
   params.quiet         = false;
 
   testing::internal::CaptureStdout();
-  warn_unused_params(params);
+  pptree::io::Output out(params.quiet);
+  warn_unused_params(out, params);
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_NE(output.find("threads parameter is ignored"), std::string::npos);
@@ -824,7 +827,8 @@ TEST(WarnUnusedParams, TreesNonZeroNoWarning) {
   params.quiet         = false;
 
   testing::internal::CaptureStdout();
-  warn_unused_params(params);
+  pptree::io::Output out(params.quiet);
+  warn_unused_params(out, params);
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_TRUE(output.empty());
@@ -839,7 +843,8 @@ TEST(WarnUnusedParams, QuietSuppresses) {
   params.quiet         = true;
 
   testing::internal::CaptureStdout();
-  warn_unused_params(params);
+  pptree::io::Output out(params.quiet);
+  warn_unused_params(out, params);
   std::string output = testing::internal::GetCapturedStdout();
 
   EXPECT_TRUE(output.empty());

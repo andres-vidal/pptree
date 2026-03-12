@@ -112,7 +112,11 @@ TEST_F(BenchmarkReportTest, WriteCsv) {
 
 TEST_F(BenchmarkReportTest, FormatMarkdownWithoutBaseline) {
   auto result = make_sample_result();
-  auto md     = format_benchmark_markdown(result);
+  pptree::io::Output out(false);
+
+  testing::internal::CaptureStdout();
+  print_benchmark_markdown(out, result);
+  auto md = testing::internal::GetCapturedStdout();
 
   // Header
   EXPECT_TRUE(md.find("## test suite") != std::string::npos);
@@ -144,7 +148,11 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithBaseline) {
   baseline.results[0].mean_time_ms = 15.0;   // current is 12.3 → improvement
   baseline.results[1].mean_time_ms = 400.0;  // current is 500.0 → regression
 
-  auto md = format_benchmark_markdown(current, baseline);
+  pptree::io::Output out(false);
+
+  testing::internal::CaptureStdout();
+  print_benchmark_markdown(out, current, baseline);
+  auto md = testing::internal::GetCapturedStdout();
 
   // Both timestamps
   EXPECT_TRUE(md.find("Current:") != std::string::npos);

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cli/CLIOptions.hpp"
+#include "io/Output.hpp"
 #include "stats/DataPacket.hpp"
 #include "stats/Stats.hpp"
 #include "utils/Types.hpp"
@@ -52,9 +53,10 @@ namespace pptree::cli {
    * @brief Print the training configuration summary.
    */
   void print_configuration(
-    const CLIOptions& params,
-    int               n_train = 0,
-    int               n_test  = 0);
+    pptree::io::Output& out,
+    const CLIOptions&   params,
+    int                 n_train = 0,
+    int                 n_test  = 0);
 
   /**
    * @brief Run the train subcommand.
