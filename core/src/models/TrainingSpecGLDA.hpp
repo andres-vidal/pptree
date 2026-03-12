@@ -3,7 +3,7 @@
 #include "models/TrainingSpec.hpp"
 #include "models/TrainingSpecVisitor.hpp"
 
-namespace pptree {
+namespace ppforest2 {
   /**
    * @brief GLDA training specification using all variables.
    *

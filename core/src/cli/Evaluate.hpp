@@ -9,7 +9,7 @@
 
 namespace CLI { class App; }
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /** @brief Register evaluate subcommand options on @p app. */
   CLI::App * setup_evaluate(CLI::App& app, CLIOptions& params);
 

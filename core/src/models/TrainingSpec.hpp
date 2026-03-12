@@ -9,7 +9,7 @@
 #include <memory>
 #include <map>
 
-namespace pptree {
+namespace ppforest2 {
   struct TrainingSpecVisitor;
   /**
    * @brief Abstract training configuration for projection pursuit trees.

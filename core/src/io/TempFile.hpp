@@ -17,7 +17,7 @@
 #include <unistd.h>
 #endif
 
-namespace pptree::io {
+namespace ppforest2::io {
   /**
    * @brief RAII temporary file with automatic cleanup.
    *
@@ -38,7 +38,7 @@ namespace pptree::io {
         path_ = base + suffix;
         std::ofstream touch(path_);
         #else
-        std::string tmpl = "/tmp/pptree_XXXXXX" + suffix;
+        std::string tmpl = "/tmp/ppforest2_XXXXXX" + suffix;
         std::vector<char> tmpl_buf(tmpl.begin(), tmpl.end());
         tmpl_buf.push_back('\0');
 
@@ -116,7 +116,7 @@ namespace pptree::io {
         path_ = tmp_file;
         std::filesystem::create_directories(path_);
         #else
-        path_ = "/tmp/pptree_dir_XXXXXX";
+        path_ = "/tmp/ppforest2_dir_XXXXXX";
         std::vector<char> buf(path_.begin(), path_.end());
         buf.push_back('\0');
         char *result = mkdtemp(buf.data());

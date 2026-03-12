@@ -5,7 +5,7 @@
 
 #include <memory>
 
-namespace pptree::sr {
+namespace ppforest2::sr {
   /**
    * @brief Abstract strategy for computing the split threshold.
    *

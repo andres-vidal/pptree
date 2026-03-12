@@ -9,7 +9,7 @@
 #include <thread>
 #include <vector>
 
-namespace pptree {
+namespace ppforest2 {
   /**
    * @brief Tag type for requesting vote-proportion predictions.
    *

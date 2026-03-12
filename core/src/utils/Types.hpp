@@ -3,15 +3,15 @@
 #include <Eigen/Dense>
 
 /**
- * @brief Core numeric type aliases for the pptree library.
+ * @brief Core numeric type aliases for the ppforest2 library.
  *
  * All matrix and vector types are Eigen dynamic-size types.  The
  * scalar precision for features is controlled by the compile-time
- * flag PPTREE_DOUBLE_PRECISION (float by default).
+ * flag PPFOREST2_DOUBLE_PRECISION (float by default).
  */
-namespace pptree::types {
+namespace ppforest2::types {
   /** @brief Scalar type for feature values (float or double). */
-  #ifdef PPTREE_DOUBLE_PRECISION
+  #ifdef PPFOREST2_DOUBLE_PRECISION
   using Feature = double;
   #else
   using Feature = float;

@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /** @brief Simulation data source options. */
   struct SimulateParams {
     std::string format;

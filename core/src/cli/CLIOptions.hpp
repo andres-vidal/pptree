@@ -1,6 +1,6 @@
 /**
  * @file CLIOptions.hpp
- * @brief CLI argument parsing, validation, and configuration for pptree.
+ * @brief CLI argument parsing, validation, and configuration for ppforest2.
  *
  * Defines the CLIOptions struct and declares functions to parse,
  * validate, and initialize runtime parameters.
@@ -14,7 +14,7 @@
 
 #include <string>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /** @brief Available CLI subcommands. */
   enum class Subcommand { none, train, predict, evaluate, benchmark };
 
@@ -47,7 +47,7 @@ namespace pptree::cli {
   /**
    * @brief Warn the user about parameters that are ignored for single-tree training.
    */
-  void warn_unused_params(pptree::io::Output& out, const CLIOptions& params);
+  void warn_unused_params(ppforest2::io::Output& out, const CLIOptions& params);
 
   /**
    * @brief Resolve sentinel values in CLIOptions to concrete defaults.

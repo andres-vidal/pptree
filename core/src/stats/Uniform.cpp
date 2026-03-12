@@ -4,7 +4,7 @@
 
 #include "utils/Invariant.hpp"
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   uint32_t Uniform::gen_lemire(uint32_t s, RNG &rng) const {
     uint32_t x = rng();
     uint64_t m = static_cast<uint64_t>(x) * s;

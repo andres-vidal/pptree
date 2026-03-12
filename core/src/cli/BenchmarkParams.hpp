@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /** @brief Benchmark-specific options. */
   struct BenchmarkParams {
     std::string scenarios_path;

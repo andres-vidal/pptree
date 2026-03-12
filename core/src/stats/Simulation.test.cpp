@@ -4,9 +4,9 @@
 #include "stats/GroupPartition.hpp"
 #include "utils/Macros.hpp"
 
-using namespace pptree;
-using namespace pptree::types;
-using namespace pptree::stats;
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
 
 TEST(Simulate, CorrectDimensions) {
   RNG rng(42);

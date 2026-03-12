@@ -5,9 +5,9 @@
 
 #include "utils/Macros.hpp"
 
-using namespace pptree;
-using namespace pptree::stats;
-using namespace pptree::types;
+using namespace ppforest2;
+using namespace ppforest2::stats;
+using namespace ppforest2::types;
 
 TEST(GroupPartition, GroupSize) {
   FeatureMatrix x = MAT(Feature, rows(6),

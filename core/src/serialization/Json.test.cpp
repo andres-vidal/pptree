@@ -13,23 +13,23 @@
 
 #include <fstream>
 
-using namespace pptree;
-using namespace pptree::types;
-using namespace pptree::stats;
-using namespace pptree::serialization;
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
+using namespace ppforest2::serialization;
 
 using json = nlohmann::json;
 
-#ifndef PPTREE_GOLDEN_DIR
-#error "PPTREE_GOLDEN_DIR must be defined"
+#ifndef PPFOREST2_GOLDEN_DIR
+#error "PPFOREST2_GOLDEN_DIR must be defined"
 #endif
 
-#ifndef PPTREE_FIXTURES_DIR
-#error "PPTREE_FIXTURES_DIR must be defined"
+#ifndef PPFOREST2_FIXTURES_DIR
+#error "PPFOREST2_FIXTURES_DIR must be defined"
 #endif
 
-static const std::string GOLDEN_DIR   = PPTREE_GOLDEN_DIR;
-static const std::string FIXTURES_DIR = PPTREE_FIXTURES_DIR;
+static const std::string GOLDEN_DIR   = PPFOREST2_GOLDEN_DIR;
+static const std::string FIXTURES_DIR = PPFOREST2_FIXTURES_DIR;
 
 static json load_model_json(const std::string& path) {
   std::ifstream in(path);

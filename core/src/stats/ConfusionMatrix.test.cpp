@@ -19,9 +19,9 @@
 #include <sstream>
 #include <nlohmann/json.hpp>
 
-using namespace pptree;
-using namespace pptree::stats;
-using namespace pptree::types;
+using namespace ppforest2;
+using namespace ppforest2::stats;
+using namespace ppforest2::types;
 
 
 
@@ -331,7 +331,7 @@ TEST(ConfusionMatrix, Print) {
   ConfusionMatrix cm(predictions, actual);
 
   testing::internal::CaptureStdout();
-  pptree::io::Output out(false);
+  ppforest2::io::Output out(false);
   cli::print_confusion_matrix(out, cm);
   std::string output = testing::internal::GetCapturedStdout();
 
@@ -347,7 +347,7 @@ TEST(ConfusionMatrix, PrintIncludesErrorHeader) {
   ConfusionMatrix cm(predictions, actual);
 
   testing::internal::CaptureStdout();
-  pptree::io::Output out(false);
+  ppforest2::io::Output out(false);
   cli::print_confusion_matrix(out, cm);
   std::string output = testing::internal::GetCapturedStdout();
 
@@ -362,7 +362,7 @@ TEST(ConfusionMatrix, PrintIncludesPerRowError) {
   ConfusionMatrix cm(predictions, actual);
 
   testing::internal::CaptureStdout();
-  pptree::io::Output out(false);
+  ppforest2::io::Output out(false);
   cli::print_confusion_matrix(out, cm);
   std::string output = testing::internal::GetCapturedStdout();
 
@@ -381,7 +381,7 @@ TEST(ConfusionMatrix, PrintPerfectPrediction) {
   ConfusionMatrix cm(predictions, actual);
 
   testing::internal::CaptureStdout();
-  pptree::io::Output out(false);
+  ppforest2::io::Output out(false);
   cli::print_confusion_matrix(out, cm);
   std::string output = testing::internal::GetCapturedStdout();
 

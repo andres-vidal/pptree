@@ -3,7 +3,7 @@
 #include "stats/Uniform.hpp"
 #include "stats/GroupPartition.hpp"
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   DataPacket simulate(
     const int               n,
     const int               p,

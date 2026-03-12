@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <pcg_random.hpp>
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   using RNG = pcg32;
 
 

@@ -5,7 +5,7 @@
 
 #include "utils/Types.hpp"
 
-namespace pptree {
+namespace ppforest2 {
   struct TreeNodeVisitor;
   /**
    * @brief Abstract base class for nodes in a projection pursuit tree.

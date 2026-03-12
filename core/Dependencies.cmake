@@ -46,7 +46,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(fmt)
 
-if(NOT PPTREE_CORE_ONLY)
+if(NOT PPFOREST2_CORE_ONLY)
   # CLI11 for command line parsing
   FetchContent_Declare(
     cli11

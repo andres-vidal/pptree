@@ -11,14 +11,14 @@
 #include <stack>
 #include <Eigen/Dense>
 
-using namespace pptree::pp;
-using namespace pptree::dr;
-using namespace pptree::sr;
-using namespace pptree::stats;
-using namespace pptree::types;
-using namespace pptree::utils;
+using namespace ppforest2::pp;
+using namespace ppforest2::dr;
+using namespace ppforest2::sr;
+using namespace ppforest2::stats;
+using namespace ppforest2::types;
+using namespace ppforest2::utils;
 
-namespace pptree {
+namespace ppforest2 {
   std::map<Response, int> binary_regroup(
     const FeatureMatrix &  x,
     const GroupPartition & group_spec

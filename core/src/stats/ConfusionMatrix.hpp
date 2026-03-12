@@ -8,7 +8,7 @@
 
 #include <map>
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   /**
    * @brief Build a sorted mapping from unique class labels to contiguous indices.
    * @param groups A response vector containing class labels.

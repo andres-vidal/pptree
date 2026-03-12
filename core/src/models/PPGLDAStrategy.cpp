@@ -8,11 +8,11 @@
 #include <vector>
 #include <Eigen/Dense>
 
-using namespace pptree::types;
-using namespace pptree::stats;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
 
 
-namespace pptree::pp {
+namespace ppforest2::pp {
   PPGLDAStrategy::PPGLDAStrategy(float lambda) :
     lambda(lambda) {
   }

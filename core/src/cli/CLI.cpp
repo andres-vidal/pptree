@@ -1,6 +1,6 @@
 /**
  * @file CLI.cpp
- * @brief Main entry point for the pptree command-line tool.
+ * @brief Main entry point for the ppforest2 command-line tool.
  */
 #include "cli/CLIOptions.hpp"
 #include "cli/Train.hpp"
@@ -16,8 +16,8 @@
 #include <omp.h>
 #endif
 
-using namespace pptree::cli;
-using namespace pptree::io;
+using namespace ppforest2::cli;
+using namespace ppforest2::io;
 
 int main(int argc, char *argv[]) {
   CLIOptions params = parse_args(argc, argv);

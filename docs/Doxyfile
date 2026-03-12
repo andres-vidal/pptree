@@ -1,6 +1,6 @@
-# Doxyfile for pptree
+# Doxyfile for ppforest2
 
-PROJECT_NAME           = "pptree"
+PROJECT_NAME           = "ppforest2"
 PROJECT_BRIEF          = "Projection Pursuit Decision Trees and Random Forests"
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = docs/.build/cpp

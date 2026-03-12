@@ -2,7 +2,7 @@
 
 #include "utils/Types.hpp"
 
-namespace pptree {
+namespace ppforest2 {
   struct Tree;
   struct Forest;
   /**

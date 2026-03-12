@@ -78,7 +78,7 @@
 
 #include "stats/Normal.hpp"
 
-using namespace pptree::stats;
+using namespace ppforest2::stats;
 
 /**
  * @brief Standard normal CDF: Φ(x) = ½ erfc(−x / √2).

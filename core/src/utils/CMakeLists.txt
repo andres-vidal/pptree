@@ -1,4 +1,4 @@
-add_library(pptree-utils OBJECT
+add_library(ppforest2-utils OBJECT
   Invariant.cpp)
 
-target_link_libraries(pptree-utils PRIVATE pptree-compile)
+target_link_libraries(ppforest2-utils PRIVATE ppforest2-compile)

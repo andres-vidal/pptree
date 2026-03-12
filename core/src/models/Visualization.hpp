@@ -62,7 +62,7 @@
 #include <utility>
 #include <string>
 
-namespace pptree {
+namespace ppforest2 {
   // ===================================================================
   // Node Data Collection
   // ===================================================================
@@ -429,7 +429,7 @@ namespace pptree {
    * @brief Layout parameters for tree structure rendering.
    *
    * Controls spacing and dimensions used by compute_tree_layout().
-   * Node dimensions must match the R-side constants (pptree_node_w, etc.)
+   * Node dimensions must match the R-side constants (ppforest2_node_w, etc.)
    * so that histogram bars and leaf labels align with the rectangles.
    */
   struct LayoutParams {

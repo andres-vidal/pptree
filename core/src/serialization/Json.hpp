@@ -15,14 +15,14 @@
 #include <ostream>
 
 /**
- * @brief JSON serialization and deserialization for pptree models.
+ * @brief JSON serialization and deserialization for ppforest2 models.
  *
  * Uses nlohmann/json.  Provides to_json() for serializing trees,
  * forests, confusion matrices, and variable importance to JSON, and
  * *_from_json() for deserializing them back.  Also provides ostream
  * operators for convenient text output.
  */
-namespace pptree::serialization {
+namespace ppforest2::serialization {
   using json = nlohmann::json;
 
   /** @brief Visitor that serializes a tree node to JSON. */

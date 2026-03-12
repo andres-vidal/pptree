@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   /**
    * @brief Parameters for generating simulated classification data.
    *

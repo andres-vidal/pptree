@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace pptree::io {
+namespace ppforest2::io {
   enum class Align { left, right };
 
   /**

@@ -12,7 +12,7 @@
 #include <vector>
 #include <Eigen/Dense>
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   /**
    * @brief Contiguous-block representation of grouped observations.
    *

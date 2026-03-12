@@ -2,7 +2,7 @@
  * @file Benchmark.hpp
  * @brief Benchmark scenario types, JSON parsing, and subprocess-based execution.
  *
- * Each benchmark scenario runs as a separate `pptree evaluate` process,
+ * Each benchmark scenario runs as a separate `ppforest2 evaluate` process,
  * giving accurate per-scenario peak RSS measurements.
  */
 #pragma once
@@ -17,7 +17,7 @@
 
 namespace CLI { class App; }
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /** @brief Register benchmark subcommand options on @p app. */
   CLI::App * setup_benchmark(CLI::App& app, CLIOptions& params);
 
@@ -78,7 +78,7 @@ namespace pptree::cli {
   /**
    * @brief Result of running a single benchmark scenario.
    *
-   * Parsed from the JSON output of `pptree evaluate`.
+   * Parsed from the JSON output of `ppforest2 evaluate`.
    */
   struct ScenarioResult {
     std::string name;
@@ -106,7 +106,7 @@ namespace pptree::cli {
    * @brief A suite of scenarios with shared defaults.
    */
   struct BenchmarkSuite {
-    std::string name = "pptree benchmark";
+    std::string name = "ppforest2 benchmark";
     std::vector<Scenario> scenarios;
   };
 
@@ -150,11 +150,11 @@ namespace pptree::cli {
   /**
    * @brief Run all scenarios in a suite via subprocess invocations.
    *
-   * For each scenario, spawns `pptree evaluate` as a child process with
+   * For each scenario, spawns `ppforest2 evaluate` as a child process with
    * the appropriate flags, reads its JSON output, and collects results.
    *
    * @param suite       The benchmark suite to run.
-   * @param binary_path Path to the pptree binary (typically argv[0]).
+   * @param binary_path Path to the ppforest2 binary (typically argv[0]).
    * @param quiet       Suppress progress output.
    * @param progress    Optional progress callback.
    * @return Aggregated suite results.
@@ -176,7 +176,7 @@ namespace pptree::cli {
   /**
    * @brief Run the benchmark subcommand.
    * @param params      CLI options.
-   * @param binary_path Path to the pptree binary (typically argv[0]).
+   * @param binary_path Path to the ppforest2 binary (typically argv[0]).
    * @return Exit code.
    */
   int run_benchmark(CLIOptions& params, const std::string& binary_path);

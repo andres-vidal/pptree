@@ -21,7 +21,7 @@ jobs:
         run: make build
 
       - name: Run PR benchmarks
-        run: .build/pptree benchmark -s bench/default-scenarios.json -o /tmp/pr-results.json -q -i ${{ env.BENCH_ITERATIONS }}
+        run: .build/ppforest2 benchmark -s bench/default-scenarios.json -o /tmp/pr-results.json -q -i ${{ env.BENCH_ITERATIONS }}
 
       - name: Checkout base branch
         uses: actions/checkout@v4
@@ -37,15 +37,15 @@ jobs:
           cd base-branch
           make build
           cp ../bench/default-scenarios.json bench/default-scenarios.json 2>/dev/null || true
-          .build/pptree benchmark -s bench/default-scenarios.json -o /tmp/base-results.json -q -i ${{ env.BENCH_ITERATIONS }}
+          .build/ppforest2 benchmark -s bench/default-scenarios.json -o /tmp/base-results.json -q -i ${{ env.BENCH_ITERATIONS }}
 
       - name: Generate comparison
         id: comparison
         run: |
           if [ "${{ steps.base.outcome }}" = "success" ]; then
-            REPORT=$(.build/pptree benchmark -s bench/default-scenarios.json -b /tmp/base-results.json --format markdown -q -i ${{ env.BENCH_ITERATIONS }})
+            REPORT=$(.build/ppforest2 benchmark -s bench/default-scenarios.json -b /tmp/base-results.json --format markdown -q -i ${{ env.BENCH_ITERATIONS }})
           else
-            REPORT=$(.build/pptree benchmark -s bench/default-scenarios.json --format markdown -q -i ${{ env.BENCH_ITERATIONS }})
+            REPORT=$(.build/ppforest2 benchmark -s bench/default-scenarios.json --format markdown -q -i ${{ env.BENCH_ITERATIONS }})
             REPORT="${REPORT}"$'\n\n'"_Baseline comparison skipped: base branch does not support benchmarking._"
           fi
           {
@@ -60,7 +60,7 @@ jobs:
           REPORT: ${{ steps.comparison.outputs.report }}
         with:
           script: |
-            const marker = '<!-- pptree-benchmark -->';
+            const marker = '<!-- ppforest2-benchmark -->';
             const body = `${marker}\n${process.env.REPORT}`;
 
             const { data: comments } = await github.rest.issues.listComments({

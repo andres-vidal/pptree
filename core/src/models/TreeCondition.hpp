@@ -5,7 +5,7 @@
 #include "models/TrainingSpec.hpp"
 #include "utils/Math.hpp"
 
-namespace pptree {
+namespace ppforest2 {
   /** @brief Scalar threshold type for split decisions. */
   using Threshold = types::Feature;
 

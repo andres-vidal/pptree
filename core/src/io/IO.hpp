@@ -10,7 +10,7 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-namespace pptree::io {
+namespace ppforest2::io {
   // --- File output helpers ---
 
   /**

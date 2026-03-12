@@ -2,7 +2,7 @@
 
 #include "models/SRStrategy.hpp"
 
-namespace pptree::sr {
+namespace ppforest2::sr {
   /**
    * @brief Split threshold as the mean of two group means.
    *

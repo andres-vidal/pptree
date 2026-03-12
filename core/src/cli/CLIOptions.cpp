@@ -1,6 +1,6 @@
 /**
  * @file CLIOptions.cpp
- * @brief CLI argument parsing, validation, and configuration for pptree.
+ * @brief CLI argument parsing, validation, and configuration for ppforest2.
  */
 #include "cli/CLIOptions.hpp"
 #include "cli/Train.hpp"
@@ -23,11 +23,11 @@
 #include <omp.h>
 #endif
 
-#ifndef PPTREE_VERSION
-#define PPTREE_VERSION "0.0.0"
+#ifndef PPFOREST2_VERSION
+#define PPFOREST2_VERSION "0.0.0"
 #endif
 
-namespace pptree::cli {
+namespace ppforest2::cli {
 namespace {
   /**
    * @brief JSON config file adapter for CLI11.
@@ -217,12 +217,12 @@ namespace {
       }
     }
 
-    pptree::io::Output out(params.quiet);
+    ppforest2::io::Output out(params.quiet);
     warn_unused_params(out, params);
   }
 }
 
-  void warn_unused_params(pptree::io::Output& out, const CLIOptions& params) {
+  void warn_unused_params(ppforest2::io::Output& out, const CLIOptions& params) {
     if (params.model.trees == 0) {
       bool has_warnings = false;
 
@@ -283,10 +283,10 @@ namespace {
   CLIOptions parse_args(int argc, char *argv[]) {
     CLIOptions params;
 
-    CLI::App app{ "pptree - Projection Pursuit Trees and Forests" };
+    CLI::App app{ "ppforest2 - Projection Pursuit Trees and Forests" };
     app.require_subcommand(1);
     app.fallthrough();
-    app.set_version_flag("--version,-V", PPTREE_VERSION, "Print version and exit");
+    app.set_version_flag("--version,-V", PPFOREST2_VERSION, "Print version and exit");
 
     // Global options
     app.add_flag("--quiet,-q", params.quiet, "Suppress all terminal output");

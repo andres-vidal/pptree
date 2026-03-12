@@ -9,10 +9,10 @@
 #include "stats/Simulation.hpp"
 #include "stats/Stats.hpp"
 
-using namespace pptree;
-using namespace pptree::pp;
-using namespace pptree::stats;
-using namespace pptree::types;
+using namespace ppforest2;
+using namespace ppforest2::pp;
+using namespace ppforest2::stats;
+using namespace ppforest2::types;
 
 static Projector make_proj(std::vector<Feature> v) {
   Eigen::Map<Projector> proj(v.data(), static_cast<Eigen::Index>(v.size()));

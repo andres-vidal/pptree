@@ -1,4 +1,4 @@
-add_library(pptree-serialization OBJECT
+add_library(ppforest2-serialization OBJECT
   Json.cpp)
 
-target_link_libraries(pptree-serialization PRIVATE pptree-compile nlohmann_json::nlohmann_json)
+target_link_libraries(ppforest2-serialization PRIVATE ppforest2-compile nlohmann_json::nlohmann_json)

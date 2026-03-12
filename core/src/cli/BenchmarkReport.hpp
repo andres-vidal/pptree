@@ -9,7 +9,7 @@
 #include <string>
 #include <optional>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /**
    * @brief Print a formatted results table to stdout.
    *
@@ -21,7 +21,7 @@ namespace pptree::cli {
    * @param baseline  Optional baseline results for comparison.
    */
   void print_benchmark_table(
-    pptree::io::Output&               out,
+    ppforest2::io::Output&               out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline = std::nullopt);
 
@@ -47,7 +47,7 @@ namespace pptree::cli {
    * @param baseline  Optional baseline results for comparison.
    */
   void print_benchmark_markdown(
-    pptree::io::Output&               out,
+    ppforest2::io::Output&               out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline = std::nullopt);
 }

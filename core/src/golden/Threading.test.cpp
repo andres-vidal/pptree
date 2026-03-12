@@ -12,14 +12,14 @@
 #include "models/TrainingSpecUGLDA.hpp"
 #include "io/IO.hpp"
 
-using namespace pptree;
-using namespace pptree::stats;
+using namespace ppforest2;
+using namespace ppforest2::stats;
 
-#ifndef PPTREE_DATA_DIR
-#error "PPTREE_DATA_DIR must be defined"
+#ifndef PPFOREST2_DATA_DIR
+#error "PPFOREST2_DATA_DIR must be defined"
 #endif
 
-static const std::string DATA_DIR = PPTREE_DATA_DIR;
+static const std::string DATA_DIR = PPFOREST2_DATA_DIR;
 
 TEST(Threading, ForestSameResultsSingleVsMulti) {
   #ifndef _OPENMP

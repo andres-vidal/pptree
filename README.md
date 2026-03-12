@@ -1,11 +1,11 @@
-# pptree
+# ppforest2
 
-[![C++ Tests](https://github.com/andres-vidal/pptree/actions/workflows/run-test.yml/badge.svg)](https://github.com/andres-vidal/pptree/actions/workflows/run-test.yml)
-[![R Package Check](https://github.com/andres-vidal/pptree/actions/workflows/run-r-check.yml/badge.svg)](https://github.com/andres-vidal/pptree/actions/workflows/run-r-check.yml)
+[![C++ Tests](https://github.com/andres-vidal/ppforest2/actions/workflows/run-test.yml/badge.svg)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-test.yml)
+[![R Package Check](https://github.com/andres-vidal/ppforest2/actions/workflows/run-r-check.yml/badge.svg)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-r-check.yml)
 
 > **Work in progress** — this repository contains ongoing research and development work. Interfaces and behavior are expected to evolve as the project matures.
 
-**pptree** is a fast, memory-efficient implementation of
+**ppforest2** is a fast, memory-efficient implementation of
 [Projection Pursuit Random Forests](https://www.tandfonline.com/doi/full/10.1080/10618600.2020.1870480),
 built on
 [Projection Pursuit (oblique) Decision Trees](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-7/issue-none/PPtree-Projection-pursuit-classification-tree/10.1214/13-EJS810.full).
@@ -19,35 +19,35 @@ Developed as a Bachelor's thesis project in Statistics at **Universidad de la Re
 
 **Key capabilities:** oblique splits via projection pursuit, multi-threaded forest training (OpenMP), cross-platform reproducibility with golden tests, multiple variable importance measures (projection-based, weighted, permutation), LDA/PDA optimization, OOB error estimation, and [parsnip](https://parsnip.tidymodels.org/) / tidymodels integration.
 
-**Documentation:** [andres-vidal.github.io/pptree](https://andres-vidal.github.io/pptree/) — [C++ API Reference](https://andres-vidal.github.io/pptree/main/cpp/) (Doxygen) · [R Package Reference](https://andres-vidal.github.io/pptree/main/r/) (pkgdown)
+**Documentation:** [andres-vidal.github.io/ppforest2](https://andres-vidal.github.io/ppforest2/) — [C++ API Reference](https://andres-vidal.github.io/ppforest2/main/cpp/) (Doxygen) · [R Package Reference](https://andres-vidal.github.io/ppforest2/main/r/) (pkgdown)
 
 ## Quick Start
 
 ### CLI
 
-Build and use the `pptree` command-line tool directly:
+Build and use the `ppforest2` command-line tool directly:
 
 ```bash
-# Compile the project into the .build folder, where the `pptree` executable is.
+# Compile the project into the .build folder, where the `ppforest2` executable is.
 make build
 
 # Train a forest on a CSV dataset and save the model
-pptree train --data data.csv --trees 100 --lambda 0.5 --save model.json
+ppforest2 train --data data.csv --trees 100 --lambda 0.5 --save model.json
 
 # Predict on new data using a saved model
-pptree predict --model model.json --data test.csv
+ppforest2 predict --model model.json --data test.csv
 
 # Evaluate with smart convergence (default)
-pptree evaluate --data data.csv --trees 100 --train-ratio 0.7
+ppforest2 evaluate --data data.csv --trees 100 --train-ratio 0.7
 
 # Evaluate with fixed iterations (disables convergence)
-pptree evaluate --data data.csv --trees 100 -i 10 --train-ratio 0.7
+ppforest2 evaluate --data data.csv --trees 100 -i 10 --train-ratio 0.7
 
 # Evaluate on simulated data (1000 rows, 10 features, 3 classes)
-pptree evaluate --simulate 1000x10x3 --trees 50
+ppforest2 evaluate --simulate 1000x10x3 --trees 50
 
 # Run performance benchmarks across scenarios
-pptree benchmark -s bench/default-scenarios.json
+ppforest2 benchmark -s bench/default-scenarios.json
 ```
 
 ### R
@@ -56,18 +56,18 @@ Install the R package (CRAN submission is planned once the package stabilizes):
 
 ```r
 # install.packages("devtools")
-devtools::install_github("https://github.com/andres-vidal/pptree", ref = "main-r")
+devtools::install_github("https://github.com/andres-vidal/ppforest2", ref = "main-r")
 ```
 
 ```r
-library(PPTree)
+library(ppforest2)
 
 # Single projection pursuit tree
-model <- PPTree(Type ~ ., data = iris)
+model <- pptr(Type ~ ., data = iris)
 predict(model, iris)
 
 # Random forest with 50 trees
-forest <- PPForest(Type ~ ., data = iris, size = 50)
+forest <- pprf(Type ~ ., data = iris, size = 50)
 predict(forest, iris)
 predict(forest, iris, type = "prob")   # vote proportions
 summary(forest)                        # variable importance & model info
@@ -89,7 +89,7 @@ plot(model, type = "boundaries")    # decision boundaries in feature space
 #   - 1 feature:  number-line plot with colored decision regions
 #   - 2 features: scatterplot with polygon regions and boundary lines
 #   - 3+ features: pairwise scatterplot matrix (lower triangle)
-model2 <- PPTree(x = iris[, 1:2], y = iris$Type)
+model2 <- pptr(x = iris[, 1:2], y = iris$Type)
 plot(model2, type = "boundaries")   # 2D boundary plot
 
 # Forest: importance across all trees, or inspect individual trees
@@ -103,7 +103,7 @@ Works with [parsnip](https://parsnip.tidymodels.org/) / tidymodels:
 ```r
 library(parsnip)
 
-spec <- pp_forest(trees = 50, mtry = 2) %>% set_engine("PPTree")
+spec <- pp_rand_forest(trees = 50, mtry = 2) %>% set_engine("ppforest2")
 fit <- spec %>% fit(Type ~ ., data = iris)
 predict(fit, iris, type = "prob")
 ```
@@ -114,9 +114,9 @@ The project is organized into a shared C++ core and language-specific bindings:
 
 - **C++ core** (`core/`) — All models, training algorithms, statistics, serialization, and CLI live here. This is the single source of truth for the implementation. External dependencies (Eigen, nlohmann/json, pcg, GoogleTest, Google Benchmark, CLI11, fmt, csv-parser) are declared in `core/Dependencies.cmake` and fetched automatically via CMake `FetchContent`.
 
-- **R package** (`bindings/R/PPTree/`) — Thin Rcpp layer that exposes the C++ core to R. Type conversions between R and C++ types are defined in `inst/include/PPTree.h`. Roxygen documentation and parsnip integration are R-only.
+- **R package** (`bindings/R/ppforest2/`) — Thin Rcpp layer that exposes the C++ core to R. Type conversions between R and C++ types are defined in `inst/include/ppforest2.h`. Roxygen documentation and parsnip integration are R-only.
 
-- **Visualization** (`core/src/models/Visualization.hpp/cpp` + `bindings/R/PPTree/R/plot.R`) — Split between C++ and R. C++ handles geometry: tree traversal visitors collect per-node data, clip decision boundary lines via parametric line clipping, and compute convex decision region polygons via Sutherland–Hodgman polygon clipping. R handles rendering via ggplot2, translating the C++ output into layers and assembling composite layouts (mosaic, pairwise facets, tree diagrams).
+- **Visualization** (`core/src/models/Visualization.hpp/cpp` + `bindings/R/ppforest2/R/plot.R`) — Split between C++ and R. C++ handles geometry: tree traversal visitors collect per-node data, clip decision boundary lines via parametric line clipping, and compute convex decision region polygons via Sutherland–Hodgman polygon clipping. R handles rendering via ggplot2, translating the C++ output into layers and assembling composite layouts (mosaic, pairwise facets, tree diagrams).
 
 - **Python bindings** — Planned.
 
@@ -156,16 +156,16 @@ make benchmark-vs REF=main         # Compare current branch against another ref 
 
 ```bash
 # Run scenarios from a JSON file
-pptree benchmark -s bench/default-scenarios.json
+ppforest2 benchmark -s bench/default-scenarios.json
 
 # Save results as JSON and CSV
-pptree benchmark -s bench/default-scenarios.json -o results.json --csv results.csv
+ppforest2 benchmark -s bench/default-scenarios.json -o results.json --csv results.csv
 
 # Compare against a baseline
-pptree benchmark -s bench/default-scenarios.json -b baseline.json
+ppforest2 benchmark -s bench/default-scenarios.json -b baseline.json
 
 # Override iteration count (forces fixed mode)
-pptree benchmark -s bench/default-scenarios.json -i 5
+ppforest2 benchmark -s bench/default-scenarios.json -i 5
 ```
 
 ### Smart Convergence
@@ -184,16 +184,16 @@ Use `-i N` to disable convergence and run exactly N iterations instead.
 
 ```bash
 # Default: smart convergence (runs until CV < 5%)
-pptree evaluate --simulate 1000x20x3 -t 50
+ppforest2 evaluate --simulate 1000x20x3 -t 50
 
 # Stricter threshold with warmup
-pptree evaluate --simulate 1000x20x3 -t 50 --warmup 2 --cv 0.03
+ppforest2 evaluate --simulate 1000x20x3 -t 50 --warmup 2 --cv 0.03
 
 # Tune convergence parameters
-pptree evaluate --simulate 1000x20x3 -t 50 --min-iterations 20 --stable-window 5
+ppforest2 evaluate --simulate 1000x20x3 -t 50 --min-iterations 20 --stable-window 5
 
 # Fixed iterations (disables convergence)
-pptree evaluate --simulate 1000x20x3 -t 50 -i 10
+ppforest2 evaluate --simulate 1000x20x3 -t 50 -i 10
 ```
 
 ### Scenario Format
@@ -251,15 +251,15 @@ All workflows share a single dependency cache in `.build/_deps/`, populated by `
 
 3. **`r-build`** — Removes the `.core` sentinel, regenerates `RcppExports.cpp`/`RcppExports.R` via `Rcpp::compileAttributes()`, and runs `R CMD build` to produce a source tarball.
 
-4. **`configure` / `configure.win`** — During `R CMD check` or `R CMD INSTALL`, the configure script detects the compiler, runs cmake + compile on the bundled core source, and places the static library in `inst/lib/`. The `PPTREE_FETCH_CACHE` environment variable can point to pre-downloaded sources to avoid re-fetching.
+4. **`configure` / `configure.win`** — During `R CMD check` or `R CMD INSTALL`, the configure script detects the compiler, runs cmake + compile on the bundled core source, and places the static library in `inst/lib/`. The `PPFOREST2_FETCH_CACHE` environment variable can point to pre-downloaded sources to avoid re-fetching.
 
 #### Development workflow (`devtools::load_all()`)
 
 For iterative development, the `.core` sentinel file in `src/` activates the dev path in Makevars. On each `devtools::load_all()`, Makevars delegates to `make r-build-core` which compiles the C++ core into `.r-build/` using R's compiler. cmake incremental builds ensure only changed files are recompiled. The static library, headers, and core source are copied into the R package for linking.
 
 ```r
-devtools::load_all("bindings/R/PPTree")   # edit C++ -> reload -> test
-devtools::test("bindings/R/PPTree")        # run testthat suite
+devtools::load_all("bindings/R/ppforest2")   # edit C++ -> reload -> test
+devtools::test("bindings/R/ppforest2")        # run testthat suite
 ```
 
 #### Compiler handling
@@ -268,7 +268,7 @@ On macOS, `R CMD config CXX17` may return the compiler with architecture flags (
 
 ### How `install_github` Works
 
-R packages installed via `devtools::install_github()` must have the package source at the repository root. Since pptree is a monorepo, a CI workflow (`update-main-r.yml`) maintains a separate `main-r` branch for this purpose:
+R packages installed via `devtools::install_github()` must have the package source at the repository root. Since ppforest2 is a monorepo, a CI workflow (`update-main-r.yml`) maintains a separate `main-r` branch for this purpose:
 
 1. On every push to `main`, CI runs `make r-build` and `make r-untar` to produce the self-contained R package source
 2. `git subtree split` extracts the package directory into the `main-r` branch

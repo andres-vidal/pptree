@@ -3,9 +3,9 @@
 #include "utils/Math.hpp"
 #include "utils/Macros.hpp"
 
-using namespace pptree;
-using namespace pptree::types;
-using namespace pptree::math;
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::math;
 
 TEST(Collinear, CollinearSameDirection) {
   Vector<float> a(3);

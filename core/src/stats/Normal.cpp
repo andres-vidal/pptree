@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   double Normal::gen_unif01(RNG &rng) {
     static constexpr uint64_t PRECISION = 53;
     static constexpr uint64_t MAX_BITS  = (1ULL << PRECISION) - 1;

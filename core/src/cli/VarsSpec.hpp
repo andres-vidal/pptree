@@ -15,7 +15,7 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /**
    * @brief Result of parsing a vars specification.
    *

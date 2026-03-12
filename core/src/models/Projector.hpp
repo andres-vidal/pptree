@@ -1,7 +1,7 @@
 #pragma once
 
 #include "utils/Types.hpp"
-namespace pptree::pp {
+namespace ppforest2::pp {
   /** @brief Column vector of projection coefficients (one per variable). */
   using Projector = types::FeatureVector;
 

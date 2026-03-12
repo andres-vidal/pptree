@@ -5,7 +5,7 @@
  */
 #include "cli/Evaluate.hpp"
 #include "cli/Train.hpp"
-#include "pptree.hpp"
+#include "ppforest2.hpp"
 
 #include <CLI/CLI.hpp>
 #include <fmt/format.h>
@@ -25,13 +25,13 @@
 
 #include <nlohmann/json.hpp>
 
-using namespace pptree;
-using namespace pptree::types;
-using namespace pptree::stats;
-using namespace pptree::io;
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
+using namespace ppforest2::io;
 using json = nlohmann::json;
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   CLI::App * setup_evaluate(CLI::App& app, CLIOptions& params) {
     auto sub      = app.add_subcommand("evaluate", "Train and evaluate a model");
     auto data_opt = sub->add_option("-d,--data", params.data_path, "CSV file")
@@ -110,7 +110,7 @@ namespace {
     ResponseVector &     tr_y,
     ResponseVector &     te_y,
     const CLIOptions&   params,
-    pptree::stats::RNG& rng) {
+    ppforest2::stats::RNG& rng) {
     // Run warmup iterations (discarded)
     if (params.convergence.warmup > 0) {
       out.indent();
@@ -154,8 +154,8 @@ namespace {
       const auto train_result = train_model(tr_x, tr_y, params, rng);
 
       times.push_back(static_cast<float>(train_result.duration));
-      tr_errors.push_back(pptree::stats::error_rate(train_result.model->predict(tr_x), tr_y));
-      te_errors.push_back(pptree::stats::error_rate(train_result.model->predict(te_x), te_y));
+      tr_errors.push_back(ppforest2::stats::error_rate(train_result.model->predict(tr_x), tr_y));
+      te_errors.push_back(ppforest2::stats::error_rate(train_result.model->predict(te_x), te_y));
 
       iterations_run = i + 1;
       out.progress(iterations_run, max_iters);
@@ -254,7 +254,7 @@ namespace {
       check_dir_not_exists(params.evaluate.export_path);
     }
 
-    pptree::stats::RNG rng(params.model.seed);
+    ppforest2::stats::RNG rng(params.model.seed);
     auto full_data = read_data(params, rng);
 
     init_params(params, full_data.x.cols());

@@ -1,10 +1,10 @@
-add_library(pptree-io OBJECT IO.cpp Presentation.cpp)
+add_library(ppforest2-io OBJECT IO.cpp Presentation.cpp)
 
-target_link_libraries(pptree-io PUBLIC
-  pptree-compile
+target_link_libraries(ppforest2-io PUBLIC
+  ppforest2-compile
   nlohmann_json::nlohmann_json
   csv
   fmt::fmt)
 
-target_include_directories(pptree-io PUBLIC
+target_include_directories(ppforest2-io PUBLIC
   ${csv_SOURCE_DIR}/include)

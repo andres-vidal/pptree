@@ -4,7 +4,7 @@
 
 #include "models/DRStrategy.hpp"
 
-namespace pptree::dr {
+namespace ppforest2::dr {
   /**
    * @brief No-op dimensionality reduction: selects all variables.
    *

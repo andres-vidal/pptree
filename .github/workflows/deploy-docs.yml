@@ -18,7 +18,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          working-directory: bindings/R/PPTree
+          working-directory: bindings/R/ppforest2
           extra-packages: any::devtools, any::pkgdown
 
       - name: Cache dev tools

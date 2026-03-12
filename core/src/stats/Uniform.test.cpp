@@ -74,7 +74,7 @@
 
 #include "stats/Uniform.hpp"
 
-using namespace pptree::stats;
+using namespace ppforest2::stats;
 
 // ---------------------------------------------------------------------------
 // Moment tests

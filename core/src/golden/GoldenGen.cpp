@@ -6,7 +6,7 @@
  * fixed seed, computes predictions, metrics, and variable importance, then
  * writes the results as a JSON golden file.
  */
-#include "pptree.hpp"
+#include "ppforest2.hpp"
 
 #include "utils/Types.hpp"
 #include "stats/DataPacket.hpp"
@@ -29,28 +29,28 @@
 #include <string>
 #include <vector>
 
-using namespace pptree;
-using namespace pptree::types;
-using namespace pptree::stats;
-using namespace pptree::io;
-using namespace pptree::serialization;
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
+using namespace ppforest2::io;
+using namespace ppforest2::serialization;
 using json = nlohmann::json;
 
-#ifndef PPTREE_DATA_DIR
-#error "PPTREE_DATA_DIR must be defined"
+#ifndef PPFOREST2_DATA_DIR
+#error "PPFOREST2_DATA_DIR must be defined"
 #endif
 
-#ifndef PPTREE_GOLDEN_DIR
-#error "PPTREE_GOLDEN_DIR must be defined"
+#ifndef PPFOREST2_GOLDEN_DIR
+#error "PPFOREST2_GOLDEN_DIR must be defined"
 #endif
 
-#ifndef PPTREE_PLATFORM
-#error "PPTREE_PLATFORM must be defined"
+#ifndef PPFOREST2_PLATFORM
+#error "PPFOREST2_PLATFORM must be defined"
 #endif
 
-static const std::string DATA_DIR   = PPTREE_DATA_DIR;
-static const std::string GOLDEN_DIR = PPTREE_GOLDEN_DIR;
-static const std::string PLATFORM   = PPTREE_PLATFORM;
+static const std::string DATA_DIR   = PPFOREST2_DATA_DIR;
+static const std::string GOLDEN_DIR = PPFOREST2_GOLDEN_DIR;
+static const std::string PLATFORM   = PPFOREST2_PLATFORM;
 
 struct GoldenConfig {
   std::string csv_path;

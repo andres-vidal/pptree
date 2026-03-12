@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <cmath>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
 namespace {
   std::string format_rss(double mb) {
     if (mb < 0) return "N/A";
@@ -30,11 +30,11 @@ namespace {
 
     // For time and RSS: negative = improvement (green), positive = regression (red)
     if (delta_pct < -1.0) {
-      return pptree::io::success(text);
+      return ppforest2::io::success(text);
     } else if (delta_pct > 1.0) {
-      return pptree::io::error(text);
+      return ppforest2::io::error(text);
     } else {
-      return pptree::io::muted(text);
+      return ppforest2::io::muted(text);
     }
   }
 
@@ -67,10 +67,10 @@ namespace {
 }
 
   void print_benchmark_table(
-    pptree::io::Output&               out,
+    ppforest2::io::Output&               out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
-    using namespace pptree::io;
+    using namespace ppforest2::io;
 
     bool has_baseline   = baseline.has_value();
     auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
@@ -211,14 +211,14 @@ namespace {
   }
 
   void write_results_json(const SuiteResult& result, const std::string& path) {
-    pptree::io::write_json_file(result.to_json(), path);
+    ppforest2::io::write_json_file(result.to_json(), path);
   }
 
   void print_benchmark_markdown(
-    pptree::io::Output&               out,
+    ppforest2::io::Output&               out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
-    using namespace pptree::io;
+    using namespace ppforest2::io;
 
     bool has_baseline   = baseline.has_value();
     auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};

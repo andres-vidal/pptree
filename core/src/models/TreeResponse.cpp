@@ -3,9 +3,9 @@
 
 #include <memory>
 
-using namespace pptree::types;
+using namespace ppforest2::types;
 
-namespace pptree {
+namespace ppforest2 {
   TreeResponse::TreeResponse(Response value) :
     value(value) {
   }

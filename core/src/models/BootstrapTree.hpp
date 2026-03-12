@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace pptree {
+namespace ppforest2 {
   struct BootstrapTree : public Tree {
     using Tree::Tree;
     using Ptr = std::unique_ptr<BootstrapTree>;

@@ -1,4 +1,4 @@
-url: https://andres-vidal.github.io/pptree/main/r/
+url: https://andres-vidal.github.io/ppforest2/main/r/
 
 template:
   bootstrap: 5
@@ -10,5 +10,5 @@ navbar:
   components:
     github:
       icon: fa-github
-      href: https://github.com/andres-vidal/pptree
+      href: https://github.com/andres-vidal/ppforest2
       aria-label: GitHub

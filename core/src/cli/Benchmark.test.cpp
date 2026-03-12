@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "cli/Benchmark.hpp"
 
-using namespace pptree::cli;
+using namespace ppforest2::cli;
 using json = nlohmann::json;
 
 class BenchmarkParsingTest : public ::testing::Test {};
@@ -183,7 +183,7 @@ TEST_F(BenchmarkParsingTest, NegativeNThrows) {
 }
 
 TEST_F(BenchmarkParsingTest, ParseDefaultScenariosFile) {
-  auto suite = parse_suite(std::string(PPTREE_BENCH_SCENARIOS));
+  auto suite = parse_suite(std::string(PPFOREST2_BENCH_SCENARIOS));
 
   EXPECT_GT(suite.scenarios.size(), 0u);
 

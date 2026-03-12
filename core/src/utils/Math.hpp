@@ -8,7 +8,7 @@
 #define APPROX_THRESHOLD 0.01
 
 /** @brief Numeric comparison utilities. */
-namespace pptree::math {
+namespace ppforest2::math {
   /**
    * @brief Check whether two scalars are approximately equal.
    *

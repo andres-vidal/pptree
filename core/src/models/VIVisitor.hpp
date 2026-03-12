@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace pptree {
+namespace ppforest2 {
   /**
    * @brief Visitor that accumulates per-variable contributions for VI2 and VI3.
    *

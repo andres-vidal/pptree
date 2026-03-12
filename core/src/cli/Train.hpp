@@ -17,7 +17,7 @@
 
 namespace CLI { class App; }
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /** @brief Register train subcommand options on @p app. */
   CLI::App * setup_train(CLI::App& app, CLIOptions& params);
 
@@ -26,7 +26,7 @@ namespace pptree::cli {
 
   /** @brief Result of a train operation containing the model and training duration. */
   struct TrainResult {
-    pptree::Model::Ptr model;
+    ppforest2::Model::Ptr model;
     long long duration;
   };
 
@@ -36,24 +36,24 @@ namespace pptree::cli {
    * If data_path is set, reads a CSV file; otherwise generates simulated data.
    * Ensures the response vector is contiguous (sorted by class).
    */
-  pptree::stats::DataPacket read_data(
+  ppforest2::stats::DataPacket read_data(
     const CLIOptions&   params,
-    pptree::stats::RNG& rng);
+    ppforest2::stats::RNG& rng);
 
   /**
    * @brief Train a single model (Forest or Tree) on the given dataset.
    */
   TrainResult train_model(
-    const pptree::types::FeatureMatrix&  x,
-    const pptree::types::ResponseVector& y,
+    const ppforest2::types::FeatureMatrix&  x,
+    const ppforest2::types::ResponseVector& y,
     const CLIOptions&                    params,
-    pptree::stats::RNG&                  rng);
+    ppforest2::stats::RNG&                  rng);
 
   /**
    * @brief Print the training configuration summary.
    */
   void print_configuration(
-    pptree::io::Output& out,
+    ppforest2::io::Output& out,
     const CLIOptions&   params,
     int                 n_train = 0,
     int                 n_test  = 0);

@@ -3,7 +3,7 @@
 #include "utils/Types.hpp"
 #include "models/PPStrategy.hpp"
 
-namespace pptree::pp {
+namespace ppforest2::pp {
   /**
    * @brief Generalized LDA projection pursuit strategy.
    *

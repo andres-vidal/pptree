@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /** @brief Model training parameters shared by train and evaluate. */
   struct ModelParams {
     int trees    = 100;

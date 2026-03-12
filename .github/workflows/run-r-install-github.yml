@@ -11,9 +11,9 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          working-directory: bindings/R/PPTree
+          working-directory: bindings/R/ppforest2
           extra-packages: any::devtools
-      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/pptree', ref='main-r')"
+      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/ppforest2', ref='main-r')"
   Mac:
     runs-on: macos-latest
     steps:
@@ -21,9 +21,9 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          working-directory: bindings/R/PPTree
+          working-directory: bindings/R/ppforest2
           extra-packages: any::devtools
-      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/pptree', ref='main-r')"
+      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/ppforest2', ref='main-r')"
   Windows:
     runs-on: windows-latest
     steps:
@@ -31,6 +31,6 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          working-directory: bindings/R/PPTree
+          working-directory: bindings/R/ppforest2
           extra-packages: any::devtools
-      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/pptree', ref='main-r')"
+      - run: Rscript -e "devtools::install_github('https://github.com/andres-vidal/ppforest2', ref='main-r')"

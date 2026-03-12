@@ -5,7 +5,7 @@
 #include <set>
 
 /** @brief Utility functions for std::map manipulation. */
-namespace pptree::utils {
+namespace ppforest2::utils {
   /**
    * @brief Invert a map: values become keys, original keys are grouped into sets.
    *

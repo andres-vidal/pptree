@@ -10,7 +10,7 @@
 #include <string>
 #include <utility>
 
-namespace pptree::io {
+namespace ppforest2::io {
   /**
    * @brief Return the current local time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SS).
    */

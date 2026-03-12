@@ -11,9 +11,9 @@
 #include <set>
 #include <vector>
 
-using namespace pptree::types;
+using namespace ppforest2::types;
 
-namespace pptree {
+namespace ppforest2 {
   // -------------------------------------------------------------------------
   // Helpers
   // -------------------------------------------------------------------------

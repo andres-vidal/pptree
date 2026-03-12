@@ -6,7 +6,7 @@
 #include "stats/Uniform.hpp"
 #include "utils/Invariant.hpp"
 
-namespace pptree::dr {
+namespace ppforest2::dr {
   /**
    * @brief Uniform random dimensionality reduction.
    *

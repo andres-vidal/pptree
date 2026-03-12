@@ -10,7 +10,7 @@
 
 
 
-namespace pptree::dr {
+namespace ppforest2::dr {
   /**
    * @brief Result of a dimensionality reduction step.
    *

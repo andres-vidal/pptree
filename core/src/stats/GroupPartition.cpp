@@ -2,9 +2,9 @@
 
 #include <stdexcept>
 
-using namespace pptree::types;
+using namespace ppforest2::types;
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   bool GroupPartition::is_contiguous(const GroupVector& y) {
     GroupSet visited;
 

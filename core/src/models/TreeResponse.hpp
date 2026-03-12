@@ -2,7 +2,7 @@
 
 #include "models/TreeNode.hpp"
 
-namespace pptree {
+namespace ppforest2 {
   /**
    * @brief Leaf node in a projection pursuit tree.
    *

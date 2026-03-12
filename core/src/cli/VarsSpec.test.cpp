@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "cli/VarsSpec.hpp"
 
-using pptree::cli::parse_vars;
+using ppforest2::cli::parse_vars;
 using json = nlohmann::json;
 
 // --- String overload ---

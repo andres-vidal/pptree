@@ -14,7 +14,7 @@
 
 #include <nlohmann/json.hpp>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /**
    * @brief Aggregated statistics across multiple training iterations.
    *
@@ -60,7 +60,7 @@ namespace pptree::cli {
    * @brief Print evaluation results (timing, errors, memory) to stdout.
    * @param stats The aggregated model statistics.
    */
-  void print_results(pptree::io::Output& out, const ModelStats& stats);
+  void print_results(ppforest2::io::Output& out, const ModelStats& stats);
 
   /**
    * @brief Print a ranked variable importance table to stdout.
@@ -74,7 +74,7 @@ namespace pptree::cli {
    * @param max_rows  Maximum number of rows to print (0 = all).
    */
   void print_variable_importance(
-    pptree::io::Output&       out,
+    ppforest2::io::Output&       out,
     const VariableImportance& vi,
     int                       max_rows = 20);
 
@@ -87,5 +87,5 @@ namespace pptree::cli {
    * @param out Output context.
    * @param cm  The confusion matrix to print.
    */
-  void print_confusion_matrix(pptree::io::Output& out, const stats::ConfusionMatrix& cm);
+  void print_confusion_matrix(ppforest2::io::Output& out, const stats::ConfusionMatrix& cm);
 }

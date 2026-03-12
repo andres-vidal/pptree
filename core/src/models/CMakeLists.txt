@@ -1,4 +1,4 @@
-add_library(pptree-models OBJECT
+add_library(ppforest2-models OBJECT
   Tree.cpp
   BootstrapTree.cpp
   Forest.cpp
@@ -10,4 +10,4 @@ add_library(pptree-models OBJECT
   VariableImportance.cpp
   Visualization.cpp)
 
-target_link_libraries(pptree-models PRIVATE pptree-compile)
+target_link_libraries(ppforest2-models PRIVATE ppforest2-compile)

@@ -7,11 +7,11 @@
 #include <utility>
 #include <vector>
 
-using namespace pptree::types;
-using namespace pptree::pp;
-using namespace pptree::stats;
+using namespace ppforest2::types;
+using namespace ppforest2::pp;
+using namespace ppforest2::stats;
 
-namespace pptree {
+namespace ppforest2 {
   TreeCondition::TreeCondition(
     Projector          projector,
     Threshold          threshold,

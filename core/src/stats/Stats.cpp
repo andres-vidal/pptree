@@ -6,9 +6,9 @@
 #include <vector>
 #include <Eigen/Dense>
 
-using namespace pptree::types;
+using namespace ppforest2::types;
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   void sort(FeatureMatrix& x, ResponseVector& y) {
     std::vector<int> indices(x.rows());
     std::iota(indices.begin(), indices.end(), 0);

@@ -11,10 +11,10 @@
 #include <omp.h>
 #endif
 
-using namespace pptree::stats;
-using namespace pptree::types;
+using namespace ppforest2::stats;
+using namespace ppforest2::types;
 
-namespace pptree {
+namespace ppforest2 {
   Forest Forest::train(
     const TrainingSpec &  training_spec,
     const FeatureMatrix & x,

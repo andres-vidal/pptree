@@ -3,9 +3,9 @@
 
 #include <Eigen/Dense>
 
-using namespace pptree::types;
+using namespace ppforest2::types;
 
-namespace pptree::serialization {
+namespace ppforest2::serialization {
   void JsonNodeVisitor::visit(const TreeCondition& node) {
     JsonNodeVisitor lower_visitor;
     node.lower->accept(lower_visitor);

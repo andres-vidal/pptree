@@ -5,7 +5,7 @@
 #include "cli/VarsSpec.hpp"
 #include "utils/Invariant.hpp"
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   VarsSpec parse_vars(const std::string& input) {
     auto slash_pos = input.find('/');
 

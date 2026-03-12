@@ -1,9 +1,9 @@
 #include "models/Projector.hpp"
 #include "utils/Math.hpp"
 
-using namespace pptree::types;
+using namespace ppforest2::types;
 
-namespace pptree::pp {
+namespace ppforest2::pp {
   Projector normalize(const Projector &projector) {
     Projector truncated = (projector.array().abs() < 1e-15).select(0, projector.array());
 

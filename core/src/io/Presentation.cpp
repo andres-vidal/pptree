@@ -11,7 +11,7 @@
 #include <numeric>
 #include <vector>
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   nlohmann::json ModelStats::to_json() const {
     nlohmann::json j = {
       { "runs",             tr_times.size() },
@@ -43,8 +43,8 @@ namespace pptree::cli {
     return j;
   }
 
-  void print_results(pptree::io::Output& out, const ModelStats& stats) {
-    using namespace pptree::io;
+  void print_results(ppforest2::io::Output& out, const ModelStats& stats) {
+    using namespace ppforest2::io;
 
     out.println("{}", emphasis("Evaluation results"));
     out.newline();
@@ -86,10 +86,10 @@ namespace pptree::cli {
   }
 
   void print_variable_importance(
-    pptree::io::Output&       out,
+    ppforest2::io::Output&       out,
     const VariableImportance& vi,
     int                       max_rows) {
-    using namespace pptree::io;
+    using namespace ppforest2::io;
 
     const auto& vi1   = vi.permuted;
     const auto& vi2   = vi.projections;
@@ -174,8 +174,8 @@ namespace pptree::cli {
     out.newline();
   }
 
-  void print_confusion_matrix(pptree::io::Output& out, const stats::ConfusionMatrix& cm) {
-    using namespace pptree::io;
+  void print_confusion_matrix(ppforest2::io::Output& out, const stats::ConfusionMatrix& cm) {
+    using namespace ppforest2::io;
 
     auto class_err = cm.class_errors();
 

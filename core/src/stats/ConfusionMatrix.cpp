@@ -11,9 +11,9 @@
 #include <set>
 #include <stdexcept>
 
-using namespace pptree::types;
+using namespace ppforest2::types;
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   std::map<int, int> get_labels_map(const ResponseVector& groups) {
     std::set<int> labels_set = unique(groups);
 

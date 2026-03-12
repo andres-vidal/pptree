@@ -6,10 +6,10 @@
 
 #include "utils/Macros.hpp"
 
-using namespace pptree;
-using namespace pptree::pp;
-using namespace pptree::stats;
-using namespace pptree::types;
+using namespace ppforest2;
+using namespace ppforest2::pp;
+using namespace ppforest2::stats;
+using namespace ppforest2::types;
 
 TEST(Projector, LDAOptimumProjectorTwoGroups1) {
   FeatureMatrix x = MAT(Feature, rows(10),

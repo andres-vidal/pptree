@@ -26,7 +26,7 @@
 #define pclose _pclose
 #endif
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   CLI::App * setup_benchmark(CLI::App& app, CLIOptions& params) {
     auto sub = app.add_subcommand("benchmark", "Run performance benchmarks across scenarios");
     sub->add_option("-s,--scenarios", params.benchmark.scenarios_path, "JSON scenarios file")
@@ -86,7 +86,7 @@ namespace {
     if (scenario_json.contains("trees")) s.trees = scenario_json["trees"].get<int>();
 
     if (scenario_json.contains("vars")) {
-      auto spec = pptree::cli::parse_vars(scenario_json["vars"]);
+      auto spec = ppforest2::cli::parse_vars(scenario_json["vars"]);
 
       if (spec.is_proportion) {
         s.vars = spec.value;
@@ -133,14 +133,14 @@ namespace {
   }
 
   /**
-   * @brief Build the `pptree evaluate` shell command for a scenario.
+   * @brief Build the `ppforest2 evaluate` shell command for a scenario.
    *
    * Constructs the full command string including simulated data shape,
    * model parameters, and iteration/convergence flags. Always runs
    * with @c -q and @c --no-color for clean JSON output.
    *
    * @param s            The scenario to evaluate.
-   * @param binary_path  Path to the pptree binary.
+   * @param binary_path  Path to the ppforest2 binary.
    * @param output_path  Where the subprocess writes its JSON results.
    */
   std::string build_evaluate_command(
@@ -185,7 +185,7 @@ namespace {
   }
 
   /**
-   * @brief Read and parse the JSON output written by `pptree evaluate`.
+   * @brief Read and parse the JSON output written by `ppforest2 evaluate`.
    *
    * Copies the scenario's data-shape fields (n, p, g, trees, vars) into
    * the result for reporting, then extracts timing and error metrics.
@@ -344,11 +344,11 @@ namespace {
     const Scenario&    scenario,
     const std::string& binary_path,
     bool               quiet) {
-    pptree::io::TempFile output;
+    ppforest2::io::TempFile output;
     output.clear();
     std::string cmd = build_evaluate_command(scenario, binary_path, output.path());
 
-    auto [ret, wall_ms] = pptree::io::measure_time_ms([&] {
+    auto [ret, wall_ms] = ppforest2::io::measure_time_ms([&] {
       return std::system(cmd.c_str());
     });
 
@@ -366,11 +366,11 @@ namespace {
     ProgressCallback      progress) {
     SuiteResult result;
     result.suite_name = suite.name;
-    result.timestamp  = pptree::io::now_iso8601();
+    result.timestamp  = ppforest2::io::now_iso8601();
 
     int total = static_cast<int>(suite.scenarios.size());
 
-    auto [_, total_ms] = pptree::io::measure_time_ms([&] {
+    auto [_, total_ms] = ppforest2::io::measure_time_ms([&] {
       for (int i = 0; i < total; ++i) {
         const auto& scenario = suite.scenarios[i];
 
@@ -395,7 +395,7 @@ namespace {
   }
 
   int run_benchmark(CLIOptions& params, const std::string& binary_path) {
-    using namespace pptree::io;
+    using namespace ppforest2::io;
 
     Output out(params.quiet);
 

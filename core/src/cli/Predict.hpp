@@ -8,7 +8,7 @@
 
 namespace CLI { class App; }
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   /** @brief Register predict subcommand options on @p app. */
   CLI::App * setup_predict(CLI::App& app, CLIOptions& params);
 

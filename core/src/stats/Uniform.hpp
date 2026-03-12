@@ -3,7 +3,7 @@
 #include <vector>
 #include "stats/Stats.hpp"
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   /**
    * @brief Discrete uniform random integer generator over [min, max].
    *

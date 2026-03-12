@@ -3,7 +3,7 @@
  * @brief Predict subcommand handler.
  */
 #include "cli/Predict.hpp"
-#include "pptree.hpp"
+#include "ppforest2.hpp"
 
 #include <CLI/CLI.hpp>
 #include <fmt/format.h>
@@ -20,13 +20,13 @@
 
 #include <nlohmann/json.hpp>
 
-using namespace pptree;
-using namespace pptree::types;
-using namespace pptree::stats;
-using namespace pptree::io;
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
+using namespace ppforest2::io;
 using json = nlohmann::json;
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   CLI::App * setup_predict(CLI::App& app, CLIOptions& params) {
     auto sub = app.add_subcommand("predict", "Load a model and predict on new data");
     sub->add_option("-M,--model", params.model_path, "Saved model JSON file")
@@ -41,7 +41,7 @@ namespace pptree::cli {
   }
 }
 
-namespace pptree::cli {
+namespace ppforest2::cli {
 namespace {
   json load_model(const std::string& path) {
     std::ifstream in(path);

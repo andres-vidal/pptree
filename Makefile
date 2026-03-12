@@ -11,7 +11,7 @@ PCG_HEADERS_PATH = ${BUILD_DIR}/_deps/pcg-src/include
 # and the current runner's CPU instruction set.
 CMAKE_EXTRA ?=
 ifdef CI
-CMAKE_EXTRA += -DPPTREE_NATIVE_ARCH=OFF
+CMAKE_EXTRA += -DPPFOREST2_NATIVE_ARCH=OFF
 endif
 
 clean:
@@ -21,13 +21,13 @@ fetch-deps:
 	@mkdir -p ${BUILD_DIR}
 	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" \
 		-DCMAKE_BUILD_TYPE=Release \
-		-DPPTREE_CORE_ONLY=ON \
+		-DPPFOREST2_CORE_ONLY=ON \
 		${CMAKE_EXTRA} ../core
 
 build:
 	@mkdir -p ${BUILD_DIR}
 	@cd ${BUILD_DIR} && cmake -G "Unix Makefiles" \
-		-DCMAKE_BUILD_TYPE=Release -DPPTREE_CORE_ONLY=OFF \
+		-DCMAKE_BUILD_TYPE=Release -DPPFOREST2_CORE_ONLY=OFF \
 		${CMAKE_EXTRA} ../core && make
 
 build-debug:
@@ -35,13 +35,13 @@ build-debug:
 	@cd ${BUILD_DIR_DEBUG} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ${CMAKE_EXTRA} ../core && make
 
 test: build
-	@cd ./$(BUILD_DIR) && ./pptree-test
+	@cd ./$(BUILD_DIR) && ./ppforest2-test
 
 test-debug: build-debug
-	@cd ./$(BUILD_DIR_DEBUG) && ./pptree-test
+	@cd ./$(BUILD_DIR_DEBUG) && ./ppforest2-test
 
 golden-regen: build
-	@cd ./$(BUILD_DIR) && ./pptree-golden-gen
+	@cd ./$(BUILD_DIR) && ./ppforest2-golden-gen
 
 # Targets for the Dev tools
 
@@ -80,9 +80,9 @@ cppclean: build
 
 # Targets for the R package
 
-R_PACKAGE_DIR = bindings/R/PPTree
+R_PACKAGE_DIR = bindings/R/ppforest2
 R_PACKAGE_VERSION = 0.0.0
-R_PACKAGE_TARBALL = PPTree_${R_PACKAGE_VERSION}.tar.gz
+R_PACKAGE_TARBALL = ppforest2_${R_PACKAGE_VERSION}.tar.gz
 R_CRAN_MIRROR = https://cran.rstudio.com/
 
 r-install-deps:
@@ -103,10 +103,10 @@ r-build-core: fetch-deps
 		-DCMAKE_CXX_COMPILER="$$R_CXX_COMPILER" \
 		-DCMAKE_CXX_FLAGS="$$R_CXX_EXTRA $$(R CMD config CXX17STD) $$(R CMD config CXX17FLAGS)" \
 		-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-		-DPPTREE_CORE_ONLY=ON ${CMAKE_EXTRA} \
+		-DPPFOREST2_CORE_ONLY=ON ${CMAKE_EXTRA} \
 		../core
-	@cd ${R_BUILD_DIR} && make pptree-core
-	@strip -S ${R_BUILD_DIR}/libpptree-core.a
+	@cd ${R_BUILD_DIR} && make ppforest2-core
+	@strip -S ${R_BUILD_DIR}/libppforest2-core.a
 
 r-clean:
 	@rm -rf \
@@ -120,8 +120,8 @@ r-clean:
 		${R_PACKAGE_DIR}/inst/include/nlohmann \
 		${R_PACKAGE_DIR}/inst/include/pcg_* \
 		${R_PACKAGE_DIR}/inst/golden \
-		PPTree_${R_PACKAGE_VERSION}.tar.gzm \
-		PPTree.Rcheck
+		ppforest2_${R_PACKAGE_VERSION}.tar.gzm \
+		ppforest2.Rcheck
 
 r-prepare: r-clean fetch-deps
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
@@ -143,13 +143,13 @@ r-build: r-clean
 	@make r-clean
 
 r-check: r-build
-	@PPTREE_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD check ${R_PACKAGE_TARBALL}
+	@PPFOREST2_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD check ${R_PACKAGE_TARBALL}
 
 r-check-cran: r-build
-	@PPTREE_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD check ${R_PACKAGE_TARBALL} --as-cran
+	@PPFOREST2_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD check ${R_PACKAGE_TARBALL} --as-cran
 
 r-install: r-build
-	@PPTREE_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD INSTALL ${R_PACKAGE_TARBALL}
+	@PPFOREST2_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD INSTALL ${R_PACKAGE_TARBALL}
 
 r-untar:
 	@tar -xvf ${R_PACKAGE_TARBALL}
@@ -172,7 +172,7 @@ docs-r:
 	@make r-build-core
 	@make r-prepare
 	@mkdir -p ${R_PACKAGE_DIR}/inst/lib
-	@cp ${R_BUILD_DIR}/libpptree-core.a ${R_PACKAGE_DIR}/inst/lib/
+	@cp ${R_BUILD_DIR}/libppforest2-core.a ${R_PACKAGE_DIR}/inst/lib/
 	@cp ${DOCS_DIR}/_pkgdown.yml ${R_PACKAGE_DIR}/_pkgdown.yml
 	@Rscript -e "pkgdown::build_site('${R_PACKAGE_DIR}', override=list(destination='../../../${DOCS_BUILD_DIR}/r'), preview=FALSE)"
 	@rm -f ${R_PACKAGE_DIR}/_pkgdown.yml
@@ -186,17 +186,17 @@ BENCH_SCENARIOS = bench/default-scenarios.json
 BENCH_REF ?= main
 
 benchmark: build
-	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS}
+	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS}
 
 benchmark-save: build
-	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -o bench/results.json --csv bench/results.csv
+	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS} -o bench/results.json --csv bench/results.csv
 
 benchmark-compare: build
-	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -b bench/results.json
+	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS} -b bench/results.json
 
 benchmark-vs: build
 	@echo "Building and benchmarking current branch..."
-	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -o bench/.current-results.json -q
+	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS} -o bench/.current-results.json -q
 	@echo "Setting up baseline (${BENCH_REF})..."
 	@git worktree add -f .bench-worktree ${BENCH_REF} 2>/dev/null || { echo "Error: Could not create worktree for ref '${BENCH_REF}'"; exit 1; }
 	@mkdir -p .bench-worktree/bench
@@ -204,8 +204,8 @@ benchmark-vs: build
 	@echo "Building baseline..."
 	@cd .bench-worktree && mkdir -p .build && cd .build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../core > /dev/null 2>&1 && make -j > /dev/null 2>&1
 	@echo "Running baseline benchmarks..."
-	@cd .bench-worktree && .build/pptree benchmark -s bench/default-scenarios.json -o bench/.baseline-results.json -q
+	@cd .bench-worktree && .build/ppforest2 benchmark -s bench/default-scenarios.json -o bench/.baseline-results.json -q
 	@echo ""
-	@${BUILD_DIR}/pptree benchmark -s ${BENCH_SCENARIOS} -b .bench-worktree/bench/.baseline-results.json
+	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS} -b .bench-worktree/bench/.baseline-results.json
 	@rm -f bench/.current-results.json
 	@git worktree remove -f .bench-worktree 2>/dev/null || true

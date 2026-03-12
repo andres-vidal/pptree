@@ -1,4 +1,4 @@
-add_library(pptree-stats OBJECT
+add_library(ppforest2-stats OBJECT
   Stats.cpp
   Uniform.cpp
   Normal.cpp
@@ -6,4 +6,4 @@ add_library(pptree-stats OBJECT
   ConfusionMatrix.cpp
   Simulation.cpp)
 
-target_link_libraries(pptree-stats PRIVATE pptree-compile)
+target_link_libraries(ppforest2-stats PRIVATE ppforest2-compile)

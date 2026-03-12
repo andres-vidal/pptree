@@ -5,7 +5,7 @@
 
 #include "stats/Stats.hpp"
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   /**
    * @brief Normal (Gaussian) random number generator.
    *

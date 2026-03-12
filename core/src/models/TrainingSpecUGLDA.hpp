@@ -3,7 +3,7 @@
 #include "models/TrainingSpec.hpp"
 #include "models/TrainingSpecVisitor.hpp"
 
-namespace pptree {
+namespace ppforest2 {
   /**
    * @brief UGLDA training specification with uniform variable selection.
    *

@@ -1,8 +1,8 @@
 /**
  * @file CLI.integration.test.cpp
- * @brief Integration tests for the pptree command-line interface.
+ * @brief Integration tests for the ppforest2 command-line interface.
  *
- * Each test spawns the pptree binary as a child process and checks its
+ * Each test spawns the ppforest2 binary as a child process and checks its
  * exit code and stdout output.  Temporary files (TempFile, TempDir) are
  * used for model and output artifacts; they are automatically cleaned up.
  */
@@ -21,21 +21,21 @@
 
 using json = nlohmann::json;
 
-#ifndef PPTREE_BINARY_PATH
-#error "PPTREE_BINARY_PATH must be defined"
+#ifndef PPFOREST2_BINARY_PATH
+#error "PPFOREST2_BINARY_PATH must be defined"
 #endif
 
-#ifndef PPTREE_DATA_DIR
-#error "PPTREE_DATA_DIR must be defined"
+#ifndef PPFOREST2_DATA_DIR
+#error "PPFOREST2_DATA_DIR must be defined"
 #endif
 
-#ifndef PPTREE_GOLDEN_DIR
-#error "PPTREE_GOLDEN_DIR must be defined"
+#ifndef PPFOREST2_GOLDEN_DIR
+#error "PPFOREST2_GOLDEN_DIR must be defined"
 #endif
 
-static const std::string BINARY     = PPTREE_BINARY_PATH;
-static const std::string DATA_DIR   = PPTREE_DATA_DIR;
-static const std::string GOLDEN_DIR = PPTREE_GOLDEN_DIR;
+static const std::string BINARY     = PPFOREST2_BINARY_PATH;
+static const std::string DATA_DIR   = PPFOREST2_DATA_DIR;
+static const std::string GOLDEN_DIR = PPFOREST2_GOLDEN_DIR;
 static const std::string IRIS_CSV   = DATA_DIR + "/iris.csv";
 static const std::string CRAB_CSV   = DATA_DIR + "/crab.csv";
 static const std::string WINE_CSV   = DATA_DIR + "/wine.csv";
@@ -57,7 +57,7 @@ struct ProcessResult {
 };
 
 /**
- * @brief Spawn the pptree binary with the given argument string.
+ * @brief Spawn the ppforest2 binary with the given argument string.
  *
  * Stderr is redirected to /dev/null (NUL on Windows) so only stdout
  * is captured.  The exit code is extracted via WEXITSTATUS on POSIX.
@@ -65,7 +65,7 @@ struct ProcessResult {
  * @param args  Space-separated argument string appended to the binary path.
  * @return ProcessResult with exit code and captured stdout.
  */
-static ProcessResult run_pptree(const std::string& args) {
+static ProcessResult run_ppforest2(const std::string& args) {
   #ifdef _WIN32
   std::string cmd = BINARY + " " + args + " 2>NUL";
   FILE *pipe      = _popen(cmd.c_str(), "r");
@@ -94,8 +94,8 @@ static ProcessResult run_pptree(const std::string& args) {
   return { exit_code, output };
 }
 
-using pptree::io::TempFile;
-using pptree::io::TempDir;
+using ppforest2::io::TempFile;
+using ppforest2::io::TempDir;
 
 // ---------------------------------------------------------------------------
 // Golden test helpers — load reference files and compare fields
@@ -139,7 +139,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
                                                                                                                                    \
           TempFile model;                                                                                                          \
           model.clear();                                                                                                           \
-          auto train = run_pptree(                                                                                                 \
+          auto train = run_ppforest2(                                                                                                 \
             "-q train -d " + csv + " -t 0"                                                                                         \
             " -l " + std::to_string(lambda) +                                                                                      \
             " -r " + std::to_string(seed) +                                                                                        \
@@ -154,7 +154,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
                                                                                                                                    \
           TempFile output;                                                                                                         \
           output.clear();                                                                                                          \
-          auto predict = run_pptree("-q predict -M " + model.path() + " -d " + csv + " -o " + output.path());                      \
+          auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + csv + " -o " + output.path());                      \
           ASSERT_EQ(predict.exit_code, 0) << "predict failed";                                                                     \
                                                                                                                                    \
           auto pred_json = json::parse(output.read());                                                                             \
@@ -169,7 +169,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
                                                                                                                                     \
           TempFile model;                                                                                                           \
           model.clear();                                                                                                            \
-          auto train = run_pptree(                                                                                                  \
+          auto train = run_ppforest2(                                                                                                  \
             "-q train -d " + csv +                                                                                                  \
             " -t " + std::to_string(n_trees) +                                                                                      \
             " -l " + std::to_string(lambda) +                                                                                       \
@@ -193,7 +193,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
                                                                                                                                     \
           TempFile output;                                                                                                          \
           output.clear();                                                                                                           \
-          auto predict = run_pptree("-q predict -M " + model.path() + " -d " + csv + " -o " + output.path());                       \
+          auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + csv + " -o " + output.path());                       \
           ASSERT_EQ(predict.exit_code, 0) << "predict failed";                                                                      \
                                                                                                                                     \
           auto pred_json = json::parse(output.read());                                                                              \
@@ -209,7 +209,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
 /* Basic forest training on iris data succeeds. */
 TEST(CLIIntegration, TrainWithIrisData) {
   TempDir dir;
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + dir.file("model.json"));
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + dir.file("model.json"));
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -217,7 +217,7 @@ TEST(CLIIntegration, TrainWithIrisData) {
 TEST(CLIIntegration, TrainAndSaveForest) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -238,7 +238,7 @@ TEST(CLIIntegration, TrainAndSaveForest) {
 TEST(CLIIntegration, TrainAndSaveSingleTree) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 0 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 0 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -249,7 +249,7 @@ TEST(CLIIntegration, TrainAndSaveSingleTree) {
 TEST(CLIIntegration, TrainDefaultSavesModel) {
   TempDir dir;
   // Run train from inside temp dir so default model.json goes there
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + dir.file("model.json"));
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + dir.file("model.json"));
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_TRUE(std::filesystem::exists(dir.file("model.json")));
 }
@@ -257,7 +257,7 @@ TEST(CLIIntegration, TrainDefaultSavesModel) {
 /* --no-save suppresses model file creation. */
 TEST(CLIIntegration, TrainNoSave) {
   TempDir dir;
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-save");
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-save");
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -265,19 +265,19 @@ TEST(CLIIntegration, TrainNoSave) {
 TEST(CLIIntegration, TrainCollisionFails) {
   TempFile model;
   // Don't clear - file exists, should fail
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
   EXPECT_NE(result.exit_code, 0);
 }
 
 /* Train without a data file must fail. */
 TEST(CLIIntegration, TrainMissingDataFails) {
-  auto result = run_pptree("train");
+  auto result = run_ppforest2("train");
   EXPECT_NE(result.exit_code, 0);
 }
 
 /* Train with a nonexistent data file must fail. */
 TEST(CLIIntegration, TrainNonexistentFileFails) {
-  auto result = run_pptree("train -d /nonexistent/file.csv");
+  auto result = run_ppforest2("train -d /nonexistent/file.csv");
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -287,7 +287,7 @@ TEST(CLIIntegration, TrainNonexistentFileFails) {
 
 /* Forest training prints OOB error and Variable Importance table by default. */
 TEST(CLIIntegration, TrainVIShownByDefault) {
-  auto result = run_pptree("train -d " + IRIS_CSV + " -t 5 -r 42 --no-save");
+  auto result = run_ppforest2("train -d " + IRIS_CSV + " -t 5 -r 42 --no-save");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_NE(result.stdout_output.find("OOB error"), std::string::npos);
   EXPECT_NE(result.stdout_output.find("Variable Importance"), std::string::npos);
@@ -298,7 +298,7 @@ TEST(CLIIntegration, TrainVIShownByDefault) {
 
 /* --no-metrics suppresses OOB error and Variable Importance table. */
 TEST(CLIIntegration, TrainNoMetricsSuppressesVI) {
-  auto result = run_pptree("train -d " + IRIS_CSV + " -t 5 -r 42 --no-save --no-metrics");
+  auto result = run_ppforest2("train -d " + IRIS_CSV + " -t 5 -r 42 --no-save --no-metrics");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_EQ(result.stdout_output.find("OOB error"), std::string::npos);
   EXPECT_EQ(result.stdout_output.find("Variable Importance"), std::string::npos);
@@ -308,7 +308,7 @@ TEST(CLIIntegration, TrainNoMetricsSuppressesVI) {
 TEST(CLIIntegration, TrainVISavedToJson) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -336,7 +336,7 @@ TEST(CLIIntegration, TrainVISavedToJson) {
 TEST(CLIIntegration, TrainNoMetricsNotInJson) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-metrics -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-metrics -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -346,7 +346,7 @@ TEST(CLIIntegration, TrainNoMetricsNotInJson) {
 
 /* Single tree training shows VI2 (projections) only, no OOB error. */
 TEST(CLIIntegration, TrainSingleTreeShowsVI2Only) {
-  auto result = run_pptree("train -d " + IRIS_CSV + " -t 0 --no-save");
+  auto result = run_ppforest2("train -d " + IRIS_CSV + " -t 0 --no-save");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_EQ(result.stdout_output.find("OOB error"), std::string::npos);
   EXPECT_NE(result.stdout_output.find("Variable Importance"), std::string::npos);
@@ -359,7 +359,7 @@ TEST(CLIIntegration, TrainSingleTreeShowsVI2Only) {
 TEST(CLIIntegration, TrainSingleTreeVISavedToJson) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 0 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 0 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -379,7 +379,7 @@ TEST(CLIIntegration, TrainSingleTreeVISavedToJson) {
 TEST(CLIIntegration, TrainVIQuietSuppressesTable) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_EQ(result.stdout_output.find("Variable Importance"), std::string::npos)
     << "Expected no VI table in quiet mode";
@@ -405,7 +405,7 @@ class PredictTest : public ::testing::Test {
     void SetUp() override {
       model_.reset(new TempFile());
       model_->clear();
-      auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model_->path());
+      auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model_->path());
       ASSERT_EQ(result.exit_code, 0);
     }
 
@@ -414,7 +414,7 @@ class PredictTest : public ::testing::Test {
 
 /* Default predict shows error rate and confusion matrix. */
 TEST_F(PredictTest, PredictWithSavedModel) {
-  auto result = run_pptree("predict -M " + model_->path() + " -d " + IRIS_CSV);
+  auto result = run_ppforest2("predict -M " + model_->path() + " -d " + IRIS_CSV);
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_FALSE(result.stdout_output.empty());
   EXPECT_NE(result.stdout_output.find("Error rate:"), std::string::npos);
@@ -423,7 +423,7 @@ TEST_F(PredictTest, PredictWithSavedModel) {
 
 /* --no-metrics in quiet mode suppresses error rate and confusion matrix. */
 TEST_F(PredictTest, PredictNoMetrics) {
-  auto result = run_pptree("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-metrics");
+  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-metrics");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_EQ(result.stdout_output.find("Error rate:"), std::string::npos);
   EXPECT_EQ(result.stdout_output.find("Confusion Matrix:"), std::string::npos);
@@ -432,7 +432,7 @@ TEST_F(PredictTest, PredictNoMetrics) {
 /* --no-metrics without quiet still suppresses metrics output. */
 TEST_F(PredictTest, PredictNoMetricsWithoutQuiet) {
   // --no-metrics without -q should also suppress metrics
-  auto result = run_pptree("--no-color predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-metrics");
+  auto result = run_ppforest2("--no-color predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-metrics");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_EQ(result.stdout_output.find("Error rate:"), std::string::npos);
   EXPECT_EQ(result.stdout_output.find("Confusion Matrix:"), std::string::npos);
@@ -443,7 +443,7 @@ TEST_F(PredictTest, PredictNoMetricsOutputFile) {
   // --no-metrics should omit error_rate and confusion_matrix from output file
   TempFile output;
   output.clear();
-  auto result = run_pptree("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-metrics -o " + output.path());
+  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-metrics -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -454,7 +454,7 @@ TEST_F(PredictTest, PredictNoMetricsOutputFile) {
 
 /* Without --output, predict shows a hint about --output. */
 TEST_F(PredictTest, PredictSuggestsOutputHint) {
-  auto result = run_pptree("--no-color predict -M " + model_->path() + " -d " + IRIS_CSV);
+  auto result = run_ppforest2("--no-color predict -M " + model_->path() + " -d " + IRIS_CSV);
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_NE(result.stdout_output.find("--output"), std::string::npos);
 }
@@ -463,14 +463,14 @@ TEST_F(PredictTest, PredictSuggestsOutputHint) {
 TEST_F(PredictTest, PredictNoHintWhenOutputUsed) {
   TempFile output;
   output.clear();
-  auto result = run_pptree("--no-color predict -M " + model_->path() + " -d " + IRIS_CSV + " -o " + output.path());
+  auto result = run_ppforest2("--no-color predict -M " + model_->path() + " -d " + IRIS_CSV + " -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_EQ(result.stdout_output.find("Tip:"), std::string::npos);
 }
 
 /* Quiet mode produces completely empty stdout. */
 TEST_F(PredictTest, PredictQuietSuppressesAll) {
-  auto result = run_pptree("-q predict -M " + model_->path() + " -d " + IRIS_CSV);
+  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV);
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_TRUE(result.stdout_output.empty());
 }
@@ -479,7 +479,7 @@ TEST_F(PredictTest, PredictQuietSuppressesAll) {
 TEST_F(PredictTest, PredictOutputFile) {
   TempFile output;
   output.clear();
-  auto result = run_pptree("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " -o " + output.path());
+  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -492,7 +492,7 @@ TEST_F(PredictTest, PredictOutputFile) {
 TEST_F(PredictTest, PredictOutputCollisionFails) {
   TempFile output;
   // Don't clear - file exists, should fail
-  auto result = run_pptree("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " -o " + output.path());
+  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " -o " + output.path());
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -502,13 +502,13 @@ TEST_F(PredictTest, PredictOutputCollisionFails) {
 
 /* Predict without -M must fail. */
 TEST(CLIIntegration, PredictMissingModelArgFails) {
-  auto result = run_pptree("predict -d " + IRIS_CSV);
+  auto result = run_ppforest2("predict -d " + IRIS_CSV);
   EXPECT_NE(result.exit_code, 0);
 }
 
 /* Predict with a nonexistent model file must fail. */
 TEST(CLIIntegration, PredictNonexistentModelFails) {
-  auto result = run_pptree("predict -M /nonexistent.json -d " + IRIS_CSV);
+  auto result = run_ppforest2("predict -M /nonexistent.json -d " + IRIS_CSV);
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -518,19 +518,19 @@ TEST(CLIIntegration, PredictNonexistentModelFails) {
 
 /* Basic evaluation with simulated data succeeds. */
 TEST(CLIIntegration, EvaluateWithSimulatedData) {
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
 }
 
 /* Evaluation with real iris data succeeds. */
 TEST(CLIIntegration, EvaluateWithIrisData) {
-  auto result = run_pptree("-q evaluate -d " + IRIS_CSV + " -t 5 -r 42 -i 1");
+  auto result = run_ppforest2("-q evaluate -d " + IRIS_CSV + " -t 5 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
 }
 
 /* Non-quiet evaluate prints results header and error metrics. */
 TEST(CLIIntegration, EvaluateTextOutput) {
-  auto result = run_pptree("evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
+  auto result = run_ppforest2("evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_NE(result.stdout_output.find("Evaluation results"), std::string::npos);
   EXPECT_NE(result.stdout_output.find("Train Err"), std::string::npos);
@@ -540,7 +540,7 @@ TEST(CLIIntegration, EvaluateTextOutput) {
 
 /* Evaluation with a single tree (t=0) succeeds. */
 TEST(CLIIntegration, EvaluateSingleTree) {
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 0 -r 42 -i 1");
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 0 -r 42 -i 1");
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -548,7 +548,7 @@ TEST(CLIIntegration, EvaluateSingleTree) {
 TEST(CLIIntegration, EvaluateOutputFile) {
   TempFile output;
   output.clear();
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -562,7 +562,7 @@ TEST(CLIIntegration, EvaluateExport) {
   TempDir dir;
   std::string export_path = dir.path() + "/exp1";
 
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -l 0.3 -i 1 -e " + export_path);
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -l 0.3 -i 1 -e " + export_path);
   EXPECT_EQ(result.exit_code, 0);
 
   EXPECT_TRUE(std::filesystem::exists(export_path + "/config.json"));
@@ -585,7 +585,7 @@ TEST(CLIIntegration, EvaluateExport) {
 TEST(CLIIntegration, EvaluateOutputCollisionFails) {
   TempFile output;
   // Don't clear - file exists, should fail
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -593,7 +593,7 @@ TEST(CLIIntegration, EvaluateOutputCollisionFails) {
 TEST(CLIIntegration, EvaluateExportCollisionFails) {
   TempDir dir;
   // dir.path() already exists, should fail
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -e " + dir.path());
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -e " + dir.path());
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -601,7 +601,7 @@ TEST(CLIIntegration, EvaluateExportCollisionFails) {
 TEST(CLIIntegration, EvaluateOutputHasIterationsArray) {
   TempFile output;
   output.clear();
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -616,7 +616,7 @@ TEST(CLIIntegration, EvaluateOutputHasIterationsArray) {
 TEST(CLIIntegration, EvaluateMultipleIterationsArray) {
   TempFile output;
   output.clear();
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 3 -o " + output.path());
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 3 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -634,13 +634,13 @@ TEST(CLIIntegration, EvaluateMultipleIterationsArray) {
 
 /* Evaluate without -d or --simulate must fail. */
 TEST(CLIIntegration, EvaluateNoDataSourceFails) {
-  auto result = run_pptree("evaluate");
+  auto result = run_ppforest2("evaluate");
   EXPECT_NE(result.exit_code, 0);
 }
 
 /* Malformed --simulate string must fail. */
 TEST(CLIIntegration, EvaluateInvalidSimFormatFails) {
-  auto result = run_pptree("evaluate --simulate 100x5");
+  auto result = run_ppforest2("evaluate --simulate 100x5");
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -650,7 +650,7 @@ TEST(CLIIntegration, EvaluateInvalidSimFormatFails) {
 
 /* --help prints subcommand names and exits successfully. */
 TEST(CLIIntegration, HelpFlag) {
-  auto result = run_pptree("--help");
+  auto result = run_ppforest2("--help");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_NE(result.stdout_output.find("train"), std::string::npos);
   EXPECT_NE(result.stdout_output.find("predict"), std::string::npos);
@@ -659,21 +659,21 @@ TEST(CLIIntegration, HelpFlag) {
 
 /* --version prints non-empty version string and exits successfully. */
 TEST(CLIIntegration, VersionFlag) {
-  auto result = run_pptree("--version");
+  auto result = run_ppforest2("--version");
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_FALSE(result.stdout_output.empty());
 }
 
 /* -q with evaluate produces completely empty stdout. */
 TEST(CLIIntegration, QuietSuppressesOutput) {
-  auto quiet_result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
+  auto quiet_result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(quiet_result.exit_code, 0);
   EXPECT_TRUE(quiet_result.stdout_output.empty());
 }
 
 /* -q suppresses "Evaluation results", "Train Error", "Test Error". */
 TEST(CLIIntegration, QuietSuppressesEvaluateResults) {
-  auto quiet_result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
+  auto quiet_result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
   EXPECT_EQ(quiet_result.exit_code, 0);
   EXPECT_EQ(quiet_result.stdout_output.find("Evaluation results"), std::string::npos);
   EXPECT_EQ(quiet_result.stdout_output.find("Train Error"), std::string::npos);
@@ -682,7 +682,7 @@ TEST(CLIIntegration, QuietSuppressesEvaluateResults) {
 
 /* No arguments at all exits with a non-zero code. */
 TEST(CLIIntegration, NoArgsExitsNonZero) {
-  auto result = run_pptree("");
+  auto result = run_ppforest2("");
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -700,7 +700,7 @@ TEST(CLIIntegration, ConfigFileApplied) {
 
   TempFile output;
   output.clear();
-  auto result = run_pptree("--config " + config.path() + " -q evaluate --simulate 50x3x2 -r 42 -i 1 -o " + output.path());
+  auto result = run_ppforest2("--config " + config.path() + " -q evaluate --simulate 50x3x2 -r 42 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -716,12 +716,12 @@ TEST(CLIIntegration, TrainThenPredict) {
   TempFile model;
   model.clear();
 
-  auto train_result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  auto train_result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
   ASSERT_EQ(train_result.exit_code, 0);
 
   TempFile output;
   output.clear();
-  auto predict_result = run_pptree("-q predict -M " + model.path() + " -d " + IRIS_CSV + " -o " + output.path());
+  auto predict_result = run_ppforest2("-q predict -M " + model.path() + " -d " + IRIS_CSV + " -o " + output.path());
   ASSERT_EQ(predict_result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -741,7 +741,7 @@ TEST(CLIIntegration, TrainThenPredict) {
 
 /* Fraction "1/3" is accepted end-to-end for evaluate. */
 TEST(CLIIntegration, EvaluateWithFractionVars) {
-  auto result = run_pptree("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -v 1/3");
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1 -v 1/3");
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -753,7 +753,7 @@ TEST(CLIIntegration, EvaluateWithFractionVars) {
 TEST(CLIIntegration, TrainSingleTreeConfigNoVars) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 0 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 0 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -771,12 +771,12 @@ TEST(CLIIntegration, TrainSingleTreeConfigNoVars) {
 TEST(CLIIntegration, PredictOutputNoErrorInConfusionMatrix) {
   TempFile model;
   model.clear();
-  auto train = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;
   output.clear();
-  auto predict = run_pptree("-q predict -M " + model.path() + " -d " + IRIS_CSV + " -o " + output.path());
+  auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + IRIS_CSV + " -o " + output.path());
   ASSERT_EQ(predict.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -794,7 +794,7 @@ TEST(CLIIntegration, TrainAutoAppendsJsonExtension) {
   TempDir dir;
   std::string path_no_ext = dir.file("mymodel");
 
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + path_no_ext);
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + path_no_ext);
   EXPECT_EQ(result.exit_code, 0);
   EXPECT_TRUE(std::filesystem::exists(path_no_ext + ".json"));
 }
@@ -820,7 +820,7 @@ CLI_GOLDEN_FOREST_TEST(GlassForestGLDA, "glass", "forest-glda-t10-s42",     GLAS
 TEST(CLIIntegration, TrainLambdaSaved) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -l 0.5 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -l 0.5 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -831,7 +831,7 @@ TEST(CLIIntegration, TrainLambdaSaved) {
 TEST(CLIIntegration, TrainVarsSaved) {
   TempFile model;
   model.clear();
-  auto result = run_pptree("-q train -d " + IRIS_CSV + " -t 5 -r 42 -v 2 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -v 2 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -848,7 +848,7 @@ TEST(CLIIntegration, CLIArgOverridesConfig) {
 
   TempFile model;
   model.clear();
-  auto result = run_pptree("--config " + config.path() + " -q train -d " + IRIS_CSV + " -t 7 -r 42 -s " + model.path());
+  auto result = run_ppforest2("--config " + config.path() + " -q train -d " + IRIS_CSV + " -t 7 -r 42 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -864,12 +864,12 @@ TEST(CLIIntegration, CLIArgOverridesConfig) {
 TEST(CLIIntegration, PredictWithSingleTreeModel) {
   TempFile model;
   model.clear();
-  auto train = run_pptree("-q train -d " + IRIS_CSV + " -t 0 -r 42 -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 0 -r 42 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;
   output.clear();
-  auto result = run_pptree("-q predict -M " + model.path() + " -d " + IRIS_CSV + " -o " + output.path());
+  auto result = run_ppforest2("-q predict -M " + model.path() + " -d " + IRIS_CSV + " -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -887,12 +887,12 @@ TEST(CLIIntegration, PredictWithSingleTreeModel) {
 TEST(CLIIntegration, TrainPredictCrab) {
   TempFile model;
   model.clear();
-  auto train = run_pptree("-q train -d " + CRAB_CSV + " -t 5 -r 42 -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + CRAB_CSV + " -t 5 -r 42 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;
   output.clear();
-  auto predict = run_pptree("-q predict -M " + model.path() + " -d " + CRAB_CSV + " -o " + output.path());
+  auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + CRAB_CSV + " -o " + output.path());
   EXPECT_EQ(predict.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -906,12 +906,12 @@ TEST(CLIIntegration, TrainPredictCrab) {
 TEST(CLIIntegration, TrainPredictWine) {
   TempFile model;
   model.clear();
-  auto train = run_pptree("-q train -d " + WINE_CSV + " -t 5 -r 42 -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + WINE_CSV + " -t 5 -r 42 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;
   output.clear();
-  auto predict = run_pptree("-q predict -M " + model.path() + " -d " + WINE_CSV + " -o " + output.path());
+  auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + WINE_CSV + " -o " + output.path());
   EXPECT_EQ(predict.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -951,13 +951,13 @@ static TempFile write_scenarios() {
 /* Benchmark runs successfully with a scenarios file. */
 TEST(CLIIntegration, BenchmarkRunsSuccessfully) {
   auto scenarios = write_scenarios();
-  auto result    = run_pptree("-q --no-color benchmark -s " + scenarios.path());
+  auto result    = run_ppforest2("-q --no-color benchmark -s " + scenarios.path());
   EXPECT_EQ(result.exit_code, 0);
 }
 
 /* Benchmark without -s must fail. */
 TEST(CLIIntegration, BenchmarkNoScenariosFails) {
-  auto result = run_pptree("-q --no-color benchmark");
+  auto result = run_ppforest2("-q --no-color benchmark");
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -968,7 +968,7 @@ TEST(CLIIntegration, BenchmarkInvalidScenariosFails) {
     std::ofstream out(bad.path());
     out << "not valid json";
   }
-  auto result = run_pptree("-q --no-color benchmark -s " + bad.path());
+  auto result = run_ppforest2("-q --no-color benchmark -s " + bad.path());
   EXPECT_NE(result.exit_code, 0);
 }
 
@@ -978,7 +978,7 @@ TEST(CLIIntegration, BenchmarkJsonOutput) {
   TempFile output;
   output.clear();
 
-  auto result = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " -o " + output.path());
+  auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -1005,7 +1005,7 @@ TEST(CLIIntegration, BenchmarkCsvOutput) {
   TempFile csv_out(".csv");
   csv_out.clear();
 
-  auto result = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " --csv " + csv_out.path());
+  auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " --csv " + csv_out.path());
   EXPECT_EQ(result.exit_code, 0);
 
   std::ifstream in(csv_out.path());
@@ -1031,11 +1031,11 @@ TEST(CLIIntegration, BenchmarkBaselineComparison) {
   // First run: produce baseline
   TempFile baseline;
   baseline.clear();
-  auto run1 = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " -o " + baseline.path());
+  auto run1 = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -o " + baseline.path());
   ASSERT_EQ(run1.exit_code, 0);
 
   // Second run: compare against baseline
-  auto run2 = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " -b " + baseline.path());
+  auto run2 = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -b " + baseline.path());
   EXPECT_EQ(run2.exit_code, 0);
 }
 
@@ -1045,7 +1045,7 @@ TEST(CLIIntegration, BenchmarkIterationOverride) {
   TempFile output;
   output.clear();
 
-  auto result = run_pptree("-q --no-color benchmark -s " + scenarios.path() + " -i 2 -o " + output.path());
+  auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -i 2 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -1056,6 +1056,6 @@ TEST(CLIIntegration, BenchmarkIterationOverride) {
 
 /* Benchmark with missing scenarios file must fail. */
 TEST(CLIIntegration, BenchmarkMissingFileFails) {
-  auto result = run_pptree("-q --no-color benchmark -s /nonexistent/path.json");
+  auto result = run_ppforest2("-q --no-color benchmark -s /nonexistent/path.json");
   EXPECT_NE(result.exit_code, 0);
 }

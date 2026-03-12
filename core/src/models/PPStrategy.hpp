@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 
-namespace pptree::pp {
+namespace ppforest2::pp {
   /**
    * @brief Result of a projection pursuit optimization step.
    */

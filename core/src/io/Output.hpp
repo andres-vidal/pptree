@@ -15,7 +15,7 @@
 #include <functional>
 #include <string>
 
-namespace pptree::io {
+namespace ppforest2::io {
   /**
    * @brief Quiet-aware, indentation-aware output context.
    *

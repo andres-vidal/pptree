@@ -13,7 +13,7 @@
 #include <sstream>
 #include <iomanip>
 
-namespace pptree {
+namespace ppforest2 {
   /** @name NodeDataVisitor Implementation
    *
    * Traverses the tree in pre-order, routing observations by the split

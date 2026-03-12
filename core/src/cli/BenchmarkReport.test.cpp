@@ -10,7 +10,7 @@
 #include <filesystem>
 #include <sstream>
 
-using namespace pptree::cli;
+using namespace ppforest2::cli;
 
 class BenchmarkReportTest : public ::testing::Test {
   protected:
@@ -61,7 +61,7 @@ class BenchmarkReportTest : public ::testing::Test {
 
 TEST_F(BenchmarkReportTest, WriteAndReadJson) {
   auto result      = make_sample_result();
-  std::string path = (std::filesystem::temp_directory_path() / "pptree-test-report.json").string();
+  std::string path = (std::filesystem::temp_directory_path() / "ppforest2-test-report.json").string();
 
   write_results_json(result, path);
 
@@ -80,7 +80,7 @@ TEST_F(BenchmarkReportTest, WriteAndReadJson) {
 
 TEST_F(BenchmarkReportTest, WriteCsv) {
   auto result      = make_sample_result();
-  std::string path = (std::filesystem::temp_directory_path() / "pptree-test-report.csv").string();
+  std::string path = (std::filesystem::temp_directory_path() / "ppforest2-test-report.csv").string();
 
   write_results_csv(result, path);
 
@@ -112,7 +112,7 @@ TEST_F(BenchmarkReportTest, WriteCsv) {
 
 TEST_F(BenchmarkReportTest, FormatMarkdownWithoutBaseline) {
   auto result = make_sample_result();
-  pptree::io::Output out(false);
+  ppforest2::io::Output out(false);
 
   testing::internal::CaptureStdout();
   print_benchmark_markdown(out, result);
@@ -148,7 +148,7 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithBaseline) {
   baseline.results[0].mean_time_ms = 15.0;   // current is 12.3 → improvement
   baseline.results[1].mean_time_ms = 400.0;  // current is 500.0 → regression
 
-  pptree::io::Output out(false);
+  ppforest2::io::Output out(false);
 
   testing::internal::CaptureStdout();
   print_benchmark_markdown(out, current, baseline);

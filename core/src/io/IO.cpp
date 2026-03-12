@@ -23,7 +23,7 @@
 #include <sys/resource.h>
 #endif
 
-namespace pptree::io {
+namespace ppforest2::io {
   std::string ensure_json_extension(const std::string& path) {
     if (path.size() >= 5 && path.substr(path.size() - 5) == ".json") {
       return path;

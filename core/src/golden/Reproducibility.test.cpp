@@ -29,26 +29,26 @@
 #include <string>
 #include <vector>
 
-using namespace pptree;
-using namespace pptree::types;
-using namespace pptree::stats;
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
 using json = nlohmann::json;
 
-#ifndef PPTREE_DATA_DIR
-#error "PPTREE_DATA_DIR must be defined"
+#ifndef PPFOREST2_DATA_DIR
+#error "PPFOREST2_DATA_DIR must be defined"
 #endif
 
-#ifndef PPTREE_GOLDEN_DIR
-#error "PPTREE_GOLDEN_DIR must be defined"
+#ifndef PPFOREST2_GOLDEN_DIR
+#error "PPFOREST2_GOLDEN_DIR must be defined"
 #endif
 
-#ifndef PPTREE_PLATFORM
-#error "PPTREE_PLATFORM must be defined"
+#ifndef PPFOREST2_PLATFORM
+#error "PPFOREST2_PLATFORM must be defined"
 #endif
 
-static const std::string DATA_DIR   = PPTREE_DATA_DIR;
-static const std::string GOLDEN_DIR = PPTREE_GOLDEN_DIR;
-static const std::string PLATFORM   = PPTREE_PLATFORM;
+static const std::string DATA_DIR   = PPFOREST2_DATA_DIR;
+static const std::string GOLDEN_DIR = PPFOREST2_GOLDEN_DIR;
+static const std::string PLATFORM   = PPFOREST2_PLATFORM;
 
 // ---------------------------------------------------------------------------
 // Utilities

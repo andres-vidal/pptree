@@ -1,6 +1,6 @@
 #pragma once
 
-namespace pptree {
+namespace ppforest2 {
   struct TreeCondition;
   struct TreeResponse;
 

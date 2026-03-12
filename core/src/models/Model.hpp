@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace pptree {
+namespace ppforest2 {
   struct ModelVisitor;
   /**
    * @brief Abstract base class for predictive models (trees and forests).

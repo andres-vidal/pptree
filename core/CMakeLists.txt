@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(pptree VERSION 0.0.0)
+project(ppforest2 VERSION 0.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,32 +8,32 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Platform detection for golden files
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set(PPTREE_OS "linux")
+  set(PPFOREST2_OS "linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  set(PPTREE_OS "macos")
+  set(PPFOREST2_OS "macos")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  set(PPTREE_OS "windows")
+  set(PPFOREST2_OS "windows")
 else()
-  set(PPTREE_OS "unknown")
+  set(PPFOREST2_OS "unknown")
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(PPTREE_COMPILER "gcc")
+  set(PPFOREST2_COMPILER "gcc")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(PPTREE_COMPILER "clang")
+  set(PPFOREST2_COMPILER "clang")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  set(PPTREE_COMPILER "msvc")
+  set(PPFOREST2_COMPILER "msvc")
 else()
-  set(PPTREE_COMPILER "unknown")
+  set(PPFOREST2_COMPILER "unknown")
 endif()
 
-set(PPTREE_PLATFORM "${PPTREE_OS}-${PPTREE_COMPILER}")
+set(PPFOREST2_PLATFORM "${PPFOREST2_OS}-${PPFOREST2_COMPILER}")
 
-option(PPTREE_DOUBLE_PRECISION "Use double precision for feature data" OFF)
-option(PPTREE_CORE_ONLY "Build only the core library, skip CLI, tests, and benchmarks" OFF)
-option(PPTREE_NATIVE_ARCH "Use -march=native for CPU-specific optimization" ON)
-if(PPTREE_DOUBLE_PRECISION)
-  add_compile_definitions(PPTREE_DOUBLE_PRECISION)
+option(PPFOREST2_DOUBLE_PRECISION "Use double precision for feature data" OFF)
+option(PPFOREST2_CORE_ONLY "Build only the core library, skip CLI, tests, and benchmarks" OFF)
+option(PPFOREST2_NATIVE_ARCH "Use -march=native for CPU-specific optimization" ON)
+if(PPFOREST2_DOUBLE_PRECISION)
+  add_compile_definitions(PPFOREST2_DOUBLE_PRECISION)
 endif()
 
 add_compile_definitions(EIGEN_DONT_PARALLELIZE)
@@ -44,7 +44,7 @@ if(WIN32)
   add_compile_definitions(EIGEN_DONT_VECTORIZE)
 endif()
 
-if(PPTREE_NATIVE_ARCH AND NOT CMAKE_BUILD_TYPE MATCHES Debug)
+if(PPFOREST2_NATIVE_ARCH AND NOT CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_options(-march=native)
 endif()
 
@@ -101,20 +101,20 @@ endif()
 include(Dependencies.cmake)
 
 # ---------------------------------------------------------------------------
-# Common compile interface for all pptree OBJECT libraries
+# Common compile interface for all ppforest2 OBJECT libraries
 # ---------------------------------------------------------------------------
-add_library(pptree-compile INTERFACE)
+add_library(ppforest2-compile INTERFACE)
 
-target_include_directories(pptree-compile INTERFACE
+target_include_directories(ppforest2-compile INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-target_link_libraries(pptree-compile INTERFACE
+target_link_libraries(ppforest2-compile INTERFACE
   Eigen3::Eigen
   pcg_lib)
 
 if(OpenMP_FOUND)
-  target_link_libraries(pptree-compile INTERFACE OpenMP::OpenMP_CXX)
+  target_link_libraries(ppforest2-compile INTERFACE OpenMP::OpenMP_CXX)
 endif()
 
 # ---------------------------------------------------------------------------
@@ -129,38 +129,38 @@ add_subdirectory(src/io)
 # ---------------------------------------------------------------------------
 # Core library (composed from OBJECT libraries)
 # ---------------------------------------------------------------------------
-add_library(pptree-core
-  $<TARGET_OBJECTS:pptree-models>
-  $<TARGET_OBJECTS:pptree-stats>
-  $<TARGET_OBJECTS:pptree-utils>
-  $<TARGET_OBJECTS:pptree-io>)
+add_library(ppforest2-core
+  $<TARGET_OBJECTS:ppforest2-models>
+  $<TARGET_OBJECTS:ppforest2-stats>
+  $<TARGET_OBJECTS:ppforest2-utils>
+  $<TARGET_OBJECTS:ppforest2-io>)
 
-target_link_libraries(pptree-core PUBLIC pptree-compile)
+target_link_libraries(ppforest2-core PUBLIC ppforest2-compile)
 
 if(Jemalloc_FOUND)
   message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")
-  target_link_libraries(pptree-core PRIVATE PkgConfig::Jemalloc)
+  target_link_libraries(ppforest2-core PRIVATE PkgConfig::Jemalloc)
 else()
   message(WARNING "Jemalloc not found. Program could be unstable on highly multi-threaded operations.")
 endif()
 
-if(NOT PPTREE_CORE_ONLY)
+if(NOT PPFOREST2_CORE_ONLY)
   # ---------------------------------------------------------------------------
   # CLI
   # ---------------------------------------------------------------------------
   add_subdirectory(src/cli)
 
-  add_executable(pptree src/cli/CLI.cpp $<TARGET_OBJECTS:pptree-cli>)
-  target_include_directories(pptree PRIVATE ${csv_SOURCE_DIR}/include)
-  target_link_libraries(pptree pptree-core pptree-serialization nlohmann_json::nlohmann_json csv CLI11::CLI11 fmt::fmt)
-  target_compile_definitions(pptree PRIVATE PPTREE_VERSION="${PROJECT_VERSION}")
+  add_executable(ppforest2 src/cli/CLI.cpp $<TARGET_OBJECTS:ppforest2-cli>)
+  target_include_directories(ppforest2 PRIVATE ${csv_SOURCE_DIR}/include)
+  target_link_libraries(ppforest2 ppforest2-core ppforest2-serialization nlohmann_json::nlohmann_json csv CLI11::CLI11 fmt::fmt)
+  target_compile_definitions(ppforest2 PRIVATE PPFOREST2_VERSION="${PROJECT_VERSION}")
 
   # ---------------------------------------------------------------------------
   # Tests
   # ---------------------------------------------------------------------------
   enable_testing()
 
-  set(PPTREE_TEST_SRC
+  set(PPFOREST2_TEST_SRC
     src/test.cpp
     src/models/Tree.test.cpp
     src/models/Forest.test.cpp
@@ -184,53 +184,53 @@ if(NOT PPTREE_CORE_ONLY)
     src/cli/Benchmark.test.cpp
     src/cli/BenchmarkReport.test.cpp)
 
-  add_executable(pptree-test ${PPTREE_TEST_SRC} $<TARGET_OBJECTS:pptree-cli>)
+  add_executable(ppforest2-test ${PPFOREST2_TEST_SRC} $<TARGET_OBJECTS:ppforest2-cli>)
 
-  target_link_libraries(pptree-test
-    pptree-core
-    pptree-serialization
+  target_link_libraries(ppforest2-test
+    ppforest2-core
+    ppforest2-serialization
     nlohmann_json::nlohmann_json
     gtest
     CLI11::CLI11
     csv
     fmt::fmt)
 
-  target_include_directories(pptree-test PRIVATE
+  target_include_directories(ppforest2-test PRIVATE
     ${csv_SOURCE_DIR}/include
     ${gtest_SOURCE_DIR}/include
     ${gtest_SOURCE_DIR})
 
-  target_compile_definitions(pptree-test PRIVATE
-    PPTREE_BINARY_PATH="${CMAKE_BINARY_DIR}/pptree"
-    PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
-    PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
-    PPTREE_FIXTURES_DIR="${CMAKE_SOURCE_DIR}/../fixtures"
-    PPTREE_BENCH_SCENARIOS="${CMAKE_SOURCE_DIR}/../bench/default-scenarios.json"
-    PPTREE_PLATFORM="${PPTREE_PLATFORM}"
-    PPTREE_VERSION="${PROJECT_VERSION}")
+  target_compile_definitions(ppforest2-test PRIVATE
+    PPFOREST2_BINARY_PATH="${CMAKE_BINARY_DIR}/ppforest2"
+    PPFOREST2_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
+    PPFOREST2_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
+    PPFOREST2_FIXTURES_DIR="${CMAKE_SOURCE_DIR}/../fixtures"
+    PPFOREST2_BENCH_SCENARIOS="${CMAKE_SOURCE_DIR}/../bench/default-scenarios.json"
+    PPFOREST2_PLATFORM="${PPFOREST2_PLATFORM}"
+    PPFOREST2_VERSION="${PROJECT_VERSION}")
 
-  add_dependencies(pptree-test pptree)
+  add_dependencies(ppforest2-test ppforest2)
 
   include(GoogleTest)
-  gtest_discover_tests(pptree-test DISCOVERY_MODE PRE_TEST)
+  gtest_discover_tests(ppforest2-test DISCOVERY_MODE PRE_TEST)
 
   # ---------------------------------------------------------------------------
   # Golden file generator
   # ---------------------------------------------------------------------------
-  add_executable(pptree-golden-gen src/golden/GoldenGen.cpp)
+  add_executable(ppforest2-golden-gen src/golden/GoldenGen.cpp)
 
-  target_link_libraries(pptree-golden-gen
-    pptree-core
-    pptree-serialization
+  target_link_libraries(ppforest2-golden-gen
+    ppforest2-core
+    ppforest2-serialization
     nlohmann_json::nlohmann_json
     csv
     fmt::fmt)
 
-  target_include_directories(pptree-golden-gen PRIVATE
+  target_include_directories(ppforest2-golden-gen PRIVATE
     ${csv_SOURCE_DIR}/include)
 
-  target_compile_definitions(pptree-golden-gen PRIVATE
-    PPTREE_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
-    PPTREE_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
-    PPTREE_PLATFORM="${PPTREE_PLATFORM}")
+  target_compile_definitions(ppforest2-golden-gen PRIVATE
+    PPFOREST2_DATA_DIR="${CMAKE_SOURCE_DIR}/../data"
+    PPFOREST2_GOLDEN_DIR="${CMAKE_SOURCE_DIR}/../golden"
+    PPFOREST2_PLATFORM="${PPFOREST2_PLATFORM}")
 endif()

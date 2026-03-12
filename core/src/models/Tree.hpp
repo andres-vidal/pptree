@@ -7,7 +7,7 @@
 #include "models/TrainingSpec.hpp"
 
 
-namespace pptree {
+namespace ppforest2 {
   /**
    * @brief A single projection pursuit decision tree.
    *

@@ -3,7 +3,7 @@
  * @brief Model training utilities and train subcommand handler.
  */
 #include "cli/Train.hpp"
-#include "pptree.hpp"
+#include "ppforest2.hpp"
 
 #include <CLI/CLI.hpp>
 #include <fmt/format.h>
@@ -21,17 +21,17 @@
 
 #include <nlohmann/json.hpp>
 
-using namespace pptree;
-using namespace pptree::types;
-using namespace pptree::stats;
-using namespace pptree::io;
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
+using namespace ppforest2::io;
 using json = nlohmann::json;
 
-using pptree::variable_importance_permuted;
-using pptree::variable_importance_projections;
-using pptree::variable_importance_weighted_projections;
+using ppforest2::variable_importance_permuted;
+using ppforest2::variable_importance_projections;
+using ppforest2::variable_importance_weighted_projections;
 
-namespace pptree::cli {
+namespace ppforest2::cli {
   void add_model_options(CLI::App *sub, ModelParams& model) {
     sub->add_option("-t,--trees", model.trees, "Number of trees (default: 100, 0 for single tree)")
     ->check(CLI::NonNegativeNumber);
@@ -58,7 +58,7 @@ namespace pptree::cli {
   }
 }
 
-namespace pptree::cli {
+namespace ppforest2::cli {
 namespace {
   std::string default_tag(bool is_default) {
     if (!is_default) return "";
@@ -140,7 +140,7 @@ namespace {
     out.newline();
   }
 
-  DataPacket read_data(const CLIOptions& params, pptree::stats::RNG& rng) {
+  DataPacket read_data(const CLIOptions& params, ppforest2::stats::RNG& rng) {
     if (!params.data_path.empty()) {
       try {
         return read_csv_sorted(params.data_path);
@@ -171,7 +171,7 @@ namespace {
     const FeatureMatrix&  x,
     const ResponseVector& y,
     const CLIOptions&     params,
-    pptree::stats::RNG&   rng) {
+    ppforest2::stats::RNG&   rng) {
     TrainingSpec::Ptr spec;
     std::function<Model::Ptr()> fact;
 
@@ -200,7 +200,7 @@ namespace {
       check_file_not_exists(params.save_path);
     }
 
-    pptree::stats::RNG rng(params.model.seed);
+    ppforest2::stats::RNG rng(params.model.seed);
     auto data = read_data(params, rng);
 
     init_params(params, data.x.cols());

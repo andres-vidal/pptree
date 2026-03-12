@@ -6,7 +6,7 @@
 #include <set>
 #include <vector>
 
-namespace pptree::stats {
+namespace ppforest2::stats {
   /**
    * @brief Bundled dataset: features, responses, and class labels.
    *

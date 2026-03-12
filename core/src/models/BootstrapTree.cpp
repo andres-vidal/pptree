@@ -4,10 +4,10 @@
 #include <set>
 #include <Eigen/Dense>
 
-using namespace pptree::stats;
-using namespace pptree::types;
+using namespace ppforest2::stats;
+using namespace ppforest2::types;
 
-namespace pptree {
+namespace ppforest2 {
   BootstrapTree::Ptr BootstrapTree::train(
     TrainingSpec const&   training_spec,
     FeatureMatrix const&  x,

@@ -13,11 +13,11 @@
 #include "stats/Stats.hpp"
 #include "utils/Macros.hpp"
 
-using namespace pptree;
-using namespace pptree::pp;
-using namespace pptree::stats;
-using namespace pptree::types;
-using namespace pptree::math;
+using namespace ppforest2;
+using namespace ppforest2::pp;
+using namespace ppforest2::stats;
+using namespace ppforest2::types;
+using namespace ppforest2::math;
 
 static Projector as_projector(std::vector<Feature> vector) {
   Eigen::Map<Projector > projector(vector.data(), vector.size());

@@ -16,7 +16,7 @@
 #define ASSERT_APPROX(a, b)    ASSERT_TRUE(a.isApprox(b, APPROX_THRESHOLD)) << "Expected " << std::endl << a << std::endl << " to be approximate to " << std::endl << b
 
 /** @brief Assert that two Eigen vectors are collinear (parallel or anti-parallel). */
-#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(pptree::math::collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
+#define ASSERT_COLLINEAR(a, b) ASSERT_TRUE(ppforest2::math::collinear(a, b)) << "Expected columns of " << std::endl << a << std::endl << " to be collinear with its respective column of " << std::endl << b
 
 /** @brief Assert that two Eigen objects have identical size and values. */
 #define ASSERT_EQ_DATA(a, b)           \
