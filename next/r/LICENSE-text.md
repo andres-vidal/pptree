@@ -1,4 +1,4 @@
 # License
 
     YEAR: 2024
-    COPYRIGHT HOLDER: PPTree authors
+    COPYRIGHT HOLDER: ppforest2 authors
