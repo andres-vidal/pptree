@@ -112,8 +112,8 @@ $(function(){initNavTree('Map_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="namespacepptree_1_1utils.html">    8</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacepptree_1_1utils.html">pptree::utils</a> {</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> K, <span class="keyword">typename</span> V&gt;</div>
 <div class="foldopen" id="foldopen00016" data-start="{" data-end="}">
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18">   16</a></span>  std::map&lt;V, std::set&lt;K&gt; &gt; <a class="code hl_function" href="namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18">invert</a>(<span class="keyword">const</span> std::map&lt;K, V&gt; &amp;map) {</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    std::map&lt;V, std::set&lt;K&gt; &gt; result;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18">   16</a></span>  std::map&lt;V, std::set&lt;K&gt;&gt; <a class="code hl_function" href="namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18">invert</a>(<span class="keyword">const</span> std::map&lt;K, V&gt; &amp;map) {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    std::map&lt;V, std::set&lt;K&gt;&gt; result;</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp;[key, value] : map) {</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>      result[value].insert(key);</div>

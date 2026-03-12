@@ -5,7 +5,7 @@ var Benchmark_8hpp =
     [ "pptree::cli::Scenario", "structpptree_1_1cli_1_1Scenario.html", "structpptree_1_1cli_1_1Scenario" ],
     [ "pptree::cli::ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", "structpptree_1_1cli_1_1ScenarioResult" ],
     [ "pptree::cli::SuiteResult", "structpptree_1_1cli_1_1SuiteResult.html", "structpptree_1_1cli_1_1SuiteResult" ],
-    [ "pptree::cli::ProgressCallback", "namespacepptree_1_1cli.html#ae6653e461f1f4674add8e353327978b9", null ],
+    [ "pptree::cli::ProgressCallback", "namespacepptree_1_1cli.html#a5701a3e365c518fe193414f7ed646772", null ],
     [ "pptree::cli::parse_results", "namespacepptree_1_1cli.html#a3d952f3bba5d7dd5b175178553719d2a", null ],
     [ "pptree::cli::parse_suite", "namespacepptree_1_1cli.html#a7dd234a915ab5eb389ad7d8cabbcd238", null ],
     [ "pptree::cli::parse_suite", "namespacepptree_1_1cli.html#aa05f02a83ff7afbd01207a7dc7ce11b5", null ],

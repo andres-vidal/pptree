@@ -130,20 +130,20 @@ $(function(){initNavTree('Timing_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>  }</div>
 </div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;</div>
-<div class="foldopen" id="foldopen00041" data-start="{" data-end="}">
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea">   41</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea">measure_time_ms</a>(F&amp;&amp; f) {</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keyword">auto</span> str = std::chrono::high_resolution_clock::now();</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">auto</span> res = f();</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keyword">auto</span> end = std::chrono::high_resolution_clock::now();</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keyword">auto</span> dur = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - str);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordflow">return</span> std::make_pair(std::move(res), dur.count());</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>  }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;</div>
+<div class="foldopen" id="foldopen00042" data-start="{" data-end="}">
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea">   42</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea">measure_time_ms</a>(F&amp;&amp; f) {</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">auto</span> str = std::chrono::high_resolution_clock::now();</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keyword">auto</span> res = f();</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keyword">auto</span> end = std::chrono::high_resolution_clock::now();</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keyword">auto</span> dur = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - str);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordflow">return</span> std::make_pair(std::move(res), dur.count());</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>  }</div>
 </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>}</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>}</div>
 <div class="ttc" id="anamespacepptree_1_1io_html"><div class="ttname"><a href="namespacepptree_1_1io.html">pptree::io</a></div><div class="ttdef"><b>Definition</b> Color.hpp:23</div></div>
-<div class="ttc" id="anamespacepptree_1_1io_html_a0bfe7762855a7a8d18287357aa3da3ea"><div class="ttname"><a href="namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea">pptree::io::measure_time_ms</a></div><div class="ttdeci">auto measure_time_ms(F &amp;&amp;f)</div><div class="ttdoc">Measure the wall-clock execution time of a callable in milliseconds.</div><div class="ttdef"><b>Definition</b> Timing.hpp:41</div></div>
+<div class="ttc" id="anamespacepptree_1_1io_html_a0bfe7762855a7a8d18287357aa3da3ea"><div class="ttname"><a href="namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea">pptree::io::measure_time_ms</a></div><div class="ttdeci">auto measure_time_ms(F &amp;&amp;f)</div><div class="ttdoc">Measure the wall-clock execution time of a callable in milliseconds.</div><div class="ttdef"><b>Definition</b> Timing.hpp:42</div></div>
 <div class="ttc" id="anamespacepptree_1_1io_html_a7b370b1542eb16ec7e6d2eee5c64fe97"><div class="ttname"><a href="namespacepptree_1_1io.html#a7b370b1542eb16ec7e6d2eee5c64fe97">pptree::io::now_iso8601</a></div><div class="ttdeci">std::string now_iso8601()</div><div class="ttdoc">Return the current local time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SS).</div><div class="ttdef"><b>Definition</b> Timing.hpp:17</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

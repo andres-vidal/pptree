@@ -14,7 +14,7 @@ var namespacepptree_1_1cli =
     [ "SuiteResult", "structpptree_1_1cli_1_1SuiteResult.html", "structpptree_1_1cli_1_1SuiteResult" ],
     [ "TrainResult", "structpptree_1_1cli_1_1TrainResult.html", "structpptree_1_1cli_1_1TrainResult" ],
     [ "VarsSpec", "structpptree_1_1cli_1_1VarsSpec.html", "structpptree_1_1cli_1_1VarsSpec" ],
-    [ "ProgressCallback", "namespacepptree_1_1cli.html#ae6653e461f1f4674add8e353327978b9", null ],
+    [ "ProgressCallback", "namespacepptree_1_1cli.html#a5701a3e365c518fe193414f7ed646772", null ],
     [ "Subcommand", "namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2", [
       [ "none", "namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a334c4a4c42fdb79d7ebc3e73b517e6f8", null ],
       [ "train", "namespacepptree_1_1cli.html#a984adc2deae80ff21c9b6baab8820fd2a61b3a8faa9c1091806675c230a9abe64", null ],

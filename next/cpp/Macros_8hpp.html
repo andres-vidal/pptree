@@ -235,14 +235,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        ([&amp;]() -&gt; Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic&gt; {                                                        \</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">int</span> _rows = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(ROWS);                                                                               \</div>
-<div class="line">    std::vector&lt;T&gt; _vals = { __VA_ARGS__ };                                                                                 \</div>
-<div class="line">    invariant(_rows &gt; 0, <span class="stringliteral">&quot;ROWS must be &gt; 0&quot;</span>);                                                                               \</div>
-<div class="line">    invariant(_vals.size() % _rows == 0, <span class="stringliteral">&quot;Element count not divisible by ROWS&quot;</span>);                                            \</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">int</span> _cols = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(_vals.size()) / _rows;                                                               \</div>
-<div class="line">    <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor&gt;&gt;(_vals.data(), _rows, _cols); \</div>
-<div class="line">  })()</div>
+<b>Value:</b><div class="fragment"><div class="line">        ([&amp;]() -&gt; Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic&gt; {                                                              \</div>
+<div class="line">          <span class="keyword">const</span> <span class="keywordtype">int</span> _rows = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(ROWS);                                                                               \</div>
+<div class="line">          std::vector&lt;T&gt; _vals = { __VA_ARGS__ };                                                                                 \</div>
+<div class="line">          invariant(_rows &gt; 0, <span class="stringliteral">&quot;ROWS must be &gt; 0&quot;</span>);                                                                               \</div>
+<div class="line">          invariant(_vals.size() % _rows == 0, <span class="stringliteral">&quot;Element count not divisible by ROWS&quot;</span>);                                            \</div>
+<div class="line">          <span class="keyword">const</span> <span class="keywordtype">int</span> _cols = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(_vals.size()) / _rows;                                                               \</div>
+<div class="line">          <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor&gt;&gt;(_vals.data(), _rows, _cols); \</div>
+<div class="line">        })()</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -264,11 +264,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        ([&amp;]() -&gt; Eigen::Matrix&lt;T, Eigen::Dynamic, 1&gt; {           \</div>
-<div class="line">    std::vector&lt;T&gt; _vals = { __VA_ARGS__ };                       \</div>
-<div class="line">    <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, 1&gt;&gt;( \</div>
-<div class="line">      _vals.data(), _vals.size());                                \</div>
-<div class="line">  })()</div>
+<b>Value:</b><div class="fragment"><div class="line">        ([&amp;]() -&gt; Eigen::Matrix&lt;T, Eigen::Dynamic, 1&gt; {                 \</div>
+<div class="line">          std::vector&lt;T&gt; _vals = { __VA_ARGS__ };                       \</div>
+<div class="line">          <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, 1&gt;&gt;( \</div>
+<div class="line">            _vals.data(), _vals.size());                                \</div>
+<div class="line">        })()</div>
 </div><!-- fragment -->
 </div>
 </div>

@@ -41,7 +41,7 @@ var searchData=
   ['print_5fconfusion_5fmatrix_38',['print_confusion_matrix',['../namespacepptree_1_1cli.html#ac0a17338648781d6b8b499db83b6905a',1,'pptree::cli']]],
   ['print_5fresults_39',['print_results',['../namespacepptree_1_1cli.html#a84c3d2d3f8274a7d808e5bb722734ee8',1,'pptree::cli']]],
   ['print_5fvariable_5fimportance_40',['print_variable_importance',['../namespacepptree_1_1cli.html#ada7326ea4198f85538016417272c88c8',1,'pptree::cli']]],
-  ['progresscallback_41',['ProgressCallback',['../namespacepptree_1_1cli.html#ae6653e461f1f4674add8e353327978b9',1,'pptree::cli']]],
+  ['progresscallback_41',['ProgressCallback',['../namespacepptree_1_1cli.html#a5701a3e365c518fe193414f7ed646772',1,'pptree::cli']]],
   ['project_5f2d_42',['project_2d',['../namespacepptree.html#a1c699ffb0b788d437a6008804ddd9bb0',1,'pptree']]],
   ['projected_5fvalues_43',['projected_values',['../structpptree_1_1NodeData.html#abeec7ceb06546293a78f2c8678b8214c',1,'pptree::NodeData']]],
   ['projection_44',['2D Projection',['../Visualization_8hpp.html#proj',1,'']]],
