@@ -178,9 +178,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a4214dc1188cbe3365e82b77fcf5818a0" id="r_a4214dc1188cbe3365e82b77fcf5818a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4214dc1188cbe3365e82b77fcf5818a0">add_model_options</a> (CLI::App *sub, <a class="el" href="structpptree_1_1cli_1_1ModelParams.html">ModelParams</a> &amp;model)</td></tr>
 <tr class="memdesc:a4214dc1188cbe3365e82b77fcf5818a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add shared model options (trees, lambda, threads, seed, vars) to <code class="param">sub</code>.  <br /></td></tr>
 <tr class="separator:a4214dc1188cbe3365e82b77fcf5818a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e898bbef9bc8509ae646ae0fe42ccc0" id="r_a0e898bbef9bc8509ae646ae0fe42ccc0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e898bbef9bc8509ae646ae0fe42ccc0">format_benchmark_markdown</a> (const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;current, const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;baseline=std::nullopt)</td></tr>
-<tr class="memdesc:a0e898bbef9bc8509ae646ae0fe42ccc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format results as a GitHub-flavored markdown table.  <br /></td></tr>
-<tr class="separator:a0e898bbef9bc8509ae646ae0fe42ccc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6edbd9529f4c9712812300fa08b07d7c" id="r_a6edbd9529f4c9712812300fa08b07d7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6edbd9529f4c9712812300fa08b07d7c">init_params</a> (<a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params, int total_vars=0)</td></tr>
 <tr class="memdesc:a6edbd9529f4c9712812300fa08b07d7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve sentinel values in <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html" title="All CLI options and runtime parameters.">CLIOptions</a> to concrete defaults.  <br /></td></tr>
 <tr class="separator:a6edbd9529f4c9712812300fa08b07d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -202,21 +199,24 @@ Functions</h2></td></tr>
 <tr class="memitem:af4cb3795222af14fab1cd0cff4740d2e" id="r_af4cb3795222af14fab1cd0cff4740d2e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1VarsSpec.html">VarsSpec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4cb3795222af14fab1cd0cff4740d2e">parse_vars</a> (const std::string &amp;input)</td></tr>
 <tr class="memdesc:af4cb3795222af14fab1cd0cff4740d2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse vars from a string (<a class="el" href="namespaceCLI.html">CLI</a> input).  <br /></td></tr>
 <tr class="separator:af4cb3795222af14fab1cd0cff4740d2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad76326b4e92c2eef1b7c851616b52ba8" id="r_ad76326b4e92c2eef1b7c851616b52ba8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad76326b4e92c2eef1b7c851616b52ba8">print_benchmark_table</a> (const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;current, const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;baseline=std::nullopt)</td></tr>
-<tr class="memdesc:ad76326b4e92c2eef1b7c851616b52ba8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted results table to stdout.  <br /></td></tr>
-<tr class="separator:ad76326b4e92c2eef1b7c851616b52ba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab61192e18f7534f0f5b5adfc6b299b67" id="r_ab61192e18f7534f0f5b5adfc6b299b67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab61192e18f7534f0f5b5adfc6b299b67">print_configuration</a> (const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params, int n_train=0, int n_test=0)</td></tr>
-<tr class="memdesc:ab61192e18f7534f0f5b5adfc6b299b67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the training configuration summary.  <br /></td></tr>
-<tr class="separator:ab61192e18f7534f0f5b5adfc6b299b67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0a17338648781d6b8b499db83b6905a" id="r_ac0a17338648781d6b8b499db83b6905a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0a17338648781d6b8b499db83b6905a">print_confusion_matrix</a> (const <a class="el" href="structpptree_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;cm)</td></tr>
-<tr class="memdesc:ac0a17338648781d6b8b499db83b6905a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted confusion matrix to stdout.  <br /></td></tr>
-<tr class="separator:ac0a17338648781d6b8b499db83b6905a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84c3d2d3f8274a7d808e5bb722734ee8" id="r_a84c3d2d3f8274a7d808e5bb722734ee8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84c3d2d3f8274a7d808e5bb722734ee8">print_results</a> (const <a class="el" href="structpptree_1_1cli_1_1ModelStats.html">ModelStats</a> &amp;stats)</td></tr>
-<tr class="memdesc:a84c3d2d3f8274a7d808e5bb722734ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print evaluation results (timing, errors, memory) to stdout.  <br /></td></tr>
-<tr class="separator:a84c3d2d3f8274a7d808e5bb722734ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada7326ea4198f85538016417272c88c8" id="r_ada7326ea4198f85538016417272c88c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada7326ea4198f85538016417272c88c8">print_variable_importance</a> (const <a class="el" href="structpptree_1_1VariableImportance.html">VariableImportance</a> &amp;vi, int max_rows=20)</td></tr>
-<tr class="memdesc:ada7326ea4198f85538016417272c88c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a ranked variable importance table to stdout.  <br /></td></tr>
-<tr class="separator:ada7326ea4198f85538016417272c88c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a789c42cadcef22f1b8e880df5f07f2" id="r_a7a789c42cadcef22f1b8e880df5f07f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a789c42cadcef22f1b8e880df5f07f2">print_benchmark_markdown</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;current, const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;baseline=std::nullopt)</td></tr>
+<tr class="memdesc:a7a789c42cadcef22f1b8e880df5f07f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print results as a GitHub-flavored markdown table.  <br /></td></tr>
+<tr class="separator:a7a789c42cadcef22f1b8e880df5f07f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a141a01f235c772a70e175acf0dc958d5" id="r_a141a01f235c772a70e175acf0dc958d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a141a01f235c772a70e175acf0dc958d5">print_benchmark_table</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;current, const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;baseline=std::nullopt)</td></tr>
+<tr class="memdesc:a141a01f235c772a70e175acf0dc958d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted results table to stdout.  <br /></td></tr>
+<tr class="separator:a141a01f235c772a70e175acf0dc958d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f9993e61c8923f0110a315216efd42d" id="r_a1f9993e61c8923f0110a315216efd42d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f9993e61c8923f0110a315216efd42d">print_configuration</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params, int n_train=0, int n_test=0)</td></tr>
+<tr class="memdesc:a1f9993e61c8923f0110a315216efd42d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the training configuration summary.  <br /></td></tr>
+<tr class="separator:a1f9993e61c8923f0110a315216efd42d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a696dd4c66175a27a4c15e62507dbbf1b" id="r_a696dd4c66175a27a4c15e62507dbbf1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a696dd4c66175a27a4c15e62507dbbf1b">print_confusion_matrix</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;cm)</td></tr>
+<tr class="memdesc:a696dd4c66175a27a4c15e62507dbbf1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted confusion matrix to stdout.  <br /></td></tr>
+<tr class="separator:a696dd4c66175a27a4c15e62507dbbf1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff14296222a39757646a4219d547fe35" id="r_aff14296222a39757646a4219d547fe35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff14296222a39757646a4219d547fe35">print_results</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1ModelStats.html">ModelStats</a> &amp;stats)</td></tr>
+<tr class="memdesc:aff14296222a39757646a4219d547fe35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print evaluation results (timing, errors, memory) to stdout.  <br /></td></tr>
+<tr class="separator:aff14296222a39757646a4219d547fe35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0379c63aba617f925bc69f90f0b92892" id="r_a0379c63aba617f925bc69f90f0b92892"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0379c63aba617f925bc69f90f0b92892">print_variable_importance</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1VariableImportance.html">VariableImportance</a> &amp;vi, int max_rows=20)</td></tr>
+<tr class="memdesc:a0379c63aba617f925bc69f90f0b92892"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a ranked variable importance table to stdout.  <br /></td></tr>
+<tr class="separator:a0379c63aba617f925bc69f90f0b92892"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4875e4adc6a08fcc5db69e6028d8a80" id="r_ad4875e4adc6a08fcc5db69e6028d8a80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1stats_1_1DataPacket.html">pptree::stats::DataPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4875e4adc6a08fcc5db69e6028d8a80">read_data</a> (const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params, <a class="el" href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">pptree::stats::RNG</a> &amp;rng)</td></tr>
 <tr class="memdesc:ad4875e4adc6a08fcc5db69e6028d8a80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load or simulate data based on <a class="el" href="namespaceCLI.html">CLI</a> options.  <br /></td></tr>
 <tr class="separator:ad4875e4adc6a08fcc5db69e6028d8a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -253,9 +253,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a3936c19a3680f9e7b4299e7e9ed591c0" id="r_a3936c19a3680f9e7b4299e7e9ed591c0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1TrainResult.html">TrainResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3936c19a3680f9e7b4299e7e9ed591c0">train_model</a> (const <a class="el" href="namespacepptree_1_1types.html#ac38153c80ae165f34711219a6fa20ae0">pptree::types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespacepptree_1_1types.html#abd887dc81073c44a6b885e57c2411f08">pptree::types::ResponseVector</a> &amp;y, const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params, <a class="el" href="namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926">pptree::stats::RNG</a> &amp;rng)</td></tr>
 <tr class="memdesc:a3936c19a3680f9e7b4299e7e9ed591c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Train a single model (<a class="el" href="structpptree_1_1Forest.html">Forest</a> or <a class="el" href="structpptree_1_1Tree.html" title="A single projection pursuit decision tree.">Tree</a>) on the given dataset.  <br /></td></tr>
 <tr class="separator:a3936c19a3680f9e7b4299e7e9ed591c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f6bf17ee59d3f7e450e6b274d99b292" id="r_a9f6bf17ee59d3f7e450e6b274d99b292"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f6bf17ee59d3f7e450e6b274d99b292">warn_unused_params</a> (const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params)</td></tr>
-<tr class="memdesc:a9f6bf17ee59d3f7e450e6b274d99b292"><td class="mdescLeft">&#160;</td><td class="mdescRight">Warn the user about parameters that are ignored for single-tree training.  <br /></td></tr>
-<tr class="separator:a9f6bf17ee59d3f7e450e6b274d99b292"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00d75cae237a6fad00c7371662c825b5" id="r_a00d75cae237a6fad00c7371662c825b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00d75cae237a6fad00c7371662c825b5">warn_unused_params</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params)</td></tr>
+<tr class="memdesc:a00d75cae237a6fad00c7371662c825b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Warn the user about parameters that are ignored for single-tree training.  <br /></td></tr>
+<tr class="separator:a00d75cae237a6fad00c7371662c825b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8349ee0f6743440e9de662f064958c04" id="r_a8349ee0f6743440e9de662f064958c04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8349ee0f6743440e9de662f064958c04">write_results_csv</a> (const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;result, const std::string &amp;path)</td></tr>
 <tr class="memdesc:a8349ee0f6743440e9de662f064958c04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write suite results to a CSV file.  <br /></td></tr>
 <tr class="separator:a8349ee0f6743440e9de662f064958c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -341,30 +341,6 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Add shared model options (trees, lambda, threads, seed, vars) to <code class="param">sub</code>. </p>
-
-</div>
-</div>
-<a id="a0e898bbef9bc8509ae646ae0fe42ccc0" name="a0e898bbef9bc8509ae646ae0fe42ccc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e898bbef9bc8509ae646ae0fe42ccc0">&#9670;&#160;</a></span>format_benchmark_markdown()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string pptree::cli::format_benchmark_markdown </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>current</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>baseline</em></span><span class="paramdefsep"> = </span><span class="paramdefval">std::nullopt</span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Format results as a GitHub-flavored markdown table. </p>
-<p>Returns a string suitable for posting as a PR comment. With a baseline, includes delta columns with emoji indicators. </p>
 
 </div>
 </div>
@@ -558,8 +534,45 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ad76326b4e92c2eef1b7c851616b52ba8" name="ad76326b4e92c2eef1b7c851616b52ba8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad76326b4e92c2eef1b7c851616b52ba8">&#9670;&#160;</a></span>print_benchmark_table()</h2>
+<a id="a7a789c42cadcef22f1b8e880df5f07f2" name="a7a789c42cadcef22f1b8e880df5f07f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a789c42cadcef22f1b8e880df5f07f2">&#9670;&#160;</a></span>print_benchmark_markdown()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pptree::cli::print_benchmark_markdown </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>current</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>baseline</em></span><span class="paramdefsep"> = </span><span class="paramdefval">std::nullopt</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Print results as a GitHub-flavored markdown table. </p>
+<p>Prints directly via Output (no indentation). Suitable for piping to a file or posting as a PR comment. With a baseline, includes delta columns with emoji indicators.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">out</td><td>Output context. </td></tr>
+    <tr><td class="paramname">current</td><td>Results from the current run. </td></tr>
+    <tr><td class="paramname">baseline</td><td>Optional baseline results for comparison. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a141a01f235c772a70e175acf0dc958d5" name="a141a01f235c772a70e175acf0dc958d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a141a01f235c772a70e175acf0dc958d5">&#9670;&#160;</a></span>print_benchmark_table()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -567,6 +580,11 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void pptree::cli::print_benchmark_table </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>current</em></span>, </td>
         </tr>
         <tr>
@@ -581,6 +599,7 @@ Functions</h2></td></tr>
 <p>Without a baseline, prints absolute numbers. With a baseline, adds delta columns (green = faster/less memory, red = slower/more memory).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">out</td><td>Output context. </td></tr>
     <tr><td class="paramname">current</td><td>Results from the current run. </td></tr>
     <tr><td class="paramname">baseline</td><td>Optional baseline results for comparison. </td></tr>
   </table>
@@ -589,8 +608,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ab61192e18f7534f0f5b5adfc6b299b67" name="ab61192e18f7534f0f5b5adfc6b299b67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab61192e18f7534f0f5b5adfc6b299b67">&#9670;&#160;</a></span>print_configuration()</h2>
+<a id="a1f9993e61c8923f0110a315216efd42d" name="a1f9993e61c8923f0110a315216efd42d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f9993e61c8923f0110a315216efd42d">&#9670;&#160;</a></span>print_configuration()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -598,6 +617,11 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void pptree::cli::print_configuration </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>params</em></span>, </td>
         </tr>
         <tr>
@@ -617,8 +641,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac0a17338648781d6b8b499db83b6905a" name="ac0a17338648781d6b8b499db83b6905a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac0a17338648781d6b8b499db83b6905a">&#9670;&#160;</a></span>print_confusion_matrix()</h2>
+<a id="a696dd4c66175a27a4c15e62507dbbf1b" name="a696dd4c66175a27a4c15e62507dbbf1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a696dd4c66175a27a4c15e62507dbbf1b">&#9670;&#160;</a></span>print_confusion_matrix()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -626,8 +650,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void pptree::cli::print_confusion_matrix </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structpptree_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>cm</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structpptree_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>cm</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -636,6 +664,7 @@ Functions</h2></td></tr>
 <p>Displays the confusion matrix with class labels, diagonal highlighting, and per-class error rates.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">out</td><td>Output context. </td></tr>
     <tr><td class="paramname">cm</td><td>The confusion matrix to print. </td></tr>
   </table>
   </dd>
@@ -643,8 +672,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a84c3d2d3f8274a7d808e5bb722734ee8" name="a84c3d2d3f8274a7d808e5bb722734ee8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84c3d2d3f8274a7d808e5bb722734ee8">&#9670;&#160;</a></span>print_results()</h2>
+<a id="aff14296222a39757646a4219d547fe35" name="aff14296222a39757646a4219d547fe35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff14296222a39757646a4219d547fe35">&#9670;&#160;</a></span>print_results()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -652,8 +681,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void pptree::cli::print_results </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structpptree_1_1cli_1_1ModelStats.html">ModelStats</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>stats</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structpptree_1_1cli_1_1ModelStats.html">ModelStats</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>stats</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -668,8 +701,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ada7326ea4198f85538016417272c88c8" name="ada7326ea4198f85538016417272c88c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada7326ea4198f85538016417272c88c8">&#9670;&#160;</a></span>print_variable_importance()</h2>
+<a id="a0379c63aba617f925bc69f90f0b92892" name="a0379c63aba617f925bc69f90f0b92892"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0379c63aba617f925bc69f90f0b92892">&#9670;&#160;</a></span>print_variable_importance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -677,6 +710,11 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void pptree::cli::print_variable_importance </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="structpptree_1_1VariableImportance.html">VariableImportance</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>vi</em></span>, </td>
         </tr>
         <tr>
@@ -691,6 +729,7 @@ Functions</h2></td></tr>
 <p>Columns: rank, variable name, sigma (scale), VI2 (projections), VI3 (weighted), VI1 (permuted). Rows are sorted by VI2 descending. The VI1 column is omitted when its vector is empty. At most max_rows rows are printed.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">out</td><td>Output context. </td></tr>
     <tr><td class="paramname">vi</td><td>Variable importance results. </td></tr>
     <tr><td class="paramname">max_rows</td><td>Maximum number of rows to print (0 = all). </td></tr>
   </table>
@@ -1011,8 +1050,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a9f6bf17ee59d3f7e450e6b274d99b292" name="a9f6bf17ee59d3f7e450e6b274d99b292"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f6bf17ee59d3f7e450e6b274d99b292">&#9670;&#160;</a></span>warn_unused_params()</h2>
+<a id="a00d75cae237a6fad00c7371662c825b5" name="a00d75cae237a6fad00c7371662c825b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00d75cae237a6fad00c7371662c825b5">&#9670;&#160;</a></span>warn_unused_params()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1020,8 +1059,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void pptree::cli::warn_unused_params </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>params</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>params</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

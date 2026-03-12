@@ -109,6 +109,7 @@ $(function(){initNavTree('BenchmarkReport_8hpp.html',''); initResizable(true); }
 <p>Benchmark result formatting, comparison, and export.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Benchmark_8hpp_source.html">cli/Benchmark.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Output_8hpp_source.html">io/Output.hpp</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;optional&gt;</code><br />
 </div>
@@ -123,12 +124,12 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a0e898bbef9bc8509ae646ae0fe42ccc0" id="r_a0e898bbef9bc8509ae646ae0fe42ccc0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a0e898bbef9bc8509ae646ae0fe42ccc0">pptree::cli::format_benchmark_markdown</a> (const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;current, const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;baseline=std::nullopt)</td></tr>
-<tr class="memdesc:a0e898bbef9bc8509ae646ae0fe42ccc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format results as a GitHub-flavored markdown table.  <br /></td></tr>
-<tr class="separator:a0e898bbef9bc8509ae646ae0fe42ccc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad76326b4e92c2eef1b7c851616b52ba8" id="r_ad76326b4e92c2eef1b7c851616b52ba8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#ad76326b4e92c2eef1b7c851616b52ba8">pptree::cli::print_benchmark_table</a> (const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;current, const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;baseline=std::nullopt)</td></tr>
-<tr class="memdesc:ad76326b4e92c2eef1b7c851616b52ba8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted results table to stdout.  <br /></td></tr>
-<tr class="separator:ad76326b4e92c2eef1b7c851616b52ba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a789c42cadcef22f1b8e880df5f07f2" id="r_a7a789c42cadcef22f1b8e880df5f07f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a7a789c42cadcef22f1b8e880df5f07f2">pptree::cli::print_benchmark_markdown</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;current, const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;baseline=std::nullopt)</td></tr>
+<tr class="memdesc:a7a789c42cadcef22f1b8e880df5f07f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print results as a GitHub-flavored markdown table.  <br /></td></tr>
+<tr class="separator:a7a789c42cadcef22f1b8e880df5f07f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a141a01f235c772a70e175acf0dc958d5" id="r_a141a01f235c772a70e175acf0dc958d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a141a01f235c772a70e175acf0dc958d5">pptree::cli::print_benchmark_table</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;current, const std::optional&lt; <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; &amp;baseline=std::nullopt)</td></tr>
+<tr class="memdesc:a141a01f235c772a70e175acf0dc958d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted results table to stdout.  <br /></td></tr>
+<tr class="separator:a141a01f235c772a70e175acf0dc958d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8349ee0f6743440e9de662f064958c04" id="r_a8349ee0f6743440e9de662f064958c04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a8349ee0f6743440e9de662f064958c04">pptree::cli::write_results_csv</a> (const <a class="el" href="structpptree_1_1cli_1_1SuiteResult.html">SuiteResult</a> &amp;result, const std::string &amp;path)</td></tr>
 <tr class="memdesc:a8349ee0f6743440e9de662f064958c04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write suite results to a CSV file.  <br /></td></tr>
 <tr class="separator:a8349ee0f6743440e9de662f064958c04"><td class="memSeparator" colspan="2">&#160;</td></tr>

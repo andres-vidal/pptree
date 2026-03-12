@@ -10,5 +10,5 @@ var CLIOptions_8hpp =
     ] ],
     [ "pptree::cli::init_params", "namespacepptree_1_1cli.html#a6edbd9529f4c9712812300fa08b07d7c", null ],
     [ "pptree::cli::parse_args", "namespacepptree_1_1cli.html#a7ceebad5e5ddd8e7081eb6268a1002e9", null ],
-    [ "pptree::cli::warn_unused_params", "namespacepptree_1_1cli.html#a9f6bf17ee59d3f7e450e6b274d99b292", null ]
+    [ "pptree::cli::warn_unused_params", "namespacepptree_1_1cli.html#a00d75cae237a6fad00c7371662c825b5", null ]
 ];

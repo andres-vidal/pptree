@@ -31,7 +31,6 @@ var namespacepptree_1_1io =
     [ "read_csv_sorted", "namespacepptree_1_1io.html#a772f7a3db36e891aaf4e09da9b7bfdc0", null ],
     [ "styled", "namespacepptree_1_1io.html#ae94061af4b225512803595814626b1f0", null ],
     [ "success", "namespacepptree_1_1io.html#ac6a7826839deb482d88bbee1a95cd67a", null ],
-    [ "try_or_fail", "namespacepptree_1_1io.html#a95b71cfde92a7d2e349b1ecce5418c1a", null ],
     [ "visual_width", "namespacepptree_1_1io.html#a0e7fce12d06e78f44fc8ab83a2ef76c1", null ],
     [ "warning", "namespacepptree_1_1io.html#a3cb6da523b18b750e6757f5a123a1131", null ],
     [ "write_csv", "namespacepptree_1_1io.html#ab5fa4ab9ed74ae21bfbd014699281aca", null ],

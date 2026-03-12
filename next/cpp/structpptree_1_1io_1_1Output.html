@@ -107,7 +107,7 @@ $(function(){initNavTree('structpptree_1_1io_1_1Output.html',''); initResizable(
 </div><!--header-->
 <div class="contents">
 
-<p>Quiet-aware output context for <a class="el" href="namespaceCLI.html">CLI</a> subcommands.  
+<p>Quiet-aware, indentation-aware output context.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Output_8hpp_source.html">Output.hpp</a>&gt;</code></p>
@@ -116,22 +116,48 @@ $(function(){initNavTree('structpptree_1_1io_1_1Output.html',''); initResizable(
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4ad2d6cc3d7f3f26d067ed871db2479b" id="r_a4ad2d6cc3d7f3f26d067ed871db2479b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ad2d6cc3d7f3f26d067ed871db2479b">Output</a> (bool <a class="el" href="#af8f87c959c398db981a18f9f879f2b58">quiet</a>)</td></tr>
 <tr class="separator:a4ad2d6cc3d7f3f26d067ed871db2479b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ebc3d133a895b840b5734f3e8f86f61" id="r_a7ebc3d133a895b840b5734f3e8f86f61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ebc3d133a895b840b5734f3e8f86f61">dedent</a> ()</td></tr>
+<tr class="separator:a7ebc3d133a895b840b5734f3e8f86f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4f80aad7951027efd3fbc3933133198" id="r_ae4f80aad7951027efd3fbc3933133198"><td class="memTemplParams" colspan="2">template&lt;typename ... Args&gt; </td></tr>
+<tr class="memitem:ae4f80aad7951027efd3fbc3933133198"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ae4f80aad7951027efd3fbc3933133198">errorln</a> (fmt::format_string&lt; Args... &gt; fmt_str, Args &amp;&amp;... args) const</td></tr>
+<tr class="memdesc:ae4f80aad7951027efd3fbc3933133198"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print formatted content + newline to stderr. Always prints.  <br /></td></tr>
+<tr class="separator:ae4f80aad7951027efd3fbc3933133198"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e6d4095be7a506043cd2737347d9a62" id="r_a0e6d4095be7a506043cd2737347d9a62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e6d4095be7a506043cd2737347d9a62">flush</a> () const</td></tr>
+<tr class="memdesc:a0e6d4095be7a506043cd2737347d9a62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush stdout. For interactive output like progress bars.  <br /></td></tr>
+<tr class="separator:a0e6d4095be7a506043cd2737347d9a62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec5d2a5bcf538e2dc3be274637673f1f" id="r_aec5d2a5bcf538e2dc3be274637673f1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aec5d2a5bcf538e2dc3be274637673f1f">indent</a> ()</td></tr>
+<tr class="separator:aec5d2a5bcf538e2dc3be274637673f1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfdad8c9c9a1e0cb59b4721ab073f5f1" id="r_adfdad8c9c9a1e0cb59b4721ab073f5f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfdad8c9c9a1e0cb59b4721ab073f5f1">newline</a> () const</td></tr>
+<tr class="memdesc:adfdad8c9c9a1e0cb59b4721ab073f5f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a blank line. For visual separation between sections.  <br /></td></tr>
+<tr class="separator:adfdad8c9c9a1e0cb59b4721ab073f5f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fec15cf88822bc76086947bf213cdbb" id="r_a6fec15cf88822bc76086947bf213cdbb"><td class="memTemplParams" colspan="2">template&lt;typename ... Args&gt; </td></tr>
 <tr class="memitem:a6fec15cf88822bc76086947bf213cdbb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a6fec15cf88822bc76086947bf213cdbb">print</a> (fmt::format_string&lt; Args... &gt; fmt_str, Args &amp;&amp;... args) const</td></tr>
-<tr class="memdesc:a6fec15cf88822bc76086947bf213cdbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted message, suppressed in quiet mode.  <br /></td></tr>
+<tr class="memdesc:a6fec15cf88822bc76086947bf213cdbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print indent + formatted content, no newline.  <br /></td></tr>
 <tr class="separator:a6fec15cf88822bc76086947bf213cdbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7d5e7070d7de6ee04c67852f95628f3" id="r_aa7d5e7070d7de6ee04c67852f95628f3"><td class="memTemplParams" colspan="2">template&lt;typename ... Args&gt; </td></tr>
+<tr class="memitem:aa7d5e7070d7de6ee04c67852f95628f3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aa7d5e7070d7de6ee04c67852f95628f3">println</a> (fmt::format_string&lt; Args... &gt; fmt_str, Args &amp;&amp;... args) const</td></tr>
+<tr class="memdesc:aa7d5e7070d7de6ee04c67852f95628f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print indent + formatted content + newline. The workhorse.  <br /></td></tr>
+<tr class="separator:aa7d5e7070d7de6ee04c67852f95628f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc3199031f8ff26697d12552a5251674" id="r_abc3199031f8ff26697d12552a5251674"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc3199031f8ff26697d12552a5251674">progress</a> (int current, int total, int bar_width=50) const</td></tr>
+<tr class="memdesc:abc3199031f8ff26697d12552a5251674"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display a carriage-return progress bar.  <br /></td></tr>
+<tr class="separator:abc3199031f8ff26697d12552a5251674"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae74f34592bf4ce0c1536f1bd022c1f4b" id="r_ae74f34592bf4ce0c1536f1bd022c1f4b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae74f34592bf4ce0c1536f1bd022c1f4b">saved</a> (const std::string &amp;label, const std::string &amp;path) const</td></tr>
-<tr class="memdesc:ae74f34592bf4ce0c1536f1bd022c1f4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a file-save confirmation in the standard format.  <br /></td></tr>
+<tr class="memdesc:ae74f34592bf4ce0c1536f1bd022c1f4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a file-save confirmation: "label saved to path".  <br /></td></tr>
 <tr class="separator:ae74f34592bf4ce0c1536f1bd022c1f4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addc75df74c8bf1bb66a5f45ea1be4d8f" id="r_addc75df74c8bf1bb66a5f45ea1be4d8f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addc75df74c8bf1bb66a5f45ea1be4d8f">try_or_fail</a> (const std::function&lt; void()&gt; &amp;f, const std::string &amp;context=&quot;&quot;) const</td></tr>
+<tr class="memdesc:addc75df74c8bf1bb66a5f45ea1be4d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a callable, catch std::exception, print error, return 1.  <br /></td></tr>
+<tr class="separator:addc75df74c8bf1bb66a5f45ea1be4d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:adf41d39c5f9968c28db945de242d5c95" id="r_adf41d39c5f9968c28db945de242d5c95"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf41d39c5f9968c28db945de242d5c95">indent_level</a> = 0</td></tr>
+<tr class="separator:adf41d39c5f9968c28db945de242d5c95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8f87c959c398db981a18f9f879f2b58" id="r_af8f87c959c398db981a18f9f879f2b58"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af8f87c959c398db981a18f9f879f2b58">quiet</a></td></tr>
 <tr class="separator:af8f87c959c398db981a18f9f879f2b58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Quiet-aware output context for <a class="el" href="namespaceCLI.html">CLI</a> subcommands. </p>
-<p>Wraps a single boolean and provides methods that suppress output when quiet mode is active. Construct once per subcommand from CLIOptions::quiet and use throughout. </p>
+<div class="textblock"><p>Quiet-aware, indentation-aware output context. </p>
+<p>Construct once per subcommand from CLIOptions::quiet and thread through all printing functions. Stdout methods respect quiet mode and prepend the current indentation. Stderr methods always print. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a4ad2d6cc3d7f3f26d067ed871db2479b" name="a4ad2d6cc3d7f3f26d067ed871db2479b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4ad2d6cc3d7f3f26d067ed871db2479b">&#9670;&#160;</a></span>Output()</h2>
@@ -159,6 +185,143 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7ebc3d133a895b840b5734f3e8f86f61" name="a7ebc3d133a895b840b5734f3e8f86f61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ebc3d133a895b840b5734f3e8f86f61">&#9670;&#160;</a></span>dedent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pptree::io::Output::dedent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae4f80aad7951027efd3fbc3933133198" name="ae4f80aad7951027efd3fbc3933133198"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4f80aad7951027efd3fbc3933133198">&#9670;&#160;</a></span>errorln()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pptree::io::Output::errorln </td>
+          <td>(</td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;</td>          <td class="paramname"><span class="paramname"><em>fmt_str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Print formatted content + newline to stderr. Always prints. </p>
+
+</div>
+</div>
+<a id="a0e6d4095be7a506043cd2737347d9a62" name="a0e6d4095be7a506043cd2737347d9a62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e6d4095be7a506043cd2737347d9a62">&#9670;&#160;</a></span>flush()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pptree::io::Output::flush </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Flush stdout. For interactive output like progress bars. </p>
+
+</div>
+</div>
+<a id="aec5d2a5bcf538e2dc3be274637673f1f" name="aec5d2a5bcf538e2dc3be274637673f1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec5d2a5bcf538e2dc3be274637673f1f">&#9670;&#160;</a></span>indent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pptree::io::Output::indent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adfdad8c9c9a1e0cb59b4721ab073f5f1" name="adfdad8c9c9a1e0cb59b4721ab073f5f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfdad8c9c9a1e0cb59b4721ab073f5f1">&#9670;&#160;</a></span>newline()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pptree::io::Output::newline </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Print a blank line. For visual separation between sections. </p>
+
+</div>
+</div>
 <a id="a6fec15cf88822bc76086947bf213cdbb" name="a6fec15cf88822bc76086947bf213cdbb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6fec15cf88822bc76086947bf213cdbb">&#9670;&#160;</a></span>print()</h2>
 
@@ -188,7 +351,78 @@ template&lt;typename ... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Print a formatted message, suppressed in quiet mode. </p>
+<p>Print indent + formatted content, no newline. </p>
+<p>Use for starting a partial line that will be continued. </p>
+
+</div>
+</div>
+<a id="aa7d5e7070d7de6ee04c67852f95628f3" name="aa7d5e7070d7de6ee04c67852f95628f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7d5e7070d7de6ee04c67852f95628f3">&#9670;&#160;</a></span>println()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pptree::io::Output::println </td>
+          <td>(</td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;</td>          <td class="paramname"><span class="paramname"><em>fmt_str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Print indent + formatted content + newline. The workhorse. </p>
+
+</div>
+</div>
+<a id="abc3199031f8ff26697d12552a5251674" name="abc3199031f8ff26697d12552a5251674"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc3199031f8ff26697d12552a5251674">&#9670;&#160;</a></span>progress()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pptree::io::Output::progress </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>current</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>total</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>bar_width</em></span><span class="paramdefsep"> = </span><span class="paramdefval">50</span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Display a carriage-return progress bar. </p>
+<p>Overwrites the current line with a bar showing current/total. Prints a final newline when current == total. </p>
 
 </div>
 </div>
@@ -219,12 +453,57 @@ template&lt;typename ... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Print a file-save confirmation in the standard format. </p>
-<p>Produces: "{label} saved to {path}" with green prefix. Suppressed in quiet mode. </p>
+<p>Print a file-save confirmation: "label saved to path". </p>
+
+</div>
+</div>
+<a id="addc75df74c8bf1bb66a5f45ea1be4d8f" name="addc75df74c8bf1bb66a5f45ea1be4d8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addc75df74c8bf1bb66a5f45ea1be4d8f">&#9670;&#160;</a></span>try_or_fail()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pptree::io::Output::try_or_fail </td>
+          <td>(</td>
+          <td class="paramtype">const std::function&lt; void()&gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Run a callable, catch std::exception, print error, return 1. </p>
+<p>If the callable succeeds, returns 0. If it throws, prints the error message to stderr with red "Error:" prefix and returns 1. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="adf41d39c5f9968c28db945de242d5c95" name="adf41d39c5f9968c28db945de242d5c95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf41d39c5f9968c28db945de242d5c95">&#9670;&#160;</a></span>indent_level</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pptree::io::Output::indent_level = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af8f87c959c398db981a18f9f879f2b58" name="af8f87c959c398db981a18f9f879f2b58"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af8f87c959c398db981a18f9f879f2b58">&#9670;&#160;</a></span>quiet</h2>
 

@@ -46,6 +46,6 @@ var searchData=
   ['treeresponse_43',['TreeResponse',['../structpptree_1_1TreeResponse.html',1,'pptree::TreeResponse'],['../structpptree_1_1TreeResponse.html#a770f539f8d886b6e79e8fee8d56fdbe5',1,'pptree::TreeResponse::TreeResponse()']]],
   ['treeresponse_2ehpp_44',['TreeResponse.hpp',['../TreeResponse_8hpp.html',1,'']]],
   ['trees_45',['trees',['../structpptree_1_1cli_1_1Scenario.html#a2413251ad02bce80b4caa86dc23c32db',1,'pptree::cli::Scenario::trees'],['../structpptree_1_1cli_1_1ScenarioResult.html#a02faa4a4da2c9cdcc589426e3b83562c',1,'pptree::cli::ScenarioResult::trees'],['../structpptree_1_1cli_1_1ModelParams.html#a58ca732f6f4623e8e68532dc80b28421',1,'pptree::cli::ModelParams::trees'],['../structpptree_1_1Forest.html#abf8e9c2b1c7858b6c8bf6c70f407e05b',1,'pptree::Forest::trees']]],
-  ['try_5for_5ffail_46',['try_or_fail',['../namespacepptree_1_1io.html#a95b71cfde92a7d2e349b1ecce5418c1a',1,'pptree::io']]],
+  ['try_5for_5ffail_46',['try_or_fail',['../structpptree_1_1io_1_1Output.html#addc75df74c8bf1bb66a5f45ea1be4d8f',1,'pptree::io::Output']]],
   ['types_2ehpp_47',['Types.hpp',['../Types_8hpp.html',1,'']]]
 ];

@@ -110,6 +110,7 @@ $(function(){initNavTree('Presentation_8hpp.html',''); initResizable(true); });
 <p>Model statistics, variable importance serialization, and formatted terminal display for confusion matrices and VI tables.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Color_8hpp_source.html">io/Color.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Output_8hpp_source.html">io/Output.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="VariableImportance_8hpp_source.html">models/VariableImportance.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ConfusionMatrix_8hpp_source.html">stats/ConfusionMatrix.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Stats_8hpp_source.html">stats/Stats.hpp</a>&quot;</code><br />
@@ -133,15 +134,15 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac0a17338648781d6b8b499db83b6905a" id="r_ac0a17338648781d6b8b499db83b6905a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#ac0a17338648781d6b8b499db83b6905a">pptree::cli::print_confusion_matrix</a> (const <a class="el" href="structpptree_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;cm)</td></tr>
-<tr class="memdesc:ac0a17338648781d6b8b499db83b6905a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted confusion matrix to stdout.  <br /></td></tr>
-<tr class="separator:ac0a17338648781d6b8b499db83b6905a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84c3d2d3f8274a7d808e5bb722734ee8" id="r_a84c3d2d3f8274a7d808e5bb722734ee8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a84c3d2d3f8274a7d808e5bb722734ee8">pptree::cli::print_results</a> (const <a class="el" href="structpptree_1_1cli_1_1ModelStats.html">ModelStats</a> &amp;stats)</td></tr>
-<tr class="memdesc:a84c3d2d3f8274a7d808e5bb722734ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print evaluation results (timing, errors, memory) to stdout.  <br /></td></tr>
-<tr class="separator:a84c3d2d3f8274a7d808e5bb722734ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada7326ea4198f85538016417272c88c8" id="r_ada7326ea4198f85538016417272c88c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#ada7326ea4198f85538016417272c88c8">pptree::cli::print_variable_importance</a> (const <a class="el" href="structpptree_1_1VariableImportance.html">VariableImportance</a> &amp;vi, int max_rows=20)</td></tr>
-<tr class="memdesc:ada7326ea4198f85538016417272c88c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a ranked variable importance table to stdout.  <br /></td></tr>
-<tr class="separator:ada7326ea4198f85538016417272c88c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a696dd4c66175a27a4c15e62507dbbf1b" id="r_a696dd4c66175a27a4c15e62507dbbf1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a696dd4c66175a27a4c15e62507dbbf1b">pptree::cli::print_confusion_matrix</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;cm)</td></tr>
+<tr class="memdesc:a696dd4c66175a27a4c15e62507dbbf1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted confusion matrix to stdout.  <br /></td></tr>
+<tr class="separator:a696dd4c66175a27a4c15e62507dbbf1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff14296222a39757646a4219d547fe35" id="r_aff14296222a39757646a4219d547fe35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#aff14296222a39757646a4219d547fe35">pptree::cli::print_results</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1ModelStats.html">ModelStats</a> &amp;stats)</td></tr>
+<tr class="memdesc:aff14296222a39757646a4219d547fe35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print evaluation results (timing, errors, memory) to stdout.  <br /></td></tr>
+<tr class="separator:aff14296222a39757646a4219d547fe35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0379c63aba617f925bc69f90f0b92892" id="r_a0379c63aba617f925bc69f90f0b92892"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a0379c63aba617f925bc69f90f0b92892">pptree::cli::print_variable_importance</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1VariableImportance.html">VariableImportance</a> &amp;vi, int max_rows=20)</td></tr>
+<tr class="memdesc:a0379c63aba617f925bc69f90f0b92892"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a ranked variable importance table to stdout.  <br /></td></tr>
+<tr class="separator:a0379c63aba617f925bc69f90f0b92892"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Model statistics, variable importance serialization, and formatted terminal display for confusion matrices and VI tables. </p>

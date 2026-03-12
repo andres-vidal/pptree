@@ -113,6 +113,7 @@ $(function(){initNavTree('CLIOptions_8hpp.html',''); initResizable(true); });
 <div class="textblock"><code>#include &quot;<a class="el" href="ModelParams_8hpp_source.html">cli/ModelParams.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EvaluateParams_8hpp_source.html">cli/EvaluateParams.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BenchmarkParams_8hpp_source.html">cli/BenchmarkParams.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Output_8hpp_source.html">io/Output.hpp</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 </div>
 <p><a href="CLIOptions_8hpp_source.html">Go to the source code of this file.</a></p>
@@ -152,9 +153,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7ceebad5e5ddd8e7081eb6268a1002e9" id="r_a7ceebad5e5ddd8e7081eb6268a1002e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a7ceebad5e5ddd8e7081eb6268a1002e9">pptree::cli::parse_args</a> (int argc, char *argv[])</td></tr>
 <tr class="memdesc:a7ceebad5e5ddd8e7081eb6268a1002e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse command-line arguments into a <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html" title="All CLI options and runtime parameters.">CLIOptions</a> struct.  <br /></td></tr>
 <tr class="separator:a7ceebad5e5ddd8e7081eb6268a1002e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f6bf17ee59d3f7e450e6b274d99b292" id="r_a9f6bf17ee59d3f7e450e6b274d99b292"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a9f6bf17ee59d3f7e450e6b274d99b292">pptree::cli::warn_unused_params</a> (const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params)</td></tr>
-<tr class="memdesc:a9f6bf17ee59d3f7e450e6b274d99b292"><td class="mdescLeft">&#160;</td><td class="mdescRight">Warn the user about parameters that are ignored for single-tree training.  <br /></td></tr>
-<tr class="separator:a9f6bf17ee59d3f7e450e6b274d99b292"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00d75cae237a6fad00c7371662c825b5" id="r_a00d75cae237a6fad00c7371662c825b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1cli.html#a00d75cae237a6fad00c7371662c825b5">pptree::cli::warn_unused_params</a> (<a class="el" href="structpptree_1_1io_1_1Output.html">pptree::io::Output</a> &amp;out, const <a class="el" href="structpptree_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params)</td></tr>
+<tr class="memdesc:a00d75cae237a6fad00c7371662c825b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Warn the user about parameters that are ignored for single-tree training.  <br /></td></tr>
+<tr class="separator:a00d75cae237a6fad00c7371662c825b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="namespaceCLI.html">CLI</a> argument parsing, validation, and configuration for pptree. </p>

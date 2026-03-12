@@ -114,7 +114,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structpptree_1_1io_1_1Column.html" title="Column definition for table formatting.">Column</a> definition for table formatting.  <a href="structpptree_1_1io_1_1Column.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1io_1_1Output.html">Output</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quiet-aware output context for <a class="el" href="namespaceCLI.html">CLI</a> subcommands.  <a href="structpptree_1_1io_1_1Output.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quiet-aware, indentation-aware output context.  <a href="structpptree_1_1io_1_1Output.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpptree_1_1io_1_1TempDir.html">TempDir</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII temporary directory with automatic cleanup.  <a href="classpptree_1_1io_1_1TempDir.html#details">More...</a><br /></td></tr>
@@ -205,9 +205,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ac6a7826839deb482d88bbee1a95cd67a" id="r_ac6a7826839deb482d88bbee1a95cd67a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6a7826839deb482d88bbee1a95cd67a">success</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:ac6a7826839deb482d88bbee1a95cd67a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format text in green (for success messages).  <br /></td></tr>
 <tr class="separator:ac6a7826839deb482d88bbee1a95cd67a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95b71cfde92a7d2e349b1ecce5418c1a" id="r_a95b71cfde92a7d2e349b1ecce5418c1a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95b71cfde92a7d2e349b1ecce5418c1a">try_or_fail</a> (const std::function&lt; void()&gt; &amp;f, const std::string &amp;context=&quot;&quot;)</td></tr>
-<tr class="memdesc:a95b71cfde92a7d2e349b1ecce5418c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a callable, catch std::exception, print error, return 1.  <br /></td></tr>
-<tr class="separator:a95b71cfde92a7d2e349b1ecce5418c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e7fce12d06e78f44fc8ab83a2ef76c1" id="r_a0e7fce12d06e78f44fc8ab83a2ef76c1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e7fce12d06e78f44fc8ab83a2ef76c1">visual_width</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:a0e7fce12d06e78f44fc8ab83a2ef76c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the visual width of a string, ignoring ANSI escape codes.  <br /></td></tr>
 <tr class="separator:a0e7fce12d06e78f44fc8ab83a2ef76c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -899,46 +896,6 @@ template&lt;typename F&gt; </div>
 
 </div>
 </div>
-<a id="a95b71cfde92a7d2e349b1ecce5418c1a" name="a95b71cfde92a7d2e349b1ecce5418c1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95b71cfde92a7d2e349b1ecce5418c1a">&#9670;&#160;</a></span>try_or_fail()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int pptree::io::try_or_fail </td>
-          <td>(</td>
-          <td class="paramtype">const std::function&lt; void()&gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Run a callable, catch std::exception, print error, return 1. </p>
-<p>If the callable succeeds, returns 0. If it throws, prints the error message to stderr with red "Error:" prefix and returns 1.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">f</td><td>Callable that may throw. </td></tr>
-    <tr><td class="paramname">context</td><td>Optional prefix for the error message. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, 1 on caught exception. </dd></dl>
-
-</div>
-</div>
 <a id="a0e7fce12d06e78f44fc8ab83a2ef76c1" name="a0e7fce12d06e78f44fc8ab83a2ef76c1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0e7fce12d06e78f44fc8ab83a2ef76c1">&#9670;&#160;</a></span>visual_width()</h2>
 
@@ -1017,7 +974,7 @@ template&lt;typename F&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>The DataPacket to write. </td></tr>
-    <tr><td class="paramname">filename</td><td><a class="el" href="structpptree_1_1io_1_1Output.html" title="Quiet-aware output context for CLI subcommands.">Output</a> file path. </td></tr>
+    <tr><td class="paramname">filename</td><td><a class="el" href="structpptree_1_1io_1_1Output.html" title="Quiet-aware, indentation-aware output context.">Output</a> file path. </td></tr>
   </table>
   </dd>
 </dl>

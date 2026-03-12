@@ -13,5 +13,5 @@ var searchData=
   ['tree_5ffrom_5fjson_10',['tree_from_json',['../namespacepptree_1_1serialization.html#a3960a3c53ae345941268bedc774b09d8',1,'pptree::serialization']]],
   ['treecondition_11',['TreeCondition',['../structpptree_1_1TreeCondition.html#a24047ca2e7fee246f7771671516dfcfe',1,'pptree::TreeCondition']]],
   ['treeresponse_12',['TreeResponse',['../structpptree_1_1TreeResponse.html#a770f539f8d886b6e79e8fee8d56fdbe5',1,'pptree::TreeResponse']]],
-  ['try_5for_5ffail_13',['try_or_fail',['../namespacepptree_1_1io.html#a95b71cfde92a7d2e349b1ecce5418c1a',1,'pptree::io']]]
+  ['try_5for_5ffail_13',['try_or_fail',['../structpptree_1_1io_1_1Output.html#addc75df74c8bf1bb66a5f45ea1be4d8f',1,'pptree::io::Output']]]
 ];
