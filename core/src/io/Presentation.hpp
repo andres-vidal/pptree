@@ -74,7 +74,7 @@ namespace ppforest2::cli {
    * @param max_rows  Maximum number of rows to print (0 = all).
    */
   void print_variable_importance(
-    ppforest2::io::Output&       out,
+    ppforest2::io::Output&    out,
     const VariableImportance& vi,
     int                       max_rows = 20);
 

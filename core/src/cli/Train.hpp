@@ -37,7 +37,7 @@ namespace ppforest2::cli {
    * Ensures the response vector is contiguous (sorted by class).
    */
   ppforest2::stats::DataPacket read_data(
-    const CLIOptions&   params,
+    const CLIOptions&      params,
     ppforest2::stats::RNG& rng);
 
   /**
@@ -46,7 +46,7 @@ namespace ppforest2::cli {
   TrainResult train_model(
     const ppforest2::types::FeatureMatrix&  x,
     const ppforest2::types::ResponseVector& y,
-    const CLIOptions&                    params,
+    const CLIOptions&                       params,
     ppforest2::stats::RNG&                  rng);
 
   /**
@@ -54,9 +54,9 @@ namespace ppforest2::cli {
    */
   void print_configuration(
     ppforest2::io::Output& out,
-    const CLIOptions&   params,
-    int                 n_train = 0,
-    int                 n_test  = 0);
+    const CLIOptions&      params,
+    int                    n_train = 0,
+    int                    n_test  = 0);
 
   /**
    * @brief Run the train subcommand.

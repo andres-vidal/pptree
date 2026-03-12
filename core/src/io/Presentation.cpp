@@ -86,7 +86,7 @@ namespace ppforest2::cli {
   }
 
   void print_variable_importance(
-    ppforest2::io::Output&       out,
+    ppforest2::io::Output&    out,
     const VariableImportance& vi,
     int                       max_rows) {
     using namespace ppforest2::io;

@@ -139,7 +139,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
                                                                                                                                    \
           TempFile model;                                                                                                          \
           model.clear();                                                                                                           \
-          auto train = run_ppforest2(                                                                                                 \
+          auto train = run_ppforest2(                                                                                              \
             "-q train -d " + csv + " -t 0"                                                                                         \
             " -l " + std::to_string(lambda) +                                                                                      \
             " -r " + std::to_string(seed) +                                                                                        \
@@ -154,7 +154,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
                                                                                                                                    \
           TempFile output;                                                                                                         \
           output.clear();                                                                                                          \
-          auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + csv + " -o " + output.path());                      \
+          auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + csv + " -o " + output.path());                   \
           ASSERT_EQ(predict.exit_code, 0) << "predict failed";                                                                     \
                                                                                                                                    \
           auto pred_json = json::parse(output.read());                                                                             \
@@ -169,7 +169,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
                                                                                                                                     \
           TempFile model;                                                                                                           \
           model.clear();                                                                                                            \
-          auto train = run_ppforest2(                                                                                                  \
+          auto train = run_ppforest2(                                                                                               \
             "-q train -d " + csv +                                                                                                  \
             " -t " + std::to_string(n_trees) +                                                                                      \
             " -l " + std::to_string(lambda) +                                                                                       \
@@ -193,7 +193,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
                                                                                                                                     \
           TempFile output;                                                                                                          \
           output.clear();                                                                                                           \
-          auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + csv + " -o " + output.path());                       \
+          auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + csv + " -o " + output.path());                    \
           ASSERT_EQ(predict.exit_code, 0) << "predict failed";                                                                      \
                                                                                                                                     \
           auto pred_json = json::parse(output.read());                                                                              \

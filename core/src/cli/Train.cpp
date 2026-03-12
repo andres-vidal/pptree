@@ -168,10 +168,10 @@ namespace {
   }
 
   TrainResult train_model(
-    const FeatureMatrix&  x,
-    const ResponseVector& y,
-    const CLIOptions&     params,
-    ppforest2::stats::RNG&   rng) {
+    const FeatureMatrix&   x,
+    const ResponseVector&  y,
+    const CLIOptions&      params,
+    ppforest2::stats::RNG& rng) {
     TrainingSpec::Ptr spec;
     std::function<Model::Ptr()> fact;
 

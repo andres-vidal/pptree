@@ -67,7 +67,7 @@ namespace {
 }
 
   void print_benchmark_table(
-    ppforest2::io::Output&               out,
+    ppforest2::io::Output&            out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
     using namespace ppforest2::io;
@@ -215,7 +215,7 @@ namespace {
   }
 
   void print_benchmark_markdown(
-    ppforest2::io::Output&               out,
+    ppforest2::io::Output&            out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
     using namespace ppforest2::io;
