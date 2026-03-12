@@ -225,6 +225,12 @@ summary.PPTree <- function(object, ...) {
     )
     names(tbl)[2] <- "\u03c3"
     print(tbl)
+    if (!all(model$vi$scale == 1)) {
+      cat("\nNote: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).\n")
+      cat("Variable contributions can only be theoretically interpreted as such\n")
+      cat("if the model was trained on scaled data. Scaling also changes the\n")
+      cat("projection-pursuit optimization, which may affect the resulting tree.\n")
+    }
     cat("-------------------------------------\n")
     cat("Confusion Matrix:\n")
     cat("TODO")

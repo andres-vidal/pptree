@@ -160,6 +160,17 @@ namespace pptree::cli {
       out.println("{}", muted(fmt::format("... {} more variables not shown", p - rows)));
     }
 
+    bool all_ones = (scale.array() - types::Feature(1)).abs().maxCoeff() < types::Feature(1e-6);
+
+    if (!all_ones) {
+      out.newline();
+      out.println("{}", warning(
+        "Note: VI was calculated using scaled coefficients (|a_j| * sigma_j).\n"
+        "Variable contributions can only be theoretically interpreted as such\n"
+        "if the model was trained on scaled data. Scaling also changes the\n"
+        "projection-pursuit optimization, which may affect the resulting tree."));
+    }
+
     out.newline();
   }
 
