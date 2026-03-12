@@ -49,6 +49,11 @@ summary(model)
 #> 2  Petal.Width 0.7622377  0.3437867
 #> 3  Sepal.Width 0.4358663  0.1806545
 #> 4 Sepal.Length 0.8280661  0.1471821
+#> 
+#> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).
+#> Variable contributions can only be theoretically interpreted as such
+#> if the model was trained on scaled data. Scaling also changes the
+#> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
 #> Confusion Matrix:
 #> TODO
