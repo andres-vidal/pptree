@@ -19,7 +19,7 @@ jobs:
       - run: make r-check
       - name: Show Install Logs
         if: failure()
-        run: cat PPtree.Rcheck/00install.out
+        run: cat ppforest2.Rcheck/00install.out
   Mac:
     runs-on: macos-latest
     steps:
@@ -38,7 +38,7 @@ jobs:
       - run: make r-check
       - name: Show Install Logs
         if: failure()
-        run: cat PPtree.Rcheck/00install.out
+        run: cat ppforest2.Rcheck/00install.out
   MacOpenMP:
     runs-on: macos-latest
     steps:
@@ -58,7 +58,7 @@ jobs:
       - run: make r-check
       - name: Show Install Logs
         if: failure()
-        run: cat PPtree.Rcheck/00install.out
+        run: cat ppforest2.Rcheck/00install.out
   Windows:
     runs-on: windows-latest
     defaults:
@@ -82,4 +82,4 @@ jobs:
       - run: make r-check
       - name: Show Install Logs
         if: failure()
-        run: cat PPtree.Rcheck/00install.out
+        run: cat ppforest2.Rcheck/00install.out

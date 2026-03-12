@@ -1,5 +1,5 @@
 {
-  "name": "pptree default benchmarks",
+  "name": "ppforest2 default benchmarks",
   "defaults": {
     "trees": 100,
     "lambda": 0.5,
