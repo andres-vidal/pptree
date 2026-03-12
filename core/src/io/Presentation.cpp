@@ -165,10 +165,10 @@ namespace pptree::cli {
     if (!all_ones) {
       out.newline();
       out.println("{}", warning(
-        "Note: VI was calculated using scaled coefficients (|a_j| * sigma_j).\n"
-        "Variable contributions can only be theoretically interpreted as such\n"
-        "if the model was trained on scaled data. Scaling also changes the\n"
-        "projection-pursuit optimization, which may affect the resulting tree."));
+          "Note: VI was calculated using scaled coefficients (|a_j| * sigma_j).\n"
+          "Variable contributions can only be theoretically interpreted as such\n"
+          "if the model was trained on scaled data. Scaling also changes the\n"
+          "projection-pursuit optimization, which may affect the resulting tree."));
     }
 
     out.newline();
@@ -187,6 +187,7 @@ namespace pptree::cli {
     for (const auto& [label, idx] : cm.label_index) {
       header += fmt::format("{:>5}", label);
     }
+
     header += "  Error";
     out.println("{}", header);
 

@@ -67,7 +67,7 @@ namespace {
   }
 
   void save_model(
-    Output&            out,
+    Output &            out,
     const Model&       model,
     const CLIOptions&  params,
     const std::string& path) {
@@ -219,6 +219,7 @@ namespace {
     } else {
       out.println("not saved {}", muted("(used --no-save)"));
     }
+
     out.dedent();
 
     if (!params.no_metrics) {

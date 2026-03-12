@@ -204,8 +204,8 @@ namespace {
     out.newline();
     out.indent();
     out.println("{} scenarios completed in {:.1f}s",
-      emphasis(std::to_string(current.results.size())),
-      current.total_time_ms / 1000.0);
+    emphasis(std::to_string(current.results.size())),
+    current.total_time_ms / 1000.0);
     out.dedent();
     out.newline();
   }
@@ -334,7 +334,7 @@ namespace {
 
     out.newline();
     out.println("{} scenarios completed in {:.1f}s",
-      current.results.size(), current.total_time_ms / 1000.0);
+    current.results.size(), current.total_time_ms / 1000.0);
   }
 
   void write_results_csv(const SuiteResult& result, const std::string& path) {

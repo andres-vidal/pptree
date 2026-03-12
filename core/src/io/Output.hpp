@@ -156,11 +156,11 @@ namespace pptree::io {
       }
     }
 
-  private:
-    void print_indent() const {
-      if (indent_level > 0) {
-        fmt::print("{:{}}", "", indent_level * 2);
+    private:
+      void print_indent() const {
+        if (indent_level > 0) {
+          fmt::print("{:{}}", "", indent_level * 2);
+        }
       }
-    }
   };
 }
