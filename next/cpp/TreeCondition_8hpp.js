@@ -1,5 +1,5 @@
 var TreeCondition_8hpp =
 [
-    [ "pptree::TreeCondition", "structpptree_1_1TreeCondition.html", "structpptree_1_1TreeCondition" ],
-    [ "pptree::Threshold", "namespacepptree.html#a77cf791610d11e642edf4503609d9fdb", null ]
+    [ "ppforest2::TreeCondition", "structppforest2_1_1TreeCondition.html", "structppforest2_1_1TreeCondition" ],
+    [ "ppforest2::Threshold", "namespaceppforest2.html#ad86c43fe58242b878d5590d1d130772a", null ]
 ];

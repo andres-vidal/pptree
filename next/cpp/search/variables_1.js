@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['baseline_5fpath_0',['baseline_path',['../structpptree_1_1cli_1_1BenchmarkParams.html#a5015ba2c6b7e7b8ad2d7736d95ce9815',1,'pptree::cli::BenchmarkParams']]],
-  ['benchmark_1',['benchmark',['../structpptree_1_1cli_1_1CLIOptions.html#a48d7cef50a360aa588f1c78cf96be3e4',1,'pptree::cli::CLIOptions']]]
+  ['baseline_5fpath_0',['baseline_path',['../structppforest2_1_1cli_1_1BenchmarkParams.html#aece25fda7ac99aa87a5f0463a95b836e',1,'ppforest2::cli::BenchmarkParams']]],
+  ['benchmark_1',['benchmark',['../structppforest2_1_1cli_1_1CLIOptions.html#a55211f7da9e210608fbeff6d776cdaa8',1,'ppforest2::cli::CLIOptions']]]
 ];

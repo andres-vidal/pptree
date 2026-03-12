@@ -1,4 +1,4 @@
 var TreeResponse_8hpp =
 [
-    [ "pptree::TreeResponse", "structpptree_1_1TreeResponse.html", "structpptree_1_1TreeResponse" ]
+    [ "ppforest2::TreeResponse", "structppforest2_1_1TreeResponse.html", "structppforest2_1_1TreeResponse" ]
 ];

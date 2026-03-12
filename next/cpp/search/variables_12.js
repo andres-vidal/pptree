@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['value_0',['value',['../structpptree_1_1cli_1_1VarsSpec.html#a461024a247bbb7a5b11962b108e00468',1,'pptree::cli::VarsSpec::value'],['../structpptree_1_1TreeResponse.html#a73c03e28ce5a44e192146a6152b5d295',1,'pptree::TreeResponse::value'],['../structpptree_1_1NodeData.html#ad8bfb08c5c04eff7eb470d12d1d50d82',1,'pptree::NodeData::value']]],
-  ['values_1',['values',['../structpptree_1_1stats_1_1ConfusionMatrix.html#a52f9856ac27209bc35f791516c0f855e',1,'pptree::stats::ConfusionMatrix']]],
-  ['var_5fi_2',['var_i',['../structpptree_1_1BoundaryVisitor.html#a67a77432e92a807c912e9455aa713c1f',1,'pptree::BoundaryVisitor::var_i'],['../structpptree_1_1RegionVisitor.html#abac26c9017355350ac3a9b5c99455020',1,'pptree::RegionVisitor::var_i']]],
-  ['var_5fj_3',['var_j',['../structpptree_1_1BoundaryVisitor.html#a6caabbd70b620a9714b72d871d10d6df',1,'pptree::BoundaryVisitor::var_j'],['../structpptree_1_1RegionVisitor.html#aa4c527b6d06fd1b1d59bed8326b26689',1,'pptree::RegionVisitor::var_j']]],
-  ['vars_4',['vars',['../structpptree_1_1cli_1_1Scenario.html#a5ee87e14597cc78e2eb4d3c88c64b8a5',1,'pptree::cli::Scenario::vars'],['../structpptree_1_1cli_1_1ScenarioResult.html#ae7ece9e3d920f272c5de02201e149d55',1,'pptree::cli::ScenarioResult::vars']]],
-  ['vars_5finput_5',['vars_input',['../structpptree_1_1cli_1_1ModelParams.html#a717d284213d0ada7ac1cc5c11d7a719c',1,'pptree::cli::ModelParams']]],
-  ['vertices_6',['vertices',['../structpptree_1_1RegionPolygon.html#a7e0bb94487b9fed8cdf32d903956717a',1,'pptree::RegionPolygon']]],
-  ['vi2_5fcontributions_7',['vi2_contributions',['../structpptree_1_1VIVisitor.html#a821b5d5774107d3312e0315791b658ad',1,'pptree::VIVisitor']]],
-  ['vi3_5fcontributions_8',['vi3_contributions',['../structpptree_1_1VIVisitor.html#a9eaf092669d146be10352ab4b57ba3b3',1,'pptree::VIVisitor']]]
+  ['value_0',['value',['../structppforest2_1_1cli_1_1VarsSpec.html#a93281f27248d046c29a19d7c33e41aff',1,'ppforest2::cli::VarsSpec::value'],['../structppforest2_1_1TreeResponse.html#aa94fac6f7ec3fa85e83e4bc68d90b187',1,'ppforest2::TreeResponse::value'],['../structppforest2_1_1NodeData.html#acc50b4c2a937771d0427b7e5ceac27e8',1,'ppforest2::NodeData::value']]],
+  ['values_1',['values',['../structppforest2_1_1stats_1_1ConfusionMatrix.html#a2d3e3a8f8d3a9eb59cce5fe877a02088',1,'ppforest2::stats::ConfusionMatrix']]],
+  ['var_5fi_2',['var_i',['../structppforest2_1_1BoundaryVisitor.html#a7c6a89f89791bb8888f448e12757efd4',1,'ppforest2::BoundaryVisitor::var_i'],['../structppforest2_1_1RegionVisitor.html#aec2c57e04715ea5178b617c443a567f4',1,'ppforest2::RegionVisitor::var_i']]],
+  ['var_5fj_3',['var_j',['../structppforest2_1_1BoundaryVisitor.html#aad22cc7ab4921eba8029a7c82d64a93a',1,'ppforest2::BoundaryVisitor::var_j'],['../structppforest2_1_1RegionVisitor.html#aaa51f0f4fb0b172faf306d091a1248d2',1,'ppforest2::RegionVisitor::var_j']]],
+  ['vars_4',['vars',['../structppforest2_1_1cli_1_1Scenario.html#adcb93bd1ba2ced538d73ff0761f67a95',1,'ppforest2::cli::Scenario::vars'],['../structppforest2_1_1cli_1_1ScenarioResult.html#a7fc4bdcadf56e1c89f27fc3696c2ef19',1,'ppforest2::cli::ScenarioResult::vars']]],
+  ['vars_5finput_5',['vars_input',['../structppforest2_1_1cli_1_1ModelParams.html#ae4084e7308940cdb2ad792c17f17e1a2',1,'ppforest2::cli::ModelParams']]],
+  ['vertices_6',['vertices',['../structppforest2_1_1RegionPolygon.html#a1586702c38e2254739c998735a88b33e',1,'ppforest2::RegionPolygon']]],
+  ['vi2_5fcontributions_7',['vi2_contributions',['../structppforest2_1_1VIVisitor.html#a79401108bcca41308bc44ecf85efca19',1,'ppforest2::VIVisitor']]],
+  ['vi3_5fcontributions_8',['vi3_contributions',['../structppforest2_1_1VIVisitor.html#aa6a120367d17b321103fb422e603e1b5',1,'ppforest2::VIVisitor']]]
 ];

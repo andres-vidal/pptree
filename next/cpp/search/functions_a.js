@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['make_0',['make',['../structpptree_1_1pp_1_1PPGLDAStrategy.html#a6887b3b89732c3678cf722fb8e4e02ba',1,'pptree::pp::PPGLDAStrategy::make()'],['../structpptree_1_1TrainingSpecGLDA.html#aba2454f056010e6fa1f7c94bb8f28ac2',1,'pptree::TrainingSpecGLDA::make()'],['../structpptree_1_1TrainingSpecUGLDA.html#a87af465629bf8e3e139e625953612439',1,'pptree::TrainingSpecUGLDA::make()'],['../structpptree_1_1TreeCondition.html#ab83b2361c1f359263dc68373a3022bba',1,'pptree::TreeCondition::make()'],['../structpptree_1_1TreeResponse.html#a01ee793f6dff012484af5c14aab99f7b',1,'pptree::TreeResponse::make()']]],
-  ['mean_1',['mean',['../classpptree_1_1stats_1_1GroupPartition.html#aae3e7922f72c5869610aa8eb3cef8d20',1,'pptree::stats::GroupPartition']]],
-  ['mean_5fof_5fmeans_2',['mean_of_means',['../namespacepptree_1_1sr.html#a7806230c1f53fa4099f4de54d2775ce6',1,'pptree::sr']]],
-  ['mean_5fte_5ferror_3',['mean_te_error',['../structpptree_1_1cli_1_1ModelStats.html#a2af9467d3d5840949bdb85ccab4857e9',1,'pptree::cli::ModelStats']]],
-  ['mean_5ftime_4',['mean_time',['../structpptree_1_1cli_1_1ModelStats.html#a7c2315f9fa32e9400e872b49bf18dc43',1,'pptree::cli::ModelStats']]],
-  ['mean_5ftr_5ferror_5',['mean_tr_error',['../structpptree_1_1cli_1_1ModelStats.html#a207d3cf9fa379f8d4de9b12c46e0d5c3',1,'pptree::cli::ModelStats']]],
-  ['measure_5ftime_5fms_6',['measure_time_ms',['../namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea',1,'pptree::io']]],
-  ['model_5ffrom_5fjson_7',['model_from_json',['../namespacepptree_1_1serialization.html#ad389da240453e7e78f82f9523e48663c',1,'pptree::serialization']]],
-  ['muted_8',['muted',['../namespacepptree_1_1io.html#aab2771d227adf994e7c2ccfca1c77536',1,'pptree::io']]]
+  ['make_0',['make',['../structppforest2_1_1pp_1_1PPGLDAStrategy.html#ae80b05dc1fa29a9c2f91abc3e13bb50e',1,'ppforest2::pp::PPGLDAStrategy::make()'],['../structppforest2_1_1TrainingSpecGLDA.html#a18f606509efdd84ec87a04cf36478b93',1,'ppforest2::TrainingSpecGLDA::make()'],['../structppforest2_1_1TrainingSpecUGLDA.html#ab9b693121c295cd88d9b993c81dd400b',1,'ppforest2::TrainingSpecUGLDA::make()'],['../structppforest2_1_1TreeCondition.html#aae00c2126f9831cb31aa1ad2cca1c491',1,'ppforest2::TreeCondition::make()'],['../structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516',1,'ppforest2::TreeResponse::make()']]],
+  ['mean_1',['mean',['../classppforest2_1_1stats_1_1GroupPartition.html#a6d2c08555e8c8ff49f95715f2fc771c4',1,'ppforest2::stats::GroupPartition']]],
+  ['mean_5fof_5fmeans_2',['mean_of_means',['../namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045',1,'ppforest2::sr']]],
+  ['mean_5fte_5ferror_3',['mean_te_error',['../structppforest2_1_1cli_1_1ModelStats.html#aa67e0a94ea6fe4461f7d3de6ec2986db',1,'ppforest2::cli::ModelStats']]],
+  ['mean_5ftime_4',['mean_time',['../structppforest2_1_1cli_1_1ModelStats.html#afd467733979981ba17eeabec86e38887',1,'ppforest2::cli::ModelStats']]],
+  ['mean_5ftr_5ferror_5',['mean_tr_error',['../structppforest2_1_1cli_1_1ModelStats.html#ab7d51e4f705c09f31d48b98d91bae93f',1,'ppforest2::cli::ModelStats']]],
+  ['measure_5ftime_5fms_6',['measure_time_ms',['../namespaceppforest2_1_1io.html#a27548afe6815bfe21d68e54f71b37fdd',1,'ppforest2::io']]],
+  ['model_5ffrom_5fjson_7',['model_from_json',['../namespaceppforest2_1_1serialization.html#adc903606c521ef56dc9d09c08696a240',1,'ppforest2::serialization']]],
+  ['muted_8',['muted',['../namespaceppforest2_1_1io.html#a6d17c49578950ab6ea0be9494e4794ed',1,'ppforest2::io']]]
 ];

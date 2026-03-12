@@ -1,4 +1,4 @@
 var TreeNodeVisitor_8hpp =
 [
-    [ "pptree::TreeNodeVisitor", "structpptree_1_1TreeNodeVisitor.html", "structpptree_1_1TreeNodeVisitor" ]
+    [ "ppforest2::TreeNodeVisitor", "structppforest2_1_1TreeNodeVisitor.html", "structppforest2_1_1TreeNodeVisitor" ]
 ];

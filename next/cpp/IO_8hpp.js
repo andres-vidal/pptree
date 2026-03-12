@@ -1,11 +1,11 @@
 var IO_8hpp =
 [
-    [ "pptree::io::check_dir_not_exists", "namespacepptree_1_1io.html#a68f4a3ea8c66d91fe11b76811aea21e9", null ],
-    [ "pptree::io::check_file_not_exists", "namespacepptree_1_1io.html#a18ec4390252485761c113f3c4d0e3047", null ],
-    [ "pptree::io::ensure_json_extension", "namespacepptree_1_1io.html#a14ad9eff26882ef01fc6a53d3da0a504", null ],
-    [ "pptree::io::get_peak_rss_bytes", "namespacepptree_1_1io.html#a00ba7c7307a572e2566448cf70a74113", null ],
-    [ "pptree::io::read_csv", "namespacepptree_1_1io.html#af1e66c916b557283bd093964b09f9b3f", null ],
-    [ "pptree::io::read_csv_sorted", "namespacepptree_1_1io.html#a772f7a3db36e891aaf4e09da9b7bfdc0", null ],
-    [ "pptree::io::write_csv", "namespacepptree_1_1io.html#ab5fa4ab9ed74ae21bfbd014699281aca", null ],
-    [ "pptree::io::write_json_file", "namespacepptree_1_1io.html#a02251f7a65a89af4da5b86108cf281bb", null ]
+    [ "ppforest2::io::check_dir_not_exists", "namespaceppforest2_1_1io.html#ae8b077f59b53c46c1279dd269956ecf8", null ],
+    [ "ppforest2::io::check_file_not_exists", "namespaceppforest2_1_1io.html#ab05c747dc852ed977dcdb58e81bc42f9", null ],
+    [ "ppforest2::io::ensure_json_extension", "namespaceppforest2_1_1io.html#ab36310cec64c69533da062a18bf7de2c", null ],
+    [ "ppforest2::io::get_peak_rss_bytes", "namespaceppforest2_1_1io.html#a62843aaf7087f11baadd77694332f8d1", null ],
+    [ "ppforest2::io::read_csv", "namespaceppforest2_1_1io.html#a6ac9b79cdbc8914a27aa5f20878943b1", null ],
+    [ "ppforest2::io::read_csv_sorted", "namespaceppforest2_1_1io.html#a449e151e1b1e9ad488238b2305a5eaa8", null ],
+    [ "ppforest2::io::write_csv", "namespaceppforest2_1_1io.html#a6492f52a5acb1f75c9d5e8716412f272", null ],
+    [ "ppforest2::io::write_json_file", "namespaceppforest2_1_1io.html#a10a3a1e5e1dcf48d6de96cdd8f1c9faf", null ]
 ];

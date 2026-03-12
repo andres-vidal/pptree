@@ -1,5 +1,5 @@
 var DRNoopStrategy_8hpp =
 [
-    [ "pptree::dr::DRNoopStrategy", "structpptree_1_1dr_1_1DRNoopStrategy.html", "structpptree_1_1dr_1_1DRNoopStrategy" ],
-    [ "pptree::dr::noop", "namespacepptree_1_1dr.html#a77ca219c48491bdfcd2aa7144ce92108", null ]
+    [ "ppforest2::dr::DRNoopStrategy", "structppforest2_1_1dr_1_1DRNoopStrategy.html", "structppforest2_1_1dr_1_1DRNoopStrategy" ],
+    [ "ppforest2::dr::noop", "namespaceppforest2_1_1dr.html#afb04463fe18947613b27e0b8a367923a", null ]
 ];

@@ -1,6 +1,6 @@
 var VarsSpec_8hpp =
 [
-    [ "pptree::cli::VarsSpec", "structpptree_1_1cli_1_1VarsSpec.html", "structpptree_1_1cli_1_1VarsSpec" ],
-    [ "pptree::cli::parse_vars", "namespacepptree_1_1cli.html#a8bf5ab988401bf3ce7ba2f2aa4b2666b", null ],
-    [ "pptree::cli::parse_vars", "namespacepptree_1_1cli.html#af4cb3795222af14fab1cd0cff4740d2e", null ]
+    [ "ppforest2::cli::VarsSpec", "structppforest2_1_1cli_1_1VarsSpec.html", "structppforest2_1_1cli_1_1VarsSpec" ],
+    [ "ppforest2::cli::parse_vars", "namespaceppforest2_1_1cli.html#a6aea99e72f3fed4564684ef4362d9c39", null ],
+    [ "ppforest2::cli::parse_vars", "namespaceppforest2_1_1cli.html#af431290776838c0a65e480b0e89731cf", null ]
 ];

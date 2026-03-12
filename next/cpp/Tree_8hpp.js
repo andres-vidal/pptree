@@ -1,4 +1,4 @@
 var Tree_8hpp =
 [
-    [ "pptree::Tree", "structpptree_1_1Tree.html", "structpptree_1_1Tree" ]
+    [ "ppforest2::Tree", "structppforest2_1_1Tree.html", "structppforest2_1_1Tree" ]
 ];

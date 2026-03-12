@@ -1,5 +1,5 @@
 var Timing_8hpp =
 [
-    [ "pptree::io::measure_time_ms", "namespacepptree_1_1io.html#a0bfe7762855a7a8d18287357aa3da3ea", null ],
-    [ "pptree::io::now_iso8601", "namespacepptree_1_1io.html#a7b370b1542eb16ec7e6d2eee5c64fe97", null ]
+    [ "ppforest2::io::measure_time_ms", "namespaceppforest2_1_1io.html#a27548afe6815bfe21d68e54f71b37fdd", null ],
+    [ "ppforest2::io::now_iso8601", "namespaceppforest2_1_1io.html#af3bea8d81a602627c7d483ac468c0870", null ]
 ];

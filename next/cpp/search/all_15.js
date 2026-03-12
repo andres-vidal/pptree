@@ -1,11 +1,11 @@
 var searchData=
 [
-  ['uniform_0',['Uniform',['../classpptree_1_1stats_1_1Uniform.html',1,'pptree::stats::Uniform'],['../classpptree_1_1stats_1_1Uniform.html#a719f5add406af776681a6f5928e5f49d',1,'pptree::stats::Uniform::Uniform()']]],
-  ['uniform_1',['uniform',['../namespacepptree_1_1dr.html#a31c1433501a5c0b9c8e429185034d671',1,'pptree::dr']]],
+  ['uniform_0',['Uniform',['../classppforest2_1_1stats_1_1Uniform.html',1,'ppforest2::stats::Uniform'],['../classppforest2_1_1stats_1_1Uniform.html#a724bb7c030c3d9d4b49261cc04208d2e',1,'ppforest2::stats::Uniform::Uniform()']]],
+  ['uniform_1',['uniform',['../namespaceppforest2_1_1dr.html#a3f9e147489a1f708dd66dcc88f87e845',1,'ppforest2::dr']]],
   ['uniform_2ehpp_2',['Uniform.hpp',['../Uniform_8hpp.html',1,'']]],
-  ['unique_3',['unique',['../namespacepptree_1_1stats.html#a6c77f93afd576715a4cef4b87eb0c1bb',1,'pptree::stats']]],
-  ['upper_4',['upper',['../structpptree_1_1TreeCondition.html#acd6c7fcb40f6576fa4eba3f0a3511ee2',1,'pptree::TreeCondition']]],
-  ['used_5fdefault_5fseed_5',['used_default_seed',['../structpptree_1_1cli_1_1ModelParams.html#aaac179fe40380e74927942871b6f7fe8',1,'pptree::cli::ModelParams']]],
-  ['used_5fdefault_5fthreads_6',['used_default_threads',['../structpptree_1_1cli_1_1ModelParams.html#a15754d49d8ebd1c7803f41960be5ea05',1,'pptree::cli::ModelParams']]],
-  ['used_5fdefault_5fvars_7',['used_default_vars',['../structpptree_1_1cli_1_1ModelParams.html#a3d08f825a2274ab751aa18988b0d2368',1,'pptree::cli::ModelParams']]]
+  ['unique_3',['unique',['../namespaceppforest2_1_1stats.html#a116d95f97b06a0c8b60db844c607ce25',1,'ppforest2::stats']]],
+  ['upper_4',['upper',['../structppforest2_1_1TreeCondition.html#a925ca0a1fe65dd8097b007ef31fe2324',1,'ppforest2::TreeCondition']]],
+  ['used_5fdefault_5fseed_5',['used_default_seed',['../structppforest2_1_1cli_1_1ModelParams.html#af8cfb29c1cdb2dfd6896613868067cdd',1,'ppforest2::cli::ModelParams']]],
+  ['used_5fdefault_5fthreads_6',['used_default_threads',['../structppforest2_1_1cli_1_1ModelParams.html#aa67093fd3dae587f393545690a8b5d82',1,'ppforest2::cli::ModelParams']]],
+  ['used_5fdefault_5fvars_7',['used_default_vars',['../structppforest2_1_1cli_1_1ModelParams.html#ae4d60c4e4772e4866a7b2c79804481eb',1,'ppforest2::cli::ModelParams']]]
 ];

@@ -1,82 +1,82 @@
 var annotated_dup =
 [
-    [ "pptree", "namespacepptree.html", [
-      [ "cli", "namespacepptree_1_1cli.html", [
-        [ "BenchmarkParams", "structpptree_1_1cli_1_1BenchmarkParams.html", "structpptree_1_1cli_1_1BenchmarkParams" ],
-        [ "BenchmarkSuite", "structpptree_1_1cli_1_1BenchmarkSuite.html", "structpptree_1_1cli_1_1BenchmarkSuite" ],
-        [ "CLIOptions", "structpptree_1_1cli_1_1CLIOptions.html", "structpptree_1_1cli_1_1CLIOptions" ],
-        [ "ConvergenceCriteria", "structpptree_1_1cli_1_1ConvergenceCriteria.html", "structpptree_1_1cli_1_1ConvergenceCriteria" ],
-        [ "ConvergenceParams", "structpptree_1_1cli_1_1ConvergenceParams.html", "structpptree_1_1cli_1_1ConvergenceParams" ],
-        [ "EvaluateParams", "structpptree_1_1cli_1_1EvaluateParams.html", "structpptree_1_1cli_1_1EvaluateParams" ],
-        [ "ModelParams", "structpptree_1_1cli_1_1ModelParams.html", "structpptree_1_1cli_1_1ModelParams" ],
-        [ "ModelStats", "structpptree_1_1cli_1_1ModelStats.html", "structpptree_1_1cli_1_1ModelStats" ],
-        [ "Scenario", "structpptree_1_1cli_1_1Scenario.html", "structpptree_1_1cli_1_1Scenario" ],
-        [ "ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", "structpptree_1_1cli_1_1ScenarioResult" ],
-        [ "SimulateParams", "structpptree_1_1cli_1_1SimulateParams.html", "structpptree_1_1cli_1_1SimulateParams" ],
-        [ "SuiteResult", "structpptree_1_1cli_1_1SuiteResult.html", "structpptree_1_1cli_1_1SuiteResult" ],
-        [ "TrainResult", "structpptree_1_1cli_1_1TrainResult.html", "structpptree_1_1cli_1_1TrainResult" ],
-        [ "VarsSpec", "structpptree_1_1cli_1_1VarsSpec.html", "structpptree_1_1cli_1_1VarsSpec" ]
+    [ "ppforest2", "namespaceppforest2.html", [
+      [ "cli", "namespaceppforest2_1_1cli.html", [
+        [ "BenchmarkParams", "structppforest2_1_1cli_1_1BenchmarkParams.html", "structppforest2_1_1cli_1_1BenchmarkParams" ],
+        [ "BenchmarkSuite", "structppforest2_1_1cli_1_1BenchmarkSuite.html", "structppforest2_1_1cli_1_1BenchmarkSuite" ],
+        [ "CLIOptions", "structppforest2_1_1cli_1_1CLIOptions.html", "structppforest2_1_1cli_1_1CLIOptions" ],
+        [ "ConvergenceCriteria", "structppforest2_1_1cli_1_1ConvergenceCriteria.html", "structppforest2_1_1cli_1_1ConvergenceCriteria" ],
+        [ "ConvergenceParams", "structppforest2_1_1cli_1_1ConvergenceParams.html", "structppforest2_1_1cli_1_1ConvergenceParams" ],
+        [ "EvaluateParams", "structppforest2_1_1cli_1_1EvaluateParams.html", "structppforest2_1_1cli_1_1EvaluateParams" ],
+        [ "ModelParams", "structppforest2_1_1cli_1_1ModelParams.html", "structppforest2_1_1cli_1_1ModelParams" ],
+        [ "ModelStats", "structppforest2_1_1cli_1_1ModelStats.html", "structppforest2_1_1cli_1_1ModelStats" ],
+        [ "Scenario", "structppforest2_1_1cli_1_1Scenario.html", "structppforest2_1_1cli_1_1Scenario" ],
+        [ "ScenarioResult", "structppforest2_1_1cli_1_1ScenarioResult.html", "structppforest2_1_1cli_1_1ScenarioResult" ],
+        [ "SimulateParams", "structppforest2_1_1cli_1_1SimulateParams.html", "structppforest2_1_1cli_1_1SimulateParams" ],
+        [ "SuiteResult", "structppforest2_1_1cli_1_1SuiteResult.html", "structppforest2_1_1cli_1_1SuiteResult" ],
+        [ "TrainResult", "structppforest2_1_1cli_1_1TrainResult.html", "structppforest2_1_1cli_1_1TrainResult" ],
+        [ "VarsSpec", "structppforest2_1_1cli_1_1VarsSpec.html", "structppforest2_1_1cli_1_1VarsSpec" ]
       ] ],
-      [ "dr", "namespacepptree_1_1dr.html", [
-        [ "DRNoopStrategy", "structpptree_1_1dr_1_1DRNoopStrategy.html", "structpptree_1_1dr_1_1DRNoopStrategy" ],
-        [ "DRSpec", "structpptree_1_1dr_1_1DRSpec.html", "structpptree_1_1dr_1_1DRSpec" ],
-        [ "DRStrategy", "structpptree_1_1dr_1_1DRStrategy.html", "structpptree_1_1dr_1_1DRStrategy" ],
-        [ "DRUniformStrategy", "structpptree_1_1dr_1_1DRUniformStrategy.html", "structpptree_1_1dr_1_1DRUniformStrategy" ]
+      [ "dr", "namespaceppforest2_1_1dr.html", [
+        [ "DRNoopStrategy", "structppforest2_1_1dr_1_1DRNoopStrategy.html", "structppforest2_1_1dr_1_1DRNoopStrategy" ],
+        [ "DRSpec", "structppforest2_1_1dr_1_1DRSpec.html", "structppforest2_1_1dr_1_1DRSpec" ],
+        [ "DRStrategy", "structppforest2_1_1dr_1_1DRStrategy.html", "structppforest2_1_1dr_1_1DRStrategy" ],
+        [ "DRUniformStrategy", "structppforest2_1_1dr_1_1DRUniformStrategy.html", "structppforest2_1_1dr_1_1DRUniformStrategy" ]
       ] ],
-      [ "io", "namespacepptree_1_1io.html", [
-        [ "Column", "structpptree_1_1io_1_1Column.html", "structpptree_1_1io_1_1Column" ],
-        [ "Output", "structpptree_1_1io_1_1Output.html", "structpptree_1_1io_1_1Output" ],
-        [ "TempDir", "classpptree_1_1io_1_1TempDir.html", "classpptree_1_1io_1_1TempDir" ],
-        [ "TempFile", "classpptree_1_1io_1_1TempFile.html", "classpptree_1_1io_1_1TempFile" ]
+      [ "io", "namespaceppforest2_1_1io.html", [
+        [ "Column", "structppforest2_1_1io_1_1Column.html", "structppforest2_1_1io_1_1Column" ],
+        [ "Output", "structppforest2_1_1io_1_1Output.html", "structppforest2_1_1io_1_1Output" ],
+        [ "TempDir", "classppforest2_1_1io_1_1TempDir.html", "classppforest2_1_1io_1_1TempDir" ],
+        [ "TempFile", "classppforest2_1_1io_1_1TempFile.html", "classppforest2_1_1io_1_1TempFile" ]
       ] ],
-      [ "pp", "namespacepptree_1_1pp.html", [
-        [ "PPGLDAStrategy", "structpptree_1_1pp_1_1PPGLDAStrategy.html", "structpptree_1_1pp_1_1PPGLDAStrategy" ],
-        [ "PPResult", "structpptree_1_1pp_1_1PPResult.html", "structpptree_1_1pp_1_1PPResult" ],
-        [ "PPStrategy", "structpptree_1_1pp_1_1PPStrategy.html", "structpptree_1_1pp_1_1PPStrategy" ]
+      [ "pp", "namespaceppforest2_1_1pp.html", [
+        [ "PPGLDAStrategy", "structppforest2_1_1pp_1_1PPGLDAStrategy.html", "structppforest2_1_1pp_1_1PPGLDAStrategy" ],
+        [ "PPResult", "structppforest2_1_1pp_1_1PPResult.html", "structppforest2_1_1pp_1_1PPResult" ],
+        [ "PPStrategy", "structppforest2_1_1pp_1_1PPStrategy.html", "structppforest2_1_1pp_1_1PPStrategy" ]
       ] ],
-      [ "serialization", "namespacepptree_1_1serialization.html", [
-        [ "JsonModelVisitor", "structpptree_1_1serialization_1_1JsonModelVisitor.html", "structpptree_1_1serialization_1_1JsonModelVisitor" ],
-        [ "JsonNodeVisitor", "structpptree_1_1serialization_1_1JsonNodeVisitor.html", "structpptree_1_1serialization_1_1JsonNodeVisitor" ]
+      [ "serialization", "namespaceppforest2_1_1serialization.html", [
+        [ "JsonModelVisitor", "structppforest2_1_1serialization_1_1JsonModelVisitor.html", "structppforest2_1_1serialization_1_1JsonModelVisitor" ],
+        [ "JsonNodeVisitor", "structppforest2_1_1serialization_1_1JsonNodeVisitor.html", "structppforest2_1_1serialization_1_1JsonNodeVisitor" ]
       ] ],
-      [ "sr", "namespacepptree_1_1sr.html", [
-        [ "SRMeanOfMeansStrategy", "structpptree_1_1sr_1_1SRMeanOfMeansStrategy.html", "structpptree_1_1sr_1_1SRMeanOfMeansStrategy" ],
-        [ "SRStrategy", "structpptree_1_1sr_1_1SRStrategy.html", "structpptree_1_1sr_1_1SRStrategy" ]
+      [ "sr", "namespaceppforest2_1_1sr.html", [
+        [ "SRMeanOfMeansStrategy", "structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html", "structppforest2_1_1sr_1_1SRMeanOfMeansStrategy" ],
+        [ "SRStrategy", "structppforest2_1_1sr_1_1SRStrategy.html", "structppforest2_1_1sr_1_1SRStrategy" ]
       ] ],
-      [ "stats", "namespacepptree_1_1stats.html", [
-        [ "ConfusionMatrix", "structpptree_1_1stats_1_1ConfusionMatrix.html", "structpptree_1_1stats_1_1ConfusionMatrix" ],
-        [ "DataPacket", "structpptree_1_1stats_1_1DataPacket.html", "structpptree_1_1stats_1_1DataPacket" ],
-        [ "GroupPartition", "classpptree_1_1stats_1_1GroupPartition.html", "classpptree_1_1stats_1_1GroupPartition" ],
-        [ "Normal", "classpptree_1_1stats_1_1Normal.html", "classpptree_1_1stats_1_1Normal" ],
-        [ "SimulationParams", "structpptree_1_1stats_1_1SimulationParams.html", "structpptree_1_1stats_1_1SimulationParams" ],
-        [ "Split", "structpptree_1_1stats_1_1Split.html", "structpptree_1_1stats_1_1Split" ],
-        [ "Uniform", "classpptree_1_1stats_1_1Uniform.html", "classpptree_1_1stats_1_1Uniform" ]
+      [ "stats", "namespaceppforest2_1_1stats.html", [
+        [ "ConfusionMatrix", "structppforest2_1_1stats_1_1ConfusionMatrix.html", "structppforest2_1_1stats_1_1ConfusionMatrix" ],
+        [ "DataPacket", "structppforest2_1_1stats_1_1DataPacket.html", "structppforest2_1_1stats_1_1DataPacket" ],
+        [ "GroupPartition", "classppforest2_1_1stats_1_1GroupPartition.html", "classppforest2_1_1stats_1_1GroupPartition" ],
+        [ "Normal", "classppforest2_1_1stats_1_1Normal.html", "classppforest2_1_1stats_1_1Normal" ],
+        [ "SimulationParams", "structppforest2_1_1stats_1_1SimulationParams.html", "structppforest2_1_1stats_1_1SimulationParams" ],
+        [ "Split", "structppforest2_1_1stats_1_1Split.html", "structppforest2_1_1stats_1_1Split" ],
+        [ "Uniform", "classppforest2_1_1stats_1_1Uniform.html", "classppforest2_1_1stats_1_1Uniform" ]
       ] ],
-      [ "BootstrapTree", "structpptree_1_1BootstrapTree.html", "structpptree_1_1BootstrapTree" ],
-      [ "BoundarySegment", "structpptree_1_1BoundarySegment.html", "structpptree_1_1BoundarySegment" ],
-      [ "BoundaryVisitor", "structpptree_1_1BoundaryVisitor.html", "structpptree_1_1BoundaryVisitor" ],
-      [ "Forest", "structpptree_1_1Forest.html", "structpptree_1_1Forest" ],
-      [ "HalfSpace", "structpptree_1_1HalfSpace.html", "structpptree_1_1HalfSpace" ],
-      [ "LayoutEdge", "structpptree_1_1LayoutEdge.html", "structpptree_1_1LayoutEdge" ],
-      [ "LayoutNode", "structpptree_1_1LayoutNode.html", "structpptree_1_1LayoutNode" ],
-      [ "LayoutParams", "structpptree_1_1LayoutParams.html", "structpptree_1_1LayoutParams" ],
-      [ "Model", "structpptree_1_1Model.html", "structpptree_1_1Model" ],
-      [ "ModelVisitor", "structpptree_1_1ModelVisitor.html", "structpptree_1_1ModelVisitor" ],
-      [ "NodeData", "structpptree_1_1NodeData.html", "structpptree_1_1NodeData" ],
-      [ "NodeDataVisitor", "structpptree_1_1NodeDataVisitor.html", "structpptree_1_1NodeDataVisitor" ],
-      [ "Proportions", "structpptree_1_1Proportions.html", null ],
-      [ "RegionPolygon", "structpptree_1_1RegionPolygon.html", "structpptree_1_1RegionPolygon" ],
-      [ "RegionVisitor", "structpptree_1_1RegionVisitor.html", "structpptree_1_1RegionVisitor" ],
-      [ "TrainingSpec", "structpptree_1_1TrainingSpec.html", "structpptree_1_1TrainingSpec" ],
-      [ "TrainingSpecGLDA", "structpptree_1_1TrainingSpecGLDA.html", "structpptree_1_1TrainingSpecGLDA" ],
-      [ "TrainingSpecUGLDA", "structpptree_1_1TrainingSpecUGLDA.html", "structpptree_1_1TrainingSpecUGLDA" ],
-      [ "TrainingSpecVisitor", "structpptree_1_1TrainingSpecVisitor.html", "structpptree_1_1TrainingSpecVisitor" ],
-      [ "Tree", "structpptree_1_1Tree.html", "structpptree_1_1Tree" ],
-      [ "TreeCondition", "structpptree_1_1TreeCondition.html", "structpptree_1_1TreeCondition" ],
-      [ "TreeLayout", "structpptree_1_1TreeLayout.html", "structpptree_1_1TreeLayout" ],
-      [ "TreeNode", "structpptree_1_1TreeNode.html", "structpptree_1_1TreeNode" ],
-      [ "TreeNodeVisitor", "structpptree_1_1TreeNodeVisitor.html", "structpptree_1_1TreeNodeVisitor" ],
-      [ "TreeResponse", "structpptree_1_1TreeResponse.html", "structpptree_1_1TreeResponse" ],
-      [ "VariableImportance", "structpptree_1_1VariableImportance.html", "structpptree_1_1VariableImportance" ],
-      [ "VIVisitor", "structpptree_1_1VIVisitor.html", "structpptree_1_1VIVisitor" ]
+      [ "BootstrapTree", "structppforest2_1_1BootstrapTree.html", "structppforest2_1_1BootstrapTree" ],
+      [ "BoundarySegment", "structppforest2_1_1BoundarySegment.html", "structppforest2_1_1BoundarySegment" ],
+      [ "BoundaryVisitor", "structppforest2_1_1BoundaryVisitor.html", "structppforest2_1_1BoundaryVisitor" ],
+      [ "Forest", "structppforest2_1_1Forest.html", "structppforest2_1_1Forest" ],
+      [ "HalfSpace", "structppforest2_1_1HalfSpace.html", "structppforest2_1_1HalfSpace" ],
+      [ "LayoutEdge", "structppforest2_1_1LayoutEdge.html", "structppforest2_1_1LayoutEdge" ],
+      [ "LayoutNode", "structppforest2_1_1LayoutNode.html", "structppforest2_1_1LayoutNode" ],
+      [ "LayoutParams", "structppforest2_1_1LayoutParams.html", "structppforest2_1_1LayoutParams" ],
+      [ "Model", "structppforest2_1_1Model.html", "structppforest2_1_1Model" ],
+      [ "ModelVisitor", "structppforest2_1_1ModelVisitor.html", "structppforest2_1_1ModelVisitor" ],
+      [ "NodeData", "structppforest2_1_1NodeData.html", "structppforest2_1_1NodeData" ],
+      [ "NodeDataVisitor", "structppforest2_1_1NodeDataVisitor.html", "structppforest2_1_1NodeDataVisitor" ],
+      [ "Proportions", "structppforest2_1_1Proportions.html", null ],
+      [ "RegionPolygon", "structppforest2_1_1RegionPolygon.html", "structppforest2_1_1RegionPolygon" ],
+      [ "RegionVisitor", "structppforest2_1_1RegionVisitor.html", "structppforest2_1_1RegionVisitor" ],
+      [ "TrainingSpec", "structppforest2_1_1TrainingSpec.html", "structppforest2_1_1TrainingSpec" ],
+      [ "TrainingSpecGLDA", "structppforest2_1_1TrainingSpecGLDA.html", "structppforest2_1_1TrainingSpecGLDA" ],
+      [ "TrainingSpecUGLDA", "structppforest2_1_1TrainingSpecUGLDA.html", "structppforest2_1_1TrainingSpecUGLDA" ],
+      [ "TrainingSpecVisitor", "structppforest2_1_1TrainingSpecVisitor.html", "structppforest2_1_1TrainingSpecVisitor" ],
+      [ "Tree", "structppforest2_1_1Tree.html", "structppforest2_1_1Tree" ],
+      [ "TreeCondition", "structppforest2_1_1TreeCondition.html", "structppforest2_1_1TreeCondition" ],
+      [ "TreeLayout", "structppforest2_1_1TreeLayout.html", "structppforest2_1_1TreeLayout" ],
+      [ "TreeNode", "structppforest2_1_1TreeNode.html", "structppforest2_1_1TreeNode" ],
+      [ "TreeNodeVisitor", "structppforest2_1_1TreeNodeVisitor.html", "structppforest2_1_1TreeNodeVisitor" ],
+      [ "TreeResponse", "structppforest2_1_1TreeResponse.html", "structppforest2_1_1TreeResponse" ],
+      [ "VariableImportance", "structppforest2_1_1VariableImportance.html", "structppforest2_1_1VariableImportance" ],
+      [ "VIVisitor", "structppforest2_1_1VIVisitor.html", "structppforest2_1_1VIVisitor" ]
     ] ]
 ];

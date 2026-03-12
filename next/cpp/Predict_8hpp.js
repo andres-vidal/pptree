@@ -1,5 +1,5 @@
 var Predict_8hpp =
 [
-    [ "pptree::cli::run_predict", "namespacepptree_1_1cli.html#a44ba64ccd1958ca29282aaee713272de", null ],
-    [ "pptree::cli::setup_predict", "namespacepptree_1_1cli.html#aec67c5998f4058f8904b3ed0f180c76e", null ]
+    [ "ppforest2::cli::run_predict", "namespaceppforest2_1_1cli.html#ada7599b95483cd00ec94f3c4fa50a452", null ],
+    [ "ppforest2::cli::setup_predict", "namespaceppforest2_1_1cli.html#a90895cea001e3e824db0fce454d670bb", null ]
 ];

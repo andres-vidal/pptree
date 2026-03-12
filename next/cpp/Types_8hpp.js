@@ -1,10 +1,10 @@
 var Types_8hpp =
 [
-    [ "pptree::types::Feature", "namespacepptree_1_1types.html#a3dd5e8450bd731998512c82ad422a94f", null ],
-    [ "pptree::types::FeatureMatrix", "namespacepptree_1_1types.html#ac38153c80ae165f34711219a6fa20ae0", null ],
-    [ "pptree::types::FeatureVector", "namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5", null ],
-    [ "pptree::types::Matrix", "namespacepptree_1_1types.html#ae29eaef8bcf46ae9ea8ede99898cb32e", null ],
-    [ "pptree::types::Response", "namespacepptree_1_1types.html#aae1233a987efa16d160ef36410a5467e", null ],
-    [ "pptree::types::ResponseVector", "namespacepptree_1_1types.html#abd887dc81073c44a6b885e57c2411f08", null ],
-    [ "pptree::types::Vector", "namespacepptree_1_1types.html#ab3408cc3539f8f5423a3bdb9d7c3509e", null ]
+    [ "ppforest2::types::Feature", "namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c", null ],
+    [ "ppforest2::types::FeatureMatrix", "namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d", null ],
+    [ "ppforest2::types::FeatureVector", "namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c", null ],
+    [ "ppforest2::types::Matrix", "namespaceppforest2_1_1types.html#ac1e616da571ea80e3ce8bbfc479c8297", null ],
+    [ "ppforest2::types::Response", "namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e", null ],
+    [ "ppforest2::types::ResponseVector", "namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da", null ],
+    [ "ppforest2::types::Vector", "namespaceppforest2_1_1types.html#a6b0f2fc1c6c2d1f5fac68202619e33f8", null ]
 ];

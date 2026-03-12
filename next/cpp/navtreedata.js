@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "pptree", "index.html", [
+  [ "ppforest2", "index.html", [
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -60,9 +60,9 @@ var NAVTREEINDEX =
 [
 "BenchmarkParams_8hpp.html",
 "functions_vars_s.html",
-"structpptree_1_1Forest.html#aee867c4c324352182743b5ae7b2a9819",
-"structpptree_1_1TreeLayout.html#adb668b1307243a2707f11092d645ed4d",
-"structpptree_1_1cli_1_1ScenarioResult.html#a570fa46807f336199492f1b09edf6bae"
+"structppforest2_1_1Forest.html#ad5d1affa0b4c09155a5ce0e630bcafac",
+"structppforest2_1_1TreeLayout.html#ad817de684dc3db1148d08e77124364d9",
+"structppforest2_1_1cli_1_1ScenarioResult.html#a4aba54b9a903d47386853443c7654f89"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

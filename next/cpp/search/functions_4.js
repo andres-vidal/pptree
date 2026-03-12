@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['emphasis_0',['emphasis',['../namespacepptree_1_1io.html#a42e68bb1754da1f385ec5e55417ca1c1',1,'pptree::io']]],
-  ['ensure_5fjson_5fextension_1',['ensure_json_extension',['../namespacepptree_1_1io.html#a14ad9eff26882ef01fc6a53d3da0a504',1,'pptree::io']]],
-  ['equals_2',['equals',['../structpptree_1_1TreeCondition.html#a265ca05a39b483294ade4e1819b80906',1,'pptree::TreeCondition::equals()'],['../structpptree_1_1TreeNode.html#ae9bf2c82f064a16241c9bde60c3a785c',1,'pptree::TreeNode::equals()'],['../structpptree_1_1TreeResponse.html#a885651a3b60fddf6df707f2855ce6527',1,'pptree::TreeResponse::equals()']]],
-  ['error_3',['error',['../structpptree_1_1stats_1_1ConfusionMatrix.html#af4e62203647cab4d1e35156df7ae0ba7',1,'pptree::stats::ConfusionMatrix::error()'],['../namespacepptree_1_1io.html#abb20142e444d32b98d7eaf4a61532e55',1,'pptree::io::error()']]],
-  ['error_5frate_4',['error_rate',['../namespacepptree_1_1stats.html#a641303facc19141d78831657e5925127',1,'pptree::stats']]],
-  ['errorln_5',['errorln',['../structpptree_1_1io_1_1Output.html#ae4f80aad7951027efd3fbc3933133198',1,'pptree::io::Output']]],
-  ['expand_6',['expand',['../structpptree_1_1dr_1_1DRSpec.html#a9853df3806df2a532d6c8956859e070b',1,'pptree::dr::DRSpec']]]
+  ['emphasis_0',['emphasis',['../namespaceppforest2_1_1io.html#a0ae867be3c84d481a1ca6ef03c8fea88',1,'ppforest2::io']]],
+  ['ensure_5fjson_5fextension_1',['ensure_json_extension',['../namespaceppforest2_1_1io.html#ab36310cec64c69533da062a18bf7de2c',1,'ppforest2::io']]],
+  ['equals_2',['equals',['../structppforest2_1_1TreeCondition.html#ac561c798489ee9547170a689d8a63fd9',1,'ppforest2::TreeCondition::equals()'],['../structppforest2_1_1TreeNode.html#a42f498ebc918e98f30dc91e90a755356',1,'ppforest2::TreeNode::equals()'],['../structppforest2_1_1TreeResponse.html#ad21e9e3a0043c750247183169cb9b16b',1,'ppforest2::TreeResponse::equals()']]],
+  ['error_3',['error',['../structppforest2_1_1stats_1_1ConfusionMatrix.html#ae9f6a0c3bf45609dd766bd2b1b60c9fa',1,'ppforest2::stats::ConfusionMatrix::error()'],['../namespaceppforest2_1_1io.html#acd9d2efceb01956a04b014c2bb737519',1,'ppforest2::io::error()']]],
+  ['error_5frate_4',['error_rate',['../namespaceppforest2_1_1stats.html#a7a9ab29c5165bf5acb78e69f78458c52',1,'ppforest2::stats']]],
+  ['errorln_5',['errorln',['../structppforest2_1_1io_1_1Output.html#a914caeddb5b39d6d094cf76b5d89af25',1,'ppforest2::io::Output']]],
+  ['expand_6',['expand',['../structppforest2_1_1dr_1_1DRSpec.html#aec4b2d653544ad4dd0addf78eacfdb0f',1,'ppforest2::dr::DRSpec']]]
 ];

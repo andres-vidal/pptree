@@ -1,16 +1,16 @@
 var Table_8hpp =
 [
-    [ "pptree::io::Column", "structpptree_1_1io_1_1Column.html", "structpptree_1_1io_1_1Column" ],
-    [ "pptree::io::Row", "namespacepptree_1_1io.html#abe9d14d638204ed03238b2a739eb81f9", null ],
-    [ "pptree::io::Align", "namespacepptree_1_1io.html#adab0ef61cd6661616ef875fece9277b3", [
-      [ "pptree::io::Align::left", "namespacepptree_1_1io.html#adab0ef61cd6661616ef875fece9277b3a811882fecd5c7618d7099ebbd39ea254", null ],
-      [ "pptree::io::Align::right", "namespacepptree_1_1io.html#adab0ef61cd6661616ef875fece9277b3a7c4f29407893c334a6cb7a87bf045c0d", null ]
+    [ "ppforest2::io::Column", "structppforest2_1_1io_1_1Column.html", "structppforest2_1_1io_1_1Column" ],
+    [ "ppforest2::io::Row", "namespaceppforest2_1_1io.html#a2afe1fae977bb64b514b5cf95dea6e3e", null ],
+    [ "ppforest2::io::Align", "namespaceppforest2_1_1io.html#a3f0ff1581cbe84c230ae589c33630e41", [
+      [ "ppforest2::io::Align::left", "namespaceppforest2_1_1io.html#a3f0ff1581cbe84c230ae589c33630e41a811882fecd5c7618d7099ebbd39ea254", null ],
+      [ "ppforest2::io::Align::right", "namespaceppforest2_1_1io.html#a3f0ff1581cbe84c230ae589c33630e41a7c4f29407893c334a6cb7a87bf045c0d", null ]
     ] ],
-    [ "pptree::io::format_md_row", "namespacepptree_1_1io.html#abde664afeca8604974b1c7f983697f29", null ],
-    [ "pptree::io::format_md_separator", "namespacepptree_1_1io.html#a5fe26a9a4244693b489dfa607bcde322", null ],
-    [ "pptree::io::format_row", "namespacepptree_1_1io.html#ad653adc1ad4e986f5a04220386ef256b", null ],
-    [ "pptree::io::format_separator", "namespacepptree_1_1io.html#a1e8c414cf2fe4d9af2d4599d20789393", null ],
-    [ "pptree::io::header_labels", "namespacepptree_1_1io.html#a6a6d05c84683e6d6c0e28dd34627b543", null ],
-    [ "pptree::io::pad", "namespacepptree_1_1io.html#a26cf2c53540b1d0f893f852e12d1db0c", null ],
-    [ "pptree::io::visual_width", "namespacepptree_1_1io.html#a0e7fce12d06e78f44fc8ab83a2ef76c1", null ]
+    [ "ppforest2::io::format_md_row", "namespaceppforest2_1_1io.html#aa94d18b568da9a6796f1f59efb0b9454", null ],
+    [ "ppforest2::io::format_md_separator", "namespaceppforest2_1_1io.html#aa55e111567240699ff009c5e917a36fb", null ],
+    [ "ppforest2::io::format_row", "namespaceppforest2_1_1io.html#a57d58a07b534d8c26c1af0fd12653c94", null ],
+    [ "ppforest2::io::format_separator", "namespaceppforest2_1_1io.html#ab0ce615a1537c286417c9840ea68285a", null ],
+    [ "ppforest2::io::header_labels", "namespaceppforest2_1_1io.html#aabc0031d1ccbf2b2fe63a2dc8ce463a3", null ],
+    [ "ppforest2::io::pad", "namespaceppforest2_1_1io.html#a994ea8ca1614d3e7ebbde1881fba5064", null ],
+    [ "ppforest2::io::visual_width", "namespaceppforest2_1_1io.html#a6d903a558a0013dbd7cab5b8e73e62ca", null ]
 ];

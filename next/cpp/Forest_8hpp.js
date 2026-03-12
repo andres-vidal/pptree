@@ -1,5 +1,5 @@
 var Forest_8hpp =
 [
-    [ "pptree::Forest", "structpptree_1_1Forest.html", "structpptree_1_1Forest" ],
-    [ "pptree::Proportions", "structpptree_1_1Proportions.html", null ]
+    [ "ppforest2::Forest", "structppforest2_1_1Forest.html", "structppforest2_1_1Forest" ],
+    [ "ppforest2::Proportions", "structppforest2_1_1Proportions.html", null ]
 ];

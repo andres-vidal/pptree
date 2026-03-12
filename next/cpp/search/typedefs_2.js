@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['matrix_0',['Matrix',['../namespacepptree_1_1types.html#ae29eaef8bcf46ae9ea8ede99898cb32e',1,'pptree::types']]]
+  ['matrix_0',['Matrix',['../namespaceppforest2_1_1types.html#ac1e616da571ea80e3ce8bbfc479c8297',1,'ppforest2::types']]]
 ];

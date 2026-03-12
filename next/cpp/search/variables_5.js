@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['fixed_5fvars_0',['fixed_vars',['../structpptree_1_1BoundaryVisitor.html#a4becbfc64c233680d24e78fd46d581cf',1,'pptree::BoundaryVisitor::fixed_vars'],['../structpptree_1_1RegionVisitor.html#a58c993bf00197ef0625eb70a747b9f37',1,'pptree::RegionVisitor::fixed_vars']]],
-  ['format_1',['format',['../structpptree_1_1cli_1_1BenchmarkParams.html#a3b562ad645b6e2d624aaa44387f2b377',1,'pptree::cli::BenchmarkParams::format'],['../structpptree_1_1cli_1_1SimulateParams.html#ae09bc063d7f404ae80c1c353b0683fe3',1,'pptree::cli::SimulateParams::format']]],
-  ['from_5fx_2',['from_x',['../structpptree_1_1LayoutEdge.html#a9d16f025593b38567be9931b6d07d7ba',1,'pptree::LayoutEdge']]],
-  ['from_5fy_3',['from_y',['../structpptree_1_1LayoutEdge.html#a2d43bc6c1a549cb0fe4a944a845a6193',1,'pptree::LayoutEdge']]]
+  ['fixed_5fvars_0',['fixed_vars',['../structppforest2_1_1BoundaryVisitor.html#ab1114cd4cf9d3a6325c6e8ff1dbfb90f',1,'ppforest2::BoundaryVisitor::fixed_vars'],['../structppforest2_1_1RegionVisitor.html#a3d2833f174da793d6dd581f17a98c002',1,'ppforest2::RegionVisitor::fixed_vars']]],
+  ['format_1',['format',['../structppforest2_1_1cli_1_1BenchmarkParams.html#aab83bf598da28d07ec276532bebfe69f',1,'ppforest2::cli::BenchmarkParams::format'],['../structppforest2_1_1cli_1_1SimulateParams.html#af1695a357c09532387cd738275c592a0',1,'ppforest2::cli::SimulateParams::format']]],
+  ['from_5fx_2',['from_x',['../structppforest2_1_1LayoutEdge.html#aba385bf7e2b34642f65718c0f04ab109',1,'ppforest2::LayoutEdge']]],
+  ['from_5fy_3',['from_y',['../structppforest2_1_1LayoutEdge.html#a97f45af85f2aa2e07603031953c7e94d',1,'ppforest2::LayoutEdge']]]
 ];

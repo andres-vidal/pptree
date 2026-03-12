@@ -1,4 +1,4 @@
 var TrainingSpecUGLDA_8hpp =
 [
-    [ "pptree::TrainingSpecUGLDA", "structpptree_1_1TrainingSpecUGLDA.html", "structpptree_1_1TrainingSpecUGLDA" ]
+    [ "ppforest2::TrainingSpecUGLDA", "structppforest2_1_1TrainingSpecUGLDA.html", "structppforest2_1_1TrainingSpecUGLDA" ]
 ];

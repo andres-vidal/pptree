@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['indent_0',['indent',['../structpptree_1_1io_1_1Output.html#aec5d2a5bcf538e2dc3be274637673f1f',1,'pptree::io::Output']]],
-  ['index_1',['index',['../structpptree_1_1pp_1_1PPGLDAStrategy.html#abc9f53ac84c5e11389a3d9c3a0d1e10e',1,'pptree::pp::PPGLDAStrategy::index()'],['../structpptree_1_1pp_1_1PPStrategy.html#a6703dc90d80e6552fc2f29a3bc7ef534',1,'pptree::pp::PPStrategy::index()']]],
-  ['info_2',['info',['../namespacepptree_1_1io.html#a1222c3910a83549514e15f27a153f47d',1,'pptree::io']]],
-  ['init_5fcolor_3',['init_color',['../namespacepptree_1_1io.html#a0cc750cc7124a7dfa8aeb3180a2f98eb',1,'pptree::io']]],
-  ['init_5fparams_4',['init_params',['../namespacepptree_1_1cli.html#a6edbd9529f4c9712812300fa08b07d7c',1,'pptree::cli']]],
+  ['indent_0',['indent',['../structppforest2_1_1io_1_1Output.html#ab34e6a707aa1d473f3d07407e6f02664',1,'ppforest2::io::Output']]],
+  ['index_1',['index',['../structppforest2_1_1pp_1_1PPGLDAStrategy.html#a97df730dc29b1048f21c0fe6e683d124',1,'ppforest2::pp::PPGLDAStrategy::index()'],['../structppforest2_1_1pp_1_1PPStrategy.html#a64af1e1b0e3cbd01592ba1ccb7f9e13d',1,'ppforest2::pp::PPStrategy::index()']]],
+  ['info_2',['info',['../namespaceppforest2_1_1io.html#a387c3189d57a139dd1ba757353b46bab',1,'ppforest2::io']]],
+  ['init_5fcolor_3',['init_color',['../namespaceppforest2_1_1io.html#aca29babe7e55a0cc4872b4f719384b06',1,'ppforest2::io']]],
+  ['init_5fparams_4',['init_params',['../namespaceppforest2_1_1cli.html#a9bd63acbab0aa4b7ce674bb37015de00',1,'ppforest2::cli']]],
   ['invariant_5',['invariant',['../Invariant_8hpp.html#a124cb675ca310166eaa892310c9903de',1,'invariant(bool condition, const char *message):&#160;Invariant.hpp'],['../Invariant_8hpp.html#a285abbb502f4a466b24fcfbdb6125109',1,'invariant(bool condition, const std::string &amp;message):&#160;Invariant.hpp']]],
-  ['invert_6',['invert',['../namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18',1,'pptree::utils']]],
-  ['is_5fapprox_7',['is_approx',['../namespacepptree_1_1math.html#a70b43231e11e8cb6e239fe93884b2ed5',1,'pptree::math::is_approx(A a, B b, T threshold)'],['../namespacepptree_1_1math.html#a77db36f3fe890ab90a17cf3838d33437',1,'pptree::math::is_approx(A a, B b)']]],
-  ['is_5fcontiguous_8',['is_contiguous',['../classpptree_1_1stats_1_1GroupPartition.html#a3a66a1cae87ab2ad41c81108d66fec47',1,'pptree::stats::GroupPartition']]],
-  ['is_5fmodule_5fapprox_9',['is_module_approx',['../namespacepptree_1_1math.html#af945fa6da0cba82b3f93a33460ca663e',1,'pptree::math']]]
+  ['invert_6',['invert',['../namespaceppforest2_1_1utils.html#ada415ecaf9b653fec6a3236256e52f21',1,'ppforest2::utils']]],
+  ['is_5fapprox_7',['is_approx',['../namespaceppforest2_1_1math.html#aef9bfff79515449a7894e70e661a3daf',1,'ppforest2::math::is_approx(A a, B b, T threshold)'],['../namespaceppforest2_1_1math.html#a486fc087538c291f21b8e796c04fa70c',1,'ppforest2::math::is_approx(A a, B b)']]],
+  ['is_5fcontiguous_8',['is_contiguous',['../classppforest2_1_1stats_1_1GroupPartition.html#a1a978af3b19da94951f4b594776b4a87',1,'ppforest2::stats::GroupPartition']]],
+  ['is_5fmodule_5fapprox_9',['is_module_approx',['../namespaceppforest2_1_1math.html#ace8888ca553032158504ff15745c2fbf',1,'ppforest2::math']]]
 ];

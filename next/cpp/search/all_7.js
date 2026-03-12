@@ -1,15 +1,15 @@
 var searchData=
 [
-  ['g_0',['g',['../structpptree_1_1cli_1_1Scenario.html#a198d7602ee65efb73a4e99eac04aefc3',1,'pptree::cli::Scenario::g'],['../structpptree_1_1cli_1_1ScenarioResult.html#a02503a3ed35aedfc85163f78e0ce480f',1,'pptree::cli::ScenarioResult::g']]],
-  ['gap_1',['gap',['../structpptree_1_1LayoutParams.html#adb9f045d8592c6ad880b40b2bc672bf9',1,'pptree::LayoutParams']]],
-  ['get_5flabels_5fmap_2',['get_labels_map',['../namespacepptree_1_1stats.html#a50fe9765618d56728ffc8b6225cea78e',1,'pptree::stats']]],
-  ['get_5fpeak_5frss_5fbytes_3',['get_peak_rss_bytes',['../namespacepptree_1_1io.html#a00ba7c7307a572e2566448cf70a74113',1,'pptree::io']]],
-  ['glda_4',['glda',['../namespacepptree_1_1pp.html#a5a1beeb9f8cf594fc7e93c99d795dcb4',1,'pptree::pp']]],
-  ['group_5',['group',['../classpptree_1_1stats_1_1GroupPartition.html#a6e5b85327477152cd43b3c4081c00937',1,'pptree::stats::GroupPartition']]],
-  ['group_5fend_6',['group_end',['../classpptree_1_1stats_1_1GroupPartition.html#a6215bba040e7b1e62502b4b9bf17839b',1,'pptree::stats::GroupPartition']]],
-  ['group_5fsize_7',['group_size',['../classpptree_1_1stats_1_1GroupPartition.html#ae4b6382dcca6a5071e1e5a52d5589383',1,'pptree::stats::GroupPartition']]],
-  ['group_5fstart_8',['group_start',['../classpptree_1_1stats_1_1GroupPartition.html#abe5035505273b315852dbef5317dfac6',1,'pptree::stats::GroupPartition']]],
-  ['grouppartition_9',['GroupPartition',['../classpptree_1_1stats_1_1GroupPartition.html',1,'pptree::stats::GroupPartition'],['../classpptree_1_1stats_1_1GroupPartition.html#aee367d22320280953425cc2f348f731d',1,'pptree::stats::GroupPartition::GroupPartition()']]],
+  ['g_0',['g',['../structppforest2_1_1cli_1_1Scenario.html#abe2e3a9dd565c85c95d27c73522636ea',1,'ppforest2::cli::Scenario::g'],['../structppforest2_1_1cli_1_1ScenarioResult.html#af0c7667f9d6a8b6b1943e8a2961956ef',1,'ppforest2::cli::ScenarioResult::g']]],
+  ['gap_1',['gap',['../structppforest2_1_1LayoutParams.html#a8790de59ef47d2e8d651ac8d7101ce47',1,'ppforest2::LayoutParams']]],
+  ['get_5flabels_5fmap_2',['get_labels_map',['../namespaceppforest2_1_1stats.html#a0ef348216200ff629b08c457e5ebccd8',1,'ppforest2::stats']]],
+  ['get_5fpeak_5frss_5fbytes_3',['get_peak_rss_bytes',['../namespaceppforest2_1_1io.html#a62843aaf7087f11baadd77694332f8d1',1,'ppforest2::io']]],
+  ['glda_4',['glda',['../namespaceppforest2_1_1pp.html#a069ba8d8c46fe2cc426f4fb5e6d1b3f7',1,'ppforest2::pp']]],
+  ['group_5',['group',['../classppforest2_1_1stats_1_1GroupPartition.html#a92f54a9c3b6c7d8f9bcc0bcd468e01cb',1,'ppforest2::stats::GroupPartition']]],
+  ['group_5fend_6',['group_end',['../classppforest2_1_1stats_1_1GroupPartition.html#abc0ff590e44b834f19270b005b70d1cf',1,'ppforest2::stats::GroupPartition']]],
+  ['group_5fsize_7',['group_size',['../classppforest2_1_1stats_1_1GroupPartition.html#a715cc9b795d75f516da1028ad44c560e',1,'ppforest2::stats::GroupPartition']]],
+  ['group_5fstart_8',['group_start',['../classppforest2_1_1stats_1_1GroupPartition.html#a7e1e651cf7c30b3125511e7f0f5de868',1,'ppforest2::stats::GroupPartition']]],
+  ['grouppartition_9',['GroupPartition',['../classppforest2_1_1stats_1_1GroupPartition.html',1,'ppforest2::stats::GroupPartition'],['../classppforest2_1_1stats_1_1GroupPartition.html#a7e7a8ac88580ee9f420c3c0bed63b729',1,'ppforest2::stats::GroupPartition::GroupPartition()']]],
   ['grouppartition_2ehpp_10',['GroupPartition.hpp',['../GroupPartition_8hpp.html',1,'']]],
-  ['groups_11',['groups',['../classpptree_1_1stats_1_1GroupPartition.html#a0b898a1c2780d33f3d88b32972029faf',1,'pptree::stats::GroupPartition']]]
+  ['groups_11',['groups',['../classppforest2_1_1stats_1_1GroupPartition.html#ac20cb0aec4eedcfbfab67725ca74d346',1,'ppforest2::stats::GroupPartition']]]
 ];

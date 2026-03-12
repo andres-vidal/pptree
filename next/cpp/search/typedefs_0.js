@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['feature_0',['Feature',['../namespacepptree_1_1types.html#a3dd5e8450bd731998512c82ad422a94f',1,'pptree::types']]],
-  ['featurematrix_1',['FeatureMatrix',['../namespacepptree_1_1types.html#ac38153c80ae165f34711219a6fa20ae0',1,'pptree::types']]],
-  ['featurevector_2',['FeatureVector',['../namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5',1,'pptree::types']]]
+  ['feature_0',['Feature',['../namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c',1,'ppforest2::types']]],
+  ['featurematrix_1',['FeatureMatrix',['../namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d',1,'ppforest2::types']]],
+  ['featurevector_2',['FeatureVector',['../namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c',1,'ppforest2::types']]]
 ];

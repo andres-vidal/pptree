@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['data_0',['data',['../classpptree_1_1stats_1_1GroupPartition.html#ad5a4db0c6f137931d06d13e3c74921a3',1,'pptree::stats::GroupPartition']]],
-  ['datapacket_1',['DataPacket',['../structpptree_1_1stats_1_1DataPacket.html#aa850f27efc324721cb3b94ba034e623c',1,'pptree::stats::DataPacket::DataPacket(const types::FeatureMatrix &amp;x, const types::Vector&lt; types::Response &gt; &amp;y, const std::set&lt; types::Response &gt; &amp;classes)'],['../structpptree_1_1stats_1_1DataPacket.html#a8bbab759f003a05ac7a966a973eb735d',1,'pptree::stats::DataPacket::DataPacket(const types::FeatureMatrix &amp;x, const types::Vector&lt; types::Response &gt; &amp;y)'],['../structpptree_1_1stats_1_1DataPacket.html#a2ad524b17ff6a7665ee1c65c77985fd8',1,'pptree::stats::DataPacket::DataPacket()']]],
-  ['dedent_2',['dedent',['../structpptree_1_1io_1_1Output.html#a7ebc3d133a895b840b5734f3e8f86f61',1,'pptree::io::Output']]],
-  ['distinct_3',['distinct',['../classpptree_1_1stats_1_1Uniform.html#a41002dcb9d137f6c384618eeb4c48fc8',1,'pptree::stats::Uniform']]],
-  ['drspec_4',['DRSpec',['../structpptree_1_1dr_1_1DRSpec.html#ad73706324bd86b04d863f1c05b5fb181',1,'pptree::dr::DRSpec']]],
-  ['druniformstrategy_5',['DRUniformStrategy',['../structpptree_1_1dr_1_1DRUniformStrategy.html#aafa125efd5aa38eff5f74d567e5c2143',1,'pptree::dr::DRUniformStrategy']]]
+  ['data_0',['data',['../classppforest2_1_1stats_1_1GroupPartition.html#a7f0b5e9655ac768680d0b878f28add11',1,'ppforest2::stats::GroupPartition']]],
+  ['datapacket_1',['DataPacket',['../structppforest2_1_1stats_1_1DataPacket.html#a1bad2bd225dc100916528c004f882c1d',1,'ppforest2::stats::DataPacket::DataPacket(const types::FeatureMatrix &amp;x, const types::Vector&lt; types::Response &gt; &amp;y, const std::set&lt; types::Response &gt; &amp;classes)'],['../structppforest2_1_1stats_1_1DataPacket.html#ab6cebb160f14694ce04565fdabb1360d',1,'ppforest2::stats::DataPacket::DataPacket(const types::FeatureMatrix &amp;x, const types::Vector&lt; types::Response &gt; &amp;y)'],['../structppforest2_1_1stats_1_1DataPacket.html#a82c19f639338ac068b1e4df65c982b10',1,'ppforest2::stats::DataPacket::DataPacket()']]],
+  ['dedent_2',['dedent',['../structppforest2_1_1io_1_1Output.html#ae59e648ea9ef2701147d3c932119b015',1,'ppforest2::io::Output']]],
+  ['distinct_3',['distinct',['../classppforest2_1_1stats_1_1Uniform.html#a5aa8a57470c4488850e83bc1d6367ad5',1,'ppforest2::stats::Uniform']]],
+  ['drspec_4',['DRSpec',['../structppforest2_1_1dr_1_1DRSpec.html#a13f9c31715352a33c9b4e07963280a60',1,'ppforest2::dr::DRSpec']]],
+  ['druniformstrategy_5',['DRUniformStrategy',['../structppforest2_1_1dr_1_1DRUniformStrategy.html#a9fab78fecdb784a7f7fa87234d8f2414',1,'ppforest2::dr::DRUniformStrategy']]]
 ];

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pptree: core/src/utils/Map.hpp Source File</title>
+<title>ppforest2: core/src/utils/Map.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">pptree
+   <div id="projectname">ppforest2
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -109,10 +109,10 @@ $(function(){initNavTree('Map_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;set&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span></div>
 <div class="foldopen" id="foldopen00008" data-start="{" data-end="}">
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="namespacepptree_1_1utils.html">    8</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacepptree_1_1utils.html">pptree::utils</a> {</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="namespaceppforest2_1_1utils.html">    8</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceppforest2_1_1utils.html">ppforest2::utils</a> {</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> K, <span class="keyword">typename</span> V&gt;</div>
 <div class="foldopen" id="foldopen00016" data-start="{" data-end="}">
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18">   16</a></span>  std::map&lt;V, std::set&lt;K&gt;&gt; <a class="code hl_function" href="namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18">invert</a>(<span class="keyword">const</span> std::map&lt;K, V&gt; &amp;map) {</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespaceppforest2_1_1utils.html#ada415ecaf9b653fec6a3236256e52f21">   16</a></span>  std::map&lt;V, std::set&lt;K&gt;&gt; <a class="code hl_function" href="namespaceppforest2_1_1utils.html#ada415ecaf9b653fec6a3236256e52f21">invert</a>(<span class="keyword">const</span> std::map&lt;K, V&gt; &amp;map) {</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    std::map&lt;V, std::set&lt;K&gt;&gt; result;</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp;[key, value] : map) {</div>
@@ -125,7 +125,7 @@ $(function(){initNavTree('Map_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> K, <span class="keyword">typename</span> V&gt;</div>
 <div class="foldopen" id="foldopen00033" data-start="{" data-end="}">
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="namespacepptree_1_1utils.html#ac62636bae785aae199111ef8dbfbbca5">   33</a></span>  std::set&lt;K&gt; <a class="code hl_function" href="namespacepptree_1_1utils.html#ac62636bae785aae199111ef8dbfbbca5">keys</a>(<span class="keyword">const</span> std::map&lt;K, V&gt; &amp;map) {</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="namespaceppforest2_1_1utils.html#aeb655a3f13d114f54bc1d97cba1d8abe">   33</a></span>  std::set&lt;K&gt; <a class="code hl_function" href="namespaceppforest2_1_1utils.html#aeb655a3f13d114f54bc1d97cba1d8abe">keys</a>(<span class="keyword">const</span> std::map&lt;K, V&gt; &amp;map) {</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    std::set&lt;K&gt; result;</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp;[key, value] : map) {</div>
@@ -138,7 +138,7 @@ $(function(){initNavTree('Map_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span></div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> K, <span class="keyword">typename</span> V&gt;</div>
 <div class="foldopen" id="foldopen00050" data-start="{" data-end="}">
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="namespacepptree_1_1utils.html#aecdc9c2335261d2c1dbdc82d2ed924a5">   50</a></span>  std::set&lt;V&gt; <a class="code hl_function" href="namespacepptree_1_1utils.html#aecdc9c2335261d2c1dbdc82d2ed924a5">values</a>(<span class="keyword">const</span> std::map&lt;K, V&gt; &amp;map) {</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="namespaceppforest2_1_1utils.html#a9ed3e5ccf285997edb19045d4cf62b16">   50</a></span>  std::set&lt;V&gt; <a class="code hl_function" href="namespaceppforest2_1_1utils.html#a9ed3e5ccf285997edb19045d4cf62b16">values</a>(<span class="keyword">const</span> std::map&lt;K, V&gt; &amp;map) {</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    std::set&lt;V&gt; result;</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp;[key, value] : map) {</div>
@@ -150,10 +150,10 @@ $(function(){initNavTree('Map_8hpp_source.html',''); initResizable(true); });
 </div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>}</div>
 </div>
-<div class="ttc" id="anamespacepptree_1_1utils_html"><div class="ttname"><a href="namespacepptree_1_1utils.html">pptree::utils</a></div><div class="ttdoc">Utility functions for std::map manipulation.</div><div class="ttdef"><b>Definition</b> Map.hpp:8</div></div>
-<div class="ttc" id="anamespacepptree_1_1utils_html_ac62636bae785aae199111ef8dbfbbca5"><div class="ttname"><a href="namespacepptree_1_1utils.html#ac62636bae785aae199111ef8dbfbbca5">pptree::utils::keys</a></div><div class="ttdeci">std::set&lt; K &gt; keys(const std::map&lt; K, V &gt; &amp;map)</div><div class="ttdoc">Extract all keys from a map as a set.</div><div class="ttdef"><b>Definition</b> Map.hpp:33</div></div>
-<div class="ttc" id="anamespacepptree_1_1utils_html_aecdc9c2335261d2c1dbdc82d2ed924a5"><div class="ttname"><a href="namespacepptree_1_1utils.html#aecdc9c2335261d2c1dbdc82d2ed924a5">pptree::utils::values</a></div><div class="ttdeci">std::set&lt; V &gt; values(const std::map&lt; K, V &gt; &amp;map)</div><div class="ttdoc">Extract all values from a map as a set.</div><div class="ttdef"><b>Definition</b> Map.hpp:50</div></div>
-<div class="ttc" id="anamespacepptree_1_1utils_html_af3268af759f869b1fdffdaac807e7a18"><div class="ttname"><a href="namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18">pptree::utils::invert</a></div><div class="ttdeci">std::map&lt; V, std::set&lt; K &gt; &gt; invert(const std::map&lt; K, V &gt; &amp;map)</div><div class="ttdoc">Invert a map: values become keys, original keys are grouped into sets.</div><div class="ttdef"><b>Definition</b> Map.hpp:16</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1utils_html"><div class="ttname"><a href="namespaceppforest2_1_1utils.html">ppforest2::utils</a></div><div class="ttdoc">Utility functions for std::map manipulation.</div><div class="ttdef"><b>Definition</b> Map.hpp:8</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1utils_html_a9ed3e5ccf285997edb19045d4cf62b16"><div class="ttname"><a href="namespaceppforest2_1_1utils.html#a9ed3e5ccf285997edb19045d4cf62b16">ppforest2::utils::values</a></div><div class="ttdeci">std::set&lt; V &gt; values(const std::map&lt; K, V &gt; &amp;map)</div><div class="ttdoc">Extract all values from a map as a set.</div><div class="ttdef"><b>Definition</b> Map.hpp:50</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1utils_html_ada415ecaf9b653fec6a3236256e52f21"><div class="ttname"><a href="namespaceppforest2_1_1utils.html#ada415ecaf9b653fec6a3236256e52f21">ppforest2::utils::invert</a></div><div class="ttdeci">std::map&lt; V, std::set&lt; K &gt; &gt; invert(const std::map&lt; K, V &gt; &amp;map)</div><div class="ttdoc">Invert a map: values become keys, original keys are grouped into sets.</div><div class="ttdef"><b>Definition</b> Map.hpp:16</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1utils_html_aeb655a3f13d114f54bc1d97cba1d8abe"><div class="ttname"><a href="namespaceppforest2_1_1utils.html#aeb655a3f13d114f54bc1d97cba1d8abe">ppforest2::utils::keys</a></div><div class="ttdeci">std::set&lt; K &gt; keys(const std::map&lt; K, V &gt; &amp;map)</div><div class="ttdoc">Extract all keys from a map as a set.</div><div class="ttdef"><b>Definition</b> Map.hpp:33</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

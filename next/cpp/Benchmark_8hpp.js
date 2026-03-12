@@ -1,16 +1,16 @@
 var Benchmark_8hpp =
 [
-    [ "pptree::cli::BenchmarkSuite", "structpptree_1_1cli_1_1BenchmarkSuite.html", "structpptree_1_1cli_1_1BenchmarkSuite" ],
-    [ "pptree::cli::ConvergenceCriteria", "structpptree_1_1cli_1_1ConvergenceCriteria.html", "structpptree_1_1cli_1_1ConvergenceCriteria" ],
-    [ "pptree::cli::Scenario", "structpptree_1_1cli_1_1Scenario.html", "structpptree_1_1cli_1_1Scenario" ],
-    [ "pptree::cli::ScenarioResult", "structpptree_1_1cli_1_1ScenarioResult.html", "structpptree_1_1cli_1_1ScenarioResult" ],
-    [ "pptree::cli::SuiteResult", "structpptree_1_1cli_1_1SuiteResult.html", "structpptree_1_1cli_1_1SuiteResult" ],
-    [ "pptree::cli::ProgressCallback", "namespacepptree_1_1cli.html#a5701a3e365c518fe193414f7ed646772", null ],
-    [ "pptree::cli::parse_results", "namespacepptree_1_1cli.html#a3d952f3bba5d7dd5b175178553719d2a", null ],
-    [ "pptree::cli::parse_suite", "namespacepptree_1_1cli.html#a7dd234a915ab5eb389ad7d8cabbcd238", null ],
-    [ "pptree::cli::parse_suite", "namespacepptree_1_1cli.html#aa05f02a83ff7afbd01207a7dc7ce11b5", null ],
-    [ "pptree::cli::run_benchmark", "namespacepptree_1_1cli.html#a6a3adaf97468f3ade25c1288f374daf7", null ],
-    [ "pptree::cli::run_scenario", "namespacepptree_1_1cli.html#acdaf76dcf40755924f371dc92bf290dd", null ],
-    [ "pptree::cli::run_suite", "namespacepptree_1_1cli.html#aeba5efa29f083576f8402451c143b539", null ],
-    [ "pptree::cli::setup_benchmark", "namespacepptree_1_1cli.html#a4f4df65c0420297a9cb7a33868d869de", null ]
+    [ "ppforest2::cli::BenchmarkSuite", "structppforest2_1_1cli_1_1BenchmarkSuite.html", "structppforest2_1_1cli_1_1BenchmarkSuite" ],
+    [ "ppforest2::cli::ConvergenceCriteria", "structppforest2_1_1cli_1_1ConvergenceCriteria.html", "structppforest2_1_1cli_1_1ConvergenceCriteria" ],
+    [ "ppforest2::cli::Scenario", "structppforest2_1_1cli_1_1Scenario.html", "structppforest2_1_1cli_1_1Scenario" ],
+    [ "ppforest2::cli::ScenarioResult", "structppforest2_1_1cli_1_1ScenarioResult.html", "structppforest2_1_1cli_1_1ScenarioResult" ],
+    [ "ppforest2::cli::SuiteResult", "structppforest2_1_1cli_1_1SuiteResult.html", "structppforest2_1_1cli_1_1SuiteResult" ],
+    [ "ppforest2::cli::ProgressCallback", "namespaceppforest2_1_1cli.html#ab60fae501eccee5220fb3c5a3033c130", null ],
+    [ "ppforest2::cli::parse_results", "namespaceppforest2_1_1cli.html#a4028b2a5fb09e7b529169ce37ce9e390", null ],
+    [ "ppforest2::cli::parse_suite", "namespaceppforest2_1_1cli.html#a9cf171fa7eb33e83613e50ea84c6389a", null ],
+    [ "ppforest2::cli::parse_suite", "namespaceppforest2_1_1cli.html#ab87c050791813ad79fe241d3a51e28a3", null ],
+    [ "ppforest2::cli::run_benchmark", "namespaceppforest2_1_1cli.html#a2ebbb070a90b0d0994feb45deb58d5e1", null ],
+    [ "ppforest2::cli::run_scenario", "namespaceppforest2_1_1cli.html#a91124ec5682f6ee3e52c71731e8717ca", null ],
+    [ "ppforest2::cli::run_suite", "namespaceppforest2_1_1cli.html#a927afd38346bebbf3da4900795381846", null ],
+    [ "ppforest2::cli::setup_benchmark", "namespaceppforest2_1_1cli.html#a22dffebbed0dbfea3b8bbce9b92f2274", null ]
 ];

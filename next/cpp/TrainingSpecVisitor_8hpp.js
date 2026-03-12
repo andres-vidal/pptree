@@ -1,4 +1,4 @@
 var TrainingSpecVisitor_8hpp =
 [
-    [ "pptree::TrainingSpecVisitor", "structpptree_1_1TrainingSpecVisitor.html", "structpptree_1_1TrainingSpecVisitor" ]
+    [ "ppforest2::TrainingSpecVisitor", "structppforest2_1_1TrainingSpecVisitor.html", "structppforest2_1_1TrainingSpecVisitor" ]
 ];

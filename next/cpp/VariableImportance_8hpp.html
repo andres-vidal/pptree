@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pptree: core/src/models/VariableImportance.hpp File Reference</title>
+<title>ppforest2: core/src/models/VariableImportance.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">pptree
+   <div id="projectname">ppforest2
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -112,29 +112,29 @@ $(function(){initNavTree('VariableImportance_8hpp.html',''); initResizable(true)
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1VariableImportance.html">pptree::VariableImportance</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grouped result of the three variable importance measures.  <a href="structpptree_1_1VariableImportance.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1VariableImportance.html">ppforest2::VariableImportance</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grouped result of the three variable importance measures.  <a href="structppforest2_1_1VariableImportance.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree.html">pptree</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html">ppforest2</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac433aaa9cc1f5f6ee06876da6137f235" id="r_ac433aaa9cc1f5f6ee06876da6137f235"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree.html#ac433aaa9cc1f5f6ee06876da6137f235">pptree::variable_importance_permuted</a> (const <a class="el" href="structpptree_1_1Forest.html">Forest</a> &amp;forest, const <a class="el" href="namespacepptree_1_1types.html#ac38153c80ae165f34711219a6fa20ae0">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespacepptree_1_1types.html#abd887dc81073c44a6b885e57c2411f08">types::ResponseVector</a> &amp;y, int seed=0)</td></tr>
-<tr class="memdesc:ac433aaa9cc1f5f6ee06876da6137f235"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI1 — Permuted importance.  <br /></td></tr>
-<tr class="separator:ac433aaa9cc1f5f6ee06876da6137f235"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45daf9d4022d1f0a3965532411ec9225" id="r_a45daf9d4022d1f0a3965532411ec9225"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree.html#a45daf9d4022d1f0a3965532411ec9225">pptree::variable_importance_projections</a> (const <a class="el" href="structpptree_1_1Forest.html">Forest</a> &amp;forest, int n_vars, const <a class="el" href="namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5">types::FeatureVector</a> *scale=nullptr)</td></tr>
-<tr class="memdesc:a45daf9d4022d1f0a3965532411ec9225"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI2 — Projections importance (forest).  <br /></td></tr>
-<tr class="separator:a45daf9d4022d1f0a3965532411ec9225"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0feae830ee7071f5e7a2490488a386bb" id="r_a0feae830ee7071f5e7a2490488a386bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree.html#a0feae830ee7071f5e7a2490488a386bb">pptree::variable_importance_projections</a> (const <a class="el" href="structpptree_1_1Tree.html">Tree</a> &amp;tree, int n_vars, const <a class="el" href="namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5">types::FeatureVector</a> *scale=nullptr)</td></tr>
-<tr class="memdesc:a0feae830ee7071f5e7a2490488a386bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI2 — Projections importance (single tree).  <br /></td></tr>
-<tr class="separator:a0feae830ee7071f5e7a2490488a386bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60519b808da430c26f871e868cee8765" id="r_a60519b808da430c26f871e868cee8765"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree.html#a60519b808da430c26f871e868cee8765">pptree::variable_importance_weighted_projections</a> (const <a class="el" href="structpptree_1_1Forest.html">Forest</a> &amp;forest, const <a class="el" href="namespacepptree_1_1types.html#ac38153c80ae165f34711219a6fa20ae0">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespacepptree_1_1types.html#abd887dc81073c44a6b885e57c2411f08">types::ResponseVector</a> &amp;y, const <a class="el" href="namespacepptree_1_1types.html#a4609370e1866a39f047c354f469ebfc5">types::FeatureVector</a> *scale=nullptr)</td></tr>
-<tr class="memdesc:a60519b808da430c26f871e868cee8765"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI3 — Weighted projections importance.  <br /></td></tr>
-<tr class="separator:a60519b808da430c26f871e868cee8765"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0a515d25db5e1b1f0b171426f5e7ef4" id="r_ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html#ae0a515d25db5e1b1f0b171426f5e7ef4">ppforest2::variable_importance_permuted</a> (const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;forest, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, int seed=0)</td></tr>
+<tr class="memdesc:ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI1 — Permuted importance.  <br /></td></tr>
+<tr class="separator:ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa294cff97b443565ec4e005fba2829c6" id="r_aa294cff97b443565ec4e005fba2829c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html#aa294cff97b443565ec4e005fba2829c6">ppforest2::variable_importance_projections</a> (const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;forest, int n_vars, const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *scale=nullptr)</td></tr>
+<tr class="memdesc:aa294cff97b443565ec4e005fba2829c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI2 — Projections importance (forest).  <br /></td></tr>
+<tr class="separator:aa294cff97b443565ec4e005fba2829c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7c6e1845ee1ad52809da10a17da6a14" id="r_ad7c6e1845ee1ad52809da10a17da6a14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html#ad7c6e1845ee1ad52809da10a17da6a14">ppforest2::variable_importance_projections</a> (const <a class="el" href="structppforest2_1_1Tree.html">Tree</a> &amp;tree, int n_vars, const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *scale=nullptr)</td></tr>
+<tr class="memdesc:ad7c6e1845ee1ad52809da10a17da6a14"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI2 — Projections importance (single tree).  <br /></td></tr>
+<tr class="separator:ad7c6e1845ee1ad52809da10a17da6a14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fc51558fbdb031113953cb666fc4028" id="r_a3fc51558fbdb031113953cb666fc4028"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html#a3fc51558fbdb031113953cb666fc4028">ppforest2::variable_importance_weighted_projections</a> (const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;forest, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *scale=nullptr)</td></tr>
+<tr class="memdesc:a3fc51558fbdb031113953cb666fc4028"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI3 — Weighted projections importance.  <br /></td></tr>
+<tr class="separator:a3fc51558fbdb031113953cb666fc4028"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['label_0',['label',['../structpptree_1_1io_1_1Column.html#a767f2ff97c32c71c9146f713c0500976',1,'pptree::io::Column::label'],['../structpptree_1_1LayoutEdge.html#aeccf7e101561a17dd7db87186c171c30',1,'pptree::LayoutEdge::label']]],
-  ['label_5findex_1',['label_index',['../structpptree_1_1stats_1_1ConfusionMatrix.html#aa61fbe884e52f9cbd80e0af82f89ac09',1,'pptree::stats::ConfusionMatrix']]],
-  ['lambda_2',['lambda',['../structpptree_1_1cli_1_1Scenario.html#ac483ea20d5a4d0f7a0f95032d09eef85',1,'pptree::cli::Scenario::lambda'],['../structpptree_1_1cli_1_1ModelParams.html#a7ea2193efc7bb3d6d10a825611812374',1,'pptree::cli::ModelParams::lambda'],['../structpptree_1_1pp_1_1PPGLDAStrategy.html#a7273c365457f42f8a373651458bc5c6d',1,'pptree::pp::PPGLDAStrategy::lambda'],['../structpptree_1_1TrainingSpecGLDA.html#aae25cb80f88d50d2782c44da352c8f61',1,'pptree::TrainingSpecGLDA::lambda'],['../structpptree_1_1TrainingSpecUGLDA.html#a2b660688d096449d7e9cea175a72b387',1,'pptree::TrainingSpecUGLDA::lambda']]],
-  ['layoutedge_3',['LayoutEdge',['../structpptree_1_1LayoutEdge.html',1,'pptree']]],
-  ['layoutnode_4',['LayoutNode',['../structpptree_1_1LayoutNode.html',1,'pptree']]],
-  ['layoutparams_5',['LayoutParams',['../structpptree_1_1LayoutParams.html',1,'pptree']]],
-  ['leaf_5fh_6',['leaf_h',['../structpptree_1_1LayoutParams.html#aeafb3d47b9098064e10afa12340b63ae',1,'pptree::LayoutParams']]],
-  ['leaf_5fw_7',['leaf_w',['../structpptree_1_1LayoutParams.html#a2ee962f21ac15879cd341e540cce89fc',1,'pptree::LayoutParams']]],
-  ['left_8',['left',['../namespacepptree_1_1io.html#adab0ef61cd6661616ef875fece9277b3a811882fecd5c7618d7099ebbd39ea254',1,'pptree::io']]],
-  ['lower_9',['lower',['../structpptree_1_1TreeCondition.html#ada25e84d4498ebe16e85bee416a16fdd',1,'pptree::TreeCondition']]]
+  ['label_0',['label',['../structppforest2_1_1io_1_1Column.html#aa64d8705ece0fd66c670a79dafcc7a87',1,'ppforest2::io::Column::label'],['../structppforest2_1_1LayoutEdge.html#a400ac110c74d30b6fad9237577147502',1,'ppforest2::LayoutEdge::label']]],
+  ['label_5findex_1',['label_index',['../structppforest2_1_1stats_1_1ConfusionMatrix.html#a7fa8e58051c2bdcff35bbf61d5f0aefe',1,'ppforest2::stats::ConfusionMatrix']]],
+  ['lambda_2',['lambda',['../structppforest2_1_1cli_1_1Scenario.html#a1084c890c022161f019b894a33a96169',1,'ppforest2::cli::Scenario::lambda'],['../structppforest2_1_1cli_1_1ModelParams.html#a10629e456e9af2b64b4f7de4c6139028',1,'ppforest2::cli::ModelParams::lambda'],['../structppforest2_1_1pp_1_1PPGLDAStrategy.html#a07198f044e1a2915ef789bf6f1f17fd2',1,'ppforest2::pp::PPGLDAStrategy::lambda'],['../structppforest2_1_1TrainingSpecGLDA.html#a1e8f6ab07abb2ca9ef4a0d9eeda8ea5b',1,'ppforest2::TrainingSpecGLDA::lambda'],['../structppforest2_1_1TrainingSpecUGLDA.html#ad76480fba5487a53cb0e264e115cf523',1,'ppforest2::TrainingSpecUGLDA::lambda']]],
+  ['layoutedge_3',['LayoutEdge',['../structppforest2_1_1LayoutEdge.html',1,'ppforest2']]],
+  ['layoutnode_4',['LayoutNode',['../structppforest2_1_1LayoutNode.html',1,'ppforest2']]],
+  ['layoutparams_5',['LayoutParams',['../structppforest2_1_1LayoutParams.html',1,'ppforest2']]],
+  ['leaf_5fh_6',['leaf_h',['../structppforest2_1_1LayoutParams.html#a600f0296d3c57955d7efc7967a7ab6a8',1,'ppforest2::LayoutParams']]],
+  ['leaf_5fw_7',['leaf_w',['../structppforest2_1_1LayoutParams.html#a6424ce1d93831d05f6062ce689f8fe7a',1,'ppforest2::LayoutParams']]],
+  ['left_8',['left',['../namespaceppforest2_1_1io.html#a3f0ff1581cbe84c230ae589c33630e41a811882fecd5c7618d7099ebbd39ea254',1,'ppforest2::io']]],
+  ['lower_9',['lower',['../structppforest2_1_1TreeCondition.html#a966a4b8bd456ebc3f93aeb2c215fa92d',1,'ppforest2::TreeCondition']]]
 ];

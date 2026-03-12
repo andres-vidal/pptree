@@ -6,11 +6,11 @@
 
 ## Citation
 
-Vidal A, Silva Nd (2026). *PPTree: High Performant Assembled Projection
-Pursuit (PP) Decision Trees*. R package version 0.0.0.
+Vidal A, Silva Nd (2026). *ppforest2: Projection Pursuit Oblique
+Decision Trees and Random Forests*. R package version 0.0.0.
 
     @Manual{,
-      title = {PPTree: High Performant Assembled Projection Pursuit (PP) Decision Trees},
+      title = {ppforest2: Projection Pursuit Oblique Decision Trees and Random Forests},
       author = {Andres Vidal and Natalia da Silva},
       year = {2026},
       note = {R package version 0.0.0},

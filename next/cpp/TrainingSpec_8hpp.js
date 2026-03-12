@@ -1,4 +1,4 @@
 var TrainingSpec_8hpp =
 [
-    [ "pptree::TrainingSpec", "structpptree_1_1TrainingSpec.html", "structpptree_1_1TrainingSpec" ]
+    [ "ppforest2::TrainingSpec", "structppforest2_1_1TrainingSpec.html", "structppforest2_1_1TrainingSpec" ]
 ];

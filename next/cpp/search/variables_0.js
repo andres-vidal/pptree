@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['align_0',['align',['../structpptree_1_1io_1_1Column.html#acb5044255f24cfd7d43392784822479b',1,'pptree::io::Column']]]
+  ['align_0',['align',['../structppforest2_1_1io_1_1Column.html#a965d0448f68f7de7f8783d5ca95b7fa3',1,'ppforest2::io::Column']]]
 ];

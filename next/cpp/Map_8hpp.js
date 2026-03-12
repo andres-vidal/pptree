@@ -1,6 +1,6 @@
 var Map_8hpp =
 [
-    [ "pptree::utils::invert", "namespacepptree_1_1utils.html#af3268af759f869b1fdffdaac807e7a18", null ],
-    [ "pptree::utils::keys", "namespacepptree_1_1utils.html#ac62636bae785aae199111ef8dbfbbca5", null ],
-    [ "pptree::utils::values", "namespacepptree_1_1utils.html#aecdc9c2335261d2c1dbdc82d2ed924a5", null ]
+    [ "ppforest2::utils::invert", "namespaceppforest2_1_1utils.html#ada415ecaf9b653fec6a3236256e52f21", null ],
+    [ "ppforest2::utils::keys", "namespaceppforest2_1_1utils.html#aeb655a3f13d114f54bc1d97cba1d8abe", null ],
+    [ "ppforest2::utils::values", "namespaceppforest2_1_1utils.html#a9ed3e5ccf285997edb19045d4cf62b16", null ]
 ];

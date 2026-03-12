@@ -1,10 +1,10 @@
 var Stats_8hpp =
 [
-    [ "pptree::stats::RNG", "namespacepptree_1_1stats.html#af911152f523c174265b99e6c6e538926", null ],
-    [ "pptree::stats::accuracy", "namespacepptree_1_1stats.html#a92768aa7e1219e23ebcb44119ee746e8", null ],
-    [ "pptree::stats::error_rate", "namespacepptree_1_1stats.html#a641303facc19141d78831657e5925127", null ],
-    [ "pptree::stats::sd", "namespacepptree_1_1stats.html#a425a97e299c21784e23b7f10e0fe5f10", null ],
-    [ "pptree::stats::sd", "namespacepptree_1_1stats.html#a3baaee1a2420ac4a4c5646fbd219e815", null ],
-    [ "pptree::stats::sort", "namespacepptree_1_1stats.html#a91db86bb29efb099ee80000477554429", null ],
-    [ "pptree::stats::unique", "namespacepptree_1_1stats.html#a6c77f93afd576715a4cef4b87eb0c1bb", null ]
+    [ "ppforest2::stats::RNG", "namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567", null ],
+    [ "ppforest2::stats::accuracy", "namespaceppforest2_1_1stats.html#ab1be109eb5773e260bc48e272d1599d4", null ],
+    [ "ppforest2::stats::error_rate", "namespaceppforest2_1_1stats.html#a7a9ab29c5165bf5acb78e69f78458c52", null ],
+    [ "ppforest2::stats::sd", "namespaceppforest2_1_1stats.html#a847826ab1262d5fe5c802ecafaf332b6", null ],
+    [ "ppforest2::stats::sd", "namespaceppforest2_1_1stats.html#a80225d623d30b503146bc9a03e8b1327", null ],
+    [ "ppforest2::stats::sort", "namespaceppforest2_1_1stats.html#ab5fea02c8d682b90a47fd016d536b820", null ],
+    [ "ppforest2::stats::unique", "namespaceppforest2_1_1stats.html#a116d95f97b06a0c8b60db844c607ce25", null ]
 ];

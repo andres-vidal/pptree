@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['uniform_0',['Uniform',['../classpptree_1_1stats_1_1Uniform.html#a719f5add406af776681a6f5928e5f49d',1,'pptree::stats::Uniform']]],
-  ['uniform_1',['uniform',['../namespacepptree_1_1dr.html#a31c1433501a5c0b9c8e429185034d671',1,'pptree::dr']]],
-  ['unique_2',['unique',['../namespacepptree_1_1stats.html#a6c77f93afd576715a4cef4b87eb0c1bb',1,'pptree::stats']]]
+  ['uniform_0',['Uniform',['../classppforest2_1_1stats_1_1Uniform.html#a724bb7c030c3d9d4b49261cc04208d2e',1,'ppforest2::stats::Uniform']]],
+  ['uniform_1',['uniform',['../namespaceppforest2_1_1dr.html#a3f9e147489a1f708dd66dcc88f87e845',1,'ppforest2::dr']]],
+  ['unique_2',['unique',['../namespaceppforest2_1_1stats.html#a116d95f97b06a0c8b60db844c607ce25',1,'ppforest2::stats']]]
 ];

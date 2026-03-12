@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pptree: core/src/utils/Math.hpp File Reference</title>
+<title>ppforest2: core/src/utils/Math.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">pptree
+   <div id="projectname">ppforest2
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -114,10 +114,10 @@ $(function(){initNavTree('Math_8hpp.html',''); initResizable(true); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree.html">pptree</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html">ppforest2</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1math.html">pptree::math</a></td></tr>
-<tr class="memdesc:namespacepptree_1_1math"><td class="mdescLeft">&#160;</td><td class="mdescRight">Numeric comparison utilities. <br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1math.html">ppforest2::math</a></td></tr>
+<tr class="memdesc:namespaceppforest2_1_1math"><td class="mdescLeft">&#160;</td><td class="mdescRight">Numeric comparison utilities. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -127,22 +127,22 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1ea3f8ae707ac87258c832e969257a81" id="r_a1ea3f8ae707ac87258c832e969257a81"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a1ea3f8ae707ac87258c832e969257a81"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1math.html#a1ea3f8ae707ac87258c832e969257a81">pptree::math::collinear</a> (const <a class="el" href="namespacepptree_1_1types.html#ab3408cc3539f8f5423a3bdb9d7c3509e">types::Vector</a>&lt; T &gt; &amp;a, const <a class="el" href="namespacepptree_1_1types.html#ab3408cc3539f8f5423a3bdb9d7c3509e">types::Vector</a>&lt; T &gt; &amp;b)</td></tr>
-<tr class="memdesc:a1ea3f8ae707ac87258c832e969257a81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether two vectors are collinear (parallel or anti-parallel).  <br /></td></tr>
-<tr class="separator:a1ea3f8ae707ac87258c832e969257a81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77db36f3fe890ab90a17cf3838d33437" id="r_a77db36f3fe890ab90a17cf3838d33437"><td class="memTemplParams" colspan="2">template&lt;typename A, typename B&gt; </td></tr>
-<tr class="memitem:a77db36f3fe890ab90a17cf3838d33437"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1math.html#a77db36f3fe890ab90a17cf3838d33437">pptree::math::is_approx</a> (A a, B b)</td></tr>
-<tr class="memdesc:a77db36f3fe890ab90a17cf3838d33437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload using the default APPROX_THRESHOLD.  <br /></td></tr>
-<tr class="separator:a77db36f3fe890ab90a17cf3838d33437"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70b43231e11e8cb6e239fe93884b2ed5" id="r_a70b43231e11e8cb6e239fe93884b2ed5"><td class="memTemplParams" colspan="2">template&lt;typename A, typename B, typename T&gt; </td></tr>
-<tr class="memitem:a70b43231e11e8cb6e239fe93884b2ed5"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1math.html#a70b43231e11e8cb6e239fe93884b2ed5">pptree::math::is_approx</a> (A a, B b, T threshold)</td></tr>
-<tr class="memdesc:a70b43231e11e8cb6e239fe93884b2ed5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether two scalars are approximately equal.  <br /></td></tr>
-<tr class="separator:a70b43231e11e8cb6e239fe93884b2ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af945fa6da0cba82b3f93a33460ca663e" id="r_af945fa6da0cba82b3f93a33460ca663e"><td class="memTemplParams" colspan="2">template&lt;typename A, typename B&gt; </td></tr>
-<tr class="memitem:af945fa6da0cba82b3f93a33460ca663e"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1math.html#af945fa6da0cba82b3f93a33460ca663e">pptree::math::is_module_approx</a> (A a, B b)</td></tr>
-<tr class="memdesc:af945fa6da0cba82b3f93a33460ca663e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether the absolute values of two scalars are approximately equal.  <br /></td></tr>
-<tr class="separator:af945fa6da0cba82b3f93a33460ca663e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb2c5eb329ea583be675af520bfc4b4b" id="r_adb2c5eb329ea583be675af520bfc4b4b"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:adb2c5eb329ea583be675af520bfc4b4b"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1math.html#adb2c5eb329ea583be675af520bfc4b4b">ppforest2::math::collinear</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a6b0f2fc1c6c2d1f5fac68202619e33f8">types::Vector</a>&lt; T &gt; &amp;a, const <a class="el" href="namespaceppforest2_1_1types.html#a6b0f2fc1c6c2d1f5fac68202619e33f8">types::Vector</a>&lt; T &gt; &amp;b)</td></tr>
+<tr class="memdesc:adb2c5eb329ea583be675af520bfc4b4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether two vectors are collinear (parallel or anti-parallel).  <br /></td></tr>
+<tr class="separator:adb2c5eb329ea583be675af520bfc4b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a486fc087538c291f21b8e796c04fa70c" id="r_a486fc087538c291f21b8e796c04fa70c"><td class="memTemplParams" colspan="2">template&lt;typename A, typename B&gt; </td></tr>
+<tr class="memitem:a486fc087538c291f21b8e796c04fa70c"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1math.html#a486fc087538c291f21b8e796c04fa70c">ppforest2::math::is_approx</a> (A a, B b)</td></tr>
+<tr class="memdesc:a486fc087538c291f21b8e796c04fa70c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload using the default APPROX_THRESHOLD.  <br /></td></tr>
+<tr class="separator:a486fc087538c291f21b8e796c04fa70c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef9bfff79515449a7894e70e661a3daf" id="r_aef9bfff79515449a7894e70e661a3daf"><td class="memTemplParams" colspan="2">template&lt;typename A, typename B, typename T&gt; </td></tr>
+<tr class="memitem:aef9bfff79515449a7894e70e661a3daf"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1math.html#aef9bfff79515449a7894e70e661a3daf">ppforest2::math::is_approx</a> (A a, B b, T threshold)</td></tr>
+<tr class="memdesc:aef9bfff79515449a7894e70e661a3daf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether two scalars are approximately equal.  <br /></td></tr>
+<tr class="separator:aef9bfff79515449a7894e70e661a3daf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace8888ca553032158504ff15745c2fbf" id="r_ace8888ca553032158504ff15745c2fbf"><td class="memTemplParams" colspan="2">template&lt;typename A, typename B&gt; </td></tr>
+<tr class="memitem:ace8888ca553032158504ff15745c2fbf"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1math.html#ace8888ca553032158504ff15745c2fbf">ppforest2::math::is_module_approx</a> (A a, B b)</td></tr>
+<tr class="memdesc:ace8888ca553032158504ff15745c2fbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether the absolute values of two scalars are approximately equal.  <br /></td></tr>
+<tr class="separator:ace8888ca553032158504ff15745c2fbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="adc749a0041f86b9a04fa05a27d8de53b" name="adc749a0041f86b9a04fa05a27d8de53b"></a>

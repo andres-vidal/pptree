@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>pptree: core/src/stats/ConfusionMatrix.hpp File Reference</title>
+<title>ppforest2: core/src/stats/ConfusionMatrix.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">pptree
+   <div id="projectname">ppforest2
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -116,22 +116,22 @@ $(function(){initNavTree('ConfusionMatrix_8hpp.html',''); initResizable(true); }
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpptree_1_1stats_1_1ConfusionMatrix.html">pptree::stats::ConfusionMatrix</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A confusion matrix comparing predicted vs actual class labels.  <a href="structpptree_1_1stats_1_1ConfusionMatrix.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1stats_1_1ConfusionMatrix.html">ppforest2::stats::ConfusionMatrix</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A confusion matrix comparing predicted vs actual class labels.  <a href="structppforest2_1_1stats_1_1ConfusionMatrix.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree.html">pptree</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html">ppforest2</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1stats.html">pptree::stats</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1stats.html">ppforest2::stats</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a50fe9765618d56728ffc8b6225cea78e" id="r_a50fe9765618d56728ffc8b6225cea78e"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepptree_1_1stats.html#a50fe9765618d56728ffc8b6225cea78e">pptree::stats::get_labels_map</a> (const <a class="el" href="namespacepptree_1_1types.html#abd887dc81073c44a6b885e57c2411f08">types::ResponseVector</a> &amp;groups)</td></tr>
-<tr class="memdesc:a50fe9765618d56728ffc8b6225cea78e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build a sorted mapping from unique class labels to contiguous indices.  <br /></td></tr>
-<tr class="separator:a50fe9765618d56728ffc8b6225cea78e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ef348216200ff629b08c457e5ebccd8" id="r_a0ef348216200ff629b08c457e5ebccd8"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1stats.html#a0ef348216200ff629b08c457e5ebccd8">ppforest2::stats::get_labels_map</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;groups)</td></tr>
+<tr class="memdesc:a0ef348216200ff629b08c457e5ebccd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build a sorted mapping from unique class labels to contiguous indices.  <br /></td></tr>
+<tr class="separator:a0ef348216200ff629b08c457e5ebccd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Confusion matrix for classification model evaluation. </p>

@@ -1,5 +1,5 @@
 var DRUniformStrategy_8hpp =
 [
-    [ "pptree::dr::DRUniformStrategy", "structpptree_1_1dr_1_1DRUniformStrategy.html", "structpptree_1_1dr_1_1DRUniformStrategy" ],
-    [ "pptree::dr::uniform", "namespacepptree_1_1dr.html#a31c1433501a5c0b9c8e429185034d671", null ]
+    [ "ppforest2::dr::DRUniformStrategy", "structppforest2_1_1dr_1_1DRUniformStrategy.html", "structppforest2_1_1dr_1_1DRUniformStrategy" ],
+    [ "ppforest2::dr::uniform", "namespaceppforest2_1_1dr.html#a3f9e147489a1f708dd66dcc88f87e845", null ]
 ];

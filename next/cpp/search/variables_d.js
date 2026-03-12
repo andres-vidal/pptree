@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['quiet_0',['quiet',['../structpptree_1_1cli_1_1CLIOptions.html#a81b96c8fcda2e58510bc33bf2555a1d4',1,'pptree::cli::CLIOptions::quiet'],['../structpptree_1_1io_1_1Output.html#af8f87c959c398db981a18f9f879f2b58',1,'pptree::io::Output::quiet']]]
+  ['quiet_0',['quiet',['../structppforest2_1_1cli_1_1CLIOptions.html#a6abeb8d9536f624549e6c0f42fb7e7fb',1,'ppforest2::cli::CLIOptions::quiet'],['../structppforest2_1_1io_1_1Output.html#a8f0efe2699b4508e39a4ec7d570490f3',1,'ppforest2::io::Output::quiet']]]
 ];
