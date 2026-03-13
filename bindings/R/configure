@@ -98,7 +98,7 @@ fi
 if [ -f src/.core ]; then
   # Dev path: build core using project Makefile
   echo "* Development environment detected. Running r-build-core..."
-  PROJECT_ROOT="../../.."
+  PROJECT_ROOT="../.."
   cd "$PROJECT_ROOT"
   make r-build-core
   cd - > /dev/null

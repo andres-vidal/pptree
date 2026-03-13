@@ -41,7 +41,7 @@ jobs:
           TINYTEX_INSTALLER: ${{ runner.os == 'Windows' && 'TinyTeX' || '' }}
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          working-directory: bindings/R/ppforest2
+          working-directory: bindings/R
           extra-packages: any::devtools
       - name: Cache CMake deps
         uses: actions/cache@v4

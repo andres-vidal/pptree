@@ -16,15 +16,15 @@ ppforest2_*.tar.gz
 .DS_Store
 Rplots.pdf
 
-bindings/R/ppforest2/src/core
-bindings/R/ppforest2/src/Makevars
-bindings/R/ppforest2/inst/include/nlohmann
-bindings/R/ppforest2/inst/include/pcg_*
-bindings/R/ppforest2/NEWS.md
+bindings/R/src/core
+bindings/R/src/Makevars
+bindings/R/inst/include/nlohmann
+bindings/R/inst/include/pcg_*
+bindings/R/NEWS.md
 
 docs/.build
 
 log
 .claude
 CLAUDE.md
-bindings/R/ppforest2/src/VERSION
+bindings/R/src/VERSION

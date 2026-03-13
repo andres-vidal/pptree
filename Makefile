@@ -80,7 +80,7 @@ cppclean: build
 
 # Targets for the R package
 
-R_PACKAGE_DIR = bindings/R/ppforest2
+R_PACKAGE_DIR = bindings/R
 CORE_VERSION := $(shell cat VERSION)
 R_BINDING_SUFFIX ?=
 R_PACKAGE_VERSION = $(CORE_VERSION)$(R_BINDING_SUFFIX)

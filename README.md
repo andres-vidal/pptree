@@ -114,9 +114,9 @@ The project is organized into a shared C++ core and language-specific bindings:
 
 - **C++ core** (`core/`) — All models, training algorithms, statistics, serialization, and CLI live here. This is the single source of truth for the implementation. External dependencies (Eigen, nlohmann/json, pcg, GoogleTest, Google Benchmark, CLI11, fmt, csv-parser) are declared in `core/Dependencies.cmake` and fetched automatically via CMake `FetchContent`.
 
-- **R package** (`bindings/R/ppforest2/`) — Thin Rcpp layer that exposes the C++ core to R. Type conversions between R and C++ types are defined in `inst/include/ppforest2.h`. Roxygen documentation and parsnip integration are R-only.
+- **R package** (`bindings/R/`) — Thin Rcpp layer that exposes the C++ core to R. Type conversions between R and C++ types are defined in `inst/include/ppforest2.h`. Roxygen documentation and parsnip integration are R-only.
 
-- **Visualization** (`core/src/models/Visualization.hpp/cpp` + `bindings/R/ppforest2/R/plot.R`) — Split between C++ and R. C++ handles geometry: tree traversal visitors collect per-node data, clip decision boundary lines via parametric line clipping, and compute convex decision region polygons via Sutherland–Hodgman polygon clipping. R handles rendering via ggplot2, translating the C++ output into layers and assembling composite layouts (mosaic, pairwise facets, tree diagrams).
+- **Visualization** (`core/src/models/Visualization.hpp/cpp` + `bindings/R/R/plot.R`) — Split between C++ and R. C++ handles geometry: tree traversal visitors collect per-node data, clip decision boundary lines via parametric line clipping, and compute convex decision region polygons via Sutherland–Hodgman polygon clipping. R handles rendering via ggplot2, translating the C++ output into layers and assembling composite layouts (mosaic, pairwise facets, tree diagrams).
 
 - **Python bindings** — Planned.
 
@@ -258,8 +258,8 @@ All workflows share a single dependency cache in `.build/_deps/`, populated by `
 For iterative development, the `.core` sentinel file in `src/` activates the dev path in Makevars. On each `devtools::load_all()`, Makevars delegates to `make r-build-core` which compiles the C++ core into `.r-build/` using R's compiler. cmake incremental builds ensure only changed files are recompiled. The static library, headers, and core source are copied into the R package for linking.
 
 ```r
-devtools::load_all("bindings/R/ppforest2")   # edit C++ -> reload -> test
-devtools::test("bindings/R/ppforest2")        # run testthat suite
+devtools::load_all("bindings/R")   # edit C++ -> reload -> test
+devtools::test("bindings/R")        # run testthat suite
 ```
 
 #### Compiler handling
