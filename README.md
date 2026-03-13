@@ -278,7 +278,7 @@ The project is organized into a shared C++ core and language-specific bindings:
 
 - **R package** (`bindings/R/`) — Thin Rcpp layer that exposes the C++ core to R. Type conversions between R and C++ types are defined in `inst/include/ppforest2.h`. Roxygen documentation and parsnip integration are R-only.
 
-- **Visualization** (`core/src/models/Visualization.hpp/cpp` + `bindings/R/R/plot.R`) — Split between C++ and R. C++ handles geometry: tree traversal visitors collect per-node data, clip decision boundary lines via parametric line clipping, and compute convex decision region polygons via Sutherland–Hodgman polygon clipping. R handles rendering via ggplot2, translating the C++ output into layers and assembling composite layouts (mosaic, pairwise facets, tree diagrams).
+- **Visualization** (`core/src/models/Visualization.hpp/cpp` + `bindings/R/R/plot-*.R`) — Split between C++ and R. C++ handles geometry: tree traversal visitors collect per-node data, clip decision boundary lines via parametric line clipping, and compute convex decision region polygons via Sutherland–Hodgman polygon clipping. R handles rendering via ggplot2, translating the C++ output into layers and assembling composite layouts (mosaic, pairwise facets, tree diagrams). The tree structure visualization — with embedded per-node histograms and projector labels — is inspired by [dtreeviz](https://github.com/parrt/dtreeviz).
 
 - **Python bindings** — Planned.
 
