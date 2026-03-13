@@ -339,6 +339,53 @@ Implementation constraints that preserve reproducibility:
 - **Sorting**: use `std::stable_sort` where element order affects downstream results. `std::sort` is not guaranteed to be stable and can produce different orderings of equal elements across platforms.
 - **R seeds**: generated in R, passed as integers to C++.
 
+## Versioning
+
+The project follows [Semantic Versioning](https://semver.org/) with a single source of truth: the `VERSION` file at the repository root.
+
+- **MAJOR** — breaking API changes (C++ public API, R/Python interface changes that break user code)
+- **MINOR** — new features, new model types, new parameters
+- **PATCH** — bug fixes, performance improvements, documentation
+
+### Core version
+
+The `VERSION` file contains `MAJOR.MINOR.PATCH` (e.g., `0.1.0`). CMake reads it automatically, and the CLI binary's `--version` flag reflects it.
+
+### Binding versions
+
+Bindings derive their version from the core `VERSION` file and may append a binding-specific suffix for binding-only fixes:
+
+| Binding | Format                              | Example                |
+|---------|-------------------------------------|------------------------|
+| R       | `MAJOR.MINOR.PATCH[.N]`             | `0.1.0`, `0.1.0.1`     |
+| Python  | `MAJOR.MINOR.PATCH[.postN]`         | `0.1.0`, `0.1.0.post1` |
+| CLI     | always matches core `VERSION`       | `0.1.0`                |
+
+For R, the `.N` 4th component follows CRAN conventions. Development versions between releases use `.9000` (e.g., `0.1.0.9000`).
+
+### Git tags
+
+- Core releases: `v0.1.0`
+- R binding-only releases: `r0.1.0.1`
+- Python binding-only releases: `py0.1.0.post1`
+
+### Changelog
+
+`CHANGELOG.md` at the repository root tracks all changes. It is automatically copied as `NEWS.md` into the R package during `make r-prepare` (CRAN requires that filename).
+
+### How to release
+
+1. Update the `VERSION` file with the new version number
+2. Add a section to `CHANGELOG.md` for the new version
+3. Run `make r-prepare` (or `make r-build`) — DESCRIPTION version is updated from the `VERSION` file
+4. Commit, tag (`v0.1.0`), push
+
+For a binding-only R release:
+
+```bash
+R_BINDING_SUFFIX=.1 make r-build   # produces tarball with version 0.1.0.1
+```
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

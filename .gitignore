@@ -20,9 +20,11 @@ bindings/R/ppforest2/src/core
 bindings/R/ppforest2/src/Makevars
 bindings/R/ppforest2/inst/include/nlohmann
 bindings/R/ppforest2/inst/include/pcg_*
+bindings/R/ppforest2/NEWS.md
 
 docs/.build
 
 log
 .claude
 CLAUDE.md
+bindings/R/ppforest2/src/VERSION

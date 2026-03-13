@@ -81,7 +81,9 @@ cppclean: build
 # Targets for the R package
 
 R_PACKAGE_DIR = bindings/R/ppforest2
-R_PACKAGE_VERSION = 0.0.0
+CORE_VERSION := $(shell cat VERSION)
+R_BINDING_SUFFIX ?=
+R_PACKAGE_VERSION = $(CORE_VERSION)$(R_BINDING_SUFFIX)
 R_PACKAGE_TARBALL = ppforest2_${R_PACKAGE_VERSION}.tar.gz
 R_CRAN_MIRROR = https://cran.rstudio.com/
 
@@ -116,15 +118,21 @@ r-clean:
 		${R_PACKAGE_DIR}/src/*.dll \
 		${R_PACKAGE_DIR}/src/core \
 		${R_PACKAGE_DIR}/src/.build \
+		${R_PACKAGE_DIR}/src/VERSION \
+		${R_PACKAGE_DIR}/NEWS.md \
 		${R_PACKAGE_DIR}/inst/lib \
 		${R_PACKAGE_DIR}/inst/include/nlohmann \
 		${R_PACKAGE_DIR}/inst/include/pcg_* \
 		${R_PACKAGE_DIR}/inst/golden \
 		ppforest2_${R_PACKAGE_VERSION}.tar.gzm \
 		ppforest2.Rcheck
+	@sed -i.bak 's/^Version: .*/Version: 0.0.0.9000/' ${R_PACKAGE_DIR}/DESCRIPTION && rm -f ${R_PACKAGE_DIR}/DESCRIPTION.bak
 
 r-prepare: r-clean fetch-deps
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
+	@cp VERSION ${R_PACKAGE_DIR}/src/VERSION
+	@sed -i.bak 's/^Version: .*/Version: ${R_PACKAGE_VERSION}/' ${R_PACKAGE_DIR}/DESCRIPTION && rm -f ${R_PACKAGE_DIR}/DESCRIPTION.bak
+	@cp CHANGELOG.md ${R_PACKAGE_DIR}/NEWS.md
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 	@cp -r ${PCG_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 	@cp -r golden ${R_PACKAGE_DIR}/inst/golden

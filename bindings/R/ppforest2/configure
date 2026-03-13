@@ -109,6 +109,7 @@ if [ -f src/.core ]; then
   cp -r "$R_DEV_BUILD_DIR/_deps/pcg-src/include/"* inst/include/
 
   mkdir -p src/core && cp -r "$PROJECT_ROOT/core/"* src/core/
+  cp "$PROJECT_ROOT/VERSION" src/VERSION
 
   mkdir -p inst/lib
   cp "$R_DEV_BUILD_DIR/libppforest2-core.a" inst/lib/
