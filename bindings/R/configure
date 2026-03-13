@@ -95,59 +95,66 @@ if [ -n "${CI}" ]; then
 fi
 
 # Build libppforest2-core.a
-if [ -f src/.core ]; then
-  # Dev path: build core using project Makefile
-  echo "* Development environment detected. Running r-build-core..."
-  PROJECT_ROOT="../.."
-  cd "$PROJECT_ROOT"
-  make r-build-core
-  cd - > /dev/null
-
-  R_DEV_BUILD_DIR="$PROJECT_ROOT/.r-build"
-
-  cp -r "$R_DEV_BUILD_DIR/_deps/json-src/include/"* inst/include/
-  cp -r "$R_DEV_BUILD_DIR/_deps/pcg-src/include/"* inst/include/
-
-  mkdir -p src/core && cp -r "$PROJECT_ROOT/core/"* src/core/
-  cp "$PROJECT_ROOT/VERSION" src/VERSION
-
+if [ ! -f inst/lib/libppforest2-core.a ]; then
   mkdir -p inst/lib
-  cp "$R_DEV_BUILD_DIR/libppforest2-core.a" inst/lib/
 
-elif [ ! -f inst/lib/libppforest2-core.a ]; then
-  # Tarball path: build from bundled source
-  R_BUILD_DIR=src/.r-build
-  mkdir -p "$R_BUILD_DIR" inst/lib
+  if [ -d ../../core ]; then
+    # Monorepo path (devtools::load_all or install_github with subdir)
+    echo "* Monorepo detected. Building core via project Makefile..."
+    PROJECT_ROOT="../.."
+    cd "$PROJECT_ROOT"
+    make r-build-core
+    cd - > /dev/null
 
-  FETCH_ARGS=""
-  if [ -n "$PPFOREST2_FETCH_CACHE" ]; then
-    for src_dir in "$PPFOREST2_FETCH_CACHE"/*-src; do
-      name=$(basename "$src_dir" -src | tr '[:lower:]' '[:upper:]')
-      FETCH_ARGS="$FETCH_ARGS -DFETCHCONTENT_SOURCE_DIR_${name}=${src_dir}"
-    done
+    R_BUILD_DIR="$PROJECT_ROOT/.r-build"
+
+    cp -r "$R_BUILD_DIR/_deps/json-src/include/"* inst/include/
+    cp -r "$R_BUILD_DIR/_deps/pcg-src/include/"* inst/include/
+
+    mkdir -p src/core && cp -r "$PROJECT_ROOT/core/"* src/core/
+    cp "$PROJECT_ROOT/VERSION" src/VERSION
+
+    cp "$R_BUILD_DIR/libppforest2-core.a" inst/lib/
+
+  elif [ -d src/core ]; then
+    # Tarball path: build from bundled source
+    R_BUILD_DIR=src/.r-build
+    mkdir -p "$R_BUILD_DIR"
+
+    FETCH_ARGS=""
+    if [ -n "$PPFOREST2_FETCH_CACHE" ]; then
+      for src_dir in "$PPFOREST2_FETCH_CACHE"/*-src; do
+        name=$(basename "$src_dir" -src | tr '[:lower:]' '[:upper:]')
+        FETCH_ARGS="$FETCH_ARGS -DFETCHCONTENT_SOURCE_DIR_${name}=${src_dir}"
+      done
+    fi
+
+    # Split R's CXX17 into compiler path and extra flags
+    # (on macOS ARM, R CMD config CXX17 returns "clang++ -arch arm64")
+    R_CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17)
+    R_CXX_COMPILER=$(echo "$R_CXX_FULL" | awk '{print $1}')
+    R_CXX_EXTRA=$(echo "$R_CXX_FULL" | awk '{$1=""; print}' | sed 's/^ *//')
+
+    R_CXX_STD=$("${R_HOME}/bin/R" CMD config CXX17STD)
+    R_CXX_FLAGS=$("${R_HOME}/bin/R" CMD config CXX17FLAGS)
+
+    cd "$R_BUILD_DIR" && cmake -G "Unix Makefiles" \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_CXX_COMPILER="$R_CXX_COMPILER" \
+      -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXX_STD $R_CXX_FLAGS" \
+      -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+      -DPPFOREST2_CORE_ONLY=ON \
+      $CMAKE_NATIVE_ARCH $FETCH_ARGS \
+      ../core && make ppforest2-core && cd ../..
+
+    strip -S "$R_BUILD_DIR/libppforest2-core.a"
+    cp "$R_BUILD_DIR/libppforest2-core.a" inst/lib/
+    rm -rf "$R_BUILD_DIR"
+
+  else
+    echo "ERROR: Cannot find core source. Expected ../../core/ (monorepo) or src/core/ (tarball)."
+    exit 1
   fi
-
-  # Split R's CXX17 into compiler path and extra flags
-  # (on macOS ARM, R CMD config CXX17 returns "clang++ -arch arm64")
-  R_CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17)
-  R_CXX_COMPILER=$(echo "$R_CXX_FULL" | awk '{print $1}')
-  R_CXX_EXTRA=$(echo "$R_CXX_FULL" | awk '{$1=""; print}' | sed 's/^ *//')
-
-  R_CXX_STD=$("${R_HOME}/bin/R" CMD config CXX17STD)
-  R_CXX_FLAGS=$("${R_HOME}/bin/R" CMD config CXX17FLAGS)
-
-  cd "$R_BUILD_DIR" && cmake -G "Unix Makefiles" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_COMPILER="$R_CXX_COMPILER" \
-    -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXX_STD $R_CXX_FLAGS" \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DPPFOREST2_CORE_ONLY=ON \
-    $CMAKE_NATIVE_ARCH $FETCH_ARGS \
-    ../core && make ppforest2-core && cd ../..
-
-  strip -S "$R_BUILD_DIR/libppforest2-core.a"
-  cp "$R_BUILD_DIR/libppforest2-core.a" inst/lib/
-  rm -rf "$R_BUILD_DIR"
 fi
 
 sed -e "s|@DARWIN_OPENMP_CXXFLAGS@|${DARWIN_OPENMP_CXXFLAGS}|" \

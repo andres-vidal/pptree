@@ -56,7 +56,7 @@ Install the R package (CRAN submission is planned once the package stabilizes):
 
 ```r
 # install.packages("devtools")
-devtools::install_github("https://github.com/andres-vidal/ppforest2", ref = "main-r")
+devtools::install_github("andres-vidal/ppforest2", subdir = "bindings/R", build = FALSE)
 ```
 
 ```r
@@ -249,13 +249,17 @@ All workflows share a single dependency cache in `.build/_deps/`, populated by `
 
 2. **`r-prepare`** — Copies the core source into `src/core/`, dependency headers (nlohmann/json, pcg) from `.build/_deps/` into `inst/include/`, and golden files into `inst/golden/`.
 
-3. **`r-build`** — Removes the `.core` sentinel, regenerates `RcppExports.cpp`/`RcppExports.R` via `Rcpp::compileAttributes()`, and runs `R CMD build` to produce a source tarball.
+3. **`r-build`** — Regenerates `RcppExports.cpp`/`RcppExports.R` via `Rcpp::compileAttributes()`, and runs `R CMD build` to produce a source tarball.
 
-4. **`configure` / `configure.win`** — During `R CMD check` or `R CMD INSTALL`, the configure script detects the compiler, runs cmake + compile on the bundled core source, and places the static library in `inst/lib/`. The `PPFOREST2_FETCH_CACHE` environment variable can point to pre-downloaded sources to avoid re-fetching.
+4. **`configure` / `configure.win`** — During `R CMD check` or `R CMD INSTALL`, the configure script detects the build context and compiles the C++ core:
+   - **Monorepo** (`../../core/` exists): delegates to `make r-build-core`, which uses cmake incremental builds in `.r-build/`. Used by `devtools::load_all()` and `install_github`.
+   - **Tarball** (`src/core/` bundled): runs cmake directly on the bundled source. Used by `R CMD INSTALL` from a tarball.
+
+   The `PPFOREST2_FETCH_CACHE` environment variable can point to pre-downloaded sources to avoid re-fetching.
 
 #### Development workflow (`devtools::load_all()`)
 
-For iterative development, the `.core` sentinel file in `src/` activates the dev path in Makevars. On each `devtools::load_all()`, Makevars delegates to `make r-build-core` which compiles the C++ core into `.r-build/` using R's compiler. cmake incremental builds ensure only changed files are recompiled. The static library, headers, and core source are copied into the R package for linking.
+For iterative development, the configure script detects the monorepo layout and delegates to `make r-build-core`, which compiles the C++ core into `.r-build/` using R's compiler. cmake incremental builds ensure only changed files are recompiled. The static library, headers, and core source are copied into the R package for linking.
 
 ```r
 devtools::load_all("bindings/R")   # edit C++ -> reload -> test
@@ -268,13 +272,13 @@ On macOS, `R CMD config CXX17` may return the compiler with architecture flags (
 
 ### How `install_github` Works
 
-R packages installed via `devtools::install_github()` must have the package source at the repository root. Since ppforest2 is a monorepo, a CI workflow (`update-main-r.yml`) maintains a separate `main-r` branch for this purpose:
+`install_github` requires `build = FALSE` so that `R CMD INSTALL` runs directly on the source directory within the cloned monorepo (without `build = FALSE`, `R CMD build` creates an intermediate tarball that loses the monorepo context):
 
-1. On every push to `main`, CI runs `make r-build` and `make r-untar` to produce the self-contained R package source
-2. `git subtree split` extracts the package directory into the `main-r` branch
-3. The `main-r` branch is force-pushed, keeping it in sync with `main`
+```r
+devtools::install_github("andres-vidal/ppforest2", subdir = "bindings/R", build = FALSE)
+```
 
-This allows `devtools::install_github(..., ref = "main-r")` to work without requiring users to clone the full monorepo. A second workflow (`run-r-install-github.yml`) verifies that `install_github` succeeds on all three platforms.
+The configure script detects `../../core/` and delegates to `make r-build-core`, which builds the C++ core via cmake and copies it into the package.
 
 ## Development Tools
 

@@ -144,10 +144,8 @@ r-document:
 
 r-build: r-clean
 	@make r-prepare
-	@rm ${R_PACKAGE_DIR}/src/.core
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
 	@R CMD build ${R_PACKAGE_DIR}
-	@touch ${R_PACKAGE_DIR}/src/.core
 	@make r-clean
 
 r-check: r-build
@@ -158,9 +156,6 @@ r-check-cran: r-build
 
 r-install: r-build
 	@PPFOREST2_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" R CMD INSTALL ${R_PACKAGE_TARBALL}
-
-r-untar:
-	@tar -xvf ${R_PACKAGE_TARBALL}
 
 # Documentation
 
