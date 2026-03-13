@@ -439,7 +439,7 @@ plot_tree_structure <- function(model, ...) {
   # Color scale and title
   p <- p +
     ggplot2::scale_fill_manual(values = class_colors, name = "Class") +
-    ggplot2::ggtitle("pptr Structure") +
+    ggplot2::ggtitle("PP Decision Tree Structure") +
     ggplot2::coord_cartesian(
       xlim = c(min(node_df$x) - node_w / 2 - 0.2,
                max(node_df$x) + node_w / 2 + 0.2),
@@ -468,19 +468,36 @@ metric_labels <- c(
 #' Render a horizontal bar chart of variable importance.
 #'
 #' Supports multiple importance metrics (projection, weighted, permuted).
-#' When a single metric is available, bars use the neutral
-#' \code{ppforest2_col_bar} colour.  With multiple metrics, bars are
-#' colour-coded and dodged.  Variables are ordered by the first
-#' available metric's values.
+#' When \code{metric} is \code{NULL} and multiple metrics are available,
+#' bars are colour-coded and dodged.  When a single metric is selected
+#' (or only one is available), bars use the neutral
+#' \code{ppforest2_col_bar} colour.  Variables are ordered by the
+#' plotted metric's values (descending).
 #'
 #' @param model A pptr or pprf model with \code{$vi} (list of named
 #'   numeric vectors) and \code{$x} (for variable names).
+#' @param metric Character string selecting a single importance metric
+#'   to plot: \code{"projections"}, \code{"weighted"}, or
+#'   \code{"permuted"}.  \code{NULL} (default) shows all available
+#'   metrics together.
 #' @param ... Currently unused.
 #' @return A ggplot2 object.
 #' @noRd
-plot_importance <- function(model, ...) {
+plot_importance <- function(model, metric = NULL, ...) {
   vnames <- get_variable_names(model)
   available <- intersect(names(metric_labels), names(model$vi))
+
+  if (!is.null(metric)) {
+    metric <- match.arg(metric, names(metric_labels))
+    if (!(metric %in% available)) {
+      stop(
+        "Metric '", metric, "' is not available for this model. ",
+        "Available: ", paste(available, collapse = ", "),
+        call. = FALSE
+      )
+    }
+    available <- metric
+  }
 
   dfs <- list()
   for (m in available) {
@@ -495,7 +512,7 @@ plot_importance <- function(model, ...) {
 
   df <- do.call(rbind, dfs)
 
-  # Order variables by first metric's values
+  # Order variables by first (or only) metric's values
   first_values <- model$vi[[available[1]]]
   df$variable <- factor(df$variable, levels = vnames[order(first_values)])
   df$metric <- factor(df$metric, levels = unname(metric_labels[available]))
@@ -512,10 +529,11 @@ plot_importance <- function(model, ...) {
       ppforest2_theme() +
       ggplot2::theme(panel.grid.major.y = ggplot2::element_blank())
   } else {
+    title <- paste0("Variable Importance (", metric_labels[available], ")")
     p <- ggplot2::ggplot(df, ggplot2::aes(x = importance, y = variable)) +
       ggplot2::geom_col(fill = ppforest2_col_bar) +
       ggplot2::labs(
-        title = "Variable Importance",
+        title = title,
         x     = "Importance",
         y     = NULL
       ) +
@@ -524,6 +542,40 @@ plot_importance <- function(model, ...) {
   }
 
   p
+}
+
+#' Render a grid of individual importance plots, one per metric.
+#'
+#' Used by \code{plot.pprf()} to show all importance metrics side by side,
+#' each ordered independently.
+#'
+#' @param model A pprf model.
+#' @param ... Currently unused.
+#' @return NULL (invisibly). The plot is drawn as a side effect via grid.
+#' @noRd
+plot_importance_grid <- function(model, ...) {
+  available <- intersect(names(metric_labels), names(model$vi))
+
+  plots <- lapply(available, function(m) {
+    plot_importance(model, metric = m) +
+      ggplot2::theme(plot.margin = ggplot2::margin(5, 10, 5, 10))
+  })
+
+  n <- length(plots)
+  grid::grid.newpage()
+  grid::pushViewport(grid::viewport(
+    layout = grid::grid.layout(1, n,
+      widths = grid::unit(rep(1, n), "null"))
+  ))
+
+  for (i in seq_along(plots)) {
+    grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = i))
+    print(plots[[i]], newpage = FALSE)
+    grid::popViewport()
+  }
+
+  grid::popViewport()
+  invisible(NULL)
 }
 
 # ======================================================================
@@ -1181,9 +1233,14 @@ plot_mosaic <- function(model, ...) {
 #' @param x A pptr model.
 #' @param type Character string specifying the plot type. \code{NULL} (default)
 #'   shows a mosaic overview. Other options: \code{"structure"} for tree with
-#'   embedded histograms, \code{"importance"} for variable importance (all
-#'   available metrics), \code{"projection"} for projected data at a node,
+#'   embedded histograms, \code{"importance"} for variable importance,
+#'   \code{"projection"} for projected data at a node,
 #'   \code{"boundaries"} for decision boundaries in feature space.
+#' @param metric Character string selecting a single importance metric
+#'   to plot: \code{"projections"}, \code{"weighted"}, or
+#'   \code{"permuted"} (availability depends on the model).  \code{NULL}
+#'   (default) shows all available metrics together.  Only used when
+#'   \code{type = "importance"}.
 #' @param node Integer index of the node for projection plots (1-based, breadth-first
 #'   order). Defaults to 1 (root node). Only used when \code{type = "projection"}.
 #' @param ... Additional arguments passed to the internal plotting function.
@@ -1198,7 +1255,7 @@ plot_mosaic <- function(model, ...) {
 #' plot(model, type = "boundaries")   # decision boundaries
 #' }
 #' @export
-plot.pptr <- function(x, type = NULL, node = 1L, ...) {
+plot.pptr <- function(x, type = NULL, metric = NULL, node = 1L, ...) {
   check_ggplot2()
 
   if (is.null(type)) {
@@ -1209,7 +1266,7 @@ plot.pptr <- function(x, type = NULL, node = 1L, ...) {
 
   p <- switch(type,
     structure  = plot_tree_structure(x, ...),
-    importance = plot_importance(x, ...),
+    importance = plot_importance(x, metric = metric, ...),
     projection = plot_projection(x, node = node, ...),
     boundaries = plot_boundaries(x, ...)
   )
@@ -1225,31 +1282,38 @@ plot.pptr <- function(x, type = NULL, node = 1L, ...) {
 
 #' Plot a pprf model.
 #'
-#' Visualizes a pprf model. By default, shows variable importance across
-#' all available metrics. Use \code{type} to show individual plots.
+#' Visualizes a pprf model. By default, shows variable importance with
+#' one plot per metric side by side. Use \code{metric} to show a single
+#' importance metric.
 #'
 #' @param x A pprf model.
 #' @param type Character string specifying the plot type.
-#'   \code{"importance"} (default) shows variable importance (all available
-#'   metrics), \code{"structure"} shows a specific tree with embedded histograms,
+#'   \code{"importance"} (default) shows variable importance,
+#'   \code{"structure"} shows a specific tree with embedded histograms,
 #'   \code{"projection"} shows projected data at a node,
 #'   \code{"boundaries"} shows decision boundaries of a specific tree.
+#' @param metric Character string selecting a single importance metric
+#'   to plot: \code{"projections"}, \code{"weighted"}, or
+#'   \code{"permuted"}.  \code{NULL} (default) shows all available
+#'   metrics side by side in separate panels.  Only used when
+#'   \code{type = "importance"}.
 #' @param tree_index Integer index of the tree to plot (1-based). Only used when
 #'   \code{type = "structure"}, \code{type = "projection"}, or
 #'   \code{type = "boundaries"}. Defaults to 1.
 #' @param node Integer index of the node for projection plots. Defaults to 1 (root).
 #'   Only used when \code{type = "projection"}.
 #' @param ... Additional arguments passed to the internal plotting function.
-#' @return A ggplot2 object (invisibly).
+#' @return A ggplot2 object (invisibly), or \code{NULL} for the grid layout.
 #' @examples
 #' \dontrun{
 #' forest <- pprf(Type ~ ., data = iris, size = 10)
-#' plot(forest)
+#' plot(forest)                                    # all metrics side by side
+#' plot(forest, metric = "permuted")               # single metric
 #' plot(forest, type = "structure", tree_index = 1)
 #' plot(forest, type = "projection", tree_index = 1)
 #' }
 #' @export
-plot.pprf <- function(x, type = "importance",
+plot.pprf <- function(x, type = "importance", metric = NULL,
                           tree_index = 1L, node = 1L, ...) {
   check_ggplot2()
   type <- match.arg(type, c("importance", "structure", "projection", "boundaries"))
@@ -1261,8 +1325,12 @@ plot.pprf <- function(x, type = "importance",
     tree$classes <- x$classes
   }
 
+  if (type == "importance" && is.null(metric)) {
+    return(plot_importance_grid(x, ...))
+  }
+
   p <- switch(type,
-    importance = plot_importance(x, ...),
+    importance = plot_importance(x, metric = metric, ...),
     structure  = plot_tree_structure(tree, ...),
     projection = plot_projection(tree, node = node, ...),
     boundaries = plot_boundaries(tree, ...)

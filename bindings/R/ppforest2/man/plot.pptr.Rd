@@ -4,16 +4,22 @@
 \alias{plot.pptr}
 \title{Plot a pptr model.}
 \usage{
-\method{plot}{pptr}(x, type = NULL, node = 1L, ...)
+\method{plot}{pptr}(x, type = NULL, metric = NULL, node = 1L, ...)
 }
 \arguments{
 \item{x}{A pptr model.}
 
 \item{type}{Character string specifying the plot type. \code{NULL} (default)
 shows a mosaic overview. Other options: \code{"structure"} for tree with
-embedded histograms, \code{"importance"} for variable importance (all
-available metrics), \code{"projection"} for projected data at a node,
+embedded histograms, \code{"importance"} for variable importance,
+\code{"projection"} for projected data at a node,
 \code{"boundaries"} for decision boundaries in feature space.}
+
+\item{metric}{Character string selecting a single importance metric
+to plot: \code{"projections"}, \code{"weighted"}, or
+\code{"permuted"} (availability depends on the model).  \code{NULL}
+(default) shows all available metrics together.  Only used when
+\code{type = "importance"}.}
 
 \item{node}{Integer index of the node for projection plots (1-based, breadth-first
 order). Defaults to 1 (root node). Only used when \code{type = "projection"}.}

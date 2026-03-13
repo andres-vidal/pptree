@@ -20,6 +20,16 @@ describe("plot.pptr", {
     expect_s3_class(p, "ggplot")
   })
 
+  it("importance plot orders variables by value", {
+    model <- pptr(Type ~ ., data = iris, seed = 42L)
+    p <- plot(model, type = "importance")
+    pdata <- ggplot2::ggplot_build(p)$layout$panel_params[[1]]$y$get_labels()
+    vi <- model$vi$projections
+    vnames <- colnames(model$x)
+    expected_order <- vnames[order(vi)]
+    expect_equal(pdata, expected_order)
+  })
+
   it("returns a ggplot object for type = 'projection'", {
     model <- pptr(Type ~ ., data = iris, seed = 42L)
     p <- plot(model, type = "projection")
@@ -109,10 +119,34 @@ describe("plot.pptr", {
 })
 
 describe("plot.pprf", {
-  it("returns a ggplot object for type = 'importance'", {
+  it("default plot renders importance grid without error", {
     model <- pprf(Type ~ ., data = iris, size = 5, seed = 42L, n_threads = 1)
-    p <- plot(model, type = "importance")
+    expect_no_error(plot(model))
+  })
+
+  it("renders importance grid for type = 'importance' without metric", {
+    model <- pprf(Type ~ ., data = iris, size = 5, seed = 42L, n_threads = 1)
+    expect_no_error(plot(model, type = "importance"))
+  })
+
+  it("returns a ggplot for a single importance metric", {
+    model <- pprf(Type ~ ., data = iris, size = 5, seed = 42L, n_threads = 1)
+    p <- plot(model, metric = "projections")
     expect_s3_class(p, "ggplot")
+    p <- plot(model, metric = "weighted")
+    expect_s3_class(p, "ggplot")
+    p <- plot(model, metric = "permuted")
+    expect_s3_class(p, "ggplot")
+  })
+
+  it("importance plot orders variables by selected metric", {
+    model <- pprf(Type ~ ., data = iris, size = 5, seed = 42L, n_threads = 1)
+    p <- plot(model, metric = "permuted")
+    pdata <- ggplot2::ggplot_build(p)$layout$panel_params[[1]]$y$get_labels()
+    vi <- model$vi$permuted
+    vnames <- colnames(model$x)
+    expected_order <- vnames[order(vi)]
+    expect_equal(pdata, expected_order)
   })
 
   it("returns a ggplot object for type = 'structure'", {
@@ -134,12 +168,6 @@ describe("plot.pprf", {
       size = 5, seed = 42L, n_threads = 1
     )
     p <- plot(model, type = "boundaries", tree_index = 1)
-    expect_s3_class(p, "ggplot")
-  })
-
-  it("defaults to type = 'importance'", {
-    model <- pprf(Type ~ ., data = iris, size = 5, seed = 42L, n_threads = 1)
-    p <- plot(model)
     expect_s3_class(p, "ggplot")
   })
 })

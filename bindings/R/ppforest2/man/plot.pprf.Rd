@@ -4,16 +4,22 @@
 \alias{plot.pprf}
 \title{Plot a pprf model.}
 \usage{
-\method{plot}{pprf}(x, type = "importance", tree_index = 1L, node = 1L, ...)
+\method{plot}{pprf}(x, type = "importance", metric = NULL, tree_index = 1L, node = 1L, ...)
 }
 \arguments{
 \item{x}{A pprf model.}
 
 \item{type}{Character string specifying the plot type.
-\code{"importance"} (default) shows variable importance (all available
-metrics), \code{"structure"} shows a specific tree with embedded histograms,
+\code{"importance"} (default) shows variable importance,
+\code{"structure"} shows a specific tree with embedded histograms,
 \code{"projection"} shows projected data at a node,
 \code{"boundaries"} shows decision boundaries of a specific tree.}
+
+\item{metric}{Character string selecting a single importance metric
+to plot: \code{"projections"}, \code{"weighted"}, or
+\code{"permuted"}.  \code{NULL} (default) shows all available
+metrics side by side in separate panels.  Only used when
+\code{type = "importance"}.}
 
 \item{tree_index}{Integer index of the tree to plot (1-based). Only used when
 \code{type = "structure"}, \code{type = "projection"}, or
@@ -25,16 +31,18 @@ Only used when \code{type = "projection"}.}
 \item{...}{Additional arguments passed to the internal plotting function.}
 }
 \value{
-A ggplot2 object (invisibly).
+A ggplot2 object (invisibly), or \code{NULL} for the grid layout.
 }
 \description{
-Visualizes a pprf model. By default, shows variable importance across
-all available metrics. Use \code{type} to show individual plots.
+Visualizes a pprf model. By default, shows variable importance with
+one plot per metric side by side. Use \code{metric} to show a single
+importance metric.
 }
 \examples{
 \dontrun{
 forest <- pprf(Type ~ ., data = iris, size = 10)
-plot(forest)
+plot(forest)                                    # all metrics side by side
+plot(forest, metric = "permuted")               # single metric
 plot(forest, type = "structure", tree_index = 1)
 plot(forest, type = "projection", tree_index = 1)
 }
