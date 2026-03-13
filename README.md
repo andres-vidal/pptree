@@ -30,7 +30,6 @@ Developed as a Bachelor's thesis project in Statistics at **Universidad de la Re
 - [Building and Testing](#building-and-testing)
 - [Benchmarking](#benchmarking)
 - [R Package](#r-package)
-- [Development Tools](#development-tools)
 - [Documentation](#documentation)
 - [Reproducibility Break Protocol](#reproducibility-break-protocol)
 - [Versioning](#versioning)
@@ -287,19 +286,62 @@ The project is organized into a shared C++ core and language-specific bindings:
 
 |              | Linux            | macOS           | Windows                              |
 |--------------|------------------|-----------------|--------------------------------------|
-| **C++ core** | `cmake` >= 3.14, `make`, `gcc` | `cmake` >= 3.14, `make`, `clang` | `cmake` >= 3.14, `make`, MinGW `gcc` |
+| **C++ core** | `cmake` >= 3.20, `make`, `gcc` | `cmake` >= 3.20, `make`, `clang` | `cmake` >= 3.20, `make`, MinGW `gcc` |
 | **R package**| `R` >= 3.5       | `R` >= 3.5      | `R` >= 3.5, `Rtools`                |
+| **OpenMP** (optional) | Usually included with `gcc` | `brew install libomp` | Usually included with MinGW |
 | **R docs**   | TeX distribution with `pdflatex` | TeX distribution with `pdflatex` | TeX distribution with `pdflatex` |
 
-For the R package, the C++ compiler must match the one R was built with (`gcc` on Linux/Windows, `clang` on macOS).
+For the R package, the C++ compiler must match the one R was built with (`gcc` on Linux/Windows, `clang` on macOS). OpenMP is optional but recommended for multi-threaded forest training; without it, forests train on a single thread.
 
 ## Building and Testing
 
+### C++ core
+
 ```bash
-make build              # Release build (C++ core + tests)
-make test               # Build and run C++ tests
+make build              # Release build (C++ core + CLI + tests)
+make test               # Build and run C++ tests (GoogleTest)
 make build-debug        # Debug build with AddressSanitizer
 make test-debug         # Run debug tests
+make clean              # Remove all build artifacts (.build/, .debug/, .r-build/)
+```
+
+The release build produces the `ppforest2` CLI binary and the `ppforest2-test` test runner in `.build/`. The debug build enables AddressSanitizer (on Linux) and runtime assertions.
+
+### R package
+
+```bash
+make r-install-deps     # Install R package dependencies via pak
+make r-build            # Prepare source and run R CMD build (produces tarball)
+make r-check            # Build and run R CMD check on the tarball
+make r-check-cran       # Same as r-check with --as-cran for CRAN submission
+make r-install          # Build and install the package locally
+make r-document         # Regenerate Roxygen man pages
+make r-clean            # Remove R compilation byproducts
+```
+
+### Development tools
+
+```bash
+make install-tools      # Download uncrustify, cppcheck, doxygen into .tools/
+make format             # Format C++ code (uncrustify)
+make format-dry         # Check formatting without applying changes
+make analyze            # Run static analysis (cppcheck)
+```
+
+### Golden tests
+
+```bash
+make golden-regen       # Regenerate golden reference files from current code
+```
+
+Golden files in `golden/` are pre-computed reference outputs verified on every platform in CI. If a code change intentionally alters model output, regenerate them and commit the updated files. See [Reproducibility Break Protocol](#reproducibility-break-protocol) for the full procedure.
+
+### Documentation
+
+```bash
+make docs               # Build all documentation (landing page + C++ API + R pkgdown)
+make docs-cpp           # Build C++ API docs only (Doxygen)
+make docs-r             # Build R package site only (pkgdown)
 ```
 
 ## Benchmarking
@@ -443,35 +485,9 @@ devtools::install_github("andres-vidal/ppforest2", subdir = "bindings/R", build 
 
 The configure script detects `../../core/` and delegates to `make r-build-core`, which builds the C++ core via cmake and copies it into the package.
 
-## Development Tools
-
-Install dependencies:
-
-```bash
-make install-tools      # Downloads uncrustify, cppcheck, doxygen into .tools/
-make r-install-deps     # Installs R package dependencies (Rcpp, testthat, parsnip, etc.)
-```
-
-Run them:
-
-```bash
-make format             # Format C++ code (uncrustify)
-make format-dry         # Check formatting without applying
-make analyze            # Static analysis (cppcheck)
-```
-
 ## Documentation
 
 The project has a unified documentation site combining a static landing page, a C++ API reference (Doxygen), and R package documentation (pkgdown). The site is deployed to GitHub Pages with versioned directories for each branch and tag.
-
-### Building Locally
-
-```bash
-make docs               # Build full site into docs/.build/
-make docs-site          # Landing page only
-make docs-cpp           # C++ API reference (Doxygen)
-make docs-r             # R package site (pkgdown)
-```
 
 ### Deployment
 
@@ -533,8 +549,8 @@ For R, the `.N` 4th component follows CRAN conventions. Development versions bet
 ### Git tags
 
 - Core releases: `v0.1.0`
-- R binding-only releases: `r0.1.0.1`
-- Python binding-only releases: `py0.1.0.post1`
+- R binding-only releases: `v-r0.1.0.1`
+- Python binding-only releases: `v-py0.1.0.post1`
 
 ### Changelog
 
