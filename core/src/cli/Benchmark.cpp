@@ -19,6 +19,7 @@
 #include <chrono>
 #include <fstream>
 #include <optional>
+#include <set>
 
 #ifdef _WIN32
 #include <process.h>
@@ -45,6 +46,53 @@ namespace ppforest2::cli {
   }
 
 namespace {
+  /**
+   * @brief Read CSV dimensions (rows, columns, unique values in last column).
+   *
+   * Lightweight: reads the file line by line without loading it into memory.
+   * Assumes the last column is the response variable.
+   */
+  struct CsvDimensions { int n = 0; int p = 0; int g = 0; };
+
+  CsvDimensions read_csv_dimensions(const std::string& path) {
+    std::ifstream file(path);
+
+    invariant(file.is_open(), fmt::format("Cannot open data file: {}", path));
+
+    CsvDimensions dims;
+    std::string line;
+    int total_cols = 0;
+    std::set<std::string> classes;
+
+    while (std::getline(file, line)) {
+      if (line.empty()) continue;
+
+      int cols = 1;
+
+      for (char c : line) {
+        if (c == ',') ++cols;
+      }
+
+      if (total_cols == 0) {
+        total_cols = cols;
+      }
+
+      // Extract last column value (response)
+      auto last_comma   = line.rfind(',');
+      std::string label = (last_comma != std::string::npos)
+        ? line.substr(last_comma + 1)
+        : line;
+
+      classes.insert(label);
+      ++dims.n;
+    }
+
+    dims.p = total_cols - 1;  // Last column is response
+    dims.g = static_cast<int>(classes.size());
+
+    return dims;
+  }
+
   /**
    * @brief Parse a ConvergenceCriteria from a JSON object.
    *
@@ -76,6 +124,8 @@ namespace {
     Scenario s = defaults;
 
     if (scenario_json.contains("name")) s.name = scenario_json["name"].get<std::string>();
+
+    if (scenario_json.contains("data")) s.data = scenario_json["data"].get<std::string>();
 
     if (scenario_json.contains("n")) s.n = scenario_json["n"].get<int>();
 
@@ -122,9 +172,14 @@ namespace {
    */
   void validate_scenario(const Scenario& s) {
     invariant(!s.name.empty(), "Scenario name is required");
-    invariant(s.n > 0, fmt::format("Scenario '{}': n must be positive", s.name));
-    invariant(s.p > 0, fmt::format("Scenario '{}': p must be positive", s.name));
-    invariant(s.g > 1, fmt::format("Scenario '{}': g must be > 1", s.name));
+
+    if (s.data.empty()) {
+      // Simulation mode: n, p, g are required
+      invariant(s.n > 0, fmt::format("Scenario '{}': n must be positive", s.name));
+      invariant(s.p > 0, fmt::format("Scenario '{}': p must be positive", s.name));
+      invariant(s.g > 1, fmt::format("Scenario '{}': g must be > 1", s.name));
+    }
+
     invariant(s.trees >= 0, fmt::format("Scenario '{}': trees must be >= 0", s.name));
     invariant(s.vars > 0 && s.vars <= 1, fmt::format("Scenario '{}': vars must be in (0, 1]", s.name));
     invariant(s.lambda >= 0 && s.lambda <= 1, fmt::format("Scenario '{}': lambda must be in [0, 1]", s.name));
@@ -147,9 +202,17 @@ namespace {
     const Scenario&    s,
     const std::string& binary_path,
     const std::string& output_path) {
-    std::string cmd = fmt::format(
-      "\"{}\" -q --no-color evaluate --simulate {}x{}x{} -r {} -p {} -o \"{}\"",
-      binary_path, s.n, s.p, s.g, s.seed, s.train_ratio, output_path);
+    std::string cmd;
+
+    if (s.data.empty()) {
+      cmd = fmt::format(
+        "\"{}\" -q --no-color evaluate --simulate {}x{}x{} -r {} -p {} -o \"{}\"",
+        binary_path, s.n, s.p, s.g, s.seed, s.train_ratio, output_path);
+    } else {
+      cmd = fmt::format(
+        "\"{}\" -q --no-color evaluate --data \"{}\" -r {} -p {} -o \"{}\"",
+        binary_path, s.data, s.seed, s.train_ratio, output_path);
+    }
 
     if (s.trees > 0) {
       cmd += fmt::format(" -t {} -v {}", s.trees, s.vars);
@@ -202,10 +265,20 @@ namespace {
     auto j = nlohmann::json::parse(file);
 
     ScenarioResult result;
-    result.name        = s.name;
-    result.n           = s.n;
-    result.p           = s.p;
-    result.g           = s.g;
+    result.name = s.name;
+    result.data = s.data;
+
+    if (s.data.empty()) {
+      result.n = s.n;
+      result.p = s.p;
+      result.g = s.g;
+    } else {
+      auto dims = read_csv_dimensions(s.data);
+      result.n = dims.n;
+      result.p = dims.p;
+      result.g = dims.g;
+    }
+
     result.trees       = s.trees;
     result.vars        = s.vars;
     result.train_ratio = s.train_ratio;
@@ -282,6 +355,7 @@ namespace {
       for (const auto& r : j["results"]) {
         ScenarioResult sr;
         sr.name           = r.value("name", "");
+        sr.data           = r.value("data", "");
         sr.n              = r.value("n", 0);
         sr.p              = r.value("p", 0);
         sr.g              = r.value("g", 0);
@@ -313,7 +387,12 @@ namespace {
 
     for (const auto& r : results) {
       nlohmann::json rj;
-      rj["name"]             = r.name;
+      rj["name"] = r.name;
+
+      if (!r.data.empty()) {
+        rj["data"] = r.data;
+      }
+
       rj["n"]                = r.n;
       rj["p"]                = r.p;
       rj["g"]                = r.g;

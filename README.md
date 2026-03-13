@@ -346,7 +346,7 @@ make docs-r             # Build R package site only (pkgdown)
 
 ## Benchmarking
 
-Performance benchmarks run configurable scenarios on simulated data, measuring execution time and peak RSS. Each scenario runs as a separate process for accurate per-scenario memory measurement.
+Performance benchmarks run configurable scenarios on simulated or real data, measuring execution time and peak RSS. Each scenario runs as a separate process for accurate per-scenario memory measurement.
 
 ### Running Benchmarks
 
@@ -415,10 +415,15 @@ Scenarios are defined in JSON with shared defaults and per-scenario overrides:
   "scenarios": [
     { "name": "small-forest",  "n": 200,  "p": 5,  "g": 2, "trees": 50 },
     { "name": "medium-forest", "n": 1000, "p": 20, "g": 3 },
-    { "name": "fixed-5",       "n": 1000, "p": 20, "g": 3, "iterations": 5 }
+    { "name": "fixed-5",       "n": 1000, "p": 20, "g": 3, "iterations": 5 },
+    { "name": "data-iris",     "data": "data/iris.csv", "trees": 50 }
   ]
 }
 ```
+
+Scenarios support two data sources:
+- **Simulated**: specify `n`, `p`, `g` to generate synthetic data via `--simulate NxPxG`.
+- **Real data**: specify `"data": "path/to/file.csv"` to use a CSV file. Data dimensions (n, p, g) are derived automatically from the file. The `n`, `p`, `g` fields are ignored when `data` is set.
 
 Setting `"iterations"` forces fixed mode for that scenario; otherwise, smart convergence is used.
 

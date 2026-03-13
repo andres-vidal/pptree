@@ -54,7 +54,10 @@ namespace ppforest2::cli {
   struct Scenario {
     std::string name;
 
-    // Data parameters
+    // Data source: either a CSV path or simulated NxPxG
+    std::string data;
+
+    // Data parameters (used for simulation; ignored when data is set)
     int n = 1000;
     int p = 10;
     int g = 3;
@@ -82,8 +85,9 @@ namespace ppforest2::cli {
    */
   struct ScenarioResult {
     std::string name;
+    std::string data;
 
-    // Data shape (copied from scenario for reporting)
+    // Data shape (copied from scenario for reporting; 0 for real-data scenarios)
     int n = 0, p = 0, g = 0;
     int trees         = 0;
     float vars        = 0;
