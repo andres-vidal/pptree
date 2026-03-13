@@ -46,6 +46,22 @@ namespace ppforest2::io {
     }
   }
 
+  nlohmann::json read_json_file(const std::string& path) {
+    std::ifstream in(path);
+
+    if (!in.is_open()) {
+      fmt::print(stderr, "Error: Could not open file: {}\n", path);
+      std::exit(1);
+    }
+
+    try {
+      return nlohmann::json::parse(in);
+    } catch (const nlohmann::json::parse_error& e) {
+      fmt::print(stderr, "Error: Invalid JSON in file: {}\n", e.what());
+      std::exit(1);
+    }
+  }
+
   void write_json_file(const nlohmann::json& data, const std::string& path) {
     std::ofstream out(path);
 
@@ -139,6 +155,23 @@ namespace ppforest2::io {
     }
 
     return stats::DataPacket(x, y);
+  }
+
+  std::vector<std::string> read_csv_labels(const std::string& filename) {
+    csv::CSVReader reader(filename);
+    std::unordered_map<std::string, int> seen;
+    std::vector<std::string> labels;
+
+    for (csv::CSVRow& row : reader) {
+      std::string label = row[row.size() - 1].get<std::string>();
+
+      if (seen.find(label) == seen.end()) {
+        seen[label] = static_cast<int>(labels.size());
+        labels.push_back(label);
+      }
+    }
+
+    return labels;
   }
 
   stats::DataPacket read_csv_sorted(const std::string& filename) {

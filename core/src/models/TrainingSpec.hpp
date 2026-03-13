@@ -27,21 +27,21 @@ namespace ppforest2 {
     /** @brief Dimensionality reduction strategy. */
     const std::unique_ptr<dr::DRStrategy> dr_strategy;
     /** @brief Group splitting rule strategy. */
-    const std::unique_ptr<sr::SRStrategy> split_strategy;
+    const std::unique_ptr<sr::SRStrategy> sr_strategy;
 
     TrainingSpec(
       std::unique_ptr<pp::PPStrategy> pp_strategy,
       std::unique_ptr<dr::DRStrategy> dr_strategy,
-      std::unique_ptr<sr::SRStrategy> split_strategy) :
+      std::unique_ptr<sr::SRStrategy> sr_strategy) :
       pp_strategy(std::move(pp_strategy)),
       dr_strategy(std::move(dr_strategy)),
-      split_strategy(std::move(split_strategy)) {
+      sr_strategy(std::move(sr_strategy)) {
     }
 
     TrainingSpec(const TrainingSpec& other) :
       pp_strategy(other.pp_strategy->clone()),
       dr_strategy(other.dr_strategy->clone()),
-      split_strategy(other.split_strategy->clone()) {
+      sr_strategy(other.sr_strategy->clone()) {
     }
 
     virtual ~TrainingSpec() = default;

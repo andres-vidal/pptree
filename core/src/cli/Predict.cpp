@@ -43,22 +43,6 @@ namespace ppforest2::cli {
 
 namespace ppforest2::cli {
 namespace {
-  json load_model(const std::string& path) {
-    std::ifstream in(path);
-
-    if (!in.is_open()) {
-      fmt::print(stderr, "Error: Could not open model file: {}\n", path);
-      std::exit(1);
-    }
-
-    try {
-      return json::parse(in);
-    } catch (const json::parse_error& e) {
-      fmt::print(stderr, "Error: Invalid JSON in model file: {}\n", e.what());
-      std::exit(1);
-    }
-  }
-
   json build_predict_result(
     const ResponseVector& predictions,
     const DataPacket&     data,
@@ -97,7 +81,7 @@ namespace {
       }
     }();
 
-    json model_data  = load_model(params.model_path);
+    json model_data  = read_json_file(params.model_path);
     auto model       = serialization::model_from_json(model_data);
     auto predictions = model->predict(data.x);
 

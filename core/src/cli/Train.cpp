@@ -4,6 +4,7 @@
  */
 #include "cli/Train.hpp"
 #include "ppforest2.hpp"
+#include "models/ModelVisitor.hpp"
 
 #include <CLI/CLI.hpp>
 #include <fmt/format.h>
@@ -223,8 +224,6 @@ namespace {
     out.dedent();
 
     if (!params.no_metrics) {
-      const auto *forest = dynamic_cast<const Forest *>(train_result.model.get());
-      const auto *tree   = dynamic_cast<const Tree *>(train_result.model.get());
       VariableImportance vi;
       double oob_err = -1.0;
 
@@ -233,14 +232,33 @@ namespace {
       vi.scale = stats::sd(x);
       vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
-      if (forest != nullptr) {
-        oob_err                 = forest->oob_error(x, y);
-        vi.permuted             = variable_importance_permuted(*forest, x, y, params.model.seed);
-        vi.projections          = variable_importance_projections(*forest, n_vars, &vi.scale);
-        vi.weighted_projections = variable_importance_weighted_projections(*forest, x, y, &vi.scale);
-      } else if (tree != nullptr) {
-        vi.projections = variable_importance_projections(*tree, n_vars, &vi.scale);
-      }
+      struct MetricsVisitor : ModelVisitor {
+        const FeatureMatrix& x;
+        const ResponseVector& y;
+        const CLIOptions& params;
+        int n_vars;
+        VariableImportance& vi;
+        double& oob_err;
+
+        MetricsVisitor(const FeatureMatrix& x, const ResponseVector& y,
+          const CLIOptions& params, int n_vars,
+          VariableImportance& vi, double& oob_err) :
+          x(x), y(y), params(params), n_vars(n_vars), vi(vi), oob_err(oob_err) {}
+
+        void visit(const Forest& forest) override {
+          oob_err                 = forest.oob_error(x, y);
+          vi.permuted             = variable_importance_permuted(forest, x, y, params.model.seed);
+          vi.projections          = variable_importance_projections(forest, n_vars, &vi.scale);
+          vi.weighted_projections = variable_importance_weighted_projections(forest, x, y, &vi.scale);
+        }
+
+        void visit(const Tree& tree) override {
+          vi.projections = variable_importance_projections(tree, n_vars, &vi.scale);
+        }
+      };
+
+      MetricsVisitor metrics_visitor(x, y, params, n_vars, vi, oob_err);
+      train_result.model->accept(metrics_visitor);
 
       if (oob_err >= 0.0) {
         out.indent();
@@ -252,9 +270,7 @@ namespace {
       print_variable_importance(out, vi);
 
       if (!params.save_path.empty()) {
-        std::ifstream in(params.save_path);
-        json saved = json::parse(in);
-        in.close();
+        json saved = read_json_file(params.save_path);
 
         if (oob_err >= 0.0) {
           saved["oob_error"] = oob_err;

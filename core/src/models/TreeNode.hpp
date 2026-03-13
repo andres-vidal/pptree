@@ -43,6 +43,9 @@ namespace ppforest2 {
      */
     virtual std::set<types::Response> node_classes() const = 0;
 
+    /** @brief Whether this node is a leaf (TreeResponse). */
+    virtual bool is_leaf() const = 0;
+
     /** @brief Structural equality comparison (value-based). */
     virtual bool equals(const TreeNode &other) const = 0;
 

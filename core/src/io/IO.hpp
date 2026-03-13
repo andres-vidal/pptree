@@ -33,6 +33,13 @@ namespace ppforest2::io {
   void check_dir_not_exists(const std::string& path);
 
   /**
+   * @brief Read a JSON file and parse its contents.
+   * @param path The input file path.
+   * @return The parsed JSON object.
+   */
+  nlohmann::json read_json_file(const std::string& path);
+
+  /**
    * @brief Write a JSON object to a file (pretty-printed with indent 2).
    * @param data The JSON object to serialize.
    * @param path The output file path.
@@ -76,6 +83,17 @@ namespace ppforest2::io {
    * @return A DataPacket with contiguous group ordering.
    */
   stats::DataPacket read_csv_sorted(const std::string& filename);
+
+  /**
+   * @brief Read class label names from a CSV file in the order they first appear.
+   *
+   * Returns a vector where index i is the string label that maps to integer code i,
+   * matching the encoding produced by read_csv().
+   *
+   * @param filename Path to the CSV file.
+   * @return A vector of class label strings, ordered by their integer code.
+   */
+  std::vector<std::string> read_csv_labels(const std::string& filename);
 
   /**
    * @brief Write a DataPacket to a CSV file (features followed by label, no header).

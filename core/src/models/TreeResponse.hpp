@@ -28,6 +28,8 @@ namespace ppforest2 {
      */
     types::Response predict(const types::FeatureVector& data) const override;
 
+    bool is_leaf() const override { return true; }
+
     int class_count() const override {
       return 1;
     }

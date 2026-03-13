@@ -474,87 +474,88 @@ namespace {
   }
 
   /**
-   * @brief Recursively layout a subtree.
+   * @brief Visitor that recursively lays out tree nodes.
    *
-   * @param node       Current tree node.
-   * @param depth      Current depth (0 = root).
-   * @param node_idx   Running pre-order index (incremented for each node).
-   * @param x_offset   Left edge of the available horizontal space.
-   * @param params     Layout dimensions.
-   * @param nodes      Output: positioned nodes (appended in pre-order).
-   * @param edges      Output: edges (appended for each internal node).
-   * @return           Center x-position and total width of this subtree.
+   * Carries shared mutable state (depth, node_idx, x_offset) and
+   * writes positioned nodes/edges into output vectors.  After
+   * accepting a node, the result is available in @c result.
    */
-  LayoutSubtree layout_recursive(
-    const TreeNode& node,
-    int depth,
-    int& node_idx,
-    types::Feature x_offset,
-    const LayoutParams& params,
-    std::vector<LayoutNode>& nodes,
-    std::vector<LayoutEdge>& edges) {
-    types::Feature y_pos = -static_cast<types::Feature>(depth) * params.y_spacing;
-    int my_idx           = node_idx;
-    node_idx++;
+  struct LayoutVisitor : TreeNodeVisitor {
+    int depth;
+    int& node_idx;
+    types::Feature x_offset;
+    const LayoutParams& params;
+    std::vector<LayoutNode>& nodes;
+    std::vector<LayoutEdge>& edges;
 
-    auto *condition = dynamic_cast<const TreeCondition *>(&node);
+    LayoutSubtree result;
 
-    if (!condition) {
-      // Leaf node: place at x_offset + half leaf width.
+    LayoutVisitor(int depth, int& node_idx, types::Feature x_offset,
+      const LayoutParams& params,
+      std::vector<LayoutNode>& nodes,
+      std::vector<LayoutEdge>& edges) :
+      depth(depth), node_idx(node_idx), x_offset(x_offset),
+      params(params), nodes(nodes), edges(edges), result{ 0, 0 } {}
+
+    void visit(const TreeResponse& /* response */) override {
+      types::Feature y_pos = -static_cast<types::Feature>(depth) * params.y_spacing;
+      int my_idx = node_idx;
+      node_idx++;
+
       types::Feature cx = x_offset + params.leaf_w / 2;
-
       nodes.push_back({ cx, y_pos, true, my_idx });
 
-      return { cx, params.leaf_w + 0.1f };
+      result = { cx, params.leaf_w + 0.1f };
     }
 
-    // Internal node: reserve slot (pre-order), then layout children.
-    std::size_t my_slot = nodes.size();
-    nodes.push_back({ 0, y_pos, false, my_idx });   // x filled below
+    void visit(const TreeCondition& condition) override {
+      types::Feature y_pos = -static_cast<types::Feature>(depth) * params.y_spacing;
+      int my_idx = node_idx;
+      node_idx++;
 
-    auto left_result = layout_recursive(
-      *condition->lower, depth + 1, node_idx, x_offset,
-      params, nodes, edges);
+      // Reserve slot (pre-order), x filled below.
+      std::size_t my_slot = nodes.size();
+      nodes.push_back({ 0, y_pos, false, my_idx });
 
-    auto right_result = layout_recursive(
-      *condition->upper, depth + 1, node_idx,
-      x_offset + left_result.width + params.gap,
-      params, nodes, edges);
+      LayoutVisitor left_visitor(depth + 1, node_idx, x_offset, params, nodes, edges);
+      condition.lower->accept(left_visitor);
 
-    // Left-aligned: parent centered above left child.
-    types::Feature center_x = left_result.center_x;
-    nodes[my_slot].x = center_x;
+      LayoutVisitor right_visitor(depth + 1, node_idx,
+        x_offset + left_visitor.result.width + params.gap,
+        params, nodes, edges);
+      condition.upper->accept(right_visitor);
 
-    // Compute edge endpoints (parent bottom → child top).
-    types::Feature from_y = y_pos - params.node_h / 2;
+      // Left-aligned: parent centered above left child.
+      types::Feature center_x = left_visitor.result.center_x;
+      nodes[my_slot].x = center_x;
 
-    types::Feature child_y = -static_cast<types::Feature>(depth + 1) * params.y_spacing;
+      // Compute edge endpoints (parent bottom -> child top).
+      types::Feature from_y  = y_pos - params.node_h / 2;
+      types::Feature child_y = -static_cast<types::Feature>(depth + 1) * params.y_spacing;
 
-    bool left_is_leaf  = dynamic_cast<const TreeResponse *>(condition->lower.get()) != nullptr;
-    bool right_is_leaf = dynamic_cast<const TreeResponse *>(condition->upper.get()) != nullptr;
+      types::Feature left_child_h  = condition.lower->is_leaf() ? params.leaf_h : params.node_h;
+      types::Feature right_child_h = condition.upper->is_leaf() ? params.leaf_h : params.node_h;
 
-    types::Feature left_child_h  = left_is_leaf ? params.leaf_h : params.node_h;
-    types::Feature right_child_h = right_is_leaf ? params.leaf_h : params.node_h;
+      std::string thr = format_threshold(condition.threshold);
 
-    std::string thr = format_threshold(condition->threshold);
+      edges.push_back({
+        center_x, from_y,
+        left_visitor.result.center_x, child_y + left_child_h / 2,
+        "< " + thr
+      });
 
-    edges.push_back({
-      center_x, from_y,
-      left_result.center_x, child_y + left_child_h / 2,
-      "< " + thr
-    });
+      edges.push_back({
+        center_x, from_y,
+        right_visitor.result.center_x, child_y + right_child_h / 2,
+        "\xe2\x89\xa5 " + thr    // UTF-8 for ≥
+      });
 
-    edges.push_back({
-      center_x, from_y,
-      right_result.center_x, child_y + right_child_h / 2,
-      "\xe2\x89\xa5 " + thr    // UTF-8 for ≥
-    });
+      types::Feature total_width = left_visitor.result.width + params.gap + right_visitor.result.width;
+      types::Feature min_width   = params.node_w + 0.1f;
 
-    types::Feature total_width = left_result.width + params.gap + right_result.width;
-    types::Feature min_width   = params.node_w + 0.1f;
-
-    return { center_x, std::max(total_width, min_width) };
-  }
+      result = { center_x, std::max(total_width, min_width) };
+    }
+  };
 }
 
   TreeLayout compute_tree_layout(
@@ -564,7 +565,8 @@ namespace {
     std::vector<LayoutEdge> edges;
     int node_idx = 0;
 
-    layout_recursive(root, 0, node_idx, 0.0f, params, nodes, edges);
+    LayoutVisitor visitor(0, node_idx, 0.0f, params, nodes, edges);
+    root.accept(visitor);
 
     return { std::move(nodes), std::move(edges) };
   }
