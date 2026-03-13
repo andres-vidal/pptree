@@ -1,0 +1,130 @@
+---
+title: "Introduction to ppforest2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to ppforest2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+ppforest2 builds oblique decision trees and random forests using projection pursuit. Instead of splitting on a single variable at each node, it finds a linear combination of variables that best separates the classes.
+
+## Single tree
+
+Train a projection-pursuit tree on the iris dataset:
+
+```{r tree}
+library(ppforest2)
+
+tree <- pptr(Type ~ ., data = iris, seed = 42)
+tree
+```
+
+The tree splits on linear projections of the features. Use `summary()` to see variable importance:
+
+```{r tree-summary}
+summary(tree)
+```
+
+Predict new observations:
+
+```{r tree-predict}
+preds <- predict(tree, iris)
+table(predicted = preds, actual = iris$Type)
+```
+
+## Random forest
+
+Train a forest of 100 trees, each considering 2 randomly chosen variables at each split:
+
+```{r forest}
+forest <- pprf(Type ~ ., data = iris, size = 100, n_vars = 2, seed = 42)
+summary(forest)
+```
+
+The summary shows the OOB (out-of-bag) error estimate and three variable importance measures:
+
+- **Projection**: average absolute projection coefficient across all splits
+- **Weighted**: projection importance weighted by the number of observations routed through each node
+- **Permuted**: decrease in OOB accuracy when each variable is permuted
+
+Predict with class probabilities:
+
+```{r forest-predict}
+probs <- predict(forest, iris[1:5, ], type = "prob")
+probs
+```
+
+## Visualization
+
+ppforest2 provides several plot types via `plot()` (requires ggplot2):
+
+```{r plot-structure, eval = requireNamespace("ggplot2", quietly = TRUE)}
+# Tree structure with projected data histograms at each node
+plot(tree, type = "structure")
+```
+
+```{r plot-importance, eval = requireNamespace("ggplot2", quietly = TRUE)}
+# Variable importance bar chart
+plot(tree, type = "importance")
+```
+
+```{r plot-projection, eval = requireNamespace("ggplot2", quietly = TRUE)}
+# Data projected onto the first split's projection vector
+plot(tree, type = "projection")
+```
+
+```{r plot-boundaries, eval = requireNamespace("ggplot2", quietly = TRUE)}
+# Decision boundaries for two selected variables
+plot(tree, type = "boundaries")
+```
+
+For forests, specify a `tree_index` to plot an individual tree:
+
+```{r plot-forest-tree, eval = requireNamespace("ggplot2", quietly = TRUE)}
+plot(forest, type = "structure", tree_index = 1)
+```
+
+## Regularization with PDA
+
+Set `lambda > 0` to use Penalized Discriminant Analysis instead of LDA. This can help when features are highly correlated:
+
+```{r pda}
+tree_pda <- pptr(Type ~ ., data = iris, lambda = 0.5, seed = 42)
+summary(tree_pda)
+```
+
+## Tidymodels integration
+
+ppforest2 integrates with the tidymodels ecosystem via parsnip:
+
+```{r parsnip, eval = requireNamespace("parsnip", quietly = TRUE)}
+library(parsnip)
+
+# Single tree
+spec <- pp_tree(penalty = 0.5) |>
+  set_engine("ppforest2") |>
+  set_mode("classification")
+
+fit <- spec |> fit(Type ~ ., data = iris)
+predict(fit, iris[1:5, ])
+```
+
+```{r parsnip-forest, eval = requireNamespace("parsnip", quietly = TRUE)}
+# Random forest
+spec <- pp_rand_forest(trees = 50, mtry = 2, penalty = 0.5) |>
+  set_engine("ppforest2") |>
+  set_mode("classification")
+
+fit <- spec |> fit(Type ~ ., data = iris)
+predict(fit, iris[1:5, ], type = "prob")
+```

@@ -12,6 +12,7 @@ pprf(
   size = 2,
   lambda = 0,
   n_vars = NULL,
+  p_vars = NULL,
   seed = NULL,
   n_threads = NULL
 )
@@ -29,7 +30,9 @@ pprf(
 
 \item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).}
 
-\item{n_vars}{The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.}
+\item{n_vars}{The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with \code{p_vars}.}
+
+\item{p_vars}{The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, \code{p_vars = 0.5} uses half the features. Cannot be used together with \code{n_vars}.}
 
 \item{seed}{An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.}
 
@@ -76,5 +79,5 @@ pprf(x = x, y = crabs$Type, lambda = 0.5)
 
 }
 \seealso{
-\code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{pp_rand_forest}} for parsnip integration
+\code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{vignette("introduction")} for a tutorial
 }

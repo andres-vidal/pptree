@@ -11,6 +11,15 @@ using namespace ppforest2::types;
 using namespace ppforest2::stats;
 
 // [[Rcpp::export]]
+bool ppforest2_has_openmp() {
+  #ifdef _OPENMP
+  return true;
+  #else
+  return false;
+  #endif
+}
+
+// [[Rcpp::export]]
 Tree ppforest2_train_tree_glda(
   FeatureMatrix  x,
   ResponseVector y,

@@ -100,6 +100,26 @@ describe("pptr reproducibility", {
   })
 })
 
+describe("pptr input validation", {
+  it("rejects invalid lambda", {
+    expect_error(pptr(x = iris[, 1:4], y = iris[, 5], lambda = -1), "between 0 and 1")
+    expect_error(pptr(x = iris[, 1:4], y = iris[, 5], lambda = 2), "between 0 and 1")
+    expect_error(pptr(x = iris[, 1:4], y = iris[, 5], lambda = "a"), "between 0 and 1")
+  })
+
+  it("rejects non-integer seed", {
+    expect_error(pptr(x = iris[, 1:4], y = iris[, 5], seed = 1.5), "integer")
+  })
+
+  it("rejects single-class y", {
+    expect_error(pptr(x = iris[, 1:4], y = rep("a", 150)), "at least 2 classes")
+  })
+
+  it("rejects dimension mismatch", {
+    expect_error(pptr(x = iris[1:10, 1:4], y = iris[, 5]), "same number of observations")
+  })
+})
+
 describe("pptr training spec", {
   it("preserves the lambda parameter in the returned model", {
     model <- pptr(Type ~ ., data = iris, lambda = 0.5)

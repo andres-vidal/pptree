@@ -107,6 +107,50 @@ describe("pprf reproducibility", {
   })
 })
 
+describe("pprf input validation", {
+  it("rejects invalid lambda", {
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], lambda = -1), "between 0 and 1")
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], lambda = 2), "between 0 and 1")
+  })
+
+  it("rejects non-integer seed", {
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], seed = 1.5), "integer")
+  })
+
+  it("rejects size < 1", {
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], size = 0), "positive integer")
+  })
+
+  it("rejects non-integer size", {
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], size = 2.5), "positive integer")
+  })
+
+  it("rejects n_vars out of range", {
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], n_vars = 100), "number of features")
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], n_vars = 0), "number of features")
+  })
+
+  it("rejects non-positive n_threads", {
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], n_threads = 0), "positive integer")
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], n_threads = -1), "positive integer")
+  })
+
+  it("rejects both n_vars and p_vars", {
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], n_vars = 2, p_vars = 0.5), "not both")
+  })
+
+  it("rejects invalid p_vars", {
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], p_vars = 0), "between 0 and 1")
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], p_vars = 1), "between 0 and 1")
+    expect_error(pprf(x = iris[, 1:4], y = iris[, 5], p_vars = 1.5), "between 0 and 1")
+  })
+
+  it("accepts valid p_vars", {
+    model <- pprf(x = iris[, 1:4], y = iris[, 5], p_vars = 0.5, size = 2, n_threads = 1)
+    expect_equal(model$training_spec$n_vars, 2)
+  })
+})
+
 describe("pprf training spec", {
   it("preserves the lambda parameter in the returned model", {
     model <- pprf(Type ~ ., data = iris, lambda = 0.5, n_threads = 1)

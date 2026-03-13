@@ -12,6 +12,16 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// ppforest2_has_openmp
+bool ppforest2_has_openmp();
+RcppExport SEXP _ppforest2_ppforest2_has_openmp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(ppforest2_has_openmp());
+    return rcpp_result_gen;
+END_RCPP
+}
 // ppforest2_train_tree_glda
 Tree ppforest2_train_tree_glda(FeatureMatrix x, ResponseVector y, const float lambda, const int seed);
 RcppExport SEXP _ppforest2_ppforest2_train_tree_glda(SEXP xSEXP, SEXP ySEXP, SEXP lambdaSEXP, SEXP seedSEXP) {
@@ -206,6 +216,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_ppforest2_ppforest2_has_openmp", (DL_FUNC) &_ppforest2_ppforest2_has_openmp, 0},
     {"_ppforest2_ppforest2_train_tree_glda", (DL_FUNC) &_ppforest2_ppforest2_train_tree_glda, 4},
     {"_ppforest2_ppforest2_train_forest_glda", (DL_FUNC) &_ppforest2_ppforest2_train_forest_glda, 7},
     {"_ppforest2_ppforest2_predict", (DL_FUNC) &_ppforest2_ppforest2_predict, 2},

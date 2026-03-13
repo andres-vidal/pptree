@@ -28,18 +28,31 @@ process_model_arguments <- function(formula, data, x, y) {
     stop("For the matrix interface, both `x` and `y` must be provided.")
   }
 
+  x <- as.matrix(x)
 
-  if (!all(sapply(x, is.numeric))) {
-    stop("All columns in `x` must be numeric")
+  if (!is.numeric(x)) {
+    stop("All columns in `x` must be numeric.")
   }
 
   if (!is.factor(y)) {
     y <- factor(y)
   }
 
+  if (nrow(x) != length(y)) {
+    stop("`x` and `y` must have the same number of observations.")
+  }
+
+  if (nlevels(y) < 2) {
+    stop("`y` must have at least 2 classes.")
+  }
+
+  if (nrow(x) < nlevels(y)) {
+    stop("Not enough observations: need at least as many rows as classes.")
+  }
+
   return(
     list(
-      x = as.matrix(x),
+      x = x,
       y = as.matrix(as.numeric(y)),
       classes = levels(y),
       formula = formula

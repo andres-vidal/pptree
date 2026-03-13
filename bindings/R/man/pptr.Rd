@@ -58,5 +58,5 @@ pptr(x = x, y = crabs$Type, lambda = 0.5)
 
 }
 \seealso{
-\code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{pp_tree}} for parsnip integration
+\code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{pp_tree}} for parsnip integration, \code{vignette("introduction")} for a tutorial
 }

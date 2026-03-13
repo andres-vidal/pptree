@@ -21,6 +21,21 @@ Developed as a Bachelor's thesis project in Statistics at **Universidad de la Re
 
 **Documentation:** [andres-vidal.github.io/ppforest2](https://andres-vidal.github.io/ppforest2/) — [C++ API Reference](https://andres-vidal.github.io/ppforest2/main/cpp/) (Doxygen) · [R Package Reference](https://andres-vidal.github.io/ppforest2/main/r/) (pkgdown)
 
+## Contents
+
+- [Quick Start](#quick-start)
+- [CLI Reference](#cli-reference)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Building and Testing](#building-and-testing)
+- [Benchmarking](#benchmarking)
+- [R Package](#r-package)
+- [Development Tools](#development-tools)
+- [Documentation](#documentation)
+- [Reproducibility Break Protocol](#reproducibility-break-protocol)
+- [Versioning](#versioning)
+- [License](#license)
+
 ## Quick Start
 
 ### CLI

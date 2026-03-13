@@ -16,11 +16,12 @@ NULL
 #' @param y A matrix containing the labels for each observation.
 #' @param size The number of trees in the forest.
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
-#' @param n_vars The number of variables to consider at each split. These are chosen uniformly in each split. The default is all variables.
+#' @param n_vars The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with \code{p_vars}.
+#' @param p_vars The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, \code{p_vars = 0.5} uses half the features. Cannot be used together with \code{n_vars}.
 #' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.
 #' @param n_threads The number of threads to use. The default is the number of cores available.
 #' @return A pprf model trained on \code{x} and \code{y}.
-#' @seealso \code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{pp_rand_forest}} for parsnip integration
+#' @seealso \code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{vignette("introduction")} for a tutorial
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
@@ -60,8 +61,31 @@ pprf <- function(
     size = 2,
     lambda = 0,
     n_vars = NULL,
+    p_vars = NULL,
     seed = NULL,
     n_threads = NULL) {
+  if (!is.numeric(lambda) || length(lambda) != 1 || lambda < 0 || lambda > 1)
+    stop("`lambda` must be a single number between 0 and 1.")
+
+  if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1 || seed != as.integer(seed)))
+    stop("`seed` must be a single integer or NULL.")
+
+  if (!is.numeric(size) || length(size) != 1 || size < 1 || size != as.integer(size))
+    stop("`size` must be a positive integer.")
+
+  if (!is.null(n_vars) && !is.null(p_vars))
+    stop("Only one of `n_vars` or `p_vars` may be specified, not both.")
+
+  if (!is.null(p_vars)) {
+    if (!is.numeric(p_vars) || length(p_vars) != 1 || p_vars <= 0 || p_vars >= 1)
+      stop("`p_vars` must be a single number between 0 and 1 (exclusive).")
+  }
+
+  if (!is.null(n_threads)) {
+    if (!is.numeric(n_threads) || length(n_threads) != 1 || n_threads < 1 || n_threads != as.integer(n_threads))
+      stop("`n_threads` must be a positive integer or NULL.")
+  }
+
   args <- process_model_arguments(formula, data, x, y)
 
   x <- args$x
@@ -69,8 +93,23 @@ pprf <- function(
   classes <- args$classes
   formula <- args$formula
 
+  if (!is.null(p_vars)) {
+    n_vars <- max(1L, as.integer(round(p_vars * ncol(x))))
+  }
+
+  if (!is.null(n_vars)) {
+    if (!is.numeric(n_vars) || length(n_vars) != 1 || n_vars < 1 || n_vars > ncol(x) || n_vars != as.integer(n_vars))
+      stop("`n_vars` must be an integer between 1 and the number of features (", ncol(x), ").")
+  }
+
   if (is.null(seed)) {
     seed <- sample.int(.Machine$integer.max, 1L)
+  }
+
+  effective_threads <- if (is.null(n_threads)) parallel::detectCores() else n_threads
+  if (effective_threads > 1 && !ppforest2_has_openmp()) {
+    warning("OpenMP is not available. The forest will be trained using a single thread.\n",
+            "On macOS, install libomp: brew install libomp", call. = FALSE)
   }
 
   model <- ppforest2_train_forest_glda(
@@ -222,7 +261,7 @@ summary.pprf <- function(object, ...) {
     names(tbl)[2] <- "\u03c3"
     print(tbl)
     if (!all(model$vi$scale == 1)) {
-      cat("\nNote: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).\n")
+      cat("\nNote: Variable importance was calculated using scaled coefficients (|a_j| * \u03c3_j).\n")
       cat("Variable contributions can only be theoretically interpreted as such\n")
       cat("if the model was trained on scaled data. Scaling also changes the\n")
       cat("projection-pursuit optimization, which may affect the resulting tree.\n")
