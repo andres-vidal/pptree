@@ -108,6 +108,154 @@ fit <- spec %>% fit(Type ~ ., data = iris)
 predict(fit, iris, type = "prob")
 ```
 
+## CLI Reference
+
+The `ppforest2` command-line tool provides four subcommands for training, prediction, evaluation, and benchmarking. After `make build`, the binary is available at `.build/ppforest2`.
+
+### Global Options
+
+| Flag              | Description                                      |
+|-------------------|--------------------------------------------------|
+| `--version, -V`   | Print version and exit                           |
+| `--quiet, -q`     | Suppress all terminal output                     |
+| `--no-color`      | Disable colored output                           |
+| `--config <file>` | Read parameters from a JSON config file          |
+
+Config files accept both `snake_case` and `kebab-case` keys. Top-level keys are broadcast to all subcommands:
+
+```json
+{ "trees": 100, "lambda": 0.5, "train": { "data": "iris.csv" } }
+```
+
+### `train` — Train a Model
+
+Train a single tree or forest on a CSV dataset and save the result.
+
+```bash
+ppforest2 train -d data.csv -t 100 -l 0.5 -s model.json
+ppforest2 train -d data.csv -t 0                # single tree (no forest)
+ppforest2 train -d data.csv --no-save            # train without saving
+ppforest2 train -d data.csv --no-metrics         # skip variable importance
+```
+
+| Flag                     | Default       | Description                                       |
+|--------------------------|---------------|---------------------------------------------------|
+| `-d, --data <file>`      | *(required)*  | CSV training data                                 |
+| `-t, --trees <N>`        | `100`         | Number of trees (`0` for a single tree)           |
+| `-l, --lambda <X>`       | `0.5`         | PDA penalty; `0` = LDA, `(0,1]` = PDA             |
+| `-r, --seed <N>`         | *(random)*    | Random seed for reproducibility                   |
+| `-v, --vars <spec>`      | `0.5`         | Features per split (see [Variable selection](#variable-selection)) |
+| `--threads <N>`          | *(all cores)* | Number of OpenMP threads                          |
+| `-s, --save <file>`      | `model.json`  | Output model path (`.json` added if missing)      |
+| `--no-save`              | —             | Skip saving the model                             |
+| `--no-metrics`           | —             | Skip variable importance computation              |
+
+The saved model JSON includes the full serialization, training configuration, variable importance metrics, and OOB error (forests only).
+
+### `predict` — Predict with a Saved Model
+
+Load a trained model and classify new observations.
+
+```bash
+ppforest2 predict -M model.json -d test.csv
+ppforest2 predict -M model.json -d test.csv -o predictions.json
+```
+
+| Flag                     | Default       | Description                                       |
+|--------------------------|---------------|---------------------------------------------------|
+| `-M, --model <file>`     | *(required)*  | Saved model JSON                                  |
+| `-d, --data <file>`      | *(required)*  | CSV data to classify                              |
+| `-o, --output <file>`    | —             | Save predictions, error rate, and confusion matrix to JSON |
+| `--no-metrics`           | —             | Omit error rate and confusion matrix from output  |
+
+If the CSV includes response labels, the tool reports the error rate and confusion matrix.
+
+### `evaluate` — Train-Test Evaluation
+
+Split data into training and test sets, train a model, and measure performance. Supports smart convergence for stable timing measurements or a fixed number of iterations.
+
+```bash
+# Evaluate on a CSV file
+ppforest2 evaluate -d data.csv -t 50 -p 0.7
+
+# Evaluate on simulated data (1000 rows, 10 features, 3 classes)
+ppforest2 evaluate --simulate 1000x10x3 -t 50
+
+# Fixed iterations (disables convergence)
+ppforest2 evaluate -d data.csv -t 50 -i 20
+```
+
+**Data source** (mutually exclusive):
+
+| Flag                     | Description                                       |
+|--------------------------|---------------------------------------------------|
+| `-d, --data <file>`      | CSV file                                          |
+| `--simulate NxMxK`       | Generate synthetic data (rows × features × classes) |
+
+**Simulation parameters** (only with `--simulate`):
+
+| Flag                       | Default  | Description                           |
+|----------------------------|----------|---------------------------------------|
+| `--sim-mean <X>`           | `100.0`  | Feature mean                          |
+| `--sim-mean-separation <X>`| `50.0`   | Mean separation between classes       |
+| `--sim-sd <X>`             | `10.0`   | Standard deviation                    |
+
+**Iteration control:**
+
+| Flag                     | Default  | Description                                       |
+|--------------------------|----------|---------------------------------------------------|
+| `-p, --train-ratio <X>`  | `0.7`    | Proportion of data used for training              |
+| `-i, --iterations <N>`   | —        | Fixed iteration count (disables convergence)      |
+| `--warmup <N>`           | `0`      | Warmup iterations discarded before measuring      |
+| `-o, --output <file>`    | —        | Save results to JSON                              |
+| `-e, --export <dir>`     | —        | Export experiment bundle (config + data + results) |
+
+**Convergence parameters** (active when `-i` is not set):
+
+| Flag                     | Default  | Description                                       |
+|--------------------------|----------|---------------------------------------------------|
+| `--max-iterations <N>`   | `200`    | Hard upper bound on iterations                    |
+| `--cv <X>`               | `0.05`   | CV threshold (stop when std/mean < threshold)     |
+| `--min-iterations <N>`   | `10`     | Minimum iterations before checking convergence    |
+| `--stable-window <N>`    | `3`      | Consecutive stable checks required to stop        |
+
+All model parameters (`--trees`, `--lambda`, `--seed`, `--vars`, `--threads`) are also available.
+
+### `benchmark` — Multi-Scenario Benchmarks
+
+Run a suite of evaluation scenarios and report results in a table. Each scenario runs as a separate subprocess for accurate per-scenario memory measurement.
+
+```bash
+ppforest2 benchmark -s bench/default-scenarios.json
+ppforest2 benchmark -s scenarios.json -b baseline.json       # compare against baseline
+ppforest2 benchmark -s scenarios.json -o results.json --csv results.csv
+ppforest2 benchmark -s scenarios.json --format markdown
+```
+
+| Flag                     | Default  | Description                                       |
+|--------------------------|----------|---------------------------------------------------|
+| `-s, --scenarios <file>` | *(required)* | JSON scenarios file                           |
+| `-b, --baseline <file>`  | —        | Baseline results JSON for comparison              |
+| `-o, --output <file>`    | —        | Save results to JSON                              |
+| `--csv <file>`           | —        | Save results to CSV                               |
+| `--format <fmt>`         | `table`  | Output format: `table` or `markdown`              |
+| `-i, --iterations <N>`   | —        | Override iteration count for all scenarios        |
+| `-p, --train-ratio <X>`  | —        | Override train ratio for all scenarios            |
+
+When comparing against a baseline, delta columns show regressions and improvements with color indicators.
+
+### Variable Selection
+
+The `--vars` flag controls how many features are considered at each split in a forest. It accepts three formats:
+
+| Format   | Example  | Meaning                         |
+|----------|----------|---------------------------------|
+| Integer  | `5`      | Use exactly 5 features          |
+| Decimal  | `0.5`    | Use 50% of features             |
+| Fraction | `1/3`    | Use one-third of features       |
+
+This parameter is ignored for single trees (`--trees 0`), which always use all features.
+
 ## Architecture
 
 The project is organized into a shared C++ core and language-specific bindings:
