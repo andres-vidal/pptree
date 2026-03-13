@@ -1,6 +1,7 @@
 var structppforest2_1_1cli_1_1Scenario =
 [
     [ "convergence", "structppforest2_1_1cli_1_1Scenario.html#a5161bca9198d56cdc78f585510c79093", null ],
+    [ "data", "structppforest2_1_1cli_1_1Scenario.html#a36975064c7d84e2c0c11aa781d54f629", null ],
     [ "g", "structppforest2_1_1cli_1_1Scenario.html#abe2e3a9dd565c85c95d27c73522636ea", null ],
     [ "iterations", "structppforest2_1_1cli_1_1Scenario.html#a0653ea409d6f7e10ddcf97f1ef84bb41", null ],
     [ "lambda", "structppforest2_1_1cli_1_1Scenario.html#a1084c890c022161f019b894a33a96169", null ],
