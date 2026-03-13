@@ -1,0 +1,38 @@
+var namespaceppforest2_1_1io =
+[
+    [ "Column", "structppforest2_1_1io_1_1Column.html", "structppforest2_1_1io_1_1Column" ],
+    [ "Output", "structppforest2_1_1io_1_1Output.html", "structppforest2_1_1io_1_1Output" ],
+    [ "TempDir", "classppforest2_1_1io_1_1TempDir.html", "classppforest2_1_1io_1_1TempDir" ],
+    [ "TempFile", "classppforest2_1_1io_1_1TempFile.html", "classppforest2_1_1io_1_1TempFile" ],
+    [ "Row", "namespaceppforest2_1_1io.html#a2afe1fae977bb64b514b5cf95dea6e3e", null ],
+    [ "Align", "namespaceppforest2_1_1io.html#a3f0ff1581cbe84c230ae589c33630e41", [
+      [ "left", "namespaceppforest2_1_1io.html#a3f0ff1581cbe84c230ae589c33630e41a811882fecd5c7618d7099ebbd39ea254", null ],
+      [ "right", "namespaceppforest2_1_1io.html#a3f0ff1581cbe84c230ae589c33630e41a7c4f29407893c334a6cb7a87bf045c0d", null ]
+    ] ],
+    [ "check_dir_not_exists", "namespaceppforest2_1_1io.html#ae8b077f59b53c46c1279dd269956ecf8", null ],
+    [ "check_file_not_exists", "namespaceppforest2_1_1io.html#ab05c747dc852ed977dcdb58e81bc42f9", null ],
+    [ "color_enabled", "namespaceppforest2_1_1io.html#a3111452e4ba7ec15aa74b54d2f2f4e38", null ],
+    [ "emphasis", "namespaceppforest2_1_1io.html#a0ae867be3c84d481a1ca6ef03c8fea88", null ],
+    [ "ensure_json_extension", "namespaceppforest2_1_1io.html#ab36310cec64c69533da062a18bf7de2c", null ],
+    [ "error", "namespaceppforest2_1_1io.html#acd9d2efceb01956a04b014c2bb737519", null ],
+    [ "format_md_row", "namespaceppforest2_1_1io.html#aa94d18b568da9a6796f1f59efb0b9454", null ],
+    [ "format_md_separator", "namespaceppforest2_1_1io.html#aa55e111567240699ff009c5e917a36fb", null ],
+    [ "format_row", "namespaceppforest2_1_1io.html#a57d58a07b534d8c26c1af0fd12653c94", null ],
+    [ "format_separator", "namespaceppforest2_1_1io.html#ab0ce615a1537c286417c9840ea68285a", null ],
+    [ "get_peak_rss_bytes", "namespaceppforest2_1_1io.html#a62843aaf7087f11baadd77694332f8d1", null ],
+    [ "header_labels", "namespaceppforest2_1_1io.html#aabc0031d1ccbf2b2fe63a2dc8ce463a3", null ],
+    [ "info", "namespaceppforest2_1_1io.html#a387c3189d57a139dd1ba757353b46bab", null ],
+    [ "init_color", "namespaceppforest2_1_1io.html#aca29babe7e55a0cc4872b4f719384b06", null ],
+    [ "measure_time_ms", "namespaceppforest2_1_1io.html#a27548afe6815bfe21d68e54f71b37fdd", null ],
+    [ "muted", "namespaceppforest2_1_1io.html#a6d17c49578950ab6ea0be9494e4794ed", null ],
+    [ "now_iso8601", "namespaceppforest2_1_1io.html#af3bea8d81a602627c7d483ac468c0870", null ],
+    [ "pad", "namespaceppforest2_1_1io.html#a994ea8ca1614d3e7ebbde1881fba5064", null ],
+    [ "read_csv", "namespaceppforest2_1_1io.html#a6ac9b79cdbc8914a27aa5f20878943b1", null ],
+    [ "read_csv_sorted", "namespaceppforest2_1_1io.html#a449e151e1b1e9ad488238b2305a5eaa8", null ],
+    [ "styled", "namespaceppforest2_1_1io.html#a222ff6cba696eeab19857a793761f186", null ],
+    [ "success", "namespaceppforest2_1_1io.html#a0a89efbd7491cf7317bc1be84e83c6a3", null ],
+    [ "visual_width", "namespaceppforest2_1_1io.html#a6d903a558a0013dbd7cab5b8e73e62ca", null ],
+    [ "warning", "namespaceppforest2_1_1io.html#a2abdb2d444beebe6d5f4e0cd090a17fc", null ],
+    [ "write_csv", "namespaceppforest2_1_1io.html#a6492f52a5acb1f75c9d5e8716412f272", null ],
+    [ "write_json_file", "namespaceppforest2_1_1io.html#a10a3a1e5e1dcf48d6de96cdd8f1c9faf", null ]
+];

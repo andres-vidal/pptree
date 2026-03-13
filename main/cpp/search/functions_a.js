@@ -1,0 +1,12 @@
+var searchData=
+[
+  ['make_0',['make',['../structppforest2_1_1pp_1_1PPGLDAStrategy.html#ae80b05dc1fa29a9c2f91abc3e13bb50e',1,'ppforest2::pp::PPGLDAStrategy::make()'],['../structppforest2_1_1TrainingSpecGLDA.html#a18f606509efdd84ec87a04cf36478b93',1,'ppforest2::TrainingSpecGLDA::make()'],['../structppforest2_1_1TrainingSpecUGLDA.html#ab9b693121c295cd88d9b993c81dd400b',1,'ppforest2::TrainingSpecUGLDA::make()'],['../structppforest2_1_1TreeCondition.html#aae00c2126f9831cb31aa1ad2cca1c491',1,'ppforest2::TreeCondition::make()'],['../structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516',1,'ppforest2::TreeResponse::make()']]],
+  ['mean_1',['mean',['../classppforest2_1_1stats_1_1GroupPartition.html#a6d2c08555e8c8ff49f95715f2fc771c4',1,'ppforest2::stats::GroupPartition']]],
+  ['mean_5fof_5fmeans_2',['mean_of_means',['../namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045',1,'ppforest2::sr']]],
+  ['mean_5fte_5ferror_3',['mean_te_error',['../structppforest2_1_1cli_1_1ModelStats.html#aa67e0a94ea6fe4461f7d3de6ec2986db',1,'ppforest2::cli::ModelStats']]],
+  ['mean_5ftime_4',['mean_time',['../structppforest2_1_1cli_1_1ModelStats.html#afd467733979981ba17eeabec86e38887',1,'ppforest2::cli::ModelStats']]],
+  ['mean_5ftr_5ferror_5',['mean_tr_error',['../structppforest2_1_1cli_1_1ModelStats.html#ab7d51e4f705c09f31d48b98d91bae93f',1,'ppforest2::cli::ModelStats']]],
+  ['measure_5ftime_5fms_6',['measure_time_ms',['../namespaceppforest2_1_1io.html#a27548afe6815bfe21d68e54f71b37fdd',1,'ppforest2::io']]],
+  ['model_5ffrom_5fjson_7',['model_from_json',['../namespaceppforest2_1_1serialization.html#adc903606c521ef56dc9d09c08696a240',1,'ppforest2::serialization']]],
+  ['muted_8',['muted',['../namespaceppforest2_1_1io.html#a6d17c49578950ab6ea0be9494e4794ed',1,'ppforest2::io']]]
+];

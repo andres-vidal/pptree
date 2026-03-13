@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['sample_5findices_0',['sample_indices',['../structppforest2_1_1BootstrapTree.html#ad59297e713fccd9eb5a9bb27acd5af7f',1,'ppforest2::BootstrapTree']]],
+  ['save_5fpath_1',['save_path',['../structppforest2_1_1cli_1_1CLIOptions.html#ac95d361120f4871675870ae5d9a462b7',1,'ppforest2::cli::CLIOptions']]],
+  ['scale_2',['scale',['../structppforest2_1_1VariableImportance.html#aee7a414e7a9141727fb1eecc715bd65c',1,'ppforest2::VariableImportance::scale'],['../structppforest2_1_1VIVisitor.html#abc82d36dcae5b793485d12e96edb8f5c',1,'ppforest2::VIVisitor::scale']]],
+  ['scenario_5ftime_5fms_3',['scenario_time_ms',['../structppforest2_1_1cli_1_1ScenarioResult.html#a0c55bd0a3cc116bac43e9edfeea0320f',1,'ppforest2::cli::ScenarioResult']]],
+  ['scenarios_4',['scenarios',['../structppforest2_1_1cli_1_1BenchmarkSuite.html#a5eec139a60f4005f7eb9fa6e3d7a3080',1,'ppforest2::cli::BenchmarkSuite']]],
+  ['scenarios_5fpath_5',['scenarios_path',['../structppforest2_1_1cli_1_1BenchmarkParams.html#a4d96ac8719cee7a1f0c6469d1092289a',1,'ppforest2::cli::BenchmarkParams']]],
+  ['sd_6',['sd',['../structppforest2_1_1cli_1_1SimulateParams.html#a21ef9b43dfba26ad5390f869689ed571',1,'ppforest2::cli::SimulateParams::sd'],['../structppforest2_1_1stats_1_1SimulationParams.html#a1de01239dbb5f1395a080c20593de0ae',1,'ppforest2::stats::SimulationParams::sd']]],
+  ['seed_7',['seed',['../structppforest2_1_1cli_1_1Scenario.html#ae90e7e71a4448284723a569d4479c03b',1,'ppforest2::cli::Scenario::seed'],['../structppforest2_1_1cli_1_1ModelParams.html#a0b9402b4c690e2a04bfee8ca1a1435f8',1,'ppforest2::cli::ModelParams::seed'],['../structppforest2_1_1Forest.html#a2bb8cefb0eb540d08e8e26b99883e7cc',1,'ppforest2::Forest::seed']]],
+  ['segments_8',['segments',['../structppforest2_1_1BoundaryVisitor.html#add931a786dacd2974179cbebc8bcc383',1,'ppforest2::BoundaryVisitor']]],
+  ['selected_5fcols_9',['selected_cols',['../structppforest2_1_1dr_1_1DRSpec.html#afafeeb50a48be5a27f2b6f090af315aa',1,'ppforest2::dr::DRSpec']]],
+  ['simulation_10',['simulation',['../structppforest2_1_1cli_1_1CLIOptions.html#ae7db379425ec8063039014faebdf025c',1,'ppforest2::cli::CLIOptions']]],
+  ['split_5fstrategy_11',['split_strategy',['../structppforest2_1_1TrainingSpec.html#a04c19d88f671ea0fc89d935e3e2b5e89',1,'ppforest2::TrainingSpec']]],
+  ['stable_5fwindow_12',['stable_window',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html#ae6e8171c61bc2ae143283570f2c37817',1,'ppforest2::cli::ConvergenceCriteria::stable_window'],['../structppforest2_1_1cli_1_1ConvergenceParams.html#a48b8f3c24dc15ec8460552f11c405d09',1,'ppforest2::cli::ConvergenceParams::stable_window']]],
+  ['std_5ftime_5fms_13',['std_time_ms',['../structppforest2_1_1cli_1_1ScenarioResult.html#a121f0fb566c59ffc9427e59597cf1d94',1,'ppforest2::cli::ScenarioResult']]],
+  ['subcommand_14',['subcommand',['../structppforest2_1_1cli_1_1CLIOptions.html#a9769737ca09cab6d5bafa2a16033bee9',1,'ppforest2::cli::CLIOptions']]],
+  ['subgroups_15',['subgroups',['../classppforest2_1_1stats_1_1GroupPartition.html#a25ae4b9fb8f609ca250d87ecf2bba856',1,'ppforest2::stats::GroupPartition']]],
+  ['suite_5fname_16',['suite_name',['../structppforest2_1_1cli_1_1SuiteResult.html#aff3948eb59c1ad0d697d411595df766c',1,'ppforest2::cli::SuiteResult']]],
+  ['supergroups_17',['supergroups',['../classppforest2_1_1stats_1_1GroupPartition.html#a1d79ee8da7694f65fbb214e072142997',1,'ppforest2::stats::GroupPartition']]]
+];
