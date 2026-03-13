@@ -1,5 +1,6 @@
 .build
 .debug
+.r-build
 .tools
 .vscode
 *.trace
@@ -10,10 +11,20 @@
 *.so
 *.a
 
-PPTree_*.tar.gz
+ppforest2_*.tar.gz
 
 .DS_Store
+Rplots.pdf
 
-bindings/R/PPTree/src/core
-bindings/R/PPTree/src/Makevars
-bindings/R/PPTree/inst/include/nlohmann
+bindings/R/src/core
+bindings/R/src/Makevars
+bindings/R/inst/include/nlohmann
+bindings/R/inst/include/pcg_*
+bindings/R/NEWS.md
+
+docs/.build
+
+log
+.claude
+CLAUDE.md
+bindings/R/src/VERSION

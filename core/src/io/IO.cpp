@@ -1,0 +1,179 @@
+/**
+ * @file IO.cpp
+ * @brief File I/O utilities, CSV reading/writing, and peak RSS measurement.
+ */
+#include "io/IO.hpp"
+#include "stats/GroupPartition.hpp"
+#include "stats/Stats.hpp"
+#include "utils/Invariant.hpp"
+
+#include "csv.hpp"
+
+#include <fmt/format.h>
+
+#include <vector>
+#include <unordered_map>
+#include <fstream>
+#include <filesystem>
+
+#ifdef _WIN32
+#include <windows.h>
+#include <psapi.h>
+#else
+#include <sys/resource.h>
+#endif
+
+namespace ppforest2::io {
+  std::string ensure_json_extension(const std::string& path) {
+    if (path.size() >= 5 && path.substr(path.size() - 5) == ".json") {
+      return path;
+    }
+
+    return path + ".json";
+  }
+
+  void check_file_not_exists(const std::string& path) {
+    if (std::filesystem::exists(path)) {
+      fmt::print(stderr, "Error: File already exists: {}\n", path);
+      std::exit(1);
+    }
+  }
+
+  void check_dir_not_exists(const std::string& path) {
+    if (std::filesystem::exists(path)) {
+      fmt::print(stderr, "Error: Directory already exists: {}\n", path);
+      std::exit(1);
+    }
+  }
+
+  void write_json_file(const nlohmann::json& data, const std::string& path) {
+    std::ofstream out(path);
+
+    if (!out.is_open()) {
+      fmt::print(stderr, "Error: Could not open file for writing: {}\n", path);
+      std::exit(1);
+    }
+
+    out << data.dump(2);
+    out.close();
+  }
+
+  long get_peak_rss_bytes() {
+    #ifdef _WIN32
+    PROCESS_MEMORY_COUNTERS pmc;
+
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
+      return static_cast<long>(pmc.PeakWorkingSetSize);
+    }
+
+    return -1;
+
+    #else
+    struct rusage usage;
+
+    if (getrusage(RUSAGE_SELF, &usage) == 0) {
+      #ifdef __APPLE__
+      return usage.ru_maxrss;          // macOS: already in bytes
+
+      #else
+      return usage.ru_maxrss * 1024L;  // Linux: reported in KB
+
+      #endif
+    }
+
+    return -1;
+
+    #endif // ifdef _WIN32
+  }
+
+  stats::DataPacket read_csv(const std::string& filename) {
+    csv::CSVReader reader(filename);
+    std::vector<std::vector<types::Feature>> featureData;
+    std::vector<std::string> rawLabels;
+
+    for (csv::CSVRow& row : reader) {
+      invariant(row.size() >= 1, "CSV row has no features.");
+
+      std::vector<types::Feature> currentFeatures;
+      for (int j = 0; j < row.size() - 1; ++j) {
+        currentFeatures.push_back(row[j].get<types::Feature>());
+      }
+
+      featureData.push_back(std::move(currentFeatures));
+
+      // Read the last column as a string.
+      std::string labelStr = row[row.size() - 1].get<std::string>();
+      rawLabels.push_back(labelStr);
+    }
+
+    invariant(!featureData.empty(), "CSV file is empty.");
+
+    // Map string labels to integer codes.
+    std::unordered_map<std::string, int> labelMapping;
+    std::vector<int> labels;
+    int labelIndex = 0;
+    for (const auto &labelStr : rawLabels) {
+      if (labelMapping.find(labelStr) == labelMapping.end()) {
+        labelMapping[labelStr] = labelIndex++;
+      }
+
+      labels.push_back(labelMapping[labelStr]);
+    }
+
+    // Determine dimensions for feature matrix.
+    const int n = featureData.size();
+    const int p = featureData[0].size();
+
+    types::FeatureMatrix x(n, p);
+    for (int i = 0; i < n; ++i) {
+      invariant(featureData[i].size() == p, "Inconsistent number of feature columns in CSV file.");
+
+      for (int j = 0; j < p; ++j) {
+        x(i, j) = featureData[i][j];
+      }
+    }
+
+    types::ResponseVector y(n);
+    for (int i = 0; i < n; ++i) {
+      y[i] = labels[i];
+    }
+
+    return stats::DataPacket(x, y);
+  }
+
+  stats::DataPacket read_csv_sorted(const std::string& filename) {
+    stats::DataPacket data = read_csv(filename);
+
+    types::FeatureMatrix x  = data.x;
+    types::ResponseVector y = data.y;
+
+    if (!stats::GroupPartition::is_contiguous(y)) {
+      stats::sort(x, y);
+    }
+
+    return stats::DataPacket(x, y);
+  }
+
+  void write_csv(const stats::DataPacket& data, const std::string& filename) {
+    std::ofstream out(filename);
+
+    if (!out.is_open()) {
+      fmt::print(stderr, "Error: Could not open file for writing: {}\n", filename);
+      std::exit(1);
+    }
+
+    for (int i = 0; i < data.x.rows(); ++i) {
+      for (int j = 0; j < data.x.cols(); ++j) {
+        out << data.x(i, j);
+
+        if (j < data.x.cols() - 1) {
+          out << ",";
+        }
+      }
+
+      out << "," << data.y[i] << "\n";
+    }
+
+    out.close();
+  }
+}

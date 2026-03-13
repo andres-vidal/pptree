@@ -1,0 +1,32 @@
+{
+  "name": "ppforest2 default benchmarks",
+  "defaults": {
+    "trees": 100,
+    "lambda": 0.5,
+    "vars": 0.5,
+    "train_ratio": 0.7,
+    "seed": 42,
+    "threads": -1,
+    "warmup": 2,
+    "convergence": {
+      "cv_threshold": 0.05,
+      "stable_window": 3,
+      "min_iterations": 10,
+      "max_iterations": 200
+    }
+  },
+  "scenarios": [
+    { "name": "trees-sm", "n": 500, "p": 10, "g": 5, "trees": 100 },
+    { "name": "trees-md", "n": 500, "p": 10, "g": 5, "trees": 500 },
+    { "name": "trees-lg", "n": 500, "p": 10, "g": 5, "trees": 1000 },
+    { "name": "n-sm", "p": 10, "g": 5, "trees": 50, "n": 100 },
+    { "name": "n-md", "p": 10, "g": 5, "trees": 50, "n": 1000 },
+    { "name": "n-lg", "p": 10, "g": 5, "trees": 50, "n": 10000 },
+    { "name": "p-sm", "n": 1000, "g": 5, "trees": 50, "p": 20 },
+    { "name": "p-md", "n": 1000, "g": 5, "trees": 50, "p": 200 },
+    { "name": "p-lg", "n": 1000, "g": 5, "trees": 50, "p": 400 },
+    { "name": "g-sm", "n": 1000, "p": 20, "trees": 50, "g": 4 },
+    { "name": "g-md", "n": 1000, "p": 20, "trees": 50, "g": 16 },
+    { "name": "g-lg", "n": 1000, "p": 20, "trees": 50, "g": 32 }
+  ]
+}

@@ -1,0 +1,14 @@
+url: https://andres-vidal.github.io/ppforest2/main/r/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [github]
+  components:
+    github:
+      icon: fa-github
+      href: https://github.com/andres-vidal/ppforest2
+      aria-label: GitHub

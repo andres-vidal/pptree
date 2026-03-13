@@ -1,0 +1,45 @@
+# Doxyfile for ppforest2
+
+PROJECT_NAME           = "ppforest2"
+PROJECT_BRIEF          = "Projection Pursuit Decision Trees and Random Forests"
+PROJECT_LOGO           =
+OUTPUT_DIRECTORY       = docs/.build/cpp
+
+# Input
+INPUT                  = core/src
+RECURSIVE              = YES
+FILE_PATTERNS          = *.hpp
+EXCLUDE_PATTERNS       = *.test.cpp
+
+# Extraction
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+
+# Output
+GENERATE_HTML          = YES
+HTML_OUTPUT            = .
+GENERATE_LATEX         = NO
+GENERATE_XML           = NO
+
+# Theme (doxygen-awesome-css)
+HTML_EXTRA_STYLESHEET  = docs/doxygen-awesome.css \
+                         docs/doxygen-awesome-sidebar-only.css
+HTML_COLORSTYLE        = LIGHT
+GENERATE_TREEVIEW      = YES
+DISABLE_INDEX          = NO
+FULL_SIDEBAR           = NO
+HTML_HEADER            =
+HTML_FOOTER            =
+
+# Navigation
+SORT_BRIEF_DOCS        = YES
+SORT_MEMBERS_CTORS_1ST = YES
+
+# Diagrams
+HAVE_DOT               = NO
+CLASS_GRAPH            = NO
+
+# Warnings
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = NO

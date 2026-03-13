@@ -1,0 +1,34 @@
+name: Regenerate Golden Files
+on: workflow_dispatch
+jobs:
+  Ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make golden-regen
+      - uses: actions/upload-artifact@v4
+        with:
+          name: golden-ubuntu
+          path: golden/
+  Mac:
+    runs-on: macos-latest
+    steps:
+      - run: brew install gcc
+      - uses: actions/checkout@v4
+      - run: make golden-regen
+      - uses: actions/upload-artifact@v4
+        with:
+          name: golden-macos
+          path: golden/
+  Windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - run: make golden-regen
+      - uses: actions/upload-artifact@v4
+        with:
+          name: golden-windows
+          path: golden/

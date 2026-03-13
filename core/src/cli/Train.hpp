@@ -1,0 +1,66 @@
+/**
+ * @file Train.hpp
+ * @brief Model training utilities and train subcommand handler.
+ *
+ * Provides shared functions used by both the train and evaluate
+ * subcommands (data loading, model training, configuration display)
+ * plus the run_train() entry point.
+ */
+#pragma once
+
+#include "cli/CLIOptions.hpp"
+#include "io/Output.hpp"
+#include "stats/DataPacket.hpp"
+#include "stats/Stats.hpp"
+#include "utils/Types.hpp"
+#include "models/Model.hpp"
+
+namespace CLI { class App; }
+
+namespace ppforest2::cli {
+  /** @brief Register train subcommand options on @p app. */
+  CLI::App * setup_train(CLI::App& app, CLIOptions& params);
+
+  /** @brief Add shared model options (trees, lambda, threads, seed, vars) to @p sub. */
+  void add_model_options(CLI::App *sub, ModelParams& model);
+
+  /** @brief Result of a train operation containing the model and training duration. */
+  struct TrainResult {
+    ppforest2::Model::Ptr model;
+    long long duration;
+  };
+
+  /**
+   * @brief Load or simulate data based on CLI options.
+   *
+   * If data_path is set, reads a CSV file; otherwise generates simulated data.
+   * Ensures the response vector is contiguous (sorted by class).
+   */
+  ppforest2::stats::DataPacket read_data(
+    const CLIOptions&      params,
+    ppforest2::stats::RNG& rng);
+
+  /**
+   * @brief Train a single model (Forest or Tree) on the given dataset.
+   */
+  TrainResult train_model(
+    const ppforest2::types::FeatureMatrix&  x,
+    const ppforest2::types::ResponseVector& y,
+    const CLIOptions&                       params,
+    ppforest2::stats::RNG&                  rng);
+
+  /**
+   * @brief Print the training configuration summary.
+   */
+  void print_configuration(
+    ppforest2::io::Output& out,
+    const CLIOptions&      params,
+    int                    n_train = 0,
+    int                    n_test  = 0);
+
+  /**
+   * @brief Run the train subcommand.
+   * @return Exit code (0 on success).
+   */
+  int run_train(CLIOptions& params);
+}
