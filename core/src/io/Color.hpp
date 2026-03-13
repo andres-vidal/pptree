@@ -20,7 +20,7 @@
 #include <unistd.h>
 #endif
 
-namespace ppforest2::io {
+namespace ppforest2::io::style {
   /**
    * @brief Global toggle for colored output.
    * @return Reference to the static enabled flag.

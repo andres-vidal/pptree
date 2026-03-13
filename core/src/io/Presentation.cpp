@@ -11,7 +11,7 @@
 #include <numeric>
 #include <vector>
 
-namespace ppforest2::cli {
+namespace ppforest2::io {
   nlohmann::json ModelStats::to_json() const {
     nlohmann::json j = {
       { "runs",             tr_times.size() },
@@ -43,8 +43,9 @@ namespace ppforest2::cli {
     return j;
   }
 
-  void print_results(ppforest2::io::Output& out, const ModelStats& stats) {
-    using namespace ppforest2::io;
+  void print_results(Output& out, const ModelStats& stats) {
+    using namespace style;
+    using namespace layout;
 
     out.println("{}", emphasis("Evaluation results"));
     out.newline();
@@ -86,10 +87,11 @@ namespace ppforest2::cli {
   }
 
   void print_variable_importance(
-    ppforest2::io::Output&    out,
+    Output&                   out,
     const VariableImportance& vi,
     int                       max_rows) {
-    using namespace ppforest2::io;
+    using namespace style;
+    using namespace layout;
 
     const auto& vi1   = vi.permuted;
     const auto& vi2   = vi.projections;
@@ -174,8 +176,8 @@ namespace ppforest2::cli {
     out.newline();
   }
 
-  void print_confusion_matrix(ppforest2::io::Output& out, const stats::ConfusionMatrix& cm) {
-    using namespace ppforest2::io;
+  void print_confusion_matrix(Output& out, const stats::ConfusionMatrix& cm) {
+    using namespace style;
 
     auto class_err = cm.class_errors();
 

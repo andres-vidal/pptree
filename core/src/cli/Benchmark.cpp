@@ -474,9 +474,9 @@ namespace {
   }
 
   int run_benchmark(CLIOptions& params, const std::string& binary_path) {
-    using namespace ppforest2::io;
+    using namespace ppforest2::io::style;
 
-    Output out(params.quiet);
+    io::Output out(params.quiet);
 
     // Load scenarios
     if (params.benchmark.scenarios_path.empty()) {
@@ -536,7 +536,7 @@ namespace {
 
     // Print results
     if (params.benchmark.format == "markdown") {
-      Output md_out(false);
+      io::Output md_out(false);
       print_benchmark_markdown(md_out, result, baseline);
     } else {
       print_benchmark_table(out, result, baseline);

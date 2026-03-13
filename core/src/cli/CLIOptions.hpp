@@ -47,7 +47,7 @@ namespace ppforest2::cli {
   /**
    * @brief Warn the user about parameters that are ignored for single-tree training.
    */
-  void warn_unused_params(ppforest2::io::Output& out, const CLIOptions& params);
+  void warn_unused_params(io::Output& out, const CLIOptions& params);
 
   /**
    * @brief Resolve sentinel values in CLIOptions to concrete defaults.

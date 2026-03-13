@@ -53,10 +53,10 @@ namespace ppforest2::cli {
    * @brief Print the training configuration summary.
    */
   void print_configuration(
-    ppforest2::io::Output& out,
-    const CLIOptions&      params,
-    int                    n_train = 0,
-    int                    n_test  = 0);
+    io::Output&       out,
+    const CLIOptions& params,
+    int               n_train = 0,
+    int               n_test  = 0);
 
   /**
    * @brief Run the train subcommand.

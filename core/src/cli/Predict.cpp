@@ -23,7 +23,7 @@
 using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
-using namespace ppforest2::io;
+using namespace ppforest2::io::style;
 using json = nlohmann::json;
 
 namespace ppforest2::cli {
@@ -65,23 +65,23 @@ namespace {
 }
 
   int run_predict(CLIOptions& params) {
-    Output out(params.quiet);
+    io::Output out(params.quiet);
 
     // Validate output path before doing work
     if (!params.output_path.empty()) {
-      check_file_not_exists(params.output_path);
+      io::check_file_not_exists(params.output_path);
     }
 
     DataPacket data = [&]() {
       try {
-        return read_csv_sorted(params.data_path);
+        return io::csv::read_sorted(params.data_path);
       } catch (const std::exception& e) {
         fmt::print(stderr, "{} reading CSV file: {}\n", error("Error:"), e.what());
         std::exit(1);
       }
     }();
 
-    json model_data  = read_json_file(params.model_path);
+    json model_data  = io::json::read_file(params.model_path);
     auto model       = serialization::model_from_json(model_data);
     auto predictions = model->predict(data.x);
 
@@ -105,7 +105,7 @@ namespace {
     // Save results to file if requested
     if (!params.output_path.empty()) {
       json file_result = build_predict_result(predictions, data, params.no_metrics);
-      write_json_file(file_result, params.output_path);
+      io::json::write_file(file_result, params.output_path);
       out.saved("Results", params.output_path);
     }
 

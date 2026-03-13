@@ -217,12 +217,12 @@ namespace {
       }
     }
 
-    ppforest2::io::Output out(params.quiet);
+    io::Output out(params.quiet);
     warn_unused_params(out, params);
   }
 }
 
-  void warn_unused_params(ppforest2::io::Output& out, const CLIOptions& params) {
+  void warn_unused_params(io::Output& out, const CLIOptions& params) {
     if (params.model.trees == 0) {
       bool has_warnings = false;
 

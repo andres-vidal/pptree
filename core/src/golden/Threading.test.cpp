@@ -26,7 +26,7 @@ TEST(Threading, ForestSameResultsSingleVsMulti) {
   GTEST_SKIP() << "OpenMP not available";
   #endif
 
-  auto data = io::read_csv_sorted(DATA_DIR + "/iris.csv");
+  auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
 
   Forest f1 = Forest::train(TrainingSpecUGLDA(2, 0.0f), data.x, data.y, 10, 42, 1);
   Forest f4 = Forest::train(TrainingSpecUGLDA(2, 0.0f), data.x, data.y, 10, 42, 4);
@@ -39,7 +39,7 @@ TEST(Threading, ForestSameResultsAcrossRuns) {
   GTEST_SKIP() << "OpenMP not available";
   #endif
 
-  auto data = io::read_csv_sorted(DATA_DIR + "/iris.csv");
+  auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
 
   Forest f1 = Forest::train(TrainingSpecUGLDA(2, 0.0f), data.x, data.y, 10, 42, 4);
   Forest f2 = Forest::train(TrainingSpecUGLDA(2, 0.0f), data.x, data.y, 10, 42, 4);

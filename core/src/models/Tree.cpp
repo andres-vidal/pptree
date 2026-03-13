@@ -84,7 +84,7 @@ namespace ppforest2 {
     auto data_group_2 = group_spec.group(x, group_2);
 
     const SRStrategy &sr_strategy = *(training_spec.sr_strategy);
-    Feature threshold                = sr_strategy.threshold(data_group_1, data_group_2, projector);
+    Feature threshold             = sr_strategy.threshold(data_group_1, data_group_2, projector);
 
     Feature projected_mean_1 = data_group_1.colwise().mean().dot(projector);
     Feature projected_mean_2 = data_group_2.colwise().mean().dot(projector);

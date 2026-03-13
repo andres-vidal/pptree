@@ -21,7 +21,7 @@ namespace ppforest2::cli {
    * @param baseline  Optional baseline results for comparison.
    */
   void print_benchmark_table(
-    ppforest2::io::Output&            out,
+    io::Output&                       out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline = std::nullopt);
 
@@ -47,7 +47,7 @@ namespace ppforest2::cli {
    * @param baseline  Optional baseline results for comparison.
    */
   void print_benchmark_markdown(
-    ppforest2::io::Output&            out,
+    io::Output&                       out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline = std::nullopt);
 }

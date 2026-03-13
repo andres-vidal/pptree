@@ -150,7 +150,7 @@ namespace {
           invariant(std::filesystem::exists(path), "Golden file missing: " + path);         \
                                                                                             \
           auto golden = load_golden(path);                                                  \
-          auto data   = io::read_csv_sorted(DATA_DIR + "/" + csv_file);                     \
+          auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                     \
                                                                                             \
           RNG rng(seed_val);                                                                \
           Tree tree = Tree::train(TrainingSpecGLDA(lambda_val), data.x, data.y, rng);       \
@@ -178,7 +178,7 @@ namespace {
           invariant(std::filesystem::exists(path), "Golden file missing: " + path);             \
                                                                                                 \
           auto golden = load_golden(path);                                                      \
-          auto data   = io::read_csv_sorted(DATA_DIR + "/" + csv_file);                         \
+          auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                         \
                                                                                                 \
           Forest forest = Forest::train(                                                        \
             TrainingSpecUGLDA(n_vars_val, lambda_val),                                          \

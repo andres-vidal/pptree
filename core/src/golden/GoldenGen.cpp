@@ -32,7 +32,7 @@
 using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
-using namespace ppforest2::io;
+using namespace ppforest2::io::style;
 using namespace ppforest2::serialization;
 using json = nlohmann::json;
 
@@ -99,7 +99,8 @@ static void generate_golden(const GoldenConfig& config) {
 
   std::filesystem::create_directories(dir);
 
-  DataPacket data = read_csv_sorted(config.csv_path);
+  DataPacket data                      = io::csv::read_sorted(config.csv_path);
+  std::vector<std::string> class_names = io::csv::read_labels(config.csv_path);
 
   const int n_vars = static_cast<int>(data.x.cols());
 
@@ -112,6 +113,7 @@ static void generate_golden(const GoldenConfig& config) {
   meta["dataset"]  = config.dataset();
   meta["trees"]    = config.trees;
   meta["lambda"]   = config.lambda;
+  meta["classes"]  = class_names;
 
   if (config.trees > 0) {
     meta["n_vars"]        = config.n_vars;
@@ -183,7 +185,7 @@ static void generate_golden(const GoldenConfig& config) {
     result["variable_importance"] = to_json(vi);
   }
 
-  write_json_file(result, path);
+  io::json::write_file(result, path);
   fmt::print("  {} -> {}\n", config.slug(), path);
 }
 

@@ -30,11 +30,11 @@ namespace {
 
     // For time and RSS: negative = improvement (green), positive = regression (red)
     if (delta_pct < -1.0) {
-      return ppforest2::io::success(text);
+      return ppforest2::io::style::success(text);
     } else if (delta_pct > 1.0) {
-      return ppforest2::io::error(text);
+      return ppforest2::io::style::error(text);
     } else {
-      return ppforest2::io::muted(text);
+      return ppforest2::io::style::muted(text);
     }
   }
 
@@ -67,10 +67,11 @@ namespace {
 }
 
   void print_benchmark_table(
-    ppforest2::io::Output&            out,
+    io::Output&                       out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
-    using namespace ppforest2::io;
+    using namespace ppforest2::io::style;
+    using namespace ppforest2::io::layout;
 
     bool has_baseline   = baseline.has_value();
     auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
@@ -211,14 +212,15 @@ namespace {
   }
 
   void write_results_json(const SuiteResult& result, const std::string& path) {
-    ppforest2::io::write_json_file(result.to_json(), path);
+    ppforest2::io::json::write_file(result.to_json(), path);
   }
 
   void print_benchmark_markdown(
-    ppforest2::io::Output&            out,
+    io::Output&                       out,
     const SuiteResult&                current,
     const std::optional<SuiteResult>& baseline) {
-    using namespace ppforest2::io;
+    using namespace ppforest2::io::style;
+    using namespace ppforest2::io::layout;
 
     bool has_baseline   = baseline.has_value();
     auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};

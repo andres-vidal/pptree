@@ -491,15 +491,15 @@ namespace {
     LayoutSubtree result;
 
     LayoutVisitor(int depth, int& node_idx, types::Feature x_offset,
-      const LayoutParams& params,
-      std::vector<LayoutNode>& nodes,
-      std::vector<LayoutEdge>& edges) :
+    const LayoutParams& params,
+    std::vector<LayoutNode>& nodes,
+    std::vector<LayoutEdge>& edges) :
       depth(depth), node_idx(node_idx), x_offset(x_offset),
       params(params), nodes(nodes), edges(edges), result{ 0, 0 } {}
 
     void visit(const TreeResponse& /* response */) override {
       types::Feature y_pos = -static_cast<types::Feature>(depth) * params.y_spacing;
-      int my_idx = node_idx;
+      int my_idx           = node_idx;
       node_idx++;
 
       types::Feature cx = x_offset + params.leaf_w / 2;
@@ -510,7 +510,7 @@ namespace {
 
     void visit(const TreeCondition& condition) override {
       types::Feature y_pos = -static_cast<types::Feature>(depth) * params.y_spacing;
-      int my_idx = node_idx;
+      int my_idx           = node_idx;
       node_idx++;
 
       // Reserve slot (pre-order), x filled below.
@@ -521,8 +521,8 @@ namespace {
       condition.lower->accept(left_visitor);
 
       LayoutVisitor right_visitor(depth + 1, node_idx,
-        x_offset + left_visitor.result.width + params.gap,
-        params, nodes, edges);
+      x_offset + left_visitor.result.width + params.gap,
+      params, nodes, edges);
       condition.upper->accept(right_visitor);
 
       // Left-aligned: parent centered above left child.

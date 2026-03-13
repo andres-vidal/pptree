@@ -1,6 +1,6 @@
 /**
  * @file IO.cpp
- * @brief File I/O utilities, CSV reading/writing, and peak RSS measurement.
+ * @brief File I/O utilities, JSON and CSV reading/writing.
  */
 #include "io/IO.hpp"
 #include "stats/GroupPartition.hpp"
@@ -16,22 +16,7 @@
 #include <fstream>
 #include <filesystem>
 
-#ifdef _WIN32
-#include <windows.h>
-#include <psapi.h>
-#else
-#include <sys/resource.h>
-#endif
-
 namespace ppforest2::io {
-  std::string ensure_json_extension(const std::string& path) {
-    if (path.size() >= 5 && path.substr(path.size() - 5) == ".json") {
-      return path;
-    }
-
-    return path + ".json";
-  }
-
   void check_file_not_exists(const std::string& path) {
     if (std::filesystem::exists(path)) {
       fmt::print(stderr, "Error: File already exists: {}\n", path);
@@ -45,8 +30,18 @@ namespace ppforest2::io {
       std::exit(1);
     }
   }
+}
 
-  nlohmann::json read_json_file(const std::string& path) {
+namespace ppforest2::io::json {
+  std::string ensure_extension(const std::string& path) {
+    if (path.size() >= 5 && path.substr(path.size() - 5) == ".json") {
+      return path;
+    }
+
+    return path + ".json";
+  }
+
+  nlohmann::json read_file(const std::string& path) {
     std::ifstream in(path);
 
     if (!in.is_open()) {
@@ -62,7 +57,7 @@ namespace ppforest2::io {
     }
   }
 
-  void write_json_file(const nlohmann::json& data, const std::string& path) {
+  void write_file(const nlohmann::json& data, const std::string& path) {
     std::ofstream out(path);
 
     if (!out.is_open()) {
@@ -73,41 +68,15 @@ namespace ppforest2::io {
     out << data.dump(2);
     out.close();
   }
+}
 
-  long get_peak_rss_bytes() {
-    #ifdef _WIN32
-    PROCESS_MEMORY_COUNTERS pmc;
-
-    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-      return static_cast<long>(pmc.PeakWorkingSetSize);
-    }
-
-    return -1;
-
-    #else
-    struct rusage usage;
-
-    if (getrusage(RUSAGE_SELF, &usage) == 0) {
-      #ifdef __APPLE__
-      return usage.ru_maxrss;          // macOS: already in bytes
-
-      #else
-      return usage.ru_maxrss * 1024L;  // Linux: reported in KB
-
-      #endif
-    }
-
-    return -1;
-
-    #endif // ifdef _WIN32
-  }
-
-  stats::DataPacket read_csv(const std::string& filename) {
-    csv::CSVReader reader(filename);
+namespace ppforest2::io::csv {
+  stats::DataPacket read(const std::string& filename) {
+    ::csv::CSVReader reader(filename);
     std::vector<std::vector<types::Feature>> featureData;
     std::vector<std::string> rawLabels;
 
-    for (csv::CSVRow& row : reader) {
+    for (::csv::CSVRow& row : reader) {
       invariant(row.size() >= 1, "CSV row has no features.");
 
       std::vector<types::Feature> currentFeatures;
@@ -157,12 +126,12 @@ namespace ppforest2::io {
     return stats::DataPacket(x, y);
   }
 
-  std::vector<std::string> read_csv_labels(const std::string& filename) {
-    csv::CSVReader reader(filename);
+  std::vector<std::string> read_labels(const std::string& filename) {
+    ::csv::CSVReader reader(filename);
     std::unordered_map<std::string, int> seen;
     std::vector<std::string> labels;
 
-    for (csv::CSVRow& row : reader) {
+    for (::csv::CSVRow& row : reader) {
       std::string label = row[row.size() - 1].get<std::string>();
 
       if (seen.find(label) == seen.end()) {
@@ -174,8 +143,8 @@ namespace ppforest2::io {
     return labels;
   }
 
-  stats::DataPacket read_csv_sorted(const std::string& filename) {
-    stats::DataPacket data = read_csv(filename);
+  stats::DataPacket read_sorted(const std::string& filename) {
+    stats::DataPacket data = read(filename);
 
     types::FeatureMatrix x  = data.x;
     types::ResponseVector y = data.y;
@@ -187,7 +156,7 @@ namespace ppforest2::io {
     return stats::DataPacket(x, y);
   }
 
-  void write_csv(const stats::DataPacket& data, const std::string& filename) {
+  void write(const stats::DataPacket& data, const std::string& filename) {
     std::ofstream out(filename);
 
     if (!out.is_open()) {

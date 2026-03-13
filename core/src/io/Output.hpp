@@ -115,13 +115,13 @@ namespace ppforest2::io {
       float pct = static_cast<float>(current) / total;
       int pos   = static_cast<int>(bar_width * pct);
 
-      std::string bar_tpl = emphasis("{} |");
+      std::string bar_tpl = style::emphasis("{} |");
       std::string bar     = std::string(pos, '-') + std::string(bar_width - pos, ' ');
 
       if (current == total) {
-        bar_tpl = success(bar_tpl);
+        bar_tpl = style::success(bar_tpl);
       } else {
-        bar_tpl = info(bar_tpl);
+        bar_tpl = style::info(bar_tpl);
       }
 
       fmt::print("\r{:{}}" + bar_tpl + " {}/{} ({}%)     ",
@@ -147,9 +147,9 @@ namespace ppforest2::io {
         return 0;
       } catch (const std::exception& e) {
         if (context.empty()) {
-          errorln("{} {}", error("Error:"), e.what());
+          errorln("{} {}", style::error("Error:"), e.what());
         } else {
-          errorln("{} {}: {}", error("Error:"), context, e.what());
+          errorln("{} {}: {}", style::error("Error:"), context, e.what());
         }
 
         return 1;

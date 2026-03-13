@@ -17,20 +17,19 @@
 #endif
 
 using namespace ppforest2::cli;
-using namespace ppforest2::io;
 
 int main(int argc, char *argv[]) {
   CLIOptions params = parse_args(argc, argv);
 
-  init_color(params.no_color);
+  ppforest2::io::style::init_color(params.no_color);
 
   // Post-parse: ensure .json extension on output paths
   if (!params.save_path.empty()) {
-    params.save_path = ensure_json_extension(params.save_path);
+    params.save_path = ppforest2::io::json::ensure_extension(params.save_path);
   }
 
   if (!params.output_path.empty()) {
-    params.output_path = ensure_json_extension(params.output_path);
+    params.output_path = ppforest2::io::json::ensure_extension(params.output_path);
   }
 
   #ifdef _OPENMP

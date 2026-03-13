@@ -16,6 +16,7 @@
 #include "io/Color.hpp"
 #include "io/Presentation.hpp"
 #include "io/IO.hpp"
+#include "utils/System.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -23,7 +24,10 @@
 using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::cli;
-using namespace ppforest2::io;
+using ppforest2::io::Output;
+using ppforest2::io::ModelStats;
+using ppforest2::io::check_file_not_exists;
+using ppforest2::io::check_dir_not_exists;
 
 
 #ifndef PPFOREST2_DATA_DIR
@@ -1047,27 +1051,27 @@ TEST(ParseArgs, VarsInvalidValueExits) {
 }
 
 // ---------------------------------------------------------------------------
-// File helpers — ensure_json_extension, check_*_not_exists
+// File helpers — io::json::ensure_extension, check_*_not_exists
 // ---------------------------------------------------------------------------
 
 /* Path already ending in .json is returned unchanged. */
 TEST(FileHelpers, EnsureJsonExtensionWithExtension) {
-  EXPECT_EQ(ensure_json_extension("model.json"), "model.json");
+  EXPECT_EQ(io::json::ensure_extension("model.json"), "model.json");
 }
 
 /* Path without extension gets .json appended. */
 TEST(FileHelpers, EnsureJsonExtensionWithoutExtension) {
-  EXPECT_EQ(ensure_json_extension("model"), "model.json");
+  EXPECT_EQ(io::json::ensure_extension("model"), "model.json");
 }
 
 /* Non-.json extension gets .json added (e.g. .txt -> .txt.json). */
 TEST(FileHelpers, EnsureJsonExtensionWithOtherExtension) {
-  EXPECT_EQ(ensure_json_extension("model.txt"), "model.txt.json");
+  EXPECT_EQ(io::json::ensure_extension("model.txt"), "model.txt.json");
 }
 
 /* Full path without extension gets .json appended. */
 TEST(FileHelpers, EnsureJsonExtensionWithPath) {
-  EXPECT_EQ(ensure_json_extension("/tmp/model"), "/tmp/model.json");
+  EXPECT_EQ(io::json::ensure_extension("/tmp/model"), "/tmp/model.json");
 }
 
 /* check_file_not_exists succeeds for a nonexistent path. */
@@ -1106,6 +1110,6 @@ TEST(FileHelpers, CheckDirNotExistsOnExisting) {
 
 /* The process must report a positive peak RSS value. */
 TEST(PeakRSS, ReturnsPositiveValue) {
-  long rss = get_peak_rss_bytes();
+  long rss = ppforest2::sys::get_peak_rss_bytes();
   EXPECT_GT(rss, 0);
 }

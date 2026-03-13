@@ -17,6 +17,7 @@
 #include "stats/DataPacket.hpp"
 #include "stats/Simulation.hpp"
 #include "io/Presentation.hpp"
+#include "utils/System.hpp"
 #include "io/Color.hpp"
 #include "io/IO.hpp"
 #include "io/Output.hpp"
@@ -28,7 +29,7 @@
 using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
-using namespace ppforest2::io;
+using namespace ppforest2::io::style;
 using json = nlohmann::json;
 
 namespace ppforest2::cli {
@@ -71,7 +72,7 @@ namespace ppforest2::cli {
 namespace {
   /** @brief Result of an evaluate run containing aggregated statistics. */
   struct EvaluateResult {
-    ModelStats stats;
+    io::ModelStats stats;
   };
 
   bool check_convergence(
@@ -104,12 +105,12 @@ namespace {
   }
 
   EvaluateResult evaluate_model(
-    Output &              out,
-    FeatureMatrix &      tr_x,
-    FeatureMatrix &      te_x,
-    ResponseVector &     tr_y,
-    ResponseVector &     te_y,
-    const CLIOptions&   params,
+    io::Output &            out,
+    FeatureMatrix &        tr_x,
+    FeatureMatrix &        te_x,
+    ResponseVector &       tr_y,
+    ResponseVector &       te_y,
+    const CLIOptions&     params,
     ppforest2::stats::RNG& rng) {
     // Run warmup iterations (discarded)
     if (params.convergence.warmup > 0) {
@@ -190,7 +191,7 @@ namespace {
     out.dedent();
 
     // Build ModelStats from collected vectors
-    ModelStats model_stats;
+    io::ModelStats model_stats;
     model_stats.tr_times = Eigen::Map<const Vector<float>>(times.data(), times.size());
     model_stats.tr_error = Eigen::Map<const Vector<float>>(tr_errors.data(), tr_errors.size());
     model_stats.te_error = Eigen::Map<const Vector<float>>(te_errors.data(), te_errors.size());
@@ -225,20 +226,20 @@ namespace {
   }
 
   void export_experiment(
-    Output &               out,
-    const CLIOptions&     params,
-    const DataPacket&     full_data,
-    const EvaluateResult& eval_result) {
+    io::Output &              out,
+    const CLIOptions&        params,
+    const DataPacket&        full_data,
+    const EvaluateResult&    eval_result) {
     std::string dir = params.evaluate.export_path;
 
     std::filesystem::create_directories(dir);
 
     json config = build_export_config(params);
-    write_json_file(config, dir + "/config.json");
+    io::json::write_file(config, dir + "/config.json");
 
-    write_csv(full_data, dir + "/data.csv");
+    io::csv::write(full_data, dir + "/data.csv");
 
-    write_json_file(eval_result.stats.to_json(), dir + "/results.json");
+    io::json::write_file(eval_result.stats.to_json(), dir + "/results.json");
 
     out.println("{}{}/", success("Experiment exported to "), dir);
   }
@@ -247,11 +248,11 @@ namespace {
   int run_evaluate(CLIOptions& params) {
     // Validate output paths before doing work
     if (!params.output_path.empty()) {
-      check_file_not_exists(params.output_path);
+      io::check_file_not_exists(params.output_path);
     }
 
     if (!params.evaluate.export_path.empty()) {
-      check_dir_not_exists(params.evaluate.export_path);
+      io::check_dir_not_exists(params.evaluate.export_path);
     }
 
     ppforest2::stats::RNG rng(params.model.seed);
@@ -266,14 +267,14 @@ namespace {
     ResponseVector tr_y = full_data.y(data_split.tr);
     ResponseVector te_y = full_data.y(data_split.te);
 
-    Output out(params.quiet);
+    io::Output out(params.quiet);
 
     print_configuration(out, params, tr_x.rows(), te_x.rows());
 
     auto eval_result = evaluate_model(out, tr_x, te_x, tr_y, te_y, params, rng);
 
     // Measure peak RSS after evaluation
-    eval_result.stats.peak_rss_bytes = get_peak_rss_bytes();
+    eval_result.stats.peak_rss_bytes = ppforest2::sys::get_peak_rss_bytes();
 
     out.indent();
     print_results(out, eval_result.stats);
@@ -281,7 +282,7 @@ namespace {
 
     // Save results to file if requested
     if (!params.output_path.empty()) {
-      write_json_file(eval_result.stats.to_json(), params.output_path);
+      io::json::write_file(eval_result.stats.to_json(), params.output_path);
       out.saved("Results", params.output_path);
     }
 

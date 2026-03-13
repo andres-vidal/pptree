@@ -25,7 +25,8 @@
 using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
-using namespace ppforest2::io;
+using namespace ppforest2::io::style;
+using namespace ppforest2::io::layout;
 using json = nlohmann::json;
 
 using ppforest2::variable_importance_permuted;
@@ -68,7 +69,7 @@ namespace {
   }
 
   void save_model(
-    Output &            out,
+    io::Output &        out,
     const Model&       model,
     const CLIOptions&  params,
     const std::string& path) {
@@ -90,14 +91,14 @@ namespace {
 
     output["config"] = config;
 
-    write_json_file(output, path);
+    io::json::write_file(output, path);
 
     out.saved("model", path);
   }
 }
 
   void print_configuration(
-    Output&           out,
+    io::Output&       out,
     const CLIOptions& params,
     int               n_train,
     int               n_test) {
@@ -144,7 +145,7 @@ namespace {
   DataPacket read_data(const CLIOptions& params, ppforest2::stats::RNG& rng) {
     if (!params.data_path.empty()) {
       try {
-        return read_csv_sorted(params.data_path);
+        return io::csv::read_sorted(params.data_path);
       } catch (const std::runtime_error& e) {
         fmt::print(stderr, "Error reading CSV file: {}\n", e.what());
         fmt::print(stderr, "Please ensure the file exists and is properly formatted\n");
@@ -188,17 +189,17 @@ namespace {
       };
     }
 
-    auto [model, ms] = measure_time_ms(fact);
+    auto [model, ms] = io::measure_time_ms(fact);
 
     return { std::move(model), ms };
   }
 
   int run_train(CLIOptions& params) {
-    Output out(params.quiet);
+    io::Output out(params.quiet);
 
     // Validate save path before training
     if (!params.save_path.empty()) {
-      check_file_not_exists(params.save_path);
+      io::check_file_not_exists(params.save_path);
     }
 
     ppforest2::stats::RNG rng(params.model.seed);
@@ -241,9 +242,10 @@ namespace {
         double& oob_err;
 
         MetricsVisitor(const FeatureMatrix& x, const ResponseVector& y,
-          const CLIOptions& params, int n_vars,
-          VariableImportance& vi, double& oob_err) :
-          x(x), y(y), params(params), n_vars(n_vars), vi(vi), oob_err(oob_err) {}
+        const CLIOptions& params, int n_vars,
+        VariableImportance & vi, double& oob_err) :
+          x(x), y(y), params(params), n_vars(n_vars), vi(vi), oob_err(oob_err) {
+        }
 
         void visit(const Forest& forest) override {
           oob_err                 = forest.oob_error(x, y);
@@ -270,14 +272,14 @@ namespace {
       print_variable_importance(out, vi);
 
       if (!params.save_path.empty()) {
-        json saved = read_json_file(params.save_path);
+        json saved = io::json::read_file(params.save_path);
 
         if (oob_err >= 0.0) {
           saved["oob_error"] = oob_err;
         }
 
         saved["variable_importance"] = serialization::to_json(vi);
-        write_json_file(saved, params.save_path);
+        io::json::write_file(saved, params.save_path);
       }
     }
 
