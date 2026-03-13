@@ -30,6 +30,11 @@
   },
   "error_rate": 0.03333336114883423,
   "meta": {
+    "classes": [
+      "setosa",
+      "versicolor",
+      "virginica"
+    ],
     "dataset": "iris",
     "lambda": 0.0,
     "n_vars": 2,
@@ -42,7 +47,16 @@
     "trees": [
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2
+          ],
           "lower": {
+            "classes": [
+              1,
+              2
+            ],
             "lower": {
               "value": 1
             },
@@ -53,7 +67,7 @@
               0.35849618911743164,
               0.9335311651229858
             ],
-            "threshold": 3.356398344039917,
+            "threshold": 3.356398105621338,
             "upper": {
               "value": 2
             }
@@ -73,6 +87,11 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2
+          ],
           "lower": {
             "value": 0
           },
@@ -85,6 +104,10 @@
           ],
           "threshold": -0.30988696217536926,
           "upper": {
+            "classes": [
+              1,
+              2
+            ],
             "lower": {
               "value": 1
             },
@@ -104,6 +127,11 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2
+          ],
           "lower": {
             "value": 0
           },
@@ -116,6 +144,10 @@
           ],
           "threshold": 2.412924289703369,
           "upper": {
+            "classes": [
+              1,
+              2
+            ],
             "lower": {
               "value": 2
             },
@@ -135,6 +167,11 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2
+          ],
           "lower": {
             "value": 0
           },
@@ -147,6 +184,10 @@
           ],
           "threshold": -0.234296053647995,
           "upper": {
+            "classes": [
+              1,
+              2
+            ],
             "lower": {
               "value": 2
             },
@@ -166,6 +207,11 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2
+          ],
           "lower": {
             "value": 0
           },
@@ -178,6 +224,10 @@
           ],
           "threshold": 3.2584571838378906,
           "upper": {
+            "classes": [
+              1,
+              2
+            ],
             "lower": {
               "value": 1
             },

@@ -41,6 +41,12 @@
   },
   "error_rate": 0.05500000715255737,
   "meta": {
+    "classes": [
+      "BlueMale",
+      "BlueFemale",
+      "OrangeMale",
+      "OrangeFemale"
+    ],
     "dataset": "crab",
     "lambda": 0.0,
     "platform": "macos-clang",
@@ -50,7 +56,17 @@
   },
   "model": {
     "root": {
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
       "lower": {
+        "classes": [
+          0,
+          1
+        ],
         "lower": {
           "value": 0
         },
@@ -77,6 +93,10 @@
       ],
       "threshold": 0.5188782811164856,
       "upper": {
+        "classes": [
+          2,
+          3
+        ],
         "lower": {
           "value": 2
         },
@@ -88,7 +108,7 @@
           0.1508399099111557,
           -0.06589025259017944
         ],
-        "threshold": 2.3483188152313232,
+        "threshold": 2.348318576812744,
         "upper": {
           "value": 3
         }

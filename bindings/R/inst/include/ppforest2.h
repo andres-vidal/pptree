@@ -53,11 +53,12 @@ namespace Rcpp {
 
   SEXP wrap(const TreeResponse &node) {
     return Rcpp::List::create(
-      Rcpp::Named("value") = Rcpp::wrap(node.value));
+      Rcpp::Named("value") = Rcpp::wrap(node.value + 1));  // C++ 0-based → R 1-based
   }
 
   SEXP wrap(const TreeCondition &node) {
     Rcpp::IntegerVector classes(node.classes.begin(), node.classes.end());
+    classes = classes + 1;  // C++ 0-based → R 1-based
 
     return Rcpp::List::create(
       Rcpp::Named("projector")      = Rcpp::wrap(node.projector),
@@ -130,7 +131,7 @@ namespace Rcpp {
 
     if (rnode.containsElementNamed("value")) {
       return std::make_unique<TreeResponse>(
-        Rcpp::as<Feature>(rnode["value"]));
+        Rcpp::as<Feature>(rnode["value"]) - 1);  // R 1-based → C++ 0-based
     }
 
     auto lower = as<std::unique_ptr<TreeNode> >(rnode["lower"]);
@@ -139,7 +140,7 @@ namespace Rcpp {
     std::set<Response> classes;
     if (rnode.containsElementNamed("classes")) {
       Rcpp::IntegerVector rclasses(rnode["classes"]);
-      classes.insert(rclasses.begin(), rclasses.end());
+      for (auto c : rclasses) classes.insert(c - 1);  // R 1-based → C++ 0-based
     }
 
     Feature pp_index_value = 0;
@@ -159,7 +160,7 @@ namespace Rcpp {
 
   template<> TreeResponse as(SEXP x) {
     Rcpp::List rresp(x);
-    return TreeResponse(Rcpp::as<Feature>(rresp["value"]));
+    return TreeResponse(Rcpp::as<Feature>(rresp["value"]) - 1);  // R 1-based → C++ 0-based
   }
 
   template<> TreeCondition as(SEXP x) {
@@ -171,7 +172,7 @@ namespace Rcpp {
     std::set<Response> classes;
     if (rcond.containsElementNamed("classes")) {
       Rcpp::IntegerVector rclasses(rcond["classes"]);
-      classes.insert(rclasses.begin(), rclasses.end());
+      for (auto c : rclasses) classes.insert(c - 1);  // R 1-based → C++ 0-based
     }
 
     Feature pp_index_value = 0;

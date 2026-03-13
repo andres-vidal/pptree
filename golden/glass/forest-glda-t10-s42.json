@@ -69,6 +69,14 @@
   },
   "error_rate": 0.3925233483314514,
   "meta": {
+    "classes": [
+      "1",
+      "2",
+      "3",
+      "5",
+      "6",
+      "7"
+    ],
     "dataset": "glass",
     "lambda": 0.0,
     "n_vars": 3,
@@ -81,7 +89,20 @@
     "trees": [
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
+            "classes": [
+              3,
+              4,
+              5
+            ],
             "lower": {
               "value": 3
             },
@@ -97,8 +118,12 @@
               0.0,
               0.10359860211610794
             ],
-            "threshold": -1.1041916608810425,
+            "threshold": -1.104191541671753,
             "upper": {
+              "classes": [
+                4,
+                5
+              ],
               "lower": {
                 "value": 5
               },
@@ -132,9 +157,18 @@
             0.0,
             0.0
           ],
-          "threshold": -1.439194679260254,
+          "threshold": -1.4391947984695435,
           "upper": {
+            "classes": [
+              0,
+              1,
+              2
+            ],
             "lower": {
+              "classes": [
+                1,
+                2
+              ],
               "lower": {
                 "value": 1
               },
@@ -176,8 +210,29 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
+            "classes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "lower": {
+              "classes": [
+                0,
+                1,
+                2,
+                3
+              ],
               "lower": {
                 "value": 3
               },
@@ -195,7 +250,16 @@
               ],
               "threshold": 1.8838167190551758,
               "upper": {
+                "classes": [
+                  0,
+                  1,
+                  2
+                ],
                 "lower": {
+                  "classes": [
+                    0,
+                    2
+                  ],
                   "lower": {
                     "value": 2
                   },
@@ -271,8 +335,29 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
+            "classes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "lower": {
+              "classes": [
+                0,
+                1,
+                2,
+                4
+              ],
               "lower": {
                 "value": 4
               },
@@ -290,7 +375,16 @@
               ],
               "threshold": 5.219223976135254,
               "upper": {
+                "classes": [
+                  0,
+                  1,
+                  2
+                ],
                 "lower": {
+                  "classes": [
+                    0,
+                    2
+                  ],
                   "lower": {
                     "value": 2
                   },
@@ -366,8 +460,25 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
+            "classes": [
+              0,
+              1,
+              2
+            ],
             "lower": {
+              "classes": [
+                0,
+                2
+              ],
               "lower": {
                 "value": 2
               },
@@ -419,7 +530,16 @@
           ],
           "threshold": 1.5529344081878662,
           "upper": {
+            "classes": [
+              3,
+              4,
+              5
+            ],
             "lower": {
+              "classes": [
+                3,
+                4
+              ],
               "lower": {
                 "value": 3
               },
@@ -461,8 +581,29 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
+            "classes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "lower": {
+              "classes": [
+                0,
+                1,
+                2,
+                4
+              ],
               "lower": {
                 "value": 4
               },
@@ -480,6 +621,11 @@
               ],
               "threshold": -35.56565856933594,
               "upper": {
+                "classes": [
+                  0,
+                  1,
+                  2
+                ],
                 "lower": {
                   "value": 1
                 },
@@ -497,6 +643,10 @@
                 ],
                 "threshold": 0.057555921375751495,
                 "upper": {
+                  "classes": [
+                    0,
+                    2
+                  ],
                   "lower": {
                     "value": 2
                   },
@@ -556,7 +706,22 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
+            "classes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "lower": {
               "value": 3
             },
@@ -574,6 +739,12 @@
             ],
             "threshold": 0.8666883111000061,
             "upper": {
+              "classes": [
+                0,
+                1,
+                2,
+                4
+              ],
               "lower": {
                 "value": 4
               },
@@ -591,7 +762,16 @@
               ],
               "threshold": 30.025798797607422,
               "upper": {
+                "classes": [
+                  0,
+                  1,
+                  2
+                ],
                 "lower": {
+                  "classes": [
+                    1,
+                    2
+                  ],
                   "lower": {
                     "value": 2
                   },
@@ -651,7 +831,19 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
+            "classes": [
+              4,
+              5
+            ],
             "lower": {
               "value": 4
             },
@@ -686,6 +878,12 @@
           ],
           "threshold": -10.461176872253418,
           "upper": {
+            "classes": [
+              0,
+              1,
+              2,
+              3
+            ],
             "lower": {
               "value": 3
             },
@@ -703,6 +901,11 @@
             ],
             "threshold": 5.539708614349365,
             "upper": {
+              "classes": [
+                0,
+                1,
+                2
+              ],
               "lower": {
                 "value": 2
               },
@@ -720,6 +923,10 @@
               ],
               "threshold": 1.822613000869751,
               "upper": {
+                "classes": [
+                  0,
+                  1
+                ],
                 "lower": {
                   "value": 1
                 },
@@ -746,7 +953,21 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
+            "classes": [
+              0,
+              1,
+              2,
+              3
+            ],
             "lower": {
               "value": 3
             },
@@ -764,7 +985,16 @@
             ],
             "threshold": -2.13063383102417,
             "upper": {
+              "classes": [
+                0,
+                1,
+                2
+              ],
               "lower": {
+                "classes": [
+                  0,
+                  2
+                ],
                 "lower": {
                   "value": 2
                 },
@@ -817,6 +1047,10 @@
           ],
           "threshold": 30.883846282958984,
           "upper": {
+            "classes": [
+              4,
+              5
+            ],
             "lower": {
               "value": 5
             },
@@ -841,6 +1075,14 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
             "value": 5
           },
@@ -858,7 +1100,20 @@
           ],
           "threshold": 1.4893240928649902,
           "upper": {
+            "classes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "lower": {
+              "classes": [
+                0,
+                1,
+                2,
+                4
+              ],
               "lower": {
                 "value": 4
               },
@@ -876,6 +1131,11 @@
               ],
               "threshold": 2.9974679946899414,
               "upper": {
+                "classes": [
+                  0,
+                  1,
+                  2
+                ],
                 "lower": {
                   "value": 1
                 },
@@ -893,6 +1153,10 @@
                 ],
                 "threshold": -11.029662132263184,
                 "upper": {
+                  "classes": [
+                    0,
+                    2
+                  ],
                   "lower": {
                     "value": 0
                   },
@@ -936,6 +1200,14 @@
       },
       {
         "root": {
+          "classes": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "lower": {
             "value": 5
           },
@@ -951,9 +1223,22 @@
             -0.9829728007316589,
             0.0
           ],
-          "threshold": 0.4584375321865082,
+          "threshold": 0.4584375023841858,
           "upper": {
+            "classes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "lower": {
+              "classes": [
+                0,
+                1,
+                2,
+                4
+              ],
               "lower": {
                 "value": 1
               },
@@ -971,6 +1256,11 @@
               ],
               "threshold": -1.5360519886016846,
               "upper": {
+                "classes": [
+                  0,
+                  2,
+                  4
+                ],
                 "lower": {
                   "value": 4
                 },
@@ -988,6 +1278,10 @@
                 ],
                 "threshold": -9.4656982421875,
                 "upper": {
+                  "classes": [
+                    0,
+                    2
+                  ],
                   "lower": {
                     "value": 0
                   },

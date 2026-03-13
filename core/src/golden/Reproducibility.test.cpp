@@ -3,8 +3,8 @@
  * @brief Tests that compare freshly-trained models against committed golden files.
  *
  * Each test loads a golden JSON file, trains the same model configuration,
- * and compares predictions, error rates, confusion matrix, and (for forests)
- * OOB error and variable importance.
+ * and compares model structure, predictions, error rates, confusion matrix,
+ * and (for forests) OOB error and variable importance.
  */
 #include <gtest/gtest.h>
 
@@ -126,6 +126,66 @@ namespace {
     }
   }
 
+  void compare_node(const json& expected, const json& actual,
+    float tolerance, const std::string& path) {
+    if (expected.contains("value")) {
+      ASSERT_TRUE(actual.contains("value")) << path << ": expected leaf node";
+      EXPECT_EQ(expected["value"].get<int>(), actual["value"].get<int>())
+        << path << ".value mismatch";
+      return;
+    }
+
+    ASSERT_TRUE(actual.contains("projector")) << path << ": expected condition node";
+
+    // Compare classes (exact int equality)
+    auto expected_classes = expected["classes"].get<std::vector<int>>();
+    auto actual_classes   = actual["classes"].get<std::vector<int>>();
+    EXPECT_EQ(expected_classes, actual_classes) << path << ".classes mismatch";
+
+    // Compare floats with tolerance
+    EXPECT_NEAR(expected["pp_index_value"].get<float>(),
+      actual["pp_index_value"].get<float>(), tolerance)
+      << path << ".pp_index_value mismatch";
+
+    EXPECT_NEAR(expected["threshold"].get<float>(),
+      actual["threshold"].get<float>(), tolerance)
+      << path << ".threshold mismatch";
+
+    auto expected_proj = expected["projector"].get<std::vector<float>>();
+    auto actual_proj   = actual["projector"].get<std::vector<float>>();
+    ASSERT_EQ(expected_proj.size(), actual_proj.size())
+      << path << ".projector size mismatch";
+
+    for (size_t i = 0; i < expected_proj.size(); ++i) {
+      EXPECT_NEAR(expected_proj[i], actual_proj[i], tolerance)
+        << path << ".projector[" << i << "] mismatch";
+    }
+
+    // Recurse into children
+    compare_node(expected["lower"], actual["lower"], tolerance, path + ".lower");
+    compare_node(expected["upper"], actual["upper"], tolerance, path + ".upper");
+  }
+
+  void compare_model_structure(const json& expected_json, const Tree& actual,
+    float tolerance = 1e-3f) {
+    json actual_json = serialization::to_json(actual);
+    compare_node(expected_json["root"], actual_json["root"], tolerance, "root");
+  }
+
+  void compare_model_structure(const json& expected_json, const Forest& actual,
+    float tolerance = 1e-3f) {
+    json actual_json     = serialization::to_json(actual);
+    auto& expected_trees = expected_json["trees"];
+    auto& actual_trees   = actual_json["trees"];
+
+    ASSERT_EQ(expected_trees.size(), actual_trees.size()) << "Tree count mismatch";
+
+    for (size_t i = 0; i < expected_trees.size(); ++i) {
+      compare_node(expected_trees[i]["root"], actual_trees[i]["root"],
+        tolerance, "trees[" + std::to_string(i) + "].root");
+    }
+  }
+
   void compare_vote_proportions(const json& expected_json, const FeatureMatrix& actual, float tolerance) {
     ASSERT_EQ(static_cast<int>(expected_json.size()), actual.rows()) << "Vote proportions row count mismatch";
 
@@ -150,10 +210,12 @@ namespace {
           invariant(std::filesystem::exists(path), "Golden file missing: " + path);         \
                                                                                             \
           auto golden = load_golden(path);                                                  \
-          auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                     \
+          auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                    \
                                                                                             \
           RNG rng(seed_val);                                                                \
           Tree tree = Tree::train(TrainingSpecGLDA(lambda_val), data.x, data.y, rng);       \
+                                                                                            \
+          compare_model_structure(golden["model"], tree);                                   \
                                                                                             \
           auto predictions = tree.predict(data.x);                                          \
           compare_predictions(golden["predictions"], predictions);                          \
@@ -178,11 +240,13 @@ namespace {
           invariant(std::filesystem::exists(path), "Golden file missing: " + path);             \
                                                                                                 \
           auto golden = load_golden(path);                                                      \
-          auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                         \
+          auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                        \
                                                                                                 \
           Forest forest = Forest::train(                                                        \
             TrainingSpecUGLDA(n_vars_val, lambda_val),                                          \
             data.x, data.y, n_trees, seed_val, 1);                                              \
+                                                                                                \
+          compare_model_structure(golden["model"], forest);                                     \
                                                                                                 \
           auto predictions = forest.predict(data.x);                                            \
           compare_predictions(golden["predictions"], predictions);                              \

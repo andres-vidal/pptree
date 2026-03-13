@@ -25,6 +25,8 @@ Tree ppforest2_train_tree_glda(
   ResponseVector y,
   const float    lambda,
   const int      seed) {
+  y.array() -= 1;  // R 1-based → C++ 0-based
+
   if (!GroupPartition::is_contiguous(y)) {
     sort(x, y);
   }
@@ -47,6 +49,8 @@ Forest ppforest2_train_forest_glda(
   const float    lambda,
   const int      seed,
   SEXP           n_threads) {
+  y.array() -= 1;  // R 1-based → C++ 0-based
+
   if (!GroupPartition::is_contiguous(y)) {
     sort(x, y);
   }
@@ -73,14 +77,18 @@ Forest ppforest2_train_forest_glda(
 ResponseVector ppforest2_predict(
   const Tree &          tree,
   const FeatureMatrix & data) {
-  return tree.predict(data);
+  ResponseVector result = tree.predict(data);
+  result.array() += 1;  // C++ 0-based → R 1-based
+  return result;
 }
 
 // [[Rcpp::export]]
 ResponseVector ppforest2_predict_forest(
   const Forest &        forest,
   const FeatureMatrix & data) {
-  return forest.predict(data);
+  ResponseVector result = forest.predict(data);
+  result.array() += 1;  // C++ 0-based → R 1-based
+  return result;
 }
 
 // [[Rcpp::export]]
@@ -110,8 +118,9 @@ FeatureVector ppforest2_vi_projections_forest(
 FeatureVector ppforest2_vi_weighted(
   const Forest&        forest,
   const FeatureMatrix& x,
-  const ResponseVector& y,
+  ResponseVector       y,
   const FeatureVector& scale) {
+  y.array() -= 1;  // R 1-based → C++ 0-based
   return variable_importance_weighted_projections(forest, x, y, &scale);
 }
 
@@ -119,8 +128,9 @@ FeatureVector ppforest2_vi_weighted(
 FeatureVector ppforest2_vi_permuted(
   const Forest&        forest,
   const FeatureMatrix& x,
-  const ResponseVector& y,
+  ResponseVector       y,
   int                  seed) {
+  y.array() -= 1;  // R 1-based → C++ 0-based
   return variable_importance_permuted(forest, x, y, seed);
 }
 
@@ -128,7 +138,8 @@ FeatureVector ppforest2_vi_permuted(
 double ppforest2_oob_error(
   const Forest&        forest,
   const FeatureMatrix& x,
-  const ResponseVector& y) {
+  ResponseVector       y) {
+  y.array() -= 1;  // R 1-based → C++ 0-based
   return forest.oob_error(x, y);
 }
 
@@ -136,7 +147,8 @@ double ppforest2_oob_error(
 Rcpp::List ppforest2_tree_node_data(
   const Tree&          tree,
   const FeatureMatrix& x,
-  const ResponseVector& y) {
+  ResponseVector       y) {
+  y.array() -= 1;  // R 1-based → C++ 0-based
   NodeDataVisitor visitor(x, y);
   tree.root->accept(visitor);
 
@@ -145,12 +157,16 @@ Rcpp::List ppforest2_tree_node_data(
   for (std::size_t i = 0; i < visitor.nodes.size(); ++i) {
     const auto& nd = visitor.nodes[i];
 
+    // Convert 0-based class indices → R 1-based
+    Rcpp::IntegerVector classes_r(nd.classes.begin(), nd.classes.end());
+    classes_r = classes_r + 1;
+
     if (nd.is_leaf) {
       result[i] = Rcpp::List::create(
         Rcpp::Named("is_leaf")   = true,
         Rcpp::Named("depth")     = nd.depth,
-        Rcpp::Named("value")     = nd.value,
-        Rcpp::Named("classes")   = Rcpp::IntegerVector(nd.classes.begin(), nd.classes.end())
+        Rcpp::Named("value")     = nd.value + 1,
+        Rcpp::Named("classes")   = classes_r
       );
     } else {
       result[i] = Rcpp::List::create(
@@ -159,7 +175,7 @@ Rcpp::List ppforest2_tree_node_data(
         Rcpp::Named("projector") = Rcpp::wrap(nd.projector),
         Rcpp::Named("threshold") = nd.threshold,
         Rcpp::Named("projected") = Rcpp::NumericVector(nd.projected_values.begin(), nd.projected_values.end()),
-        Rcpp::Named("classes")   = Rcpp::IntegerVector(nd.classes.begin(), nd.classes.end())
+        Rcpp::Named("classes")   = classes_r
       );
     }
   }
@@ -277,7 +293,7 @@ Rcpp::List ppforest2_decision_regions(
     result[i] = Rcpp::List::create(
       Rcpp::Named("x")     = rx,
       Rcpp::Named("y")     = ry,
-      Rcpp::Named("class") = region.predicted_class
+      Rcpp::Named("class") = region.predicted_class + 1  // C++ 0-based → R 1-based
     );
   }
 

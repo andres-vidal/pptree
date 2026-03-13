@@ -16,9 +16,10 @@ namespace ppforest2::serialization {
     result = json{
       { "projector",      node.projector },
       { "threshold",      node.threshold },
+      { "pp_index_value", node.pp_index_value },
+      { "classes",        node.classes },
       { "lower",          lower_visitor.result },
       { "upper",          upper_visitor.result },
-      { "pp_index_value", node.pp_index_value },
     };
   }
 
@@ -160,13 +161,18 @@ namespace ppforest2::serialization {
     const Feature threshold      = j["threshold"].get<Feature>();
     const Feature pp_index_value = j.value("pp_index_value", Feature(0));
 
+    std::set<Response> classes;
+    if (j.contains("classes")) {
+      classes = j["classes"].get<std::set<Response>>();
+    }
+
     auto lower = node_from_json(j["lower"]);
     auto upper = node_from_json(j["upper"]);
 
     return TreeCondition::make(
       projector, threshold,
       std::move(lower), std::move(upper),
-      nullptr, {}, pp_index_value);
+      nullptr, classes, pp_index_value);
   }
 
   Tree tree_from_json(const json& j) {
