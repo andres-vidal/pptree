@@ -189,9 +189,16 @@ TEST_F(BenchmarkParsingTest, ParseDefaultScenariosFile) {
 
   for (const auto& s : suite.scenarios) {
     EXPECT_FALSE(s.name.empty());
-    EXPECT_GT(s.n, 0);
-    EXPECT_GT(s.p, 0);
-    EXPECT_GT(s.g, 1);
+
+    if (s.data.empty()) {
+      // Simulation scenarios must have valid dimensions
+      EXPECT_GT(s.n, 0);
+      EXPECT_GT(s.p, 0);
+      EXPECT_GT(s.g, 1);
+    } else {
+      // Data scenarios must have a non-empty path
+      EXPECT_FALSE(s.data.empty());
+    }
   }
 }
 
@@ -249,6 +256,73 @@ TEST_F(SuiteResultTest, ToJsonOmitsPeakRSSWhenNegative) {
 
   EXPECT_FALSE(j["results"][0].contains("peak_rss_bytes"));
   EXPECT_FALSE(j["results"][0].contains("peak_rss_mb"));
+}
+
+TEST_F(BenchmarkParsingTest, ParseDataScenario) {
+  json j = {
+    {
+      "scenarios", {
+        { { "name", "csv-test" }, { "data", "data/iris.csv" }, { "trees", 50 } }
+      }
+    }
+  };
+
+  auto suite = parse_suite(j);
+
+  ASSERT_EQ(suite.scenarios.size(), 1u);
+  EXPECT_EQ(suite.scenarios[0].name, "csv-test");
+  EXPECT_EQ(suite.scenarios[0].data, "data/iris.csv");
+  EXPECT_EQ(suite.scenarios[0].trees, 50);
+}
+
+TEST_F(BenchmarkParsingTest, DataScenarioSkipsNPGValidation) {
+  // A data scenario with default n/p/g (which would be fine anyway)
+  // but the point is that validation doesn't require explicit n/p/g
+  json j = {
+    {
+      "scenarios", {
+        { { "name", "csv-test" }, { "data", "some/file.csv" } }
+      }
+    }
+  };
+
+  EXPECT_NO_THROW(parse_suite(j));
+}
+
+TEST_F(BenchmarkParsingTest, DataScenarioToJsonIncludesDataField) {
+  SuiteResult result;
+  result.suite_name = "test";
+
+  ScenarioResult sr;
+  sr.name = "csv-test";
+  sr.data = "data/iris.csv";
+  sr.n    = 150;
+  sr.p    = 4;
+  sr.g    = 3;
+
+  result.results.push_back(sr);
+
+  auto j = result.to_json();
+
+  EXPECT_EQ(j["results"][0]["data"], "data/iris.csv");
+  EXPECT_EQ(j["results"][0]["n"], 150);
+}
+
+TEST_F(BenchmarkParsingTest, SimulationScenarioToJsonOmitsDataField) {
+  SuiteResult result;
+  result.suite_name = "test";
+
+  ScenarioResult sr;
+  sr.name = "sim-test";
+  sr.n    = 100;
+  sr.p    = 5;
+  sr.g    = 2;
+
+  result.results.push_back(sr);
+
+  auto j = result.to_json();
+
+  EXPECT_FALSE(j["results"][0].contains("data"));
 }
 
 TEST_F(BenchmarkParsingTest, ScenarioVarsAsIntegerCount) {
