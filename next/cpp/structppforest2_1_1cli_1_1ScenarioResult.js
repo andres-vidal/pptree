@@ -1,5 +1,6 @@
 var structppforest2_1_1cli_1_1ScenarioResult =
 [
+    [ "data", "structppforest2_1_1cli_1_1ScenarioResult.html#a6ff2f005b9956a0232fee9a87fd835e6", null ],
     [ "g", "structppforest2_1_1cli_1_1ScenarioResult.html#af0c7667f9d6a8b6b1943e8a2961956ef", null ],
     [ "mean_te_error", "structppforest2_1_1cli_1_1ScenarioResult.html#a52c0b0a65b0ade361819a442e225a925", null ],
     [ "mean_time_ms", "structppforest2_1_1cli_1_1ScenarioResult.html#a8063517b3e791bce0d6a416b54ecaea2", null ],

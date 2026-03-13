@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['data_0',['data',['../classppforest2_1_1stats_1_1GroupPartition.html#a7f0b5e9655ac768680d0b878f28add11',1,'ppforest2::stats::GroupPartition']]],
+  ['data_0',['data',['../structppforest2_1_1cli_1_1Scenario.html#a36975064c7d84e2c0c11aa781d54f629',1,'ppforest2::cli::Scenario::data'],['../structppforest2_1_1cli_1_1ScenarioResult.html#a6ff2f005b9956a0232fee9a87fd835e6',1,'ppforest2::cli::ScenarioResult::data'],['../classppforest2_1_1stats_1_1GroupPartition.html#a7f0b5e9655ac768680d0b878f28add11',1,'ppforest2::stats::GroupPartition::data()']]],
   ['data_5fpath_1',['data_path',['../structppforest2_1_1cli_1_1CLIOptions.html#adb34ced694d2733f05f2f3ecf137d6f7',1,'ppforest2::cli::CLIOptions']]],
   ['datapacket_2',['DataPacket',['../structppforest2_1_1stats_1_1DataPacket.html',1,'ppforest2::stats::DataPacket'],['../structppforest2_1_1stats_1_1DataPacket.html#a1bad2bd225dc100916528c004f882c1d',1,'ppforest2::stats::DataPacket::DataPacket(const types::FeatureMatrix &amp;x, const types::Vector&lt; types::Response &gt; &amp;y, const std::set&lt; types::Response &gt; &amp;classes)'],['../structppforest2_1_1stats_1_1DataPacket.html#ab6cebb160f14694ce04565fdabb1360d',1,'ppforest2::stats::DataPacket::DataPacket(const types::FeatureMatrix &amp;x, const types::Vector&lt; types::Response &gt; &amp;y)'],['../structppforest2_1_1stats_1_1DataPacket.html#a82c19f639338ac068b1e4df65c982b10',1,'ppforest2::stats::DataPacket::DataPacket()']]],
   ['datapacket_2ehpp_3',['DataPacket.hpp',['../DataPacket_8hpp.html',1,'']]],
