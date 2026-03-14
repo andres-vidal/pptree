@@ -61,32 +61,34 @@ namespace ppforest2 {
       const int n_oob = static_cast<int>(oob_idx.size());
       stats::Uniform uniform(0, n_oob - 1);
 
+      // Copy OOB rows once — only column j changes per iteration.
+      FeatureMatrix perm_x(n_oob, n_vars);
+
+      for (int i = 0; i < n_oob; ++i) {
+        perm_x.row(i) = x.row(oob_idx[i]);
+      }
+
+      ResponseVector perm_pred(n_oob);
+
       for (int j = 0; j < n_vars; ++j) {
-        // Build a permuted copy of the OOB rows with column j shuffled.
-        FeatureMatrix perm_x(n_oob, n_vars);
-
-        for (int i = 0; i < n_oob; ++i) {
-          perm_x.row(i) = x.row(oob_idx[i]);
-        }
-
-        // Permute column j in-place.
+        // Save and permute column j.
+        FeatureVector col_saved    = perm_x.col(j);
         std::vector<int> row_order = uniform.distinct(n_oob, rng);
 
-        FeatureVector col_copy = perm_x.col(j);
-
         for (int i = 0; i < n_oob; ++i) {
-          perm_x(i, j) = col_copy(row_order[i]);
+          perm_x(i, j) = col_saved(row_order[i]);
         }
 
         // Predict on permuted data.
-        ResponseVector perm_pred(n_oob);
-
         for (int i = 0; i < n_oob; ++i) {
           perm_pred(i) = tree.predict(static_cast<FeatureVector>(perm_x.row(i)));
         }
 
         const float perm_acc = stats::accuracy(perm_pred, oob_labels);
         importance(j) += baseline_acc - perm_acc;
+
+        // Restore column j for next iteration.
+        perm_x.col(j) = col_saved;
       }
     }
 
