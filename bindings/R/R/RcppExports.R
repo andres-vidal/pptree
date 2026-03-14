@@ -61,3 +61,23 @@ ppforest2_tree_layout <- function(tree) {
     .Call('_ppforest2_ppforest2_tree_layout', PACKAGE = 'ppforest2', tree)
 }
 
+ppforest2_save_tree_json <- function(tree, classes, vi, training_spec, seed, include_metrics) {
+    .Call('_ppforest2_ppforest2_save_tree_json', PACKAGE = 'ppforest2', tree, classes, vi, training_spec, seed, include_metrics)
+}
+
+ppforest2_save_forest_json <- function(forest, classes, vi, training_spec, seed, oob_error, include_metrics) {
+    .Call('_ppforest2_ppforest2_save_forest_json', PACKAGE = 'ppforest2', forest, classes, vi, training_spec, seed, oob_error, include_metrics)
+}
+
+ppforest2_load_json_meta <- function(json_str) {
+    .Call('_ppforest2_ppforest2_load_json_meta', PACKAGE = 'ppforest2', json_str)
+}
+
+ppforest2_tree_from_json <- function(json_str) {
+    .Call('_ppforest2_ppforest2_tree_from_json', PACKAGE = 'ppforest2', json_str)
+}
+
+ppforest2_forest_from_json <- function(json_str) {
+    .Call('_ppforest2_ppforest2_forest_from_json', PACKAGE = 'ppforest2', json_str)
+}
+

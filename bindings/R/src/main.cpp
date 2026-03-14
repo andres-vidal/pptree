@@ -1,6 +1,9 @@
 #include <Rcpp.h>
 #include <RcppEigen.h>
 #include "ppforest2.hpp"
+#include "serialization/Json.hpp"
+
+#include <nlohmann/json.hpp>
 
 // [[Rcpp::depends(RcppEigen)]]
 
@@ -350,4 +353,232 @@ Rcpp::List ppforest2_tree_layout(const Tree& tree) {
     Rcpp::Named("nodes") = node_df,
     Rcpp::Named("edges") = edge_df
   );
+}
+
+namespace {
+  using json = nlohmann::json;
+
+  json meta_from_r(
+    Rcpp::CharacterVector classes,
+    Rcpp::List            training_spec,
+    int                   seed) {
+    json meta;
+
+    std::vector<std::string> cls(classes.begin(), classes.end());
+    meta["classes"] = cls;
+
+    std::string strategy = Rcpp::as<std::string>(training_spec["strategy"]);
+    meta["training_spec"] = strategy;
+    meta["lambda"]        = Rcpp::as<float>(training_spec["lambda"]);
+    meta["seed"]          = seed;
+
+    if (training_spec.containsElementNamed("n_vars")) {
+      meta["n_vars"] = Rcpp::as<int>(training_spec["n_vars"]);
+    }
+
+    return meta;
+  }
+
+  FeatureVector to_feature_vector(Rcpp::NumericVector v) {
+    int n = static_cast<int>(v.size());
+    FeatureVector result(n);
+
+    for (int i = 0; i < n; ++i) {
+      result(i) = static_cast<Feature>(v[i]);
+    }
+
+    return result;
+  }
+
+  json vi_from_r(Rcpp::List vi) {
+    VariableImportance cpp_vi;
+
+    cpp_vi.scale       = to_feature_vector(vi["scale"]);
+    cpp_vi.projections = to_feature_vector(vi["projections"]);
+
+    if (vi.containsElementNamed("weighted")) {
+      cpp_vi.weighted_projections = to_feature_vector(vi["weighted"]);
+    }
+
+    if (vi.containsElementNamed("permuted")) {
+      cpp_vi.permuted = to_feature_vector(vi["permuted"]);
+    }
+
+    return ppforest2::serialization::to_json(cpp_vi);
+  }
+}
+
+// [[Rcpp::export]]
+std::string ppforest2_save_tree_json(
+    const Tree&           tree,
+    Rcpp::CharacterVector classes,
+    Rcpp::List            vi,
+    Rcpp::List            training_spec,
+    int                   seed,
+    bool                  include_metrics) {
+  json output = ppforest2::serialization::to_json(tree);
+
+  json result;
+  result["model_type"] = "tree";
+  result["meta"]       = meta_from_r(classes, training_spec, seed);
+  result["model"]      = output;
+
+  if (include_metrics) {
+    result["variable_importance"] = vi_from_r(vi);
+  }
+
+  return result.dump(2);
+}
+
+// [[Rcpp::export]]
+std::string ppforest2_save_forest_json(
+    const Forest&         forest,
+    Rcpp::CharacterVector classes,
+    Rcpp::List            vi,
+    Rcpp::List            training_spec,
+    int                   seed,
+    double                oob_error,
+    bool                  include_metrics) {
+  json output = ppforest2::serialization::to_json(forest);
+
+  json result;
+  result["model_type"] = "forest";
+  result["meta"]       = meta_from_r(classes, training_spec, seed);
+  result["model"]      = output;
+
+  if (include_metrics) {
+    result["variable_importance"] = vi_from_r(vi);
+    result["oob_error"]           = oob_error;
+  }
+
+  return result.dump(2);
+}
+
+// [[Rcpp::export]]
+Rcpp::List ppforest2_load_json_meta(const std::string& json_str) {
+  json j = json::parse(json_str);
+
+  // Detect model type: explicit field, meta.trees > 0, or model.trees key
+  std::string model_type;
+
+  if (j.contains("model_type")) {
+    model_type = j["model_type"].get<std::string>();
+  } else if (j.contains("model") && j["model"].contains("trees")) {
+    model_type = "forest";
+  } else if (j.contains("meta") && j["meta"].value("trees", 0) > 0) {
+    model_type = "forest";
+  } else {
+    model_type = "tree";
+  }
+
+  // Restore class names from meta
+  Rcpp::CharacterVector classes;
+  int seed = 0;
+  Rcpp::List training_spec;
+
+  if (j.contains("meta")) {
+    const auto& meta = j["meta"];
+
+    if (meta.contains("classes")) {
+      auto cls = meta["classes"].get<std::vector<std::string>>();
+      classes = Rcpp::wrap(cls);
+    }
+
+    seed = meta.value("seed", 0);
+
+    std::string strategy = meta.value("training_spec", "glda");
+    float lambda         = meta.value("lambda", 0.0f);
+
+    if (meta.contains("n_vars")) {
+      training_spec = Rcpp::List::create(
+        Rcpp::Named("strategy") = strategy,
+        Rcpp::Named("lambda")   = lambda,
+        Rcpp::Named("n_vars")   = meta["n_vars"].get<int>());
+    } else {
+      training_spec = Rcpp::List::create(
+        Rcpp::Named("strategy") = strategy,
+        Rcpp::Named("lambda")   = lambda);
+    }
+  }
+
+  // Restore variable importance
+  SEXP vi_sexp = R_NilValue;
+
+  if (j.contains("variable_importance")) {
+    const auto& vi_j = j["variable_importance"];
+
+    Rcpp::List vi_list;
+    if (vi_j.contains("scale")) {
+      vi_list["scale"] = Rcpp::wrap(vi_j["scale"].get<std::vector<double>>());
+    }
+
+    if (vi_j.contains("projections")) {
+      vi_list["projections"] = Rcpp::wrap(vi_j["projections"].get<std::vector<double>>());
+    }
+
+    if (vi_j.contains("weighted_projections")) {
+      vi_list["weighted"] = Rcpp::wrap(vi_j["weighted_projections"].get<std::vector<double>>());
+    }
+
+    if (vi_j.contains("permuted")) {
+      vi_list["permuted"] = Rcpp::wrap(vi_j["permuted"].get<std::vector<double>>());
+    }
+
+    vi_sexp = vi_list;
+  }
+
+  // OOB error (forest only)
+  double oob_error = NA_REAL;
+  if (j.contains("oob_error")) {
+    oob_error = j["oob_error"].get<double>();
+  }
+
+  return Rcpp::List::create(
+    Rcpp::Named("model_type")     = model_type,
+    Rcpp::Named("classes")        = classes,
+    Rcpp::Named("training_spec")  = training_spec,
+    Rcpp::Named("seed")           = seed,
+    Rcpp::Named("vi")             = vi_sexp,
+    Rcpp::Named("oob_error")      = oob_error);
+}
+
+namespace {
+  TrainingSpec::Ptr training_spec_from_meta(const json& j) {
+    if (!j.contains("meta")) {
+      return TrainingSpecGLDA::make(0.0f);
+    }
+
+    const auto& meta    = j["meta"];
+    std::string strategy = meta.value("training_spec", "glda");
+    float lambda         = meta.value("lambda", 0.0f);
+
+    if (strategy == "uglda" || strategy == "uniform_glda") {
+      int n_vars = meta.value("n_vars", 0);
+      return TrainingSpecUGLDA::make(n_vars, lambda);
+    }
+
+    return TrainingSpecGLDA::make(lambda);
+  }
+}
+
+// [[Rcpp::export]]
+Tree ppforest2_tree_from_json(const std::string& json_str) {
+  json j = json::parse(json_str);
+  Tree tree = ppforest2::serialization::tree_from_json(j["model"]);
+  tree.training_spec = training_spec_from_meta(j);
+  return tree;
+}
+
+// [[Rcpp::export]]
+Forest ppforest2_forest_from_json(const std::string& json_str) {
+  json j = json::parse(json_str);
+  Forest forest = ppforest2::serialization::forest_from_json(j["model"]);
+  forest.training_spec = training_spec_from_meta(j);
+
+  // Propagate training_spec to each tree
+  for (auto& tree : forest.trees) {
+    tree->training_spec = training_spec_from_meta(j);
+  }
+
+  return forest;
 }

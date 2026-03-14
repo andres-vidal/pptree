@@ -135,10 +135,11 @@ add_subdirectory(src/io)
 add_library(ppforest2-core
   $<TARGET_OBJECTS:ppforest2-models>
   $<TARGET_OBJECTS:ppforest2-stats>
+  $<TARGET_OBJECTS:ppforest2-serialization>
   $<TARGET_OBJECTS:ppforest2-utils>
   $<TARGET_OBJECTS:ppforest2-io>)
 
-target_link_libraries(ppforest2-core PUBLIC ppforest2-compile)
+target_link_libraries(ppforest2-core PUBLIC ppforest2-compile nlohmann_json::nlohmann_json)
 
 if(Jemalloc_FOUND)
   message(STATUS "Jemalloc found: ${Jemalloc_INCLUDE_DIRS}")

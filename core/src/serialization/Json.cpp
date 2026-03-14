@@ -162,6 +162,7 @@ namespace ppforest2::serialization {
     const Feature pp_index_value = j.value("pp_index_value", Feature(0));
 
     std::set<Response> classes;
+
     if (j.contains("classes")) {
       classes = j["classes"].get<std::set<Response>>();
     }
