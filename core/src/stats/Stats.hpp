@@ -7,6 +7,14 @@
 #include <stdexcept>
 #include <pcg_random.hpp>
 
+/**
+ * @brief Statistical infrastructure for training and evaluation.
+ *
+ * Provides the random number generator (pcg32), discrete uniform
+ * sampling (Lemire's method), grouped-observation bookkeeping
+ * (GroupPartition), confusion matrices, data simulation, and basic
+ * descriptive statistics used throughout the training pipeline.
+ */
 namespace ppforest2::stats {
   using RNG = pcg32;
 

@@ -8,7 +8,7 @@ OUTPUT_DIRECTORY       = docs/.build/cpp
 # Input
 INPUT                  = core/src
 RECURSIVE              = YES
-FILE_PATTERNS          = *.hpp
+FILE_PATTERNS          = *.hpp *.dox
 EXCLUDE_PATTERNS       = *.test.cpp
 
 # Extraction

@@ -20,6 +20,14 @@
 #include <unistd.h>
 #endif
 
+/**
+ * @brief TTY-aware ANSI colored output utilities.
+ *
+ * Wraps fmt/color.h with conditional formatting that disables escape
+ * codes when stdout is not a TTY or the user passes --no-color.
+ * Provides semantic helpers: error(), success(), emphasis(), muted(),
+ * info(), and warning().
+ */
 namespace ppforest2::io::style {
   /**
    * @brief Global toggle for colored output.

@@ -22,6 +22,14 @@ namespace ppforest2::stats {
    * Rows correspond to actual classes and columns to predicted classes.
    * Provides overall error rate, per-class error rates, JSON serialization,
    * and formatted terminal printing with diagonal highlighting and marginal errors.
+   *
+   * @code
+   *   types::ResponseVector preds = model.predict(x_test);
+   *   ConfusionMatrix cm(preds, y_test);
+   *
+   *   float err = cm.error();                  // overall error rate
+   *   auto per_class = cm.class_errors();      // per-class error rates
+   * @endcode
    */
   struct ConfusionMatrix {
     types::Matrix<int> values;         ///< The NxN confusion matrix (actual x predicted).

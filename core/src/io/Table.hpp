@@ -12,6 +12,14 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Column-driven table formatting with ANSI-safe alignment.
+ *
+ * Provides primitives for building aligned text tables that correctly
+ * handle ANSI escape codes when computing column widths.  Used for
+ * terminal output of confusion matrices, benchmark results, and
+ * evaluation summaries.
+ */
 namespace ppforest2::io::layout {
   enum class Align { left, right };
 

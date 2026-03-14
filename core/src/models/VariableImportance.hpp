@@ -10,6 +10,19 @@ namespace ppforest2 {
    *
    * For single trees only @c projections and @c scale are populated;
    * @c permuted and @c weighted_projections remain empty (size 0).
+   *
+   * @code
+   *   // Forest — all three measures:
+   *   auto vi1 = variable_importance_permuted(forest, x, y, seed: 0);
+   *   auto vi2 = variable_importance_projections(forest, x.cols());
+   *   auto vi3 = variable_importance_weighted_projections(forest, x, y);
+   *
+   *   // Single tree — projection-based only:
+   *   auto vi = variable_importance_projections(tree, x.cols());
+   * @endcode
+   *
+   * @see variable_importance_permuted, variable_importance_projections,
+   *      variable_importance_weighted_projections
    */
   struct VariableImportance {
     types::FeatureVector permuted;

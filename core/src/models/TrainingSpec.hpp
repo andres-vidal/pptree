@@ -18,6 +18,25 @@ namespace ppforest2 {
    * dimensionality reduction strategy (DRStrategy), and a split
    * strategy (SRStrategy).  Concrete subclasses (TrainingSpecGLDA,
    * TrainingSpecUGLDA) provide specific parameter combinations.
+   *
+   * For most use cases, use the ready-made subclasses:
+   * @code
+   *   // Single tree — GLDA with all variables:
+   *   TrainingSpecGLDA spec(lambda: 0.0);
+   *
+   *   // Random forest — GLDA with uniform variable selection:
+   *   TrainingSpecUGLDA spec(n_vars: 3, lambda: 0.5);
+   * @endcode
+   *
+   * For custom strategy composition:
+   * @code
+   *   auto spec = std::make_unique<TrainingSpec>(
+   *     pp::glda(0.5),          // PDA with lambda = 0.5
+   *     dr::uniform(4),         // sample 4 variables per split
+   *     sr::mean_of_means());   // midpoint of group means
+   * @endcode
+   *
+   * @see TrainingSpecGLDA, TrainingSpecUGLDA
    */
   struct TrainingSpec {
     using Ptr = std::unique_ptr<TrainingSpec>;

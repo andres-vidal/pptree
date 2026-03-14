@@ -21,6 +21,16 @@
  * forests, confusion matrices, and variable importance to JSON, and
  * *_from_json() for deserializing them back.  Also provides ostream
  * operators for convenient text output.
+ *
+ * @code
+ *   // Serialize a forest to JSON and write to file:
+ *   auto j = serialization::to_json(forest);
+ *   io::json::write_file(j, "model.json");
+ *
+ *   // Read and deserialize:
+ *   auto j2 = io::json::read_file("model.json");
+ *   Forest restored = serialization::forest_from_json(j2);
+ * @endcode
  */
 namespace ppforest2::serialization {
   using json = nlohmann::json;

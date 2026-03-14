@@ -10,6 +10,14 @@
 
 
 
+/**
+ * @brief Dimensionality reduction strategies for variable selection.
+ *
+ * Contains the abstract DRStrategy interface and concrete
+ * implementations that select a subset of variables before projection
+ * pursuit optimisation.  DRNoopStrategy uses all variables (single
+ * trees); DRUniformStrategy samples uniformly at random (forests).
+ */
 namespace ppforest2::dr {
   /**
    * @brief Result of a dimensionality reduction step.

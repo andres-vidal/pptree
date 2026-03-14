@@ -46,7 +46,7 @@ jobs:
           fi
 
       - name: Build docs
-        run: make docs
+        run: make docs DOCS_REF=${{ steps.version.outputs.dir }}
 
       - name: Deploy version
         uses: peaceiris/actions-gh-pages@v4

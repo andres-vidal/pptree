@@ -14,6 +14,10 @@
 
 #include <string>
 
+/**
+ * @brief Command-line interface: argument parsing, subcommands, and
+ *        benchmark/evaluation orchestration.
+ */
 namespace ppforest2::cli {
   /** @brief Available CLI subcommands. */
   enum class Subcommand { none, train, predict, evaluate, benchmark };

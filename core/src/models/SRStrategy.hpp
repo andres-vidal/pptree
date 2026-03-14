@@ -5,6 +5,14 @@
 
 #include <memory>
 
+/**
+ * @brief Split rule strategies for computing decision thresholds.
+ *
+ * Contains the abstract SRStrategy interface and concrete
+ * implementations that determine the split threshold in projected
+ * space.  The built-in SRMeanOfMeansStrategy uses the midpoint
+ * of the two group means.
+ */
 namespace ppforest2::sr {
   /**
    * @brief Abstract strategy for computing the split threshold.

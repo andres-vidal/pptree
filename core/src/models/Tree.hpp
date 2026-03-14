@@ -14,6 +14,15 @@ namespace ppforest2 {
    * Each internal node projects data onto a linear combination of
    * features and splits on the projected value.  Leaf nodes hold
    * class labels.
+   *
+   * @code
+   *   TrainingSpecGLDA spec(lambda: 0.0);
+   *   stats::RNG rng(42);
+   *
+   *   Tree tree = Tree::train(spec, x, y, rng);
+   *   types::Response label = tree.predict(x.row(0));
+   *   types::ResponseVector preds = tree.predict(x);
+   * @endcode
    */
   struct Tree : public Model {
     /**

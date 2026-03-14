@@ -23,6 +23,21 @@ namespace ppforest2::stats {
    *
    * Groups can be hierarchically merged via remap(), which assigns
    * supergroup labels while tracking the original subgroups.
+   *
+   * @code
+   *   // y must be sorted so equal values are contiguous.
+   *   GroupPartition gp(y);
+   *
+   *   // Extract rows belonging to group 0:
+   *   auto x_group0 = gp.group(x, 0);
+   *
+   *   // Between- and within-group statistics:
+   *   auto B = gp.bgss(x);   // between-group sum of squares (p × p)
+   *   auto W = gp.wgss(x);   // within-group sum of squares  (p × p)
+   *
+   *   // Restrict to a subset of groups:
+   *   GroupPartition sub = gp.subset({0, 2});
+   * @endcode
    */
   class GroupPartition {
     using Group       = types::Response;

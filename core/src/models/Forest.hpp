@@ -18,6 +18,25 @@ namespace ppforest2 {
    */
   struct Proportions {};
 
+  /**
+   * @brief A projection pursuit random forest.
+   *
+   * An ensemble of BootstrapTree instances, each trained on a
+   * bootstrap sample.  Predictions are made by majority vote.
+   * Out-of-bag estimation and vote-proportion predictions are
+   * supported.
+   *
+   * @code
+   *   TrainingSpecUGLDA spec(n_vars: 3, lambda: 0.0);
+   *   Forest forest = Forest::train(spec, x, y, size: 500, seed: 42);
+   *
+   *   types::ResponseVector preds = forest.predict(x_test);
+   *   double oob = forest.oob_error(x, y);
+   *
+   *   // Vote proportions — (n × G) matrix, rows sum to 1.
+   *   types::FeatureMatrix probs = forest.predict(x_test, Proportions{});
+   * @endcode
+   */
   struct Forest : public Model {
     /**
      * @brief Train a random forest.

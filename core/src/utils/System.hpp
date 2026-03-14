@@ -4,6 +4,7 @@
  */
 #pragma once
 
+/** @brief System-level utilities (process memory measurement). */
 namespace ppforest2::sys {
   /**
    * @brief Get the peak resident set size (RSS) of the current process in bytes.

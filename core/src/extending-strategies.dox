@@ -1,0 +1,282 @@
+/**
+ * @page extending_strategies Extending: Custom Strategies
+ *
+ * Tree training in ppforest2 is parameterised by three pluggable
+ * strategy interfaces.  You can add new optimisation criteria, variable
+ * selection methods, or splitting rules without modifying the
+ * tree-building logic.
+ *
+ * | Interface   | Purpose                              | Override |
+ * |-------------|--------------------------------------|----------|
+ * | PPStrategy  | Projection pursuit index optimisation | index(), optimize(), clone() |
+ * | DRStrategy  | Variable subset selection            | select(), clone() |
+ * | SRStrategy  | Split threshold computation          | threshold(), clone() |
+ *
+ * @section strat_conventions Conventions
+ *
+ * All strategies follow the same structural conventions:
+ *
+ * - **Immutable configuration** — store parameters as `const` members
+ *   set in the constructor.
+ * - **Ptr typedef** — each strategy defines `using Ptr = std::unique_ptr<Strategy>`.
+ * - **clone()** — returns a deep copy as a `Ptr` (used by TrainingSpec's
+ *   copy constructor).
+ * - **Factory function** — a free function in the strategy's namespace
+ *   that returns a `Ptr` (e.g. `pp::glda(lambda)`).
+ * - **Convenience operator()** — calls the main virtual method so
+ *   strategies can be used as functors.
+ *
+ * @section strat_pp Adding a new PPStrategy
+ *
+ * A PPStrategy defines how to evaluate a projection index and how to
+ * find the optimal projection for a given dataset.
+ *
+ * @subsection strat_pp_interface Interface to implement
+ *
+ * @code
+ *   struct PPStrategy {
+ *     virtual PPStrategy::Ptr clone() const = 0;
+ *
+ *     // Evaluate the projection index for a given projector.
+ *     virtual types::Feature index(
+ *       const types::FeatureMatrix&  x,          // (n x p)
+ *       const stats::GroupPartition& group_spec,
+ *       const Projector&             projector    // (p)
+ *     ) const = 0;
+ *
+ *     // Find the optimal projector for the data.
+ *     virtual PPResult optimize(
+ *       const types::FeatureMatrix&  x,          // (n x p)
+ *       const stats::GroupPartition& group_spec
+ *     ) const = 0;
+ *   };
+ * @endcode
+ *
+ * @subsection strat_pp_example Example: a random projection strategy
+ *
+ * @code
+ *   // File: models/PPRandomStrategy.hpp
+ *   #pragma once
+ *   #include "models/PPStrategy.hpp"
+ *   #include "stats/Normal.hpp"
+ *
+ *   namespace ppforest2::pp {
+ *
+ *   // A toy strategy that returns a random unit projector.
+ *   // Useful as a baseline or for testing.
+ *   struct PPRandomStrategy : public PPStrategy {
+ *     PPStrategy::Ptr clone() const override {
+ *       return std::make_unique<PPRandomStrategy>(*this);
+ *     }
+ *
+ *     types::Feature index(
+ *       const types::FeatureMatrix&  x,
+ *       const stats::GroupPartition& group_spec,
+ *       const Projector&             projector) const override {
+ *       // No meaningful index — return 0.
+ *       return 0;
+ *     }
+ *
+ *     PPResult optimize(
+ *       const types::FeatureMatrix&  x,
+ *       const stats::GroupPartition& group_spec) const override {
+ *       // Generate a random unit vector of dimension p.
+ *       Projector proj = Projector::Random(x.cols());
+ *       proj.normalize();
+ *       return PPResult{ proj, 0 };
+ *     }
+ *   };
+ *
+ *   // Factory function (convention).
+ *   inline PPStrategy::Ptr random() {
+ *     return std::make_unique<PPRandomStrategy>();
+ *   }
+ *
+ *   }  // namespace ppforest2::pp
+ * @endcode
+ *
+ * @section strat_dr Adding a new DRStrategy
+ *
+ * A DRStrategy selects a subset of variables (columns) before
+ * projection pursuit runs.  This reduces cost and introduces
+ * diversity in forests.
+ *
+ * @subsection strat_dr_interface Interface to implement
+ *
+ * @code
+ *   struct DRStrategy {
+ *     virtual DRStrategy::Ptr clone() const = 0;
+ *
+ *     // Select a subset of columns.
+ *     virtual DRSpec select(
+ *       const types::FeatureMatrix&  x,          // (n x p)
+ *       const stats::GroupPartition& group_spec,
+ *       stats::RNG&                  rng
+ *     ) const = 0;
+ *   };
+ * @endcode
+ *
+ * The returned DRSpec records which columns were selected and the
+ * original column count, so the reduced-space projector can be
+ * expanded back to the full space via DRSpec::expand().
+ *
+ * @subsection strat_dr_example Example: top-variance variable selection
+ *
+ * @code
+ *   // File: models/DRVarianceStrategy.hpp
+ *   #pragma once
+ *   #include "models/DRStrategy.hpp"
+ *
+ *   namespace ppforest2::dr {
+ *
+ *   // Selects the n_vars columns with highest variance.
+ *   struct DRVarianceStrategy : public DRStrategy {
+ *     const int n_vars;
+ *
+ *     explicit DRVarianceStrategy(int n_vars) : n_vars(n_vars) {}
+ *
+ *     DRStrategy::Ptr clone() const override {
+ *       return std::make_unique<DRVarianceStrategy>(*this);
+ *     }
+ *
+ *     DRSpec select(
+ *       const types::FeatureMatrix& x,
+ *       const stats::GroupPartition& group_spec,
+ *       stats::RNG& rng) const override {
+ *
+ *       // Compute per-column variance.
+ *       std::vector<std::pair<float, int>> var_idx;
+ *       for (int j = 0; j < x.cols(); ++j) {
+ *         float var = (x.col(j).array() - x.col(j).mean()).square().sum();
+ *         var_idx.push_back({var, j});
+ *       }
+ *
+ *       // Sort descending by variance, pick top n_vars.
+ *       std::stable_sort(var_idx.begin(), var_idx.end(),
+ *         [](auto& a, auto& b) { return a.first > b.first; });
+ *
+ *       std::vector<int> selected;
+ *       for (int i = 0; i < n_vars && i < (int)var_idx.size(); ++i)
+ *         selected.push_back(var_idx[i].second);
+ *
+ *       return DRSpec(selected, x.cols());
+ *     }
+ *   };
+ *
+ *   inline DRStrategy::Ptr variance(int n_vars) {
+ *     return std::make_unique<DRVarianceStrategy>(n_vars);
+ *   }
+ *
+ *   }  // namespace ppforest2::dr
+ * @endcode
+ *
+ * @section strat_sr Adding a new SRStrategy
+ *
+ * An SRStrategy computes the split threshold in the projected space
+ * that separates two groups.
+ *
+ * @subsection strat_sr_interface Interface to implement
+ *
+ * @code
+ *   struct SRStrategy {
+ *     virtual SRStrategy::Ptr clone() const = 0;
+ *
+ *     // Compute the split threshold for two groups.
+ *     virtual types::Feature threshold(
+ *       const types::FeatureMatrix& group_1,   // (n1 x p)
+ *       const types::FeatureMatrix& group_2,   // (n2 x p)
+ *       const pp::Projector&        projector   // (p)
+ *     ) const = 0;
+ *   };
+ * @endcode
+ *
+ * @subsection strat_sr_example Example: median-based split
+ *
+ * @code
+ *   // File: models/SRMedianStrategy.hpp
+ *   #pragma once
+ *   #include "models/SRStrategy.hpp"
+ *   #include <algorithm>
+ *
+ *   namespace ppforest2::sr {
+ *
+ *   // Splits at the median of the combined projected values.
+ *   struct SRMedianStrategy : public SRStrategy {
+ *     SRStrategy::Ptr clone() const override {
+ *       return std::make_unique<SRMedianStrategy>(*this);
+ *     }
+ *
+ *     types::Feature threshold(
+ *       const types::FeatureMatrix& group_1,
+ *       const types::FeatureMatrix& group_2,
+ *       const pp::Projector& projector) const override {
+ *
+ *       auto proj_1 = group_1 * projector;
+ *       auto proj_2 = group_2 * projector;
+ *
+ *       std::vector<float> all;
+ *       for (int i = 0; i < proj_1.rows(); ++i) all.push_back(proj_1(i));
+ *       for (int i = 0; i < proj_2.rows(); ++i) all.push_back(proj_2(i));
+ *
+ *       std::nth_element(all.begin(), all.begin() + all.size() / 2, all.end());
+ *       return all[all.size() / 2];
+ *     }
+ *   };
+ *
+ *   inline SRStrategy::Ptr median() {
+ *     return std::make_unique<SRMedianStrategy>();
+ *   }
+ *
+ *   }  // namespace ppforest2::sr
+ * @endcode
+ *
+ * @section strat_compose Composing strategies
+ *
+ * Once you have a new strategy, compose it into a training
+ * configuration:
+ *
+ * @subsection strat_compose_direct Direct composition
+ *
+ * @code
+ *   // Mix and match any PP + DR + SR strategies:
+ *   auto spec = std::make_unique<TrainingSpec>(
+ *     pp::glda(0.5),          // existing GLDA strategy
+ *     dr::variance(4),        // your new DR strategy
+ *     sr::median());          // your new SR strategy
+ *
+ *   stats::RNG rng(42);
+ *   Tree tree = Tree::train(*spec, x, y, rng);
+ * @endcode
+ *
+ * @subsection strat_compose_subclass Creating a TrainingSpec subclass
+ *
+ * Create a named subclass when you want a reusable, self-documenting
+ * configuration with its own parameters:
+ *
+ * @code
+ *   struct TrainingSpecCustom : public TrainingSpec {
+ *     const int n_vars;
+ *     const float lambda;
+ *
+ *     TrainingSpecCustom(int n_vars, float lambda) :
+ *       TrainingSpec(
+ *         pp::glda(lambda),
+ *         dr::variance(n_vars),
+ *         sr::median()),
+ *       n_vars(n_vars),
+ *       lambda(lambda) {}
+ *
+ *     void accept(TrainingSpecVisitor& visitor) const override {
+ *       // Add a visit() overload to TrainingSpecVisitor if you need
+ *       // type-safe dispatch (e.g. for serialisation).
+ *     }
+ *
+ *     TrainingSpec::Ptr clone() const override {
+ *       return std::make_unique<TrainingSpecCustom>(*this);
+ *     }
+ *   };
+ * @endcode
+ *
+ * @see PPStrategy, DRStrategy, SRStrategy, TrainingSpec,
+ *      TrainingSpecGLDA, TrainingSpecUGLDA
+ */

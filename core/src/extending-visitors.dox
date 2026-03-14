@@ -1,0 +1,242 @@
+/**
+ * @page extending_visitors Extending: Custom Visitors
+ *
+ * ppforest2 uses the Visitor pattern (double dispatch) to traverse
+ * trees and models without `dynamic_cast`.  You can add new traversal
+ * logic — statistics, export formats, analysis — by implementing a
+ * visitor, without modifying the model classes.
+ *
+ * Three visitor interfaces are available:
+ *
+ * | Interface            | Dispatches over                   | Use when |
+ * |----------------------|-----------------------------------|----------|
+ * | TreeNodeVisitor      | TreeCondition (split), TreeResponse (leaf) | You need to walk the tree structure |
+ * | ModelVisitor         | Tree, Forest                      | You need to handle trees and forests differently |
+ * | TrainingSpecVisitor  | TrainingSpecGLDA, TrainingSpecUGLDA | You need type-safe access to spec parameters |
+ *
+ * @section vis_dispatch How double dispatch works
+ *
+ * Each visitable class has an `accept()` method that calls the
+ * appropriate `visit()` overload on the visitor:
+ *
+ * @code
+ *   // 1. Caller invokes accept() on a node (via base pointer):
+ *   node->accept(visitor);
+ *
+ *   // 2. The concrete node type calls visit(*this):
+ *   void TreeCondition::accept(TreeNodeVisitor& v) const { v.visit(*this); }
+ *   void TreeResponse::accept(TreeNodeVisitor& v) const  { v.visit(*this); }
+ *
+ *   // 3. The visitor's concrete visit() method runs:
+ *   void MyVisitor::visit(const TreeCondition& cond) { ... }
+ *   void MyVisitor::visit(const TreeResponse& resp)  { ... }
+ * @endcode
+ *
+ * This resolves both the node type and the visitor type at runtime
+ * without any casts.
+ *
+ * @section vis_treenode Implementing a TreeNodeVisitor
+ *
+ * @subsection vis_treenode_interface Interface to implement
+ *
+ * @code
+ *   struct TreeNodeVisitor {
+ *     virtual void visit(const TreeCondition& condition) = 0;
+ *     virtual void visit(const TreeResponse& response) = 0;
+ *   };
+ * @endcode
+ *
+ * **TreeCondition** (internal split node) provides:
+ * - `projector` — the projection vector (p) used at this split
+ * - `threshold` — the split threshold in projected space
+ * - `lower` / `upper` — child nodes (TreeNode::Ptr)
+ * - `classes` — set of class labels reachable from this node
+ * - `pp_index_value` — the PP index value achieved at this split
+ * - `training_spec` — the TrainingSpec used to build this subtree
+ *
+ * **TreeResponse** (leaf node) provides:
+ * - `value` — the predicted class label
+ *
+ * @subsection vis_treenode_traversal Traversal pattern
+ *
+ * To walk the full tree, recursively call `accept()` on child nodes
+ * inside your `visit(TreeCondition&)` method:
+ *
+ * @code
+ *   void visit(const TreeCondition& cond) override {
+ *     // ... process this split node ...
+ *     cond.lower->accept(*this);   // recurse left
+ *     cond.upper->accept(*this);   // recurse right
+ *   }
+ *
+ *   void visit(const TreeResponse& resp) override {
+ *     // ... process this leaf node (base case) ...
+ *   }
+ * @endcode
+ *
+ * @subsection vis_treenode_example Example: computing tree depth
+ *
+ * @code
+ *   #include "models/TreeNodeVisitor.hpp"
+ *   #include "models/TreeCondition.hpp"
+ *   #include "models/TreeResponse.hpp"
+ *
+ *   namespace ppforest2 {
+ *
+ *   struct DepthVisitor : public TreeNodeVisitor {
+ *     int max_depth = 0;
+ *     int current_depth = 0;
+ *
+ *     void visit(const TreeCondition& cond) override {
+ *       ++current_depth;
+ *       if (current_depth > max_depth)
+ *         max_depth = current_depth;
+ *
+ *       cond.lower->accept(*this);
+ *       cond.upper->accept(*this);
+ *
+ *       --current_depth;   // backtrack
+ *     }
+ *
+ *     void visit(const TreeResponse&) override {
+ *       ++current_depth;
+ *       if (current_depth > max_depth)
+ *         max_depth = current_depth;
+ *       --current_depth;
+ *     }
+ *   };
+ *
+ *   }  // namespace ppforest2
+ * @endcode
+ *
+ * Usage:
+ * @code
+ *   DepthVisitor visitor;
+ *   tree.root->accept(visitor);
+ *   int depth = visitor.max_depth;
+ * @endcode
+ *
+ * @subsection vis_treenode_example2 Example: counting leaves
+ *
+ * @code
+ *   struct LeafCountVisitor : public TreeNodeVisitor {
+ *     int count = 0;
+ *
+ *     void visit(const TreeCondition& cond) override {
+ *       cond.lower->accept(*this);
+ *       cond.upper->accept(*this);
+ *     }
+ *
+ *     void visit(const TreeResponse&) override {
+ *       ++count;
+ *     }
+ *   };
+ * @endcode
+ *
+ * Usage:
+ * @code
+ *   LeafCountVisitor visitor;
+ *   tree.root->accept(visitor);
+ *   int leaves = visitor.count;
+ * @endcode
+ *
+ * @section vis_model Implementing a ModelVisitor
+ *
+ * ModelVisitor dispatches over Tree and Forest, useful when you need
+ * to handle them differently (e.g. serialisation, summary statistics).
+ *
+ * @subsection vis_model_interface Interface to implement
+ *
+ * @code
+ *   struct ModelVisitor {
+ *     virtual void visit(const Tree& tree) = 0;
+ *     virtual void visit(const Forest& forest) = 0;
+ *   };
+ * @endcode
+ *
+ * @subsection vis_model_example Example: collecting all leaf labels
+ *
+ * @code
+ *   struct AllLabelsVisitor : public ModelVisitor {
+ *     std::set<types::Response> labels;
+ *
+ *     void visit(const Tree& tree) override {
+ *       // Use a TreeNodeVisitor to walk the tree:
+ *       struct LabelCollector : public TreeNodeVisitor {
+ *         std::set<types::Response>& labels;
+ *         LabelCollector(std::set<types::Response>& l) : labels(l) {}
+ *
+ *         void visit(const TreeCondition& c) override {
+ *           c.lower->accept(*this);
+ *           c.upper->accept(*this);
+ *         }
+ *         void visit(const TreeResponse& r) override {
+ *           labels.insert(r.value);
+ *         }
+ *       };
+ *
+ *       LabelCollector collector(labels);
+ *       tree.root->accept(collector);
+ *     }
+ *
+ *     void visit(const Forest& forest) override {
+ *       for (const auto& bt : forest.trees)
+ *         visit(static_cast<const Tree&>(*bt));
+ *     }
+ *   };
+ * @endcode
+ *
+ * Usage:
+ * @code
+ *   AllLabelsVisitor visitor;
+ *   model.accept(visitor);
+ *   // visitor.labels contains all class labels in the model
+ * @endcode
+ *
+ * @section vis_specvisitor Implementing a TrainingSpecVisitor
+ *
+ * TrainingSpecVisitor dispatches over concrete TrainingSpec subclasses,
+ * giving type-safe access to their parameters (e.g. `lambda`, `n_vars`).
+ *
+ * @code
+ *   struct TrainingSpecVisitor {
+ *     virtual void visit(const TrainingSpecGLDA& spec) = 0;
+ *     virtual void visit(const TrainingSpecUGLDA& spec) = 0;
+ *   };
+ * @endcode
+ *
+ * If you add a new TrainingSpec subclass, add a corresponding
+ * `visit()` overload to TrainingSpecVisitor.
+ *
+ * @section vis_existing Existing visitors as reference
+ *
+ * | Visitor            | File                          | Purpose |
+ * |--------------------|-------------------------------|---------|
+ * | VIVisitor          | models/VIVisitor.hpp          | Accumulates projection-based variable importance at each split |
+ * | JsonNodeVisitor    | serialization/Json.hpp        | Serialises tree nodes to JSON |
+ * | JsonModelVisitor   | serialization/Json.hpp        | Serialises Tree/Forest to JSON |
+ * | NodeDataVisitor    | models/Visualization.hpp      | Routes observations through the tree, collects per-node histograms |
+ * | BoundaryVisitor    | models/Visualization.hpp      | Projects decision boundaries into 2D for plotting |
+ * | RegionVisitor      | models/Visualization.hpp      | Computes convex decision region polygons via Sutherland-Hodgman clipping |
+ *
+ * @section vis_conventions Conventions
+ *
+ * - **Single-use** — instantiate a fresh visitor for each traversal.
+ *   Do not reuse a visitor across multiple trees without resetting
+ *   its state.
+ *
+ * - **Mutable accumulators** — store results in public mutable members
+ *   (e.g. `int count`, `json result`, `std::vector<NodeData> nodes`).
+ *   Read them after `accept()` returns.
+ *
+ * - **Not thread-safe** — visitors carry mutable state and should not
+ *   be shared across threads.  Use one visitor per thread if needed.
+ *
+ * - **Recursive traversal** — call `cond.lower->accept(*this)` and
+ *   `cond.upper->accept(*this)` inside `visit(TreeCondition&)` to
+ *   walk the full tree.  Omit these calls if you only need to inspect
+ *   the root.
+ *
+ * @see TreeNodeVisitor, ModelVisitor, TrainingSpecVisitor,
+ *      VIVisitor, TreeCondition, TreeResponse
+ */

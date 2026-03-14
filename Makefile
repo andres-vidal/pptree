@@ -160,14 +160,16 @@ r-install: r-build
 DOCS_DIR = docs
 DOCS_BUILD_DIR = ${DOCS_DIR}/.build
 DOXYGEN = ${TOOLS_DIR}/doxygen/bin/doxygen
+DOCS_REF ?= main
 
 docs-site:
 	@mkdir -p ${DOCS_BUILD_DIR}
-	@cp ${DOCS_DIR}/index.html ${DOCS_DIR}/style.css ${DOCS_BUILD_DIR}/
+	@sed 's/{{VERSION}}/v${CORE_VERSION}/g' ${DOCS_DIR}/index.html > ${DOCS_BUILD_DIR}/index.html
+	@cp ${DOCS_DIR}/style.css ${DOCS_BUILD_DIR}/
 
 docs-cpp:
 	@mkdir -p ${DOCS_BUILD_DIR}/cpp
-	@${DOXYGEN} ${DOCS_DIR}/Doxyfile
+	@( cat ${DOCS_DIR}/Doxyfile ; echo "PROJECT_NUMBER = v${CORE_VERSION}" ) | ${DOXYGEN} -
 
 docs-r:
 	@make r-build-core
@@ -175,7 +177,8 @@ docs-r:
 	@mkdir -p ${R_PACKAGE_DIR}/inst/lib
 	@cp ${R_BUILD_DIR}/libppforest2-core.a ${R_PACKAGE_DIR}/inst/lib/
 	@cp ${DOCS_DIR}/_pkgdown.yml ${R_PACKAGE_DIR}/_pkgdown.yml
-	@Rscript -e "pkgdown::build_site('${R_PACKAGE_DIR}', override=list(destination='../../../${DOCS_BUILD_DIR}/r'), preview=FALSE)"
+	@sed -i.bak 's|/ppforest2/main/|/ppforest2/${DOCS_REF}/|g' ${R_PACKAGE_DIR}/_pkgdown.yml ${R_PACKAGE_DIR}/README.md && rm -f ${R_PACKAGE_DIR}/_pkgdown.yml.bak ${R_PACKAGE_DIR}/README.md.bak
+	@Rscript -e "pkgdown::build_site('${R_PACKAGE_DIR}', override=list(destination='../../${DOCS_BUILD_DIR}/r'), preview=FALSE)"
 	@rm -f ${R_PACKAGE_DIR}/_pkgdown.yml
 	@make r-clean
 

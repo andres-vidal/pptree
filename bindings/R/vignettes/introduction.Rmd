@@ -88,11 +88,17 @@ plot(tree, type = "projection")
 plot(tree, type = "boundaries")
 ```
 
-For forests, specify a `tree_index` to plot an individual tree:
+For forests, variable importance is the only global visualization available. Individual trees can be plotted by specifying a `tree_index`.
+
+```{r plot-forest, eval = requireNamespace("ggplot2", quietly = TRUE)}
+plot(forest)
+```
 
 ```{r plot-forest-tree, eval = requireNamespace("ggplot2", quietly = TRUE)}
 plot(forest, type = "structure", tree_index = 1)
 ```
+
+
 
 ## Regularization with PDA
 
