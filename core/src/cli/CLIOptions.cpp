@@ -23,10 +23,6 @@
 #include <omp.h>
 #endif
 
-#ifndef PPFOREST2_VERSION
-#define PPFOREST2_VERSION "0.0.0"
-#endif
-
 namespace ppforest2::cli {
 namespace {
   /**

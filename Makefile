@@ -124,12 +124,14 @@ r-clean:
 		${R_PACKAGE_DIR}/inst/golden \
 		ppforest2_${CORE_VERSION}.tar.gzm \
 		ppforest2.Rcheck
-	@sed -i.bak 's/^Version: .*/Version: 0.0.0.9000/' ${R_PACKAGE_DIR}/DESCRIPTION && rm -f ${R_PACKAGE_DIR}/DESCRIPTION.bak
 
-r-prepare: r-clean fetch-deps
+r-version:
+	@sed -i.bak 's/^Version: .*/Version: ${CORE_VERSION}/' ${R_PACKAGE_DIR}/DESCRIPTION && rm -f ${R_PACKAGE_DIR}/DESCRIPTION.bak
+	
+	
+r-prepare: r-clean r-version fetch-deps
 	@mkdir -p ${R_PACKAGE_DIR}/src/core && cp -r core/* ${R_PACKAGE_DIR}/src/core
 	@cp VERSION ${R_PACKAGE_DIR}/src/VERSION
-	@sed -i.bak 's/^Version: .*/Version: ${CORE_VERSION}/' ${R_PACKAGE_DIR}/DESCRIPTION && rm -f ${R_PACKAGE_DIR}/DESCRIPTION.bak
 	@cp CHANGELOG.md ${R_PACKAGE_DIR}/NEWS.md
 	@cp -r ${NLHOMANN_JSON_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
 	@cp -r ${PCG_HEADERS_PATH}/* ${R_PACKAGE_DIR}/inst/include
@@ -175,7 +177,7 @@ docs-r:
 	@mkdir -p ${R_PACKAGE_DIR}/inst/lib
 	@cp ${R_BUILD_DIR}/libppforest2-core.a ${R_PACKAGE_DIR}/inst/lib/
 	@cp ${DOCS_DIR}/_pkgdown.yml ${R_PACKAGE_DIR}/_pkgdown.yml
-	@Rscript -e "pkgdown::build_site('${R_PACKAGE_DIR}', override=list(destination='../../../${DOCS_BUILD_DIR}/r'), preview=FALSE)"
+	@Rscript -e "pkgdown::build_site('${R_PACKAGE_DIR}', override=list(destination='../../${DOCS_BUILD_DIR}/r'), preview=FALSE)"
 	@rm -f ${R_PACKAGE_DIR}/_pkgdown.yml
 	@make r-clean
 
