@@ -4,7 +4,7 @@ var hierarchy =
     [ "ppforest2::cli::BenchmarkSuite", "structppforest2_1_1cli_1_1BenchmarkSuite.html", null ],
     [ "ppforest2::BoundarySegment", "structppforest2_1_1BoundarySegment.html", null ],
     [ "ppforest2::cli::CLIOptions", "structppforest2_1_1cli_1_1CLIOptions.html", null ],
-    [ "ppforest2::io::Column", "structppforest2_1_1io_1_1Column.html", null ],
+    [ "ppforest2::io::layout::Column", "structppforest2_1_1io_1_1layout_1_1Column.html", null ],
     [ "ppforest2::stats::ConfusionMatrix", "structppforest2_1_1stats_1_1ConfusionMatrix.html", null ],
     [ "ppforest2::cli::ConvergenceCriteria", "structppforest2_1_1cli_1_1ConvergenceCriteria.html", null ],
     [ "ppforest2::cli::ConvergenceParams", "structppforest2_1_1cli_1_1ConvergenceParams.html", null ],
@@ -27,7 +27,7 @@ var hierarchy =
       ] ]
     ] ],
     [ "ppforest2::cli::ModelParams", "structppforest2_1_1cli_1_1ModelParams.html", null ],
-    [ "ppforest2::cli::ModelStats", "structppforest2_1_1cli_1_1ModelStats.html", null ],
+    [ "ppforest2::io::ModelStats", "structppforest2_1_1io_1_1ModelStats.html", null ],
     [ "ppforest2::ModelVisitor", "structppforest2_1_1ModelVisitor.html", [
       [ "ppforest2::serialization::JsonModelVisitor", "structppforest2_1_1serialization_1_1JsonModelVisitor.html", null ]
     ] ],

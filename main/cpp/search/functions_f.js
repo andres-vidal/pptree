@@ -10,10 +10,10 @@ var searchData=
   ['simulate_7',['simulate',['../namespaceppforest2_1_1stats.html#a917d81236d7b2dc7432e1d34c0c2bab1',1,'ppforest2::stats']]],
   ['sort_8',['sort',['../namespaceppforest2_1_1stats.html#ab5fea02c8d682b90a47fd016d536b820',1,'ppforest2::stats']]],
   ['split_9',['split',['../namespaceppforest2_1_1stats.html#a7544bfd87b8aeb5d134d987a6a2aa8e9',1,'ppforest2::stats']]],
-  ['std_5fte_5ferror_10',['std_te_error',['../structppforest2_1_1cli_1_1ModelStats.html#a5248e2ae6228a36892e4b0595183a298',1,'ppforest2::cli::ModelStats']]],
-  ['std_5ftime_11',['std_time',['../structppforest2_1_1cli_1_1ModelStats.html#a8d4142f59a007eb5c116d4b3ce310825',1,'ppforest2::cli::ModelStats']]],
-  ['std_5ftr_5ferror_12',['std_tr_error',['../structppforest2_1_1cli_1_1ModelStats.html#affabe9f1c631daae21b47f9976874cfb',1,'ppforest2::cli::ModelStats']]],
-  ['styled_13',['styled',['../namespaceppforest2_1_1io.html#a222ff6cba696eeab19857a793761f186',1,'ppforest2::io']]],
+  ['std_5fte_5ferror_10',['std_te_error',['../structppforest2_1_1io_1_1ModelStats.html#a537e710b4ddd439161ad24faefaea7ff',1,'ppforest2::io::ModelStats']]],
+  ['std_5ftime_11',['std_time',['../structppforest2_1_1io_1_1ModelStats.html#a5a36f1b04c8f0c2fd08902546cc1683f',1,'ppforest2::io::ModelStats']]],
+  ['std_5ftr_5ferror_12',['std_tr_error',['../structppforest2_1_1io_1_1ModelStats.html#a695041ef5064259f249b8bb4b86485e6',1,'ppforest2::io::ModelStats']]],
+  ['styled_13',['styled',['../namespaceppforest2_1_1io_1_1style.html#a43ef20ac4bf95914ac676d9766d880ac',1,'ppforest2::io::style']]],
   ['subset_14',['subset',['../classppforest2_1_1stats_1_1GroupPartition.html#a74d9a3a7e7c401bf22a019f8cf764af8',1,'ppforest2::stats::GroupPartition']]],
-  ['success_15',['success',['../namespaceppforest2_1_1io.html#a0a89efbd7491cf7317bc1be84e83c6a3',1,'ppforest2::io']]]
+  ['success_15',['success',['../namespaceppforest2_1_1io_1_1style.html#a54edc627ad5d004ce526c46686cd68bb',1,'ppforest2::io::style']]]
 ];

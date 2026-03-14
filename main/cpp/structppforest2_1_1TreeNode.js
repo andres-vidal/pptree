@@ -6,6 +6,7 @@ var structppforest2_1_1TreeNode =
     [ "class_count", "structppforest2_1_1TreeNode.html#a667461a1a3a32da0dd3d196b682e650d", null ],
     [ "clone", "structppforest2_1_1TreeNode.html#afe195ce45f18dc9e2fc543ff4f7bf166", null ],
     [ "equals", "structppforest2_1_1TreeNode.html#a42f498ebc918e98f30dc91e90a755356", null ],
+    [ "is_leaf", "structppforest2_1_1TreeNode.html#a010d9b1fc895976b4834b2c2567163f6", null ],
     [ "node_classes", "structppforest2_1_1TreeNode.html#adab155cca304b9ad15d75f699efb4f34", null ],
     [ "operator!=", "structppforest2_1_1TreeNode.html#ae1d36e4d07e7074212c43dad2da0d761", null ],
     [ "operator==", "structppforest2_1_1TreeNode.html#a494aabdfba0d9c497c051771b1fe5e9a", null ],

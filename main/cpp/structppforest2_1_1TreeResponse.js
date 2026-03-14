@@ -6,6 +6,7 @@ var structppforest2_1_1TreeResponse =
     [ "class_count", "structppforest2_1_1TreeResponse.html#a2a626569e79d8941da493b2ddd274ecb", null ],
     [ "clone", "structppforest2_1_1TreeResponse.html#a98d85931fdf139a8706f5d9be99c2af0", null ],
     [ "equals", "structppforest2_1_1TreeResponse.html#ad21e9e3a0043c750247183169cb9b16b", null ],
+    [ "is_leaf", "structppforest2_1_1TreeResponse.html#afec18b1e2545f347bfc2dd7dca0d0e9c", null ],
     [ "make", "structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516", null ],
     [ "node_classes", "structppforest2_1_1TreeResponse.html#ad7f34e7b3bd03ca763e3cf13d12956c9", null ],
     [ "predict", "structppforest2_1_1TreeResponse.html#ad1152e6aabd3dbbfce1c69881f33bb64", null ],

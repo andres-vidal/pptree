@@ -10,10 +10,10 @@ var searchData=
   ['forest_2ehpp_7',['Forest.hpp',['../Forest_8hpp.html',1,'']]],
   ['forest_5ffrom_5fjson_8',['forest_from_json',['../namespaceppforest2_1_1serialization.html#acb1f75bf0934a1093a5aec7e8731368b',1,'ppforest2::serialization']]],
   ['format_9',['format',['../structppforest2_1_1cli_1_1BenchmarkParams.html#aab83bf598da28d07ec276532bebfe69f',1,'ppforest2::cli::BenchmarkParams::format'],['../structppforest2_1_1cli_1_1SimulateParams.html#af1695a357c09532387cd738275c592a0',1,'ppforest2::cli::SimulateParams::format']]],
-  ['format_5fmd_5frow_10',['format_md_row',['../namespaceppforest2_1_1io.html#aa94d18b568da9a6796f1f59efb0b9454',1,'ppforest2::io']]],
-  ['format_5fmd_5fseparator_11',['format_md_separator',['../namespaceppforest2_1_1io.html#aa55e111567240699ff009c5e917a36fb',1,'ppforest2::io']]],
-  ['format_5frow_12',['format_row',['../namespaceppforest2_1_1io.html#a57d58a07b534d8c26c1af0fd12653c94',1,'ppforest2::io']]],
-  ['format_5fseparator_13',['format_separator',['../namespaceppforest2_1_1io.html#ab0ce615a1537c286417c9840ea68285a',1,'ppforest2::io']]],
+  ['format_5fmd_5frow_10',['format_md_row',['../namespaceppforest2_1_1io_1_1layout.html#a665671be7e16794fc46d803051dd3493',1,'ppforest2::io::layout']]],
+  ['format_5fmd_5fseparator_11',['format_md_separator',['../namespaceppforest2_1_1io_1_1layout.html#a61070d5fb9ca7d772bc39584f769e4c0',1,'ppforest2::io::layout']]],
+  ['format_5frow_12',['format_row',['../namespaceppforest2_1_1io_1_1layout.html#aea6c2636a757c887f397765d98a19171',1,'ppforest2::io::layout']]],
+  ['format_5fseparator_13',['format_separator',['../namespaceppforest2_1_1io_1_1layout.html#af10f865878b7928c96bcc65d4c6f01a7',1,'ppforest2::io::layout']]],
   ['from_5fx_14',['from_x',['../structppforest2_1_1LayoutEdge.html#aba385bf7e2b34642f65718c0f04ab109',1,'ppforest2::LayoutEdge']]],
   ['from_5fy_15',['from_y',['../structppforest2_1_1LayoutEdge.html#a97f45af85f2aa2e07603031953c7e94d',1,'ppforest2::LayoutEdge']]]
 ];

@@ -2,7 +2,7 @@ var searchData=
 [
   ['p_0',['p',['../structppforest2_1_1cli_1_1Scenario.html#ad6a689e6d327ec9dbe7c5af2fd04d60b',1,'ppforest2::cli::Scenario::p'],['../structppforest2_1_1cli_1_1ScenarioResult.html#aa196c76adf908bb442964bbb1253e53b',1,'ppforest2::cli::ScenarioResult::p']]],
   ['p_5fvars_1',['p_vars',['../structppforest2_1_1cli_1_1ModelParams.html#a656bb57a60382ba2f17591ac68fdf95d',1,'ppforest2::cli::ModelParams']]],
-  ['peak_5frss_5fbytes_2',['peak_rss_bytes',['../structppforest2_1_1cli_1_1ScenarioResult.html#a2e4cd1b3bbd91e543db0c6aa4e1ef3ab',1,'ppforest2::cli::ScenarioResult::peak_rss_bytes'],['../structppforest2_1_1cli_1_1ModelStats.html#aa84010b53b01686e316a2ec19fed1462',1,'ppforest2::cli::ModelStats::peak_rss_bytes']]],
+  ['peak_5frss_5fbytes_2',['peak_rss_bytes',['../structppforest2_1_1cli_1_1ScenarioResult.html#a2e4cd1b3bbd91e543db0c6aa4e1ef3ab',1,'ppforest2::cli::ScenarioResult::peak_rss_bytes'],['../structppforest2_1_1io_1_1ModelStats.html#a15c61c5f80ed5d882213a4a7fe3c91e2',1,'ppforest2::io::ModelStats::peak_rss_bytes']]],
   ['peak_5frss_5fmb_3',['peak_rss_mb',['../structppforest2_1_1cli_1_1ScenarioResult.html#ad86ee2a25a8a2cb1e28aec866300028b',1,'ppforest2::cli::ScenarioResult']]],
   ['permuted_4',['permuted',['../structppforest2_1_1VariableImportance.html#a56fdf2538c7867b8c5d7183a7268a4d3',1,'ppforest2::VariableImportance']]],
   ['pp_5findex_5fvalue_5',['pp_index_value',['../structppforest2_1_1TreeCondition.html#a9fef8c69a770e7f914754a06280c5d49',1,'ppforest2::TreeCondition']]],

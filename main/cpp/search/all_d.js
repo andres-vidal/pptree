@@ -10,10 +10,10 @@ var searchData=
   ['mean_7',['mean',['../structppforest2_1_1cli_1_1SimulateParams.html#a9454fca9aec87a57eb1dd530b5d5520c',1,'ppforest2::cli::SimulateParams::mean'],['../structppforest2_1_1stats_1_1SimulationParams.html#a69694a803715d64e63683b780476ff5b',1,'ppforest2::stats::SimulationParams::mean'],['../classppforest2_1_1stats_1_1GroupPartition.html#a6d2c08555e8c8ff49f95715f2fc771c4',1,'ppforest2::stats::GroupPartition::mean()']]],
   ['mean_5fof_5fmeans_8',['mean_of_means',['../namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045',1,'ppforest2::sr']]],
   ['mean_5fseparation_9',['mean_separation',['../structppforest2_1_1cli_1_1SimulateParams.html#ac75c78a938a3f6f887f843da646f8a0b',1,'ppforest2::cli::SimulateParams::mean_separation'],['../structppforest2_1_1stats_1_1SimulationParams.html#a27279b3a38409e61edd7ccf522a5cabd',1,'ppforest2::stats::SimulationParams::mean_separation']]],
-  ['mean_5fte_5ferror_10',['mean_te_error',['../structppforest2_1_1cli_1_1ScenarioResult.html#a52c0b0a65b0ade361819a442e225a925',1,'ppforest2::cli::ScenarioResult::mean_te_error'],['../structppforest2_1_1cli_1_1ModelStats.html#aa67e0a94ea6fe4461f7d3de6ec2986db',1,'ppforest2::cli::ModelStats::mean_te_error() const']]],
-  ['mean_5ftime_11',['mean_time',['../structppforest2_1_1cli_1_1ModelStats.html#afd467733979981ba17eeabec86e38887',1,'ppforest2::cli::ModelStats']]],
+  ['mean_5fte_5ferror_10',['mean_te_error',['../structppforest2_1_1cli_1_1ScenarioResult.html#a52c0b0a65b0ade361819a442e225a925',1,'ppforest2::cli::ScenarioResult::mean_te_error'],['../structppforest2_1_1io_1_1ModelStats.html#ae5dfe222a74aa08f9dac6276368cc39f',1,'ppforest2::io::ModelStats::mean_te_error() const']]],
+  ['mean_5ftime_11',['mean_time',['../structppforest2_1_1io_1_1ModelStats.html#abe5139d459e9d907ed068cad5cce849f',1,'ppforest2::io::ModelStats']]],
   ['mean_5ftime_5fms_12',['mean_time_ms',['../structppforest2_1_1cli_1_1ScenarioResult.html#a8063517b3e791bce0d6a416b54ecaea2',1,'ppforest2::cli::ScenarioResult']]],
-  ['mean_5ftr_5ferror_13',['mean_tr_error',['../structppforest2_1_1cli_1_1ScenarioResult.html#aa94a7fa50631b86fcefb39f3a32542b8',1,'ppforest2::cli::ScenarioResult::mean_tr_error'],['../structppforest2_1_1cli_1_1ModelStats.html#ab7d51e4f705c09f31d48b98d91bae93f',1,'ppforest2::cli::ModelStats::mean_tr_error()']]],
+  ['mean_5ftr_5ferror_13',['mean_tr_error',['../structppforest2_1_1cli_1_1ScenarioResult.html#aa94a7fa50631b86fcefb39f3a32542b8',1,'ppforest2::cli::ScenarioResult::mean_tr_error'],['../structppforest2_1_1io_1_1ModelStats.html#ad0e7bd2f965369b0f21a3e7c9493f9ce',1,'ppforest2::io::ModelStats::mean_tr_error()']]],
   ['measure_5ftime_5fms_14',['measure_time_ms',['../namespaceppforest2_1_1io.html#a27548afe6815bfe21d68e54f71b37fdd',1,'ppforest2::io']]],
   ['min_5fiterations_15',['min_iterations',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html#a7363f8e5f2f2c108f547f81deb5d2748',1,'ppforest2::cli::ConvergenceCriteria::min_iterations'],['../structppforest2_1_1cli_1_1ConvergenceParams.html#ae9bf640b9f28bcda3cec26bbd4e8e8f4',1,'ppforest2::cli::ConvergenceParams::min_iterations']]],
   ['model_16',['Model',['../structppforest2_1_1Model.html',1,'ppforest2']]],
@@ -23,8 +23,8 @@ var searchData=
   ['model_5fpath_20',['model_path',['../structppforest2_1_1cli_1_1CLIOptions.html#ab1edf18b4f200cfbf2980ec460f47e32',1,'ppforest2::cli::CLIOptions']]],
   ['modelparams_21',['ModelParams',['../structppforest2_1_1cli_1_1ModelParams.html',1,'ppforest2::cli']]],
   ['modelparams_2ehpp_22',['ModelParams.hpp',['../ModelParams_8hpp.html',1,'']]],
-  ['modelstats_23',['ModelStats',['../structppforest2_1_1cli_1_1ModelStats.html',1,'ppforest2::cli']]],
+  ['modelstats_23',['ModelStats',['../structppforest2_1_1io_1_1ModelStats.html',1,'ppforest2::io']]],
   ['modelvisitor_24',['ModelVisitor',['../structppforest2_1_1ModelVisitor.html',1,'ppforest2']]],
   ['modelvisitor_2ehpp_25',['ModelVisitor.hpp',['../ModelVisitor_8hpp.html',1,'']]],
-  ['muted_26',['muted',['../namespaceppforest2_1_1io.html#a6d17c49578950ab6ea0be9494e4794ed',1,'ppforest2::io']]]
+  ['muted_26',['muted',['../namespaceppforest2_1_1io_1_1style.html#a7a5f32471a0274221ad7a7747a10c852',1,'ppforest2::io::style']]]
 ];
