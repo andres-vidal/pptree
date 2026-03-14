@@ -15,5 +15,6 @@ var searchData=
   ['ppforest2_3a_3astats_12',['stats',['../namespaceppforest2_1_1stats.html',1,'ppforest2']]],
   ['ppforest2_3a_3asys_13',['sys',['../namespaceppforest2_1_1sys.html',1,'ppforest2']]],
   ['ppforest2_3a_3atypes_14',['types',['../namespaceppforest2_1_1types.html',1,'ppforest2']]],
-  ['ppforest2_3a_3autils_15',['utils',['../namespaceppforest2_1_1utils.html',1,'ppforest2']]]
+  ['ppforest2_3a_3autils_15',['utils',['../namespaceppforest2_1_1utils.html',1,'ppforest2']]],
+  ['ppforest2_3a_3aviz_16',['viz',['../namespaceppforest2_1_1viz.html',1,'ppforest2']]]
 ];

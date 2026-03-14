@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -162,8 +162,21 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A single projection pursuit decision tree. </p>
-<p>Each internal node projects data onto a linear combination of features and splits on the projected value. Leaf nodes hold class labels. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p>Each internal node projects data onto a linear combination of features and splits on the projected value. Leaf nodes hold class labels.</p>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecGLDA.html">TrainingSpecGLDA</a> spec(lambda: 0.0);</div>
+<div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">stats::RNG</a> rng(42);</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_function" href="#a4938f1b301650a27bcb1808a5cf71cd9">Tree</a> tree = <a class="code hl_function" href="#ae4efa20d35f1f9f4b04b4d25448226cf">Tree::train</a>(spec, x, y, rng);</div>
+<div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> label = tree.<a class="code hl_function" href="#a203b147b705c97025bdb3d762ed4bf2e">predict</a>(x.row(0));</div>
+<div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> preds = tree.<a class="code hl_function" href="#a203b147b705c97025bdb3d762ed4bf2e">predict</a>(x);</div>
+<div class="ttc" id="anamespaceppforest2_1_1stats_html_a8e3a1f81a376373936a72c8ba6061567"><div class="ttname"><a href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">ppforest2::stats::RNG</a></div><div class="ttdeci">pcg32 RNG</div><div class="ttdef"><b>Definition</b> Stats.hpp:19</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1types_html_a421bc51b648a3f3a8e2d3d5c17293c7e"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">ppforest2::types::Response</a></div><div class="ttdeci">int Response</div><div class="ttdoc">Scalar type for class labels (integer).</div><div class="ttdef"><b>Definition</b> Types.hpp:21</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1types_html_a4cc32c7bf71b27689fd027a8814821da"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">ppforest2::types::ResponseVector</a></div><div class="ttdeci">Eigen::Matrix&lt; Response, Eigen::Dynamic, 1 &gt; ResponseVector</div><div class="ttdoc">Dynamic-size column vector of class labels.</div><div class="ttdef"><b>Definition</b> Types.hpp:29</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecGLDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecGLDA.html">ppforest2::TrainingSpecGLDA</a></div><div class="ttdoc">GLDA training specification using all variables.</div><div class="ttdef"><b>Definition</b> TrainingSpecGLDA.hpp:14</div></div>
+<div class="ttc" id="astructppforest2_1_1Tree_html_a203b147b705c97025bdb3d762ed4bf2e"><div class="ttname"><a href="#a203b147b705c97025bdb3d762ed4bf2e">ppforest2::Tree::predict</a></div><div class="ttdeci">types::Response predict(const types::FeatureVector &amp;data) const override</div><div class="ttdoc">Predict a single observation.</div></div>
+<div class="ttc" id="astructppforest2_1_1Tree_html_a4938f1b301650a27bcb1808a5cf71cd9"><div class="ttname"><a href="#a4938f1b301650a27bcb1808a5cf71cd9">ppforest2::Tree::Tree</a></div><div class="ttdeci">Tree(TreeNode::Ptr root)</div></div>
+<div class="ttc" id="astructppforest2_1_1Tree_html_ae4efa20d35f1f9f4b04b4d25448226cf"><div class="ttname"><a href="#ae4efa20d35f1f9f4b04b4d25448226cf">ppforest2::Tree::train</a></div><div class="ttdeci">static Tree train(TrainingSpec const &amp;training_spec, const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y, stats::RNG &amp;rng)</div><div class="ttdoc">Train a tree from a response vector.</div></div>
+</div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a4938f1b301650a27bcb1808a5cf71cd9" name="a4938f1b301650a27bcb1808a5cf71cd9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4938f1b301650a27bcb1808a5cf71cd9">&#9670;&#160;</a></span>Tree() <span class="overload">[1/2]</span></h2>
 

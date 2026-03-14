@@ -7,8 +7,8 @@ var searchData=
   ['permuted_4',['permuted',['../structppforest2_1_1VariableImportance.html#a56fdf2538c7867b8c5d7183a7268a4d3',1,'ppforest2::VariableImportance']]],
   ['pp_5findex_5fvalue_5',['pp_index_value',['../structppforest2_1_1TreeCondition.html#a9fef8c69a770e7f914754a06280c5d49',1,'ppforest2::TreeCondition']]],
   ['pp_5fstrategy_6',['pp_strategy',['../structppforest2_1_1TrainingSpec.html#ae61c0a0d784ff4b2bfe5a0c16d4dfc79',1,'ppforest2::TrainingSpec']]],
-  ['predicted_5fclass_7',['predicted_class',['../structppforest2_1_1RegionPolygon.html#ab3497f09e9d85b804a5422a15f3e9219',1,'ppforest2::RegionPolygon']]],
-  ['projected_5fvalues_8',['projected_values',['../structppforest2_1_1NodeData.html#a910c7587dda10133c73870abb477c5ce',1,'ppforest2::NodeData']]],
+  ['predicted_5fclass_7',['predicted_class',['../structppforest2_1_1viz_1_1RegionPolygon.html#ae9b57871f9ecbf909deff95e4f9765ea',1,'ppforest2::viz::RegionPolygon']]],
+  ['projected_5fvalues_8',['projected_values',['../structppforest2_1_1viz_1_1NodeData.html#ace58e17809ab9eaddad15054fda49529',1,'ppforest2::viz::NodeData']]],
   ['projections_9',['projections',['../structppforest2_1_1VariableImportance.html#a9d993434c9ada143fd61ad34d87eadc7',1,'ppforest2::VariableImportance']]],
-  ['projector_10',['projector',['../structppforest2_1_1pp_1_1PPResult.html#a9850369c954e14a971ef7e2c191e22f7',1,'ppforest2::pp::PPResult::projector'],['../structppforest2_1_1TreeCondition.html#a5c2dceed6e2865fd22eed1a1f9655ac6',1,'ppforest2::TreeCondition::projector'],['../structppforest2_1_1NodeData.html#a6c9532e10d626ee8e8fe4b5aa41cf5e4',1,'ppforest2::NodeData::projector'],['../structppforest2_1_1HalfSpace.html#a754cdb096a85daba1d43a05497e1e351',1,'ppforest2::HalfSpace::projector']]]
+  ['projector_10',['projector',['../structppforest2_1_1pp_1_1PPResult.html#a9850369c954e14a971ef7e2c191e22f7',1,'ppforest2::pp::PPResult::projector'],['../structppforest2_1_1TreeCondition.html#a5c2dceed6e2865fd22eed1a1f9655ac6',1,'ppforest2::TreeCondition::projector'],['../structppforest2_1_1viz_1_1NodeData.html#a55dac264b4dda8e0bec8a4ad51bd4e52',1,'ppforest2::viz::NodeData::projector'],['../structppforest2_1_1viz_1_1HalfSpace.html#a1bb7b742a6cf3ad0867ae59361ca7934',1,'ppforest2::viz::HalfSpace::projector']]]
 ];

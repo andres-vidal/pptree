@@ -56,5 +56,13 @@ summary(model)
 #> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
 #> Confusion Matrix:
-#> TODO
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          1        49
+#> 
+#> Training error: 2 %
+#> 
 ```

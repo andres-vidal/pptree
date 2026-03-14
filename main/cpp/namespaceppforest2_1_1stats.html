@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -106,6 +106,9 @@ $(function(){initNavTree('namespaceppforest2_1_1stats.html',''); initResizable(t
   <div class="headertitle"><div class="title">ppforest2::stats Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Statistical infrastructure for training and evaluation.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -166,7 +169,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a116d95f97b06a0c8b60db844c607ce25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique values of a response vector.  <br /></td></tr>
 <tr class="separator:a116d95f97b06a0c8b60db844c607ce25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Statistical infrastructure for training and evaluation. </p>
+<p>Provides the random number generator (pcg32), discrete uniform sampling (Lemire's method), grouped-observation bookkeeping (<a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html" title="Contiguous-block representation of grouped observations.">GroupPartition</a>), confusion matrices, data simulation, and basic descriptive statistics used throughout the training pipeline. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a8e3a1f81a376373936a72c8ba6061567" name="a8e3a1f81a376373936a72c8ba6061567"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8e3a1f81a376373936a72c8ba6061567">&#9670;&#160;</a></span>RNG</h2>
 

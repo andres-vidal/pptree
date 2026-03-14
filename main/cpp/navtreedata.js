@@ -25,6 +25,42 @@
 var NAVTREE =
 [
   [ "ppforest2", "index.html", [
+    [ "ppforest2 — C++ API Reference", "index.html", "index" ],
+    [ "Extending: Custom Strategies", "extending_strategies.html", [
+      [ "Conventions", "extending_strategies.html#strat_conventions", null ],
+      [ "Adding a new PPStrategy", "extending_strategies.html#strat_pp", [
+        [ "Interface to implement", "extending_strategies.html#strat_pp_interface", null ],
+        [ "Example: a random projection strategy", "extending_strategies.html#strat_pp_example", null ]
+      ] ],
+      [ "Adding a new DRStrategy", "extending_strategies.html#strat_dr", [
+        [ "Interface to implement", "extending_strategies.html#strat_dr_interface", null ],
+        [ "Example: top-variance variable selection", "extending_strategies.html#strat_dr_example", null ]
+      ] ],
+      [ "Adding a new SRStrategy", "extending_strategies.html#strat_sr", [
+        [ "Interface to implement", "extending_strategies.html#strat_sr_interface", null ],
+        [ "Example: median-based split", "extending_strategies.html#strat_sr_example", null ]
+      ] ],
+      [ "Composing strategies", "extending_strategies.html#strat_compose", [
+        [ "Direct composition", "extending_strategies.html#strat_compose_direct", null ],
+        [ "Creating a TrainingSpec subclass", "extending_strategies.html#strat_compose_subclass", null ]
+      ] ]
+    ] ],
+    [ "Extending: Custom Visitors", "extending_visitors.html", [
+      [ "How double dispatch works", "extending_visitors.html#vis_dispatch", null ],
+      [ "Implementing a TreeNodeVisitor", "extending_visitors.html#vis_treenode", [
+        [ "Interface to implement", "extending_visitors.html#vis_treenode_interface", null ],
+        [ "Traversal pattern", "extending_visitors.html#vis_treenode_traversal", null ],
+        [ "Example: computing tree depth", "extending_visitors.html#vis_treenode_example", null ],
+        [ "Example: counting leaves", "extending_visitors.html#vis_treenode_example2", null ]
+      ] ],
+      [ "Implementing a ModelVisitor", "extending_visitors.html#vis_model", [
+        [ "Interface to implement", "extending_visitors.html#vis_model_interface", null ],
+        [ "Example: collecting all leaf labels", "extending_visitors.html#vis_model_example", null ]
+      ] ],
+      [ "Implementing a TrainingSpecVisitor", "extending_visitors.html#vis_specvisitor", null ],
+      [ "Existing visitors as reference", "extending_visitors.html#vis_existing", null ],
+      [ "Conventions", "extending_visitors.html#vis_conventions", null ]
+    ] ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -59,11 +95,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BenchmarkParams_8hpp.html",
-"functions_vars_q.html",
-"structppforest2_1_1Forest.html#a51d1f87282ecb8fd1b14cb4ffdc67479",
-"structppforest2_1_1TreeCondition.html#aae00c2126f9831cb31aa1ad2cca1c491",
-"structppforest2_1_1cli_1_1ScenarioResult.html#a6ff2f005b9956a0232fee9a87fd835e6",
-"structppforest2_1_1stats_1_1SimulationParams.html#a1de01239dbb5f1395a080c20593de0ae"
+"functions_e.html",
+"structppforest2_1_1Forest.html#a41579f1bd39c4320b6d2b1afa106fccc",
+"structppforest2_1_1cli_1_1BenchmarkParams.html#aece25fda7ac99aa87a5f0463a95b836e",
+"structppforest2_1_1io_1_1ModelStats.html#ad0e7bd2f965369b0f21a3e7c9493f9ce",
+"structppforest2_1_1viz_1_1NodeData.html#ad01e6eb86345aedd993352ba6f82e400"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

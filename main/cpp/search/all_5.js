@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['edges_0',['edges',['../structppforest2_1_1TreeLayout.html#ad817de684dc3db1148d08e77124364d9',1,'ppforest2::TreeLayout']]],
+  ['edges_0',['edges',['../structppforest2_1_1viz_1_1TreeLayout.html#aa603f454fc3c503fd7b82853b0fd1e2c',1,'ppforest2::viz::TreeLayout']]],
   ['emphasis_1',['emphasis',['../namespaceppforest2_1_1io_1_1style.html#ae3bd1294579e96533c59c763ce183764',1,'ppforest2::io::style']]],
   ['enabled_2',['enabled',['../structppforest2_1_1cli_1_1ConvergenceParams.html#abb493bce1e5768b7ac3b05fe64ed97c5',1,'ppforest2::cli::ConvergenceParams']]],
   ['ensure_5fextension_3',['ensure_extension',['../namespaceppforest2_1_1io_1_1json.html#afa1ffe178e53831a029de5729441f1e0',1,'ppforest2::io::json']]],
@@ -12,6 +12,17 @@ var searchData=
   ['evaluate_2ehpp_9',['Evaluate.hpp',['../Evaluate_8hpp.html',1,'']]],
   ['evaluateparams_10',['EvaluateParams',['../structppforest2_1_1cli_1_1EvaluateParams.html',1,'ppforest2::cli']]],
   ['evaluateparams_2ehpp_11',['EvaluateParams.hpp',['../EvaluateParams_8hpp.html',1,'']]],
-  ['expand_12',['expand',['../structppforest2_1_1dr_1_1DRSpec.html#aec4b2d653544ad4dd0addf78eacfdb0f',1,'ppforest2::dr::DRSpec']]],
-  ['export_5fpath_13',['export_path',['../structppforest2_1_1cli_1_1EvaluateParams.html#a661eccd34b18a474550737dd3cd23ac7',1,'ppforest2::cli::EvaluateParams']]]
+  ['example_3a_20a_20random_20projection_20strategy_12',['Example: a random projection strategy',['../extending_strategies.html#strat_pp_example',1,'']]],
+  ['example_3a_20collecting_20all_20leaf_20labels_13',['Example: collecting all leaf labels',['../extending_visitors.html#vis_model_example',1,'']]],
+  ['example_3a_20computing_20tree_20depth_14',['Example: computing tree depth',['../extending_visitors.html#vis_treenode_example',1,'']]],
+  ['example_3a_20counting_20leaves_15',['Example: counting leaves',['../extending_visitors.html#vis_treenode_example2',1,'']]],
+  ['example_3a_20median_20based_20split_16',['Example: median-based split',['../extending_strategies.html#strat_sr_example',1,'']]],
+  ['example_3a_20top_20variance_20variable_20selection_17',['Example: top-variance variable selection',['../extending_strategies.html#strat_dr_example',1,'']]],
+  ['existing_20visitors_20as_20reference_18',['Existing visitors as reference',['../extending_visitors.html#vis_existing',1,'']]],
+  ['expand_19',['expand',['../structppforest2_1_1dr_1_1DRSpec.html#aec4b2d653544ad4dd0addf78eacfdb0f',1,'ppforest2::dr::DRSpec']]],
+  ['export_5fpath_20',['export_path',['../structppforest2_1_1cli_1_1EvaluateParams.html#a661eccd34b18a474550737dd3cd23ac7',1,'ppforest2::cli::EvaluateParams']]],
+  ['extending_2dstrategies_2edox_21',['extending-strategies.dox',['../extending-strategies_8dox.html',1,'']]],
+  ['extending_2dvisitors_2edox_22',['extending-visitors.dox',['../extending-visitors_8dox.html',1,'']]],
+  ['extending_3a_20custom_20strategies_23',['Extending: Custom Strategies',['../extending_strategies.html',1,'']]],
+  ['extending_3a_20custom_20visitors_24',['Extending: Custom Visitors',['../extending_visitors.html',1,'']]]
 ];
