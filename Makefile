@@ -145,7 +145,7 @@ r-document:
 r-build: r-clean
 	@make r-prepare
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
-	@R CMD build ${R_PACKAGE_DIR}
+	@R CMD build ${R_PACKAGE_DIR} --no-build-vignettes
 	@make r-clean
 
 r-check: r-build
