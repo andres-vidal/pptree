@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -112,7 +112,7 @@ $(function(){initNavTree('namespaceppforest2_1_1serialization.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1serialization_1_1JsonModelVisitor.html">JsonModelVisitor</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visitor that serializes a model (<a class="el" href="structppforest2_1_1Tree.html" title="A single projection pursuit decision tree.">Tree</a> or <a class="el" href="structppforest2_1_1Forest.html">Forest</a>) to JSON.  <a href="structppforest2_1_1serialization_1_1JsonModelVisitor.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visitor that serializes a model (<a class="el" href="structppforest2_1_1Tree.html" title="A single projection pursuit decision tree.">Tree</a> or <a class="el" href="structppforest2_1_1Forest.html" title="A projection pursuit random forest.">Forest</a>) to JSON.  <a href="structppforest2_1_1serialization_1_1JsonModelVisitor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1serialization_1_1JsonNodeVisitor.html">JsonNodeVisitor</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visitor that serializes a tree node to JSON.  <a href="structppforest2_1_1serialization_1_1JsonNodeVisitor.html#details">More...</a><br /></td></tr>
@@ -177,8 +177,20 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>JSON serialization and deserialization for <a class="el" href="namespaceppforest2.html">ppforest2</a> models. </p>
-<p>Uses nlohmann/json. Provides <a class="el" href="#a5f98c94cb33ab84c91b2fba714093277">to_json()</a> for serializing trees, forests, confusion matrices, and variable importance to JSON, and *_from_json() for deserializing them back. Also provides ostream operators for convenient text output. </p>
-</div><h2 class="groupheader">Typedef Documentation</h2>
+<p>Uses nlohmann/json. Provides <a class="el" href="#a5f98c94cb33ab84c91b2fba714093277">to_json()</a> for serializing trees, forests, confusion matrices, and variable importance to JSON, and *_from_json() for deserializing them back. Also provides ostream operators for convenient text output.</p>
+<div class="fragment"><div class="line"><span class="comment">// Serialize a forest to JSON and write to file:</span></div>
+<div class="line"><span class="keyword">auto</span> j = <a class="code hl_function" href="#a5f98c94cb33ab84c91b2fba714093277">serialization::to_json</a>(forest);</div>
+<div class="line"><a class="code hl_function" href="namespaceppforest2_1_1io_1_1json.html#a44bb543f8cffdb55c94bbcced935199e">io::json::write_file</a>(j, <span class="stringliteral">&quot;model.json&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Read and deserialize:</span></div>
+<div class="line"><span class="keyword">auto</span> j2 = <a class="code hl_function" href="namespaceppforest2_1_1io_1_1json.html#a4bd6f2f3f8eefd20024552c81f49ab23">io::json::read_file</a>(<span class="stringliteral">&quot;model.json&quot;</span>);</div>
+<div class="line"><a class="code hl_struct" href="structppforest2_1_1Forest.html">Forest</a> restored = <a class="code hl_function" href="#acb1f75bf0934a1093a5aec7e8731368b">serialization::forest_from_json</a>(j2);</div>
+<div class="ttc" id="anamespaceppforest2_1_1io_1_1json_html_a44bb543f8cffdb55c94bbcced935199e"><div class="ttname"><a href="namespaceppforest2_1_1io_1_1json.html#a44bb543f8cffdb55c94bbcced935199e">ppforest2::io::json::write_file</a></div><div class="ttdeci">void write_file(const nlohmann::json &amp;data, const std::string &amp;path)</div><div class="ttdoc">Write a JSON object to a file (pretty-printed with indent 2).</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1io_1_1json_html_a4bd6f2f3f8eefd20024552c81f49ab23"><div class="ttname"><a href="namespaceppforest2_1_1io_1_1json.html#a4bd6f2f3f8eefd20024552c81f49ab23">ppforest2::io::json::read_file</a></div><div class="ttdeci">nlohmann::json read_file(const std::string &amp;path)</div><div class="ttdoc">Read a JSON file and parse its contents.</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1serialization_html_a5f98c94cb33ab84c91b2fba714093277"><div class="ttname"><a href="#a5f98c94cb33ab84c91b2fba714093277">ppforest2::serialization::to_json</a></div><div class="ttdeci">json to_json(const Model &amp;model)</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1serialization_html_acb1f75bf0934a1093a5aec7e8731368b"><div class="ttname"><a href="#acb1f75bf0934a1093a5aec7e8731368b">ppforest2::serialization::forest_from_json</a></div><div class="ttdeci">Forest forest_from_json(const json &amp;j)</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html"><div class="ttname"><a href="structppforest2_1_1Forest.html">ppforest2::Forest</a></div><div class="ttdoc">A projection pursuit random forest.</div><div class="ttdef"><b>Definition</b> Forest.hpp:40</div></div>
+</div><!-- fragment --> </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="afced42a0b2c517da2664a9a849d90899" name="afced42a0b2c517da2664a9a849d90899"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afced42a0b2c517da2664a9a849d90899">&#9670;&#160;</a></span>json</h2>
 

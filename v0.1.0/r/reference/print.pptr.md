@@ -21,8 +21,8 @@ print(x, ...)
 
 ## See also
 
-[`pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/pptr.md),
-[`summary.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md)
+[`pptr`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pptr.md),
+[`summary.pptr`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/summary.pptr.md)
 
 ## Examples
 

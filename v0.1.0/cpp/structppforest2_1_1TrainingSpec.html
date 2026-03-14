@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -147,7 +147,22 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract training configuration for projection pursuit trees. </p>
-<p>Composes a projection pursuit strategy (PPStrategy), a dimensionality reduction strategy (DRStrategy), and a split strategy (SRStrategy). Concrete subclasses (<a class="el" href="structppforest2_1_1TrainingSpecGLDA.html" title="GLDA training specification using all variables.">TrainingSpecGLDA</a>, <a class="el" href="structppforest2_1_1TrainingSpecUGLDA.html" title="UGLDA training specification with uniform variable selection.">TrainingSpecUGLDA</a>) provide specific parameter combinations. </p>
+<p>Composes a projection pursuit strategy (PPStrategy), a dimensionality reduction strategy (DRStrategy), and a split strategy (SRStrategy). Concrete subclasses (<a class="el" href="structppforest2_1_1TrainingSpecGLDA.html" title="GLDA training specification using all variables.">TrainingSpecGLDA</a>, <a class="el" href="structppforest2_1_1TrainingSpecUGLDA.html" title="UGLDA training specification with uniform variable selection.">TrainingSpecUGLDA</a>) provide specific parameter combinations.</p>
+<p>For most use cases, use the ready-made subclasses: </p><div class="fragment"><div class="line"><span class="comment">// Single tree — GLDA with all variables:</span></div>
+<div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecGLDA.html">TrainingSpecGLDA</a> spec(lambda: 0.0);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Random forest — GLDA with uniform variable selection:</span></div>
+<div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUGLDA.html">TrainingSpecUGLDA</a> spec(n_vars: 3, lambda: 0.5);</div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecGLDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecGLDA.html">ppforest2::TrainingSpecGLDA</a></div><div class="ttdoc">GLDA training specification using all variables.</div><div class="ttdef"><b>Definition</b> TrainingSpecGLDA.hpp:14</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecUGLDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUGLDA.html">ppforest2::TrainingSpecUGLDA</a></div><div class="ttdoc">UGLDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUGLDA.hpp:15</div></div>
+</div><!-- fragment --><p>For custom strategy composition: </p><div class="fragment"><div class="line"><span class="keyword">auto</span> spec = std::make_unique&lt;TrainingSpec&gt;(</div>
+<div class="line">  <a class="code hl_function" href="namespaceppforest2_1_1pp.html#a069ba8d8c46fe2cc426f4fb5e6d1b3f7">pp::glda</a>(0.5),          <span class="comment">// PDA with lambda = 0.5</span></div>
+<div class="line">  <a class="code hl_function" href="namespaceppforest2_1_1dr.html#a3f9e147489a1f708dd66dcc88f87e845">dr::uniform</a>(4),         <span class="comment">// sample 4 variables per split</span></div>
+<div class="line">  <a class="code hl_function" href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">sr::mean_of_means</a>());   <span class="comment">// midpoint of group means</span></div>
+<div class="ttc" id="anamespaceppforest2_1_1dr_html_a3f9e147489a1f708dd66dcc88f87e845"><div class="ttname"><a href="namespaceppforest2_1_1dr.html#a3f9e147489a1f708dd66dcc88f87e845">ppforest2::dr::uniform</a></div><div class="ttdeci">DRStrategy::Ptr uniform(const int n_vars)</div><div class="ttdoc">Factory function for a uniform DR strategy.</div><div class="ttdef"><b>Definition</b> DRUniformStrategy.hpp:55</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1pp_html_a069ba8d8c46fe2cc426f4fb5e6d1b3f7"><div class="ttname"><a href="namespaceppforest2_1_1pp.html#a069ba8d8c46fe2cc426f4fb5e6d1b3f7">ppforest2::pp::glda</a></div><div class="ttdeci">PPStrategy::Ptr glda(float lambda)</div><div class="ttdoc">Factory function for a GLDA projection pursuit strategy.</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1sr_html_a5984b53061082b99be1d9c764a4b7045"><div class="ttname"><a href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">ppforest2::sr::mean_of_means</a></div><div class="ttdeci">SRStrategy::Ptr mean_of_means()</div><div class="ttdoc">Factory function for a mean-of-means split strategy.</div><div class="ttdef"><b>Definition</b> SRMeanOfMeansStrategy.hpp:31</div></div>
+</div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="structppforest2_1_1TrainingSpecGLDA.html" title="GLDA training specification using all variables.">TrainingSpecGLDA</a>, <a class="el" href="structppforest2_1_1TrainingSpecUGLDA.html" title="UGLDA training specification with uniform variable selection.">TrainingSpecUGLDA</a> </dd></dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="ae2ac65f2c2e549df1dbea70d046a775b" name="ae2ac65f2c2e549df1dbea70d046a775b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae2ac65f2c2e549df1dbea70d046a775b">&#9670;&#160;</a></span>Ptr</h2>

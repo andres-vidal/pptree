@@ -25,10 +25,10 @@ The formula used to train the model.
 
 ## See also
 
-[`pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/pprf.md)
+[`pprf`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pprf.md)
 for training,
-[`predict.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/predict.pprf.md),
-[`summary.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md)
+[`predict.pprf`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/predict.pprf.md),
+[`summary.pprf`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/summary.pprf.md)
 
 ## Examples
 
@@ -37,5 +37,5 @@ model <- pprf(Type ~ ., data = iris)
 formula(model)
 #> Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 
 #>     1
-#> <environment: 0x56113481b540>
+#> <environment: 0x557758ba08c0>
 ```

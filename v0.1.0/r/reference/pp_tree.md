@@ -26,9 +26,9 @@ A parsnip model specification.
 
 ## See also
 
-[`pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/pptr.md)
+[`pptr`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pptr.md)
 for the underlying training function,
-[`pp_rand_forest`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_rand_forest.md)
+[`pp_rand_forest`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pp_rand_forest.md)
 for forests
 
 ## Examples

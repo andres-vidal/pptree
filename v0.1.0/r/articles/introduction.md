@@ -62,7 +62,14 @@ summary(tree)
 #> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
 #> Confusion Matrix:
-#> TODO
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          1        49
+#> 
+#> Training error: 2 %
 ```
 
 Predict new observations:
@@ -113,7 +120,15 @@ summary(forest)
 #> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
 #> Confusion Matrix:
-#> TODO
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          4        46
+#> 
+#> Training error: 4 %
+#> OOB error: 4 %
 ```
 
 The summary shows the OOB (out-of-bag) error estimate and three variable
@@ -172,7 +187,14 @@ plot(tree, type = "boundaries")
 
 ![](introduction_files/figure-html/plot-boundaries-1.png)
 
-For forests, specify a `tree_index` to plot an individual tree:
+For forests, variable importance is the only global visualization
+available. Individual trees can be plotted by specifying a `tree_index`.
+
+``` r
+plot(forest)
+```
+
+![](introduction_files/figure-html/plot-forest-1.png)
 
 ``` r
 plot(forest, type = "structure", tree_index = 1)
@@ -214,7 +236,14 @@ summary(tree_pda)
 #> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
 #> Confusion Matrix:
-#> TODO
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         47         3
+#>   virginica       0          3        47
+#> 
+#> Training error: 4 %
 ```
 
 ## Tidymodels integration

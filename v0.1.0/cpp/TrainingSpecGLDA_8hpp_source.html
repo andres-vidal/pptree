@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -144,9 +144,9 @@ $(function(){initNavTree('TrainingSpecGLDA_8hpp_source.html',''); initResizable(
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>}</div>
 <div class="ttc" id="aTrainingSpecVisitor_8hpp_html"><div class="ttname"><a href="TrainingSpecVisitor_8hpp.html">TrainingSpecVisitor.hpp</a></div></div>
 <div class="ttc" id="aTrainingSpec_8hpp_html"><div class="ttname"><a href="TrainingSpec_8hpp.html">TrainingSpec.hpp</a></div></div>
-<div class="ttc" id="anamespaceppforest2_1_1dr_html"><div class="ttname"><a href="namespaceppforest2_1_1dr.html">ppforest2::dr</a></div><div class="ttdef"><b>Definition</b> DRNoopStrategy.hpp:7</div></div>
-<div class="ttc" id="anamespaceppforest2_1_1pp_html"><div class="ttname"><a href="namespaceppforest2_1_1pp.html">ppforest2::pp</a></div><div class="ttdef"><b>Definition</b> PPGLDAStrategy.hpp:6</div></div>
-<div class="ttc" id="anamespaceppforest2_1_1sr_html"><div class="ttname"><a href="namespaceppforest2_1_1sr.html">ppforest2::sr</a></div><div class="ttdef"><b>Definition</b> SRMeanOfMeansStrategy.hpp:5</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1dr_html"><div class="ttname"><a href="namespaceppforest2_1_1dr.html">ppforest2::dr</a></div><div class="ttdoc">Dimensionality reduction strategies for variable selection.</div><div class="ttdef"><b>Definition</b> DRNoopStrategy.hpp:7</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1pp_html"><div class="ttname"><a href="namespaceppforest2_1_1pp.html">ppforest2::pp</a></div><div class="ttdoc">Projection pursuit strategies.</div><div class="ttdef"><b>Definition</b> PPGLDAStrategy.hpp:6</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1sr_html"><div class="ttname"><a href="namespaceppforest2_1_1sr.html">ppforest2::sr</a></div><div class="ttdoc">Split rule strategies for computing decision thresholds.</div><div class="ttdef"><b>Definition</b> SRMeanOfMeansStrategy.hpp:5</div></div>
 <div class="ttc" id="anamespaceppforest2_html"><div class="ttname"><a href="namespaceppforest2.html">ppforest2</a></div><div class="ttdef"><b>Definition</b> Benchmark.hpp:20</div></div>
 <div class="ttc" id="astructppforest2_1_1TrainingSpecGLDA_html_a18f606509efdd84ec87a04cf36478b93"><div class="ttname"><a href="structppforest2_1_1TrainingSpecGLDA.html#a18f606509efdd84ec87a04cf36478b93">ppforest2::TrainingSpecGLDA::make</a></div><div class="ttdeci">static TrainingSpec::Ptr make(const float lambda)</div><div class="ttdef"><b>Definition</b> TrainingSpecGLDA.hpp:34</div></div>
 <div class="ttc" id="astructppforest2_1_1TrainingSpecGLDA_html_a1e8f6ab07abb2ca9ef4a0d9eeda8ea5b"><div class="ttname"><a href="structppforest2_1_1TrainingSpecGLDA.html#a1e8f6ab07abb2ca9ef4a0d9eeda8ea5b">ppforest2::TrainingSpecGLDA::lambda</a></div><div class="ttdeci">const float lambda</div><div class="ttdoc">Penalty parameter for the LDA index.</div><div class="ttdef"><b>Definition</b> TrainingSpecGLDA.hpp:16</div></div>
@@ -155,8 +155,8 @@ $(function(){initNavTree('TrainingSpecGLDA_8hpp_source.html',''); initResizable(
 <div class="ttc" id="astructppforest2_1_1TrainingSpecGLDA_html_adbb657ce7b651da803186ce7a97b3ceb"><div class="ttname"><a href="structppforest2_1_1TrainingSpecGLDA.html#adbb657ce7b651da803186ce7a97b3ceb">ppforest2::TrainingSpecGLDA::clone</a></div><div class="ttdeci">TrainingSpec::Ptr clone() const override</div><div class="ttdoc">Deep copy of this training specification.</div><div class="ttdef"><b>Definition</b> TrainingSpecGLDA.hpp:30</div></div>
 <div class="ttc" id="astructppforest2_1_1TrainingSpecVisitor_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecVisitor.html">ppforest2::TrainingSpecVisitor</a></div><div class="ttdoc">Visitor interface for training specification dispatch.</div><div class="ttdef"><b>Definition</b> TrainingSpecVisitor.hpp:13</div></div>
 <div class="ttc" id="astructppforest2_1_1TrainingSpecVisitor_html_ad84f5f9761c8bf475043e8ae1df8893a"><div class="ttname"><a href="structppforest2_1_1TrainingSpecVisitor.html#ad84f5f9761c8bf475043e8ae1df8893a">ppforest2::TrainingSpecVisitor::visit</a></div><div class="ttdeci">virtual void visit(const TrainingSpecGLDA &amp;spec)=0</div></div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpec_html_ae0ab95e52ed701efa4c393973b29cbac"><div class="ttname"><a href="structppforest2_1_1TrainingSpec.html#ae0ab95e52ed701efa4c393973b29cbac">ppforest2::TrainingSpec::TrainingSpec</a></div><div class="ttdeci">TrainingSpec(std::unique_ptr&lt; pp::PPStrategy &gt; pp_strategy, std::unique_ptr&lt; dr::DRStrategy &gt; dr_strategy, std::unique_ptr&lt; sr::SRStrategy &gt; sr_strategy)</div><div class="ttdef"><b>Definition</b> TrainingSpec.hpp:32</div></div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpec_html_ae2ac65f2c2e549df1dbea70d046a775b"><div class="ttname"><a href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">ppforest2::TrainingSpec::Ptr</a></div><div class="ttdeci">std::unique_ptr&lt; TrainingSpec &gt; Ptr</div><div class="ttdef"><b>Definition</b> TrainingSpec.hpp:23</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpec_html_ae0ab95e52ed701efa4c393973b29cbac"><div class="ttname"><a href="structppforest2_1_1TrainingSpec.html#ae0ab95e52ed701efa4c393973b29cbac">ppforest2::TrainingSpec::TrainingSpec</a></div><div class="ttdeci">TrainingSpec(std::unique_ptr&lt; pp::PPStrategy &gt; pp_strategy, std::unique_ptr&lt; dr::DRStrategy &gt; dr_strategy, std::unique_ptr&lt; sr::SRStrategy &gt; sr_strategy)</div><div class="ttdef"><b>Definition</b> TrainingSpec.hpp:51</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpec_html_ae2ac65f2c2e549df1dbea70d046a775b"><div class="ttname"><a href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">ppforest2::TrainingSpec::Ptr</a></div><div class="ttdeci">std::unique_ptr&lt; TrainingSpec &gt; Ptr</div><div class="ttdef"><b>Definition</b> TrainingSpec.hpp:42</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

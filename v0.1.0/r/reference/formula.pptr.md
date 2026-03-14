@@ -25,10 +25,10 @@ The formula used to train the model.
 
 ## See also
 
-[`pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/pptr.md)
+[`pptr`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pptr.md)
 for training,
-[`predict.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/predict.pptr.md),
-[`summary.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md)
+[`predict.pptr`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/predict.pptr.md),
+[`summary.pptr`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/summary.pptr.md)
 
 ## Examples
 
@@ -37,5 +37,5 @@ model <- pptr(Type ~ ., data = iris)
 formula(model)
 #> Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 
 #>     1
-#> <environment: 0x561137b6c600>
+#> <environment: 0x557752a7f9c8>
 ```

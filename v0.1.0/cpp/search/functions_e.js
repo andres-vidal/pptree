@@ -5,7 +5,7 @@ var searchData=
   ['read_5ffile_2',['read_file',['../namespaceppforest2_1_1io_1_1json.html#a4bd6f2f3f8eefd20024552c81f49ab23',1,'ppforest2::io::json']]],
   ['read_5flabels_3',['read_labels',['../namespaceppforest2_1_1io_1_1csv.html#aeb2d17fe7babc9799666d0d98ef911f7',1,'ppforest2::io::csv']]],
   ['read_5fsorted_4',['read_sorted',['../namespaceppforest2_1_1io_1_1csv.html#ae7c79b0baafb3cc83335e83c8bc28db3',1,'ppforest2::io::csv']]],
-  ['regionvisitor_5',['RegionVisitor',['../structppforest2_1_1RegionVisitor.html#ad06402f0d305d04bb2c008963ec086cd',1,'ppforest2::RegionVisitor']]],
+  ['regionvisitor_5',['RegionVisitor',['../structppforest2_1_1viz_1_1RegionVisitor.html#aa5ed5f7eee0b058d6e5b5a069c3e54e8',1,'ppforest2::viz::RegionVisitor']]],
   ['remap_6',['remap',['../classppforest2_1_1stats_1_1GroupPartition.html#ada78d0d9120a1266b5d10573e933d131',1,'ppforest2::stats::GroupPartition']]],
   ['response_7',['response',['../structppforest2_1_1TreeCondition.html#ae64fd60a89f2f5bf2785188866ce64fa',1,'ppforest2::TreeCondition::response()'],['../structppforest2_1_1TreeNode.html#a3ff08d96717ede9a4812bac0ca787276',1,'ppforest2::TreeNode::response()'],['../structppforest2_1_1TreeResponse.html#a7a4e650892f7799dc073e5debf5b3765',1,'ppforest2::TreeResponse::response()']]],
   ['rows_8',['rows',['../Macros_8hpp.html#a71bf0955969d93eefeb1568ce5e8c0d2',1,'Macros.hpp']]],

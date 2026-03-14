@@ -4,5 +4,5 @@ var searchData=
   ['accuracy_1',['accuracy',['../namespaceppforest2_1_1stats.html#ab1be109eb5773e260bc48e272d1599d4',1,'ppforest2::stats']]],
   ['add_5fmodel_5foptions_2',['add_model_options',['../namespaceppforest2_1_1cli.html#a4233edc87e69b2325c6cfcbdf5138afd',1,'ppforest2::cli']]],
   ['add_5ftree_3',['add_tree',['../structppforest2_1_1Forest.html#a2b19dd1a1bc6e66fd817fb5d1b62fd33',1,'ppforest2::Forest']]],
-  ['adjust_5fthreshold_4',['adjust_threshold',['../namespaceppforest2.html#a93c4aabb4f964a9401e9b5424ed28dba',1,'ppforest2']]]
+  ['adjust_5fthreshold_4',['adjust_threshold',['../namespaceppforest2_1_1viz.html#a99078646b780aaa7597ab5d44b75a53a',1,'ppforest2::viz']]]
 ];

@@ -46,6 +46,17 @@ header h1 {
   font-family: var(--font-mono);
 }
 
+.version-badge {
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
 header p {
   margin-top: 16px;
   font-size: 1.125rem;

@@ -38,10 +38,10 @@ data frame with one column per class, where each row sums to 1.
 
 ## See also
 
-[`pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/pprf.md)
+[`pprf`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pprf.md)
 for training,
-[`formula.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pprf.md),
-[`summary.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md)
+[`formula.pprf`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/formula.pprf.md),
+[`summary.pprf`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/summary.pprf.md)
 
 ## Examples
 
