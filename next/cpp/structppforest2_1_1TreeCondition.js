@@ -6,6 +6,7 @@ var structppforest2_1_1TreeCondition =
     [ "class_count", "structppforest2_1_1TreeCondition.html#a438cc01e4101f24c7863cc447d3c80b5", null ],
     [ "clone", "structppforest2_1_1TreeCondition.html#a098a15e1e211878b33be889b36c2a741", null ],
     [ "equals", "structppforest2_1_1TreeCondition.html#ac561c798489ee9547170a689d8a63fd9", null ],
+    [ "is_leaf", "structppforest2_1_1TreeCondition.html#a1bc39a6582fc702b1e2728d582e79b61", null ],
     [ "make", "structppforest2_1_1TreeCondition.html#aae00c2126f9831cb31aa1ad2cca1c491", null ],
     [ "node_classes", "structppforest2_1_1TreeCondition.html#a483ddb17b43104c58ab40fabb09bcff2", null ],
     [ "predict", "structppforest2_1_1TreeCondition.html#a1ff693a51d539488538bfd6bf1b4f53c", null ],

@@ -13,6 +13,9 @@ var namespaceppforest2 =
     [ "serialization", "namespaceppforest2_1_1serialization.html", "namespaceppforest2_1_1serialization" ],
     [ "sr", "namespaceppforest2_1_1sr.html", "namespaceppforest2_1_1sr" ],
     [ "stats", "namespaceppforest2_1_1stats.html", "namespaceppforest2_1_1stats" ],
+    [ "sys", "namespaceppforest2_1_1sys.html", [
+      [ "get_peak_rss_bytes", "namespaceppforest2_1_1sys.html#a71f3c1c38bb22317bcf098505b325795", null ]
+    ] ],
     [ "types", "namespaceppforest2_1_1types.html", [
       [ "Feature", "namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c", null ],
       [ "FeatureMatrix", "namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d", null ],

@@ -1,12 +1,12 @@
 var Color_8hpp =
 [
-    [ "ppforest2::io::color_enabled", "namespaceppforest2_1_1io.html#a3111452e4ba7ec15aa74b54d2f2f4e38", null ],
-    [ "ppforest2::io::emphasis", "namespaceppforest2_1_1io.html#a0ae867be3c84d481a1ca6ef03c8fea88", null ],
-    [ "ppforest2::io::error", "namespaceppforest2_1_1io.html#acd9d2efceb01956a04b014c2bb737519", null ],
-    [ "ppforest2::io::info", "namespaceppforest2_1_1io.html#a387c3189d57a139dd1ba757353b46bab", null ],
-    [ "ppforest2::io::init_color", "namespaceppforest2_1_1io.html#aca29babe7e55a0cc4872b4f719384b06", null ],
-    [ "ppforest2::io::muted", "namespaceppforest2_1_1io.html#a6d17c49578950ab6ea0be9494e4794ed", null ],
-    [ "ppforest2::io::styled", "namespaceppforest2_1_1io.html#a222ff6cba696eeab19857a793761f186", null ],
-    [ "ppforest2::io::success", "namespaceppforest2_1_1io.html#a0a89efbd7491cf7317bc1be84e83c6a3", null ],
-    [ "ppforest2::io::warning", "namespaceppforest2_1_1io.html#a2abdb2d444beebe6d5f4e0cd090a17fc", null ]
+    [ "ppforest2::io::style::color_enabled", "namespaceppforest2_1_1io_1_1style.html#a77fedfff454143019e06de61803bb893", null ],
+    [ "ppforest2::io::style::emphasis", "namespaceppforest2_1_1io_1_1style.html#ae3bd1294579e96533c59c763ce183764", null ],
+    [ "ppforest2::io::style::error", "namespaceppforest2_1_1io_1_1style.html#ae34e06e16709ede6c42dc6070081f1f6", null ],
+    [ "ppforest2::io::style::info", "namespaceppforest2_1_1io_1_1style.html#ad3acbe1ee7247de86a2850fba97dc304", null ],
+    [ "ppforest2::io::style::init_color", "namespaceppforest2_1_1io_1_1style.html#a67980b6e1d9be22e995d884c69a19b38", null ],
+    [ "ppforest2::io::style::muted", "namespaceppforest2_1_1io_1_1style.html#a7a5f32471a0274221ad7a7747a10c852", null ],
+    [ "ppforest2::io::style::styled", "namespaceppforest2_1_1io_1_1style.html#a43ef20ac4bf95914ac676d9766d880ac", null ],
+    [ "ppforest2::io::style::success", "namespaceppforest2_1_1io_1_1style.html#a54edc627ad5d004ce526c46686cd68bb", null ],
+    [ "ppforest2::io::style::warning", "namespaceppforest2_1_1io_1_1style.html#a88c2187936a74e14b832f2a6d1cced36", null ]
 ];

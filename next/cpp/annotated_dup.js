@@ -9,7 +9,6 @@ var annotated_dup =
         [ "ConvergenceParams", "structppforest2_1_1cli_1_1ConvergenceParams.html", "structppforest2_1_1cli_1_1ConvergenceParams" ],
         [ "EvaluateParams", "structppforest2_1_1cli_1_1EvaluateParams.html", "structppforest2_1_1cli_1_1EvaluateParams" ],
         [ "ModelParams", "structppforest2_1_1cli_1_1ModelParams.html", "structppforest2_1_1cli_1_1ModelParams" ],
-        [ "ModelStats", "structppforest2_1_1cli_1_1ModelStats.html", "structppforest2_1_1cli_1_1ModelStats" ],
         [ "Scenario", "structppforest2_1_1cli_1_1Scenario.html", "structppforest2_1_1cli_1_1Scenario" ],
         [ "ScenarioResult", "structppforest2_1_1cli_1_1ScenarioResult.html", "structppforest2_1_1cli_1_1ScenarioResult" ],
         [ "SimulateParams", "structppforest2_1_1cli_1_1SimulateParams.html", "structppforest2_1_1cli_1_1SimulateParams" ],
@@ -24,7 +23,10 @@ var annotated_dup =
         [ "DRUniformStrategy", "structppforest2_1_1dr_1_1DRUniformStrategy.html", "structppforest2_1_1dr_1_1DRUniformStrategy" ]
       ] ],
       [ "io", "namespaceppforest2_1_1io.html", [
-        [ "Column", "structppforest2_1_1io_1_1Column.html", "structppforest2_1_1io_1_1Column" ],
+        [ "layout", "namespaceppforest2_1_1io_1_1layout.html", [
+          [ "Column", "structppforest2_1_1io_1_1layout_1_1Column.html", "structppforest2_1_1io_1_1layout_1_1Column" ]
+        ] ],
+        [ "ModelStats", "structppforest2_1_1io_1_1ModelStats.html", "structppforest2_1_1io_1_1ModelStats" ],
         [ "Output", "structppforest2_1_1io_1_1Output.html", "structppforest2_1_1io_1_1Output" ],
         [ "TempDir", "classppforest2_1_1io_1_1TempDir.html", "classppforest2_1_1io_1_1TempDir" ],
         [ "TempFile", "classppforest2_1_1io_1_1TempFile.html", "classppforest2_1_1io_1_1TempFile" ]

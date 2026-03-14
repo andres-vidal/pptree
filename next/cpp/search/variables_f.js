@@ -11,7 +11,7 @@ var searchData=
   ['segments_8',['segments',['../structppforest2_1_1BoundaryVisitor.html#add931a786dacd2974179cbebc8bcc383',1,'ppforest2::BoundaryVisitor']]],
   ['selected_5fcols_9',['selected_cols',['../structppforest2_1_1dr_1_1DRSpec.html#afafeeb50a48be5a27f2b6f090af315aa',1,'ppforest2::dr::DRSpec']]],
   ['simulation_10',['simulation',['../structppforest2_1_1cli_1_1CLIOptions.html#ae7db379425ec8063039014faebdf025c',1,'ppforest2::cli::CLIOptions']]],
-  ['split_5fstrategy_11',['split_strategy',['../structppforest2_1_1TrainingSpec.html#a04c19d88f671ea0fc89d935e3e2b5e89',1,'ppforest2::TrainingSpec']]],
+  ['sr_5fstrategy_11',['sr_strategy',['../structppforest2_1_1TrainingSpec.html#ae947cb682df4d848c80d143f58fd9fed',1,'ppforest2::TrainingSpec']]],
   ['stable_5fwindow_12',['stable_window',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html#ae6e8171c61bc2ae143283570f2c37817',1,'ppforest2::cli::ConvergenceCriteria::stable_window'],['../structppforest2_1_1cli_1_1ConvergenceParams.html#a48b8f3c24dc15ec8460552f11c405d09',1,'ppforest2::cli::ConvergenceParams::stable_window']]],
   ['std_5ftime_5fms_13',['std_time_ms',['../structppforest2_1_1cli_1_1ScenarioResult.html#a121f0fb566c59ffc9427e59597cf1d94',1,'ppforest2::cli::ScenarioResult']]],
   ['subcommand_14',['subcommand',['../structppforest2_1_1cli_1_1CLIOptions.html#a9769737ca09cab6d5bafa2a16033bee9',1,'ppforest2::cli::CLIOptions']]],

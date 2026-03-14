@@ -10,5 +10,5 @@ var CLIOptions_8hpp =
     ] ],
     [ "ppforest2::cli::init_params", "namespaceppforest2_1_1cli.html#a9bd63acbab0aa4b7ce674bb37015de00", null ],
     [ "ppforest2::cli::parse_args", "namespaceppforest2_1_1cli.html#a21d8bb54163dfd42eab3e54447362d72", null ],
-    [ "ppforest2::cli::warn_unused_params", "namespaceppforest2_1_1cli.html#a88a61cca6690bd5ffc0da574ea774e7e", null ]
+    [ "ppforest2::cli::warn_unused_params", "namespaceppforest2_1_1cli.html#a9dc6f94738ccf8577ec0403d028c06d1", null ]
 ];
