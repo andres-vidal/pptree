@@ -6,6 +6,7 @@
 #include "stats/GroupPartition.hpp"
 #include "stats/Stats.hpp"
 #include "utils/Invariant.hpp"
+#include "utils/UserError.hpp"
 
 #include "csv.hpp"
 
@@ -76,8 +77,11 @@ namespace ppforest2::io::csv {
     std::vector<std::vector<types::Feature>> featureData;
     std::vector<std::string> rawLabels;
 
+    int row_num = 0;
+
     for (::csv::CSVRow& row : reader) {
-      invariant(row.size() >= 1, "CSV row has no features.");
+      ++row_num;
+      ppforest2::user_error(row.size() >= 2, fmt::format("Row {} has only {} column(s) — expected at least 2 (features + label)", row_num, row.size()));
 
       std::vector<types::Feature> currentFeatures;
       for (int j = 0; j < row.size() - 1; ++j) {
@@ -91,7 +95,7 @@ namespace ppforest2::io::csv {
       rawLabels.push_back(labelStr);
     }
 
-    invariant(!featureData.empty(), "CSV file is empty.");
+    ppforest2::user_error(!featureData.empty(), "CSV file is empty or has no data rows");
 
     // Map string labels to integer codes.
     std::unordered_map<std::string, int> labelMapping;
@@ -111,7 +115,7 @@ namespace ppforest2::io::csv {
 
     types::FeatureMatrix x(n, p);
     for (int i = 0; i < n; ++i) {
-      invariant(featureData[i].size() == p, "Inconsistent number of feature columns in CSV file.");
+      ppforest2::user_error(featureData[i].size() == p, fmt::format("Row {} has {} feature column(s), expected {} (same as row 1)", i + 1, featureData[i].size(), p));
 
       for (int j = 0; j < p; ++j) {
         x(i, j) = featureData[i][j];

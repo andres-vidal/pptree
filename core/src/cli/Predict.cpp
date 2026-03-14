@@ -17,6 +17,7 @@
 #include "io/Output.hpp"
 #include "io/IO.hpp"
 #include "serialization/Json.hpp"
+#include "utils/UserError.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -75,6 +76,10 @@ namespace {
     DataPacket data = [&]() {
       try {
         return io::csv::read_sorted(params.data_path);
+      } catch (const ppforest2::UserError& e) {
+        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
+        fmt::print(stderr, "File: {}\n", params.data_path);
+        std::exit(1);
       } catch (const std::exception& e) {
         fmt::print(stderr, "{} reading CSV file: {}\n", error("Error:"), e.what());
         std::exit(1);

@@ -19,6 +19,7 @@
 #include "io/IO.hpp"
 #include "io/Timing.hpp"
 #include "serialization/Json.hpp"
+#include "utils/UserError.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -146,6 +147,10 @@ namespace {
     if (!params.data_path.empty()) {
       try {
         return io::csv::read_sorted(params.data_path);
+      } catch (const ppforest2::UserError& e) {
+        fmt::print(stderr, "Error: {}\n", e.what());
+        fmt::print(stderr, "File: {}\n", params.data_path);
+        exit(1);
       } catch (const std::runtime_error& e) {
         fmt::print(stderr, "Error reading CSV file: {}\n", e.what());
         fmt::print(stderr, "Please ensure the file exists and is properly formatted\n");

@@ -566,5 +566,4 @@ namespace {
 
     return { std::move(nodes), std::move(edges) };
   }
-
 }

@@ -280,6 +280,8 @@ The project is organized into a shared C++ core and language-specific bindings:
 
 - **Visualization** (`core/src/models/Visualization.hpp/cpp` + `bindings/R/R/plot-*.R`) — Split between C++ and R. C++ handles geometry: tree traversal visitors collect per-node data, clip decision boundary lines via parametric line clipping, and compute convex decision region polygons via Sutherland–Hodgman polygon clipping. R handles rendering via ggplot2, translating the C++ output into layers and assembling composite layouts (mosaic, pairwise facets, tree diagrams). The tree structure visualization — with embedded per-node histograms and projector labels — is inspired by [dtreeviz](https://github.com/parrt/dtreeviz).
 
+- **Numeric precision** — The C++ core uses single-precision (`float`) arithmetic by default. This is sufficient for most classification tasks and reduces memory usage. If you need higher precision (e.g., datasets with very large feature values or near-singular within-group covariance matrices), compile with `-DPPFOREST2_DOUBLE_PRECISION=ON` to switch to `double` throughout. The R package always uses whatever precision the core was compiled with.
+
 - **Python bindings** — Planned.
 
 ### Design patterns
@@ -380,6 +382,34 @@ ppforest2 benchmark -s bench/default-scenarios.json -b baseline.json
 # Override iteration count (forces fixed mode)
 ppforest2 benchmark -s bench/default-scenarios.json -i 5
 ```
+
+### Sample Results
+
+Results from `bench/default-scenarios.json` on a single machine (Apple M1, single-threaded). All scenarios use 50 trees, λ=0.5, 50% variable selection, 70/30 train-test split, with smart convergence. Timing shows mean ± standard deviation across converged iterations.
+
+**Real datasets:**
+
+| Scenario       |    n |   p |  g | Time (ms)       | Peak RSS | Test Err |
+|----------------|-----:|----:|---:|----------------:|---------:|---------:|
+| data-iris      |  151 |   4 |  4 |     2.0 ± 0.0   |   3.4 MB |     2.2% |
+| data-wine      |  179 |  13 |  4 |     4.0 ± 0.0   |   4.1 MB |     5.5% |
+| data-olive     |  573 |   8 | 10 |    20.9 ± 0.3   |   4.3 MB |     6.9% |
+| data-image     | 2311 |  18 |  8 |    62.7 ± 0.5   |   8.6 MB |    14.0% |
+| data-leukemia  |   73 |  40 |  4 |    10.0 ± 0.0   |   4.0 MB |    17.4% |
+| data-NCI60     |   62 |  30 |  9 |    32.7 ± 0.7   |   3.9 MB |    36.4% |
+
+**Scaling (simulated data):**
+
+| Scenario    |      n |   p |  g | Trees | Time (ms)         | Peak RSS |
+|-------------|-------:|----:|---:|------:|------------------:|---------:|
+| trees-sm    |    500 |  10 |  5 |   100 |     22.2 ± 0.4    |   4.0 MB |
+| trees-lg    |    500 |  10 |  5 |  1000 |    226.6 ± 3.7    |   9.1 MB |
+| n-sm        |    100 |  10 |  5 |    50 |      6.0 ± 0.0    |   2.8 MB |
+| n-lg        | 10,000 |  10 |  5 |    50 |    101.2 ± 1.0    |  14.3 MB |
+| p-sm        |  1,000 |  20 |  5 |    50 |     24.2 ± 0.4    |   5.0 MB |
+| p-lg        |  1,000 | 400 |  5 |    50 |  5,904.2 ± 17.5   |  37.8 MB |
+
+Run `make benchmark` to reproduce these on your machine, or `make benchmark-compare` to compare against saved results.
 
 ### Smart Convergence
 

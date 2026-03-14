@@ -1,3 +1,14 @@
+print_confusion_matrix <- function(raw_preds, model) {
+  preds <- factor(model$classes[raw_preds], levels = model$classes)
+  actual <- factor(model$classes[model$y], levels = model$classes)
+  cm <- table(Actual = actual, Predicted = preds)
+  print(cm)
+  cat("\n")
+  n <- length(actual)
+  correct <- sum(preds == actual)
+  cat("Training error:", round((1 - correct / n) * 100, 2), "%\n")
+}
+
 process_predict_arguments <- function(object, new_data, ...) {
   if (is.null(new_data)) {
     new_data <- list(...)[[1]]

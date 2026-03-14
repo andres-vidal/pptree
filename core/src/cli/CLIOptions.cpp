@@ -18,6 +18,8 @@
 #include <sstream>
 #include <cmath>
 #include <algorithm>
+#include <functional>
+#include <set>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -136,6 +138,72 @@ namespace {
       }
   };
 
+  /**
+   * @brief Warn about unrecognized keys in a JSON config file.
+   *
+   * CLI11's built-in config_extras_mode doesn't work with the
+   * broadcast pattern used by ConfigJSON (top-level keys forwarded
+   * to all subcommands), so we validate keys manually by walking
+   * the config JSON and checking against registered option names.
+   */
+  void warn_unknown_config_keys(io::Output& out, const CLI::App& app) {
+    auto *config_opt = app.get_config_ptr();
+
+    if (!config_opt || config_opt->count() == 0) return;
+
+    std::string config_path = config_opt->results().at(0);
+    std::ifstream file(config_path);
+
+    if (!file.is_open()) return;
+
+    nlohmann::json j;
+
+    try {
+      file >> j;
+    } catch (...) {
+      return;
+    }
+
+    if (!j.is_object()) return;
+
+    // Collect all known option names and subcommand names
+    std::set<std::string> known;
+
+    for (const CLI::Option *opt : app.get_options({})) {
+      for (const auto& name : opt->get_lnames()) {
+        known.insert(name);
+      }
+    }
+
+    for (const CLI::App *sub : app.get_subcommands({})) {
+      known.insert(sub->get_name());
+
+      for (const CLI::Option *opt : sub->get_options({})) {
+        for (const auto& name : opt->get_lnames()) {
+          known.insert(name);
+        }
+      }
+    }
+
+    // Walk config JSON and warn about unknown keys
+    std::function<void(const nlohmann::json&, const std::string&)> check;
+    check = [&](const nlohmann::json& obj, const std::string& context) {
+      for (auto it = obj.begin(); it != obj.end(); ++it) {
+        std::string key = it.key();
+        std::replace(key.begin(), key.end(), '_', '-');
+
+        if (known.find(key) == known.end()) {
+          std::string full_key = context.empty() ? it.key() : context + "." + it.key();
+          out.println("Warning: Unknown config key '{}' — ignoring", full_key);
+        } else if (it->is_object()) {
+          check(*it, key);
+        }
+      }
+    };
+
+    check(j, "");
+  }
+
   void post_parse(CLIOptions & params, CLI::App& app) {
     auto *train_sub   = app.get_subcommand("train");
     auto *predict_sub = app.get_subcommand("predict");
@@ -218,6 +286,7 @@ namespace {
     }
 
     io::Output out(params.quiet);
+    warn_unknown_config_keys(out, app);
     warn_unused_params(out, params);
   }
 }

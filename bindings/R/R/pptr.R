@@ -238,8 +238,8 @@ summary.pptr <- function(object, ...) {
       cat("projection-pursuit optimization, which may affect the resulting tree.\n")
     }
     cat("-------------------------------------\n")
-    cat("Confusion Matrix:\n")
-    cat("TODO")
+    cat("Confusion Matrix:\n\n")
+    print_confusion_matrix(ppforest2_predict(model, model$x), model)
   }
   cat("\n")
 }
