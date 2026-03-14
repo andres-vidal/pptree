@@ -21,9 +21,9 @@ summary(object, ...)
 
 ## See also
 
-[`pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/pptr.md),
-[`predict.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/predict.pptr.md),
-[`print.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pptr.md)
+[`pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/pptr.md),
+[`predict.pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/predict.pptr.md),
+[`print.pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/print.pptr.md)
 
 ## Examples
 
@@ -56,5 +56,13 @@ summary(model)
 #> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
 #> Confusion Matrix:
-#> TODO
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          1        49
+#> 
+#> Training error: 2 %
+#> 
 ```

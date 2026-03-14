@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -105,6 +105,9 @@ $(function(){initNavTree('namespaceppforest2_1_1sr.html',''); initResizable(true
   <div class="headertitle"><div class="title">ppforest2::sr Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Split rule strategies for computing decision thresholds.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -121,7 +124,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a5984b53061082b99be1d9c764a4b7045"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory function for a mean-of-means split strategy.  <br /></td></tr>
 <tr class="separator:a5984b53061082b99be1d9c764a4b7045"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Split rule strategies for computing decision thresholds. </p>
+<p>Contains the abstract <a class="el" href="structppforest2_1_1sr_1_1SRStrategy.html" title="Abstract strategy for computing the split threshold.">SRStrategy</a> interface and concrete implementations that determine the split threshold in projected space. The built-in <a class="el" href="structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html" title="Split threshold as the mean of two group means.">SRMeanOfMeansStrategy</a> uses the midpoint of the two group means. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a5984b53061082b99be1d9c764a4b7045" name="a5984b53061082b99be1d9c764a4b7045"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5984b53061082b99be1d9c764a4b7045">&#9670;&#160;</a></span>mean_of_means()</h2>
 

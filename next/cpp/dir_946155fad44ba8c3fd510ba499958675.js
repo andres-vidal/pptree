@@ -5,5 +5,6 @@ var dir_946155fad44ba8c3fd510ba499958675 =
     [ "Map.hpp", "Map_8hpp.html", "Map_8hpp" ],
     [ "Math.hpp", "Math_8hpp.html", "Math_8hpp" ],
     [ "System.hpp", "System_8hpp.html", "System_8hpp" ],
-    [ "Types.hpp", "Types_8hpp.html", "Types_8hpp" ]
+    [ "Types.hpp", "Types_8hpp.html", "Types_8hpp" ],
+    [ "UserError.hpp", "UserError_8hpp.html", "UserError_8hpp" ]
 ];

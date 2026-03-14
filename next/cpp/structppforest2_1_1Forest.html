@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -108,6 +108,9 @@ $(function(){initNavTree('structppforest2_1_1Forest.html',''); initResizable(tru
 </div><!--header-->
 <div class="contents">
 
+<p>A projection pursuit random forest.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="Forest_8hpp_source.html">Forest.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -166,7 +169,27 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a7472b8c050914c7f7b8faa363e414080 inherit pub_types_structppforest2_1_1Model" id="r_a7472b8c050914c7f7b8faa363e414080"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Model.html#a7472b8c050914c7f7b8faa363e414080">Ptr</a> = std::unique_ptr&lt;<a class="el" href="structppforest2_1_1Model.html">Model</a>&gt;</td></tr>
 <tr class="separator:a7472b8c050914c7f7b8faa363e414080 inherit pub_types_structppforest2_1_1Model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A projection pursuit random forest. </p>
+<p>An ensemble of <a class="el" href="structppforest2_1_1BootstrapTree.html">BootstrapTree</a> instances, each trained on a bootstrap sample. Predictions are made by majority vote. Out-of-bag estimation and vote-proportion predictions are supported.</p>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUGLDA.html">TrainingSpecUGLDA</a> spec(n_vars: 3, lambda: 0.0);</div>
+<div class="line"><a class="code hl_function" href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">Forest</a> forest = <a class="code hl_function" href="#a41579f1bd39c4320b6d2b1afa106fccc">Forest::train</a>(spec, x, y, size: 500, <a class="code hl_variable" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>: 42);</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> preds = forest.<a class="code hl_function" href="#a4b767e43cb29fc1273b34d1077d54c5a">predict</a>(x_test);</div>
+<div class="line"><span class="keywordtype">double</span> oob = forest.<a class="code hl_function" href="#ab9dd051d9e30e864682c01bfa252cc74">oob_error</a>(x, y);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Vote proportions — (n × G) matrix, rows sum to 1.</span></div>
+<div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> probs = forest.<a class="code hl_function" href="#a4b767e43cb29fc1273b34d1077d54c5a">predict</a>(x_test, <a class="code hl_struct" href="structppforest2_1_1Proportions.html">Proportions</a>{});</div>
+<div class="ttc" id="anamespaceppforest2_1_1types_html_a20733a55a09432e8f9f924eb11fb5b0d"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">ppforest2::types::FeatureMatrix</a></div><div class="ttdeci">Eigen::Matrix&lt; Feature, Eigen::Dynamic, Eigen::Dynamic &gt; FeatureMatrix</div><div class="ttdoc">Dynamic-size matrix of feature values.</div><div class="ttdef"><b>Definition</b> Types.hpp:24</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1types_html_a4cc32c7bf71b27689fd027a8814821da"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">ppforest2::types::ResponseVector</a></div><div class="ttdeci">Eigen::Matrix&lt; Response, Eigen::Dynamic, 1 &gt; ResponseVector</div><div class="ttdoc">Dynamic-size column vector of class labels.</div><div class="ttdef"><b>Definition</b> Types.hpp:29</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html_a2bb8cefb0eb540d08e8e26b99883e7cc"><div class="ttname"><a href="#a2bb8cefb0eb540d08e8e26b99883e7cc">ppforest2::Forest::seed</a></div><div class="ttdeci">const int seed</div><div class="ttdef"><b>Definition</b> Forest.hpp:62</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html_a41579f1bd39c4320b6d2b1afa106fccc"><div class="ttname"><a href="#a41579f1bd39c4320b6d2b1afa106fccc">ppforest2::Forest::train</a></div><div class="ttdeci">static Forest train(const TrainingSpec &amp;training_spec, const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y, int size, int seed, int n_threads=std::thread::hardware_concurrency())</div><div class="ttdoc">Train a random forest.</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html_a4b767e43cb29fc1273b34d1077d54c5a"><div class="ttname"><a href="#a4b767e43cb29fc1273b34d1077d54c5a">ppforest2::Forest::predict</a></div><div class="ttdeci">types::Response predict(const types::FeatureVector &amp;data) const override</div><div class="ttdoc">Predict a single observation.</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html_ab9dd051d9e30e864682c01bfa252cc74"><div class="ttname"><a href="#ab9dd051d9e30e864682c01bfa252cc74">ppforest2::Forest::oob_error</a></div><div class="ttdeci">double oob_error(const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y) const</div><div class="ttdoc">Out-of-bag error rate.</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html_aebf6bbdeb3ff9672fc037cc5f48a5e8c"><div class="ttname"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">ppforest2::Forest::Forest</a></div><div class="ttdeci">Forest()</div></div>
+<div class="ttc" id="astructppforest2_1_1Proportions_html"><div class="ttname"><a href="structppforest2_1_1Proportions.html">ppforest2::Proportions</a></div><div class="ttdoc">Tag type for requesting vote-proportion predictions.</div><div class="ttdef"><b>Definition</b> Forest.hpp:19</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecUGLDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUGLDA.html">ppforest2::TrainingSpecUGLDA</a></div><div class="ttdoc">UGLDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUGLDA.hpp:15</div></div>
+</div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aebf6bbdeb3ff9672fc037cc5f48a5e8c" name="aebf6bbdeb3ff9672fc037cc5f48a5e8c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">&#9670;&#160;</a></span>Forest() <span class="overload">[1/2]</span></h2>
 

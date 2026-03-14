@@ -54,13 +54,13 @@ A pptr model trained on `x` and `y`.
 
 ## See also
 
-[`predict.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/predict.pptr.md),
-[`formula.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pptr.md),
-[`summary.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md),
-[`print.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pptr.md),
-[`pp_tree`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_tree.md)
+[`predict.pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/predict.pptr.md),
+[`formula.pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/formula.pptr.md),
+[`summary.pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/summary.pptr.md),
+[`print.pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/print.pptr.md),
+[`pp_tree`](https://andres-vidal.github.io/ppforest2/next/r/reference/pp_tree.md)
 for parsnip integration,
-[`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/main/r/articles/introduction.md)
+[`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/next/r/articles/introduction.md)
 for a tutorial
 
 ## Examples

@@ -18,5 +18,5 @@ var searchData=
   ['print_5fvariable_5fimportance_15',['print_variable_importance',['../namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7',1,'ppforest2::io']]],
   ['println_16',['println',['../structppforest2_1_1io_1_1Output.html#aad1af2cabeaae871adb58a19d4d6bb20',1,'ppforest2::io::Output']]],
   ['progress_17',['progress',['../structppforest2_1_1io_1_1Output.html#a4c6405f8250f801e4f0f1121c641296e',1,'ppforest2::io::Output']]],
-  ['project_5f2d_18',['project_2d',['../namespaceppforest2.html#a6d0eda92bf6c249347ee08175f8df693',1,'ppforest2']]]
+  ['project_5f2d_18',['project_2d',['../namespaceppforest2_1_1viz.html#aecf8445cb02b9492172d5d8e0c020ac8',1,'ppforest2::viz']]]
 ];

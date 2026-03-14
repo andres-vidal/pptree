@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -105,6 +105,9 @@ $(function(){initNavTree('namespaceppforest2_1_1dr.html',''); initResizable(true
   <div class="headertitle"><div class="title">ppforest2::dr Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Dimensionality reduction strategies for variable selection.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -130,7 +133,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a3f9e147489a1f708dd66dcc88f87e845"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory function for a uniform DR strategy.  <br /></td></tr>
 <tr class="separator:a3f9e147489a1f708dd66dcc88f87e845"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Dimensionality reduction strategies for variable selection. </p>
+<p>Contains the abstract <a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html" title="Abstract strategy for dimensionality reduction.">DRStrategy</a> interface and concrete implementations that select a subset of variables before projection pursuit optimisation. <a class="el" href="structppforest2_1_1dr_1_1DRNoopStrategy.html" title="No-op dimensionality reduction: selects all variables.">DRNoopStrategy</a> uses all variables (single trees); <a class="el" href="structppforest2_1_1dr_1_1DRUniformStrategy.html" title="Uniform random dimensionality reduction.">DRUniformStrategy</a> samples uniformly at random (forests). </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="afb04463fe18947613b27e0b8a367923a" name="afb04463fe18947613b27e0b8a367923a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afb04463fe18947613b27e0b8a367923a">&#9670;&#160;</a></span>noop()</h2>
 

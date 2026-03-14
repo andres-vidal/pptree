@@ -1,69 +1,174 @@
-Builds decision trees by splitting on linear combinations of randomly
-chosen variables. Projection Pursuit (PP) is used to choose a projection
-of the variables that best separates the classes. Using linear
-combinations of variables to separate classes takes the correlation
-between variables into account which allows ppforest2 to outperform a
-traditional decision tree when separations between groups occurs in
-combinations of variables. Single trees can be assembled into random
-forests for improved accuracy.
+# ppforest2
+
+ppforest2 provides projection pursuit oblique decision trees and random
+forests for classification. Instead of splitting on single variables,
+each node projects the data onto a linear combination of features,
+capturing structure that axis-aligned trees miss.
+
+The package wraps a high-performance C++ core and is intended as a
+modern successor to
+[`PPforest`](https://cran.r-project.org/package=PPforest).
+
+Key capabilities: oblique splits via projection pursuit, multi-threaded
+forest training (OpenMP), cross-platform reproducibility, three variable
+importance measures (projection-based, weighted, permutation), LDA/PDA
+optimisation, OOB error estimation, and
+[parsnip](https://parsnip.tidymodels.org/) / tidymodels integration.
+
+## Installation
+
+``` r
+# install.packages("devtools")
+devtools::install_github("andres-vidal/ppforest2", subdir = "bindings/R", build = FALSE)
+```
+
+## Usage
+
+### Single tree
+
+``` r
+library(ppforest2)
+
+model <- pptr(Species ~ ., data = iris)
+predict(model, iris[1:5, ])
+summary(model)
+```
+
+### Random forest
+
+``` r
+forest <- pprf(Species ~ ., data = iris, size = 500)
+predict(forest, iris[1:5, ])
+predict(forest, iris[1:5, ], type = "prob")   # vote proportions
+summary(forest)
+```
+
+### Regularisation (PDA)
+
+When classes are highly correlated or the number of variables is large
+relative to the sample size, penalised discriminant analysis can improve
+separation:
+
+``` r
+pptr(Species ~ ., data = iris, lambda = 0.5)
+```
+
+### Visualisation
+
+ppforest2 provides four diagnostic plot types (requires
+[ggplot2](https://ggplot2.tidyverse.org/)):
+
+``` r
+# Mosaic overview: structure + importance + boundaries
+plot(model)
+
+# Individual plot types
+plot(model, type = "structure")     # tree diagram with per-node histograms
+plot(model, type = "importance")    # variable importance bar chart
+plot(model, type = "projection")    # projected data at each split
+plot(model, type = "boundaries")    # decision boundaries in feature space
+
+# Forest: importance across all trees, or inspect individual trees
+plot(forest)
+plot(forest, type = "structure", tree_index = 1)
+plot(forest, type = "boundaries", tree_index = 1)
+```
+
+### tidymodels integration
+
+ppforest2 integrates with [parsnip](https://parsnip.tidymodels.org/):
+
+``` r
+library(parsnip)
+
+# Single tree
+spec <- pp_tree(lambda = 0) |> set_engine("pptree") |> set_mode("classification")
+fit  <- fit(spec, Species ~ ., data = iris)
+
+# Random forest
+spec <- pp_rand_forest(trees = 50, mtry = 2) |> set_engine("ppforest2")
+fit  <- spec |> fit(Species ~ ., data = iris)
+predict(fit, iris, type = "prob")
+```
+
+### JSON serialisation
+
+Models can be saved and loaded in JSON format, enabling interoperability
+with the C++ CLI and other language bindings:
+
+``` r
+save_json(model, "model.json")
+restored <- load_json("model.json")
+```
+
+## Learning more
+
+- [`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/next/r/articles/introduction.md)
+  — a tutorial covering trees, forests, visualisation, and tidymodels
+  integration.
+- [C++ API
+  Reference](https://andres-vidal.github.io/ppforest2/next/cpp/) — core
+  library documentation (Doxygen).
+- [GitHub repository](https://github.com/andres-vidal/ppforest2) —
+  source code, build instructions, and benchmarks.
 
 # Package index
 
 ## All functions
 
-- [`NCI60`](https://andres-vidal.github.io/ppforest2/main/r/reference/NCI60.md)
+- [`NCI60`](https://andres-vidal.github.io/ppforest2/next/r/reference/NCI60.md)
   : NCI60 Dataset
-- [`crab`](https://andres-vidal.github.io/ppforest2/main/r/reference/crab.md)
+- [`crab`](https://andres-vidal.github.io/ppforest2/next/r/reference/crab.md)
   : Australian Crabs Dataset
-- [`crabs`](https://andres-vidal.github.io/ppforest2/main/r/reference/crabs.md)
+- [`crabs`](https://andres-vidal.github.io/ppforest2/next/r/reference/crabs.md)
   : Crabs Dataset
-- [`fishcatch`](https://andres-vidal.github.io/ppforest2/main/r/reference/fishcatch.md)
+- [`fishcatch`](https://andres-vidal.github.io/ppforest2/next/r/reference/fishcatch.md)
   : Fish Catch Dataset
-- [`formula(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pprf.md)
+- [`formula(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/formula.pprf.md)
   : Extracts the formula used to train a pprf model.
-- [`formula(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pptr.md)
+- [`formula(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/formula.pptr.md)
   : Extracts the formula used to train a pptr model.
-- [`glass`](https://andres-vidal.github.io/ppforest2/main/r/reference/glass.md)
+- [`glass`](https://andres-vidal.github.io/ppforest2/next/r/reference/glass.md)
   : Glass Dataset
-- [`image`](https://andres-vidal.github.io/ppforest2/main/r/reference/image.md)
+- [`image`](https://andres-vidal.github.io/ppforest2/next/r/reference/image.md)
   : Image Dataset
-- [`iris`](https://andres-vidal.github.io/ppforest2/main/r/reference/iris.md)
+- [`iris`](https://andres-vidal.github.io/ppforest2/next/r/reference/iris.md)
   : Iris Flower Dataset
-- [`leukemia`](https://andres-vidal.github.io/ppforest2/main/r/reference/leukemia.md)
+- [`leukemia`](https://andres-vidal.github.io/ppforest2/next/r/reference/leukemia.md)
   : Leukemia Dataset
-- [`lymphoma`](https://andres-vidal.github.io/ppforest2/main/r/reference/lymphoma.md)
+- [`lymphoma`](https://andres-vidal.github.io/ppforest2/next/r/reference/lymphoma.md)
   : Lymphoma Dataset
-- [`olive`](https://andres-vidal.github.io/ppforest2/main/r/reference/olive.md)
+- [`olive`](https://andres-vidal.github.io/ppforest2/next/r/reference/olive.md)
   : Olive Dataset
-- [`parkinson`](https://andres-vidal.github.io/ppforest2/main/r/reference/parkinson.md)
+- [`parkinson`](https://andres-vidal.github.io/ppforest2/next/r/reference/parkinson.md)
   : Parkinson Dataset
-- [`plot(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/plot.pprf.md)
+- [`plot(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/plot.pprf.md)
   : Plot a pprf model.
-- [`plot(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/plot.pptr.md)
+- [`plot(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/plot.pptr.md)
   : Plot a pptr model.
-- [`pp_rand_forest()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_rand_forest.md)
+- [`pp_rand_forest()`](https://andres-vidal.github.io/ppforest2/next/r/reference/pp_rand_forest.md)
   : Parsnip model specification for pprf.
-- [`pp_tree()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_tree.md)
+- [`pp_tree()`](https://andres-vidal.github.io/ppforest2/next/r/reference/pp_tree.md)
   : Parsnip model specification for pptr.
-- [`pprf()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pprf.md)
+- [`pprf()`](https://andres-vidal.github.io/ppforest2/next/r/reference/pprf.md)
   : Trains a Random Forest of Project-Pursuit oblique decision trees.
-- [`pptr()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pptr.md)
+- [`pptr()`](https://andres-vidal.github.io/ppforest2/next/r/reference/pptr.md)
   : Trains a Project-Pursuit oblique decision tree.
-- [`predict(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/predict.pprf.md)
+- [`predict(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/predict.pprf.md)
   : Predicts the labels or vote proportions of a set of observations
   using a pprf model.
-- [`predict(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/predict.pptr.md)
+- [`predict(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/predict.pptr.md)
   : Predicts the labels or class indicators of a set of observations
   using a pptr model.
-- [`print(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pprf.md)
+- [`print(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/print.pprf.md)
   : Prints a pprf model.
-- [`print(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pptr.md)
+- [`print(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/print.pptr.md)
   : Prints a pptr model.
-- [`summary(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md)
+- [`summary(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/summary.pprf.md)
   : Summarizes a pprf model.
-- [`summary(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md)
+- [`summary(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/next/r/reference/summary.pptr.md)
   : Summarizes a pptr model.
-- [`wine`](https://andres-vidal.github.io/ppforest2/main/r/reference/wine.md)
+- [`wine`](https://andres-vidal.github.io/ppforest2/next/r/reference/wine.md)
   : Wine Dataset
 
 # Articles
@@ -71,4 +176,4 @@ forests for improved accuracy.
 ### All vignettes
 
 - [Introduction to
-  ppforest2](https://andres-vidal.github.io/ppforest2/main/r/articles/introduction.md):
+  ppforest2](https://andres-vidal.github.io/ppforest2/next/r/articles/introduction.md):

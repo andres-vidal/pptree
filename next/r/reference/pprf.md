@@ -90,13 +90,13 @@ A pprf model trained on `x` and `y`.
 
 ## See also
 
-[`predict.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/predict.pprf.md),
-[`formula.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pprf.md),
-[`summary.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md),
-[`print.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pprf.md),
-[`pp_rand_forest`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_rand_forest.md)
+[`predict.pprf`](https://andres-vidal.github.io/ppforest2/next/r/reference/predict.pprf.md),
+[`formula.pprf`](https://andres-vidal.github.io/ppforest2/next/r/reference/formula.pprf.md),
+[`summary.pprf`](https://andres-vidal.github.io/ppforest2/next/r/reference/summary.pprf.md),
+[`print.pprf`](https://andres-vidal.github.io/ppforest2/next/r/reference/print.pprf.md),
+[`pp_rand_forest`](https://andres-vidal.github.io/ppforest2/next/r/reference/pp_rand_forest.md)
 for parsnip integration,
-[`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/main/r/articles/introduction.md)
+[`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/next/r/articles/introduction.md)
 for a tutorial
 
 ## Examples

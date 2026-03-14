@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -135,8 +135,15 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A confusion matrix comparing predicted vs actual class labels. </p>
-<p>Rows correspond to actual classes and columns to predicted classes. Provides overall error rate, per-class error rates, JSON serialization, and formatted terminal printing with diagonal highlighting and marginal errors. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p>Rows correspond to actual classes and columns to predicted classes. Provides overall error rate, per-class error rates, JSON serialization, and formatted terminal printing with diagonal highlighting and marginal errors.</p>
+<div class="fragment"><div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> preds = model.predict(x_test);</div>
+<div class="line"><a class="code hl_function" href="#a4f5b8a649042cd372344c60dd41f64ba">ConfusionMatrix</a> cm(preds, y_test);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">float</span> err = cm.error();                  <span class="comment">// overall error rate</span></div>
+<div class="line"><span class="keyword">auto</span> per_class = cm.class_errors();      <span class="comment">// per-class error rates</span></div>
+<div class="ttc" id="anamespaceppforest2_1_1types_html_a4cc32c7bf71b27689fd027a8814821da"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">ppforest2::types::ResponseVector</a></div><div class="ttdeci">Eigen::Matrix&lt; Response, Eigen::Dynamic, 1 &gt; ResponseVector</div><div class="ttdoc">Dynamic-size column vector of class labels.</div><div class="ttdef"><b>Definition</b> Types.hpp:29</div></div>
+<div class="ttc" id="astructppforest2_1_1stats_1_1ConfusionMatrix_html_a4f5b8a649042cd372344c60dd41f64ba"><div class="ttname"><a href="#a4f5b8a649042cd372344c60dd41f64ba">ppforest2::stats::ConfusionMatrix::ConfusionMatrix</a></div><div class="ttdeci">ConfusionMatrix(const types::ResponseVector &amp;predictions, const types::ResponseVector &amp;actual)</div><div class="ttdoc">Construct a confusion matrix from predictions and actual labels.</div></div>
+</div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a4f5b8a649042cd372344c60dd41f64ba" name="a4f5b8a649042cd372344c60dd41f64ba"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4f5b8a649042cd372344c60dd41f64ba">&#9670;&#160;</a></span>ConfusionMatrix()</h2>
 

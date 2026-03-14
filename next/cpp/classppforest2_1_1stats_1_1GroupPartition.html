@@ -29,7 +29,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ppforest2
+   <div id="projectname">ppforest2<span id="projectnumber">&#160;v0.1.0</span>
    </div>
    <div id="projectbrief">Projection Pursuit Decision Trees and Random Forests</div>
   </td>
@@ -170,8 +170,21 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contiguous-block representation of grouped observations. </p>
 <p>Assumes the response vector is sorted so that observations of the same class are contiguous. Stores the start/end row indices of each class block and provides efficient extraction, subsetting, and computation of between- and within-group statistics.</p>
-<p>Groups can be hierarchically merged via <a class="el" href="#ada78d0d9120a1266b5d10573e933d131" title="Merge groups according to a mapping.">remap()</a>, which assigns supergroup labels while tracking the original subgroups. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p>Groups can be hierarchically merged via <a class="el" href="#ada78d0d9120a1266b5d10573e933d131" title="Merge groups according to a mapping.">remap()</a>, which assigns supergroup labels while tracking the original subgroups.</p>
+<div class="fragment"><div class="line"><span class="comment">// y must be sorted so equal values are contiguous.</span></div>
+<div class="line"><a class="code hl_function" href="#a7e7a8ac88580ee9f420c3c0bed63b729">GroupPartition</a> gp(y);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Extract rows belonging to group 0:</span></div>
+<div class="line"><span class="keyword">auto</span> x_group0 = gp.group(x, 0);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Between- and within-group statistics:</span></div>
+<div class="line"><span class="keyword">auto</span> B = gp.bgss(x);   <span class="comment">// between-group sum of squares (p × p)</span></div>
+<div class="line"><span class="keyword">auto</span> W = gp.wgss(x);   <span class="comment">// within-group sum of squares  (p × p)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Restrict to a subset of groups:</span></div>
+<div class="line"><a class="code hl_function" href="#a7e7a8ac88580ee9f420c3c0bed63b729">GroupPartition</a> sub = gp.subset({0, 2});</div>
+<div class="ttc" id="aclassppforest2_1_1stats_1_1GroupPartition_html_a7e7a8ac88580ee9f420c3c0bed63b729"><div class="ttname"><a href="#a7e7a8ac88580ee9f420c3c0bed63b729">ppforest2::stats::GroupPartition::GroupPartition</a></div><div class="ttdeci">GroupPartition(const types::ResponseVector &amp;y)</div><div class="ttdoc">Construct from a sorted response vector.</div></div>
+</div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7e7a8ac88580ee9f420c3c0bed63b729" name="a7e7a8ac88580ee9f420c3c0bed63b729"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7e7a8ac88580ee9f420c3c0bed63b729">&#9670;&#160;</a></span>GroupPartition()</h2>
 

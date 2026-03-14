@@ -16,17 +16,17 @@
 - Core: Cross-platform reproducibility: identical results for the same
   seed on Linux, macOS, and Windows.
 - R:
-  [`pptr()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pptr.md)
+  [`pptr()`](https://andres-vidal.github.io/ppforest2/next/r/reference/pptr.md)
   and
-  [`pprf()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pprf.md)
+  [`pprf()`](https://andres-vidal.github.io/ppforest2/next/r/reference/pprf.md)
   with formula and matrix interfaces.
 - R: [`predict()`](https://rdrr.io/r/stats/predict.html) with class
   labels (`type = "class"`) or vote proportions (`type = "prob"`).
 - R: `save_json()` and `load_json()` for model persistence.
 - R: tidymodels/parsnip integration:
-  [`pp_tree()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_tree.md)
+  [`pp_tree()`](https://andres-vidal.github.io/ppforest2/next/r/reference/pp_tree.md)
   and
-  [`pp_rand_forest()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_rand_forest.md)
+  [`pp_rand_forest()`](https://andres-vidal.github.io/ppforest2/next/r/reference/pp_rand_forest.md)
   model specifications.
 - R: ggplot2 visualizations: tree diagrams, variable importance plots,
   projection histograms, and decision boundary plots.

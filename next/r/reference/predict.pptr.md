@@ -39,10 +39,10 @@ data frame with one column per class.
 
 ## See also
 
-[`pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/pptr.md)
+[`pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/pptr.md)
 for training,
-[`formula.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pptr.md),
-[`summary.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md)
+[`formula.pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/formula.pptr.md),
+[`summary.pptr`](https://andres-vidal.github.io/ppforest2/next/r/reference/summary.pptr.md)
 
 ## Examples
 

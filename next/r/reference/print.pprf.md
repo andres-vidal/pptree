@@ -21,8 +21,8 @@ print(x, ...)
 
 ## See also
 
-[`pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/pprf.md),
-[`summary.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md)
+[`pprf`](https://andres-vidal.github.io/ppforest2/next/r/reference/pprf.md),
+[`summary.pprf`](https://andres-vidal.github.io/ppforest2/next/r/reference/summary.pprf.md)
 
 ## Examples
 

@@ -39,9 +39,9 @@ A parsnip model specification.
 
 ## See also
 
-[`pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/pprf.md)
+[`pprf`](https://andres-vidal.github.io/ppforest2/next/r/reference/pprf.md)
 for the underlying training function,
-[`pp_tree`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_tree.md)
+[`pp_tree`](https://andres-vidal.github.io/ppforest2/next/r/reference/pp_tree.md)
 for single trees
 
 ## Examples
