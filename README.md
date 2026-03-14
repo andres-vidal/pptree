@@ -543,31 +543,11 @@ The project follows [Semantic Versioning](https://semver.org/) with a single sou
 - **MINOR** — new features, new model types, new parameters
 - **PATCH** — bug fixes, performance improvements, documentation
 
-### Core version
-
-The `VERSION` file contains `MAJOR.MINOR.PATCH` (e.g., `0.1.0`). CMake reads it automatically, and the CLI binary's `--version` flag reflects it.
-
-### Binding versions
-
-Bindings derive their version from the core `VERSION` file and may append a binding-specific suffix for binding-only fixes:
-
-| Binding | Format                              | Example                |
-|---------|-------------------------------------|------------------------|
-| R       | `MAJOR.MINOR.PATCH[.N]`             | `0.1.0`, `0.1.0.1`     |
-| Python  | `MAJOR.MINOR.PATCH[.postN]`         | `0.1.0`, `0.1.0.post1` |
-| CLI     | always matches core `VERSION`       | `0.1.0`                |
-
-For R, the `.N` 4th component follows CRAN conventions. Development versions between releases use `.9000` (e.g., `0.1.0.9000`).
-
-### Git tags
-
-- Core releases: `v0.1.0`
-- R binding-only releases: `v-r0.1.0.1`
-- Python binding-only releases: `v-py0.1.0.post1`
+The `VERSION` file contains `MAJOR.MINOR.PATCH` (e.g., `0.1.0`). All components share the same version: CMake reads it for the C++ core and CLI, and `make r-prepare` updates the R package DESCRIPTION. Git tags use the format `v0.1.0`.
 
 ### Changelog
 
-`CHANGELOG.md` at the repository root tracks all changes. It is automatically copied as `NEWS.md` into the R package during `make r-prepare` (CRAN requires that filename).
+`CHANGELOG.md` at the repository root tracks all changes. It uses the format expected by R's `utils::news()` (`# ppforest2 X.Y.Z` headings) and is copied as `NEWS.md` into the R package during `make r-prepare`.
 
 ### How to release
 
@@ -575,12 +555,6 @@ For R, the `.N` 4th component follows CRAN conventions. Development versions bet
 2. Add a section to `CHANGELOG.md` for the new version
 3. Run `make r-prepare` (or `make r-build`) — DESCRIPTION version is updated from the `VERSION` file
 4. Commit, tag (`v0.1.0`), push
-
-For a binding-only R release:
-
-```bash
-R_BINDING_SUFFIX=.1 make r-build   # produces tarball with version 0.1.0.1
-```
 
 ## License
 
