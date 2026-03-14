@@ -13,6 +13,7 @@ using namespace ppforest2;
 using namespace ppforest2::pp;
 using namespace ppforest2::stats;
 using namespace ppforest2::types;
+using namespace ppforest2::viz;
 
 static Projector make_proj(std::vector<Feature> v) {
   Eigen::Map<Projector> proj(v.data(), static_cast<Eigen::Index>(v.size()));

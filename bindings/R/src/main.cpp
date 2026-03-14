@@ -12,6 +12,7 @@ using namespace RcppEigen;
 using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
+using namespace ppforest2::viz;
 
 // [[Rcpp::export]]
 bool ppforest2_has_openmp() {

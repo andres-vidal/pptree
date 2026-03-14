@@ -13,8 +13,9 @@
 #include <sstream>
 #include <iomanip>
 
-namespace ppforest2 {
-  /** @name NodeDataVisitor Implementation
+namespace ppforest2::viz {
+  /**
+   * NodeDataVisitor
    *
    * Traverses the tree in pre-order, routing observations by the split
    * condition at each internal node.  At each condition node, every
@@ -27,7 +28,7 @@ namespace ppforest2 {
    *     threshold (used for histogram rendering in the tree diagram).
    *   - For leaf nodes: class labels of reaching observations, and the
    *     predicted class (used for leaf labels and coloring).
-   * @{ */
+   */
   NodeDataVisitor::NodeDataVisitor(
     const types::FeatureMatrix&  x,
     const types::ResponseVector& y) :
@@ -95,16 +96,15 @@ namespace ppforest2 {
     nodes.push_back(std::move(nd));
   }
 
-  /** @} */
-
-  /** @name 2D Projection Helpers
+  /**
+   * 2D Projection Helpers
    *
    * When visualizing a p-dimensional tree in 2D, we select two variables
    * (var_i, var_j) for the axes and hold all others at fixed values
    * (typically medians).  Each split's projector and threshold are then
    * reduced to 2D by extracting the two relevant components and
    * subtracting the fixed variables' contributions from the threshold.
-   * @{ */
+   */
   types::FeatureVector project_2d(
     const types::FeatureVector& full_proj,
     int var_i, int var_j) {
@@ -126,9 +126,8 @@ namespace ppforest2 {
     return thr;
   }
 
-  /** @} */
-
-  /** @name Parametric Line Clipping
+  /**
+   * Parametric Line Clipping
    *
    * Decision boundaries in 2D are lines of the form  a^T x = t.  We
    * parametrize each line as  P(u) = P0 + u * D  where D is tangent to
@@ -137,7 +136,7 @@ namespace ppforest2 {
    * Clipping to a rectangle and ancestor half-spaces reduces to
    * tightening the interval [u_min, u_max].  If u_min >= u_max after
    * all constraints, the line is fully outside the visible region.
-   * @{ */
+   */
   bool clip_param_to_range(
     types::Feature origin, types::Feature direction,
     types::Feature range_min, types::Feature range_max,
@@ -226,9 +225,8 @@ namespace ppforest2 {
     return true;
   }
 
-  /** @} */
-
-  /** @name Polygon Clipping (Sutherland–Hodgman)
+  /**
+   * Polygon Clipping (Sutherland–Hodgman)
    *
    * Used by RegionVisitor to compute decision region polygons.  Each
    * leaf's region starts as the full bounding box rectangle, then is
@@ -247,7 +245,7 @@ namespace ppforest2 {
    * ancestor constraints) and n = max polygon vertices at any step.
    * Since k and n are both bounded by tree depth, this is effectively
    * O(depth²) per leaf.
-   * @{ */
+   */
 
   Polygon clip_polygon_halfspace(
     const Polygon&              polygon,
@@ -301,9 +299,8 @@ namespace ppforest2 {
     return result;
   }
 
-  /** @} */
-
-  /** @name BoundaryVisitor Implementation
+  /**
+   * BoundaryVisitor
    *
    * Tree traversal that collects clipped boundary segments.  At each
    * split node:
@@ -311,7 +308,7 @@ namespace ppforest2 {
    *   2. Project all accumulated ancestor constraints to 2D.
    *   3. Clip the boundary line to the bbox + constraints.
    *   4. Push/pop the current split as a constraint for child traversal.
-   * @{ */
+   */
 
   BoundaryVisitor::BoundaryVisitor(
     int var_i, int var_j,
@@ -374,26 +371,26 @@ namespace ppforest2 {
     // Leaf nodes have no boundary to emit.
   }
 
-  // ===================================================================
-  // RegionVisitor
-  //
-  // At each leaf, computes the convex polygon for that leaf's decision
-  // region.  The algorithm:
-  //   1. Start with the bounding box as a rectangle (CCW winding).
-  //   2. For each ancestor constraint on the root-to-leaf path, project
-  //      the constraint to 2D (project_2d + adjust_threshold) and clip
-  //      the polygon using Sutherland–Hodgman (clip_polygon_halfspace).
-  //   3. If the polygon is non-empty, store it with the leaf's class.
-  //
-  // The bounding box should match the visible coordinate range in the
-  // plot (the padded data range).  When combined with zero scale
-  // expansion in ggplot2, this ensures the region polygons exactly
-  // tile the visible area with no whitespace gaps.
-  //
-  // Constraints are accumulated on a stack during tree traversal
-  // (push on entry, pop on exit), so each leaf sees exactly its
-  // ancestor constraints.
-  // ===================================================================
+  /**
+   * RegionVisitor
+   *
+   * At each leaf, computes the convex polygon for that leaf's decision
+   * region.  The algorithm:
+   *   1. Start with the bounding box as a rectangle (CCW winding).
+   *   2. For each ancestor constraint on the root-to-leaf path, project
+   *      the constraint to 2D (project_2d + adjust_threshold) and clip
+   *      the polygon using Sutherland–Hodgman (clip_polygon_halfspace).
+   *   3. If the polygon is non-empty, store it with the leaf's class.
+   *
+   * The bounding box should match the visible coordinate range in the
+   * plot (the padded data range).  When combined with zero scale
+   * expansion in ggplot2, this ensures the region polygons exactly
+   * tile the visible area with no whitespace gaps.
+   *
+   * Constraints are accumulated on a stack during tree traversal
+   * (push on entry, pop on exit), so each leaf sees exactly its
+   * ancestor constraints.
+   */
 
   RegionVisitor::RegionVisitor(
     int var_i, int var_j,
@@ -447,9 +444,8 @@ namespace ppforest2 {
     regions.push_back(std::move(region));
   }
 
-  /** @} */
-
-  /** @name Tree Layout
+  /**
+   * Tree Layout
    *
    * Computes (x, y) positions for rendering the tree as a diagram.
    * Uses a recursive bottom-up algorithm:
@@ -457,7 +453,7 @@ namespace ppforest2 {
    *   2. Place sibling subtrees side-by-side with a gap.
    *   3. Position the parent above its left child (left-aligned style).
    *   4. y decreases with depth so the root is at the top.
-   * @{ */
+   */
 
 namespace {
   /// Intermediate result for subtree layout computation.
@@ -571,5 +567,4 @@ namespace {
     return { std::move(nodes), std::move(edges) };
   }
 
-  /** @} */
 }

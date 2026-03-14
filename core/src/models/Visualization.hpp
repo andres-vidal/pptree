@@ -62,7 +62,7 @@
 #include <utility>
 #include <string>
 
-namespace ppforest2 {
+namespace ppforest2::viz {
   // ===================================================================
   // Node Data Collection
   // ===================================================================
