@@ -8,7 +8,7 @@ show individual plots.
 
 ``` r
 # S3 method for class 'pptr'
-plot(x, type = NULL, node = 1L, ...)
+plot(x, type = NULL, metric = NULL, node = 1L, ...)
 ```
 
 ## Arguments
@@ -21,9 +21,16 @@ plot(x, type = NULL, node = 1L, ...)
 
   Character string specifying the plot type. `NULL` (default) shows a
   mosaic overview. Other options: `"structure"` for tree with embedded
-  histograms, `"importance"` for variable importance (all available
-  metrics), `"projection"` for projected data at a node, `"boundaries"`
-  for decision boundaries in feature space.
+  histograms, `"importance"` for variable importance, `"projection"` for
+  projected data at a node, `"boundaries"` for decision boundaries in
+  feature space.
+
+- metric:
+
+  Character string selecting a single importance metric to plot:
+  `"projections"`, `"weighted"`, or `"permuted"` (availability depends
+  on the model). `NULL` (default) shows all available metrics together.
+  Only used when `type = "importance"`.
 
 - node:
 

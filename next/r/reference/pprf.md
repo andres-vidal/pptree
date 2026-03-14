@@ -23,6 +23,7 @@ pprf(
   size = 2,
   lambda = 0,
   n_vars = NULL,
+  p_vars = NULL,
   seed = NULL,
   n_threads = NULL
 )
@@ -59,8 +60,15 @@ pprf(
 
 - n_vars:
 
-  The number of variables to consider at each split. These are chosen
-  uniformly in each split. The default is all variables.
+  The number of variables to consider at each split (integer). These are
+  chosen uniformly in each split. The default is all variables. Cannot
+  be used together with `p_vars`.
+
+- p_vars:
+
+  The proportion of variables to consider at each split (number between
+  0 and 1, exclusive). For example, `p_vars = 0.5` uses half the
+  features. Cannot be used together with `n_vars`.
 
 - seed:
 
@@ -87,7 +95,9 @@ A pprf model trained on `x` and `y`.
 [`summary.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md),
 [`print.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pprf.md),
 [`pp_rand_forest`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_rand_forest.md)
-for parsnip integration
+for parsnip integration,
+[`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/main/r/articles/introduction.md)
+for a tutorial
 
 ## Examples
 
@@ -98,8 +108,8 @@ pprf(Type ~ ., data = iris)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.27 0.63 -0.69 -0.21 ] * x) < 1.063238:
-#>  If ([ 0.31 0.08 -0.48 -0.82 ] * x) < -1.619433:
+#> If ([ 0.02 0.04 -0.04 -0.01 ] * x) < 0.06435043:
+#>  If ([ 0.06 0.01 -0.09 -0.15 ] * x) < -0.2921683:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -107,8 +117,8 @@ pprf(Type ~ ., data = iris)
 #>   Predict: setosa 
 #> 
 #> Tree 2:
-#> If ([ 0.23 0.72 -0.65 -0.03 ] * x) < 1.453875:
-#>  If ([ 0.21 0.49 -0.55 -0.64 ] * x) < -1.026834:
+#> If ([ 0.02 0.05 -0.04 0 ] * x) < 0.09979815:
+#>  If ([ 0.04 0.09 -0.1 -0.12 ] * x) < -0.189255:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -123,19 +133,19 @@ pprf(Type ~ ., data = iris, lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.08 -0.67 0.43 0.6 ] * x) < 0.2777239:
+#> If ([ 0 -0.04 0.02 0.03 ] * x) < 0.01589731:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.02 0.05 -0.24 -0.97 ] * x) < -2.578496:
+#>  If ([ 0 0.01 -0.04 -0.17 ] * x) < -0.4614292:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
 #> 
 #> Tree 2:
-#> If ([ 0.09 -0.68 0.46 0.56 ] * x) < 0.3777013:
+#> If ([ 0.01 -0.04 0.03 0.03 ] * x) < 0.02173987:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.01 -0.15 0.33 0.93 ] * x) < 2.815652:
+#>  If ([ 0 -0.03 0.06 0.16 ] * x) < 0.4868189:
 #>    Predict: versicolor 
 #>  Else:
 #>    Predict: virginica 
@@ -148,8 +158,8 @@ pprf(x = iris[, 1:4], y = iris[, 5])
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.17 0.76 -0.56 -0.29 ] * x) < 1.249054:
-#>  If ([ 0.19 0.33 -0.31 -0.87 ] * x) < -0.8064449:
+#> If ([ 0.01 0.05 -0.04 -0.02 ] * x) < 0.08010742:
+#>  If ([ 0.04 0.07 -0.07 -0.19 ] * x) < -0.1760359:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -157,10 +167,10 @@ pprf(x = iris[, 1:4], y = iris[, 5])
 #>   Predict: setosa 
 #> 
 #> Tree 2:
-#> If ([ 0.05 -0.79 0.59 0.17 ] * x) < -0.2461427:
+#> If ([ 0 -0.05 0.04 0.01 ] * x) < -0.01472723:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.12 0.42 -0.27 -0.86 ] * x) < -0.8229396:
+#>  If ([ 0.03 0.1 -0.06 -0.2 ] * x) < -0.1889343:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -173,19 +183,19 @@ pprf(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.08 -0.71 0.47 0.51 ] * x) < 0.1726278:
+#> If ([ 0 -0.04 0.03 0.03 ] * x) < 0.01002465:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.01 0.23 -0.47 -0.85 ] * x) < -3.015483:
+#>  If ([ 0 0.04 -0.07 -0.13 ] * x) < -0.4705565:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
 #> 
 #> Tree 2:
-#> If ([ 0.11 -0.72 0.43 0.53 ] * x) < 0.2246059:
+#> If ([ 0.01 -0.04 0.03 0.03 ] * x) < 0.01345929:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.07 0.19 -0.38 -0.91 ] * x) < -2.423834:
+#>  If ([ 0.01 0.03 -0.06 -0.15 ] * x) < -0.3937009:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -198,13 +208,13 @@ pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.5 0.27 0 -0.45 0.43 0.53 ] * x) < 1.608614:
+#> If ([ 0.04 0.02 0 -0.04 0.03 0.04 ] * x) < 0.1272064:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.63 0.18 0.04 -0.53 0.49 0.22 ] * x) < 1.145166:
+#> If ([ 0.04 0.01 0 -0.04 0.03 0.01 ] * x) < 0.07738496:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
@@ -217,13 +227,13 @@ pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.61 0.25 0.01 -0.09 0.55 -0.5 ] * x) < 16.8111:
+#> If ([ 0.01 0 0 0 0.01 -0.01 ] * x) < 0.3201671:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.73 0.21 0 -0.12 0.56 -0.31 ] * x) < 17.04963:
+#> If ([ 0.01 0 0 0 0.01 -0.01 ] * x) < 0.3204295:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
@@ -238,13 +248,13 @@ pprf(x = x, y = crabs$Type)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.63 0.25 0.25 -0.55 0.42 ] * x) < 1.573025:
+#> If ([ 0.06 0.02 0.02 -0.05 0.04 ] * x) < 0.1417684:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.72 0.18 0.24 -0.56 0.28 ] * x) < 1.340618:
+#> If ([ 0.06 0.01 0.02 -0.04 0.02 ] * x) < 0.1080204:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
@@ -259,13 +269,13 @@ pprf(x = x, y = crabs$Type, lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.81 0.38 0.04 -0.09 0.43 ] * x) < 16.06476:
+#> If ([ 0.02 0.01 0 0 0.01 ] * x) < 0.3581609:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.53 0.2 0.03 -0.06 0.83 ] * x) < 10.87641:
+#> If ([ 0.02 0.01 0 0 0.03 ] * x) < 0.3663714:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
