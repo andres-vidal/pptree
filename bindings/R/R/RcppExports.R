@@ -9,8 +9,8 @@ ppforest2_train_tree_glda <- function(x, y, lambda, seed) {
     .Call('_ppforest2_ppforest2_train_tree_glda', PACKAGE = 'ppforest2', x, y, lambda, seed)
 }
 
-ppforest2_train_forest_glda <- function(x, y, size, n_vars, lambda, seed, n_threads) {
-    .Call('_ppforest2_ppforest2_train_forest_glda', PACKAGE = 'ppforest2', x, y, size, n_vars, lambda, seed, n_threads)
+ppforest2_train_forest_glda <- function(x, y, size, n_vars, lambda, seed, n_threads, max_retries = 3L) {
+    .Call('_ppforest2_ppforest2_train_forest_glda', PACKAGE = 'ppforest2', x, y, size, n_vars, lambda, seed, n_threads, max_retries)
 }
 
 ppforest2_predict <- function(tree, data) {

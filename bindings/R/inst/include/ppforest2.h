@@ -52,27 +52,45 @@ namespace Rcpp {
   }
 
   SEXP wrap(const TreeResponse &node) {
-    return Rcpp::List::create(
+    Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("value") = Rcpp::wrap(node.value + 1));  // C++ 0-based → R 1-based
+
+    if (node.degenerate) {
+      result["degenerate"] = true;
+    }
+
+    return result;
   }
 
   SEXP wrap(const TreeCondition &node) {
     Rcpp::IntegerVector classes(node.classes.begin(), node.classes.end());
     classes = classes + 1;  // C++ 0-based → R 1-based
 
-    return Rcpp::List::create(
+    Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("projector")      = Rcpp::wrap(node.projector),
       Rcpp::Named("threshold")      = Rcpp::wrap(node.threshold),
       Rcpp::Named("pp_index_value") = Rcpp::wrap(node.pp_index_value),
       Rcpp::Named("classes")        = classes,
       Rcpp::Named("lower")          = Rcpp::wrap(*node.lower),
       Rcpp::Named("upper")          = Rcpp::wrap(*node.upper));
+
+    if (node.degenerate) {
+      result["degenerate"] = true;
+    }
+
+    return result;
   }
 
   SEXP wrap(const Tree &tree) {
-    return Rcpp::List::create(
+    Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("root")          = Rcpp::wrap(*tree.root));
+
+    if (tree.is_degenerate()) {
+      result["degenerate"] = true;
+    }
+
+    return result;
   }
 
   SEXP wrap(const BootstrapTree &tree) {
@@ -89,10 +107,16 @@ namespace Rcpp {
       trees[i] = wrap(*forest.trees[i]);
     }
 
-    return Rcpp::List::create(
+    Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
       Rcpp::Named("seed")          = Rcpp::wrap(forest.seed),
       Rcpp::Named("trees")         = trees);
+
+    if (forest.degenerate) {
+      result["degenerate"] = true;
+    }
+
+    return result;
   }
 
   SEXP wrap(const TrainingSpec &spec) {

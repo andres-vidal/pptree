@@ -21,10 +21,18 @@ namespace ppforest2::serialization {
       { "lower",          lower_visitor.result },
       { "upper",          upper_visitor.result },
     };
+
+    if (node.degenerate) {
+      result["degenerate"] = true;
+    }
   }
 
   void JsonNodeVisitor::visit(const TreeResponse& node) {
     result = json{ { "value", node.value } };
+
+    if (node.degenerate) {
+      result["degenerate"] = true;
+    }
   }
 
   void JsonModelVisitor::visit(const Tree& tree) {
@@ -63,7 +71,13 @@ namespace ppforest2::serialization {
       trees_json.push_back(to_json(*tree));
     }
 
-    return json{ { "trees", trees_json } };
+    json result = json{ { "trees", trees_json } };
+
+    if (forest.degenerate) {
+      result["degenerate"] = true;
+    }
+
+    return result;
   }
 
   json to_json(const stats::ConfusionMatrix& cm) {
@@ -149,7 +163,9 @@ namespace ppforest2::serialization {
 
   TreeNode::Ptr node_from_json(const json& j) {
     if (j.contains("value")) {
-      return TreeResponse::make(j["value"].get<Response>());
+      auto leaf = TreeResponse::make(j["value"].get<Response>());
+      leaf->degenerate = j.value("degenerate", false);
+      return leaf;
     }
 
     const auto proj_vec = j["projector"].get<std::vector<Feature>>();
@@ -170,10 +186,12 @@ namespace ppforest2::serialization {
     auto lower = node_from_json(j["lower"]);
     auto upper = node_from_json(j["upper"]);
 
-    return TreeCondition::make(
+    auto node = TreeCondition::make(
       projector, threshold,
       std::move(lower), std::move(upper),
       nullptr, classes, pp_index_value);
+    node->degenerate = node->degenerate || j.value("degenerate", false);
+    return node;
   }
 
   Tree tree_from_json(const json& j) {
@@ -182,6 +200,7 @@ namespace ppforest2::serialization {
 
   Forest forest_from_json(const json& j) {
     Forest forest;
+    forest.degenerate = j.value("degenerate", false);
 
     for (const auto& tree_json : j.at("trees")) {
       forest.add_tree(std::make_unique<BootstrapTree>(node_from_json(tree_json.at("root"))));

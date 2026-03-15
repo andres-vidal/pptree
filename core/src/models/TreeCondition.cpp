@@ -27,6 +27,7 @@ namespace ppforest2 {
     training_spec(std::move(training_spec)),
     classes(std::move(classes)),
     pp_index_value(pp_index_value) {
+    degenerate = this->lower->degenerate || this->upper->degenerate;
   }
 
   void TreeCondition::accept(TreeNodeVisitor& visitor) const {

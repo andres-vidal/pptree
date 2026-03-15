@@ -110,7 +110,7 @@ namespace ppforest2::io {
     const bool show_vi3 = vi3.size() == vi2.size();
     const int rows      = (max_rows > 0 && p > max_rows) ? max_rows : p;
 
-    out.println("{}", emphasis("Variable Importance:"));
+    out.println("{}", emphasis(info("Variable Importance:")));
     out.newline();
 
     // Build columns conditionally
@@ -166,11 +166,11 @@ namespace ppforest2::io {
 
     if (!all_ones) {
       out.newline();
-      out.println("{}", warning(
-          "Note: VI was calculated using scaled coefficients (|a_j| * sigma_j).\n"
-          "Variable contributions can only be theoretically interpreted as such\n"
-          "if the model was trained on scaled data. Scaling also changes the\n"
-          "projection-pursuit optimization, which may affect the resulting tree."));
+      out.newline();
+      out.println("{} Variable importance was calculated using scaled coefficients (|a_j| * \u03c3_j).", emphasis(warning("Note:")));
+      out.println("Variable contributions can only be theoretically interpreted as such");
+      out.println("if the model was trained on scaled data. Scaling also changes the");
+      out.println("projection-pursuit optimization, which may affect the resulting tree.");
     }
 
     out.newline();

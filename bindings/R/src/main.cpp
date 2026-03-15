@@ -4,6 +4,7 @@
 #include "serialization/Json.hpp"
 
 #include <nlohmann/json.hpp>
+#include <thread>
 
 // [[Rcpp::depends(RcppEigen)]]
 
@@ -52,7 +53,8 @@ Forest ppforest2_train_forest_glda(
   const int      n_vars,
   const float    lambda,
   const int      seed,
-  SEXP           n_threads) {
+  SEXP           n_threads,
+  const int      max_retries = 3) {
   y.array() -= 1;  // R 1-based → C++ 0-based
 
   if (!GroupPartition::is_contiguous(y)) {
@@ -65,7 +67,9 @@ Forest ppforest2_train_forest_glda(
       x,
       y,
       size,
-      seed);
+      seed,
+      std::thread::hardware_concurrency(),
+      max_retries);
   }
 
   return Forest::train(
@@ -74,7 +78,8 @@ Forest ppforest2_train_forest_glda(
     y,
     size,
     seed,
-    as<const int>(n_threads));
+    as<const int>(n_threads),
+    max_retries);
 }
 
 // [[Rcpp::export]]

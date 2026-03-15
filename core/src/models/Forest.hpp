@@ -47,6 +47,7 @@ namespace ppforest2 {
      * @param size           Number of trees.
      * @param seed            RNG seed.
      * @param n_threads      Number of threads (default: hardware concurrency).
+     * @param max_retries    Maximum retry attempts for degenerate trees (default: 3).
      * @return               Trained forest.
      */
     static Forest train(
@@ -55,11 +56,14 @@ namespace ppforest2 {
       const types::ResponseVector& y,
       int                          size,
       int                          seed,
-      int                          n_threads = std::thread::hardware_concurrency());
+      int                          n_threads   = std::thread::hardware_concurrency(),
+      int                          max_retries = 3);
 
     std::vector<BootstrapTree::Ptr> trees;
     TrainingSpec::Ptr training_spec;
     const int seed = 0;
+    /** @brief True if any tree remains degenerate after retries. */
+    bool degenerate = false;
 
     Forest();
     Forest(TrainingSpec::Ptr&& training_spec, int seed);

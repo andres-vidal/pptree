@@ -17,6 +17,9 @@ namespace ppforest2 {
   struct TreeNode {
     using Ptr = std::unique_ptr<TreeNode>;
 
+    /** @brief Whether this node (or any descendant) had a degenerate split. */
+    bool degenerate = false;
+
     virtual ~TreeNode() = default;
 
     /** @brief Accept a tree node visitor (double dispatch). */

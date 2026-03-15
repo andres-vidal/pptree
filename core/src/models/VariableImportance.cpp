@@ -43,12 +43,19 @@ namespace ppforest2 {
     const int B       = static_cast<int>(forest.trees.size());
 
     FeatureVector importance = FeatureVector::Zero(n_vars);
+    int valid_trees          = 0;
 
     for (int k = 0; k < B; ++k) {
       const BootstrapTree& tree = *forest.trees[k];
-      std::vector<int> oob_idx  = tree.oob_indices(n_total);
+
+      if (tree.is_degenerate()) {
+        continue;
+      }
+
+      std::vector<int> oob_idx = tree.oob_indices(n_total);
 
       if (oob_idx.empty()) {
+        valid_trees++;
         continue;
       }
 
@@ -90,11 +97,13 @@ namespace ppforest2 {
         // Restore column j for next iteration.
         perm_x.col(j) = col_saved;
       }
+
+      valid_trees++;
     }
 
-    // Average over trees.
-    if (B > 0) {
-      importance /= static_cast<Feature>(B);
+    // Average over non-degenerate trees.
+    if (valid_trees > 0) {
+      importance /= static_cast<Feature>(valid_trees);
     }
 
     return importance;
@@ -129,9 +138,14 @@ namespace ppforest2 {
     const int B = static_cast<int>(forest.trees.size());
 
     FeatureVector importance = FeatureVector::Zero(n_vars);
+    int valid_trees          = 0;
 
     for (int k = 0; k < B; ++k) {
       const BootstrapTree& tree = *forest.trees[k];
+
+      if (tree.is_degenerate()) {
+        continue;
+      }
 
       VIVisitor visitor(n_vars, scale);
       tree.root->accept(visitor);
@@ -139,10 +153,12 @@ namespace ppforest2 {
       for (int j = 0; j < n_vars; ++j) {
         importance(j) += static_cast<Feature>(visitor.vi2_contributions[static_cast<std::size_t>(j)]);
       }
+
+      valid_trees++;
     }
 
-    if (B > 0) {
-      importance /= static_cast<Feature>(B);
+    if (valid_trees > 0) {
+      importance /= static_cast<Feature>(valid_trees);
     }
 
     return importance;
@@ -170,10 +186,16 @@ namespace ppforest2 {
     const int G = static_cast<int>(class_set.size());
 
     FeatureVector importance = FeatureVector::Zero(n_vars);
+    int valid_trees          = 0;
 
     for (int k = 0; k < B; ++k) {
       const BootstrapTree& tree = *forest.trees[k];
-      std::vector<int> oob_idx  = tree.oob_indices(n_total);
+
+      if (tree.is_degenerate()) {
+        continue;
+      }
+
+      std::vector<int> oob_idx = tree.oob_indices(n_total);
 
       Feature e_k = Feature(0);
 
@@ -191,9 +213,11 @@ namespace ppforest2 {
       for (int j = 0; j < n_vars; ++j) {
         importance(j) += weight * static_cast<Feature>(visitor.vi3_contributions[static_cast<std::size_t>(j)]);
       }
+
+      valid_trees++;
     }
 
-    const Feature denom = static_cast<Feature>(B) * static_cast<Feature>(G - 1);
+    const Feature denom = static_cast<Feature>(valid_trees) * static_cast<Feature>(G - 1);
 
     if (denom > Feature(0)) {
       importance /= denom;

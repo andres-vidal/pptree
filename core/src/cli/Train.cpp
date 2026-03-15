@@ -44,6 +44,8 @@ namespace ppforest2::cli {
     ->check(CLI::PositiveNumber);
     sub->add_option("-r,--seed", model.seed, "Random seed (default: random)");
     sub->add_option("-v,--vars", model.vars_input, "Features per split (integer=count, decimal or fraction=proportion, default: 0.5)");
+    sub->add_option("--max-retries", model.max_retries, "Max retries for degenerate trees (default: 3)")
+    ->check(CLI::NonNegativeNumber);
   }
 
   CLI::App * setup_train(CLI::App& app, CLIOptions& params) {
@@ -103,7 +105,7 @@ namespace {
     const CLIOptions& params,
     int               n_train,
     int               n_test) {
-    std::string model_type = params.model.trees > 0 ? "random forest" : "single decision tree";
+    std::string model_type = params.model.trees > 0 ? "Random Forest" : "Single Decision Tree";
     out.println("{}", emphasis("Training " + model_type));
     out.newline();
 
@@ -185,7 +187,7 @@ namespace {
     if (params.model.trees > 0) {
       spec = TrainingSpecUGLDA::make(params.model.n_vars, params.model.lambda);
       fact = [&] {
-        return std::make_unique<Forest>(Forest::train(*spec, x, y, params.model.trees, params.model.seed, params.model.threads));
+        return std::make_unique<Forest>(Forest::train(*spec, x, y, params.model.trees, params.model.seed, params.model.threads, params.model.max_retries));
       };
     } else {
       spec = TrainingSpecGLDA::make(params.model.lambda);
@@ -219,7 +221,23 @@ namespace {
     const auto train_result = train_model(x, y, params, rng);
 
     out.indent();
-    out.println("Trained in {}ms", emphasis(std::to_string(train_result.duration)));
+    out.print("Trained in {}ms", emphasis(std::to_string(train_result.duration)));
+
+    // Warn about degenerate trees
+    struct DegenerateCheckVisitor : ModelVisitor {
+      bool is_degenerate = false;
+
+      void visit(const Forest& forest) override {
+        is_degenerate = forest.degenerate;
+      }
+
+      void visit(const Tree& tree) override {
+        is_degenerate = tree.is_degenerate();
+      }
+    };
+
+    DegenerateCheckVisitor deg_check;
+    train_result.model->accept(deg_check);
 
     if (!params.save_path.empty()) {
       save_model(out, *train_result.model, params, params.save_path);
@@ -227,7 +245,18 @@ namespace {
       out.println("not saved {}", muted("(used --no-save)"));
     }
 
-    out.dedent();
+    out.newline();
+
+    if (deg_check.is_degenerate) {
+      out.println("{} Some splits could not separate groups (degenerate nodes).", emphasis(warning("Warning:")));
+      out.println("This can be caused by ill-conditioned variables in the input data,");
+      out.println("or by bootstrap samples that produce singular covariance matrices.");
+      out.println("Consider reviewing your data or adjusting --max-retries (currently {}).",
+      params.model.max_retries);
+      out.println("Degenerate nodes predict the class with the most observations.");
+      out.println("Degenerate trees are excluded from variable importance calculations.");
+      out.newline();
+    }
 
     if (!params.no_metrics) {
       VariableImportance vi;
@@ -268,13 +297,12 @@ namespace {
       train_result.model->accept(metrics_visitor);
 
       if (oob_err >= 0.0) {
-        out.indent();
-        out.println("OOB error: {}", emphasis(fmt::format("{:.2f}%", oob_err * 100)));
-        out.dedent();
+        out.println("{} {}", emphasis("OOB error:"), fmt::format("{:.2f}%", oob_err * 100));
         out.newline();
       }
 
       print_variable_importance(out, vi);
+      out.dedent();
 
       if (!params.save_path.empty()) {
         json saved = io::json::read_file(params.save_path);

@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <numeric>
 #include <vector>
 #include <Eigen/Dense>
@@ -13,6 +14,15 @@ using namespace ppforest2::stats;
 
 
 namespace ppforest2::pp {
+namespace {
+  PPResult nan_result(const FeatureMatrix& x) {
+    return PPResult{
+      FeatureVector::Constant(x.cols(), std::numeric_limits<Feature>::quiet_NaN()),
+      std::numeric_limits<Feature>::quiet_NaN()
+    };
+  }
+}
+
   PPGLDAStrategy::PPGLDAStrategy(float lambda) :
     lambda(lambda) {
   }
@@ -58,9 +68,16 @@ namespace ppforest2::pp {
     Eigen::GeneralizedSelfAdjointEigenSolver<FeatureMatrix> ges;
     ges.compute(B, WpB);
 
+    if (ges.info() != Eigen::Success) return nan_result(x);
+
     // largest eigenvalue => best 1D projection
     FeatureVector max_eigen_vec = ges.eigenvectors().col(ges.eigenvalues().size() - 1);
     Feature max_eigen_val       = ges.eigenvalues().real().maxCoeff();
+
+    // Solver may report Success but produce NaN eigenvectors when B is
+    // positive-semidefinite (singular covariance from small bootstrap samples).
+    if (max_eigen_vec.hasNaN() || std::isnan(max_eigen_val)) return nan_result(x);
+
     return PPResult{ pp::normalize(max_eigen_vec), max_eigen_val };
   }
 

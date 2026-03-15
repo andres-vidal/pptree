@@ -73,6 +73,13 @@ pptr <- function(
 
   model <- ppforest2_train_tree_glda(args$x, args$y, lambda, seed)
 
+  if (isTRUE(model$degenerate)) {
+    warning("Some splits could not separate groups (degenerate nodes). ",
+            "This can be caused by ill-conditioned variables in the input data. ",
+            "Degenerate nodes predict the class with the most observations.",
+            call. = FALSE)
+  }
+
   class(model) <- "pptr"
   model$seed <- seed
   model$classes <- classes

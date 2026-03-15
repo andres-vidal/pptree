@@ -37,8 +37,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ppforest2_train_forest_glda
-Forest ppforest2_train_forest_glda(FeatureMatrix x, ResponseVector y, const int size, const int n_vars, const float lambda, const int seed, SEXP n_threads);
-RcppExport SEXP _ppforest2_ppforest2_train_forest_glda(SEXP xSEXP, SEXP ySEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP seedSEXP, SEXP n_threadsSEXP) {
+Forest ppforest2_train_forest_glda(FeatureMatrix x, ResponseVector y, const int size, const int n_vars, const float lambda, const int seed, SEXP n_threads, const int max_retries);
+RcppExport SEXP _ppforest2_ppforest2_train_forest_glda(SEXP xSEXP, SEXP ySEXP, SEXP sizeSEXP, SEXP n_varsSEXP, SEXP lambdaSEXP, SEXP seedSEXP, SEXP n_threadsSEXP, SEXP max_retriesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -49,7 +49,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const float >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const int >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< SEXP >::type n_threads(n_threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(ppforest2_train_forest_glda(x, y, size, n_vars, lambda, seed, n_threads));
+    Rcpp::traits::input_parameter< const int >::type max_retries(max_retriesSEXP);
+    rcpp_result_gen = Rcpp::wrap(ppforest2_train_forest_glda(x, y, size, n_vars, lambda, seed, n_threads, max_retries));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -284,7 +285,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_ppforest2_ppforest2_has_openmp", (DL_FUNC) &_ppforest2_ppforest2_has_openmp, 0},
     {"_ppforest2_ppforest2_train_tree_glda", (DL_FUNC) &_ppforest2_ppforest2_train_tree_glda, 4},
-    {"_ppforest2_ppforest2_train_forest_glda", (DL_FUNC) &_ppforest2_ppforest2_train_forest_glda, 7},
+    {"_ppforest2_ppforest2_train_forest_glda", (DL_FUNC) &_ppforest2_ppforest2_train_forest_glda, 8},
     {"_ppforest2_ppforest2_predict", (DL_FUNC) &_ppforest2_ppforest2_predict, 2},
     {"_ppforest2_ppforest2_predict_forest", (DL_FUNC) &_ppforest2_ppforest2_predict_forest, 2},
     {"_ppforest2_ppforest2_predict_forest_prob", (DL_FUNC) &_ppforest2_ppforest2_predict_forest_prob, 2},

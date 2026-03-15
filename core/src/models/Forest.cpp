@@ -21,7 +21,8 @@ namespace ppforest2 {
     const ResponseVector& y,
     const int             size,
     const int             seed,
-    const int             n_threads) {
+    const int             n_threads,
+    const int             max_retries) {
     #ifdef _OPENMP
     omp_set_num_threads(n_threads);
     #endif
@@ -34,13 +35,24 @@ namespace ppforest2 {
 
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
-      RNG rng(static_cast<uint64_t>(seed), static_cast<uint64_t>(i));
-      trees[i] = BootstrapTree::train(training_spec, x, group_spec, rng);
+      for (int attempt = 0; attempt <= max_retries; ++attempt) {
+        uint64_t stream = static_cast<uint64_t>(i) + static_cast<uint64_t>(attempt) * static_cast<uint64_t>(size);
+        RNG rng(static_cast<uint64_t>(seed), stream);
+        trees[i] = BootstrapTree::train(training_spec, x, group_spec, rng);
+
+        if (!trees[i]->is_degenerate()) {
+          break;
+        }
+      }
     }
 
     Forest forest(training_spec.clone(), seed);
 
     for (auto& tree : trees) {
+      if (tree->is_degenerate()) {
+        forest.degenerate = true;
+      }
+
       forest.add_tree(std::move(tree));
     }
 

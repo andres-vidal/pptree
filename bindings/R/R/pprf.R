@@ -19,6 +19,7 @@ NULL
 #' @param n_vars The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with \code{p_vars}.
 #' @param p_vars The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, \code{p_vars = 0.5} uses half the features. Cannot be used together with \code{n_vars}.
 #' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.
+#' @param max_retries Maximum number of retries for degenerate trees (default: 3). When a bootstrap sample yields a singular covariance matrix, the tree is retrained with a different seed up to this many times.
 #' @param n_threads The number of threads to use. The default is the number of cores available.
 #' @return A pprf model trained on \code{x} and \code{y}.
 #' @seealso \code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{vignette("introduction")} for a tutorial
@@ -63,6 +64,7 @@ pprf <- function(
     n_vars = NULL,
     p_vars = NULL,
     seed = NULL,
+    max_retries = 3L,
     n_threads = NULL) {
   if (!is.numeric(lambda) || length(lambda) != 1 || lambda < 0 || lambda > 1)
     stop("`lambda` must be a single number between 0 and 1.")
@@ -80,6 +82,9 @@ pprf <- function(
     if (!is.numeric(p_vars) || length(p_vars) != 1 || p_vars <= 0 || p_vars >= 1)
       stop("`p_vars` must be a single number between 0 and 1 (exclusive).")
   }
+
+  if (!is.numeric(max_retries) || length(max_retries) != 1 || max_retries < 0 || max_retries != as.integer(max_retries))
+    stop("`max_retries` must be a non-negative integer.")
 
   if (!is.null(n_threads)) {
     if (!is.numeric(n_threads) || length(n_threads) != 1 || n_threads < 1 || n_threads != as.integer(n_threads))
@@ -119,8 +124,19 @@ pprf <- function(
     ifelse(is.null(n_vars), ncol(x), n_vars),
     lambda,
     seed,
-    n_threads
+    n_threads,
+    as.integer(max_retries)
   )
+
+  if (isTRUE(model$degenerate)) {
+    warning("Some splits could not separate groups (degenerate nodes). ",
+            "This can be caused by ill-conditioned variables in the input data, ",
+            "or by bootstrap samples that produce singular covariance matrices. ",
+            "Consider reviewing your data or adjusting `max_retries` (currently ", max_retries, "). ",
+            "Degenerate nodes predict the class with the most observations. ",
+            "Degenerate trees are excluded from variable importance calculations.",
+            call. = FALSE)
+  }
 
   class(model) <- "pprf"
 

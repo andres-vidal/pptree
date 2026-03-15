@@ -19,6 +19,26 @@ using namespace ppforest2::types;
 using namespace ppforest2::utils;
 
 namespace ppforest2 {
+namespace {
+  TreeNode::Ptr degenerate_leaf(const GroupPartition& y) {
+    Response majority = *y.groups.begin();
+    int majority_size = 0;
+
+    for (const auto& g : y.groups) {
+      int sz = y.group_size(g);
+
+      if (sz > majority_size) {
+        majority_size = sz;
+        majority      = g;
+      }
+    }
+
+    auto leaf = TreeResponse::make(majority);
+    leaf->degenerate = true;
+    return leaf;
+  }
+}
+
   std::map<Response, int> binary_regroup(
     const FeatureMatrix &  x,
     const GroupPartition & group_spec
@@ -34,8 +54,8 @@ namespace ppforest2 {
     }
 
     std::sort(means.begin(), means.end(), [](const auto &a, const auto &b) {
-        return std::get<1>(a) < std::get<1>(b);
-      });
+      return std::get<1>(a) < std::get<1>(b);
+    });
 
     Feature edge_gap    = -1;
     Response edge_group = -1;
@@ -147,8 +167,8 @@ namespace ppforest2 {
 
     Step(
       const GroupPartition& y,
-      TreeNode::Ptr         *node,
-      const int             cols
+      TreeNode::Ptr         * node,
+      const int cols
       ) :
       y(y),
       node(node),
@@ -197,12 +217,26 @@ namespace ppforest2 {
       DRSpec dr = dr_strategy(x, step.y, rng);
 
       if (step.y.groups.size() == 2) {
-        *step.node = binary_step(training_spec, x, step.y, dr);
+        auto node = binary_step(training_spec, x, step.y, dr);
+
+        if (node->projector.hasNaN()) {
+          *step.node = degenerate_leaf(step.y);
+        } else {
+          *step.node = std::move(node);
+        }
+
         stack.pop();
         continue;
       }
 
-      auto split     = binary_split(training_spec, x, step.y, dr);
+      auto split = binary_split(training_spec, x, step.y, dr);
+
+      if (split.groups.size() < 2) {
+        *step.node = degenerate_leaf(step.y);
+        stack.pop();
+        continue;
+      }
+
       auto temp_node = binary_step(training_spec, x, split, dr);
 
       Response binary_lower_group = temp_node->lower->response();
