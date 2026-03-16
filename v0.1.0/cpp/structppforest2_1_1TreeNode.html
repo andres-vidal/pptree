@@ -102,6 +102,7 @@ $(function(){initNavTree('structppforest2_1_1TreeNode.html',''); initResizable(t
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structppforest2_1_1TreeNode-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ppforest2::TreeNode Struct Reference<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
@@ -149,6 +150,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3ff08d96717ede9a4812bac0ca787276" id="r_a3ff08d96717ede9a4812bac0ca787276"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3ff08d96717ede9a4812bac0ca787276">response</a> () const =0</td></tr>
 <tr class="memdesc:a3ff08d96717ede9a4812bac0ca787276"><td class="mdescLeft">&#160;</td><td class="mdescRight">The class label at this node (leaf value or majority class).  <br /></td></tr>
 <tr class="separator:a3ff08d96717ede9a4812bac0ca787276"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a40efb82eb8614b560735f861f803b610" id="r_a40efb82eb8614b560735f861f803b610"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40efb82eb8614b560735f861f803b610">degenerate</a> = false</td></tr>
+<tr class="memdesc:a40efb82eb8614b560735f861f803b610"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether this node (or any descendant) had a degenerate split.  <br /></td></tr>
+<tr class="separator:a40efb82eb8614b560735f861f803b610"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract base class for nodes in a projection pursuit tree. </p>
@@ -465,6 +472,23 @@ Public Member Functions</h2></td></tr>
 <p>The class label at this node (leaf value or majority class). </p>
 
 <p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#ae64fd60a89f2f5bf2785188866ce64fa">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#a7a4e650892f7799dc073e5debf5b3765">ppforest2::TreeResponse</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a40efb82eb8614b560735f861f803b610" name="a40efb82eb8614b560735f861f803b610"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40efb82eb8614b560735f861f803b610">&#9670;&#160;</a></span>degenerate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ppforest2::TreeNode::degenerate = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether this node (or any descendant) had a degenerate split. </p>
 
 </div>
 </div>

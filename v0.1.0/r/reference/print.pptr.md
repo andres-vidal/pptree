@@ -31,8 +31,8 @@ model <- pptr(Type ~ ., data = iris)
 print(model)
 #> 
 #> Project-Pursuit Oblique Decision Tree:
-#> If ([ 0.19 0.71 -0.66 -0.17 ] * x) < 1.070804:
-#>  If ([ 0.23 0.36 -0.44 -0.79 ] * x) < -1.062904:
+#> If ([ 0.01 0.04 -0.04 -0.01 ] * x) < 0.06660754:
+#>  If ([ 0.04 0.07 -0.09 -0.15 ] * x) < -0.2075133:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
