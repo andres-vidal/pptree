@@ -96,10 +96,10 @@ var NAVTREEINDEX =
 [
 "BenchmarkParams_8hpp.html",
 "functions_e.html",
-"structppforest2_1_1Forest.html#a41579f1bd39c4320b6d2b1afa106fccc",
-"structppforest2_1_1cli_1_1BenchmarkParams.html#aece25fda7ac99aa87a5f0463a95b836e",
-"structppforest2_1_1io_1_1ModelStats.html#ad0e7bd2f965369b0f21a3e7c9493f9ce",
-"structppforest2_1_1viz_1_1NodeData.html#ad01e6eb86345aedd993352ba6f82e400"
+"structppforest2_1_1Forest.html#a4ab3043b4c73496a4fac6b387267b0bf",
+"structppforest2_1_1cli_1_1BenchmarkParams.html#aab83bf598da28d07ec276532bebfe69f",
+"structppforest2_1_1io_1_1ModelStats.html#a5a36f1b04c8f0c2fd08902546cc1683f",
+"structppforest2_1_1viz_1_1NodeData.html#aab1f8921c5f52c1db30860b7f14acfab"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

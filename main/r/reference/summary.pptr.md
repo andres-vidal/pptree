@@ -45,10 +45,10 @@ summary(model)
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection
-#> 1 Petal.Length 1.7652982  0.7787341
-#> 2  Petal.Width 0.7622377  0.3437867
-#> 3  Sepal.Width 0.4358663  0.1806545
-#> 4 Sepal.Length 0.8280661  0.1471821
+#> 1 Petal.Length 1.7652982 0.10064526
+#> 2  Petal.Width 0.7622377 0.06144172
+#> 3 Sepal.Length 0.8280661 0.02164980
+#> 4  Sepal.Width 0.4358663 0.02155388
 #> 
 #> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).
 #> Variable contributions can only be theoretically interpreted as such

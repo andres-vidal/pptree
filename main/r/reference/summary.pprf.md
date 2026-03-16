@@ -46,11 +46,11 @@ summary(model)
 #> -------------------------------------
 #> Variable Importance:
 #> 
-#>       Variable         σ Projection  Weighted   Permuted
-#> 1 Petal.Length 1.7652982  0.6765911 0.7033836 0.47511965
-#> 2  Petal.Width 0.7622377  0.3702932 0.3385268 0.24130782
-#> 3  Sepal.Width 0.4358663  0.1965394 0.2130345 0.06331739
-#> 4 Sepal.Length 0.8280661  0.1442678 0.1379393 0.04545453
+#>       Variable         σ Projection   Weighted   Permuted
+#> 1 Petal.Length 1.7652982 0.09674555 0.08712038 0.47511965
+#> 2  Petal.Width 0.7622377 0.06783789 0.05630573 0.24130782
+#> 3  Sepal.Width 0.4358663 0.02741493 0.02527830 0.06331739
+#> 4 Sepal.Length 0.8280661 0.02343013 0.02004903 0.04545453
 #> 
 #> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).
 #> Variable contributions can only be theoretically interpreted as such

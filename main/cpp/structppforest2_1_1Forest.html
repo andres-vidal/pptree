@@ -150,12 +150,15 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a41579f1bd39c4320b6d2b1afa106fccc" id="r_a41579f1bd39c4320b6d2b1afa106fccc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structppforest2_1_1Forest.html">Forest</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a41579f1bd39c4320b6d2b1afa106fccc">train</a> (const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;<a class="el" href="#a94eaa10b52e2787be14d3a60f6f68514">training_spec</a>, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, int size, int <a class="el" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>, int n_threads=std::thread::hardware_concurrency())</td></tr>
-<tr class="memdesc:a41579f1bd39c4320b6d2b1afa106fccc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Train a random forest.  <br /></td></tr>
-<tr class="separator:a41579f1bd39c4320b6d2b1afa106fccc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae448c9c9777b0e0d449504a033a2a7a" id="r_aae448c9c9777b0e0d449504a033a2a7a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structppforest2_1_1Forest.html">Forest</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae448c9c9777b0e0d449504a033a2a7a">train</a> (const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;<a class="el" href="#a94eaa10b52e2787be14d3a60f6f68514">training_spec</a>, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, int size, int <a class="el" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>, int n_threads=std::thread::hardware_concurrency(), int max_retries=3)</td></tr>
+<tr class="memdesc:aae448c9c9777b0e0d449504a033a2a7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Train a random forest.  <br /></td></tr>
+<tr class="separator:aae448c9c9777b0e0d449504a033a2a7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a66491ed73ce203326267275601af7db6" id="r_a66491ed73ce203326267275601af7db6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66491ed73ce203326267275601af7db6">degenerate</a> = false</td></tr>
+<tr class="memdesc:a66491ed73ce203326267275601af7db6"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if any tree remains degenerate after retries.  <br /></td></tr>
+<tr class="separator:a66491ed73ce203326267275601af7db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bb8cefb0eb540d08e8e26b99883e7cc" id="r_a2bb8cefb0eb540d08e8e26b99883e7cc"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a> = 0</td></tr>
 <tr class="separator:a2bb8cefb0eb540d08e8e26b99883e7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94eaa10b52e2787be14d3a60f6f68514" id="r_a94eaa10b52e2787be14d3a60f6f68514"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94eaa10b52e2787be14d3a60f6f68514">training_spec</a></td></tr>
@@ -173,7 +176,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p>A projection pursuit random forest. </p>
 <p>An ensemble of <a class="el" href="structppforest2_1_1BootstrapTree.html">BootstrapTree</a> instances, each trained on a bootstrap sample. Predictions are made by majority vote. Out-of-bag estimation and vote-proportion predictions are supported.</p>
 <div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUGLDA.html">TrainingSpecUGLDA</a> spec(n_vars: 3, lambda: 0.0);</div>
-<div class="line"><a class="code hl_function" href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">Forest</a> forest = <a class="code hl_function" href="#a41579f1bd39c4320b6d2b1afa106fccc">Forest::train</a>(spec, x, y, size: 500, <a class="code hl_variable" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>: 42);</div>
+<div class="line"><a class="code hl_function" href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">Forest</a> forest = <a class="code hl_function" href="#aae448c9c9777b0e0d449504a033a2a7a">Forest::train</a>(spec, x, y, size: 500, <a class="code hl_variable" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>: 42);</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> preds = forest.<a class="code hl_function" href="#a4b767e43cb29fc1273b34d1077d54c5a">predict</a>(x_test);</div>
 <div class="line"><span class="keywordtype">double</span> oob = forest.<a class="code hl_function" href="#ab9dd051d9e30e864682c01bfa252cc74">oob_error</a>(x, y);</div>
@@ -182,9 +185,9 @@ Additional Inherited Members</h2></td></tr>
 <div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> probs = forest.<a class="code hl_function" href="#a4b767e43cb29fc1273b34d1077d54c5a">predict</a>(x_test, <a class="code hl_struct" href="structppforest2_1_1Proportions.html">Proportions</a>{});</div>
 <div class="ttc" id="anamespaceppforest2_1_1types_html_a20733a55a09432e8f9f924eb11fb5b0d"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">ppforest2::types::FeatureMatrix</a></div><div class="ttdeci">Eigen::Matrix&lt; Feature, Eigen::Dynamic, Eigen::Dynamic &gt; FeatureMatrix</div><div class="ttdoc">Dynamic-size matrix of feature values.</div><div class="ttdef"><b>Definition</b> Types.hpp:24</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1types_html_a4cc32c7bf71b27689fd027a8814821da"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">ppforest2::types::ResponseVector</a></div><div class="ttdeci">Eigen::Matrix&lt; Response, Eigen::Dynamic, 1 &gt; ResponseVector</div><div class="ttdoc">Dynamic-size column vector of class labels.</div><div class="ttdef"><b>Definition</b> Types.hpp:29</div></div>
-<div class="ttc" id="astructppforest2_1_1Forest_html_a2bb8cefb0eb540d08e8e26b99883e7cc"><div class="ttname"><a href="#a2bb8cefb0eb540d08e8e26b99883e7cc">ppforest2::Forest::seed</a></div><div class="ttdeci">const int seed</div><div class="ttdef"><b>Definition</b> Forest.hpp:62</div></div>
-<div class="ttc" id="astructppforest2_1_1Forest_html_a41579f1bd39c4320b6d2b1afa106fccc"><div class="ttname"><a href="#a41579f1bd39c4320b6d2b1afa106fccc">ppforest2::Forest::train</a></div><div class="ttdeci">static Forest train(const TrainingSpec &amp;training_spec, const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y, int size, int seed, int n_threads=std::thread::hardware_concurrency())</div><div class="ttdoc">Train a random forest.</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html_a2bb8cefb0eb540d08e8e26b99883e7cc"><div class="ttname"><a href="#a2bb8cefb0eb540d08e8e26b99883e7cc">ppforest2::Forest::seed</a></div><div class="ttdeci">const int seed</div><div class="ttdef"><b>Definition</b> Forest.hpp:64</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html_a4b767e43cb29fc1273b34d1077d54c5a"><div class="ttname"><a href="#a4b767e43cb29fc1273b34d1077d54c5a">ppforest2::Forest::predict</a></div><div class="ttdeci">types::Response predict(const types::FeatureVector &amp;data) const override</div><div class="ttdoc">Predict a single observation.</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html_aae448c9c9777b0e0d449504a033a2a7a"><div class="ttname"><a href="#aae448c9c9777b0e0d449504a033a2a7a">ppforest2::Forest::train</a></div><div class="ttdeci">static Forest train(const TrainingSpec &amp;training_spec, const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y, int size, int seed, int n_threads=std::thread::hardware_concurrency(), int max_retries=3)</div><div class="ttdoc">Train a random forest.</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html_ab9dd051d9e30e864682c01bfa252cc74"><div class="ttname"><a href="#ab9dd051d9e30e864682c01bfa252cc74">ppforest2::Forest::oob_error</a></div><div class="ttdeci">double oob_error(const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y) const</div><div class="ttdoc">Out-of-bag error rate.</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html_aebf6bbdeb3ff9672fc037cc5f48a5e8c"><div class="ttname"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">ppforest2::Forest::Forest</a></div><div class="ttdeci">Forest()</div></div>
 <div class="ttc" id="astructppforest2_1_1Proportions_html"><div class="ttname"><a href="structppforest2_1_1Proportions.html">ppforest2::Proportions</a></div><div class="ttdoc">Tag type for requesting vote-proportion predictions.</div><div class="ttdef"><b>Definition</b> Forest.hpp:19</div></div>
@@ -479,8 +482,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a41579f1bd39c4320b6d2b1afa106fccc" name="a41579f1bd39c4320b6d2b1afa106fccc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41579f1bd39c4320b6d2b1afa106fccc">&#9670;&#160;</a></span>train()</h2>
+<a id="aae448c9c9777b0e0d449504a033a2a7a" name="aae448c9c9777b0e0d449504a033a2a7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae448c9c9777b0e0d449504a033a2a7a">&#9670;&#160;</a></span>train()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -516,7 +519,12 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_threads</em></span><span class="paramdefsep"> = </span><span class="paramdefval">std::thread::hardware_concurrency()</span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_threads</em></span><span class="paramdefsep"> = </span><span class="paramdefval">std::thread::hardware_concurrency()</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>max_retries</em></span><span class="paramdefsep"> = </span><span class="paramdefval">3</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -535,6 +543,7 @@ Additional Inherited Members</h2></td></tr>
     <tr><td class="paramname">size</td><td>Number of trees. </td></tr>
     <tr><td class="paramname">seed</td><td>RNG seed. </td></tr>
     <tr><td class="paramname">n_threads</td><td>Number of threads (default: hardware concurrency). </td></tr>
+    <tr><td class="paramname">max_retries</td><td>Maximum retry attempts for degenerate trees (default: 3). </td></tr>
   </table>
   </dd>
 </dl>
@@ -543,6 +552,22 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a66491ed73ce203326267275601af7db6" name="a66491ed73ce203326267275601af7db6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66491ed73ce203326267275601af7db6">&#9670;&#160;</a></span>degenerate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ppforest2::Forest::degenerate = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>True if any tree remains degenerate after retries. </p>
+
+</div>
+</div>
 <a id="a2bb8cefb0eb540d08e8e26b99883e7cc" name="a2bb8cefb0eb540d08e8e26b99883e7cc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2bb8cefb0eb540d08e8e26b99883e7cc">&#9670;&#160;</a></span>seed</h2>
 
