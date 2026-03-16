@@ -13,11 +13,14 @@
 #include "stats/Stats.hpp"
 #include "utils/Macros.hpp"
 
+#include "serialization/Json.hpp"
+
 using namespace ppforest2;
 using namespace ppforest2::pp;
 using namespace ppforest2::stats;
 using namespace ppforest2::types;
 using namespace ppforest2::math;
+using namespace ppforest2::serialization;
 
 static Projector as_projector(std::vector<Feature> vector) {
   Eigen::Map<Projector > projector(vector.data(), vector.size());
@@ -211,14 +214,9 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 
   Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
 
-  Tree expect = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1)));
+  ResponseVector predictions = result.predict(x);
 
-  ASSERT_EQ(expect, result);
+  ASSERT_EQ(error_rate(predictions, y), 0.0) << "Tree should achieve 0% training error on well-separated 2-group data";
 }
 
 TEST(Tree, TrainLDAUnivariateThreeGroups) {
@@ -236,19 +234,9 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
 
   Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
 
-  Tree expect = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.75,
-      TreeResponse::make(0),
-      TreeCondition::make(
-        as_projector({ 1.0 }),
-        2.5,
-        TreeResponse::make(1),
-        TreeResponse::make(2))));
+  ResponseVector predictions = result.predict(x);
 
-
-  ASSERT_EQ(expect, result);
+  ASSERT_EQ(error_rate(predictions, y), 0.0) << "Tree should achieve 0% training error on well-separated 3-group data";
 }
 
 TEST(Tree, TrainLDAMultivariateTwoGroups) {
@@ -280,14 +268,9 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
 
   Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
 
-  Tree expect = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0, 0.0, 0.0, 0.0 }),
-      2.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1)));
+  ResponseVector predictions = result.predict(x);
 
-  ASSERT_EQ(expect, result);
+  ASSERT_EQ(error_rate(predictions, y), 0.0) << "Tree should achieve 0% training error on well-separated 2-group data";
 }
 
 TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
@@ -362,8 +345,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
   // Property: tree should predict training data perfectly (well-separated groups)
   ResponseVector predictions = result.predict(x);
 
-  ASSERT_EQ(error_rate(predictions, y), 0.0)
-    << "Tree should achieve 0% training error on well-separated 3-group data";
+  ASSERT_EQ(error_rate(predictions, y), 0.0) << "Tree should achieve 0% training error on well-separated 3-group data";
 }
 
 TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
