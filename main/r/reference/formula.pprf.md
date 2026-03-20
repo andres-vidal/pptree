@@ -37,5 +37,5 @@ model <- pprf(Type ~ ., data = iris)
 formula(model)
 #> Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 
 #>     1
-#> <environment: 0x5576665d3f28>
+#> <environment: 0x55a0a50131c0>
 ```
