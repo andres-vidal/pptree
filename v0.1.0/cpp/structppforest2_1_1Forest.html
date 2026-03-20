@@ -119,9 +119,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aebf6bbdeb3ff9672fc037cc5f48a5e8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cb214a2162ed9f7cef5c59779ae0209" id="r_a8cb214a2162ed9f7cef5c59779ae0209"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8cb214a2162ed9f7cef5c59779ae0209">Forest</a> (<a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a> &amp;&amp;<a class="el" href="#a94eaa10b52e2787be14d3a60f6f68514">training_spec</a>, int <a class="el" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>)</td></tr>
 <tr class="separator:a8cb214a2162ed9f7cef5c59779ae0209"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ab3043b4c73496a4fac6b387267b0bf" id="r_a4ab3043b4c73496a4fac6b387267b0bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ab3043b4c73496a4fac6b387267b0bf">accept</a> (<a class="el" href="structppforest2_1_1ModelVisitor.html">ModelVisitor</a> &amp;visitor) const override</td></tr>
-<tr class="memdesc:a4ab3043b4c73496a4fac6b387267b0bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a model visitor (double dispatch).  <br /></td></tr>
-<tr class="separator:a4ab3043b4c73496a4fac6b387267b0bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad88835a72b166e172fc4cfe4d284b377" id="r_ad88835a72b166e172fc4cfe4d284b377"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad88835a72b166e172fc4cfe4d284b377">accept</a> (<a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Model::Visitor</a> &amp;visitor) const override</td></tr>
+<tr class="memdesc:ad88835a72b166e172fc4cfe4d284b377"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a model visitor (double dispatch).  <br /></td></tr>
+<tr class="separator:ad88835a72b166e172fc4cfe4d284b377"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b19dd1a1bc6e66fd817fb5d1b62fd33" id="r_a2b19dd1a1bc6e66fd817fb5d1b62fd33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2b19dd1a1bc6e66fd817fb5d1b62fd33">add_tree</a> (std::unique_ptr&lt; <a class="el" href="structppforest2_1_1BootstrapTree.html">BootstrapTree</a> &gt; tree)</td></tr>
 <tr class="memdesc:a2b19dd1a1bc6e66fd817fb5d1b62fd33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a tree to the forest.  <br /></td></tr>
 <tr class="separator:a2b19dd1a1bc6e66fd817fb5d1b62fd33"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,7 +175,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A projection pursuit random forest. </p>
 <p>An ensemble of <a class="el" href="structppforest2_1_1BootstrapTree.html">BootstrapTree</a> instances, each trained on a bootstrap sample. Predictions are made by majority vote. Out-of-bag estimation and vote-proportion predictions are supported.</p>
-<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUGLDA.html">TrainingSpecUGLDA</a> spec(n_vars: 3, lambda: 0.0);</div>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUPDA.html">TrainingSpecUPDA</a> spec(n_vars: 3, lambda: 0.0);</div>
 <div class="line"><a class="code hl_function" href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">Forest</a> forest = <a class="code hl_function" href="#aae448c9c9777b0e0d449504a033a2a7a">Forest::train</a>(spec, x, y, size: 500, <a class="code hl_variable" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>: 42);</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> preds = forest.<a class="code hl_function" href="#a4b767e43cb29fc1273b34d1077d54c5a">predict</a>(x_test);</div>
@@ -191,7 +191,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="ttc" id="astructppforest2_1_1Forest_html_ab9dd051d9e30e864682c01bfa252cc74"><div class="ttname"><a href="#ab9dd051d9e30e864682c01bfa252cc74">ppforest2::Forest::oob_error</a></div><div class="ttdeci">double oob_error(const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y) const</div><div class="ttdoc">Out-of-bag error rate.</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html_aebf6bbdeb3ff9672fc037cc5f48a5e8c"><div class="ttname"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">ppforest2::Forest::Forest</a></div><div class="ttdeci">Forest()</div></div>
 <div class="ttc" id="astructppforest2_1_1Proportions_html"><div class="ttname"><a href="structppforest2_1_1Proportions.html">ppforest2::Proportions</a></div><div class="ttdoc">Tag type for requesting vote-proportion predictions.</div><div class="ttdef"><b>Definition</b> Forest.hpp:19</div></div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpecUGLDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUGLDA.html">ppforest2::TrainingSpecUGLDA</a></div><div class="ttdoc">UGLDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUGLDA.hpp:15</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecUPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUPDA.html">ppforest2::TrainingSpecUPDA</a></div><div class="ttdoc">UPDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUPDA.hpp:14</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aebf6bbdeb3ff9672fc037cc5f48a5e8c" name="aebf6bbdeb3ff9672fc037cc5f48a5e8c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">&#9670;&#160;</a></span>Forest() <span class="overload">[1/2]</span></h2>
@@ -232,8 +232,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4ab3043b4c73496a4fac6b387267b0bf" name="a4ab3043b4c73496a4fac6b387267b0bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4ab3043b4c73496a4fac6b387267b0bf">&#9670;&#160;</a></span>accept()</h2>
+<a id="ad88835a72b166e172fc4cfe4d284b377" name="ad88835a72b166e172fc4cfe4d284b377"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad88835a72b166e172fc4cfe4d284b377">&#9670;&#160;</a></span>accept()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -244,7 +244,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void ppforest2::Forest::accept </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1ModelVisitor.html">ModelVisitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Model::Visitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -257,7 +257,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Accept a model visitor (double dispatch). </p>
 
-<p>Implements <a class="el" href="structppforest2_1_1Model.html#a8f1ff337b17c7ba54f6eb26af271617e">ppforest2::Model</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1Model.html#ad36801ffbde49f31de900e6bf770d010">ppforest2::Model</a>.</p>
 
 </div>
 </div>

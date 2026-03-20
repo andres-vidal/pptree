@@ -9,7 +9,7 @@ var searchData=
   ['sd_6',['sd',['../structppforest2_1_1cli_1_1SimulateParams.html#a21ef9b43dfba26ad5390f869689ed571',1,'ppforest2::cli::SimulateParams::sd'],['../structppforest2_1_1stats_1_1SimulationParams.html#a1de01239dbb5f1395a080c20593de0ae',1,'ppforest2::stats::SimulationParams::sd']]],
   ['seed_7',['seed',['../structppforest2_1_1cli_1_1Scenario.html#ae90e7e71a4448284723a569d4479c03b',1,'ppforest2::cli::Scenario::seed'],['../structppforest2_1_1cli_1_1ModelParams.html#a0b9402b4c690e2a04bfee8ca1a1435f8',1,'ppforest2::cli::ModelParams::seed'],['../structppforest2_1_1Forest.html#a2bb8cefb0eb540d08e8e26b99883e7cc',1,'ppforest2::Forest::seed']]],
   ['segments_8',['segments',['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a0a3bfa714ff181e1f56304b7f7525b68',1,'ppforest2::viz::BoundaryVisitor']]],
-  ['selected_5fcols_9',['selected_cols',['../structppforest2_1_1dr_1_1DRSpec.html#afafeeb50a48be5a27f2b6f090af315aa',1,'ppforest2::dr::DRSpec']]],
+  ['selected_5fcols_9',['selected_cols',['../structppforest2_1_1dr_1_1DRResult.html#a669d2c912c60b87f851b9ea796431d5c',1,'ppforest2::dr::DRResult']]],
   ['simulation_10',['simulation',['../structppforest2_1_1cli_1_1CLIOptions.html#ae7db379425ec8063039014faebdf025c',1,'ppforest2::cli::CLIOptions']]],
   ['sr_5fstrategy_11',['sr_strategy',['../structppforest2_1_1TrainingSpec.html#ae947cb682df4d848c80d143f58fd9fed',1,'ppforest2::TrainingSpec']]],
   ['stable_5fwindow_12',['stable_window',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html#ae6e8171c61bc2ae143283570f2c37817',1,'ppforest2::cli::ConvergenceCriteria::stable_window'],['../structppforest2_1_1cli_1_1ConvergenceParams.html#a48b8f3c24dc15ec8460552f11c405d09',1,'ppforest2::cli::ConvergenceParams::stable_window']]],

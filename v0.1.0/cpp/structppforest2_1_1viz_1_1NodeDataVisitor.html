@@ -145,8 +145,8 @@ Public Attributes</h2></td></tr>
 <div class="line">tree.root-&gt;accept(visitor);</div>
 <div class="line"><span class="comment">// visitor.nodes is a pre-order vector of NodeData</span></div>
 <div class="ttc" id="astructppforest2_1_1viz_1_1NodeDataVisitor_html_a89edf55beacb824f09a6d9a983177fa8"><div class="ttname"><a href="#a89edf55beacb824f09a6d9a983177fa8">ppforest2::viz::NodeDataVisitor::NodeDataVisitor</a></div><div class="ttdeci">NodeDataVisitor(const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y)</div></div>
-<div class="ttc" id="astructppforest2_1_1viz_1_1NodeDataVisitor_html_ab8083b84ed4805be1a93e846ce4d3631"><div class="ttname"><a href="#ab8083b84ed4805be1a93e846ce4d3631">ppforest2::viz::NodeDataVisitor::x</a></div><div class="ttdeci">const types::FeatureMatrix &amp; x</div><div class="ttdoc">Full observation matrix (n × p).</div><div class="ttdef"><b>Definition</b> Visualization.hpp:119</div></div>
-<div class="ttc" id="astructppforest2_1_1viz_1_1NodeDataVisitor_html_aca517c73329f368bf2eef635ff480305"><div class="ttname"><a href="#aca517c73329f368bf2eef635ff480305">ppforest2::viz::NodeDataVisitor::y</a></div><div class="ttdeci">const types::ResponseVector &amp; y</div><div class="ttdoc">Full response vector (n).</div><div class="ttdef"><b>Definition</b> Visualization.hpp:120</div></div>
+<div class="ttc" id="astructppforest2_1_1viz_1_1NodeDataVisitor_html_ab8083b84ed4805be1a93e846ce4d3631"><div class="ttname"><a href="#ab8083b84ed4805be1a93e846ce4d3631">ppforest2::viz::NodeDataVisitor::x</a></div><div class="ttdeci">const types::FeatureMatrix &amp; x</div><div class="ttdoc">Full observation matrix (n × p).</div><div class="ttdef"><b>Definition</b> Visualization.hpp:118</div></div>
+<div class="ttc" id="astructppforest2_1_1viz_1_1NodeDataVisitor_html_aca517c73329f368bf2eef635ff480305"><div class="ttname"><a href="#aca517c73329f368bf2eef635ff480305">ppforest2::viz::NodeDataVisitor::y</a></div><div class="ttdeci">const types::ResponseVector &amp; y</div><div class="ttdoc">Full response vector (n).</div><div class="ttdef"><b>Definition</b> Visualization.hpp:119</div></div>
 </div><!-- fragment --><p>At each split node the visitor projects all reaching observations onto the node's projector, records the projected values and class labels, partitions observation indices by the threshold, and recurses into the lower and upper children. Nodes are accumulated in <b>pre-order</b> (parent before children, left before right).</p>
 <p>The observation routing respects the tree structure exactly: an observation reaching a split goes to the lower child if its projected value &lt; threshold, otherwise to the upper child. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -195,7 +195,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="structppforest2_1_1TreeNodeVisitor.html#ad8d42d233a4ad6e9ecbf1911e87c2c9a">ppforest2::TreeNodeVisitor</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#a7f2b2b2ea1a2803d83dfd4249ac97cd5">ppforest2::TreeNode::Visitor</a>.</p>
 
 </div>
 </div>
@@ -222,7 +222,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="structppforest2_1_1TreeNodeVisitor.html#a8dfd07a148d7b54bf867f43c1a4caa1d">ppforest2::TreeNodeVisitor</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#aa0806c19fd84d904e2ebf134433a48ce">ppforest2::TreeNode::Visitor</a>.</p>
 
 </div>
 </div>

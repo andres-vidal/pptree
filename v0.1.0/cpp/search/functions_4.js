@@ -6,5 +6,5 @@ var searchData=
   ['error_3',['error',['../structppforest2_1_1stats_1_1ConfusionMatrix.html#ae9f6a0c3bf45609dd766bd2b1b60c9fa',1,'ppforest2::stats::ConfusionMatrix::error()'],['../namespaceppforest2_1_1io_1_1style.html#ae34e06e16709ede6c42dc6070081f1f6',1,'ppforest2::io::style::error()']]],
   ['error_5frate_4',['error_rate',['../namespaceppforest2_1_1stats.html#a7a9ab29c5165bf5acb78e69f78458c52',1,'ppforest2::stats']]],
   ['errorln_5',['errorln',['../structppforest2_1_1io_1_1Output.html#a914caeddb5b39d6d094cf76b5d89af25',1,'ppforest2::io::Output']]],
-  ['expand_6',['expand',['../structppforest2_1_1dr_1_1DRSpec.html#aec4b2d653544ad4dd0addf78eacfdb0f',1,'ppforest2::dr::DRSpec']]]
+  ['expand_6',['expand',['../structppforest2_1_1dr_1_1DRResult.html#aeb3458ee4d7a08556ae3b326c4fb678b',1,'ppforest2::dr::DRResult']]]
 ];

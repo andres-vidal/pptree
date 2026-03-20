@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['a_20modelvisitor_0',['Implementing a ModelVisitor',['../extending_visitors.html#vis_model',1,'']]],
+  ['a_20model_3a_3avisitor_0',['Implementing a Model::Visitor',['../extending_visitors.html#vis_model',1,'']]],
   ['a_20new_20drstrategy_1',['Adding a new DRStrategy',['../extending_strategies.html#strat_dr',1,'']]],
   ['a_20new_20ppstrategy_2',['Adding a new PPStrategy',['../extending_strategies.html#strat_pp',1,'']]],
   ['a_20new_20srstrategy_3',['Adding a new SRStrategy',['../extending_strategies.html#strat_sr',1,'']]],
@@ -8,9 +8,9 @@ var searchData=
   ['a_20random_20projection_20strategy_5',['Example: a random projection strategy',['../extending_strategies.html#strat_pp_example',1,'']]],
   ['a_20single_20tree_6',['Training a single tree',['../index.html#train_tree',1,'']]],
   ['a_20trainingspec_20subclass_7',['Creating a TrainingSpec subclass',['../extending_strategies.html#strat_compose_subclass',1,'']]],
-  ['a_20trainingspecvisitor_8',['Implementing a TrainingSpecVisitor',['../extending_visitors.html#vis_specvisitor',1,'']]],
-  ['a_20treenodevisitor_9',['Implementing a TreeNodeVisitor',['../extending_visitors.html#vis_treenode',1,'']]],
-  ['accept_10',['accept',['../structppforest2_1_1Forest.html#a4ab3043b4c73496a4fac6b387267b0bf',1,'ppforest2::Forest::accept()'],['../structppforest2_1_1Model.html#a8f1ff337b17c7ba54f6eb26af271617e',1,'ppforest2::Model::accept()'],['../structppforest2_1_1TrainingSpec.html#aea20d1f6eb26217822d00c889b51be29',1,'ppforest2::TrainingSpec::accept()'],['../structppforest2_1_1TrainingSpecGLDA.html#ac7212b4b689d037bc6c0bf55699cd3ae',1,'ppforest2::TrainingSpecGLDA::accept()'],['../structppforest2_1_1TrainingSpecUGLDA.html#aa5818a9e70a58fe96da851fb293b0b66',1,'ppforest2::TrainingSpecUGLDA::accept()'],['../structppforest2_1_1Tree.html#a7a46d619d4c059fa8de0b5da4ad2ab26',1,'ppforest2::Tree::accept()'],['../structppforest2_1_1TreeCondition.html#a46aeabaccdc4ea0ca6fabf5bb38fb50a',1,'ppforest2::TreeCondition::accept()'],['../structppforest2_1_1TreeNode.html#a361a943148dc9f5a81eac9207756925a',1,'ppforest2::TreeNode::accept()'],['../structppforest2_1_1TreeResponse.html#afb2e28a85e3524ec6666448b58421e15',1,'ppforest2::TreeResponse::accept()']]],
+  ['a_20trainingspec_3a_3avisitor_8',['Implementing a TrainingSpec::Visitor',['../extending_visitors.html#vis_specvisitor',1,'']]],
+  ['a_20treenode_3a_3avisitor_9',['Implementing a TreeNode::Visitor',['../extending_visitors.html#vis_treenode',1,'']]],
+  ['accept_10',['accept',['../structppforest2_1_1Forest.html#ad88835a72b166e172fc4cfe4d284b377',1,'ppforest2::Forest::accept()'],['../structppforest2_1_1Model.html#ad36801ffbde49f31de900e6bf770d010',1,'ppforest2::Model::accept()'],['../structppforest2_1_1TrainingSpec.html#a74035ae5291f69581411b1a778b42f22',1,'ppforest2::TrainingSpec::accept()'],['../structppforest2_1_1TrainingSpecPDA.html#aad9788439f3be72fa89be503e3f7384e',1,'ppforest2::TrainingSpecPDA::accept()'],['../structppforest2_1_1TrainingSpecUPDA.html#ae13ea9fc9880b846df087844243c4e0f',1,'ppforest2::TrainingSpecUPDA::accept()'],['../structppforest2_1_1Tree.html#af79f91e98bc4ff581a69a8afd8480137',1,'ppforest2::Tree::accept()'],['../structppforest2_1_1TreeCondition.html#a7dd80b4ff4412f587347c50e832b6601',1,'ppforest2::TreeCondition::accept()'],['../structppforest2_1_1TreeNode.html#a46fbb9d6b6583f973571f17e5ebd4a9d',1,'ppforest2::TreeNode::accept()'],['../structppforest2_1_1TreeResponse.html#a4dd4c2b0834ca7523a6a24327b953d80',1,'ppforest2::TreeResponse::accept()']]],
   ['accuracy_11',['accuracy',['../namespaceppforest2_1_1stats.html#ab1be109eb5773e260bc48e272d1599d4',1,'ppforest2::stats']]],
   ['add_5fmodel_5foptions_12',['add_model_options',['../namespaceppforest2_1_1cli.html#a4233edc87e69b2325c6cfcbdf5138afd',1,'ppforest2::cli']]],
   ['add_5ftree_13',['add_tree',['../structppforest2_1_1Forest.html#a2b19dd1a1bc6e66fd817fb5d1b62fd33',1,'ppforest2::Forest']]],

@@ -14,7 +14,7 @@ var searchData=
   ['dr_5fstrategy_11',['dr_strategy',['../structppforest2_1_1TrainingSpec.html#a76104e3b759c88cbc7d7603889ae58ca',1,'ppforest2::TrainingSpec']]],
   ['drnoopstrategy_12',['DRNoopStrategy',['../structppforest2_1_1dr_1_1DRNoopStrategy.html',1,'ppforest2::dr']]],
   ['drnoopstrategy_2ehpp_13',['DRNoopStrategy.hpp',['../DRNoopStrategy_8hpp.html',1,'']]],
-  ['drspec_14',['DRSpec',['../structppforest2_1_1dr_1_1DRSpec.html',1,'ppforest2::dr::DRSpec'],['../structppforest2_1_1dr_1_1DRSpec.html#a13f9c31715352a33c9b4e07963280a60',1,'ppforest2::dr::DRSpec::DRSpec()']]],
+  ['drresult_14',['DRResult',['../structppforest2_1_1dr_1_1DRResult.html',1,'ppforest2::dr::DRResult'],['../structppforest2_1_1dr_1_1DRResult.html#a5dae78f7808a4630e9abed0f07fc1651',1,'ppforest2::dr::DRResult::DRResult()']]],
   ['drstrategy_15',['DRStrategy',['../extending_strategies.html#strat_dr',1,'Adding a new DRStrategy'],['../structppforest2_1_1dr_1_1DRStrategy.html',1,'ppforest2::dr::DRStrategy']]],
   ['drstrategy_2ehpp_16',['DRStrategy.hpp',['../DRStrategy_8hpp.html',1,'']]],
   ['druniformstrategy_17',['DRUniformStrategy',['../structppforest2_1_1dr_1_1DRUniformStrategy.html',1,'ppforest2::dr::DRUniformStrategy'],['../structppforest2_1_1dr_1_1DRUniformStrategy.html#a9fab78fecdb784a7f7fa87234d8f2414',1,'ppforest2::dr::DRUniformStrategy::DRUniformStrategy()']]],

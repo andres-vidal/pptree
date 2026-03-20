@@ -120,7 +120,7 @@ Conventions</h1>
 <li><b>Immutable configuration</b> — store parameters as <code>const</code> members set in the constructor.</li>
 <li><b>Ptr typedef</b> — each strategy defines <code>using Ptr = std::unique_ptr&lt;Strategy&gt;</code>.</li>
 <li><b>clone()</b> — returns a deep copy as a <code>Ptr</code> (used by TrainingSpec's copy constructor).</li>
-<li><b>Factory function</b> — a free function in the strategy's namespace that returns a <code>Ptr</code> (e.g. <code>pp::glda(lambda)</code>).</li>
+<li><b>Factory function</b> — a free function in the strategy's namespace that returns a <code>Ptr</code> (e.g. <code>pp::pda(lambda)</code>).</li>
 <li><b>Convenience operator()</b> — calls the main virtual method so strategies can be used as functors.</li>
 </ul>
 <h1><a class="anchor" id="strat_pp"></a>
@@ -186,7 +186,7 @@ Example: a random projection strategy</h2>
 <div class="line">}  <span class="comment">// namespace ppforest2::pp</span></div>
 <div class="ttc" id="aNormal_8hpp_html"><div class="ttname"><a href="Normal_8hpp.html">Normal.hpp</a></div></div>
 <div class="ttc" id="aPPStrategy_8hpp_html"><div class="ttname"><a href="PPStrategy_8hpp.html">PPStrategy.hpp</a></div></div>
-<div class="ttc" id="anamespaceppforest2_1_1pp_html"><div class="ttname"><a href="namespaceppforest2_1_1pp.html">ppforest2::pp</a></div><div class="ttdoc">Projection pursuit strategies.</div><div class="ttdef"><b>Definition</b> PPGLDAStrategy.hpp:6</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1pp_html"><div class="ttname"><a href="namespaceppforest2_1_1pp.html">ppforest2::pp</a></div><div class="ttdoc">Projection pursuit strategies.</div><div class="ttdef"><b>Definition</b> PPPDAStrategy.hpp:6</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1pp_html_a686ed3b4f49bb2ed6b7e842f5557539f"><div class="ttname"><a href="namespaceppforest2_1_1pp.html#a686ed3b4f49bb2ed6b7e842f5557539f">ppforest2::pp::Projector</a></div><div class="ttdeci">types::FeatureVector Projector</div><div class="ttdoc">Column vector of projection coefficients (one per variable).</div><div class="ttdef"><b>Definition</b> Projector.hpp:6</div></div>
 <div class="ttc" id="astructppforest2_1_1pp_1_1PPStrategy_html_ac7ce60a264f1728e5032524fe9bcc7c7"><div class="ttname"><a href="structppforest2_1_1pp_1_1PPStrategy.html#ac7ce60a264f1728e5032524fe9bcc7c7">ppforest2::pp::PPStrategy::Ptr</a></div><div class="ttdeci">std::unique_ptr&lt; PPStrategy &gt; Ptr</div><div class="ttdef"><b>Definition</b> PPStrategy.hpp:35</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="strat_dr"></a>
@@ -198,13 +198,13 @@ Interface to implement</h2>
 <div class="line">  <span class="keyword">virtual</span> DRStrategy::Ptr clone() <span class="keyword">const</span> = 0;</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// Select a subset of columns.</span></div>
-<div class="line">  <span class="keyword">virtual</span> DRSpec select(</div>
+<div class="line">  <span class="keyword">virtual</span> DRResult select(</div>
 <div class="line">    <span class="keyword">const</span> types::FeatureMatrix&amp;  x,          <span class="comment">// (n x p)</span></div>
 <div class="line">    <span class="keyword">const</span> stats::GroupPartition&amp; group_spec,</div>
 <div class="line">    stats::RNG&amp;                  rng</div>
 <div class="line">  ) <span class="keyword">const</span> = 0;</div>
 <div class="line">};</div>
-</div><!-- fragment --><p>The returned DRSpec records which columns were selected and the original column count, so the reduced-space projector can be expanded back to the full space via DRSpec::expand().</p>
+</div><!-- fragment --><p>The returned DRResult records which columns were selected and the original column count, so the reduced-space projector can be expanded back to the full space via DRResult::expand().</p>
 <h2><a class="anchor" id="strat_dr_example"></a>
 Example: top-variance variable selection</h2>
 <div class="fragment"><div class="line"><span class="comment">// File: models/DRVarianceStrategy.hpp</span></div>
@@ -223,7 +223,7 @@ Example: top-variance variable selection</h2>
 <div class="line">    <span class="keywordflow">return</span> std::make_unique&lt;DRVarianceStrategy&gt;(*<span class="keyword">this</span>);</div>
 <div class="line">  }</div>
 <div class="line"> </div>
-<div class="line">  DRSpec select(</div>
+<div class="line">  DRResult select(</div>
 <div class="line">    <span class="keyword">const</span> types::FeatureMatrix&amp; x,</div>
 <div class="line">    <span class="keyword">const</span> stats::GroupPartition&amp; group_spec,</div>
 <div class="line">    stats::RNG&amp; rng)<span class="keyword"> const override </span>{</div>
@@ -243,7 +243,7 @@ Example: top-variance variable selection</h2>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; n_vars &amp;&amp; i &lt; (int)var_idx.size(); ++i)</div>
 <div class="line">      selected.push_back(var_idx[i].second);</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> DRSpec(selected, x.cols());</div>
+<div class="line">    <span class="keywordflow">return</span> DRResult(selected, x.cols());</div>
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="line"> </div>
@@ -317,7 +317,7 @@ Composing strategies</h1>
 Direct composition</h2>
 <div class="fragment"><div class="line"><span class="comment">// Mix and match any PP + DR + SR strategies:</span></div>
 <div class="line"><span class="keyword">auto</span> spec = std::make_unique&lt;TrainingSpec&gt;(</div>
-<div class="line">  pp::glda(0.5),          <span class="comment">// existing GLDA strategy</span></div>
+<div class="line">  pp::pda(0.5),          <span class="comment">// existing PDA strategy</span></div>
 <div class="line">  dr::variance(4),        <span class="comment">// your new DR strategy</span></div>
 <div class="line">  sr::median());          <span class="comment">// your new SR strategy</span></div>
 <div class="line"> </div>
@@ -332,14 +332,14 @@ Creating a TrainingSpec subclass</h2>
 <div class="line"> </div>
 <div class="line">  TrainingSpecCustom(<span class="keywordtype">int</span> n_vars, <span class="keywordtype">float</span> lambda) :</div>
 <div class="line">    TrainingSpec(</div>
-<div class="line">      pp::glda(lambda),</div>
+<div class="line">      pp::pda(lambda),</div>
 <div class="line">      dr::variance(n_vars),</div>
 <div class="line">      sr::median()),</div>
 <div class="line">    n_vars(n_vars),</div>
 <div class="line">    lambda(lambda) {}</div>
 <div class="line"> </div>
-<div class="line">  <span class="keywordtype">void</span> accept(TrainingSpecVisitor&amp; visitor)<span class="keyword"> const override </span>{</div>
-<div class="line">    <span class="comment">// Add a visit() overload to TrainingSpecVisitor if you need</span></div>
+<div class="line">  <span class="keywordtype">void</span> accept(TrainingSpec::Visitor&amp; visitor)<span class="keyword"> const override </span>{</div>
+<div class="line">    <span class="comment">// Add a visit() overload to TrainingSpec::Visitor if you need</span></div>
 <div class="line">    <span class="comment">// type-safe dispatch (e.g. for serialisation).</span></div>
 <div class="line">  }</div>
 <div class="line"> </div>
@@ -347,7 +347,7 @@ Creating a TrainingSpec subclass</h2>
 <div class="line">    <span class="keywordflow">return</span> std::make_unique&lt;TrainingSpecCustom&gt;(*<span class="keyword">this</span>);</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-</div><!-- fragment --><dl class="section see"><dt>See also</dt><dd>PPStrategy, DRStrategy, SRStrategy, TrainingSpec, TrainingSpecGLDA, TrainingSpecUGLDA </dd></dl>
+</div><!-- fragment --><dl class="section see"><dt>See also</dt><dd>PPStrategy, DRStrategy, SRStrategy, TrainingSpec, TrainingSpecPDA, TrainingSpecUPDA </dd></dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

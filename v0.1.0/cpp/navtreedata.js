@@ -47,17 +47,17 @@ var NAVTREE =
     ] ],
     [ "Extending: Custom Visitors", "extending_visitors.html", [
       [ "How double dispatch works", "extending_visitors.html#vis_dispatch", null ],
-      [ "Implementing a TreeNodeVisitor", "extending_visitors.html#vis_treenode", [
+      [ "Implementing a TreeNode::Visitor", "extending_visitors.html#vis_treenode", [
         [ "Interface to implement", "extending_visitors.html#vis_treenode_interface", null ],
         [ "Traversal pattern", "extending_visitors.html#vis_treenode_traversal", null ],
         [ "Example: computing tree depth", "extending_visitors.html#vis_treenode_example", null ],
         [ "Example: counting leaves", "extending_visitors.html#vis_treenode_example2", null ]
       ] ],
-      [ "Implementing a ModelVisitor", "extending_visitors.html#vis_model", [
+      [ "Implementing a Model::Visitor", "extending_visitors.html#vis_model", [
         [ "Interface to implement", "extending_visitors.html#vis_model_interface", null ],
         [ "Example: collecting all leaf labels", "extending_visitors.html#vis_model_example", null ]
       ] ],
-      [ "Implementing a TrainingSpecVisitor", "extending_visitors.html#vis_specvisitor", null ],
+      [ "Implementing a TrainingSpec::Visitor", "extending_visitors.html#vis_specvisitor", null ],
       [ "Existing visitors as reference", "extending_visitors.html#vis_existing", null ],
       [ "Conventions", "extending_visitors.html#vis_conventions", null ]
     ] ],
@@ -95,11 +95,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BenchmarkParams_8hpp.html",
-"functions_e.html",
-"structppforest2_1_1Forest.html#a4ab3043b4c73496a4fac6b387267b0bf",
-"structppforest2_1_1cli_1_1BenchmarkParams.html#aab83bf598da28d07ec276532bebfe69f",
-"structppforest2_1_1io_1_1ModelStats.html#a5a36f1b04c8f0c2fd08902546cc1683f",
-"structppforest2_1_1viz_1_1NodeData.html#aab1f8921c5f52c1db30860b7f14acfab"
+"functions_m.html",
+"structppforest2_1_1Forest.html#a779fbf1d1dbdd1a808841a8b7e1ebf7a",
+"structppforest2_1_1cli_1_1BenchmarkParams.html#aece25fda7ac99aa87a5f0463a95b836e",
+"structppforest2_1_1io_1_1ModelStats.html#abe5139d459e9d907ed068cad5cce849f",
+"structppforest2_1_1viz_1_1NodeData.html#ace58e17809ab9eaddad15054fda49529"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

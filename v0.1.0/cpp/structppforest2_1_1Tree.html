@@ -119,9 +119,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4938f1b301650a27bcb1808a5cf71cd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a659244a701a63f9e4d2d59584844afbe" id="r_a659244a701a63f9e4d2d59584844afbe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a659244a701a63f9e4d2d59584844afbe">Tree</a> (<a class="el" href="structppforest2_1_1TreeNode.html#aa03af85bbfe1c0f8d8ce50f18c96623c">TreeNode::Ptr</a> <a class="el" href="#a0ee08cf6521ba72ea9a4b84b346b70f6">root</a>, <a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a> <a class="el" href="#a78c666fa9e4d2d90889298676b8c53e9">training_spec</a>)</td></tr>
 <tr class="separator:a659244a701a63f9e4d2d59584844afbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a46d619d4c059fa8de0b5da4ad2ab26" id="r_a7a46d619d4c059fa8de0b5da4ad2ab26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a46d619d4c059fa8de0b5da4ad2ab26">accept</a> (<a class="el" href="structppforest2_1_1ModelVisitor.html">ModelVisitor</a> &amp;visitor) const override</td></tr>
-<tr class="memdesc:a7a46d619d4c059fa8de0b5da4ad2ab26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a model visitor (double dispatch).  <br /></td></tr>
-<tr class="separator:a7a46d619d4c059fa8de0b5da4ad2ab26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af79f91e98bc4ff581a69a8afd8480137" id="r_af79f91e98bc4ff581a69a8afd8480137"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af79f91e98bc4ff581a69a8afd8480137">accept</a> (<a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Model::Visitor</a> &amp;visitor) const override</td></tr>
+<tr class="memdesc:af79f91e98bc4ff581a69a8afd8480137"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a model visitor (double dispatch).  <br /></td></tr>
+<tr class="separator:af79f91e98bc4ff581a69a8afd8480137"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ad04268cff376dcb62b4713cedb6a9a" id="r_a9ad04268cff376dcb62b4713cedb6a9a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ad04268cff376dcb62b4713cedb6a9a">is_degenerate</a> () const</td></tr>
 <tr class="memdesc:a9ad04268cff376dcb62b4713cedb6a9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether any node in the tree had a degenerate split.  <br /></td></tr>
 <tr class="separator:a9ad04268cff376dcb62b4713cedb6a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,7 +166,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A single projection pursuit decision tree. </p>
 <p>Each internal node projects data onto a linear combination of features and splits on the projected value. Leaf nodes hold class labels.</p>
-<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecGLDA.html">TrainingSpecGLDA</a> spec(lambda: 0.0);</div>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecPDA.html">TrainingSpecPDA</a> spec(lambda: 0.0);</div>
 <div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">stats::RNG</a> rng(42);</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_function" href="#a4938f1b301650a27bcb1808a5cf71cd9">Tree</a> tree = <a class="code hl_function" href="#ae4efa20d35f1f9f4b04b4d25448226cf">Tree::train</a>(spec, x, y, rng);</div>
@@ -175,7 +175,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="ttc" id="anamespaceppforest2_1_1stats_html_a8e3a1f81a376373936a72c8ba6061567"><div class="ttname"><a href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">ppforest2::stats::RNG</a></div><div class="ttdeci">pcg32 RNG</div><div class="ttdef"><b>Definition</b> Stats.hpp:19</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1types_html_a421bc51b648a3f3a8e2d3d5c17293c7e"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">ppforest2::types::Response</a></div><div class="ttdeci">int Response</div><div class="ttdoc">Scalar type for class labels (integer).</div><div class="ttdef"><b>Definition</b> Types.hpp:21</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1types_html_a4cc32c7bf71b27689fd027a8814821da"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">ppforest2::types::ResponseVector</a></div><div class="ttdeci">Eigen::Matrix&lt; Response, Eigen::Dynamic, 1 &gt; ResponseVector</div><div class="ttdoc">Dynamic-size column vector of class labels.</div><div class="ttdef"><b>Definition</b> Types.hpp:29</div></div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpecGLDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecGLDA.html">ppforest2::TrainingSpecGLDA</a></div><div class="ttdoc">GLDA training specification using all variables.</div><div class="ttdef"><b>Definition</b> TrainingSpecGLDA.hpp:14</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecPDA.html">ppforest2::TrainingSpecPDA</a></div><div class="ttdoc">PDA training specification using all variables.</div><div class="ttdef"><b>Definition</b> TrainingSpecPDA.hpp:13</div></div>
 <div class="ttc" id="astructppforest2_1_1Tree_html_a203b147b705c97025bdb3d762ed4bf2e"><div class="ttname"><a href="#a203b147b705c97025bdb3d762ed4bf2e">ppforest2::Tree::predict</a></div><div class="ttdeci">types::Response predict(const types::FeatureVector &amp;data) const override</div><div class="ttdoc">Predict a single observation.</div></div>
 <div class="ttc" id="astructppforest2_1_1Tree_html_a4938f1b301650a27bcb1808a5cf71cd9"><div class="ttname"><a href="#a4938f1b301650a27bcb1808a5cf71cd9">ppforest2::Tree::Tree</a></div><div class="ttdeci">Tree(TreeNode::Ptr root)</div></div>
 <div class="ttc" id="astructppforest2_1_1Tree_html_ae4efa20d35f1f9f4b04b4d25448226cf"><div class="ttname"><a href="#ae4efa20d35f1f9f4b04b4d25448226cf">ppforest2::Tree::train</a></div><div class="ttdeci">static Tree train(TrainingSpec const &amp;training_spec, const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y, stats::RNG &amp;rng)</div><div class="ttdoc">Train a tree from a response vector.</div></div>
@@ -227,8 +227,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7a46d619d4c059fa8de0b5da4ad2ab26" name="a7a46d619d4c059fa8de0b5da4ad2ab26"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a46d619d4c059fa8de0b5da4ad2ab26">&#9670;&#160;</a></span>accept()</h2>
+<a id="af79f91e98bc4ff581a69a8afd8480137" name="af79f91e98bc4ff581a69a8afd8480137"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af79f91e98bc4ff581a69a8afd8480137">&#9670;&#160;</a></span>accept()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -239,7 +239,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void ppforest2::Tree::accept </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1ModelVisitor.html">ModelVisitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Model::Visitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -252,7 +252,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Accept a model visitor (double dispatch). </p>
 
-<p>Implements <a class="el" href="structppforest2_1_1Model.html#a8f1ff337b17c7ba54f6eb26af271617e">ppforest2::Model</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1Model.html#ad36801ffbde49f31de900e6bf770d010">ppforest2::Model</a>.</p>
 
 </div>
 </div>

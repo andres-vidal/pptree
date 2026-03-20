@@ -1,7 +1,7 @@
 var searchData=
 [
   ['indent_0',['indent',['../structppforest2_1_1io_1_1Output.html#ab34e6a707aa1d473f3d07407e6f02664',1,'ppforest2::io::Output']]],
-  ['index_1',['index',['../structppforest2_1_1pp_1_1PPGLDAStrategy.html#a97df730dc29b1048f21c0fe6e683d124',1,'ppforest2::pp::PPGLDAStrategy::index()'],['../structppforest2_1_1pp_1_1PPStrategy.html#a64af1e1b0e3cbd01592ba1ccb7f9e13d',1,'ppforest2::pp::PPStrategy::index()']]],
+  ['index_1',['index',['../structppforest2_1_1pp_1_1PPPDAStrategy.html#ae623e0f0e96818d6f909b74b9b2ec901',1,'ppforest2::pp::PPPDAStrategy::index()'],['../structppforest2_1_1pp_1_1PPStrategy.html#a64af1e1b0e3cbd01592ba1ccb7f9e13d',1,'ppforest2::pp::PPStrategy::index()']]],
   ['info_2',['info',['../namespaceppforest2_1_1io_1_1style.html#ad3acbe1ee7247de86a2850fba97dc304',1,'ppforest2::io::style']]],
   ['init_5fcolor_3',['init_color',['../namespaceppforest2_1_1io_1_1style.html#a67980b6e1d9be22e995d884c69a19b38',1,'ppforest2::io::style']]],
   ['init_5fparams_4',['init_params',['../namespaceppforest2_1_1cli.html#a9bd63acbab0aa4b7ce674bb37015de00',1,'ppforest2::cli']]],

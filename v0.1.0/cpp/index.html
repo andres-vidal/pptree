@@ -117,7 +117,7 @@ Overview</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">TrainingSpec   </td><td class="markdownTableBodyNone"><a class="el" href="TrainingSpec_8hpp.html">models/TrainingSpec.hpp</a>   </td><td class="markdownTableBodyNone">Composes a PP, DR, and SR strategy into a training configuration    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">PPStrategy   </td><td class="markdownTableBodyNone"><a class="el" href="PPStrategy_8hpp.html">models/PPStrategy.hpp</a>   </td><td class="markdownTableBodyNone">Projection pursuit index optimisation (e.g. GLDA)    </td></tr>
+<td class="markdownTableBodyNone">PPStrategy   </td><td class="markdownTableBodyNone"><a class="el" href="PPStrategy_8hpp.html">models/PPStrategy.hpp</a>   </td><td class="markdownTableBodyNone">Projection pursuit index optimisation (e.g. PDA)    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">DRStrategy   </td><td class="markdownTableBodyNone"><a class="el" href="DRStrategy_8hpp.html">models/DRStrategy.hpp</a>   </td><td class="markdownTableBodyNone">Dimensionality reduction / variable selection    </td></tr>
 <tr class="markdownTableRowEven">
@@ -132,31 +132,31 @@ Quick start</h1>
 <h2><a class="anchor" id="train_tree"></a>
 Training a single tree</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="Tree_8hpp.html">models/Tree.hpp</a>&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="TrainingSpecGLDA_8hpp.html">models/TrainingSpecGLDA.hpp</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="TrainingSpecPDA_8hpp.html">models/TrainingSpecPDA.hpp</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="IO_8hpp.html">io/IO.hpp</a>&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Load data — CSV last column is the response, labels encoded as integers.</span></div>
 <div class="line"><span class="keyword">auto</span> data = io::csv::read_sorted(<span class="stringliteral">&quot;iris.csv&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line">stats::RNG rng(42);</div>
-<div class="line">TrainingSpecGLDA spec(<span class="comment">/*lambda=*/</span> 0.0);   <span class="comment">// LDA (no penalty)</span></div>
+<div class="line">TrainingSpecPDA spec(<span class="comment">/*lambda=*/</span> 0.0);   <span class="comment">// LDA (no penalty)</span></div>
 <div class="line"> </div>
 <div class="line">Tree tree = Tree::train(spec, data.x, data.y, rng);</div>
 <div class="line"> </div>
 <div class="line">types::Response label = tree.predict(data.x.row(0));</div>
 <div class="line">types::ResponseVector preds = tree.predict(data.x);</div>
 <div class="ttc" id="aIO_8hpp_html"><div class="ttname"><a href="IO_8hpp.html">IO.hpp</a></div><div class="ttdoc">File I/O utilities, JSON and CSV reading/writing.</div></div>
-<div class="ttc" id="aTrainingSpecGLDA_8hpp_html"><div class="ttname"><a href="TrainingSpecGLDA_8hpp.html">TrainingSpecGLDA.hpp</a></div></div>
+<div class="ttc" id="aTrainingSpecPDA_8hpp_html"><div class="ttname"><a href="TrainingSpecPDA_8hpp.html">TrainingSpecPDA.hpp</a></div></div>
 <div class="ttc" id="aTree_8hpp_html"><div class="ttname"><a href="Tree_8hpp.html">Tree.hpp</a></div></div>
 </div><!-- fragment --><h2><a class="anchor" id="train_forest"></a>
 Training a random forest</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="Forest_8hpp.html">models/Forest.hpp</a>&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="TrainingSpecUGLDA_8hpp.html">models/TrainingSpecUGLDA.hpp</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="TrainingSpecUPDA_8hpp.html">models/TrainingSpecUPDA.hpp</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="VariableImportance_8hpp.html">models/VariableImportance.hpp</a>&quot;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// UGLDA: uniform random variable selection + GLDA optimisation.</span></div>
+<div class="line"><span class="comment">// UPDA: uniform random variable selection + PDA optimisation.</span></div>
 <div class="line"><span class="comment">// n_vars = 3 means 3 variables sampled at each split.</span></div>
-<div class="line">TrainingSpecUGLDA spec(<span class="comment">/*n_vars=*/</span> 3, <span class="comment">/*lambda=*/</span> 0.0);</div>
+<div class="line">TrainingSpecUPDA spec(<span class="comment">/*n_vars=*/</span> 3, <span class="comment">/*lambda=*/</span> 0.0);</div>
 <div class="line"> </div>
 <div class="line">Forest forest = Forest::train(spec, x, y, <span class="comment">/*size=*/</span> 500, <span class="comment">/*seed=*/</span> 42);</div>
 <div class="line"> </div>
@@ -173,7 +173,7 @@ Training a random forest</h2>
 <div class="line"><span class="keyword">auto</span> vi_proj = variable_importance_projections(forest, x.cols());</div>
 <div class="line"><span class="keyword">auto</span> vi_wt   = variable_importance_weighted_projections(forest, x, y);</div>
 <div class="ttc" id="aForest_8hpp_html"><div class="ttname"><a href="Forest_8hpp.html">Forest.hpp</a></div></div>
-<div class="ttc" id="aTrainingSpecUGLDA_8hpp_html"><div class="ttname"><a href="TrainingSpecUGLDA_8hpp.html">TrainingSpecUGLDA.hpp</a></div></div>
+<div class="ttc" id="aTrainingSpecUPDA_8hpp_html"><div class="ttname"><a href="TrainingSpecUPDA_8hpp.html">TrainingSpecUPDA.hpp</a></div></div>
 <div class="ttc" id="aVariableImportance_8hpp_html"><div class="ttname"><a href="VariableImportance_8hpp.html">VariableImportance.hpp</a></div></div>
 </div><!-- fragment --><h2><a class="anchor" id="ser"></a>
 Serialisation</h2>
@@ -193,7 +193,7 @@ Strategy pattern</h1>
 <p>Tree training is parameterised by three pluggable strategies. Concrete implementations are composed at runtime via TrainingSpec, so new optimisation criteria or variable selection methods can be added without changing the tree-building logic.</p>
 <ul>
 <li><b>PPStrategy</b> — projection pursuit index optimisation. <br  />
- Built-in: PPGLDAStrategy (Generalised LDA, with optional PDA penalty via <code>lambda</code>). <code>lambda</code> = 0 gives standard LDA; <code>lambda</code> in (0, 1] penalises the within-class covariance matrix.</li>
+ Built-in: PPPDAStrategy (Generalised LDA, with optional PDA penalty via <code>lambda</code>). <code>lambda</code> = 0 gives standard LDA; <code>lambda</code> in (0, 1] penalises the within-class covariance matrix.</li>
 <li><b>DRStrategy</b> — dimensionality reduction (variable subset selection). <br  />
  Built-in: DRNoopStrategy (use all variables, for single trees), DRUniformStrategy (sample <code>n_vars</code> uniformly at random, for forests).</li>
 <li><b>SRStrategy</b> — split threshold computation. <br  />
@@ -201,12 +201,12 @@ Strategy pattern</h1>
 </ul>
 <p>These strategies are composed via TrainingSpec. Two ready-made specs cover the most common use cases:</p>
 <ul>
-<li><b>TrainingSpecGLDA</b> — GLDA + no-op DR + mean-of-means (single trees).</li>
-<li><b>TrainingSpecUGLDA</b> — GLDA + uniform DR + mean-of-means (forests).</li>
+<li><b>TrainingSpecPDA</b> — PDA + no-op DR + mean-of-means (single trees).</li>
+<li><b>TrainingSpecUPDA</b> — PDA + uniform DR + mean-of-means (forests).</li>
 </ul>
 <div class="fragment"><div class="line"><span class="comment">// Custom strategy composition:</span></div>
 <div class="line"><span class="keyword">auto</span> spec = std::make_unique&lt;TrainingSpec&gt;(</div>
-<div class="line">  pp::glda(0.5),          <span class="comment">// PDA with lambda = 0.5</span></div>
+<div class="line">  pp::pda(0.5),          <span class="comment">// PDA with lambda = 0.5</span></div>
 <div class="line">  dr::uniform(4),         <span class="comment">// sample 4 variables per split</span></div>
 <div class="line">  sr::mean_of_means());   <span class="comment">// midpoint of group means</span></div>
 </div><!-- fragment --><p>For a step-by-step guide to implementing new strategies, see <a class="el" href="extending_strategies.html">Extending: Custom Strategies</a>.</p>
@@ -214,8 +214,8 @@ Strategy pattern</h1>
 Visitor pattern</h1>
 <p>Two visitor interfaces avoid <code>dynamic_cast</code> and keep traversal logic decoupled from the model classes:</p>
 <ul>
-<li><b>TreeNodeVisitor</b> — dispatches over internal nodes (TreeCondition) and leaf nodes (TreeResponse). Used by serialisation, visualisation, and variable importance.</li>
-<li><b>ModelVisitor</b> — dispatches over Tree and Forest. Used by the serialisation layer.</li>
+<li><b>TreeNode::Visitor</b> — dispatches over internal nodes (TreeCondition) and leaf nodes (TreeResponse). Used by serialisation, visualisation, and variable importance.</li>
+<li><b>Model::Visitor</b> — dispatches over Tree and Forest. Used by the serialisation layer.</li>
 </ul>
 <p>For a step-by-step guide to implementing new visitors, see <a class="el" href="extending_visitors.html">Extending: Custom Visitors</a>.</p>
 <h1><a class="anchor" id="vi"></a>

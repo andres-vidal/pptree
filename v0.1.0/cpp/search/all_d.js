@@ -2,7 +2,7 @@ var searchData=
 [
   ['macros_2ehpp_0',['Macros.hpp',['../Macros_8hpp.html',1,'']]],
   ['mainpage_2edox_1',['mainpage.dox',['../mainpage_8dox.html',1,'']]],
-  ['make_2',['make',['../structppforest2_1_1pp_1_1PPGLDAStrategy.html#ae80b05dc1fa29a9c2f91abc3e13bb50e',1,'ppforest2::pp::PPGLDAStrategy::make()'],['../structppforest2_1_1TrainingSpecGLDA.html#a18f606509efdd84ec87a04cf36478b93',1,'ppforest2::TrainingSpecGLDA::make()'],['../structppforest2_1_1TrainingSpecUGLDA.html#ab9b693121c295cd88d9b993c81dd400b',1,'ppforest2::TrainingSpecUGLDA::make()'],['../structppforest2_1_1TreeCondition.html#aae00c2126f9831cb31aa1ad2cca1c491',1,'ppforest2::TreeCondition::make()'],['../structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516',1,'ppforest2::TreeResponse::make()']]],
+  ['make_2',['make',['../structppforest2_1_1pp_1_1PPPDAStrategy.html#a19bf11b79080283d293812b29b772729',1,'ppforest2::pp::PPPDAStrategy::make()'],['../structppforest2_1_1TrainingSpecPDA.html#a172fe67178298a817a41dc748a15c5c2',1,'ppforest2::TrainingSpecPDA::make()'],['../structppforest2_1_1TrainingSpecUPDA.html#a60af0583078c79a55058e2ea5b746c45',1,'ppforest2::TrainingSpecUPDA::make()'],['../structppforest2_1_1TreeCondition.html#aae00c2126f9831cb31aa1ad2cca1c491',1,'ppforest2::TreeCondition::make()'],['../structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516',1,'ppforest2::TreeResponse::make()']]],
   ['map_2ehpp_3',['Map.hpp',['../Map_8hpp.html',1,'']]],
   ['mat_4',['MAT',['../Macros_8hpp.html#a4660d6ffcf62118b533a60baf351bd49',1,'Macros.hpp']]],
   ['math_2ehpp_5',['Math.hpp',['../Math_8hpp.html',1,'']]],
@@ -22,12 +22,11 @@ var searchData=
   ['model_19',['Model',['../structppforest2_1_1Model.html',1,'ppforest2']]],
   ['model_20',['model',['../structppforest2_1_1cli_1_1CLIOptions.html#ac7a69feadc50fe215476c53634b6c17f',1,'ppforest2::cli::CLIOptions::model'],['../structppforest2_1_1cli_1_1TrainResult.html#acc3f1d0ac6c37a831b7f74c5c55c792c',1,'ppforest2::cli::TrainResult::model']]],
   ['model_2ehpp_21',['Model.hpp',['../Model_8hpp.html',1,'']]],
-  ['model_5ffrom_5fjson_22',['model_from_json',['../namespaceppforest2_1_1serialization.html#adc903606c521ef56dc9d09c08696a240',1,'ppforest2::serialization']]],
-  ['model_5fpath_23',['model_path',['../structppforest2_1_1cli_1_1CLIOptions.html#ab1edf18b4f200cfbf2980ec460f47e32',1,'ppforest2::cli::CLIOptions']]],
-  ['modelparams_24',['ModelParams',['../structppforest2_1_1cli_1_1ModelParams.html',1,'ppforest2::cli']]],
-  ['modelparams_2ehpp_25',['ModelParams.hpp',['../ModelParams_8hpp.html',1,'']]],
-  ['modelstats_26',['ModelStats',['../structppforest2_1_1io_1_1ModelStats.html',1,'ppforest2::io']]],
-  ['modelvisitor_27',['ModelVisitor',['../extending_visitors.html#vis_model',1,'Implementing a ModelVisitor'],['../structppforest2_1_1ModelVisitor.html',1,'ppforest2::ModelVisitor']]],
-  ['modelvisitor_2ehpp_28',['ModelVisitor.hpp',['../ModelVisitor_8hpp.html',1,'']]],
-  ['muted_29',['muted',['../namespaceppforest2_1_1io_1_1style.html#a7a5f32471a0274221ad7a7747a10c852',1,'ppforest2::io::style']]]
+  ['model_3a_3avisitor_22',['Implementing a Model::Visitor',['../extending_visitors.html#vis_model',1,'']]],
+  ['model_5ffrom_5fjson_23',['model_from_json',['../namespaceppforest2_1_1serialization.html#adc903606c521ef56dc9d09c08696a240',1,'ppforest2::serialization']]],
+  ['model_5fpath_24',['model_path',['../structppforest2_1_1cli_1_1CLIOptions.html#ab1edf18b4f200cfbf2980ec460f47e32',1,'ppforest2::cli::CLIOptions']]],
+  ['modelparams_25',['ModelParams',['../structppforest2_1_1cli_1_1ModelParams.html',1,'ppforest2::cli']]],
+  ['modelparams_2ehpp_26',['ModelParams.hpp',['../ModelParams_8hpp.html',1,'']]],
+  ['modelstats_27',['ModelStats',['../structppforest2_1_1io_1_1ModelStats.html',1,'ppforest2::io']]],
+  ['muted_28',['muted',['../namespaceppforest2_1_1io_1_1style.html#a7a5f32471a0274221ad7a7747a10c852',1,'ppforest2::io::style']]]
 ];
