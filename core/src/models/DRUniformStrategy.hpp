@@ -26,7 +26,7 @@ namespace ppforest2::dr {
       return std::make_unique<DRUniformStrategy>(*this);
     }
 
-    DRSpec select(
+    DRResult select(
       types::FeatureMatrix const &  x,
       stats::GroupPartition const & group_spec,
       stats::RNG &                  rng) const override {
@@ -36,13 +36,13 @@ namespace ppforest2::dr {
         std::vector<int> all_indices(x.cols());
         std::iota(all_indices.begin(), all_indices.end(), 0);
 
-        return DRSpec(all_indices, x.cols());
+        return DRResult(all_indices, x.cols());
       }
 
       stats::Uniform unif(0, x.cols() - 1);
       std::vector<int> selected_indices = unif.distinct(n_vars, rng);
 
-      return DRSpec(selected_indices, x.cols());
+      return DRResult(selected_indices, x.cols());
     }
   };
 

@@ -108,7 +108,7 @@
  *     virtual DRStrategy::Ptr clone() const = 0;
  *
  *     // Select a subset of columns.
- *     virtual DRSpec select(
+ *     virtual DRResult select(
  *       const types::FeatureMatrix&  x,          // (n x p)
  *       const stats::GroupPartition& group_spec,
  *       stats::RNG&                  rng
@@ -116,9 +116,9 @@
  *   };
  * @endcode
  *
- * The returned DRSpec records which columns were selected and the
+ * The returned DRResult records which columns were selected and the
  * original column count, so the reduced-space projector can be
- * expanded back to the full space via DRSpec::expand().
+ * expanded back to the full space via DRResult::expand().
  *
  * @subsection strat_dr_example Example: top-variance variable selection
  *
@@ -139,7 +139,7 @@
  *       return std::make_unique<DRVarianceStrategy>(*this);
  *     }
  *
- *     DRSpec select(
+ *     DRResult select(
  *       const types::FeatureMatrix& x,
  *       const stats::GroupPartition& group_spec,
  *       stats::RNG& rng) const override {
@@ -159,7 +159,7 @@
  *       for (int i = 0; i < n_vars && i < (int)var_idx.size(); ++i)
  *         selected.push_back(var_idx[i].second);
  *
- *       return DRSpec(selected, x.cols());
+ *       return DRResult(selected, x.cols());
  *     }
  *   };
  *

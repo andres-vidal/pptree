@@ -89,7 +89,7 @@ namespace {
     const TrainingSpec &   training_spec,
     const FeatureMatrix &  x,
     const GroupPartition & group_spec,
-    const DRSpec&          dr) {
+    const DRResult&        dr) {
     Response group_1 = *group_spec.groups.begin();
     Response group_2 = *std::next(group_spec.groups.begin());
 
@@ -138,7 +138,7 @@ namespace {
     const TrainingSpec &   training_spec,
     const FeatureMatrix &  x,
     const GroupPartition & group_spec,
-    const DRSpec&          dr
+    const DRResult&        dr
     ) {
     const PPStrategy &pp_strategy = *(training_spec.pp_strategy);
 
@@ -214,7 +214,7 @@ namespace {
         continue;
       }
 
-      DRSpec dr = dr_strategy(x, step.y, rng);
+      DRResult dr = dr_strategy(x, step.y, rng);
 
       if (step.y.groups.size() == 2) {
         auto node = binary_step(training_spec, x, step.y, dr);

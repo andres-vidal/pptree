@@ -25,13 +25,13 @@ namespace ppforest2::dr {
    * Records which columns were selected and allows expanding a
    * reduced-dimension projector back to the original feature space.
    */
-  struct DRSpec {
+  struct DRResult {
     /** @brief Indices of the selected columns in the original matrix. */
     const std::vector<int> selected_cols;
     /** @brief Number of columns in the original (unreduced) matrix. */
     const size_t original_size;
 
-    DRSpec(const std::vector<int>& selected_cols, const size_t original_size) :
+    DRResult(const std::vector<int>& selected_cols, const size_t original_size) :
       selected_cols(selected_cols),
       original_size(original_size) {
     }
@@ -77,9 +77,9 @@ namespace ppforest2::dr {
      * @param x           Feature matrix (n × p).
      * @param group_spec  Group partition.
      * @param rng         Random number generator.
-     * @return            DRSpec recording which columns were selected.
+     * @return            DRResult recording which columns were selected.
      */
-    virtual DRSpec select(
+    virtual DRResult select(
       types::FeatureMatrix const &  x,
       stats::GroupPartition const & group_spec,
       stats::RNG &                  rng) const = 0;
@@ -87,7 +87,7 @@ namespace ppforest2::dr {
     /**
      * @brief Convenience operator: equivalent to select().
      */
-    DRSpec operator()(
+    DRResult operator()(
       types::FeatureMatrix const &  x,
       stats::GroupPartition const & group_spec,
       stats::RNG &                  rng) const {

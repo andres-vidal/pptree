@@ -16,13 +16,13 @@ namespace ppforest2::dr {
       return std::make_unique<DRNoopStrategy>(*this);
     }
 
-    DRSpec select(
+    DRResult select(
       types::FeatureMatrix const & x,
       stats::GroupPartition const& group_spec,
       stats::RNG &                 rng) const override {
       std::vector<int> all_indices(x.cols());
       std::iota(all_indices.begin(), all_indices.end(), 0);
-      return DRSpec(all_indices, x.cols());
+      return DRResult(all_indices, x.cols());
     }
   };
 
