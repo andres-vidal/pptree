@@ -44,7 +44,7 @@ describe("save_json / load_json round-trip", {
       save_json(model, path)
       loaded <- load_json(path)
 
-      expect_equal(loaded$training_spec$strategy, "glda")
+      expect_equal(loaded$training_spec$strategy, "pda")
       expect_equal(loaded$training_spec$lambda, 0.5, tolerance = 1e-5)
       expect_equal(loaded$seed, 42L)
     })
@@ -131,7 +131,7 @@ describe("load_json from golden files", {
   }
 
   it("loads a golden tree and produces correct predictions", {
-    path <- golden_path("iris", "tree-glda-s42.json")
+    path <- golden_path("iris", "tree-pda-s42.json")
     skip_if(path == "", "Golden file not bundled")
 
     loaded <- load_json(path)
@@ -144,7 +144,7 @@ describe("load_json from golden files", {
   })
 
   it("loads a golden forest", {
-    path <- golden_path("iris", "forest-glda-t5-s42.json")
+    path <- golden_path("iris", "forest-pda-t5-s42.json")
     skip_if(path == "", "Golden file not bundled")
 
     loaded <- load_json(path)

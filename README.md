@@ -288,7 +288,7 @@ The project is organized into a shared C++ core and language-specific bindings:
 
 The C++ core uses two design patterns to keep the algorithm extensible without heavily modifying existing code:
 
-- **Strategy** — The projection-pursuit optimization step (`PPStrategy`), dimensionality reduction step (`DRStrategy`), and split-point rule (`SRStrategy`) are each defined as abstract interfaces. Concrete implementations (e.g. `PPGLDAStrategy`, `DRUniformStrategy`) are composed at runtime via `TrainingSpec`, so new optimization criteria or variable selection methods can be added without changing the tree-building logic.
+- **Strategy** — The projection-pursuit optimization step (`PPStrategy`), dimensionality reduction step (`DRStrategy`), and split-point rule (`SRStrategy`) are each defined as abstract interfaces. Concrete implementations (e.g. `PPPDAStrategy`, `DRUniformStrategy`) are composed at runtime via `TrainingSpec`, so new optimization criteria or variable selection methods can be added without changing the tree-building logic.
 
 - **Visitor** — `TreeNodeVisitor` dispatches over the two node types (internal `TreeCondition` and leaf `TreeResponse`) and `ModelVisitor` dispatches over `Tree` and `Forest`. This avoids `dynamic_cast` and keeps traversal logic (serialization, visualization layout, variable importance) decoupled from the model classes themselves.
 

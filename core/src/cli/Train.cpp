@@ -185,12 +185,12 @@ namespace {
     std::function<Model::Ptr()> fact;
 
     if (params.model.trees > 0) {
-      spec = TrainingSpecUGLDA::make(params.model.n_vars, params.model.lambda);
+      spec = TrainingSpecUPDA::make(params.model.n_vars, params.model.lambda);
       fact = [&] {
         return std::make_unique<Forest>(Forest::train(*spec, x, y, params.model.trees, params.model.seed, params.model.threads, params.model.max_retries));
       };
     } else {
-      spec = TrainingSpecGLDA::make(params.model.lambda);
+      spec = TrainingSpecPDA::make(params.model.lambda);
       fact = [&] {
         return std::make_unique<Tree>(Tree::train(*spec, x, y, rng));
       };

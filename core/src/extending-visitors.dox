@@ -12,7 +12,7 @@
  * |----------------------|-----------------------------------|----------|
  * | TreeNodeVisitor      | TreeCondition (split), TreeResponse (leaf) | You need to walk the tree structure |
  * | ModelVisitor         | Tree, Forest                      | You need to handle trees and forests differently |
- * | TrainingSpecVisitor  | TrainingSpecGLDA, TrainingSpecUGLDA | You need type-safe access to spec parameters |
+ * | TrainingSpecVisitor  | TrainingSpecPDA, TrainingSpecUPDA | You need type-safe access to spec parameters |
  *
  * @section vis_dispatch How double dispatch works
  *
@@ -200,8 +200,8 @@
  *
  * @code
  *   struct TrainingSpecVisitor {
- *     virtual void visit(const TrainingSpecGLDA& spec) = 0;
- *     virtual void visit(const TrainingSpecUGLDA& spec) = 0;
+ *     virtual void visit(const TrainingSpecPDA& spec) = 0;
+ *     virtual void visit(const TrainingSpecUPDA& spec) = 0;
  *   };
  * @endcode
  *

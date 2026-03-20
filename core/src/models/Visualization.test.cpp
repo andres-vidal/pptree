@@ -5,7 +5,7 @@
 #include "models/Tree.hpp"
 #include "models/TreeCondition.hpp"
 #include "models/TreeResponse.hpp"
-#include "models/TrainingSpecGLDA.hpp"
+#include "models/TrainingSpecPDA.hpp"
 #include "stats/Simulation.hpp"
 #include "stats/Stats.hpp"
 
@@ -47,7 +47,7 @@ static Tree make_test_tree() {
     nullptr,
     { 0, 1, 2 });
 
-  return Tree(std::move(root), TrainingSpecGLDA::make(0.5f));
+  return Tree(std::move(root), TrainingSpecPDA::make(0.5f));
 }
 
 // Make a deeper tree (depth 4) to stress-test memory management
@@ -86,7 +86,7 @@ static Tree make_deep_tree() {
     nullptr,
     { 0, 1, 2, 3 });
 
-  return Tree(std::move(root), TrainingSpecGLDA::make(0.5f));
+  return Tree(std::move(root), TrainingSpecPDA::make(0.5f));
 }
 
 class VisualizationTest : public ::testing::Test {

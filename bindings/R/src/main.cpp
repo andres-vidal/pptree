@@ -25,7 +25,7 @@ bool ppforest2_has_openmp() {
 }
 
 // [[Rcpp::export]]
-Tree ppforest2_train_tree_glda(
+Tree ppforest2_train_tree_pda(
   FeatureMatrix  x,
   ResponseVector y,
   const float    lambda,
@@ -39,14 +39,14 @@ Tree ppforest2_train_tree_glda(
   RNG rng(seed);
 
   return Tree::train(
-    TrainingSpecGLDA(lambda),
+    TrainingSpecPDA(lambda),
     x,
     y,
     rng);
 }
 
 // [[Rcpp::export]]
-Forest ppforest2_train_forest_glda(
+Forest ppforest2_train_forest_pda(
   FeatureMatrix  x,
   ResponseVector y,
   const int      size,
@@ -63,7 +63,7 @@ Forest ppforest2_train_forest_glda(
 
   if (n_threads == R_NilValue) {
     return Forest::train(
-      TrainingSpecUGLDA(n_vars, lambda),
+      TrainingSpecUPDA(n_vars, lambda),
       x,
       y,
       size,
@@ -73,7 +73,7 @@ Forest ppforest2_train_forest_glda(
   }
 
   return Forest::train(
-    TrainingSpecUGLDA(n_vars, lambda),
+    TrainingSpecUPDA(n_vars, lambda),
     x,
     y,
     size,
@@ -492,7 +492,7 @@ Rcpp::List ppforest2_load_json_meta(const std::string& json_str) {
 
     seed = meta.value("seed", 0);
 
-    std::string strategy = meta.value("training_spec", "glda");
+    std::string strategy = meta.value("training_spec", "pda");
     float lambda         = meta.value("lambda", 0.0f);
 
     if (meta.contains("n_vars")) {
@@ -551,19 +551,19 @@ Rcpp::List ppforest2_load_json_meta(const std::string& json_str) {
 namespace {
   TrainingSpec::Ptr training_spec_from_meta(const json& j) {
     if (!j.contains("meta")) {
-      return TrainingSpecGLDA::make(0.0f);
+      return TrainingSpecPDA::make(0.0f);
     }
 
     const auto& meta    = j["meta"];
-    std::string strategy = meta.value("training_spec", "glda");
+    std::string strategy = meta.value("training_spec", "pda");
     float lambda         = meta.value("lambda", 0.0f);
 
-    if (strategy == "uglda" || strategy == "uniform_glda") {
+    if (strategy == "upda" || strategy == "uniform_pda") {
       int n_vars = meta.value("n_vars", 0);
-      return TrainingSpecUGLDA::make(n_vars, lambda);
+      return TrainingSpecUPDA::make(n_vars, lambda);
     }
 
-    return TrainingSpecGLDA::make(lambda);
+    return TrainingSpecPDA::make(lambda);
   }
 }
 

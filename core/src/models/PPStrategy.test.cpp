@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "models/PPStrategy.hpp"
-#include "models/PPGLDAStrategy.hpp"
+#include "models/PPPDAStrategy.hpp"
 #include "utils/Types.hpp"
 
 #include "utils/Macros.hpp"
@@ -36,7 +36,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
       1,
       1);
 
-  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPPDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = VEC(Feature,
       -1, 0, 0, 0);
@@ -71,7 +71,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
       1,
       1);
 
-  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPPDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = VEC(Feature,
       0, 1, 0, 0);
@@ -107,7 +107,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
       1,
       1);
 
-  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPPDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = VEC(Feature,
       0, 0, -1, 0);
@@ -141,7 +141,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
       1,
       1);
 
-  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPPDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = VEC(Feature,
       2.0965219514666735e-15,
@@ -218,7 +218,7 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
       2,
       2);
 
-  auto [actual, index] = PPGLDAStrategy(0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPPDAStrategy(0).optimize(x, GroupPartition(y));
 
   FeatureVector expected = VEC(Feature,
       0.0351398066f,
@@ -247,7 +247,7 @@ TEST(Projector, LDAIndexZeroReturn) {
   FeatureVector projector = VEC(Feature,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_EQ(0.0, actual);
 }
@@ -321,7 +321,7 @@ TEST(Projector, LDAIndexOptimal1) {
       -0.12823, -0.99174, 0.0, 0.0, 0.0);
 
 
-  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -394,7 +394,7 @@ TEST(Projector, LDAIndexOptimal2) {
   FeatureVector projector = VEC(Feature,
       0.78481, 0.61974, 0.0, 0.0, 0.0);
 
-  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -467,7 +467,7 @@ TEST(Projector, LDAIndexOptimal3) {
   FeatureVector projector = VEC(Feature,
       -0.66808,  0.74409,  0.0,  0.0,  0.0);
 
-  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -540,7 +540,7 @@ TEST(Projector, LDAIndexSuboptimal1) {
   FeatureVector projector = VEC(Feature,
       0, 0, 1, 1, 1);
 
-  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_NEAR(0.134985, actual, 0.00001);
 }
@@ -613,7 +613,7 @@ TEST(Projector, LDAIndexSuboptimal2) {
   FeatureVector projector = VEC(Feature,
       -0.02965,  0.08452, -0.24243, -0.40089, -0.87892);
 
-  float actual = PPGLDAStrategy(0).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0).index(x, GroupPartition(y), projector);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }
@@ -631,7 +631,7 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
       1,
       1);
 
-  auto [actual, index] = PPGLDAStrategy(0.5).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPPDAStrategy(0.5).optimize(x, GroupPartition(y));
 
   FeatureVector expected = VEC(Feature,
       0, 0, 0, 0, 0, 1);
@@ -640,7 +640,7 @@ TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
   ASSERT_GT(index, 0.0f) << "PDA optimal projector has positive index";
 }
 
-TEST(Projector, GLDAOptimumProjectorZeroColumn) {
+TEST(Projector, PDAOptimumProjectorZeroColumn) {
   FeatureMatrix x = MAT(Feature, rows(4),
       1, 0, 1, 1, 1, 4, 0,
       2, 1, 0, 0, 0, 4, 0,
@@ -653,7 +653,7 @@ TEST(Projector, GLDAOptimumProjectorZeroColumn) {
       1,
       1);
 
-  auto [actual, index] = PPGLDAStrategy(0.1).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPPDAStrategy(0.1).optimize(x, GroupPartition(y));
 
   ASSERT_TRUE(actual.hasNaN()) << "Zero column with tiny sample produces degenerate (NaN) projector";
   ASSERT_TRUE(std::isnan(index)) << "Degenerate projector has NaN index";
@@ -676,7 +676,7 @@ TEST(Projector, PDAIndexLambdaOneHalfZeroReturn) {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 
-  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_EQ(0.0, actual);
 }
@@ -749,7 +749,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal1) {
   FeatureVector projector = VEC(Feature,
       -0.12823, -0.99174, 0.0, 0.0, 0.0);
 
-  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -822,7 +822,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal2) {
   FeatureVector projector = VEC(Feature,
       0.78481, 0.61974, 0.0, 0.0, 0.0);
 
-  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -895,7 +895,7 @@ TEST(Projector, PDAIndexLambdaOneHalfOptimal3) {
   FeatureVector projector = VEC(Feature,
       -0.66808,  0.74409,  0.0,  0.0,  0.0);
 
-  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_FLOAT_EQ(1.0, actual);
 }
@@ -968,7 +968,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal1) {
   FeatureVector projector = VEC(Feature,
       0, 0, 1, 1, 1);
 
-  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_NEAR(0.12597, actual, 0.00001);
 }
@@ -990,7 +990,7 @@ TEST(Projector, PDALambdaOneBoundary) {
       0, 0, 0, 0,
       1, 1, 1, 1, 1, 1);
 
-  auto [actual, index] = PPGLDAStrategy(1.0).optimize(x, GroupPartition(y));
+  auto [actual, index] = PPPDAStrategy(1.0).optimize(x, GroupPartition(y));
 
   // Lambda=1 means full penalization (diagonal covariance)
   // Projector should still point in the discriminating direction
@@ -1067,7 +1067,7 @@ TEST(Projector, PDAIndexLambdaOneHalfSubptimal2) {
   FeatureVector projector = VEC(Feature,
       -0.02965,  0.08452, -0.24243, -0.40089, -0.87892);
 
-  float actual = PPGLDAStrategy(0.5).index(x, GroupPartition(y), projector);
+  float actual = PPPDAStrategy(0.5).index(x, GroupPartition(y), projector);
 
   ASSERT_NEAR(0.0, actual, 0.000001);
 }

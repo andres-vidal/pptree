@@ -6,8 +6,8 @@
 #include "models/TreeResponse.hpp"
 
 #include "models/TrainingSpec.hpp"
-#include "models/TrainingSpecGLDA.hpp"
-#include "models/TrainingSpecUGLDA.hpp"
+#include "models/TrainingSpecPDA.hpp"
+#include "models/TrainingSpecUPDA.hpp"
 
 #include "stats/Simulation.hpp"
 #include "stats/Stats.hpp"
@@ -212,7 +212,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
+  Tree result = Tree::train(TrainingSpecPDA(0.0), x, y, rng);
 
   ResponseVector predictions = result.predict(x);
 
@@ -232,7 +232,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
+  Tree result = Tree::train(TrainingSpecPDA(0.0), x, y, rng);
 
   ResponseVector predictions = result.predict(x);
 
@@ -266,7 +266,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
+  Tree result = Tree::train(TrainingSpecPDA(0.0), x, y, rng);
 
   ResponseVector predictions = result.predict(x);
 
@@ -340,7 +340,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecGLDA(0.0), x, y, rng);
+  Tree result = Tree::train(TrainingSpecPDA(0.0), x, y, rng);
 
   // Property: tree should predict training data perfectly (well-separated groups)
   ResponseVector predictions = result.predict(x);
@@ -375,7 +375,7 @@ TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecGLDA(0.5), x, y, rng);
+  Tree result = Tree::train(TrainingSpecPDA(0.5), x, y, rng);
 
   // Property: tree should predict training data perfectly
   ResponseVector predictions = result.predict(x);
@@ -392,7 +392,7 @@ TEST(TreeSimulation, PerfectSeparationZeroError) {
   auto data = simulate(90, 4, 3, rng, params);
 
   RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   ASSERT_EQ(error_rate(predictions, data.y), 0.0) << "Tree should achieve 0% error on perfectly separated data";
@@ -407,7 +407,7 @@ TEST(TreeSimulation, HighOverlapBoundedError) {
   auto data = simulate(200, 4, 3, rng, params);
 
   RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -424,7 +424,7 @@ TEST(TreeSimulation, ManyClasses) {
   auto data = simulate(300, 4, 10, rng, params);
 
   RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -442,7 +442,7 @@ TEST(TreeSimulation, HighDimensionality) {
   auto data = simulate(100, 50, 3, rng, params);
 
   RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -460,7 +460,7 @@ TEST(TreeSimulation, SingleFeature) {
   auto data = simulate(100, 1, 2, rng, params);
 
   RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, train_rng);
+  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -478,7 +478,7 @@ TEST(TreeSimulation, PDAOnOverlappingData) {
   auto data = simulate(200, 4, 3, rng, params);
 
   RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecGLDA(0.5), data.x, data.y, train_rng);
+  Tree tree = Tree::train(TrainingSpecPDA(0.5), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -492,10 +492,10 @@ TEST(TreeSimulation, Deterministic) {
   auto data = simulate(90, 4, 3, rng);
 
   RNG rng1(42);
-  Tree t1 = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, rng1);
+  Tree t1 = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, rng1);
 
   RNG rng2(42);
-  Tree t2 = Tree::train(TrainingSpecGLDA(0.0), data.x, data.y, rng2);
+  Tree t2 = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, rng2);
 
   ASSERT_EQ(t1, t2) << "Same seed should produce identical trees";
 }

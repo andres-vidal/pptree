@@ -52,7 +52,7 @@
     "n_vars": 3,
     "platform": "macos-clang",
     "seed": 42,
-    "training_spec": "uglda",
+    "training_spec": "upda",
     "trees": 10
   },
   "model": {

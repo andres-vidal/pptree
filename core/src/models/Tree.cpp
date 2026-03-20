@@ -6,7 +6,7 @@
 #include "models/BootstrapTree.hpp"
 #include "utils/Invariant.hpp"
 #include "utils/Map.hpp"
-#include "models/TrainingSpecGLDA.hpp"
+#include "models/TrainingSpecPDA.hpp"
 
 #include <stack>
 #include <Eigen/Dense>
@@ -284,7 +284,7 @@ namespace {
 
   Tree::Tree(TreeNode::Ptr root) :
     root(std::move(root)),
-    training_spec(TrainingSpecGLDA::make(0.5)) {
+    training_spec(TrainingSpecPDA::make(0.5)) {
   }
 
   Tree::Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec) :

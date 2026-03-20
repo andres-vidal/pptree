@@ -5,22 +5,22 @@
 
 namespace ppforest2 {
   /**
-   * @brief UGLDA training specification with uniform variable selection.
+   * @brief UPDA training specification with uniform variable selection.
    *
-   * Combines a GLDA projection pursuit strategy with uniform random
+   * Combines a PDA projection pursuit strategy with uniform random
    * dimensionality reduction.  At each split, @c n_vars variables are
    * sampled uniformly and projection pursuit is performed in that
    * subspace.  This is the standard configuration for PP random forests.
    */
-  struct TrainingSpecUGLDA : public TrainingSpec {
+  struct TrainingSpecUPDA : public TrainingSpec {
     /** @brief Number of variables sampled at each split. */
     const int n_vars;
     /** @brief Penalty parameter for the LDA index. */
     const float lambda;
 
-    TrainingSpecUGLDA(const int n_vars, const float lambda) :
+    TrainingSpecUPDA(const int n_vars, const float lambda) :
       TrainingSpec(
-        pp::glda(lambda),
+        pp::pda(lambda),
         dr::uniform(n_vars),
         sr::mean_of_means()),
       n_vars(n_vars),
@@ -32,11 +32,11 @@ namespace ppforest2 {
     }
 
     TrainingSpec::Ptr clone() const override {
-      return std::make_unique<TrainingSpecUGLDA>(*this);
+      return std::make_unique<TrainingSpecUPDA>(*this);
     }
 
     static TrainingSpec::Ptr make(const int n_vars, const float lambda) {
-      return std::make_unique<TrainingSpecUGLDA>(n_vars, lambda);
+      return std::make_unique<TrainingSpecUPDA>(n_vars, lambda);
     }
   };
 }

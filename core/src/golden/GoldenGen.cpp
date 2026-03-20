@@ -14,8 +14,8 @@
 #include "stats/ConfusionMatrix.hpp"
 #include "models/Tree.hpp"
 #include "models/Forest.hpp"
-#include "models/TrainingSpecGLDA.hpp"
-#include "models/TrainingSpecUGLDA.hpp"
+#include "models/TrainingSpecPDA.hpp"
+#include "models/TrainingSpecUPDA.hpp"
 #include "models/VariableImportance.hpp"
 #include "serialization/Json.hpp"
 #include "io/Color.hpp"
@@ -67,7 +67,7 @@ struct GoldenConfig {
     std::string s;
 
     if (trees > 0) {
-      s = (lambda > 0) ? "forest-pda" : "forest-glda";
+      s = (lambda > 0) ? "forest-pda" : "forest-pda";
 
       if (lambda > 0) {
         std::string l = fmt::format("{:g}", lambda);
@@ -77,7 +77,7 @@ struct GoldenConfig {
 
       s += fmt::format("-t{}", trees);
     } else {
-      s = "tree-glda";
+      s = "tree-pda";
     }
 
     s += fmt::format("-s{}", seed);
@@ -117,9 +117,9 @@ static void generate_golden(const GoldenConfig& config) {
 
   if (config.trees > 0) {
     meta["n_vars"]        = config.n_vars;
-    meta["training_spec"] = "uglda";
+    meta["training_spec"] = "upda";
   } else {
-    meta["training_spec"] = "glda";
+    meta["training_spec"] = "pda";
   }
 
   result["meta"] = meta;
@@ -127,7 +127,7 @@ static void generate_golden(const GoldenConfig& config) {
   // Train and serialize
   if (config.trees > 0) {
     Forest forest = Forest::train(
-      TrainingSpecUGLDA(config.n_vars, config.lambda),
+      TrainingSpecUPDA(config.n_vars, config.lambda),
       data.x,
       data.y,
       config.trees,
@@ -163,7 +163,7 @@ static void generate_golden(const GoldenConfig& config) {
   } else {
     // Single tree
     RNG rng(config.seed);
-    Tree tree = Tree::train(TrainingSpecGLDA(config.lambda), data.x, data.y, rng);
+    Tree tree = Tree::train(TrainingSpecPDA(config.lambda), data.x, data.y, rng);
 
     result["model"] = to_json(tree);
 

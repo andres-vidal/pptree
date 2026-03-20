@@ -182,8 +182,8 @@ describe("pprf training spec", {
     expect_true(length(model$trees) > 1)
   })
 
-  it("the training strategy is uniform_glda", {
+  it("the training strategy is uniform_pda", {
     model <- pprf(Type ~ ., data = iris, n_threads = 1)
-    expect_equal(model$training_spec$strategy, "uniform_glda")
+    expect_equal(model$training_spec$strategy, "uniform_pda")
   })
 })

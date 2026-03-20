@@ -6,11 +6,11 @@
 #include "models/TreeResponse.hpp"
 #include "models/Forest.hpp"
 #include "models/TrainingSpec.hpp"
-#include "models/TrainingSpecGLDA.hpp"
-#include "models/TrainingSpecUGLDA.hpp"
+#include "models/TrainingSpecPDA.hpp"
+#include "models/TrainingSpecUPDA.hpp"
 
 #include "models/PPStrategy.hpp"
-#include "models/PPGLDAStrategy.hpp"
+#include "models/PPPDAStrategy.hpp"
 
 #include "models/DRStrategy.hpp"
 #include "models/DRUniformStrategy.hpp"

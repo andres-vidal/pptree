@@ -22,7 +22,7 @@
  * - **clone()** — returns a deep copy as a `Ptr` (used by TrainingSpec's
  *   copy constructor).
  * - **Factory function** — a free function in the strategy's namespace
- *   that returns a `Ptr` (e.g. `pp::glda(lambda)`).
+ *   that returns a `Ptr` (e.g. `pp::pda(lambda)`).
  * - **Convenience operator()** — calls the main virtual method so
  *   strategies can be used as functors.
  *
@@ -240,7 +240,7 @@
  * @code
  *   // Mix and match any PP + DR + SR strategies:
  *   auto spec = std::make_unique<TrainingSpec>(
- *     pp::glda(0.5),          // existing GLDA strategy
+ *     pp::pda(0.5),          // existing PDA strategy
  *     dr::variance(4),        // your new DR strategy
  *     sr::median());          // your new SR strategy
  *
@@ -260,7 +260,7 @@
  *
  *     TrainingSpecCustom(int n_vars, float lambda) :
  *       TrainingSpec(
- *         pp::glda(lambda),
+ *         pp::pda(lambda),
  *         dr::variance(n_vars),
  *         sr::median()),
  *       n_vars(n_vars),
@@ -278,5 +278,5 @@
  * @endcode
  *
  * @see PPStrategy, DRStrategy, SRStrategy, TrainingSpec,
- *      TrainingSpecGLDA, TrainingSpecUGLDA
+ *      TrainingSpecPDA, TrainingSpecUPDA
  */

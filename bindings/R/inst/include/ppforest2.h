@@ -16,8 +16,8 @@ namespace Rcpp {
   SEXP wrap(const Forest &);
 
   SEXP wrap(const TrainingSpec &);
-  SEXP wrap(const TrainingSpecGLDA &);
-  SEXP wrap(const TrainingSpecUGLDA &);
+  SEXP wrap(const TrainingSpecPDA &);
+  SEXP wrap(const TrainingSpecUPDA &);
 
   template<> std::unique_ptr<TreeNode> as(SEXP);
   template<> Tree as(SEXP);
@@ -123,11 +123,11 @@ namespace Rcpp {
     struct TrainingSpecWrapper : public TrainingSpecVisitor {
       Rcpp::List result;
 
-      void visit(const TrainingSpecGLDA &spec) {
+      void visit(const TrainingSpecPDA &spec) {
         result = Rcpp::wrap(spec);
       }
 
-      void visit(const TrainingSpecUGLDA &spec) {
+      void visit(const TrainingSpecUPDA &spec) {
         result = Rcpp::wrap(spec);
       }
     };
@@ -137,15 +137,15 @@ namespace Rcpp {
     return wrapper.result;
   }
 
-  SEXP wrap(const TrainingSpecGLDA &spec) {
+  SEXP wrap(const TrainingSpecPDA &spec) {
     return Rcpp::List::create(
-      Rcpp::Named("strategy") = "glda",
+      Rcpp::Named("strategy") = "pda",
       Rcpp::Named("lambda")   = Rcpp::wrap(spec.lambda));
   }
 
-  SEXP wrap(const TrainingSpecUGLDA &spec) {
+  SEXP wrap(const TrainingSpecUPDA &spec) {
     return Rcpp::List::create(
-      Rcpp::Named("strategy") = "uniform_glda",
+      Rcpp::Named("strategy") = "uniform_pda",
       Rcpp::Named("n_vars")   = Rcpp::wrap(spec.n_vars),
       Rcpp::Named("lambda")   = Rcpp::wrap(spec.lambda));
   }
@@ -254,16 +254,16 @@ namespace Rcpp {
 
     std::string strategy = Rcpp::as<std::string>(rtraining_spec["strategy"]);
 
-    if (strategy == "glda") {
+    if (strategy == "pda") {
       float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
-      return TrainingSpecGLDA::make(lambda);
+      return TrainingSpecPDA::make(lambda);
     }
 
-    if (strategy == "uniform_glda") {
+    if (strategy == "uniform_pda") {
       int n_vars   = Rcpp::as<int>(rtraining_spec["n_vars"]);
       float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
 
-      return TrainingSpecUGLDA::make(n_vars, lambda);
+      return TrainingSpecUPDA::make(n_vars, lambda);
     }
 
     Rcpp::stop("Unknown training strategy: %s", strategy);

@@ -10,7 +10,7 @@
  * @brief Projection pursuit strategies.
  *
  * Contains the abstract PPStrategy interface and concrete
- * implementations (e.g. PPGLDAStrategy) that define how to evaluate
+ * implementations (e.g. PPPDAStrategy) that define how to evaluate
  * and optimise a projection index for separating classes.
  */
 namespace ppforest2::pp {

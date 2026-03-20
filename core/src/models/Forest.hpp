@@ -27,7 +27,7 @@ namespace ppforest2 {
    * supported.
    *
    * @code
-   *   TrainingSpecUGLDA spec(n_vars: 3, lambda: 0.0);
+   *   TrainingSpecUPDA spec(n_vars: 3, lambda: 0.0);
    *   Forest forest = Forest::train(spec, x, y, size: 500, seed: 42);
    *
    *   types::ResponseVector preds = forest.predict(x_test);

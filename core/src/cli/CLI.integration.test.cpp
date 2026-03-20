@@ -803,14 +803,14 @@ TEST(CLIIntegration, TrainAutoAppendsJsonExtension) {
 // CLI Golden Tests — end-to-end reproducibility through CLI pipeline
 // ---------------------------------------------------------------------------
 
-CLI_GOLDEN_TREE_TEST(IrisTreeGLDA,   "iris", "tree-glda-s42",   IRIS_CSV, 0.0f, 42)
-CLI_GOLDEN_TREE_TEST(CrabTreeGLDA,   "crab", "tree-glda-s42",   CRAB_CSV, 0.0f, 42)
+CLI_GOLDEN_TREE_TEST(IrisTreePDA,   "iris", "tree-pda-s42",   IRIS_CSV, 0.0f, 42)
+CLI_GOLDEN_TREE_TEST(CrabTreePDA,   "crab", "tree-pda-s42",   CRAB_CSV, 0.0f, 42)
 
-CLI_GOLDEN_FOREST_TEST(IrisForestGLDA,  "iris",  "forest-glda-t5-s42",      IRIS_CSV,  5,  0.0f, 2, 42)
-CLI_GOLDEN_FOREST_TEST(IrisForestPDA,   "iris",  "forest-pda-l05-t5-s42",   IRIS_CSV,  5,  0.5f, 2, 42)
-CLI_GOLDEN_FOREST_TEST(CrabForestGLDA,  "crab",  "forest-glda-t10-s42",     CRAB_CSV,  10, 0.0f, 3, 42)
-CLI_GOLDEN_FOREST_TEST(WineForestGLDA,  "wine",  "forest-glda-t10-s42",     WINE_CSV,  10, 0.0f, 4, 42)
-CLI_GOLDEN_FOREST_TEST(GlassForestGLDA, "glass", "forest-glda-t10-s42",     GLASS_CSV, 10, 0.0f, 3, 42)
+CLI_GOLDEN_FOREST_TEST(IrisForestPDAL0,  "iris",  "forest-pda-t5-s42",      IRIS_CSV,  5,  0.0f, 2, 42)
+CLI_GOLDEN_FOREST_TEST(IrisForestPDAL05, "iris",  "forest-pda-l05-t5-s42",   IRIS_CSV,  5,  0.5f, 2, 42)
+CLI_GOLDEN_FOREST_TEST(CrabForestPDA,  "crab",  "forest-pda-t10-s42",     CRAB_CSV,  10, 0.0f, 3, 42)
+CLI_GOLDEN_FOREST_TEST(WineForestPDA,  "wine",  "forest-pda-t10-s42",     WINE_CSV,  10, 0.0f, 4, 42)
+CLI_GOLDEN_FOREST_TEST(GlassForestPDA, "glass", "forest-pda-t10-s42",     GLASS_CSV, 10, 0.0f, 3, 42)
 
 // ---------------------------------------------------------------------------
 // Parameter coverage — lambda, vars, config override

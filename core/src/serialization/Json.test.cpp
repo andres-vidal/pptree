@@ -39,7 +39,7 @@ static json load_model_json(const std::string& path) {
 }
 
 TEST(JsonRoundTrip, Tree) {
-  json model_json = load_model_json(GOLDEN_DIR + "/iris/tree-glda-s42.json");
+  json model_json = load_model_json(GOLDEN_DIR + "/iris/tree-pda-s42.json");
 
   Tree tree         = tree_from_json(model_json);
   json roundtripped = to_json(tree);
@@ -48,7 +48,7 @@ TEST(JsonRoundTrip, Tree) {
 }
 
 TEST(JsonRoundTrip, Forest) {
-  json model_json = load_model_json(GOLDEN_DIR + "/iris/forest-glda-t5-s42.json");
+  json model_json = load_model_json(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
 
   Forest forest     = forest_from_json(model_json);
   json roundtripped = to_json(forest);
@@ -57,7 +57,7 @@ TEST(JsonRoundTrip, Forest) {
 }
 
 TEST(JsonRoundTrip, ModelDispatchTree) {
-  json model_json = load_model_json(GOLDEN_DIR + "/iris/tree-glda-s42.json");
+  json model_json = load_model_json(GOLDEN_DIR + "/iris/tree-pda-s42.json");
 
   json wrapped;
   wrapped["model_type"] = "tree";
@@ -71,7 +71,7 @@ TEST(JsonRoundTrip, ModelDispatchTree) {
 }
 
 TEST(JsonRoundTrip, ModelDispatchForest) {
-  json model_json = load_model_json(GOLDEN_DIR + "/iris/forest-glda-t5-s42.json");
+  json model_json = load_model_json(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
 
   json wrapped;
   wrapped["model_type"] = "forest";

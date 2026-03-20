@@ -5,19 +5,19 @@
 
 namespace ppforest2 {
   /**
-   * @brief GLDA training specification using all variables.
+   * @brief PDA training specification using all variables.
    *
-   * Combines a GLDA projection pursuit strategy with a no-op
+   * Combines a PDA projection pursuit strategy with a no-op
    * dimensionality reduction (all variables are used at every split).
    * This is the standard configuration for a single PP tree.
    */
-  struct TrainingSpecGLDA : public TrainingSpec {
+  struct TrainingSpecPDA : public TrainingSpec {
     /** @brief Penalty parameter for the LDA index. */
     const float lambda;
 
-    explicit TrainingSpecGLDA(const float lambda) :
+    explicit TrainingSpecPDA(const float lambda) :
       TrainingSpec(
-        pp::glda(lambda),
+        pp::pda(lambda),
         dr::noop(),
         sr::mean_of_means()),
       lambda(lambda) {
@@ -28,11 +28,11 @@ namespace ppforest2 {
     }
 
     TrainingSpec::Ptr clone() const override {
-      return std::make_unique<TrainingSpecGLDA>(*this);
+      return std::make_unique<TrainingSpecPDA>(*this);
     }
 
     static TrainingSpec::Ptr make(const float lambda) {
-      return std::make_unique<TrainingSpecGLDA>(lambda);
+      return std::make_unique<TrainingSpecPDA>(lambda);
     }
   };
 }

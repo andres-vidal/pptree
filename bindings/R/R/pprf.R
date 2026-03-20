@@ -117,7 +117,7 @@ pprf <- function(
             "On macOS, install libomp: brew install libomp", call. = FALSE)
   }
 
-  model <- ppforest2_train_forest_glda(
+  model <- ppforest2_train_forest_pda(
     x,
     y,
     size,

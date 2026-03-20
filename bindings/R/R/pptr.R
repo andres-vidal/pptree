@@ -71,7 +71,7 @@ pptr <- function(
     seed <- sample.int(.Machine$integer.max, 1L)
   }
 
-  model <- ppforest2_train_tree_glda(args$x, args$y, lambda, seed)
+  model <- ppforest2_train_tree_pda(args$x, args$y, lambda, seed)
 
   if (isTRUE(model$degenerate)) {
     warning("Some splits could not separate groups (degenerate nodes). ",

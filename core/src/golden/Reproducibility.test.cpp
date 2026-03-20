@@ -15,8 +15,8 @@
 #include "stats/ConfusionMatrix.hpp"
 #include "models/Tree.hpp"
 #include "models/Forest.hpp"
-#include "models/TrainingSpecGLDA.hpp"
-#include "models/TrainingSpecUGLDA.hpp"
+#include "models/TrainingSpecPDA.hpp"
+#include "models/TrainingSpecUPDA.hpp"
 #include "models/VariableImportance.hpp"
 #include "serialization/Json.hpp"
 #include "io/IO.hpp"
@@ -213,7 +213,7 @@ namespace {
           auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                    \
                                                                                             \
           RNG rng(seed_val);                                                                \
-          Tree tree = Tree::train(TrainingSpecGLDA(lambda_val), data.x, data.y, rng);       \
+          Tree tree = Tree::train(TrainingSpecPDA(lambda_val), data.x, data.y, rng);        \
                                                                                             \
           compare_model_structure(golden["model"], tree);                                   \
                                                                                             \
@@ -243,7 +243,7 @@ namespace {
           auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                        \
                                                                                                 \
           Forest forest = Forest::train(                                                        \
-            TrainingSpecUGLDA(n_vars_val, lambda_val),                                          \
+            TrainingSpecUPDA(n_vars_val, lambda_val),                                           \
             data.x, data.y, n_trees, seed_val, 1);                                              \
                                                                                                 \
           compare_model_structure(golden["model"], forest);                                     \
@@ -285,15 +285,15 @@ namespace {
 // Tree tests
 // ---------------------------------------------------------------------------
 
-GOLDEN_TREE_TEST(IrisTreeGLDA, "iris", "tree-glda-s42", "iris.csv", 0.0f, 42)
-GOLDEN_TREE_TEST(CrabTreeGLDA, "crab", "tree-glda-s42", "crab.csv", 0.0f, 42)
+GOLDEN_TREE_TEST(IrisTreePDA, "iris", "tree-pda-s42", "iris.csv", 0.0f, 42)
+GOLDEN_TREE_TEST(CrabTreePDA, "crab", "tree-pda-s42", "crab.csv", 0.0f, 42)
 
 // ---------------------------------------------------------------------------
 // Forest tests
 // ---------------------------------------------------------------------------
 
-GOLDEN_FOREST_TEST(IrisForestGLDA, "iris", "forest-glda-t5-s42", "iris.csv", 5, 0.0f, 2, 42)
-GOLDEN_FOREST_TEST(IrisForestPDA, "iris", "forest-pda-l05-t5-s42", "iris.csv", 5, 0.5f, 2, 42)
-GOLDEN_FOREST_TEST(CrabForestGLDA, "crab", "forest-glda-t10-s42", "crab.csv", 10, 0.0f, 3, 42)
-GOLDEN_FOREST_TEST(WineForestGLDA, "wine", "forest-glda-t10-s42", "wine.csv", 10, 0.0f, 4, 42)
-GOLDEN_FOREST_TEST(GlassForestGLDA, "glass", "forest-glda-t10-s42", "glass.csv", 10, 0.0f, 3, 42)
+GOLDEN_FOREST_TEST(IrisForestPDAL0, "iris", "forest-pda-t5-s42", "iris.csv", 5, 0.0f, 2, 42)
+GOLDEN_FOREST_TEST(IrisForestPDAL05, "iris", "forest-pda-l05-t5-s42", "iris.csv", 5, 0.5f, 2, 42)
+GOLDEN_FOREST_TEST(CrabForestPDA, "crab", "forest-pda-t10-s42", "crab.csv", 10, 0.0f, 3, 42)
+GOLDEN_FOREST_TEST(WineForestPDA, "wine", "forest-pda-t10-s42", "wine.csv", 10, 0.0f, 4, 42)
+GOLDEN_FOREST_TEST(GlassForestPDA, "glass", "forest-pda-t10-s42", "glass.csv", 10, 0.0f, 3, 42)

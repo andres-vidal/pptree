@@ -131,8 +131,8 @@ describe("pptr training spec", {
     expect_equal(model$training_spec$lambda, 0)
   })
 
-  it("the training strategy is glda", {
+  it("the training strategy is pda", {
     model <- pptr(Type ~ ., data = iris)
-    expect_equal(model$training_spec$strategy, "glda")
+    expect_equal(model$training_spec$strategy, "pda")
   })
 })

@@ -8,8 +8,8 @@
 #include "models/Tree.hpp"
 #include "models/TreeCondition.hpp"
 #include "models/TreeResponse.hpp"
-#include "models/TrainingSpecGLDA.hpp"
-#include "models/TrainingSpecUGLDA.hpp"
+#include "models/TrainingSpecPDA.hpp"
+#include "models/TrainingSpecUPDA.hpp"
 #include "utils/Macros.hpp"
 
 using namespace ppforest2;
@@ -30,7 +30,7 @@ TEST(BootstrapTreeOobIndices, ComplementOfSampleIndices) {
   // sample_indices = {0, 1, 2}, n_total = 5  =>  OOB = {3, 4}
   BootstrapTree bt(
     TreeResponse::make(1),
-    TrainingSpecGLDA::make(0.0f),
+    TrainingSpecPDA::make(0.0f),
     std::vector<int>{ 0, 1, 2 });
 
   auto oob = bt.oob_indices(5);
@@ -43,7 +43,7 @@ TEST(BootstrapTreeOobIndices, ComplementOfSampleIndices) {
 TEST(BootstrapTreeOobIndices, EmptyWhenAllInBag) {
   BootstrapTree bt(
     TreeResponse::make(1),
-    TrainingSpecGLDA::make(0.0f),
+    TrainingSpecPDA::make(0.0f),
     std::vector<int>{ 0, 1, 2, 3 });
 
   auto oob = bt.oob_indices(4);
@@ -53,7 +53,7 @@ TEST(BootstrapTreeOobIndices, EmptyWhenAllInBag) {
 TEST(BootstrapTreeOobIndices, AllOobWhenNoneInBag) {
   BootstrapTree bt(
     TreeResponse::make(1),
-    TrainingSpecGLDA::make(0.0f),
+    TrainingSpecPDA::make(0.0f),
     std::vector<int>{});
 
   auto oob = bt.oob_indices(3);
@@ -68,7 +68,7 @@ TEST(BootstrapTreeOobIndices, DuplicatesInSampleCountedOnce) {
   // With duplicates {0, 0, 1} the in-bag set is {0, 1}, OOB = {2, 3}
   BootstrapTree bt(
     TreeResponse::make(1),
-    TrainingSpecGLDA::make(0.0f),
+    TrainingSpecPDA::make(0.0f),
     std::vector<int>{ 0, 0, 1 });
 
   auto oob = bt.oob_indices(4);
@@ -95,7 +95,7 @@ TEST(BootstrapTreePredictOob, MatchesRowwisePredict) {
 
   BootstrapTree bt(
     std::move(condition),
-    TrainingSpecGLDA::make(0.0f),
+    TrainingSpecPDA::make(0.0f),
     std::vector<int>{ 0, 1, 4, 5 });
 
   FeatureMatrix x = MAT(Feature, rows(6),
@@ -117,7 +117,7 @@ TEST(BootstrapTreePredictOob, MatchesRowwisePredict) {
 TEST(BootstrapTreePredictOob, EmptyIndicesReturnsEmptyVector) {
   BootstrapTree bt(
     TreeResponse::make(1),
-    TrainingSpecGLDA::make(0.0f),
+    TrainingSpecPDA::make(0.0f),
     std::vector<int>{ 0, 1 });
 
   FeatureMatrix x(4, 2);
@@ -160,7 +160,7 @@ TEST(PpIndexValue, StoredAfterTraining) {
       0, 0, 0, 1, 1, 1);
 
   stats::RNG rng(42, 0);
-  Tree tree = Tree::train(TrainingSpecGLDA(0.0f), x, y, rng);
+  Tree tree = Tree::train(TrainingSpecPDA(0.0f), x, y, rng);
 
   IndexCollector collector;
   tree.root->accept(collector);
@@ -287,7 +287,7 @@ TEST(VariableImportance2, HandBuiltSingleNodeTree) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(condition),
-      TrainingSpecGLDA::make(0.0f),
+      TrainingSpecPDA::make(0.0f),
       std::vector<int>{ 0, 1, 2, 3 }));
 
   FeatureVector vi2 = variable_importance_projections(forest, 2);
@@ -327,7 +327,7 @@ TEST(VariableImportance2, HandBuiltTwoNodeTree) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(root),
-      TrainingSpecGLDA::make(0.0f),
+      TrainingSpecPDA::make(0.0f),
       std::vector<int>{ 0, 1, 2, 3 }));
 
   FeatureVector vi2 = variable_importance_projections(forest, 2);
@@ -371,7 +371,7 @@ TEST(VariableImportance3, HandBuiltSingleNodeTree) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(condition),
-      TrainingSpecGLDA::make(0.0f),
+      TrainingSpecPDA::make(0.0f),
       std::vector<int>{ 0, 1, 2, 3 }));  // all in-bag
 
   FeatureVector vi3 = variable_importance_weighted_projections(forest, x, y);
@@ -414,7 +414,7 @@ TEST(VariableImportance1, DiscriminatingVariableHighestImportance) {
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
   Forest forest = Forest::train(
-    TrainingSpecGLDA(0.0f),
+    TrainingSpecPDA(0.0f),
     x, y,
     10,    // 10 trees
     42);

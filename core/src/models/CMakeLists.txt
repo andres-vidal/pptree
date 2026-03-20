@@ -5,7 +5,7 @@ add_library(ppforest2-models OBJECT
   TreeNode.cpp
   TreeCondition.cpp
   TreeResponse.cpp
-  PPGLDAStrategy.cpp
+  PPPDAStrategy.cpp
   Projector.cpp
   VariableImportance.cpp
   Visualization.cpp)

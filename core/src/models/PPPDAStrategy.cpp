@@ -1,4 +1,4 @@
-#include "models/PPGLDAStrategy.hpp"
+#include "models/PPPDAStrategy.hpp"
 
 #include "utils/Math.hpp"
 
@@ -23,15 +23,15 @@ namespace {
   }
 }
 
-  PPGLDAStrategy::PPGLDAStrategy(float lambda) :
+  PPPDAStrategy::PPPDAStrategy(float lambda) :
     lambda(lambda) {
   }
 
-  PPStrategy::Ptr PPGLDAStrategy::clone() const {
-    return std::make_unique<PPGLDAStrategy>(*this);
+  PPStrategy::Ptr PPPDAStrategy::clone() const {
+    return std::make_unique<PPPDAStrategy>(*this);
   }
 
-  Feature PPGLDAStrategy::index(
+  Feature PPPDAStrategy::index(
     FeatureMatrix const&  x,
     GroupPartition const& group_spec,
     Projector const&      projector) const {
@@ -54,7 +54,7 @@ namespace {
     return Feature(1) - numerator / denominator;
   }
 
-  PPResult PPGLDAStrategy::optimize(
+  PPResult PPPDAStrategy::optimize(
     const FeatureMatrix&  x,
     const GroupPartition& group_spec) const {
     const FeatureMatrix B = group_spec.bgss(x);
@@ -81,11 +81,11 @@ namespace {
     return PPResult{ pp::normalize(max_eigen_vec), max_eigen_val };
   }
 
-  PPStrategy::Ptr PPGLDAStrategy::make(float lambda) {
-    return std::make_unique<PPGLDAStrategy>(lambda);
+  PPStrategy::Ptr PPPDAStrategy::make(float lambda) {
+    return std::make_unique<PPPDAStrategy>(lambda);
   }
 
-  PPStrategy::Ptr glda(float lambda) {
-    return PPGLDAStrategy::make(lambda);
+  PPStrategy::Ptr pda(float lambda) {
+    return PPPDAStrategy::make(lambda);
   }
 }

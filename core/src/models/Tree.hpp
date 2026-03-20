@@ -16,7 +16,7 @@ namespace ppforest2 {
    * class labels.
    *
    * @code
-   *   TrainingSpecGLDA spec(lambda: 0.0);
+   *   TrainingSpecPDA spec(lambda: 0.0);
    *   stats::RNG rng(42);
    *
    *   Tree tree = Tree::train(spec, x, y, rng);

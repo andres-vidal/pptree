@@ -9,7 +9,7 @@
 #include <gtest/gtest.h>
 
 #include "models/Forest.hpp"
-#include "models/TrainingSpecUGLDA.hpp"
+#include "models/TrainingSpecUPDA.hpp"
 #include "io/IO.hpp"
 
 using namespace ppforest2;
@@ -28,8 +28,8 @@ TEST(Threading, ForestSameResultsSingleVsMulti) {
 
   auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
 
-  Forest f1 = Forest::train(TrainingSpecUGLDA(2, 0.0f), data.x, data.y, 10, 42, 1);
-  Forest f4 = Forest::train(TrainingSpecUGLDA(2, 0.0f), data.x, data.y, 10, 42, 4);
+  Forest f1 = Forest::train(TrainingSpecUPDA(2, 0.0f), data.x, data.y, 10, 42, 1);
+  Forest f4 = Forest::train(TrainingSpecUPDA(2, 0.0f), data.x, data.y, 10, 42, 4);
 
   ASSERT_EQ(f1, f4) << "1-thread and 4-thread forests should be identical";
 }
@@ -41,8 +41,8 @@ TEST(Threading, ForestSameResultsAcrossRuns) {
 
   auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
 
-  Forest f1 = Forest::train(TrainingSpecUGLDA(2, 0.0f), data.x, data.y, 10, 42, 4);
-  Forest f2 = Forest::train(TrainingSpecUGLDA(2, 0.0f), data.x, data.y, 10, 42, 4);
+  Forest f1 = Forest::train(TrainingSpecUPDA(2, 0.0f), data.x, data.y, 10, 42, 4);
+  Forest f2 = Forest::train(TrainingSpecUPDA(2, 0.0f), data.x, data.y, 10, 42, 4);
 
   ASSERT_EQ(f1, f2) << "Two runs with same seed and thread count should be identical";
 }

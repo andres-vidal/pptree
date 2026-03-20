@@ -51,7 +51,7 @@
     "lambda": 0.0,
     "platform": "macos-clang",
     "seed": 42,
-    "training_spec": "glda",
+    "training_spec": "pda",
     "trees": 0
   },
   "model": {
