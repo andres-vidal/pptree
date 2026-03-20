@@ -5,17 +5,30 @@
 #include <memory>
 
 namespace ppforest2 {
-  struct ModelVisitor;
+  struct Tree;
+  struct Forest;
+
   /**
    * @brief Abstract base class for predictive models (trees and forests).
    */
   struct Model {
     using Ptr = std::unique_ptr<Model>;
 
+    /**
+     * @brief Visitor interface for model dispatch.
+     *
+     * Implements the visitor pattern to distinguish between Tree and
+     * Forest models without dynamic_cast.
+     */
+    struct Visitor {
+      virtual void visit(const Tree& tree)     = 0;
+      virtual void visit(const Forest& forest) = 0;
+    };
+
     virtual ~Model() = default;
 
     /** @brief Accept a model visitor (double dispatch). */
-    virtual void accept(ModelVisitor& visitor) const = 0;
+    virtual void accept(Visitor& visitor) const = 0;
 
     /**
      * @brief Predict a single observation.

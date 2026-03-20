@@ -10,9 +10,9 @@
  *
  * | Interface            | Dispatches over                   | Use when |
  * |----------------------|-----------------------------------|----------|
- * | TreeNodeVisitor      | TreeCondition (split), TreeResponse (leaf) | You need to walk the tree structure |
- * | ModelVisitor         | Tree, Forest                      | You need to handle trees and forests differently |
- * | TrainingSpecVisitor  | TrainingSpecPDA, TrainingSpecUPDA | You need type-safe access to spec parameters |
+ * | TreeNode::Visitor      | TreeCondition (split), TreeResponse (leaf) | You need to walk the tree structure |
+ * | Model::Visitor         | Tree, Forest                      | You need to handle trees and forests differently |
+ * | TrainingSpec::Visitor  | TrainingSpecPDA, TrainingSpecUPDA | You need type-safe access to spec parameters |
  *
  * @section vis_dispatch How double dispatch works
  *
@@ -24,8 +24,8 @@
  *   node->accept(visitor);
  *
  *   // 2. The concrete node type calls visit(*this):
- *   void TreeCondition::accept(TreeNodeVisitor& v) const { v.visit(*this); }
- *   void TreeResponse::accept(TreeNodeVisitor& v) const  { v.visit(*this); }
+ *   void TreeCondition::accept(TreeNode::Visitor& v) const { v.visit(*this); }
+ *   void TreeResponse::accept(TreeNode::Visitor& v) const  { v.visit(*this); }
  *
  *   // 3. The visitor's concrete visit() method runs:
  *   void MyVisitor::visit(const TreeCondition& cond) { ... }
@@ -35,12 +35,12 @@
  * This resolves both the node type and the visitor type at runtime
  * without any casts.
  *
- * @section vis_treenode Implementing a TreeNodeVisitor
+ * @section vis_treenode Implementing a TreeNode::Visitor
  *
  * @subsection vis_treenode_interface Interface to implement
  *
  * @code
- *   struct TreeNodeVisitor {
+ *   struct TreeNode::Visitor {
  *     virtual void visit(const TreeCondition& condition) = 0;
  *     virtual void visit(const TreeResponse& response) = 0;
  *   };
@@ -77,13 +77,12 @@
  * @subsection vis_treenode_example Example: computing tree depth
  *
  * @code
- *   #include "models/TreeNodeVisitor.hpp"
  *   #include "models/TreeCondition.hpp"
  *   #include "models/TreeResponse.hpp"
  *
  *   namespace ppforest2 {
  *
- *   struct DepthVisitor : public TreeNodeVisitor {
+ *   struct DepthVisitor : public TreeNode::Visitor {
  *     int max_depth = 0;
  *     int current_depth = 0;
  *
@@ -119,7 +118,7 @@
  * @subsection vis_treenode_example2 Example: counting leaves
  *
  * @code
- *   struct LeafCountVisitor : public TreeNodeVisitor {
+ *   struct LeafCountVisitor : public TreeNode::Visitor {
  *     int count = 0;
  *
  *     void visit(const TreeCondition& cond) override {
@@ -140,15 +139,15 @@
  *   int leaves = visitor.count;
  * @endcode
  *
- * @section vis_model Implementing a ModelVisitor
+ * @section vis_model Implementing a Model::Visitor
  *
- * ModelVisitor dispatches over Tree and Forest, useful when you need
+ * Model::Visitor dispatches over Tree and Forest, useful when you need
  * to handle them differently (e.g. serialisation, summary statistics).
  *
  * @subsection vis_model_interface Interface to implement
  *
  * @code
- *   struct ModelVisitor {
+ *   struct Model::Visitor {
  *     virtual void visit(const Tree& tree) = 0;
  *     virtual void visit(const Forest& forest) = 0;
  *   };
@@ -157,12 +156,12 @@
  * @subsection vis_model_example Example: collecting all leaf labels
  *
  * @code
- *   struct AllLabelsVisitor : public ModelVisitor {
+ *   struct AllLabelsVisitor : public Model::Visitor {
  *     std::set<types::Response> labels;
  *
  *     void visit(const Tree& tree) override {
- *       // Use a TreeNodeVisitor to walk the tree:
- *       struct LabelCollector : public TreeNodeVisitor {
+ *       // Use a TreeNode::Visitor to walk the tree:
+ *       struct LabelCollector : public TreeNode::Visitor {
  *         std::set<types::Response>& labels;
  *         LabelCollector(std::set<types::Response>& l) : labels(l) {}
  *
@@ -193,20 +192,20 @@
  *   // visitor.labels contains all class labels in the model
  * @endcode
  *
- * @section vis_specvisitor Implementing a TrainingSpecVisitor
+ * @section vis_specvisitor Implementing a TrainingSpec::Visitor
  *
- * TrainingSpecVisitor dispatches over concrete TrainingSpec subclasses,
+ * TrainingSpec::Visitor dispatches over concrete TrainingSpec subclasses,
  * giving type-safe access to their parameters (e.g. `lambda`, `n_vars`).
  *
  * @code
- *   struct TrainingSpecVisitor {
+ *   struct TrainingSpec::Visitor {
  *     virtual void visit(const TrainingSpecPDA& spec) = 0;
  *     virtual void visit(const TrainingSpecUPDA& spec) = 0;
  *   };
  * @endcode
  *
  * If you add a new TrainingSpec subclass, add a corresponding
- * `visit()` overload to TrainingSpecVisitor.
+ * `visit()` overload to TrainingSpec::Visitor.
  *
  * @section vis_existing Existing visitors as reference
  *
@@ -237,6 +236,6 @@
  *   walk the full tree.  Omit these calls if you only need to inspect
  *   the root.
  *
- * @see TreeNodeVisitor, ModelVisitor, TrainingSpecVisitor,
+ * @see TreeNode::Visitor, Model::Visitor, TrainingSpec::Visitor,
  *      VIVisitor, TreeCondition, TreeResponse
  */

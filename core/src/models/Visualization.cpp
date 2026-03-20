@@ -476,7 +476,7 @@ namespace {
    * writes positioned nodes/edges into output vectors.  After
    * accepting a node, the result is available in @c result.
    */
-  struct LayoutVisitor : TreeNodeVisitor {
+  struct LayoutVisitor : TreeNode::Visitor {
     int depth;
     int& node_idx;
     types::Feature x_offset;

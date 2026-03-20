@@ -2,7 +2,6 @@
 
 #include "models/TreeCondition.hpp"
 #include "models/TreeResponse.hpp"
-#include "models/ModelVisitor.hpp"
 #include "models/BootstrapTree.hpp"
 #include "utils/Invariant.hpp"
 #include "utils/Map.hpp"
@@ -314,7 +313,7 @@ namespace {
     return !(*this == other);
   }
 
-  void Tree::accept(ModelVisitor& visitor) const {
+  void Tree::accept(Model::Visitor& visitor) const {
     visitor.visit(*this);
   }
 }

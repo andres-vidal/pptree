@@ -69,7 +69,7 @@ namespace ppforest2 {
     explicit Tree(TreeNode::Ptr root);
     Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec);
 
-    void accept(ModelVisitor& visitor) const override;
+    void accept(Model::Visitor& visitor) const override;
 
     types::Response predict(const types::FeatureVector& data) const override;
     types::ResponseVector predict(const types::FeatureMatrix& data) const override;

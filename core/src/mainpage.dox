@@ -132,11 +132,11 @@
  * Two visitor interfaces avoid `dynamic_cast` and keep traversal logic
  * decoupled from the model classes:
  *
- * - **TreeNodeVisitor** — dispatches over internal nodes (TreeCondition)
+ * - **TreeNode::Visitor** — dispatches over internal nodes (TreeCondition)
  *   and leaf nodes (TreeResponse).  Used by serialisation, visualisation,
  *   and variable importance.
  *
- * - **ModelVisitor** — dispatches over Tree and Forest.  Used by the
+ * - **Model::Visitor** — dispatches over Tree and Forest.  Used by the
  *   serialisation layer.
  *
  * For a step-by-step guide to implementing new visitors, see

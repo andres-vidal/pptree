@@ -106,7 +106,7 @@ namespace ppforest2 {
     bool operator==(const Forest& other) const;
     bool operator!=(const Forest& other) const;
 
-    void accept(ModelVisitor& visitor) const override;
+    void accept(Model::Visitor& visitor) const override;
 
     /**
      * @brief Out-of-bag predictions by majority vote.

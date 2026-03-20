@@ -34,7 +34,7 @@ namespace Rcpp {
 
 namespace Rcpp {
   SEXP wrap(const TreeNode& node) {
-    struct NodeWrapper : public TreeNodeVisitor {
+    struct NodeWrapper : public TreeNode::Visitor {
       Rcpp::List result;
 
       void visit(const TreeCondition &condition) {
@@ -120,7 +120,7 @@ namespace Rcpp {
   }
 
   SEXP wrap(const TrainingSpec &spec) {
-    struct TrainingSpecWrapper : public TrainingSpecVisitor {
+    struct TrainingSpecWrapper : public TrainingSpec::Visitor {
       Rcpp::List result;
 
       void visit(const TrainingSpecPDA &spec) {

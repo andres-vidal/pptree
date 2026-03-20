@@ -1,5 +1,4 @@
 #include "models/TreeResponse.hpp"
-#include "models/TreeNodeVisitor.hpp"
 
 #include <memory>
 
@@ -10,7 +9,7 @@ namespace ppforest2 {
     value(value) {
   }
 
-  void TreeResponse::accept(TreeNodeVisitor& visitor) const {
+  void TreeResponse::accept(TreeNode::Visitor& visitor) const {
     visitor.visit(*this);
   }
 

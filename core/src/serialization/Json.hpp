@@ -1,10 +1,8 @@
 #pragma once
 
-#include "models/TreeNodeVisitor.hpp"
 #include "models/TreeNode.hpp"
 #include "models/TreeCondition.hpp"
 #include "models/TreeResponse.hpp"
-#include "models/ModelVisitor.hpp"
 #include "models/Tree.hpp"
 #include "models/BootstrapTree.hpp"
 #include "models/Forest.hpp"
@@ -36,14 +34,14 @@ namespace ppforest2::serialization {
   using json = nlohmann::json;
 
   /** @brief Visitor that serializes a tree node to JSON. */
-  struct JsonNodeVisitor : public TreeNodeVisitor {
+  struct JsonNodeVisitor : public TreeNode::Visitor {
     json result;
     void visit(const TreeCondition& node) override;
     void visit(const TreeResponse& node) override;
   };
 
   /** @brief Visitor that serializes a model (Tree or Forest) to JSON. */
-  struct JsonModelVisitor : public ModelVisitor {
+  struct JsonModelVisitor : public Model::Visitor {
     json result;
     void visit(const Tree& tree) override;
     void visit(const Forest& forest) override;

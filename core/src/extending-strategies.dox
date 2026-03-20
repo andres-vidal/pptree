@@ -266,8 +266,8 @@
  *       n_vars(n_vars),
  *       lambda(lambda) {}
  *
- *     void accept(TrainingSpecVisitor& visitor) const override {
- *       // Add a visit() overload to TrainingSpecVisitor if you need
+ *     void accept(TrainingSpec::Visitor& visitor) const override {
+ *       // Add a visit() overload to TrainingSpec::Visitor if you need
  *       // type-safe dispatch (e.g. for serialisation).
  *     }
  *

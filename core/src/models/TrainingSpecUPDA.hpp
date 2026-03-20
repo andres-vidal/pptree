@@ -1,7 +1,6 @@
 #pragma once
 
 #include "models/TrainingSpec.hpp"
-#include "models/TrainingSpecVisitor.hpp"
 
 namespace ppforest2 {
   /**
@@ -27,7 +26,7 @@ namespace ppforest2 {
       lambda(lambda) {
     }
 
-    virtual void accept(TrainingSpecVisitor &visitor) const override {
+    virtual void accept(TrainingSpec::Visitor &visitor) const override {
       visitor.visit(*this);
     }
 

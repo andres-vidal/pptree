@@ -10,7 +10,9 @@
 #include <map>
 
 namespace ppforest2 {
-  struct TrainingSpecVisitor;
+  struct TrainingSpecPDA;
+  struct TrainingSpecUPDA;
+
   /**
    * @brief Abstract training configuration for projection pursuit trees.
    *
@@ -41,6 +43,17 @@ namespace ppforest2 {
   struct TrainingSpec {
     using Ptr = std::unique_ptr<TrainingSpec>;
 
+    /**
+     * @brief Visitor interface for training specification dispatch.
+     *
+     * Distinguishes between PDA (all variables) and UPDA (uniform
+     * random variable subset) training configurations.
+     */
+    struct Visitor {
+      virtual void visit(const TrainingSpecPDA &spec)  = 0;
+      virtual void visit(const TrainingSpecUPDA &spec) = 0;
+    };
+
     /** @brief Projection pursuit optimization strategy. */
     const std::unique_ptr<pp::PPStrategy> pp_strategy;
     /** @brief Dimensionality reduction strategy. */
@@ -66,7 +79,7 @@ namespace ppforest2 {
     virtual ~TrainingSpec() = default;
 
     /** @brief Accept a training spec visitor (double dispatch). */
-    virtual void accept(TrainingSpecVisitor &visitor) const = 0;
+    virtual void accept(Visitor &visitor) const = 0;
 
     /** @brief Deep copy of this training specification. */
     virtual Ptr clone() const = 0;

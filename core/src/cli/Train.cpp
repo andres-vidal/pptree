@@ -4,7 +4,6 @@
  */
 #include "cli/Train.hpp"
 #include "ppforest2.hpp"
-#include "models/ModelVisitor.hpp"
 
 #include <CLI/CLI.hpp>
 #include <fmt/format.h>
@@ -224,7 +223,7 @@ namespace {
     out.print("Trained in {}ms", emphasis(std::to_string(train_result.duration)));
 
     // Warn about degenerate trees
-    struct DegenerateCheckVisitor : ModelVisitor {
+    struct DegenerateCheckVisitor : Model::Visitor {
       bool is_degenerate = false;
 
       void visit(const Forest& forest) override {
@@ -267,7 +266,7 @@ namespace {
       vi.scale = stats::sd(x);
       vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
-      struct MetricsVisitor : ModelVisitor {
+      struct MetricsVisitor : Model::Visitor {
         const FeatureMatrix& x;
         const ResponseVector& y;
         const CLIOptions& params;

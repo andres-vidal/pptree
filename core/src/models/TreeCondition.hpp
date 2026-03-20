@@ -43,7 +43,7 @@ namespace ppforest2 {
       std::set<types::Response> classes        = {},
       types::Feature            pp_index_value = 0);
 
-    void accept(TreeNodeVisitor& visitor) const override;
+    void accept(TreeNode::Visitor& visitor) const override;
 
     /** @brief Returns the response of the lower child. */
     types::Response response() const override;

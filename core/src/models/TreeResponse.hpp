@@ -17,7 +17,7 @@ namespace ppforest2 {
 
     explicit TreeResponse(types::Response value);
 
-    void accept(TreeNodeVisitor& visitor) const override;
+    void accept(TreeNode::Visitor& visitor) const override;
     types::Response response() const override;
 
     /**

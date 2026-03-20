@@ -1,6 +1,5 @@
 #pragma once
 
-#include "models/TreeNodeVisitor.hpp"
 #include "models/TreeCondition.hpp"
 #include "utils/Types.hpp"
 
@@ -22,7 +21,7 @@ namespace ppforest2 {
    * The caller is responsible for forest-level aggregation and normalization
    * described in Da Silva et al. (2021).
    */
-  struct VIVisitor : public TreeNodeVisitor {
+  struct VIVisitor : public TreeNode::Visitor {
     /** @brief VI2 contributions per variable (size p). */
     std::vector<types::Feature> vi2_contributions;
 

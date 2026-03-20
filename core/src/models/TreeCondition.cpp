@@ -1,6 +1,5 @@
 #include "models/TreeCondition.hpp"
 #include "models/TreeResponse.hpp"
-#include "models/TreeNodeVisitor.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -30,7 +29,7 @@ namespace ppforest2 {
     degenerate = this->lower->degenerate || this->upper->degenerate;
   }
 
-  void TreeCondition::accept(TreeNodeVisitor& visitor) const {
+  void TreeCondition::accept(TreeNode::Visitor& visitor) const {
     visitor.visit(*this);
   }
 

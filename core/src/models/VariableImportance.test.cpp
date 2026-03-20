@@ -133,7 +133,7 @@ TEST(BootstrapTreePredictOob, EmptyIndicesReturnsEmptyVector) {
 // ---------------------------------------------------------------------------
 
 // Visitor that collects all pp_index_value fields from a tree.
-struct IndexCollector : public TreeNodeVisitor {
+struct IndexCollector : public TreeNode::Visitor {
   std::vector<Feature> values;
 
   void visit(const TreeCondition& node) override {

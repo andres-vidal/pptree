@@ -40,7 +40,7 @@
  *
  * @section protocol Visitor Protocol
  *
- * All visitors inherit from TreeNodeVisitor and implement visit() for
+ * All visitors inherit from TreeNode::Visitor and implement visit() for
  * TreeCondition (internal) and TreeResponse (leaf) nodes.  Traversal
  * is initiated by calling tree.root->accept(visitor).  Results
  * accumulate in public member vectors (nodes, segments, regions) that
@@ -53,7 +53,6 @@
  * (immutable) tree.
  */
 
-#include "models/TreeNodeVisitor.hpp"
 #include "models/TreeCondition.hpp"
 #include "models/TreeResponse.hpp"
 #include "utils/Types.hpp"
@@ -115,7 +114,7 @@ namespace ppforest2::viz {
    * observation reaching a split goes to the lower child if its projected
    * value < threshold, otherwise to the upper child.
    */
-  struct NodeDataVisitor : public TreeNodeVisitor {
+  struct NodeDataVisitor : public TreeNode::Visitor {
     const types::FeatureMatrix& x;   ///< Full observation matrix (n × p).
     const types::ResponseVector& y;  ///< Full response vector (n).
     std::vector<int> indices;        ///< Indices of observations reaching the current node.
@@ -362,7 +361,7 @@ namespace ppforest2::viz {
    *   // visitor.segments contains all visible boundary segments
    * @endcode
    */
-  struct BoundaryVisitor : public TreeNodeVisitor {
+  struct BoundaryVisitor : public TreeNode::Visitor {
     int var_i, var_j;  ///< Indices of the two displayed feature variables.
     std::vector<std::pair<int, types::Feature>> fixed_vars;  ///< Fixed (index, value) pairs.
     types::Feature x_min, x_max, y_min, y_max;  ///< Visible bounding box.
@@ -404,7 +403,7 @@ namespace ppforest2::viz {
    *   // visitor.regions has one polygon per reachable leaf
    * @endcode
    */
-  struct RegionVisitor : public TreeNodeVisitor {
+  struct RegionVisitor : public TreeNode::Visitor {
     int var_i, var_j;  ///< Indices of the two displayed feature variables.
     std::vector<std::pair<int, types::Feature>> fixed_vars;  ///< Fixed (index, value) pairs.
     types::Feature x_min, x_max, y_min, y_max;  ///< Bounding box for the initial rectangle.

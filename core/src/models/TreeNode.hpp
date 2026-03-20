@@ -6,7 +6,9 @@
 #include "utils/Types.hpp"
 
 namespace ppforest2 {
-  struct TreeNodeVisitor;
+  struct TreeCondition;
+  struct TreeResponse;
+
   /**
    * @brief Abstract base class for nodes in a projection pursuit tree.
    *
@@ -17,13 +19,24 @@ namespace ppforest2 {
   struct TreeNode {
     using Ptr = std::unique_ptr<TreeNode>;
 
+    /**
+     * @brief Visitor interface for tree node dispatch.
+     *
+     * Implements the visitor pattern to distinguish between internal
+     * split nodes (TreeCondition) and leaf nodes (TreeResponse).
+     */
+    struct Visitor {
+      virtual void visit(const TreeCondition &condition) = 0;
+      virtual void visit(const TreeResponse &response)   = 0;
+    };
+
     /** @brief Whether this node (or any descendant) had a degenerate split. */
     bool degenerate = false;
 
     virtual ~TreeNode() = default;
 
     /** @brief Accept a tree node visitor (double dispatch). */
-    virtual void accept(TreeNodeVisitor &visitor) const = 0;
+    virtual void accept(Visitor &visitor) const = 0;
 
     /**
      * @brief Predict the class label for a single observation.

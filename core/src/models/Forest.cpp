@@ -1,5 +1,4 @@
 #include "models/Forest.hpp"
-#include "models/ModelVisitor.hpp"
 #include "stats/Stats.hpp"
 #include "utils/Types.hpp"
 #include "utils/Invariant.hpp"
@@ -155,7 +154,7 @@ namespace ppforest2 {
     return !(*this == other);
   }
 
-  void Forest::accept(ModelVisitor& visitor) const {
+  void Forest::accept(Model::Visitor& visitor) const {
     visitor.visit(*this);
   }
 
