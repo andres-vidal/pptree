@@ -112,7 +112,7 @@ $(function(){initNavTree('extending_visitors.html',''); initResizable(true); });
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">ModelVisitor   </td><td class="markdownTableBodyNone">Tree, Forest   </td><td class="markdownTableBodyNone">You need to handle trees and forests differently    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">TrainingSpecVisitor   </td><td class="markdownTableBodyNone">TrainingSpecGLDA, TrainingSpecUGLDA   </td><td class="markdownTableBodyNone">You need type-safe access to spec parameters   </td></tr>
+<td class="markdownTableBodyNone">TrainingSpecVisitor   </td><td class="markdownTableBodyNone">TrainingSpecPDA, TrainingSpecUPDA   </td><td class="markdownTableBodyNone">You need type-safe access to spec parameters   </td></tr>
 </table>
 <h1><a class="anchor" id="vis_dispatch"></a>
 How double dispatch works</h1>
@@ -260,8 +260,8 @@ Example: collecting all leaf labels</h2>
 Implementing a TrainingSpecVisitor</h1>
 <p>TrainingSpecVisitor dispatches over concrete TrainingSpec subclasses, giving type-safe access to their parameters (e.g. <code>lambda</code>, <code>n_vars</code>).</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span>TrainingSpecVisitor {</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> visit(<span class="keyword">const</span> TrainingSpecGLDA&amp; spec) = 0;</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> visit(<span class="keyword">const</span> TrainingSpecUGLDA&amp; spec) = 0;</div>
+<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> visit(<span class="keyword">const</span> TrainingSpecPDA&amp; spec) = 0;</div>
+<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> visit(<span class="keyword">const</span> TrainingSpecUPDA&amp; spec) = 0;</div>
 <div class="line">};</div>
 </div><!-- fragment --><p>If you add a new TrainingSpec subclass, add a corresponding <code>visit()</code> overload to TrainingSpecVisitor.</p>
 <h1><a class="anchor" id="vis_existing"></a>

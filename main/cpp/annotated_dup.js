@@ -32,7 +32,7 @@ var annotated_dup =
         [ "TempFile", "classppforest2_1_1io_1_1TempFile.html", "classppforest2_1_1io_1_1TempFile" ]
       ] ],
       [ "pp", "namespaceppforest2_1_1pp.html", [
-        [ "PPGLDAStrategy", "structppforest2_1_1pp_1_1PPGLDAStrategy.html", "structppforest2_1_1pp_1_1PPGLDAStrategy" ],
+        [ "PPPDAStrategy", "structppforest2_1_1pp_1_1PPPDAStrategy.html", "structppforest2_1_1pp_1_1PPPDAStrategy" ],
         [ "PPResult", "structppforest2_1_1pp_1_1PPResult.html", "structppforest2_1_1pp_1_1PPResult" ],
         [ "PPStrategy", "structppforest2_1_1pp_1_1PPStrategy.html", "structppforest2_1_1pp_1_1PPStrategy" ]
       ] ],
@@ -72,8 +72,8 @@ var annotated_dup =
       [ "ModelVisitor", "structppforest2_1_1ModelVisitor.html", "structppforest2_1_1ModelVisitor" ],
       [ "Proportions", "structppforest2_1_1Proportions.html", null ],
       [ "TrainingSpec", "structppforest2_1_1TrainingSpec.html", "structppforest2_1_1TrainingSpec" ],
-      [ "TrainingSpecGLDA", "structppforest2_1_1TrainingSpecGLDA.html", "structppforest2_1_1TrainingSpecGLDA" ],
-      [ "TrainingSpecUGLDA", "structppforest2_1_1TrainingSpecUGLDA.html", "structppforest2_1_1TrainingSpecUGLDA" ],
+      [ "TrainingSpecPDA", "structppforest2_1_1TrainingSpecPDA.html", "structppforest2_1_1TrainingSpecPDA" ],
+      [ "TrainingSpecUPDA", "structppforest2_1_1TrainingSpecUPDA.html", "structppforest2_1_1TrainingSpecUPDA" ],
       [ "TrainingSpecVisitor", "structppforest2_1_1TrainingSpecVisitor.html", "structppforest2_1_1TrainingSpecVisitor" ],
       [ "Tree", "structppforest2_1_1Tree.html", "structppforest2_1_1Tree" ],
       [ "TreeCondition", "structppforest2_1_1TreeCondition.html", "structppforest2_1_1TreeCondition" ],

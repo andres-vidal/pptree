@@ -2,7 +2,7 @@ var searchData=
 [
   ['macros_2ehpp_0',['Macros.hpp',['../Macros_8hpp.html',1,'']]],
   ['mainpage_2edox_1',['mainpage.dox',['../mainpage_8dox.html',1,'']]],
-  ['make_2',['make',['../structppforest2_1_1pp_1_1PPGLDAStrategy.html#ae80b05dc1fa29a9c2f91abc3e13bb50e',1,'ppforest2::pp::PPGLDAStrategy::make()'],['../structppforest2_1_1TrainingSpecGLDA.html#a18f606509efdd84ec87a04cf36478b93',1,'ppforest2::TrainingSpecGLDA::make()'],['../structppforest2_1_1TrainingSpecUGLDA.html#ab9b693121c295cd88d9b993c81dd400b',1,'ppforest2::TrainingSpecUGLDA::make()'],['../structppforest2_1_1TreeCondition.html#aae00c2126f9831cb31aa1ad2cca1c491',1,'ppforest2::TreeCondition::make()'],['../structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516',1,'ppforest2::TreeResponse::make()']]],
+  ['make_2',['make',['../structppforest2_1_1pp_1_1PPPDAStrategy.html#a19bf11b79080283d293812b29b772729',1,'ppforest2::pp::PPPDAStrategy::make()'],['../structppforest2_1_1TrainingSpecPDA.html#a172fe67178298a817a41dc748a15c5c2',1,'ppforest2::TrainingSpecPDA::make()'],['../structppforest2_1_1TrainingSpecUPDA.html#a60af0583078c79a55058e2ea5b746c45',1,'ppforest2::TrainingSpecUPDA::make()'],['../structppforest2_1_1TreeCondition.html#aae00c2126f9831cb31aa1ad2cca1c491',1,'ppforest2::TreeCondition::make()'],['../structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516',1,'ppforest2::TreeResponse::make()']]],
   ['map_2ehpp_3',['Map.hpp',['../Map_8hpp.html',1,'']]],
   ['mat_4',['MAT',['../Macros_8hpp.html#a4660d6ffcf62118b533a60baf351bd49',1,'Macros.hpp']]],
   ['math_2ehpp_5',['Math.hpp',['../Math_8hpp.html',1,'']]],

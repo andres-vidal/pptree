@@ -175,7 +175,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A projection pursuit random forest. </p>
 <p>An ensemble of <a class="el" href="structppforest2_1_1BootstrapTree.html">BootstrapTree</a> instances, each trained on a bootstrap sample. Predictions are made by majority vote. Out-of-bag estimation and vote-proportion predictions are supported.</p>
-<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUGLDA.html">TrainingSpecUGLDA</a> spec(n_vars: 3, lambda: 0.0);</div>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUPDA.html">TrainingSpecUPDA</a> spec(n_vars: 3, lambda: 0.0);</div>
 <div class="line"><a class="code hl_function" href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">Forest</a> forest = <a class="code hl_function" href="#aae448c9c9777b0e0d449504a033a2a7a">Forest::train</a>(spec, x, y, size: 500, <a class="code hl_variable" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>: 42);</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> preds = forest.<a class="code hl_function" href="#a4b767e43cb29fc1273b34d1077d54c5a">predict</a>(x_test);</div>
@@ -191,7 +191,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="ttc" id="astructppforest2_1_1Forest_html_ab9dd051d9e30e864682c01bfa252cc74"><div class="ttname"><a href="#ab9dd051d9e30e864682c01bfa252cc74">ppforest2::Forest::oob_error</a></div><div class="ttdeci">double oob_error(const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y) const</div><div class="ttdoc">Out-of-bag error rate.</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html_aebf6bbdeb3ff9672fc037cc5f48a5e8c"><div class="ttname"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">ppforest2::Forest::Forest</a></div><div class="ttdeci">Forest()</div></div>
 <div class="ttc" id="astructppforest2_1_1Proportions_html"><div class="ttname"><a href="structppforest2_1_1Proportions.html">ppforest2::Proportions</a></div><div class="ttdoc">Tag type for requesting vote-proportion predictions.</div><div class="ttdef"><b>Definition</b> Forest.hpp:19</div></div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpecUGLDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUGLDA.html">ppforest2::TrainingSpecUGLDA</a></div><div class="ttdoc">UGLDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUGLDA.hpp:15</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecUPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUPDA.html">ppforest2::TrainingSpecUPDA</a></div><div class="ttdoc">UPDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUPDA.hpp:15</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aebf6bbdeb3ff9672fc037cc5f48a5e8c" name="aebf6bbdeb3ff9672fc037cc5f48a5e8c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">&#9670;&#160;</a></span>Forest() <span class="overload">[1/2]</span></h2>

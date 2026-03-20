@@ -36,7 +36,7 @@ var hierarchy =
     [ "ppforest2::io::Output", "structppforest2_1_1io_1_1Output.html", null ],
     [ "ppforest2::pp::PPResult", "structppforest2_1_1pp_1_1PPResult.html", null ],
     [ "ppforest2::pp::PPStrategy", "structppforest2_1_1pp_1_1PPStrategy.html", [
-      [ "ppforest2::pp::PPGLDAStrategy", "structppforest2_1_1pp_1_1PPGLDAStrategy.html", null ]
+      [ "ppforest2::pp::PPPDAStrategy", "structppforest2_1_1pp_1_1PPPDAStrategy.html", null ]
     ] ],
     [ "ppforest2::Proportions", "structppforest2_1_1Proportions.html", null ],
     [ "ppforest2::viz::RegionPolygon", "structppforest2_1_1viz_1_1RegionPolygon.html", null ],
@@ -55,8 +55,8 @@ var hierarchy =
     [ "ppforest2::io::TempDir", "classppforest2_1_1io_1_1TempDir.html", null ],
     [ "ppforest2::io::TempFile", "classppforest2_1_1io_1_1TempFile.html", null ],
     [ "ppforest2::TrainingSpec", "structppforest2_1_1TrainingSpec.html", [
-      [ "ppforest2::TrainingSpecGLDA", "structppforest2_1_1TrainingSpecGLDA.html", null ],
-      [ "ppforest2::TrainingSpecUGLDA", "structppforest2_1_1TrainingSpecUGLDA.html", null ]
+      [ "ppforest2::TrainingSpecPDA", "structppforest2_1_1TrainingSpecPDA.html", null ],
+      [ "ppforest2::TrainingSpecUPDA", "structppforest2_1_1TrainingSpecUPDA.html", null ]
     ] ],
     [ "ppforest2::TrainingSpecVisitor", "structppforest2_1_1TrainingSpecVisitor.html", null ],
     [ "ppforest2::cli::TrainResult", "structppforest2_1_1cli_1_1TrainResult.html", null ],
