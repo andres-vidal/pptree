@@ -22,12 +22,11 @@ var searchData=
   ['model_19',['Model',['../structppforest2_1_1Model.html',1,'ppforest2']]],
   ['model_20',['model',['../structppforest2_1_1cli_1_1CLIOptions.html#ac7a69feadc50fe215476c53634b6c17f',1,'ppforest2::cli::CLIOptions::model'],['../structppforest2_1_1cli_1_1TrainResult.html#acc3f1d0ac6c37a831b7f74c5c55c792c',1,'ppforest2::cli::TrainResult::model']]],
   ['model_2ehpp_21',['Model.hpp',['../Model_8hpp.html',1,'']]],
-  ['model_5ffrom_5fjson_22',['model_from_json',['../namespaceppforest2_1_1serialization.html#adc903606c521ef56dc9d09c08696a240',1,'ppforest2::serialization']]],
-  ['model_5fpath_23',['model_path',['../structppforest2_1_1cli_1_1CLIOptions.html#ab1edf18b4f200cfbf2980ec460f47e32',1,'ppforest2::cli::CLIOptions']]],
-  ['modelparams_24',['ModelParams',['../structppforest2_1_1cli_1_1ModelParams.html',1,'ppforest2::cli']]],
-  ['modelparams_2ehpp_25',['ModelParams.hpp',['../ModelParams_8hpp.html',1,'']]],
-  ['modelstats_26',['ModelStats',['../structppforest2_1_1io_1_1ModelStats.html',1,'ppforest2::io']]],
-  ['modelvisitor_27',['ModelVisitor',['../extending_visitors.html#vis_model',1,'Implementing a ModelVisitor'],['../structppforest2_1_1ModelVisitor.html',1,'ppforest2::ModelVisitor']]],
-  ['modelvisitor_2ehpp_28',['ModelVisitor.hpp',['../ModelVisitor_8hpp.html',1,'']]],
-  ['muted_29',['muted',['../namespaceppforest2_1_1io_1_1style.html#a7a5f32471a0274221ad7a7747a10c852',1,'ppforest2::io::style']]]
+  ['model_3a_3avisitor_22',['Implementing a Model::Visitor',['../extending_visitors.html#vis_model',1,'']]],
+  ['model_5ffrom_5fjson_23',['model_from_json',['../namespaceppforest2_1_1serialization.html#adc903606c521ef56dc9d09c08696a240',1,'ppforest2::serialization']]],
+  ['model_5fpath_24',['model_path',['../structppforest2_1_1cli_1_1CLIOptions.html#ab1edf18b4f200cfbf2980ec460f47e32',1,'ppforest2::cli::CLIOptions']]],
+  ['modelparams_25',['ModelParams',['../structppforest2_1_1cli_1_1ModelParams.html',1,'ppforest2::cli']]],
+  ['modelparams_2ehpp_26',['ModelParams.hpp',['../ModelParams_8hpp.html',1,'']]],
+  ['modelstats_27',['ModelStats',['../structppforest2_1_1io_1_1ModelStats.html',1,'ppforest2::io']]],
+  ['muted_28',['muted',['../namespaceppforest2_1_1io_1_1style.html#a7a5f32471a0274221ad7a7747a10c852',1,'ppforest2::io::style']]]
 ];

@@ -100,6 +100,7 @@ $(function(){initNavTree('structppforest2_1_1Model.html',''); initResizable(true
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="structppforest2_1_1Model-members.html">List of all members</a>  </div>
@@ -112,6 +113,12 @@ $(function(){initNavTree('structppforest2_1_1Model.html',''); initResizable(true
 
 <p><code>#include &lt;<a class="el" href="Model_8hpp_source.html">Model.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Visitor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structppforest2_1_1Model_1_1Visitor.html" title="Visitor interface for model dispatch.">Visitor</a> interface for model dispatch.  <a href="structppforest2_1_1Model_1_1Visitor.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a7472b8c050914c7f7b8faa363e414080" id="r_a7472b8c050914c7f7b8faa363e414080"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7472b8c050914c7f7b8faa363e414080">Ptr</a> = std::unique_ptr&lt;<a class="el" href="structppforest2_1_1Model.html">Model</a>&gt;</td></tr>
@@ -121,9 +128,9 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af5ba2e98757f7e4f53ec963f40b39b2d" id="r_af5ba2e98757f7e4f53ec963f40b39b2d"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5ba2e98757f7e4f53ec963f40b39b2d">~Model</a> ()=default</td></tr>
 <tr class="separator:af5ba2e98757f7e4f53ec963f40b39b2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f1ff337b17c7ba54f6eb26af271617e" id="r_a8f1ff337b17c7ba54f6eb26af271617e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f1ff337b17c7ba54f6eb26af271617e">accept</a> (<a class="el" href="structppforest2_1_1ModelVisitor.html">ModelVisitor</a> &amp;visitor) const =0</td></tr>
-<tr class="memdesc:a8f1ff337b17c7ba54f6eb26af271617e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a model visitor (double dispatch).  <br /></td></tr>
-<tr class="separator:a8f1ff337b17c7ba54f6eb26af271617e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad36801ffbde49f31de900e6bf770d010" id="r_ad36801ffbde49f31de900e6bf770d010"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad36801ffbde49f31de900e6bf770d010">accept</a> (<a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Visitor</a> &amp;visitor) const =0</td></tr>
+<tr class="memdesc:ad36801ffbde49f31de900e6bf770d010"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a model visitor (double dispatch).  <br /></td></tr>
+<tr class="separator:ad36801ffbde49f31de900e6bf770d010"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78ce1b83a0b085bd8126761ecae7d864" id="r_a78ce1b83a0b085bd8126761ecae7d864"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78ce1b83a0b085bd8126761ecae7d864">predict</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;data) const =0</td></tr>
 <tr class="memdesc:a78ce1b83a0b085bd8126761ecae7d864"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predict a matrix of observations.  <br /></td></tr>
 <tr class="separator:a78ce1b83a0b085bd8126761ecae7d864"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,8 +182,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8f1ff337b17c7ba54f6eb26af271617e" name="a8f1ff337b17c7ba54f6eb26af271617e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f1ff337b17c7ba54f6eb26af271617e">&#9670;&#160;</a></span>accept()</h2>
+<a id="ad36801ffbde49f31de900e6bf770d010" name="ad36801ffbde49f31de900e6bf770d010"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad36801ffbde49f31de900e6bf770d010">&#9670;&#160;</a></span>accept()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -187,7 +194,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void ppforest2::Model::accept </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1ModelVisitor.html">ModelVisitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Visitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -200,7 +207,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Accept a model visitor (double dispatch). </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1Forest.html#a4ab3043b4c73496a4fac6b387267b0bf">ppforest2::Forest</a>, and <a class="el" href="structppforest2_1_1Tree.html#a7a46d619d4c059fa8de0b5da4ad2ab26">ppforest2::Tree</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1Forest.html#ad88835a72b166e172fc4cfe4d284b377">ppforest2::Forest</a>, and <a class="el" href="structppforest2_1_1Tree.html#af79f91e98bc4ff581a69a8afd8480137">ppforest2::Tree</a>.</p>
 
 </div>
 </div>

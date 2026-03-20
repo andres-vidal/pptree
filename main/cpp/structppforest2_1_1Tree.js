@@ -2,7 +2,7 @@ var structppforest2_1_1Tree =
 [
     [ "Tree", "structppforest2_1_1Tree.html#a4938f1b301650a27bcb1808a5cf71cd9", null ],
     [ "Tree", "structppforest2_1_1Tree.html#a659244a701a63f9e4d2d59584844afbe", null ],
-    [ "accept", "structppforest2_1_1Tree.html#a7a46d619d4c059fa8de0b5da4ad2ab26", null ],
+    [ "accept", "structppforest2_1_1Tree.html#af79f91e98bc4ff581a69a8afd8480137", null ],
     [ "is_degenerate", "structppforest2_1_1Tree.html#a9ad04268cff376dcb62b4713cedb6a9a", null ],
     [ "operator!=", "structppforest2_1_1Tree.html#ab0dbcf2386171b330973a0f868daa43c", null ],
     [ "operator==", "structppforest2_1_1Tree.html#a978854db1e371ec29b9f4aeaaa121529", null ],

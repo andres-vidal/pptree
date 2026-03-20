@@ -126,9 +126,9 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a97be247b42a99ab9b6dc072f5f786ed7" id="r_a97be247b42a99ab9b6dc072f5f786ed7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97be247b42a99ab9b6dc072f5f786ed7">TreeCondition</a> (<a class="el" href="namespaceppforest2_1_1pp.html#a686ed3b4f49bb2ed6b7e842f5557539f">pp::Projector</a> <a class="el" href="#a5c2dceed6e2865fd22eed1a1f9655ac6">projector</a>, <a class="el" href="namespaceppforest2.html#ad86c43fe58242b878d5590d1d130772a">Threshold</a> <a class="el" href="#a88a3ba85037672a833f17d9d74b97ca1">threshold</a>, <a class="el" href="structppforest2_1_1TreeNode.html#aa03af85bbfe1c0f8d8ce50f18c96623c">TreeNode::Ptr</a> <a class="el" href="#a966a4b8bd456ebc3f93aeb2c215fa92d">lower</a>, <a class="el" href="structppforest2_1_1TreeNode.html#aa03af85bbfe1c0f8d8ce50f18c96623c">TreeNode::Ptr</a> <a class="el" href="#a925ca0a1fe65dd8097b007ef31fe2324">upper</a>, <a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a> <a class="el" href="#a9fac74a3682e09f197e7a60e606173ec">training_spec</a>=nullptr, std::set&lt; <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> &gt; <a class="el" href="#ab8875c4784fde1a12511fbbdaac4452c">classes</a>={}, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> <a class="el" href="#a9fef8c69a770e7f914754a06280c5d49">pp_index_value</a>=0)</td></tr>
 <tr class="separator:a97be247b42a99ab9b6dc072f5f786ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46aeabaccdc4ea0ca6fabf5bb38fb50a" id="r_a46aeabaccdc4ea0ca6fabf5bb38fb50a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46aeabaccdc4ea0ca6fabf5bb38fb50a">accept</a> (<a class="el" href="structppforest2_1_1TreeNodeVisitor.html">TreeNodeVisitor</a> &amp;visitor) const override</td></tr>
-<tr class="memdesc:a46aeabaccdc4ea0ca6fabf5bb38fb50a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a tree node visitor (double dispatch).  <br /></td></tr>
-<tr class="separator:a46aeabaccdc4ea0ca6fabf5bb38fb50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dd80b4ff4412f587347c50e832b6601" id="r_a7dd80b4ff4412f587347c50e832b6601"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7dd80b4ff4412f587347c50e832b6601">accept</a> (<a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html">TreeNode::Visitor</a> &amp;visitor) const override</td></tr>
+<tr class="memdesc:a7dd80b4ff4412f587347c50e832b6601"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a tree node visitor (double dispatch).  <br /></td></tr>
+<tr class="separator:a7dd80b4ff4412f587347c50e832b6601"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a438cc01e4101f24c7863cc447d3c80b5" id="r_a438cc01e4101f24c7863cc447d3c80b5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a438cc01e4101f24c7863cc447d3c80b5">class_count</a> () const override</td></tr>
 <tr class="memdesc:a438cc01e4101f24c7863cc447d3c80b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of distinct classes reachable from this node.  <br /></td></tr>
 <tr class="separator:a438cc01e4101f24c7863cc447d3c80b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -258,8 +258,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a46aeabaccdc4ea0ca6fabf5bb38fb50a" name="a46aeabaccdc4ea0ca6fabf5bb38fb50a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46aeabaccdc4ea0ca6fabf5bb38fb50a">&#9670;&#160;</a></span>accept()</h2>
+<a id="a7dd80b4ff4412f587347c50e832b6601" name="a7dd80b4ff4412f587347c50e832b6601"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dd80b4ff4412f587347c50e832b6601">&#9670;&#160;</a></span>accept()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -270,7 +270,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void ppforest2::TreeCondition::accept </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeNodeVisitor.html">TreeNodeVisitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html">TreeNode::Visitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -283,7 +283,7 @@ Public Attributes</h2></td></tr>
 
 <p>Accept a tree node visitor (double dispatch). </p>
 
-<p>Implements <a class="el" href="structppforest2_1_1TreeNode.html#a361a943148dc9f5a81eac9207756925a">ppforest2::TreeNode</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1TreeNode.html#a46fbb9d6b6583f973571f17e5ebd4a9d">ppforest2::TreeNode</a>.</p>
 
 </div>
 </div>

@@ -1,9 +1,9 @@
 var searchData=
 [
   ['implement_0',['implement',['../extending_strategies.html#strat_pp_interface',1,'Interface to implement'],['../extending_strategies.html#strat_dr_interface',1,'Interface to implement'],['../extending_strategies.html#strat_sr_interface',1,'Interface to implement'],['../extending_visitors.html#vis_treenode_interface',1,'Interface to implement'],['../extending_visitors.html#vis_model_interface',1,'Interface to implement']]],
-  ['implementing_20a_20modelvisitor_1',['Implementing a ModelVisitor',['../extending_visitors.html#vis_model',1,'']]],
-  ['implementing_20a_20trainingspecvisitor_2',['Implementing a TrainingSpecVisitor',['../extending_visitors.html#vis_specvisitor',1,'']]],
-  ['implementing_20a_20treenodevisitor_3',['Implementing a TreeNodeVisitor',['../extending_visitors.html#vis_treenode',1,'']]],
+  ['implementing_20a_20model_3a_3avisitor_1',['Implementing a Model::Visitor',['../extending_visitors.html#vis_model',1,'']]],
+  ['implementing_20a_20trainingspec_3a_3avisitor_2',['Implementing a TrainingSpec::Visitor',['../extending_visitors.html#vis_specvisitor',1,'']]],
+  ['implementing_20a_20treenode_3a_3avisitor_3',['Implementing a TreeNode::Visitor',['../extending_visitors.html#vis_treenode',1,'']]],
   ['importance_4',['Variable importance',['../index.html#vi',1,'']]],
   ['indent_5',['indent',['../structppforest2_1_1io_1_1Output.html#ab34e6a707aa1d473f3d07407e6f02664',1,'ppforest2::io::Output']]],
   ['indent_5flevel_6',['indent_level',['../structppforest2_1_1io_1_1Output.html#a7a57a8d780a4a020d6b40e804bbb835b',1,'ppforest2::io::Output']]],

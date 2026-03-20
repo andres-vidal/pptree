@@ -100,6 +100,7 @@ $(function(){initNavTree('structppforest2_1_1TrainingSpec.html',''); initResizab
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
@@ -113,6 +114,12 @@ $(function(){initNavTree('structppforest2_1_1TrainingSpec.html',''); initResizab
 
 <p><code>#include &lt;<a class="el" href="TrainingSpec_8hpp_source.html">TrainingSpec.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html">Visitor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html" title="Visitor interface for training specification dispatch.">Visitor</a> interface for training specification dispatch.  <a href="structppforest2_1_1TrainingSpec_1_1Visitor.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:ae2ac65f2c2e549df1dbea70d046a775b" id="r_ae2ac65f2c2e549df1dbea70d046a775b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2ac65f2c2e549df1dbea70d046a775b">Ptr</a> = std::unique_ptr&lt;<a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a>&gt;</td></tr>
@@ -126,9 +133,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae0ab95e52ed701efa4c393973b29cbac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1057aa15c10508137c5f13a33df7ad2" id="r_ab1057aa15c10508137c5f13a33df7ad2"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1057aa15c10508137c5f13a33df7ad2">~TrainingSpec</a> ()=default</td></tr>
 <tr class="separator:ab1057aa15c10508137c5f13a33df7ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea20d1f6eb26217822d00c889b51be29" id="r_aea20d1f6eb26217822d00c889b51be29"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aea20d1f6eb26217822d00c889b51be29">accept</a> (<a class="el" href="structppforest2_1_1TrainingSpecVisitor.html">TrainingSpecVisitor</a> &amp;visitor) const =0</td></tr>
-<tr class="memdesc:aea20d1f6eb26217822d00c889b51be29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a training spec visitor (double dispatch).  <br /></td></tr>
-<tr class="separator:aea20d1f6eb26217822d00c889b51be29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74035ae5291f69581411b1a778b42f22" id="r_a74035ae5291f69581411b1a778b42f22"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74035ae5291f69581411b1a778b42f22">accept</a> (<a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html">Visitor</a> &amp;visitor) const =0</td></tr>
+<tr class="memdesc:a74035ae5291f69581411b1a778b42f22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a training spec visitor (double dispatch).  <br /></td></tr>
+<tr class="separator:a74035ae5291f69581411b1a778b42f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0636f3f7e3b319034fa0af4ed716016" id="r_ae0636f3f7e3b319034fa0af4ed716016"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="#ae2ac65f2c2e549df1dbea70d046a775b">Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0636f3f7e3b319034fa0af4ed716016">clone</a> () const =0</td></tr>
 <tr class="memdesc:ae0636f3f7e3b319034fa0af4ed716016"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deep copy of this training specification.  <br /></td></tr>
 <tr class="separator:ae0636f3f7e3b319034fa0af4ed716016"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -153,8 +160,8 @@ Public Attributes</h2></td></tr>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Random forest — PDA with uniform variable selection:</span></div>
 <div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUPDA.html">TrainingSpecUPDA</a> spec(n_vars: 3, lambda: 0.5);</div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpecPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecPDA.html">ppforest2::TrainingSpecPDA</a></div><div class="ttdoc">PDA training specification using all variables.</div><div class="ttdef"><b>Definition</b> TrainingSpecPDA.hpp:14</div></div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpecUPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUPDA.html">ppforest2::TrainingSpecUPDA</a></div><div class="ttdoc">UPDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUPDA.hpp:15</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecPDA.html">ppforest2::TrainingSpecPDA</a></div><div class="ttdoc">PDA training specification using all variables.</div><div class="ttdef"><b>Definition</b> TrainingSpecPDA.hpp:13</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpecUPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUPDA.html">ppforest2::TrainingSpecUPDA</a></div><div class="ttdoc">UPDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUPDA.hpp:14</div></div>
 </div><!-- fragment --><p>For custom strategy composition: </p><div class="fragment"><div class="line"><span class="keyword">auto</span> spec = std::make_unique&lt;TrainingSpec&gt;(</div>
 <div class="line">  <a class="code hl_function" href="namespaceppforest2_1_1pp.html#ad41c76a23274685fdb7fc21116b1d0bb">pp::pda</a>(0.5),          <span class="comment">// PDA with lambda = 0.5</span></div>
 <div class="line">  <a class="code hl_function" href="namespaceppforest2_1_1dr.html#a3f9e147489a1f708dd66dcc88f87e845">dr::uniform</a>(4),         <span class="comment">// sample 4 variables per split</span></div>
@@ -264,8 +271,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aea20d1f6eb26217822d00c889b51be29" name="aea20d1f6eb26217822d00c889b51be29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea20d1f6eb26217822d00c889b51be29">&#9670;&#160;</a></span>accept()</h2>
+<a id="a74035ae5291f69581411b1a778b42f22" name="a74035ae5291f69581411b1a778b42f22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74035ae5291f69581411b1a778b42f22">&#9670;&#160;</a></span>accept()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,7 +283,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual void ppforest2::TrainingSpec::accept </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1TrainingSpecVisitor.html">TrainingSpecVisitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html">Visitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -289,7 +296,7 @@ Public Attributes</h2></td></tr>
 
 <p>Accept a training spec visitor (double dispatch). </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TrainingSpecPDA.html#a3621ab96246b02e621fa61bc25c9478c">ppforest2::TrainingSpecPDA</a>, and <a class="el" href="structppforest2_1_1TrainingSpecUPDA.html#a4d434c7d8daf89a19154a0c36d96479d">ppforest2::TrainingSpecUPDA</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TrainingSpecPDA.html#aad9788439f3be72fa89be503e3f7384e">ppforest2::TrainingSpecPDA</a>, and <a class="el" href="structppforest2_1_1TrainingSpecUPDA.html#ae13ea9fc9880b846df087844243c4e0f">ppforest2::TrainingSpecUPDA</a>.</p>
 
 </div>
 </div>

@@ -214,8 +214,8 @@ Strategy pattern</h1>
 Visitor pattern</h1>
 <p>Two visitor interfaces avoid <code>dynamic_cast</code> and keep traversal logic decoupled from the model classes:</p>
 <ul>
-<li><b>TreeNodeVisitor</b> — dispatches over internal nodes (TreeCondition) and leaf nodes (TreeResponse). Used by serialisation, visualisation, and variable importance.</li>
-<li><b>ModelVisitor</b> — dispatches over Tree and Forest. Used by the serialisation layer.</li>
+<li><b>TreeNode::Visitor</b> — dispatches over internal nodes (TreeCondition) and leaf nodes (TreeResponse). Used by serialisation, visualisation, and variable importance.</li>
+<li><b>Model::Visitor</b> — dispatches over Tree and Forest. Used by the serialisation layer.</li>
 </ul>
 <p>For a step-by-step guide to implementing new visitors, see <a class="el" href="extending_visitors.html">Extending: Custom Visitors</a>.</p>
 <h1><a class="anchor" id="vi"></a>

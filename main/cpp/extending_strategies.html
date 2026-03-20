@@ -338,8 +338,8 @@ Creating a TrainingSpec subclass</h2>
 <div class="line">    n_vars(n_vars),</div>
 <div class="line">    lambda(lambda) {}</div>
 <div class="line"> </div>
-<div class="line">  <span class="keywordtype">void</span> accept(TrainingSpecVisitor&amp; visitor)<span class="keyword"> const override </span>{</div>
-<div class="line">    <span class="comment">// Add a visit() overload to TrainingSpecVisitor if you need</span></div>
+<div class="line">  <span class="keywordtype">void</span> accept(TrainingSpec::Visitor&amp; visitor)<span class="keyword"> const override </span>{</div>
+<div class="line">    <span class="comment">// Add a visit() overload to TrainingSpec::Visitor if you need</span></div>
 <div class="line">    <span class="comment">// type-safe dispatch (e.g. for serialisation).</span></div>
 <div class="line">  }</div>
 <div class="line"> </div>

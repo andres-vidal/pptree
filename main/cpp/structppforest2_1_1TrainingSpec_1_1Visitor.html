@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ppforest2: ppforest2::serialization::JsonNodeVisitor Struct Reference</title>
+<title>ppforest2: ppforest2::TrainingSpec::Visitor Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -73,7 +73,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function(){initNavTree('structppforest2_1_1serialization_1_1JsonNodeVisitor.html',''); initResizable(true); });
+$(function(){initNavTree('structppforest2_1_1TrainingSpec_1_1Visitor.html',''); initResizable(true); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -101,34 +101,29 @@ $(function(){initNavTree('structppforest2_1_1serialization_1_1JsonNodeVisitor.ht
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structppforest2_1_1serialization_1_1JsonNodeVisitor-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">ppforest2::serialization::JsonNodeVisitor Struct Reference</div></div>
+<a href="structppforest2_1_1TrainingSpec_1_1Visitor-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">ppforest2::TrainingSpec::Visitor Struct Reference<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Visitor that serializes a tree node to JSON.  
+<p><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html" title="Visitor interface for training specification dispatch.">Visitor</a> interface for training specification dispatch.  
  <a href="#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="Json_8hpp_source.html">Json.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="TrainingSpec_8hpp_source.html">TrainingSpec.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad6462cc1eb4c781c9e666fa78c03d995" id="r_ad6462cc1eb4c781c9e666fa78c03d995"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad6462cc1eb4c781c9e666fa78c03d995">visit</a> (const <a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> &amp;node) override</td></tr>
-<tr class="separator:ad6462cc1eb4c781c9e666fa78c03d995"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99d712c8c0a95a4deaa037ee740c77d0" id="r_a99d712c8c0a95a4deaa037ee740c77d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a99d712c8c0a95a4deaa037ee740c77d0">visit</a> (const <a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> &amp;node) override</td></tr>
-<tr class="separator:a99d712c8c0a95a4deaa037ee740c77d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a3093045778b0d62d9214787bd2ed7c5f" id="r_a3093045778b0d62d9214787bd2ed7c5f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1serialization.html#afced42a0b2c517da2664a9a849d90899">json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3093045778b0d62d9214787bd2ed7c5f">result</a></td></tr>
-<tr class="separator:a3093045778b0d62d9214787bd2ed7c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a142d6fa9c907425bfa618f6644c68f87" id="r_a142d6fa9c907425bfa618f6644c68f87"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a142d6fa9c907425bfa618f6644c68f87">visit</a> (const <a class="el" href="structppforest2_1_1TrainingSpecPDA.html">TrainingSpecPDA</a> &amp;spec)=0</td></tr>
+<tr class="separator:a142d6fa9c907425bfa618f6644c68f87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b284980c28bf2e3c2efea724073af0c" id="r_a7b284980c28bf2e3c2efea724073af0c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7b284980c28bf2e3c2efea724073af0c">visit</a> (const <a class="el" href="structppforest2_1_1TrainingSpecUPDA.html">TrainingSpecUPDA</a> &amp;spec)=0</td></tr>
+<tr class="separator:a7b284980c28bf2e3c2efea724073af0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Visitor that serializes a tree node to JSON. </p>
+<div class="textblock"><p><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html" title="Visitor interface for training specification dispatch.">Visitor</a> interface for training specification dispatch. </p>
+<p>Distinguishes between PDA (all variables) and UPDA (uniform random variable subset) training configurations. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad6462cc1eb4c781c9e666fa78c03d995" name="ad6462cc1eb4c781c9e666fa78c03d995"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad6462cc1eb4c781c9e666fa78c03d995">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
+<a id="a142d6fa9c907425bfa618f6644c68f87" name="a142d6fa9c907425bfa618f6644c68f87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a142d6fa9c907425bfa618f6644c68f87">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -137,25 +132,23 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void ppforest2::serialization::JsonNodeVisitor::visit </td>
+          <td class="memname">virtual void ppforest2::TrainingSpec::Visitor::visit </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="structppforest2_1_1TrainingSpecPDA.html">TrainingSpecPDA</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>spec</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#a7f2b2b2ea1a2803d83dfd4249ac97cd5">ppforest2::TreeNode::Visitor</a>.</p>
-
 </div>
 </div>
-<a id="a99d712c8c0a95a4deaa037ee740c77d0" name="a99d712c8c0a95a4deaa037ee740c77d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a99d712c8c0a95a4deaa037ee740c77d0">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
+<a id="a7b284980c28bf2e3c2efea724073af0c" name="a7b284980c28bf2e3c2efea724073af0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b284980c28bf2e3c2efea724073af0c">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -164,47 +157,30 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void ppforest2::serialization::JsonNodeVisitor::visit </td>
+          <td class="memname">virtual void ppforest2::TrainingSpec::Visitor::visit </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="structppforest2_1_1TrainingSpecUPDA.html">TrainingSpecUPDA</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>spec</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
   </tr>
 </table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#aa0806c19fd84d904e2ebf134433a48ce">ppforest2::TreeNode::Visitor</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a3093045778b0d62d9214787bd2ed7c5f" name="a3093045778b0d62d9214787bd2ed7c5f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3093045778b0d62d9214787bd2ed7c5f">&#9670;&#160;</a></span>result</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespaceppforest2_1_1serialization.html#afced42a0b2c517da2664a9a849d90899">json</a> ppforest2::serialization::JsonNodeVisitor::result</td>
-        </tr>
-      </table>
 </div><div class="memdoc">
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>core/src/serialization/<a class="el" href="Json_8hpp_source.html">Json.hpp</a></li>
+<li>core/src/models/<a class="el" href="TrainingSpec_8hpp_source.html">TrainingSpec.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespaceppforest2.html">ppforest2</a></li><li class="navelem"><a class="el" href="namespaceppforest2_1_1serialization.html">serialization</a></li><li class="navelem"><a class="el" href="structppforest2_1_1serialization_1_1JsonNodeVisitor.html">JsonNodeVisitor</a></li>
+    <li class="navelem"><a class="el" href="namespaceppforest2.html">ppforest2</a></li><li class="navelem"><a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a></li><li class="navelem"><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html">Visitor</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.13.2 </li>
   </ul>
 </div>

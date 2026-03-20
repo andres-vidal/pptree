@@ -1,8 +1,9 @@
 var structppforest2_1_1TreeNode =
 [
+    [ "Visitor", "structppforest2_1_1TreeNode_1_1Visitor.html", "structppforest2_1_1TreeNode_1_1Visitor" ],
     [ "Ptr", "structppforest2_1_1TreeNode.html#aa03af85bbfe1c0f8d8ce50f18c96623c", null ],
     [ "~TreeNode", "structppforest2_1_1TreeNode.html#adda9ba5c464c0520a77d6a8496c2f239", null ],
-    [ "accept", "structppforest2_1_1TreeNode.html#a361a943148dc9f5a81eac9207756925a", null ],
+    [ "accept", "structppforest2_1_1TreeNode.html#a46fbb9d6b6583f973571f17e5ebd4a9d", null ],
     [ "class_count", "structppforest2_1_1TreeNode.html#a667461a1a3a32da0dd3d196b682e650d", null ],
     [ "clone", "structppforest2_1_1TreeNode.html#afe195ce45f18dc9e2fc543ff4f7bf166", null ],
     [ "equals", "structppforest2_1_1TreeNode.html#a42f498ebc918e98f30dc91e90a755356", null ],

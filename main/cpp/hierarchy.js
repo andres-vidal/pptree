@@ -28,9 +28,6 @@ var hierarchy =
     ] ],
     [ "ppforest2::cli::ModelParams", "structppforest2_1_1cli_1_1ModelParams.html", null ],
     [ "ppforest2::io::ModelStats", "structppforest2_1_1io_1_1ModelStats.html", null ],
-    [ "ppforest2::ModelVisitor", "structppforest2_1_1ModelVisitor.html", [
-      [ "ppforest2::serialization::JsonModelVisitor", "structppforest2_1_1serialization_1_1JsonModelVisitor.html", null ]
-    ] ],
     [ "ppforest2::viz::NodeData", "structppforest2_1_1viz_1_1NodeData.html", null ],
     [ "ppforest2::stats::Normal", "classppforest2_1_1stats_1_1Normal.html", null ],
     [ "ppforest2::io::Output", "structppforest2_1_1io_1_1Output.html", null ],
@@ -58,21 +55,24 @@ var hierarchy =
       [ "ppforest2::TrainingSpecPDA", "structppforest2_1_1TrainingSpecPDA.html", null ],
       [ "ppforest2::TrainingSpecUPDA", "structppforest2_1_1TrainingSpecUPDA.html", null ]
     ] ],
-    [ "ppforest2::TrainingSpecVisitor", "structppforest2_1_1TrainingSpecVisitor.html", null ],
     [ "ppforest2::cli::TrainResult", "structppforest2_1_1cli_1_1TrainResult.html", null ],
     [ "ppforest2::viz::TreeLayout", "structppforest2_1_1viz_1_1TreeLayout.html", null ],
     [ "ppforest2::TreeNode", "structppforest2_1_1TreeNode.html", [
       [ "ppforest2::TreeCondition", "structppforest2_1_1TreeCondition.html", null ],
       [ "ppforest2::TreeResponse", "structppforest2_1_1TreeResponse.html", null ]
     ] ],
-    [ "ppforest2::TreeNodeVisitor", "structppforest2_1_1TreeNodeVisitor.html", [
+    [ "ppforest2::stats::Uniform", "classppforest2_1_1stats_1_1Uniform.html", null ],
+    [ "ppforest2::VariableImportance", "structppforest2_1_1VariableImportance.html", null ],
+    [ "ppforest2::cli::VarsSpec", "structppforest2_1_1cli_1_1VarsSpec.html", null ],
+    [ "ppforest2::Model::Visitor", "structppforest2_1_1Model_1_1Visitor.html", [
+      [ "ppforest2::serialization::JsonModelVisitor", "structppforest2_1_1serialization_1_1JsonModelVisitor.html", null ]
+    ] ],
+    [ "ppforest2::TrainingSpec::Visitor", "structppforest2_1_1TrainingSpec_1_1Visitor.html", null ],
+    [ "ppforest2::TreeNode::Visitor", "structppforest2_1_1TreeNode_1_1Visitor.html", [
       [ "ppforest2::VIVisitor", "structppforest2_1_1VIVisitor.html", null ],
       [ "ppforest2::serialization::JsonNodeVisitor", "structppforest2_1_1serialization_1_1JsonNodeVisitor.html", null ],
       [ "ppforest2::viz::BoundaryVisitor", "structppforest2_1_1viz_1_1BoundaryVisitor.html", null ],
       [ "ppforest2::viz::NodeDataVisitor", "structppforest2_1_1viz_1_1NodeDataVisitor.html", null ],
       [ "ppforest2::viz::RegionVisitor", "structppforest2_1_1viz_1_1RegionVisitor.html", null ]
-    ] ],
-    [ "ppforest2::stats::Uniform", "classppforest2_1_1stats_1_1Uniform.html", null ],
-    [ "ppforest2::VariableImportance", "structppforest2_1_1VariableImportance.html", null ],
-    [ "ppforest2::cli::VarsSpec", "structppforest2_1_1cli_1_1VarsSpec.html", null ]
+    ] ]
 ];
