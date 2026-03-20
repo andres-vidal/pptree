@@ -198,13 +198,13 @@ Interface to implement</h2>
 <div class="line">  <span class="keyword">virtual</span> DRStrategy::Ptr clone() <span class="keyword">const</span> = 0;</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// Select a subset of columns.</span></div>
-<div class="line">  <span class="keyword">virtual</span> DRSpec select(</div>
+<div class="line">  <span class="keyword">virtual</span> DRResult select(</div>
 <div class="line">    <span class="keyword">const</span> types::FeatureMatrix&amp;  x,          <span class="comment">// (n x p)</span></div>
 <div class="line">    <span class="keyword">const</span> stats::GroupPartition&amp; group_spec,</div>
 <div class="line">    stats::RNG&amp;                  rng</div>
 <div class="line">  ) <span class="keyword">const</span> = 0;</div>
 <div class="line">};</div>
-</div><!-- fragment --><p>The returned DRSpec records which columns were selected and the original column count, so the reduced-space projector can be expanded back to the full space via DRSpec::expand().</p>
+</div><!-- fragment --><p>The returned DRResult records which columns were selected and the original column count, so the reduced-space projector can be expanded back to the full space via DRResult::expand().</p>
 <h2><a class="anchor" id="strat_dr_example"></a>
 Example: top-variance variable selection</h2>
 <div class="fragment"><div class="line"><span class="comment">// File: models/DRVarianceStrategy.hpp</span></div>
@@ -223,7 +223,7 @@ Example: top-variance variable selection</h2>
 <div class="line">    <span class="keywordflow">return</span> std::make_unique&lt;DRVarianceStrategy&gt;(*<span class="keyword">this</span>);</div>
 <div class="line">  }</div>
 <div class="line"> </div>
-<div class="line">  DRSpec select(</div>
+<div class="line">  DRResult select(</div>
 <div class="line">    <span class="keyword">const</span> types::FeatureMatrix&amp; x,</div>
 <div class="line">    <span class="keyword">const</span> stats::GroupPartition&amp; group_spec,</div>
 <div class="line">    stats::RNG&amp; rng)<span class="keyword"> const override </span>{</div>
@@ -243,7 +243,7 @@ Example: top-variance variable selection</h2>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; n_vars &amp;&amp; i &lt; (int)var_idx.size(); ++i)</div>
 <div class="line">      selected.push_back(var_idx[i].second);</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> DRSpec(selected, x.cols());</div>
+<div class="line">    <span class="keywordflow">return</span> DRResult(selected, x.cols());</div>
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="line"> </div>

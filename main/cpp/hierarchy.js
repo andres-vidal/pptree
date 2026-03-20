@@ -9,7 +9,7 @@ var hierarchy =
     [ "ppforest2::cli::ConvergenceCriteria", "structppforest2_1_1cli_1_1ConvergenceCriteria.html", null ],
     [ "ppforest2::cli::ConvergenceParams", "structppforest2_1_1cli_1_1ConvergenceParams.html", null ],
     [ "ppforest2::stats::DataPacket", "structppforest2_1_1stats_1_1DataPacket.html", null ],
-    [ "ppforest2::dr::DRSpec", "structppforest2_1_1dr_1_1DRSpec.html", null ],
+    [ "ppforest2::dr::DRResult", "structppforest2_1_1dr_1_1DRResult.html", null ],
     [ "ppforest2::dr::DRStrategy", "structppforest2_1_1dr_1_1DRStrategy.html", [
       [ "ppforest2::dr::DRNoopStrategy", "structppforest2_1_1dr_1_1DRNoopStrategy.html", null ],
       [ "ppforest2::dr::DRUniformStrategy", "structppforest2_1_1dr_1_1DRUniformStrategy.html", null ]

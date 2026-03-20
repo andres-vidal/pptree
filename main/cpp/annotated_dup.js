@@ -18,7 +18,7 @@ var annotated_dup =
       ] ],
       [ "dr", "namespaceppforest2_1_1dr.html", [
         [ "DRNoopStrategy", "structppforest2_1_1dr_1_1DRNoopStrategy.html", "structppforest2_1_1dr_1_1DRNoopStrategy" ],
-        [ "DRSpec", "structppforest2_1_1dr_1_1DRSpec.html", "structppforest2_1_1dr_1_1DRSpec" ],
+        [ "DRResult", "structppforest2_1_1dr_1_1DRResult.html", "structppforest2_1_1dr_1_1DRResult" ],
         [ "DRStrategy", "structppforest2_1_1dr_1_1DRStrategy.html", "structppforest2_1_1dr_1_1DRStrategy" ],
         [ "DRUniformStrategy", "structppforest2_1_1dr_1_1DRUniformStrategy.html", "structppforest2_1_1dr_1_1DRUniformStrategy" ]
       ] ],
