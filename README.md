@@ -226,12 +226,12 @@ ppforest2 evaluate -d data.csv -t 50 -i 20
 
 **Convergence parameters** (active when `-i` is not set):
 
-| Flag                     | Default  | Description                                       |
-|--------------------------|----------|---------------------------------------------------|
-| `--max-iterations <N>`   | `200`    | Hard upper bound on iterations                    |
-| `--cv <X>`               | `0.05`   | CV threshold (stop when std/mean < threshold)     |
-| `--min-iterations <N>`   | `10`     | Minimum iterations before checking convergence    |
-| `--stable-window <N>`    | `3`      | Consecutive stable checks required to stop        |
+| Flag                        | Default  | Description                                       |
+|-----------------------------|----------|---------------------------------------------------|
+| `--convergence-max <N>`     | `200`    | Hard upper bound on iterations                    |
+| `--convergence-cv <X>`      | `0.05`   | CV threshold (stop when std/mean < threshold)     |
+| `--convergence-min <N>`     | `10`     | Minimum iterations before checking convergence    |
+| `--convergence-window <N>`  | `3`      | Consecutive stable checks required to stop        |
 
 All model parameters (`--trees`, `--lambda`, `--seed`, `--vars`, `--threads`) are also available.
 
@@ -418,10 +418,10 @@ coefficient of variation (CV = std/mean) of timing measurements and stops once
 results are statistically stable.
 
 The algorithm:
-1. Run at least `--min-iterations` (default: 10) before checking.
-2. After each iteration, if CV < `--cv` threshold (default: 0.05), increment a stability counter; otherwise reset it.
-3. Stop when the counter reaches `--stable-window` (default: 3) consecutive checks.
-4. Never exceed `--max-iterations` (default: 200).
+1. Run at least `--convergence-min` (default: 10) iterations before checking.
+2. After each iteration, if CV < `--convergence-cv` threshold (default: 0.05), increment a stability counter; otherwise reset it.
+3. Stop when the counter reaches `--convergence-window` (default: 3) consecutive checks.
+4. Never exceed `--convergence-max` (default: 200).
 
 Use `-i N` to disable convergence and run exactly N iterations instead.
 
@@ -430,10 +430,10 @@ Use `-i N` to disable convergence and run exactly N iterations instead.
 ppforest2 evaluate --simulate 1000x20x3 -t 50
 
 # Stricter threshold with warmup
-ppforest2 evaluate --simulate 1000x20x3 -t 50 --warmup 2 --cv 0.03
+ppforest2 evaluate --simulate 1000x20x3 -t 50 --warmup 2 --convergence-cv 0.03
 
 # Tune convergence parameters
-ppforest2 evaluate --simulate 1000x20x3 -t 50 --min-iterations 20 --stable-window 5
+ppforest2 evaluate --simulate 1000x20x3 -t 50 --convergence-min 20 --convergence-window 5
 
 # Fixed iterations (disables convergence)
 ppforest2 evaluate --simulate 1000x20x3 -t 50 -i 10
@@ -448,7 +448,7 @@ Scenarios are defined in JSON with shared defaults and per-scenario overrides:
   "defaults": {
     "trees": 100, "lambda": 0.5, "vars": 0.5,
     "seed": 42, "warmup": 2,
-    "convergence": { "cv_threshold": 0.05, "max_iterations": 200 }
+    "convergence": { "cv": 0.05, "max": 200 }
   },
   "scenarios": [
     { "name": "small-forest",  "n": 200,  "p": 5,  "g": 2, "trees": 50 },

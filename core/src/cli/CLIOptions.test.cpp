@@ -448,10 +448,10 @@ TEST(ParseArgs, EvaluateBothDataAndSimulateExits) {
 TEST(ParseArgs, EvaluateDefaultConvergence) {
   auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2" });
   EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_EQ(opts.convergence.max_iterations, 200);
-  EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.05f);
-  EXPECT_EQ(opts.convergence.min_iterations, 10);
-  EXPECT_EQ(opts.convergence.stable_window, 3);
+  EXPECT_EQ(opts.convergence.max, 200);
+  EXPECT_FLOAT_EQ(opts.convergence.cv, 0.05f);
+  EXPECT_EQ(opts.convergence.min, 10);
+  EXPECT_EQ(opts.convergence.window, 3);
 }
 
 /* -i disables convergence and sets fixed iteration count. */
@@ -461,54 +461,54 @@ TEST(ParseArgs, IterationsDisablesConvergence) {
   EXPECT_EQ(opts.evaluate.iterations, 5);
 }
 
-/* --max-iterations overrides convergence cap without disabling it. */
+/* --convergence-max overrides convergence cap without disabling it. */
 TEST(ParseArgs, MaxIterationsOverride) {
-  auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2", "--max-iterations", "500" });
+  auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2", "--convergence-max", "500" });
   EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_EQ(opts.convergence.max_iterations, 500);
+  EXPECT_EQ(opts.convergence.max, 500);
 }
 
-/* --cv overrides the convergence threshold. */
+/* --convergence-cv overrides the convergence threshold. */
 TEST(ParseArgs, CvThresholdOverride) {
-  auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2", "--cv", "0.01" });
+  auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2", "--convergence-cv", "0.01" });
   EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.01f);
+  EXPECT_FLOAT_EQ(opts.convergence.cv, 0.01f);
 }
 
-/* --min-iterations overrides the minimum before convergence checking. */
+/* --convergence-min overrides the minimum before convergence checking. */
 TEST(ParseArgs, MinIterationsOverride) {
-  auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2", "--min-iterations", "20" });
+  auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2", "--convergence-min", "20" });
   EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_EQ(opts.convergence.min_iterations, 20);
+  EXPECT_EQ(opts.convergence.min, 20);
 }
 
-/* --stable-window overrides the consecutive stable iterations required. */
+/* --convergence-window overrides the consecutive stable iterations required. */
 TEST(ParseArgs, StableWindowOverride) {
-  auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2", "--stable-window", "5" });
+  auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2", "--convergence-window", "5" });
   EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_EQ(opts.convergence.stable_window, 5);
+  EXPECT_EQ(opts.convergence.window, 5);
 }
 
 /* All convergence parameters can be set together. */
 TEST(ParseArgs, AllConvergenceParams) {
   auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2",
-                      "--cv", "0.02", "--max-iterations", "300",
-                      "--min-iterations", "15", "--stable-window", "4" });
+                      "--convergence-cv", "0.02", "--convergence-max", "300",
+                      "--convergence-min", "15", "--convergence-window", "4" });
   EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.02f);
-  EXPECT_EQ(opts.convergence.max_iterations, 300);
-  EXPECT_EQ(opts.convergence.min_iterations, 15);
-  EXPECT_EQ(opts.convergence.stable_window, 4);
+  EXPECT_FLOAT_EQ(opts.convergence.cv, 0.02f);
+  EXPECT_EQ(opts.convergence.max, 300);
+  EXPECT_EQ(opts.convergence.min, 15);
+  EXPECT_EQ(opts.convergence.window, 4);
 }
 
 /* -i takes precedence: convergence params are parsed but converge is false. */
 TEST(ParseArgs, IterationsOverridesConvergenceParams) {
   auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2",
-                      "-i", "10", "--cv", "0.01" });
+                      "-i", "10", "--convergence-cv", "0.01" });
   EXPECT_FALSE(opts.convergence.enabled);
   EXPECT_EQ(opts.evaluate.iterations, 10);
-  // --cv is still parsed but converge is disabled
-  EXPECT_FLOAT_EQ(opts.convergence.cv_threshold, 0.01f);
+  // --convergence-cv is still parsed but converge is disabled
+  EXPECT_FLOAT_EQ(opts.convergence.cv, 0.01f);
 }
 
 /* Simulation parameters without --simulate must exit. */

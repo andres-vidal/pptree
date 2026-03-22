@@ -9,10 +9,10 @@
     "threads": -1,
     "warmup": 2,
     "convergence": {
-      "cv_threshold": 0.05,
-      "stable_window": 3,
-      "min_iterations": 10,
-      "max_iterations": 200
+      "cv": 0.05,
+      "window": 3,
+      "min": 10,
+      "max": 200
     }
   },
   "scenarios": [

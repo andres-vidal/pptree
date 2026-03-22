@@ -46,7 +46,7 @@ namespace ppforest2::cli {
     ->check(CLI::Range(0.01f, 0.99f));
     sub->add_option("-i,--iterations", params.evaluate.iterations, "Fixed iteration count (disables convergence)")
     ->check(CLI::PositiveNumber);
-    sub->add_option("--max-iterations", params.convergence.max_iterations, "Max iterations for convergence (default: 200)")
+    sub->add_option("--convergence-max", params.convergence.max, "Max iterations for convergence (default: 200)")
     ->check(CLI::PositiveNumber);
     sub->add_option("--sim-mean", params.simulation.mean, "Mean for simulated data (default: 100.0)")
     ->needs(sim_opt);
@@ -60,11 +60,11 @@ namespace ppforest2::cli {
     sub->add_option("-e,--export", params.evaluate.export_path, "Export experiment bundle to directory");
     sub->add_option("--warmup", params.convergence.warmup, "Warmup iterations to discard before measuring (default: 0)")
     ->check(CLI::NonNegativeNumber);
-    sub->add_option("--cv", params.convergence.cv_threshold, "CV threshold for convergence (default: 0.05)")
+    sub->add_option("--convergence-cv", params.convergence.cv, "CV threshold for convergence (default: 0.05)")
     ->check(CLI::Range(0.001f, 1.0f));
-    sub->add_option("--min-iterations", params.convergence.min_iterations, "Min iterations before checking convergence (default: 10)")
+    sub->add_option("--convergence-min", params.convergence.min, "Min iterations before checking convergence (default: 10)")
     ->check(CLI::PositiveNumber);
-    sub->add_option("--stable-window", params.convergence.stable_window, "Consecutive stable checks to stop (default: 3)")
+    sub->add_option("--convergence-window", params.convergence.window, "Consecutive stable checks to stop (default: 3)")
     ->check(CLI::PositiveNumber);
     return sub;
   }
@@ -130,13 +130,13 @@ namespace {
     }
 
     // Determine iteration mode
-    int max_iters = params.convergence.enabled ? params.convergence.max_iterations : params.evaluate.iterations;
+    int max_iters = params.convergence.enabled ? params.convergence.max : params.evaluate.iterations;
 
     out.indent();
 
     if (params.convergence.enabled) {
       out.println("Running up to {} iterations (converge at CV < {:.0f}%):",
-      emphasis(std::to_string(max_iters)), params.convergence.cv_threshold * 100);
+      emphasis(std::to_string(max_iters)), params.convergence.cv * 100);
     } else {
       out.println("Running {} iterations:", emphasis(std::to_string(max_iters)));
     }
@@ -163,15 +163,15 @@ namespace {
 
       // Check convergence
       if (params.convergence.enabled &&
-      check_convergence(times, params.convergence.min_iterations, params.convergence.cv_threshold) &&
-      check_convergence(tr_errors, params.convergence.min_iterations, params.convergence.cv_threshold) &&
-      check_convergence(te_errors, params.convergence.min_iterations, params.convergence.cv_threshold)) {
+      check_convergence(times, params.convergence.min, params.convergence.cv) &&
+      check_convergence(tr_errors, params.convergence.min, params.convergence.cv) &&
+      check_convergence(te_errors, params.convergence.min, params.convergence.cv)) {
         stable_count++;
 
-        if (stable_count >= params.convergence.stable_window) {
+        if (stable_count >= params.convergence.window) {
           out.progress(iterations_run, iterations_run);
           out.newline();
-          out.println("Converged after {} iterations (CV < {:.0f}%)", iterations_run, params.convergence.cv_threshold * 100);
+          out.println("Converged after {} iterations (CV < {:.0f}%)", iterations_run, params.convergence.cv * 100);
 
           break;
         }
@@ -180,7 +180,7 @@ namespace {
       }
     }
 
-    if (params.convergence.enabled && stable_count < params.convergence.stable_window) {
+    if (params.convergence.enabled && stable_count < params.convergence.window) {
       out.newline();
       out.println("{} Did not converge after {} iterations", warning("Warning:"), iterations_run);
       out.newline();
@@ -214,8 +214,8 @@ namespace {
     config["train-ratio"] = params.evaluate.train_ratio;
 
     if (params.convergence.enabled) {
-      config["max-iterations"] = params.convergence.max_iterations;
-      config["cv-threshold"]   = params.convergence.cv_threshold;
+      config["convergence-max"] = params.convergence.max;
+      config["convergence-cv"]  = params.convergence.cv;
     } else {
       config["iterations"] = params.evaluate.iterations;
     }

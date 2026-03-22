@@ -77,8 +77,8 @@ TEST_F(BenchmarkParsingTest, ParseWithConvergence) {
       "defaults", {
         {
           "convergence", {
-            { "cv_threshold", 0.03 },
-            { "max_iterations", 100 }
+            { "cv", 0.03 },
+            { "max", 100 }
           }
         }
       }
@@ -92,17 +92,17 @@ TEST_F(BenchmarkParsingTest, ParseWithConvergence) {
 
   auto suite = parse_suite(j);
 
-  EXPECT_FLOAT_EQ(suite.scenarios[0].convergence.cv_threshold, 0.03f);
-  EXPECT_EQ(suite.scenarios[0].convergence.max_iterations, 100);
-  // Default stable_window
-  EXPECT_EQ(suite.scenarios[0].convergence.stable_window, 3);
+  EXPECT_FLOAT_EQ(suite.scenarios[0].convergence.cv, 0.03f);
+  EXPECT_EQ(suite.scenarios[0].convergence.max, 100);
+  // Default window
+  EXPECT_EQ(suite.scenarios[0].convergence.window, 3);
 }
 
 TEST_F(BenchmarkParsingTest, FixedIterationsOverrideConvergence) {
   json j = {
     {
       "defaults", {
-        { "convergence", { { "max_iterations", 100 } } }
+        { "convergence", { { "max", 100 } } }
       }
     },
     {

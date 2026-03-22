@@ -39,13 +39,13 @@ namespace ppforest2::cli {
    */
   struct ConvergenceCriteria {
     /** Target CV threshold (e.g., 0.05 = stop when std < 5% of mean). */
-    float cv_threshold = 0.05f;
-    /** Number of consecutive iterations that must stay below cv_threshold. */
-    int stable_window = 3;
+    float cv = 0.05f;
+    /** Number of consecutive iterations that must stay below the CV threshold. */
+    int window = 3;
     /** Minimum iterations before convergence checks begin. */
-    int min_iterations = 10;
+    int min = 10;
     /** Hard upper bound on iterations (stops even if not converged). */
-    int max_iterations = 200;
+    int max = 200;
   };
 
   /**

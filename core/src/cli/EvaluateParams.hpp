@@ -25,12 +25,12 @@ namespace ppforest2::cli {
    * equivalent used when parsing benchmark JSON files.
    */
   struct ConvergenceParams {
-    bool enabled       = true;    ///< Adaptive stopping (default on; -i disables).
-    int warmup         = 0;       ///< Warmup iterations discarded before measuring.
-    float cv_threshold = 0.05f;   ///< CV target (e.g. 0.05 = stop when std < 5% of mean).
-    int min_iterations = 10;      ///< Minimum iterations before checking convergence.
-    int stable_window  = 3;       ///< Consecutive checks below threshold before stopping.
-    int max_iterations = 200;     ///< Hard upper bound on iterations.
+    bool enabled = true;    ///< Adaptive stopping (default on; -i disables).
+    int warmup   = 0;       ///< Warmup iterations discarded before measuring.
+    float cv     = 0.05f;   ///< CV target (e.g. 0.05 = stop when std < 5% of mean).
+    int min      = 10;      ///< Minimum iterations before checking convergence.
+    int window   = 3;       ///< Consecutive checks below threshold before stopping.
+    int max      = 200;     ///< Hard upper bound on iterations.
   };
 
   /** @brief Evaluate-specific options. */

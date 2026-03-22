@@ -102,13 +102,13 @@ namespace {
   ConvergenceCriteria parse_convergence(const nlohmann::json& j) {
     ConvergenceCriteria c;
 
-    if (j.contains("cv_threshold")) c.cv_threshold = j["cv_threshold"].get<float>();
+    if (j.contains("cv")) c.cv = j["cv"].get<float>();
 
-    if (j.contains("stable_window")) c.stable_window = j["stable_window"].get<int>();
+    if (j.contains("window")) c.window = j["window"].get<int>();
 
-    if (j.contains("min_iterations")) c.min_iterations = j["min_iterations"].get<int>();
+    if (j.contains("min")) c.min = j["min"].get<int>();
 
-    if (j.contains("max_iterations")) c.max_iterations = j["max_iterations"].get<int>();
+    if (j.contains("max")) c.max = j["max"].get<int>();
 
     return c;
   }
@@ -235,7 +235,7 @@ namespace {
       cmd += fmt::format(" -i {}", s.iterations);
     } else {
       // Convergence mode (default)
-      cmd += fmt::format(" --cv {} --max-iterations {}", s.convergence.cv_threshold, s.convergence.max_iterations);
+      cmd += fmt::format(" --convergence-cv {} --convergence-max {}", s.convergence.cv, s.convergence.max);
     }
 
     // On Windows, std::system() invokes cmd.exe /c which requires an
