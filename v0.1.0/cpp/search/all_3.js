@@ -36,5 +36,5 @@ var searchData=
   ['csv_33',['csv',['../structppforest2_1_1cli_1_1BenchmarkParams.html#acd141caae9602b9c97f4b3f96ce3e66c',1,'ppforest2::cli::BenchmarkParams']]],
   ['custom_20strategies_34',['Extending: Custom Strategies',['../extending_strategies.html',1,'']]],
   ['custom_20visitors_35',['Extending: Custom Visitors',['../extending_visitors.html',1,'']]],
-  ['cv_5fthreshold_36',['cv_threshold',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html#a146603cfe7d80329b937e4e402f9ab6c',1,'ppforest2::cli::ConvergenceCriteria::cv_threshold'],['../structppforest2_1_1cli_1_1ConvergenceParams.html#adb1f7b8fc3a2312eed82aee15ce63ac9',1,'ppforest2::cli::ConvergenceParams::cv_threshold']]]
+  ['cv_36',['cv',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html#ad038abbfdf0426e5fa16dcfba7dc0546',1,'ppforest2::cli::ConvergenceCriteria::cv'],['../structppforest2_1_1cli_1_1ConvergenceParams.html#afab42ac10dc764879ea78f5dcc0fc522',1,'ppforest2::cli::ConvergenceParams::cv']]]
 ];
