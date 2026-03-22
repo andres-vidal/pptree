@@ -208,11 +208,11 @@ ppforest2 evaluate -d data.csv -t 50 -i 20
 
 **Simulation parameters** (only with `--simulate`):
 
-| Flag                       | Default  | Description                           |
-|----------------------------|----------|---------------------------------------|
-| `--sim-mean <X>`           | `100.0`  | Feature mean                          |
-| `--sim-mean-separation <X>`| `50.0`   | Mean separation between classes       |
-| `--sim-sd <X>`             | `10.0`   | Standard deviation                    |
+| Flag                            | Default  | Description                           |
+|---------------------------------|----------|---------------------------------------|
+| `--simulate-mean <X>`           | `100.0`  | Feature mean                          |
+| `--simulate-mean-separation <X>`| `50.0`   | Mean separation between classes       |
+| `--simulate-sd <X>`             | `10.0`   | Standard deviation                    |
 
 **Iteration control:**
 

@@ -48,12 +48,12 @@ namespace ppforest2::cli {
     ->check(CLI::PositiveNumber);
     sub->add_option("--convergence-max", params.convergence.max, "Max iterations for convergence (default: 200)")
     ->check(CLI::PositiveNumber);
-    sub->add_option("--sim-mean", params.simulation.mean, "Mean for simulated data (default: 100.0)")
+    sub->add_option("--simulate-mean", params.simulation.mean, "Mean for simulated data (default: 100.0)")
     ->needs(sim_opt);
-    sub->add_option("--sim-mean-separation", params.simulation.mean_separation, "Mean separation between classes (default: 50.0)")
+    sub->add_option("--simulate-mean-separation", params.simulation.mean_separation, "Mean separation between classes (default: 50.0)")
     ->needs(sim_opt)
     ->check(CLI::PositiveNumber);
-    sub->add_option("--sim-sd", params.simulation.sd, "Standard deviation for simulated data (default: 10.0)")
+    sub->add_option("--simulate-sd", params.simulation.sd, "Standard deviation for simulated data (default: 10.0)")
     ->needs(sim_opt)
     ->check(CLI::PositiveNumber);
     sub->add_option("-o,--output", params.output_path, "Save evaluation results to JSON file");

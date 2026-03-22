@@ -385,7 +385,7 @@ TEST(ParseArgs, EvaluateSimulateFormat) {
 /* Simulation generation parameters (mean, separation, sd) are captured. */
 TEST(ParseArgs, EvaluateSimulateCustomParams) {
   auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x3",
-                      "--sim-mean", "200", "--sim-mean-separation", "25", "--sim-sd", "5" });
+                      "--simulate-mean", "200", "--simulate-mean-separation", "25", "--simulate-sd", "5" });
   EXPECT_FLOAT_EQ(opts.simulation.mean, 200.0f);
   EXPECT_FLOAT_EQ(opts.simulation.mean_separation, 25.0f);
   EXPECT_FLOAT_EQ(opts.simulation.sd, 5.0f);
@@ -514,7 +514,7 @@ TEST(ParseArgs, IterationsOverridesConvergenceParams) {
 /* Simulation parameters without --simulate must exit. */
 TEST(ParseArgs, EvaluateSimParamsNeedSimulate) {
   EXPECT_EXIT(
-    parse({ "ppforest2", "evaluate", "-d", IRIS_PATH.c_str(), "--sim-mean", "200" }),
+    parse({ "ppforest2", "evaluate", "-d", IRIS_PATH.c_str(), "--simulate-mean", "200" }),
     ExitedWithNonZero(),
     ""
     );
