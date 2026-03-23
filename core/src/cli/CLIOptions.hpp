@@ -42,10 +42,11 @@ namespace ppforest2::cli {
     std::string model_path;
     std::string output_path;
 
-    bool quiet      = false;
-    bool no_save    = false;
-    bool no_metrics = false;
-    bool no_color   = false;
+    bool quiet          = false;
+    bool no_save        = false;
+    bool no_metrics     = false;
+    bool no_color       = false;
+    bool no_proportions = false;
   };
 
   /**

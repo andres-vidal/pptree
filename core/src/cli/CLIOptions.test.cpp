@@ -324,6 +324,18 @@ TEST(ParseArgs, PredictNoMetricsFlag) {
   EXPECT_TRUE(opts.no_metrics);
 }
 
+/* --no-proportions flag is captured. */
+TEST(ParseArgs, PredictNoProportionsFlag) {
+  auto opts = parse({ "ppforest2", "predict", "-M", IRIS_PATH.c_str(), "-d", IRIS_PATH.c_str(), "--no-proportions" });
+  EXPECT_TRUE(opts.no_proportions);
+}
+
+/* --no-proportions defaults to false (proportions included by default). */
+TEST(ParseArgs, PredictNoProportionsDefault) {
+  auto opts = parse({ "ppforest2", "predict", "-M", IRIS_PATH.c_str(), "-d", IRIS_PATH.c_str() });
+  EXPECT_FALSE(opts.no_proportions);
+}
+
 /* Predict without -M (model path) must exit. */
 TEST(ParseArgs, PredictMissingModelExits) {
   EXPECT_EXIT(

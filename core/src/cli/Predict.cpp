@@ -38,16 +38,53 @@ namespace ppforest2::cli {
     ->check(CLI::ExistingFile);
     sub->add_option("-o,--output", params.output_path, "Save prediction results to JSON file");
     sub->add_flag("--no-metrics", params.no_metrics, "Omit error rate and confusion matrix from output");
+    sub->add_flag("--no-proportions", params.no_proportions, "Omit vote proportions from output (forest only)");
     return sub;
   }
 }
 
 namespace ppforest2::cli {
 namespace {
+  json proportions_to_json(const FeatureMatrix& proportions) {
+    std::vector<std::vector<float>> rows;
+    rows.reserve(proportions.rows());
+
+    for (Eigen::Index i = 0; i < proportions.rows(); ++i) {
+      std::vector<float> row(proportions.cols());
+
+      for (Eigen::Index j = 0; j < proportions.cols(); ++j) {
+        row[j] = proportions(i, j);
+      }
+
+      rows.push_back(std::move(row));
+    }
+
+    return rows;
+  }
+
+  struct ProportionsVisitor : Model::Visitor {
+    const FeatureMatrix& data;
+    FeatureMatrix proportions;
+    bool is_forest = false;
+
+    explicit ProportionsVisitor(const FeatureMatrix& data) : data(data) {
+    }
+
+    void visit(const Tree&) override {
+    }
+
+    void visit(const Forest& forest) override {
+      is_forest   = true;
+      proportions = forest.predict(data, Proportions{});
+    }
+  };
+
   json build_predict_result(
     const ResponseVector& predictions,
     const DataPacket&     data,
-    bool no_metrics) {
+    const Model&          model,
+    bool no_metrics,
+    bool no_proportions) {
     json result;
     std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
     result["predictions"] = pred_vec;
@@ -59,6 +96,15 @@ namespace {
       ConfusionMatrix cm(predictions, data.y);
       result["error_rate"]       = cm.error();
       result["confusion_matrix"] = serialization::to_json(cm);
+    }
+
+    if (!no_proportions) {
+      ProportionsVisitor visitor(data.x);
+      model.accept(visitor);
+
+      if (visitor.is_forest) {
+        result["proportions"] = proportions_to_json(visitor.proportions);
+      }
     }
 
     return result;
@@ -109,7 +155,7 @@ namespace {
 
     // Save results to file if requested
     if (!params.output_path.empty()) {
-      json file_result = build_predict_result(predictions, data, params.no_metrics);
+      json file_result = build_predict_result(predictions, data, *model, params.no_metrics, params.no_proportions);
       io::json::write_file(file_result, params.output_path);
       out.saved("Results", params.output_path);
     }

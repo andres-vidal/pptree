@@ -475,7 +475,7 @@ TEST_F(PredictTest, PredictQuietSuppressesAll) {
   EXPECT_TRUE(result.stdout_output.empty());
 }
 
-/* -o writes predictions, error_rate, and confusion_matrix to JSON. */
+/* -o writes predictions, error_rate, confusion_matrix, and proportions to JSON. */
 TEST_F(PredictTest, PredictOutputFile) {
   TempFile output;
   output.clear();
@@ -486,6 +486,7 @@ TEST_F(PredictTest, PredictOutputFile) {
   EXPECT_TRUE(j.contains("predictions"));
   EXPECT_TRUE(j.contains("error_rate"));
   EXPECT_TRUE(j.contains("confusion_matrix"));
+  EXPECT_TRUE(j.contains("proportions"));
 }
 
 /* Writing to an existing output file must fail. */
@@ -494,6 +495,64 @@ TEST_F(PredictTest, PredictOutputCollisionFails) {
   // Don't clear - file exists, should fail
   auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " -o " + output.path());
   EXPECT_NE(result.exit_code, 0);
+}
+
+/* Forest output includes proportions by default. */
+TEST_F(PredictTest, PredictForestIncludesProportions) {
+  TempFile output;
+  output.clear();
+  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " -o " + output.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(output.read());
+  EXPECT_TRUE(j.contains("predictions"));
+  EXPECT_TRUE(j.contains("proportions"));
+
+  // 150 observations, each row is a vector of proportions
+  auto& props = j["proportions"];
+  EXPECT_EQ(props.size(), 150u);
+
+  // Each row has one entry per class (iris has 3 classes)
+  EXPECT_EQ(props[0].size(), 3u);
+
+  // Each row sums to 1.0
+  for (const auto& row : props) {
+    double sum = 0;
+    for (const auto& val : row) {
+      sum += val.get<double>();
+    }
+
+    EXPECT_NEAR(sum, 1.0, 1e-6);
+  }
+}
+
+/* --no-proportions omits proportions from forest output. */
+TEST_F(PredictTest, PredictNoProportionsFlag) {
+  TempFile output;
+  output.clear();
+  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-proportions -o " + output.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(output.read());
+  EXPECT_TRUE(j.contains("predictions"));
+  EXPECT_FALSE(j.contains("proportions"));
+}
+
+/* Single-tree output never includes proportions. */
+TEST(CLIIntegration, PredictTreeModelNoProportions) {
+  TempFile model;
+  model.clear();
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 0 -r 42 -s " + model.path());
+  ASSERT_EQ(train.exit_code, 0);
+
+  TempFile output;
+  output.clear();
+  auto result = run_ppforest2("-q predict -M " + model.path() + " -d " + IRIS_CSV + " -o " + output.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(output.read());
+  EXPECT_TRUE(j.contains("predictions"));
+  EXPECT_FALSE(j.contains("proportions"));
 }
 
 // ---------------------------------------------------------------------------

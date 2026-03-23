@@ -173,6 +173,7 @@ Load a trained model and classify new observations.
 ```bash
 ppforest2 predict -M model.json -d test.csv
 ppforest2 predict -M model.json -d test.csv -o predictions.json
+ppforest2 predict -M model.json -d test.csv --no-proportions -o predictions.json
 ```
 
 | Flag                     | Default       | Description                                       |
@@ -181,8 +182,9 @@ ppforest2 predict -M model.json -d test.csv -o predictions.json
 | `-d, --data <file>`      | *(required)*  | CSV data to classify                              |
 | `-o, --output <file>`    | —             | Save predictions, error rate, and confusion matrix to JSON |
 | `--no-metrics`           | —             | Omit error rate and confusion matrix from output  |
+| `--no-proportions`       | —             | Omit vote proportions from output (forest only)   |
 
-If the CSV includes response labels, the tool reports the error rate and confusion matrix.
+If the CSV includes response labels, the tool reports the error rate and confusion matrix. For forest models, the JSON output includes per-class vote proportions by default; use `--no-proportions` to omit them.
 
 ### `evaluate` — Train-Test Evaluation
 
