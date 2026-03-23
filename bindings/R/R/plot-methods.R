@@ -22,7 +22,8 @@
 #' @param node Integer index of the node for projection plots (1-based, breadth-first
 #'   order). Defaults to 1 (root node). Only used when \code{type = "projection"}.
 #' @param ... Additional arguments passed to the internal plotting function.
-#' @return A ggplot2 object (invisibly), or \code{NULL} for the mosaic layout.
+#' @return A ggplot2-compatible object (invisibly). The mosaic layout returns
+#'   a patchwork object that works with \code{ggplot2::ggsave()}.
 #' @examples
 #' \dontrun{
 #' model <- pptr(Type ~ ., data = iris)
@@ -37,7 +38,9 @@ plot.pptr <- function(x, type = NULL, metric = NULL, node = 1L, ...) {
   check_ggplot2()
 
   if (is.null(type)) {
-    return(plot_mosaic(x, ...))
+    p <- plot_mosaic(x, ...)
+    print(p)
+    return(invisible(p))
   }
 
   type <- match.arg(type, c("structure", "importance", "projection", "boundaries"))
@@ -81,7 +84,8 @@ plot.pptr <- function(x, type = NULL, metric = NULL, node = 1L, ...) {
 #' @param node Integer index of the node for projection plots. Defaults to 1 (root).
 #'   Only used when \code{type = "projection"}.
 #' @param ... Additional arguments passed to the internal plotting function.
-#' @return A ggplot2 object (invisibly), or \code{NULL} for the grid layout.
+#' @return A ggplot2-compatible object (invisibly). The importance grid returns
+#'   a patchwork object that works with \code{ggplot2::ggsave()}.
 #' @examples
 #' \dontrun{
 #' forest <- pprf(Type ~ ., data = iris, size = 10)
@@ -104,7 +108,9 @@ plot.pprf <- function(x, type = "importance", metric = NULL,
   }
 
   if (type == "importance" && is.null(metric)) {
-    return(plot_importance_grid(x, ...))
+    p <- plot_importance_grid(x, ...)
+    print(p)
+    return(invisible(p))
   }
 
   p <- switch(type,

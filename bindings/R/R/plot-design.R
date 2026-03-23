@@ -21,7 +21,7 @@
 #     boundary line clipping, region polygon clipping (Sutherland-Hodgman),
 #     and tree layout positioning.
 #   - R (plot-*.R files) handles rendering: translates C++ output into
-#     ggplot2 layers and assembles composite layouts via the grid package.
+#     ggplot2 layers and assembles composite layouts via patchwork.
 # ======================================================================
 
 # Suppress R CMD check NOTEs for ggplot2 aes() column references
@@ -46,6 +46,21 @@ check_ggplot2 <- function() {
     stop(
       "Package 'ggplot2' is required for plot methods. ",
       "Install it with install.packages('ggplot2').",
+      call. = FALSE
+    )
+  }
+}
+
+#' Guard: abort with a helpful message if patchwork is not installed.
+#'
+#' Called by composite layouts (mosaic, importance grid) that use
+#' patchwork to compose multiple ggplot objects into a single plot.
+#' @noRd
+check_patchwork <- function() {
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    stop(
+      "Package 'patchwork' is required for composite plot layouts. ",
+      "Install it with install.packages('patchwork').",
       call. = FALSE
     )
   }

@@ -99,9 +99,10 @@ plot_importance <- function(model, metric = NULL, ...) {
 #'
 #' @param model A pprf model.
 #' @param ... Currently unused.
-#' @return NULL (invisibly). The plot is drawn as a side effect via grid.
+#' @return A patchwork object (ggplot-compatible, works with ggsave).
 #' @noRd
 plot_importance_grid <- function(model, ...) {
+  check_patchwork()
   available <- intersect(names(metric_labels), names(model$vi))
 
   plots <- lapply(available, function(m) {
@@ -109,19 +110,5 @@ plot_importance_grid <- function(model, ...) {
       ggplot2::theme(plot.margin = ggplot2::margin(5, 10, 5, 10))
   })
 
-  n <- length(plots)
-  grid::grid.newpage()
-  grid::pushViewport(grid::viewport(
-    layout = grid::grid.layout(1, n,
-      widths = grid::unit(rep(1, n), "null"))
-  ))
-
-  for (i in seq_along(plots)) {
-    grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = i))
-    print(plots[[i]], newpage = FALSE)
-    grid::popViewport()
-  }
-
-  grid::popViewport()
-  invisible(NULL)
+  Reduce(`+`, plots) + patchwork::plot_layout(nrow = 1)
 }

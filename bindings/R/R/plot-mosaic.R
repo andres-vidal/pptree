@@ -4,7 +4,7 @@
 
 #' Render a composite mosaic of tree structure, importance, and boundaries.
 #'
-#' Arranges three plots in a 2-column grid layout using the grid package:
+#' Arranges three plots in a 2-column grid layout using patchwork:
 #' \itemize{
 #'   \item Left column (full height): tree structure diagram
 #'   \item Top-right: variable importance bar chart
@@ -22,9 +22,11 @@
 #'
 #' @param model A pptr model.
 #' @param ... Passed through to \code{plot_boundaries()}.
-#' @return NULL (invisibly). The plot is drawn as a side effect via grid.
+#' @return A patchwork object (ggplot-compatible, works with ggsave).
 #' @noRd
 plot_mosaic <- function(model, ...) {
+  check_patchwork()
+
   p_structure <- plot_tree_structure(model) +
     ggplot2::theme(plot.margin = ggplot2::margin(5, 10, 5, 5))
   p_importance <- plot_importance(model) +
@@ -33,6 +35,8 @@ plot_mosaic <- function(model, ...) {
   if (inherits(p_boundaries, "ggplot")) {
     p_boundaries <- p_boundaries +
       ggplot2::theme(plot.margin = ggplot2::margin(5, 5, 5, 10))
+  } else if (inherits(p_boundaries, "gtable")) {
+    p_boundaries <- patchwork::wrap_elements(p_boundaries)
   }
 
   # Compute adaptive layout proportions from the data
@@ -45,32 +49,12 @@ plot_mosaic <- function(model, ...) {
   imp_ratio <- if (n_features <= 2) 2 else if (n_features <= 4) 1 else 1
   bnd_ratio <- if (n_features <= 2) 1.5 else if (n_features <= 4) 2 else 3
 
-  grid::grid.newpage()
-
-  # Left column: structure (full height)
-  # Right column: importance (top) + boundaries (bottom)
-  grid::pushViewport(grid::viewport(
-    layout = grid::grid.layout(2, 2,
-      widths  = grid::unit(c(tree_frac, 1 - tree_frac), "null"),
-      heights = grid::unit(c(imp_ratio, bnd_ratio), "null"))
-  ))
-
-  grid::pushViewport(grid::viewport(layout.pos.row = 1:2, layout.pos.col = 1))
-  print(p_structure, newpage = FALSE)
-  grid::popViewport()
-
-  grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 2))
-  print(p_importance, newpage = FALSE)
-  grid::popViewport()
-
-  grid::pushViewport(grid::viewport(layout.pos.row = 2, layout.pos.col = 2))
-  if (inherits(p_boundaries, "gtable")) {
-    grid::grid.draw(p_boundaries)
-  } else {
-    print(p_boundaries, newpage = FALSE)
-  }
-  grid::popViewport()
-
-  grid::popViewport()
-  invisible(NULL)
+  # Design: A spans both rows in col 1 (structure),
+  #         B is row 1 col 2 (importance), C is row 2 col 2 (boundaries)
+  p_structure + p_importance + p_boundaries +
+    patchwork::plot_layout(
+      design = "AB\nAC",
+      widths  = c(tree_frac, 1 - tree_frac),
+      heights = c(imp_ratio, bnd_ratio)
+    )
 }
