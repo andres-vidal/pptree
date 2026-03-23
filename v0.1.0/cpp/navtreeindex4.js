@@ -1,5 +1,7 @@
 var NAVTREEINDEX4 =
 {
+"structppforest2_1_1io_1_1ModelStats.html#aa2a7bcfb4ba470aba4e3e95ee0afd1e4":[4,0,0,2,1,10],
+"structppforest2_1_1io_1_1ModelStats.html#abe5139d459e9d907ed068cad5cce849f":[3,0,1,2,4,1],
 "structppforest2_1_1io_1_1ModelStats.html#abe5139d459e9d907ed068cad5cce849f":[4,0,0,2,1,1],
 "structppforest2_1_1io_1_1ModelStats.html#ad0e7bd2f965369b0f21a3e7c9493f9ce":[3,0,1,2,4,2],
 "structppforest2_1_1io_1_1ModelStats.html#ad0e7bd2f965369b0f21a3e7c9493f9ce":[4,0,0,2,1,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX4 =
 "structppforest2_1_1viz_1_1NodeData.html#aab1f8921c5f52c1db30860b7f14acfab":[4,0,0,7,6,2],
 "structppforest2_1_1viz_1_1NodeData.html#abb2b3fbc6b5a6b7307f3df747fcf9608":[3,0,1,11,6,1],
 "structppforest2_1_1viz_1_1NodeData.html#abb2b3fbc6b5a6b7307f3df747fcf9608":[4,0,0,7,6,1],
-"structppforest2_1_1viz_1_1NodeData.html#abefd12391d8f7be6525933d855f07f31":[3,0,1,11,6,0],
-"structppforest2_1_1viz_1_1NodeData.html#abefd12391d8f7be6525933d855f07f31":[4,0,0,7,6,0],
-"structppforest2_1_1viz_1_1NodeData.html#ace58e17809ab9eaddad15054fda49529":[3,0,1,11,6,3]
+"structppforest2_1_1viz_1_1NodeData.html#abefd12391d8f7be6525933d855f07f31":[3,0,1,11,6,0]
 };

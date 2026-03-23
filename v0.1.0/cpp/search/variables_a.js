@@ -5,9 +5,10 @@ var searchData=
   ['name_2',['name',['../structppforest2_1_1cli_1_1Scenario.html#a9ec76089f3e792f7c28013e34e9471fa',1,'ppforest2::cli::Scenario::name'],['../structppforest2_1_1cli_1_1ScenarioResult.html#a4aba54b9a903d47386853443c7654f89',1,'ppforest2::cli::ScenarioResult::name'],['../structppforest2_1_1cli_1_1BenchmarkSuite.html#aa367a2eb64ea37b3eb23ec313c3bd19c',1,'ppforest2::cli::BenchmarkSuite::name']]],
   ['no_5fcolor_3',['no_color',['../structppforest2_1_1cli_1_1CLIOptions.html#a39d2689c3c11394e16285c2f83bb2b62',1,'ppforest2::cli::CLIOptions']]],
   ['no_5fmetrics_4',['no_metrics',['../structppforest2_1_1cli_1_1CLIOptions.html#abdb59f087d410f853a9f1784ea5899cf',1,'ppforest2::cli::CLIOptions']]],
-  ['no_5fsave_5',['no_save',['../structppforest2_1_1cli_1_1CLIOptions.html#a0aeee85bb5721990977d4289ec41c763',1,'ppforest2::cli::CLIOptions']]],
-  ['node_5fh_6',['node_h',['../structppforest2_1_1viz_1_1LayoutParams.html#a0be71b6b84d1206d0803812eb281c3a8',1,'ppforest2::viz::LayoutParams']]],
-  ['node_5fidx_7',['node_idx',['../structppforest2_1_1viz_1_1LayoutNode.html#a81004889e210e33b89301d19248bb044',1,'ppforest2::viz::LayoutNode']]],
-  ['node_5fw_8',['node_w',['../structppforest2_1_1viz_1_1LayoutParams.html#adb0cfabc0860200a836f984c7fa7bf7e',1,'ppforest2::viz::LayoutParams']]],
-  ['nodes_9',['nodes',['../structppforest2_1_1viz_1_1NodeDataVisitor.html#a0203d79417bd4deac383069ff7b838df',1,'ppforest2::viz::NodeDataVisitor::nodes'],['../structppforest2_1_1viz_1_1TreeLayout.html#a38ef965745dd6abb92377e1b79d8c2d7',1,'ppforest2::viz::TreeLayout::nodes']]]
+  ['no_5fproportions_5',['no_proportions',['../structppforest2_1_1cli_1_1CLIOptions.html#a31c0ab6fe1db8b8e3533e0a5f8b83c49',1,'ppforest2::cli::CLIOptions']]],
+  ['no_5fsave_6',['no_save',['../structppforest2_1_1cli_1_1CLIOptions.html#a0aeee85bb5721990977d4289ec41c763',1,'ppforest2::cli::CLIOptions']]],
+  ['node_5fh_7',['node_h',['../structppforest2_1_1viz_1_1LayoutParams.html#a0be71b6b84d1206d0803812eb281c3a8',1,'ppforest2::viz::LayoutParams']]],
+  ['node_5fidx_8',['node_idx',['../structppforest2_1_1viz_1_1LayoutNode.html#a81004889e210e33b89301d19248bb044',1,'ppforest2::viz::LayoutNode']]],
+  ['node_5fw_9',['node_w',['../structppforest2_1_1viz_1_1LayoutParams.html#adb0cfabc0860200a836f984c7fa7bf7e',1,'ppforest2::viz::LayoutParams']]],
+  ['nodes_10',['nodes',['../structppforest2_1_1viz_1_1NodeDataVisitor.html#a0203d79417bd4deac383069ff7b838df',1,'ppforest2::viz::NodeDataVisitor::nodes'],['../structppforest2_1_1viz_1_1TreeLayout.html#a38ef965745dd6abb92377e1b79d8c2d7',1,'ppforest2::viz::TreeLayout::nodes']]]
 ];
