@@ -156,8 +156,8 @@ pprf <- function(
   model$vi <- list(
     scale       = scale,
     projections = ppforest2_vi_projections_forest(model, ncol(x), scale),
-    weighted    = ppforest2_vi_weighted(model, x, y, scale),
-    permuted    = ppforest2_vi_permuted(model, x, y, seed)
+    weighted    = ppforest2_vi_weighted_forest(model, x, y, scale),
+    permuted    = ppforest2_vi_permuted_forest(model, x, y, seed)
   )
   model$oob_error <- ppforest2_oob_error(model, x, y)
 
@@ -196,7 +196,7 @@ predict.pprf <- function(object, new_data = NULL, type = "class", ...) {
     return(df)
   }
 
-  y <- ppforest2_predict_forest(object, x)
+  y <- ppforest2_predict_tree_forest(object, x)
   as.factor(object$classes[y])
 }
 
@@ -284,7 +284,7 @@ summary.pprf <- function(object, ...) {
     }
     cat("-------------------------------------\n")
     cat("Confusion Matrix:\n\n")
-    print_confusion_matrix(ppforest2_predict_forest(model, model$x), model)
+    print_confusion_matrix(ppforest2_predict_tree_forest(model, model$x), model)
     if (model$oob_error >= 0) {
       cat("OOB error:", round(model$oob_error * 100, 2), "%\n")
     }

@@ -54,27 +54,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// ppforest2_predict
-ResponseVector ppforest2_predict(const Tree& tree, const FeatureMatrix& data);
-RcppExport SEXP _ppforest2_ppforest2_predict(SEXP treeSEXP, SEXP dataSEXP) {
+// ppforest2_predict_tree
+ResponseVector ppforest2_predict_tree(const Tree& tree, const FeatureMatrix& data);
+RcppExport SEXP _ppforest2_ppforest2_predict_tree(SEXP treeSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
     Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
-    rcpp_result_gen = Rcpp::wrap(ppforest2_predict(tree, data));
+    rcpp_result_gen = Rcpp::wrap(ppforest2_predict_tree(tree, data));
     return rcpp_result_gen;
 END_RCPP
 }
-// ppforest2_predict_forest
-ResponseVector ppforest2_predict_forest(const Forest& forest, const FeatureMatrix& data);
-RcppExport SEXP _ppforest2_ppforest2_predict_forest(SEXP forestSEXP, SEXP dataSEXP) {
+// ppforest2_predict_tree_forest
+ResponseVector ppforest2_predict_tree_forest(const Forest& forest, const FeatureMatrix& data);
+RcppExport SEXP _ppforest2_ppforest2_predict_tree_forest(SEXP forestSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
     Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
-    rcpp_result_gen = Rcpp::wrap(ppforest2_predict_forest(forest, data));
+    rcpp_result_gen = Rcpp::wrap(ppforest2_predict_tree_forest(forest, data));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -116,9 +116,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// ppforest2_vi_weighted
-FeatureVector ppforest2_vi_weighted(const Forest& forest, const FeatureMatrix& x, ResponseVector y, const FeatureVector& scale);
-RcppExport SEXP _ppforest2_ppforest2_vi_weighted(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP, SEXP scaleSEXP) {
+// ppforest2_vi_weighted_forest
+FeatureVector ppforest2_vi_weighted_forest(const Forest& forest, const FeatureMatrix& x, ResponseVector y, const FeatureVector& scale);
+RcppExport SEXP _ppforest2_ppforest2_vi_weighted_forest(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP, SEXP scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -126,13 +126,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
     Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< const FeatureVector& >::type scale(scaleSEXP);
-    rcpp_result_gen = Rcpp::wrap(ppforest2_vi_weighted(forest, x, y, scale));
+    rcpp_result_gen = Rcpp::wrap(ppforest2_vi_weighted_forest(forest, x, y, scale));
     return rcpp_result_gen;
 END_RCPP
 }
-// ppforest2_vi_permuted
-FeatureVector ppforest2_vi_permuted(const Forest& forest, const FeatureMatrix& x, ResponseVector y, int seed);
-RcppExport SEXP _ppforest2_ppforest2_vi_permuted(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP, SEXP seedSEXP) {
+// ppforest2_vi_permuted_forest
+FeatureVector ppforest2_vi_permuted_forest(const Forest& forest, const FeatureMatrix& x, ResponseVector y, int seed);
+RcppExport SEXP _ppforest2_ppforest2_vi_permuted_forest(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -140,7 +140,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
     Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(ppforest2_vi_permuted(forest, x, y, seed));
+    rcpp_result_gen = Rcpp::wrap(ppforest2_vi_permuted_forest(forest, x, y, seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -286,13 +286,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ppforest2_ppforest2_has_openmp", (DL_FUNC) &_ppforest2_ppforest2_has_openmp, 0},
     {"_ppforest2_ppforest2_train_tree_pda", (DL_FUNC) &_ppforest2_ppforest2_train_tree_pda, 4},
     {"_ppforest2_ppforest2_train_forest_pda", (DL_FUNC) &_ppforest2_ppforest2_train_forest_pda, 8},
-    {"_ppforest2_ppforest2_predict", (DL_FUNC) &_ppforest2_ppforest2_predict, 2},
-    {"_ppforest2_ppforest2_predict_forest", (DL_FUNC) &_ppforest2_ppforest2_predict_forest, 2},
+    {"_ppforest2_ppforest2_predict_tree", (DL_FUNC) &_ppforest2_ppforest2_predict_tree, 2},
+    {"_ppforest2_ppforest2_predict_tree_forest", (DL_FUNC) &_ppforest2_ppforest2_predict_tree_forest, 2},
     {"_ppforest2_ppforest2_predict_forest_prob", (DL_FUNC) &_ppforest2_ppforest2_predict_forest_prob, 2},
     {"_ppforest2_ppforest2_vi_projections_tree", (DL_FUNC) &_ppforest2_ppforest2_vi_projections_tree, 3},
     {"_ppforest2_ppforest2_vi_projections_forest", (DL_FUNC) &_ppforest2_ppforest2_vi_projections_forest, 3},
-    {"_ppforest2_ppforest2_vi_weighted", (DL_FUNC) &_ppforest2_ppforest2_vi_weighted, 4},
-    {"_ppforest2_ppforest2_vi_permuted", (DL_FUNC) &_ppforest2_ppforest2_vi_permuted, 4},
+    {"_ppforest2_ppforest2_vi_weighted_forest", (DL_FUNC) &_ppforest2_ppforest2_vi_weighted_forest, 4},
+    {"_ppforest2_ppforest2_vi_permuted_forest", (DL_FUNC) &_ppforest2_ppforest2_vi_permuted_forest, 4},
     {"_ppforest2_ppforest2_oob_error", (DL_FUNC) &_ppforest2_ppforest2_oob_error, 3},
     {"_ppforest2_ppforest2_tree_node_data", (DL_FUNC) &_ppforest2_ppforest2_tree_node_data, 3},
     {"_ppforest2_ppforest2_boundary_segments", (DL_FUNC) &_ppforest2_ppforest2_boundary_segments, 7},

@@ -83,7 +83,7 @@ Forest ppforest2_train_forest_pda(
 }
 
 // [[Rcpp::export]]
-ResponseVector ppforest2_predict(
+ResponseVector ppforest2_predict_tree(
   const Tree &          tree,
   const FeatureMatrix & data) {
   ResponseVector result = tree.predict(data);
@@ -92,7 +92,7 @@ ResponseVector ppforest2_predict(
 }
 
 // [[Rcpp::export]]
-ResponseVector ppforest2_predict_forest(
+ResponseVector ppforest2_predict_tree_forest(
   const Forest &        forest,
   const FeatureMatrix & data) {
   ResponseVector result = forest.predict(data);
@@ -124,7 +124,7 @@ FeatureVector ppforest2_vi_projections_forest(
 }
 
 // [[Rcpp::export]]
-FeatureVector ppforest2_vi_weighted(
+FeatureVector ppforest2_vi_weighted_forest(
   const Forest&        forest,
   const FeatureMatrix& x,
   ResponseVector       y,
@@ -134,7 +134,7 @@ FeatureVector ppforest2_vi_weighted(
 }
 
 // [[Rcpp::export]]
-FeatureVector ppforest2_vi_permuted(
+FeatureVector ppforest2_vi_permuted_forest(
   const Forest&        forest,
   const FeatureMatrix& x,
   ResponseVector       y,

@@ -82,7 +82,7 @@ build_region_df <- function(regions, class_labels) {
 #' Draws a number-line plot with three layers (back to front):
 #' \enumerate{
 #'   \item Coloured background rectangles for each decision region
-#'     (predicted class determined by running \code{ppforest2_predict} on each
+#'     (predicted class determined by running \code{ppforest2_predict_tree} on each
 #'     region's midpoint)
 #'   \item Jittered data points coloured by true class (y is meaningless,
 #'     jittered around 0 for visual separation)
@@ -129,7 +129,7 @@ plot_boundaries_1d <- function(model) {
   for (r in seq_len(length(edges) - 1)) {
     mid <- (edges[r] + edges[r + 1]) / 2
     mid_vec <- matrix(mid, nrow = 1)
-    pred_class <- all_class_labels[ppforest2_predict(model, mid_vec)]
+    pred_class <- all_class_labels[ppforest2_predict_tree(model, mid_vec)]
     region_rects[[r]] <- data.frame(
       xmin = edges[r], xmax = edges[r + 1],
       region_class = pred_class,

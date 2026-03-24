@@ -123,7 +123,7 @@ pptr <- function(
 predict.pptr <- function(object, new_data = NULL, type = "class", ...) {
   x <- process_predict_arguments(object, new_data, ...)
 
-  y <- ppforest2_predict(object, x)
+  y <- ppforest2_predict_tree(object, x)
   predicted <- as.factor(object$classes[y])
 
   if (type == "prob") {
@@ -246,7 +246,7 @@ summary.pptr <- function(object, ...) {
     }
     cat("-------------------------------------\n")
     cat("Confusion Matrix:\n\n")
-    print_confusion_matrix(ppforest2_predict(model, model$x), model)
+    print_confusion_matrix(ppforest2_predict_tree(model, model$x), model)
   }
   cat("\n")
 }

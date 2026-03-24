@@ -13,12 +13,12 @@ ppforest2_train_forest_pda <- function(x, y, size, n_vars, lambda, seed, n_threa
     .Call('_ppforest2_ppforest2_train_forest_pda', PACKAGE = 'ppforest2', x, y, size, n_vars, lambda, seed, n_threads, max_retries)
 }
 
-ppforest2_predict <- function(tree, data) {
-    .Call('_ppforest2_ppforest2_predict', PACKAGE = 'ppforest2', tree, data)
+ppforest2_predict_tree <- function(tree, data) {
+    .Call('_ppforest2_ppforest2_predict_tree', PACKAGE = 'ppforest2', tree, data)
 }
 
-ppforest2_predict_forest <- function(forest, data) {
-    .Call('_ppforest2_ppforest2_predict_forest', PACKAGE = 'ppforest2', forest, data)
+ppforest2_predict_tree_forest <- function(forest, data) {
+    .Call('_ppforest2_ppforest2_predict_tree_forest', PACKAGE = 'ppforest2', forest, data)
 }
 
 ppforest2_predict_forest_prob <- function(forest, data) {
@@ -33,12 +33,12 @@ ppforest2_vi_projections_forest <- function(forest, n_vars, scale) {
     .Call('_ppforest2_ppforest2_vi_projections_forest', PACKAGE = 'ppforest2', forest, n_vars, scale)
 }
 
-ppforest2_vi_weighted <- function(forest, x, y, scale) {
-    .Call('_ppforest2_ppforest2_vi_weighted', PACKAGE = 'ppforest2', forest, x, y, scale)
+ppforest2_vi_weighted_forest <- function(forest, x, y, scale) {
+    .Call('_ppforest2_ppforest2_vi_weighted_forest', PACKAGE = 'ppforest2', forest, x, y, scale)
 }
 
-ppforest2_vi_permuted <- function(forest, x, y, seed) {
-    .Call('_ppforest2_ppforest2_vi_permuted', PACKAGE = 'ppforest2', forest, x, y, seed)
+ppforest2_vi_permuted_forest <- function(forest, x, y, seed) {
+    .Call('_ppforest2_ppforest2_vi_permuted_forest', PACKAGE = 'ppforest2', forest, x, y, seed)
 }
 
 ppforest2_oob_error <- function(forest, x, y) {
