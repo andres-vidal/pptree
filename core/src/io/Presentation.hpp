@@ -87,5 +87,5 @@ namespace ppforest2::io {
    * @param out Output context.
    * @param cm  The confusion matrix to print.
    */
-  void print_confusion_matrix(Output& out, const stats::ConfusionMatrix& cm);
+  void print_confusion_matrix(Output& out, const stats::ConfusionMatrix& cm, const std::string& title = "Confusion Matrix");
 }

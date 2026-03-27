@@ -176,12 +176,12 @@ namespace ppforest2::io {
     out.newline();
   }
 
-  void print_confusion_matrix(Output& out, const stats::ConfusionMatrix& cm) {
+  void print_confusion_matrix(Output& out, const stats::ConfusionMatrix& cm, const std::string& title) {
     using namespace style;
 
     auto class_err = cm.class_errors();
 
-    out.println("{}", emphasis("Confusion Matrix:"));
+    out.println("{}", emphasis(title + ":"));
     out.newline();
 
     // Header row: class labels

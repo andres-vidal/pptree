@@ -6,7 +6,21 @@ print_confusion_matrix <- function(raw_preds, model) {
   cat("\n")
   n <- length(actual)
   correct <- sum(preds == actual)
-  cat("Training error:", round((1 - correct / n) * 100, 2), "%\n")
+  cat("Training error: ", round((1 - correct / n) * 100, 2), "%\n", sep = "")
+}
+
+print_oob_confusion_matrix <- function(model) {
+  oob_preds <- model$oob_predictions
+  # 0 = sentinel for no OOB trees (was -1 in C++, +1 during conversion)
+  oob_mask <- oob_preds > 0
+  preds <- factor(model$classes[oob_preds[oob_mask]], levels = model$classes)
+  actual <- factor(model$classes[model$y[oob_mask]], levels = model$classes)
+  cm <- table(Actual = actual, Predicted = preds)
+  print(cm)
+  cat("\n")
+  n <- length(actual)
+  correct <- sum(preds == actual)
+  cat("OOB error: ", round((1 - correct / n) * 100, 2), "%\n", sep = "")
 }
 
 process_predict_arguments <- function(object, new_data, ...) {

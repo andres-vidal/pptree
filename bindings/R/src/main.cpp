@@ -153,6 +153,16 @@ double ppforest2_oob_error(
 }
 
 // [[Rcpp::export]]
+ResponseVector ppforest2_oob_predict(
+  const Forest&        forest,
+  const FeatureMatrix& x) {
+  ResponseVector result = forest.oob_predict(x);
+  // Convert C++ 0-based → R 1-based; sentinel -1 stays as 0 (handled in R)
+  result.array() += 1;
+  return result;
+}
+
+// [[Rcpp::export]]
 Rcpp::List ppforest2_tree_node_data(
   const Tree&          tree,
   const FeatureMatrix& x,

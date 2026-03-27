@@ -160,6 +160,7 @@ pprf <- function(
     permuted    = ppforest2_vi_permuted_forest(model, x, y, seed)
   )
   model$oob_error <- ppforest2_oob_error(model, x, y)
+  model$oob_predictions <- ppforest2_oob_predict(model, x)
 
   model
 }
@@ -258,9 +259,6 @@ summary.pprf <- function(object, ...) {
     if (!is.null(model$formula)) {
       cat("Formula:\n", deparse(model$formula), "\n")
     }
-    if (model$oob_error >= 0) {
-      cat("OOB error:", round(model$oob_error * 100, 2), "%\n")
-    }
     cat("-------------------------------------\n")
     cat("Variable Importance:\n\n")
     p <- length(model$vi$projections)
@@ -283,10 +281,12 @@ summary.pprf <- function(object, ...) {
       cat("projection-pursuit optimization, which may affect the resulting tree.\n")
     }
     cat("-------------------------------------\n")
-    cat("Confusion Matrix:\n\n")
+    cat("Training Confusion Matrix:\n\n")
     print_confusion_matrix(ppforest2_predict_tree_forest(model, model$x), model)
     if (model$oob_error >= 0) {
-      cat("OOB error:", round(model$oob_error * 100, 2), "%\n")
+      cat("-------------------------------------\n")
+      cat("OOB Confusion Matrix:\n\n")
+      print_oob_confusion_matrix(model)
     }
   }
   cat("\n")

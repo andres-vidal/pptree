@@ -273,6 +273,7 @@ namespace {
         int n_vars;
         VariableImportance& vi;
         double& oob_err;
+        std::unique_ptr<ConfusionMatrix> oob_cm;
 
         MetricsVisitor(const FeatureMatrix& x, const ResponseVector& y,
         const CLIOptions& params, int n_vars,
@@ -281,7 +282,23 @@ namespace {
         }
 
         void visit(const Forest& forest) override {
-          oob_err                 = forest.oob_error(x, y);
+          ResponseVector oob_preds = forest.oob_predict(x);
+
+          std::vector<int> oob_rows;
+
+          for (int i = 0; i < oob_preds.size(); ++i) {
+            if (oob_preds(i) >= 0) {
+              oob_rows.push_back(i);
+            }
+          }
+
+          if (!oob_rows.empty()) {
+            ResponseVector preds_oob = oob_preds(oob_rows, Eigen::all).eval();
+            ResponseVector y_oob     = y(oob_rows, Eigen::all).eval();
+            oob_err = stats::error_rate(preds_oob, y_oob);
+            oob_cm  = std::make_unique<ConfusionMatrix>(preds_oob, y_oob);
+          }
+
           vi.permuted             = variable_importance_permuted(forest, x, y, params.model.seed);
           vi.projections          = variable_importance_projections(forest, n_vars, &vi.scale);
           vi.weighted_projections = variable_importance_weighted_projections(forest, x, y, &vi.scale);
@@ -298,6 +315,10 @@ namespace {
       if (oob_err >= 0.0) {
         out.println("{} {}", emphasis("OOB error:"), fmt::format("{:.2f}%", oob_err * 100));
         out.newline();
+
+        if (metrics_visitor.oob_cm) {
+          print_confusion_matrix(out, *metrics_visitor.oob_cm, "OOB Confusion Matrix");
+        }
       }
 
       print_variable_importance(out, vi);
@@ -308,6 +329,10 @@ namespace {
 
         if (oob_err >= 0.0) {
           saved["oob_error"] = oob_err;
+        }
+
+        if (metrics_visitor.oob_cm) {
+          saved["oob_confusion_matrix"] = serialization::to_json(*metrics_visitor.oob_cm);
         }
 
         saved["variable_importance"] = serialization::to_json(vi);

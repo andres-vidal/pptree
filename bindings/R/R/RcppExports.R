@@ -45,6 +45,10 @@ ppforest2_oob_error <- function(forest, x, y) {
     .Call('_ppforest2_ppforest2_oob_error', PACKAGE = 'ppforest2', forest, x, y)
 }
 
+ppforest2_oob_predict <- function(forest, x) {
+    .Call('_ppforest2_ppforest2_oob_predict', PACKAGE = 'ppforest2', forest, x)
+}
+
 ppforest2_tree_node_data <- function(tree, x, y) {
     .Call('_ppforest2_ppforest2_tree_node_data', PACKAGE = 'ppforest2', tree, x, y)
 }
