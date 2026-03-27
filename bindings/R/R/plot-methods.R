@@ -104,7 +104,7 @@ plot.pprf <- function(x, type = "importance", metric = NULL,
     tree <- x$trees[[tree_index]]
     tree$x <- x$x
     tree$y <- x$y
-    tree$classes <- x$classes
+    tree$groups <- x$groups
   }
 
   if (type == "importance" && is.null(metric)) {

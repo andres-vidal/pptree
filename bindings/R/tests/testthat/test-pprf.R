@@ -27,10 +27,10 @@ describe("pprf formula interface", {
     expect_equal(model$y, expected)
   })
 
-  it("preserves the classes in the returned model", {
+  it("preserves the groups in the returned model", {
     model <- pprf(Type ~ ., data = iris, n_threads = 1)
     expected <- levels(iris$Type)
-    expect_equal(model$classes, expected)
+    expect_equal(model$groups, expected)
   })
 
   it("preserves the formula in the returned model", {
@@ -61,10 +61,10 @@ describe("pprf matrix interface", {
     expect_equal(model$y, expected)
   })
 
-  it("preserves the classes in the returned model", {
+  it("preserves the groups in the returned model", {
     model <- pprf(x = iris[, 1:4], y = iris[, 5], n_threads = 1)
     expected <- levels(iris$Type)
-    expect_equal(model$classes, expected)
+    expect_equal(model$groups, expected)
   })
 
   it("does not have a formula", {

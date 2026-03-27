@@ -80,14 +80,27 @@ namespace {
   };
 
   json build_predict_result(
-    const ResponseVector& predictions,
-    const DataPacket&     data,
-    const Model&          model,
+    const ResponseVector&           predictions,
+    const DataPacket&               data,
+    const Model&                    model,
+    const std::vector<std::string>& group_names,
     bool no_metrics,
     bool no_proportions) {
     json result;
-    std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
-    result["predictions"] = pred_vec;
+
+    if (group_names.empty()) {
+      std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
+      result["predictions"] = pred_vec;
+    } else {
+      std::vector<std::string> pred_labels;
+      pred_labels.reserve(static_cast<std::size_t>(predictions.size()));
+
+      for (int i = 0; i < predictions.size(); ++i) {
+        pred_labels.push_back(group_names[static_cast<std::size_t>(predictions(i))]);
+      }
+
+      result["predictions"] = pred_labels;
+    }
 
     bool has_labels   = data.y.size() > 0;
     bool show_metrics = has_labels && !no_metrics;
@@ -95,7 +108,9 @@ namespace {
     if (show_metrics) {
       ConfusionMatrix cm(predictions, data.y);
       result["error_rate"]       = cm.error();
-      result["confusion_matrix"] = serialization::to_json(cm);
+      result["confusion_matrix"] = group_names.empty()
+        ? serialization::to_json(cm)
+        : serialization::to_json(cm, group_names);
     }
 
     if (!no_proportions) {
@@ -139,13 +154,20 @@ namespace {
     bool has_labels   = data.y.size() > 0;
     bool show_metrics = has_labels && !params.no_metrics;
 
+    // Resolve group names: prefer CSV data, fall back to saved model metadata.
+    std::vector<std::string> group_names = data.group_names;
+
+    if (group_names.empty() && model_data.contains("meta") && model_data["meta"].contains("groups")) {
+      group_names = model_data["meta"]["groups"].get<std::vector<std::string>>();
+    }
+
     // Terminal output: only metrics
     if (show_metrics) {
       ConfusionMatrix cm(predictions, data.y);
       out.newline();
       out.println("{}{:.2f}%", emphasis("Error rate: "), cm.error() * 100);
       out.newline();
-      print_confusion_matrix(out, cm);
+      print_confusion_matrix(out, cm, "Confusion Matrix", group_names);
     }
 
     // Hint about --output when not used
@@ -155,7 +177,7 @@ namespace {
 
     // Save results to file if requested
     if (!params.output_path.empty()) {
-      json file_result = build_predict_result(predictions, data, *model, params.no_metrics, params.no_proportions);
+      json file_result = build_predict_result(predictions, data, *model, group_names, params.no_metrics, params.no_proportions);
       io::json::write_file(file_result, params.output_path);
       out.saved("Results", params.output_path);
     }

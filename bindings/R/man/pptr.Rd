@@ -41,20 +41,10 @@ pptr(x = iris[, 1:4], y = iris[, 5])
 pptr(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 
 # Example 5: formula interface with the `crabs` dataset
-pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+pptr(Type ~ ., data = crabs)
 
 # Example 6: formula interface with the `crabs` dataset with regularization
-pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
-
-# Example 7: matrix interface with the `crabs` dataset
-x <- crabs[, 2:5]
-x$sex <- as.numeric(as.factor(crabs$sex))
-pptr(x = x, y = crabs$Type)
-
-# Example 8: matrix interface with the `crabs` dataset with regularization
-x <- crabs[, 2:5]
-x$sex <- as.numeric(as.factor(crabs$sex))
-pptr(x = x, y = crabs$Type, lambda = 0.5)
+pptr(Type ~ ., data = crabs, lambda = 0.5)
 
 }
 \seealso{

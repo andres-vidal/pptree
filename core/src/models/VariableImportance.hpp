@@ -53,7 +53,7 @@ namespace ppforest2 {
   /**
    * @brief VI2 — Projections importance (forest).
    *
-   * At every split node s with G_s classes, accumulates |a_j| / G_s for
+   * At every split node s with G_s groups, accumulates |a_j| / G_s for
    * each variable j.  When @p scale is provided each |a_j| is first
    * multiplied by σ_j so that coefficients are comparable across
    * variables with different units.  Results are averaged over all trees.

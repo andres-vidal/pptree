@@ -110,8 +110,9 @@ static json load_golden(const std::string& dataset, const std::string& slug) {
 
 static void compare_predictions(const json& actual, const json& expected) {
   ASSERT_EQ(actual.size(), expected.size()) << "predictions size mismatch";
+
   for (size_t i = 0; i < expected.size(); ++i) {
-    EXPECT_EQ(actual[i].get<int>(), expected[i].get<int>()) << "prediction[" << i << "]";
+    EXPECT_EQ(actual[i], expected[i]) << "prediction[" << i << "]";
   }
 }
 
@@ -512,7 +513,7 @@ TEST_F(PredictTest, PredictForestIncludesProportions) {
   auto& props = j["proportions"];
   EXPECT_EQ(props.size(), 150u);
 
-  // Each row has one entry per class (iris has 3 classes)
+  // Each row has one entry per group (iris has 3 groups)
   EXPECT_EQ(props[0].size(), 3u);
 
   // Each row sums to 1.0
@@ -790,7 +791,7 @@ TEST(CLIIntegration, TrainThenPredict) {
   EXPECT_TRUE(j.contains("confusion_matrix"));
 
   for (const auto& pred : j["predictions"]) {
-    EXPECT_TRUE(pred.is_number_integer());
+    EXPECT_TRUE(pred.is_string()) << "predictions should use group name strings";
   }
 }
 

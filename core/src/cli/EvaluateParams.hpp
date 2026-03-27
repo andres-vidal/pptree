@@ -12,7 +12,7 @@ namespace ppforest2::cli {
     std::string format;
     int rows              = 1000;
     int cols              = 10;
-    int classes           = 2;
+    int n_groups          = 2;
     float mean            = 100.0f;
     float mean_separation = 50.0f;
     float sd              = 10.0f;

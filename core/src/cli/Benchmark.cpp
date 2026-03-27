@@ -62,7 +62,7 @@ namespace {
     CsvDimensions dims;
     std::string line;
     int total_cols = 0;
-    std::set<std::string> classes;
+    std::set<std::string> group_labels;
 
     while (std::getline(file, line)) {
       if (line.empty()) continue;
@@ -83,12 +83,12 @@ namespace {
         ? line.substr(last_comma + 1)
         : line;
 
-      classes.insert(label);
+      group_labels.insert(label);
       ++dims.n;
     }
 
     dims.p = total_cols - 1;  // Last column is response
-    dims.g = static_cast<int>(classes.size());
+    dims.g = static_cast<int>(group_labels.size());
 
     return dims;
   }

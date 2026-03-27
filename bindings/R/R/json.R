@@ -1,7 +1,7 @@
 #' Save a model to a JSON file.
 #'
 #' Serializes a \code{pptr} or \code{pprf} model to JSON format compatible
-#' with the C++ CLI. The JSON includes the model structure, class labels,
+#' with the C++ CLI. The JSON includes the model structure, group labels,
 #' training parameters, and optionally variable importance metrics.
 #'
 #' @param model A \code{pptr} or \code{pprf} model.
@@ -26,7 +26,7 @@ save_json <- function(model, path, ...) {
 save_json.pptr <- function(model, path, include_metrics = TRUE, ...) {
   json_str <- ppforest2_save_tree_json(
     model,
-    model$classes,
+    model$groups,
     model$vi,
     model$training_spec,
     model$seed,
@@ -41,7 +41,7 @@ save_json.pptr <- function(model, path, include_metrics = TRUE, ...) {
 save_json.pprf <- function(model, path, include_metrics = TRUE, ...) {
   json_str <- ppforest2_save_forest_json(
     model,
-    model$classes,
+    model$groups,
     model$vi,
     model$training_spec,
     model$seed,
@@ -83,15 +83,15 @@ load_json <- function(path) {
     class(model) <- "pprf"
     model$oob_error <- meta$oob_error
 
-    model$classes <- as.character(meta$classes)
+    model$groups <- as.character(meta$groups)
     for (i in seq_along(model$trees)) {
       class(model$trees[[i]]) <- "pptr"
-      model$trees[[i]]$classes <- model$classes
+      model$trees[[i]]$groups <- model$groups
     }
   } else {
     model <- ppforest2_tree_from_json(json_str)
     class(model) <- "pptr"
-    model$classes <- as.character(meta$classes)
+    model$groups <- as.character(meta$groups)
   }
 
   model$training_spec <- meta$training_spec

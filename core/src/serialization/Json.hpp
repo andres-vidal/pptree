@@ -33,9 +33,13 @@
 namespace ppforest2::serialization {
   using json = nlohmann::json;
 
+  /** @brief Group name vector for labeled serialization. */
+  using GroupNames = std::vector<std::string>;
+
   /** @brief Visitor that serializes a tree node to JSON. */
   struct JsonNodeVisitor : public TreeNode::Visitor {
     json result;
+    const GroupNames *group_names = nullptr;
     void visit(const TreeCondition& node) override;
     void visit(const TreeResponse& node) override;
   };
@@ -43,6 +47,7 @@ namespace ppforest2::serialization {
   /** @brief Visitor that serializes a model (Tree or Forest) to JSON. */
   struct JsonModelVisitor : public Model::Visitor {
     json result;
+    const GroupNames *group_names = nullptr;
     void visit(const Tree& tree) override;
     void visit(const Forest& forest) override;
   };
@@ -59,12 +64,27 @@ namespace ppforest2::serialization {
   json to_json(const types::FeatureMatrix& matrix);
   ///@}
 
+  /** @name Labeled serialization (uses group names instead of integer codes) */
+  ///@{
+  json to_json(const Model& model, const GroupNames& group_names);
+  json to_json(const TreeNode& node, const GroupNames& group_names);
+  json to_json(const Tree& tree, const GroupNames& group_names);
+  json to_json(const BootstrapTree& tree, const GroupNames& group_names);
+  json to_json(const Forest& forest, const GroupNames& group_names);
+  json to_json(const stats::ConfusionMatrix& cm, const GroupNames& group_names);
+  ///@}
+
   /** @name Deserialization */
   ///@{
   Model::Ptr model_from_json(const json& j);
   TreeNode::Ptr node_from_json(const json& j);
   Tree tree_from_json(const json& j);
   Forest forest_from_json(const json& j);
+
+  /** @name Labeled deserialization (maps string labels back to integer codes) */
+  TreeNode::Ptr node_from_json(const json& j, const GroupNames& group_names);
+  Tree tree_from_json(const json& j, const GroupNames& group_names);
+  Forest forest_from_json(const json& j, const GroupNames& group_names);
   ///@}
 
   /** @name Stream operators */

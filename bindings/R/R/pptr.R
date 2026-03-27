@@ -31,20 +31,10 @@ NULL
 #' pptr(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #'
 #' # Example 5: formula interface with the `crabs` dataset
-#' pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+#' pptr(Type ~ ., data = crabs)
 #'
 #' # Example 6: formula interface with the `crabs` dataset with regularization
-#' pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
-#'
-#' # Example 7: matrix interface with the `crabs` dataset
-#' x <- crabs[, 2:5]
-#' x$sex <- as.numeric(as.factor(crabs$sex))
-#' pptr(x = x, y = crabs$Type)
-#'
-#' # Example 8: matrix interface with the `crabs` dataset with regularization
-#' x <- crabs[, 2:5]
-#' x$sex <- as.numeric(as.factor(crabs$sex))
-#' pptr(x = x, y = crabs$Type, lambda = 0.5)
+#' pptr(Type ~ ., data = crabs, lambda = 0.5)
 #'
 #' @export
 pptr <- function(
@@ -64,7 +54,7 @@ pptr <- function(
 
   x <- args$x
   y <- args$y
-  classes <- args$classes
+  groups <- args$groups
   formula <- args$formula
 
   if (is.null(seed)) {
@@ -76,13 +66,13 @@ pptr <- function(
   if (isTRUE(model$degenerate)) {
     warning("Some splits could not separate groups (degenerate nodes). ",
             "This can be caused by ill-conditioned variables in the input data. ",
-            "Degenerate nodes predict the class with the most observations.",
+            "Degenerate nodes predict the group with the most observations.",
             call. = FALSE)
   }
 
   class(model) <- "pptr"
   model$seed <- seed
-  model$classes <- classes
+  model$groups <- groups
   model$formula <- formula
   model$x <- x
   model$y <- y
@@ -98,13 +88,13 @@ pptr <- function(
   model
 }
 
-#' Predicts the labels or class indicators of a set of observations using a pptr model.
+#' Predicts the labels or group indicators of a set of observations using a pptr model.
 #'
 #' @param object A pptr model.
 #' @param new_data A data frame or matrix of new observations to predict. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.
-#' @param type The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame with 1.0 for the predicted class and 0.0 elsewhere.
+#' @param type The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame with 1.0 for the predicted group and 0.0 elsewhere.
 #' @param ... For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.
-#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per class.
+#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per group.
 #' @seealso \code{\link{pptr}} for training, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}
 #' @examples
 #' # Example 1: with the `iris` dataset
@@ -112,7 +102,7 @@ pptr <- function(
 #' predict(model, iris)
 #'
 #' # Example 2: with the `crabs` dataset
-#' model <- pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+#' model <- pptr(Type ~ ., data = crabs)
 #' predict(model, crabs)
 #' 
 #' # Example 3: vote proportions
@@ -124,12 +114,12 @@ predict.pptr <- function(object, new_data = NULL, type = "class", ...) {
   x <- process_predict_arguments(object, new_data, ...)
 
   y <- ppforest2_predict_tree(object, x)
-  predicted <- as.factor(object$classes[y])
+  predicted <- as.factor(object$groups[y])
 
   if (type == "prob") {
     n <- nrow(x)
-    df <- as.data.frame(matrix(0, nrow = n, ncol = length(object$classes)))
-    colnames(df) <- object$classes
+    df <- as.data.frame(matrix(0, nrow = n, ncol = length(object$groups)))
+    colnames(df) <- object$groups
 
     for (i in seq_len(n)) {
       df[i, as.character(predicted[i])] <- 1.0
@@ -159,7 +149,7 @@ print_node <- function(model, node, depth = 0) {
   indent <- paste(rep(" ", depth), collapse = "")
 
   if (!is.null(node$value)) {
-    cat(indent, "Predict:", model$classes[node$value], "\n")
+    cat(indent, "Predict:", model$groups[node$value], "\n")
   } else {
     projection_str <- paste(
       "[", paste(round(node$projector, 2), collapse = " "), "] * x",
@@ -218,14 +208,21 @@ summary.pptr <- function(object, ...) {
   if (!is.null(model$x)) {
     cat("\n")
     cat("Project-Pursuit Oblique Decision Tree\n")
-    cat("-------------------------------------\n")
-    cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
+    cat("\n")
     cat("Regularization parameter:", model$training_spec$lambda, "\n")
-    cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
+    cat("\n")
+    cat("Data Summary:\n")
+    cat("  observations:", nrow(model$x), "\n")
+    cat("  features:    ", ncol(model$x), "\n")
+    cat("  groups:      ", length(model$groups), "\n")
+    cat("  group names: ", paste(model$groups, collapse = ", "), "\n")
     if (!is.null(model$formula)) {
-      cat("Formula:\n", deparse(model$formula), "\n")
+      cat("  formula:     ", deparse(model$formula), "\n")
     }
-    cat("-------------------------------------\n")
+    cat("\n")
+    cat("Confusion Matrix:\n\n")
+    print_confusion_matrix(ppforest2_predict_tree(model, model$x), model)
+    cat("\n")
     cat("Variable Importance:\n\n")
     p <- length(model$vi$projections)
     vnames <- if (!is.null(colnames(model$x))) colnames(model$x) else paste0("x", seq_len(p))
@@ -244,9 +241,6 @@ summary.pptr <- function(object, ...) {
       cat("if the model was trained on scaled data. Scaling also changes the\n")
       cat("projection-pursuit optimization, which may affect the resulting tree.\n")
     }
-    cat("-------------------------------------\n")
-    cat("Confusion Matrix:\n\n")
-    print_confusion_matrix(ppforest2_predict_tree(model, model$x), model)
   }
   cat("\n")
 }

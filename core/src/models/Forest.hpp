@@ -88,8 +88,8 @@ namespace ppforest2 {
      * @brief Predict vote proportions for a matrix of observations.
      *
      * For each observation, counts votes from every tree and returns
-     * the proportion of trees that voted for each class.  The number
-     * of classes G is derived from the root node of the first tree.
+     * the proportion of trees that voted for each group.  The number
+     * of groups G is derived from the root node of the first tree.
      *
      * @param data  Feature matrix (n × p).
      * @return      Vote proportions matrix (n × G), rows sum to 1.0.

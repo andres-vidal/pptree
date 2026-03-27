@@ -2,7 +2,7 @@
  * @file ConfusionMatrix.test.cpp
  * @brief Unit tests for the ConfusionMatrix class.
  *
- * Covers matrix construction, overall and per-class error computation,
+ * Covers matrix construction, overall and per-group error computation,
  * JSON serialization (structure and absence of removed fields), and
  * formatted terminal output (header, diagonal, marginal errors).
  */
@@ -43,7 +43,7 @@ TEST(ConfusionMatrix, Identity) {
   ASSERT_EQ(expected_result_values, result.values);
 }
 
-/* Uneven class sizes with perfect predictions give a weighted diagonal. */
+/* Uneven group sizes with perfect predictions give a weighted diagonal. */
 TEST(ConfusionMatrix, Diagonal) {
   ResponseVector actual   = VEC(Response, 0, 1, 1, 2, 2, 2);
   ResponseVector expected = VEC(Response, 0, 1, 1, 2, 2, 2);
@@ -83,7 +83,7 @@ TEST(ConfusionMatrix, InverseDiagonal) {
   ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
-/* Every prediction is shifted by one class — zero diagonal. */
+/* Every prediction is shifted by one group — zero diagonal. */
 TEST(ConfusionMatrix, ZeroDiagonal) {
   ResponseVector actual   = VEC(Response, 0, 1, 2);
   ResponseVector expected = VEC(Response, 1, 2, 0);
@@ -103,7 +103,7 @@ TEST(ConfusionMatrix, ZeroDiagonal) {
   ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
 }
 
-/* Mixed predictions with one misclassification in class 2. */
+/* Mixed predictions with one misclassification in group 2. */
 TEST(ConfusionMatrix, Generic) {
   ResponseVector actual   = VEC(Response, 0, 1, 1, 2, 2, 2);
   ResponseVector expected = VEC(Response, 0, 1, 1, 2, 2, 0);
@@ -192,15 +192,15 @@ TEST(ConfusionMatrix, ErrorGeneric) {
 }
 
 // ---------------------------------------------------------------------------
-// Per-class error rates — class_errors()
+// Per-group error rates — group_errors()
 // ---------------------------------------------------------------------------
 
-/* Perfect predictions -> every class has 0% error. */
+/* Perfect predictions -> every group has 0% error. */
 TEST(ConfusionMatrix, ClassErrorsAllZero) {
   ResponseVector actual      = VEC(Response, 0, 1, 2);
   ResponseVector predictions = VEC(Response, 0, 1, 2);
 
-  FeatureVector result = ConfusionMatrix(predictions, actual).class_errors();
+  FeatureVector result = ConfusionMatrix(predictions, actual).group_errors();
 
   FeatureVector expected_errors = VEC(Feature, 0, 0, 0);
 
@@ -208,12 +208,12 @@ TEST(ConfusionMatrix, ClassErrorsAllZero) {
   ASSERT_EQ(expected_errors, result);
 }
 
-/* Every single prediction is wrong -> every class has 100% error. */
+/* Every single prediction is wrong -> every group has 100% error. */
 TEST(ConfusionMatrix, ClassErrorsAllOne) {
   ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
   ResponseVector predictions = VEC(Response, 1, 2, 2, 1, 1, 1);
 
-  FeatureVector result = ConfusionMatrix(predictions, actual).class_errors();
+  FeatureVector result = ConfusionMatrix(predictions, actual).group_errors();
 
   FeatureVector expected_errors = VEC(Feature, 1, 1, 1);
 
@@ -221,12 +221,12 @@ TEST(ConfusionMatrix, ClassErrorsAllOne) {
   ASSERT_EQ(expected_errors, result);
 }
 
-/* Mixed results: class 0 perfect, class 1 at 50%, class 2 at ~67%. */
+/* Mixed results: group 0 perfect, group 1 at 50%, group 2 at ~67%. */
 TEST(ConfusionMatrix, ClassErrorsMixed) {
   ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
   ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);
 
-  FeatureVector result = ConfusionMatrix(predictions, actual).class_errors();
+  FeatureVector result = ConfusionMatrix(predictions, actual).group_errors();
 
   FeatureVector expected_errors = VEC(Feature, 0, 0.5, 0.666667);
 
@@ -237,7 +237,7 @@ TEST(ConfusionMatrix, ClassErrorsMixed) {
 // ---------------------------------------------------------------------------
 // JSON serialization — to_json()
 //
-// The JSON contains "matrix", "labels", and "class_errors".
+// The JSON contains "matrix", "labels", and "group_errors".
 // Importantly, the top-level "error" key was removed (error_rate is
 // stored at the predict-result level instead).
 // ---------------------------------------------------------------------------
@@ -251,7 +251,7 @@ TEST(ConfusionMatrix, ToJsonIdentity) {
 
   EXPECT_TRUE(j.contains("matrix"));
   EXPECT_TRUE(j.contains("labels"));
-  EXPECT_TRUE(j.contains("class_errors"));
+  EXPECT_TRUE(j.contains("group_errors"));
   EXPECT_FALSE(j.contains("error"));
 
   auto matrix = j["matrix"];
@@ -272,17 +272,17 @@ TEST(ConfusionMatrix, ToJsonNoErrorKey) {
   EXPECT_FALSE(j.contains("error"));
   EXPECT_TRUE(j.contains("matrix"));
   EXPECT_TRUE(j.contains("labels"));
-  EXPECT_TRUE(j.contains("class_errors"));
+  EXPECT_TRUE(j.contains("group_errors"));
 }
 
-/* Verify the actual class_errors values in the serialized JSON. */
+/* Verify the actual group_errors values in the serialized JSON. */
 TEST(ConfusionMatrix, ToJsonClassErrorsValues) {
   ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
   ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);
 
   auto j = serialization::to_json(ConfusionMatrix(predictions, actual));
 
-  auto ce = j["class_errors"];
+  auto ce = j["group_errors"];
   EXPECT_EQ(ce.size(), 3u);
   EXPECT_FLOAT_EQ(ce[0].get<float>(), 0.0f);
   EXPECT_NEAR(ce[1].get<float>(), 0.5f, 0.001f);
@@ -354,7 +354,7 @@ TEST(ConfusionMatrix, PrintIncludesErrorHeader) {
   EXPECT_NE(output.find("Error"), std::string::npos);
 }
 
-/* Each row shows a marginal error percentage matching class_errors(). */
+/* Each row shows a marginal error percentage matching group_errors(). */
 TEST(ConfusionMatrix, PrintIncludesPerRowError) {
   ResponseVector actual      = VEC(Response, 0, 1, 1, 2, 2, 2);
   ResponseVector predictions = VEC(Response, 0, 1, 2, 0, 1, 2);

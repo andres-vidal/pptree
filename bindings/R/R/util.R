@@ -1,6 +1,6 @@
 print_confusion_matrix <- function(raw_preds, model) {
-  preds <- factor(model$classes[raw_preds], levels = model$classes)
-  actual <- factor(model$classes[model$y], levels = model$classes)
+  preds <- factor(model$groups[raw_preds], levels = model$groups)
+  actual <- factor(model$groups[model$y], levels = model$groups)
   cm <- table(Actual = actual, Predicted = preds)
   print(cm)
   cat("\n")
@@ -13,8 +13,8 @@ print_oob_confusion_matrix <- function(model) {
   oob_preds <- model$oob_predictions
   # 0 = sentinel for no OOB trees (was -1 in C++, +1 during conversion)
   oob_mask <- oob_preds > 0
-  preds <- factor(model$classes[oob_preds[oob_mask]], levels = model$classes)
-  actual <- factor(model$classes[model$y[oob_mask]], levels = model$classes)
+  preds <- factor(model$groups[oob_preds[oob_mask]], levels = model$groups)
+  actual <- factor(model$groups[model$y[oob_mask]], levels = model$groups)
   cm <- table(Actual = actual, Predicted = preds)
   print(cm)
   cat("\n")
@@ -68,18 +68,18 @@ process_model_arguments <- function(formula, data, x, y) {
   }
 
   if (nlevels(y) < 2) {
-    stop("`y` must have at least 2 classes.")
+    stop("`y` must have at least 2 groups.")
   }
 
   if (nrow(x) < nlevels(y)) {
-    stop("Not enough observations: need at least as many rows as classes.")
+    stop("Not enough observations: need at least as many rows as groups.")
   }
 
   return(
     list(
       x = x,
       y = as.matrix(as.numeric(y)),
-      classes = levels(y),
+      groups = levels(y),
       formula = formula
     )
   )

@@ -186,7 +186,8 @@ if(NOT PPFOREST2_CORE_ONLY)
     src/golden/Threading.test.cpp
     src/cli/VarsSpec.test.cpp
     src/cli/Benchmark.test.cpp
-    src/cli/BenchmarkReport.test.cpp)
+    src/cli/BenchmarkReport.test.cpp
+    src/io/IO.test.cpp)
 
   add_executable(ppforest2-test ${PPFOREST2_TEST_SRC} $<TARGET_OBJECTS:ppforest2-cli>)
 

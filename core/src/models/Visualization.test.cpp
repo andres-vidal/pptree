@@ -20,12 +20,12 @@ static Projector make_proj(std::vector<Feature> v) {
   return proj;
 }
 
-// Build a 3-class iris-like tree:
+// Build a 3-group iris-like tree:
 //   Root: proj=[0.7, 0.3, 0.5, 0.1], thr=1.5
-//     Left leaf: class 0
+//     Left leaf: group 0
 //     Right condition: proj=[0.2, 0.8, 0.1, 0.4], thr=2.0
-//       Left leaf: class 1
-//       Right leaf: class 2
+//       Left leaf: group 1
+//       Right leaf: group 2
 static Tree make_test_tree() {
   auto leaf0 = TreeResponse::make(0);
   auto leaf1 = TreeResponse::make(1);
@@ -52,14 +52,14 @@ static Tree make_test_tree() {
 
 // Make a deeper tree (depth 4) to stress-test memory management
 static Tree make_deep_tree() {
-  auto make_subtree = [](int left_class, int right_class,
+  auto make_subtree = [](int lower_group, int upper_group,
     std::vector<Feature> proj, Feature thr) {
       return TreeCondition::make(
         make_proj(proj), thr,
-        TreeResponse::make(left_class),
-        TreeResponse::make(right_class),
+        TreeResponse::make(lower_group),
+        TreeResponse::make(upper_group),
         nullptr,
-        { left_class, right_class });
+        { lower_group, upper_group });
     };
 
   auto left_subtree  = make_subtree(0, 1, { 0.6f, 0.4f }, 1.0f);
@@ -123,7 +123,7 @@ TEST_F(VisualizationTest, NodeDataVisitorCollectsAllNodes) {
   EXPECT_FALSE(visitor.nodes[0].is_leaf);
   EXPECT_EQ(visitor.nodes[0].depth, 0);
   EXPECT_EQ(visitor.nodes[0].projected_values.size(), 30u);
-  EXPECT_EQ(visitor.nodes[0].classes.size(), 30u);
+  EXPECT_EQ(visitor.nodes[0].groups.size(), 30u);
 
   // Check that at least one leaf exists
   bool found_leaf = false;
@@ -178,9 +178,9 @@ TEST_F(VisualizationTest, RegionVisitorCollectsPolygons) {
   for (const auto& region : visitor.regions) {
     // Each region should be a polygon with at least 3 vertices
     EXPECT_GE(region.vertices.size(), 3u);
-    // Predicted class should be valid
-    EXPECT_GE(region.predicted_class, 0);
-    EXPECT_LE(region.predicted_class, 2);
+    // Predicted group should be valid
+    EXPECT_GE(region.predicted_group, 0);
+    EXPECT_LE(region.predicted_group, 2);
   }
 }
 

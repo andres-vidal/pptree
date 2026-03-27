@@ -176,16 +176,16 @@ Rcpp::List ppforest2_tree_node_data(
   for (std::size_t i = 0; i < visitor.nodes.size(); ++i) {
     const auto& nd = visitor.nodes[i];
 
-    // Convert 0-based class indices → R 1-based
-    Rcpp::IntegerVector classes_r(nd.classes.begin(), nd.classes.end());
-    classes_r = classes_r + 1;
+    // Convert 0-based group indices → R 1-based
+    Rcpp::IntegerVector groups_r(nd.groups.begin(), nd.groups.end());
+    groups_r = groups_r + 1;
 
     if (nd.is_leaf) {
       result[i] = Rcpp::List::create(
         Rcpp::Named("is_leaf")   = true,
         Rcpp::Named("depth")     = nd.depth,
         Rcpp::Named("value")     = nd.value + 1,
-        Rcpp::Named("classes")   = classes_r
+        Rcpp::Named("groups")   = groups_r
       );
     } else {
       result[i] = Rcpp::List::create(
@@ -194,7 +194,7 @@ Rcpp::List ppforest2_tree_node_data(
         Rcpp::Named("projector") = Rcpp::wrap(nd.projector),
         Rcpp::Named("threshold") = nd.threshold,
         Rcpp::Named("projected") = Rcpp::NumericVector(nd.projected_values.begin(), nd.projected_values.end()),
-        Rcpp::Named("classes")   = classes_r
+        Rcpp::Named("groups")   = groups_r
       );
     }
   }
@@ -312,7 +312,7 @@ Rcpp::List ppforest2_decision_regions(
     result[i] = Rcpp::List::create(
       Rcpp::Named("x")     = rx,
       Rcpp::Named("y")     = ry,
-      Rcpp::Named("class") = region.predicted_class + 1  // C++ 0-based → R 1-based
+      Rcpp::Named("group") = region.predicted_group + 1  // C++ 0-based → R 1-based
     );
   }
 
@@ -375,13 +375,13 @@ namespace {
   using json = nlohmann::json;
 
   json meta_from_r(
-    Rcpp::CharacterVector classes,
+    Rcpp::CharacterVector groups,
     Rcpp::List            training_spec,
     int                   seed) {
     json meta;
 
-    std::vector<std::string> cls(classes.begin(), classes.end());
-    meta["classes"] = cls;
+    std::vector<std::string> cls(groups.begin(), groups.end());
+    meta["groups"] = cls;
 
     std::string strategy = Rcpp::as<std::string>(training_spec["strategy"]);
     meta["training_spec"] = strategy;
@@ -427,7 +427,7 @@ namespace {
 // [[Rcpp::export]]
 std::string ppforest2_save_tree_json(
     const Tree&           tree,
-    Rcpp::CharacterVector classes,
+    Rcpp::CharacterVector groups,
     Rcpp::List            vi,
     Rcpp::List            training_spec,
     int                   seed,
@@ -436,7 +436,7 @@ std::string ppforest2_save_tree_json(
 
   json result;
   result["model_type"] = "tree";
-  result["meta"]       = meta_from_r(classes, training_spec, seed);
+  result["meta"]       = meta_from_r(groups, training_spec, seed);
   result["model"]      = output;
 
   if (include_metrics) {
@@ -449,7 +449,7 @@ std::string ppforest2_save_tree_json(
 // [[Rcpp::export]]
 std::string ppforest2_save_forest_json(
     const Forest&         forest,
-    Rcpp::CharacterVector classes,
+    Rcpp::CharacterVector groups,
     Rcpp::List            vi,
     Rcpp::List            training_spec,
     int                   seed,
@@ -459,7 +459,7 @@ std::string ppforest2_save_forest_json(
 
   json result;
   result["model_type"] = "forest";
-  result["meta"]       = meta_from_r(classes, training_spec, seed);
+  result["meta"]       = meta_from_r(groups, training_spec, seed);
   result["model"]      = output;
 
   if (include_metrics) {
@@ -487,17 +487,17 @@ Rcpp::List ppforest2_load_json_meta(const std::string& json_str) {
     model_type = "tree";
   }
 
-  // Restore class names from meta
-  Rcpp::CharacterVector classes;
+  // Restore group names from meta
+  Rcpp::CharacterVector groups;
   int seed = 0;
   Rcpp::List training_spec;
 
   if (j.contains("meta")) {
     const auto& meta = j["meta"];
 
-    if (meta.contains("classes")) {
-      auto cls = meta["classes"].get<std::vector<std::string>>();
-      classes = Rcpp::wrap(cls);
+    if (meta.contains("groups")) {
+      auto cls = meta["groups"].get<std::vector<std::string>>();
+      groups = Rcpp::wrap(cls);
     }
 
     seed = meta.value("seed", 0);
@@ -551,7 +551,7 @@ Rcpp::List ppforest2_load_json_meta(const std::string& json_str) {
 
   return Rcpp::List::create(
     Rcpp::Named("model_type")     = model_type,
-    Rcpp::Named("classes")        = classes,
+    Rcpp::Named("groups")        = groups,
     Rcpp::Named("training_spec")  = training_spec,
     Rcpp::Named("seed")           = seed,
     Rcpp::Named("vi")             = vi_sexp,
@@ -577,10 +577,30 @@ namespace {
   }
 }
 
+namespace {
+  // Detect whether the model JSON uses string labels by checking the first leaf value.
+  bool has_string_labels(const json& model_json) {
+    const json* node = &model_json["root"];
+
+    while (node->contains("lower")) {
+      node = &(*node)["lower"];
+    }
+
+    return node->contains("value") && (*node)["value"].is_string();
+  }
+}
+
 // [[Rcpp::export]]
 Tree ppforest2_tree_from_json(const std::string& json_str) {
   json j = json::parse(json_str);
-  Tree tree = ppforest2::serialization::tree_from_json(j["model"]);
+
+  bool labeled = has_string_labels(j["model"]);
+
+  Tree tree = labeled
+    ? ppforest2::serialization::tree_from_json(j["model"],
+        j["meta"]["groups"].get<ppforest2::serialization::GroupNames>())
+    : ppforest2::serialization::tree_from_json(j["model"]);
+
   tree.training_spec = training_spec_from_meta(j);
   return tree;
 }
@@ -588,7 +608,14 @@ Tree ppforest2_tree_from_json(const std::string& json_str) {
 // [[Rcpp::export]]
 Forest ppforest2_forest_from_json(const std::string& json_str) {
   json j = json::parse(json_str);
-  Forest forest = ppforest2::serialization::forest_from_json(j["model"]);
+
+  bool labeled = has_string_labels(j["model"]["trees"][0]);
+
+  Forest forest = labeled
+    ? ppforest2::serialization::forest_from_json(j["model"],
+        j["meta"]["groups"].get<ppforest2::serialization::GroupNames>())
+    : ppforest2::serialization::forest_from_json(j["model"]);
+
   forest.training_spec = training_spec_from_meta(j);
 
   // Propagate training_spec to each tree

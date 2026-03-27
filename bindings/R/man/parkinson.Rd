@@ -16,7 +16,7 @@ data(parkinson)
 \description{
 A dataset containing 195 observations from 2 parkinson types.
 \describe{
- \item{Type}{ Class variable has 2 classes, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures}.
+ \item{Type}{ Group variable has 2 groups, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures}.
   \item{X1}{ Average vocal fundamental frequency}
   \item{X2}{ Maximum vocal fundamental frequency}
   \item{X3}{ Minimum vocal fundamental frequency}

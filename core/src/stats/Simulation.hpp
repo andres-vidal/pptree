@@ -10,25 +10,25 @@ namespace ppforest2::stats {
   /**
    * @brief Parameters for generating simulated classification data.
    *
-   * Controls the distribution of generated features across classes.
-   * Each class is drawn from a normal distribution with a shifted mean
-   * relative to the previous class.
+   * Controls the distribution of generated features across groups.
+   * Each group is drawn from a normal distribution with a shifted mean
+   * relative to the previous group.
    */
   struct SimulationParams {
-    float mean            = 100.0f;   ///< Base mean for the first class.
-    float mean_separation = 50.0f;    ///< Mean shift between successive classes.
-    float sd              = 10.0f;    ///< Standard deviation within each class.
+    float mean            = 100.0f;   ///< Base mean for the first group.
+    float mean_separation = 50.0f;    ///< Mean shift between successive groups.
+    float sd              = 10.0f;    ///< Standard deviation within each group.
   };
 
   /**
-   * @brief Generate a simulated dataset with G classes, n rows, and p features.
+   * @brief Generate a simulated dataset with G groups, n rows, and p features.
    *
-   * Each class is drawn from a normal distribution with a shifted mean.
-   * The resulting data is sorted by class label.
+   * Each group is drawn from a normal distribution with a shifted mean.
+   * The resulting data is sorted by group label.
    *
    * @param n      Number of rows (observations).
    * @param p      Number of feature columns.
-   * @param G      Number of classes (must be > 1).
+   * @param G      Number of groups (must be > 1).
    * @param rng    Random number generator.
    * @param params Simulation parameters (mean, separation, sd).
    * @return A DataPacket with the simulated feature matrix and response vector.
@@ -51,8 +51,8 @@ namespace ppforest2::stats {
   /**
    * @brief Perform a stratified random train/test split on a DataPacket.
    *
-   * Samples indices within each class proportional to train_ratio so that
-   * class balance is preserved in both train and test sets.
+   * Samples indices within each group proportional to train_ratio so that
+   * group balance is preserved in both train and test sets.
    *
    * @param data        The full dataset.
    * @param train_ratio Proportion of data to use for training (0, 1).

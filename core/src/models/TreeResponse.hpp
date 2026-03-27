@@ -32,11 +32,11 @@ namespace ppforest2 {
       return true;
     }
 
-    int class_count() const override {
+    int group_count() const override {
       return 1;
     }
 
-    std::set<types::Response> node_classes() const override {
+    std::set<types::Response> node_groups() const override {
       return { value };
     }
 

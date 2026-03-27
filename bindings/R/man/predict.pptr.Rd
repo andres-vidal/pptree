@@ -2,7 +2,7 @@
 % Please edit documentation in R/pptr.R
 \name{predict.pptr}
 \alias{predict.pptr}
-\title{Predicts the labels or class indicators of a set of observations using a pptr model.}
+\title{Predicts the labels or group indicators of a set of observations using a pptr model.}
 \usage{
 \method{predict}{pptr}(object, new_data = NULL, type = "class", ...)
 }
@@ -11,15 +11,15 @@
 
 \item{new_data}{A data frame or matrix of new observations to predict. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.}
 
-\item{type}{The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame with 1.0 for the predicted class and 0.0 elsewhere.}
+\item{type}{The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame with 1.0 for the predicted group and 0.0 elsewhere.}
 
 \item{...}{For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.}
 }
 \value{
-If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per class.
+If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per group.
 }
 \description{
-Predicts the labels or class indicators of a set of observations using a pptr model.
+Predicts the labels or group indicators of a set of observations using a pptr model.
 }
 \examples{
 # Example 1: with the `iris` dataset
@@ -27,7 +27,7 @@ model <- pptr(Type ~ ., data = iris)
 predict(model, iris)
 
 # Example 2: with the `crabs` dataset
-model <- pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+model <- pptr(Type ~ ., data = crabs)
 predict(model, crabs)
 
 # Example 3: vote proportions

@@ -63,14 +63,14 @@ namespace Rcpp {
   }
 
   SEXP wrap(const TreeCondition &node) {
-    Rcpp::IntegerVector classes(node.classes.begin(), node.classes.end());
-    classes = classes + 1;  // C++ 0-based → R 1-based
+    Rcpp::IntegerVector groups(node.groups.begin(), node.groups.end());
+    groups = groups + 1;  // C++ 0-based → R 1-based
 
     Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("projector")      = Rcpp::wrap(node.projector),
       Rcpp::Named("threshold")      = Rcpp::wrap(node.threshold),
       Rcpp::Named("pp_index_value") = Rcpp::wrap(node.pp_index_value),
-      Rcpp::Named("classes")        = classes,
+      Rcpp::Named("groups")        = groups,
       Rcpp::Named("lower")          = Rcpp::wrap(*node.lower),
       Rcpp::Named("upper")          = Rcpp::wrap(*node.upper));
 
@@ -161,10 +161,10 @@ namespace Rcpp {
     auto lower = as<std::unique_ptr<TreeNode> >(rnode["lower"]);
     auto upper = as<std::unique_ptr<TreeNode> >(rnode["upper"]);
 
-    std::set<Response> classes;
-    if (rnode.containsElementNamed("classes")) {
-      Rcpp::IntegerVector rclasses(rnode["classes"]);
-      for (auto c : rclasses) classes.insert(c - 1);  // R 1-based → C++ 0-based
+    std::set<Response> groups;
+    if (rnode.containsElementNamed("groups")) {
+      Rcpp::IntegerVector rgroups(rnode["groups"]);
+      for (auto g : rgroups) groups.insert(g - 1);  // R 1-based → C++ 0-based
     }
 
     Feature pp_index_value = 0;
@@ -178,7 +178,7 @@ namespace Rcpp {
       std::move(lower),
       std::move(upper),
       nullptr,
-      std::move(classes),
+      std::move(groups),
       pp_index_value);
   }
 
@@ -193,10 +193,10 @@ namespace Rcpp {
     auto lower = as<std::unique_ptr<TreeNode> >(rcond["lower"]);
     auto upper = as<std::unique_ptr<TreeNode> >(rcond["upper"]);
 
-    std::set<Response> classes;
-    if (rcond.containsElementNamed("classes")) {
-      Rcpp::IntegerVector rclasses(rcond["classes"]);
-      for (auto c : rclasses) classes.insert(c - 1);  // R 1-based → C++ 0-based
+    std::set<Response> groups;
+    if (rcond.containsElementNamed("groups")) {
+      Rcpp::IntegerVector rgroups(rcond["groups"]);
+      for (auto g : rgroups) groups.insert(g - 1);  // R 1-based → C++ 0-based
     }
 
     Feature pp_index_value = 0;
@@ -210,7 +210,7 @@ namespace Rcpp {
       std::move(lower),
       std::move(upper),
       nullptr,
-      std::move(classes),
+      std::move(groups),
       pp_index_value);
   }
 

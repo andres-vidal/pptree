@@ -386,12 +386,12 @@ TEST(ParseArgs, EvaluateExportOption) {
   EXPECT_EQ(opts.evaluate.export_path, "/tmp/experiment");
 }
 
-/* --simulate "RxCxK" is parsed into rows, cols, and classes. */
+/* --simulate "RxCxK" is parsed into rows, cols, and groups. */
 TEST(ParseArgs, EvaluateSimulateFormat) {
   auto opts = parse({ "ppforest2", "evaluate", "--simulate", "100x5x2" });
   EXPECT_EQ(opts.simulation.rows, 100);
   EXPECT_EQ(opts.simulation.cols, 5);
-  EXPECT_EQ(opts.simulation.classes, 2);
+  EXPECT_EQ(opts.simulation.n_groups, 2);
 }
 
 /* Simulation generation parameters (mean, separation, sd) are captured. */
@@ -425,8 +425,8 @@ TEST(ParseArgs, EvaluateInvalidSimulateFormatExits) {
     );
 }
 
-/* Simulation with only 1 class must exit (need >= 2 for classification). */
-TEST(ParseArgs, EvaluateClassesMustBeGreaterThanOne) {
+/* Simulation with only 1 group must exit (need >= 2 for classification). */
+TEST(ParseArgs, EvaluateGroupsMustBeGreaterThanOne) {
   EXPECT_EXIT(
     parse({ "ppforest2", "evaluate", "--simulate", "100x5x1" }),
     ExitedWithNonZero(),

@@ -176,14 +176,14 @@ namespace ppforest2 {
     const int n_total = static_cast<int>(x.rows());
     const int B       = static_cast<int>(forest.trees.size());
 
-    // Count G = number of unique classes.
-    std::set<Response> class_set;
+    // Count G = number of unique groups.
+    std::set<Response> group_set;
 
     for (int i = 0; i < y.size(); ++i) {
-      class_set.insert(y(i));
+      group_set.insert(y(i));
     }
 
-    const int G = static_cast<int>(class_set.size());
+    const int G = static_cast<int>(group_set.size());
 
     FeatureVector importance = FeatureVector::Zero(n_vars);
     int valid_trees          = 0;

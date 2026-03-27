@@ -14,7 +14,7 @@ namespace ppforest2 {
    *
    * A tree is a recursive structure of nodes: internal split nodes
    * (TreeCondition) that project and threshold, and leaf nodes
-   * (TreeResponse) that hold a class label.
+   * (TreeResponse) that hold a group label.
    */
   struct TreeNode {
     using Ptr = std::unique_ptr<TreeNode>;
@@ -39,25 +39,25 @@ namespace ppforest2 {
     virtual void accept(Visitor &visitor) const = 0;
 
     /**
-     * @brief Predict the class label for a single observation.
+     * @brief Predict the group label for a single observation.
      *
      * @param data  Feature vector (p).
-     * @return      Predicted class label.
+     * @return      Predicted group label.
      */
     virtual types::Response predict(const types::FeatureVector &data) const = 0;
 
-    /** @brief The class label at this node (leaf value or majority class). */
+    /** @brief The group label at this node (leaf value or majority group). */
     virtual types::Response response() const = 0;
 
     /**
-     * @brief Number of distinct classes reachable from this node.
+     * @brief Number of distinct groups reachable from this node.
      */
-    virtual int class_count() const = 0;
+    virtual int group_count() const = 0;
 
     /**
-     * @brief Sorted set of class labels reachable from this node.
+     * @brief Sorted set of group labels reachable from this node.
      */
-    virtual std::set<types::Response> node_classes() const = 0;
+    virtual std::set<types::Response> node_groups() const = 0;
 
     /** @brief Whether this node is a leaf (TreeResponse). */
     virtual bool is_leaf() const = 0;

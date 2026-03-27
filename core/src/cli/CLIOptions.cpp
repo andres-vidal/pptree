@@ -259,12 +259,12 @@ namespace {
       }
 
       try {
-        params.simulation.rows    = std::stoi(sim_str.substr(0, x1));
-        params.simulation.cols    = std::stoi(sim_str.substr(x1 + 1, x2 - x1 - 1));
-        params.simulation.classes = std::stoi(sim_str.substr(x2 + 1));
+        params.simulation.rows     = std::stoi(sim_str.substr(0, x1));
+        params.simulation.cols     = std::stoi(sim_str.substr(x1 + 1, x2 - x1 - 1));
+        params.simulation.n_groups = std::stoi(sim_str.substr(x2 + 1));
 
-        if (params.simulation.rows <= 0 || params.simulation.cols <= 0 || params.simulation.classes <= 1) {
-          throw std::out_of_range("Values must be positive and classes must be > 1");
+        if (params.simulation.rows <= 0 || params.simulation.cols <= 0 || params.simulation.n_groups <= 1) {
+          throw std::out_of_range("Values must be positive and groups must be > 1");
         }
       } catch (const std::exception& e) {
         fmt::print(stderr, "Error: Invalid simulate values: {}\n", e.what());

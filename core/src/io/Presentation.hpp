@@ -81,11 +81,15 @@ namespace ppforest2::io {
   /**
    * @brief Print a formatted confusion matrix to stdout.
    *
-   * Displays the confusion matrix with class labels, diagonal highlighting,
-   * and per-class error rates.
+   * Displays the confusion matrix with group labels, diagonal highlighting,
+   * and per-group error rates.
    *
    * @param out Output context.
    * @param cm  The confusion matrix to print.
    */
-  void print_confusion_matrix(Output& out, const stats::ConfusionMatrix& cm, const std::string& title = "Confusion Matrix");
+  void print_confusion_matrix(
+    Output&                         out,
+    const stats::ConfusionMatrix&   cm,
+    const std::string&              title       = "Confusion Matrix",
+    const std::vector<std::string>& group_names = {});
 }

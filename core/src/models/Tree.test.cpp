@@ -430,7 +430,7 @@ TEST(TreeSimulation, ManyClasses) {
   double err                 = error_rate(predictions, data.y);
 
   ASSERT_LT(err, 0.50)
-    << "Tree should handle 10 classes with reasonable error";
+    << "Tree should handle 10 groups with reasonable error";
 }
 
 TEST(TreeSimulation, HighDimensionality) {

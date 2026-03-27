@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-ppforest2 builds oblique decision trees and random forests using projection pursuit. Instead of splitting on a single variable at each node, it finds a linear combination of variables that best separates the classes.
+ppforest2 builds oblique decision trees and random forests using projection pursuit. Instead of splitting on a single variable at each node, it finds a linear combination of variables that best separates the groups.
 
 ## Single tree
 

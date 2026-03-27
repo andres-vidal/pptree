@@ -24,10 +24,10 @@ namespace ppforest2::viz {
    * observations into the lower and upper children.
    *
    * The result is a pre-order sequence of NodeData structs containing:
-   *   - For internal nodes: projected values, class labels, projector,
+   *   - For internal nodes: projected values, group labels, projector,
    *     threshold (used for histogram rendering in the tree diagram).
-   *   - For leaf nodes: class labels of reaching observations, and the
-   *     predicted class (used for leaf labels and coloring).
+   *   - For leaf nodes: group labels of reaching observations, and the
+   *     predicted group (used for leaf labels and coloring).
    */
   NodeDataVisitor::NodeDataVisitor(
     const types::FeatureMatrix&  x,
@@ -57,7 +57,7 @@ namespace ppforest2::viz {
     for (int idx : indices) {
       types::Feature proj_val = x.row(idx).dot(node.projector);
       nd.projected_values.push_back(proj_val);
-      nd.classes.push_back(y(idx));
+      nd.groups.push_back(y(idx));
 
       if (proj_val < node.threshold) {
         lower_indices.push_back(idx);
@@ -90,7 +90,7 @@ namespace ppforest2::viz {
     nd.value     = node.value;
 
     for (int idx : indices) {
-      nd.classes.push_back(y(idx));
+      nd.groups.push_back(y(idx));
     }
 
     nodes.push_back(std::move(nd));
@@ -380,7 +380,7 @@ namespace ppforest2::viz {
    *   2. For each ancestor constraint on the root-to-leaf path, project
    *      the constraint to 2D (project_2d + adjust_threshold) and clip
    *      the polygon using Sutherland–Hodgman (clip_polygon_halfspace).
-   *   3. If the polygon is non-empty, store it with the leaf's class.
+   *   3. If the polygon is non-empty, store it with the leaf's group.
    *
    * The bounding box should match the visible coordinate range in the
    * plot (the padded data range).  When combined with zero scale
@@ -440,7 +440,7 @@ namespace ppforest2::viz {
 
     RegionPolygon region;
     region.vertices        = std::move(poly);
-    region.predicted_class = node.value;
+    region.predicted_group = node.value;
     regions.push_back(std::move(region));
   }
 

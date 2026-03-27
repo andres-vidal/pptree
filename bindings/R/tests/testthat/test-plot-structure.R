@@ -20,7 +20,7 @@ describe("plot.pptr structure", {
     expect_true(length(nodes) > 0)
     expect_false(nodes[[1]]$is_leaf)
     expect_true(length(nodes[[1]]$projected) > 0)
-    expect_true(length(nodes[[1]]$classes) > 0)
+    expect_true(length(nodes[[1]]$groups) > 0)
   })
 
   it("default plot renders mosaic without error", {

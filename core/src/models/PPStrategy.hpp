@@ -11,7 +11,7 @@
  *
  * Contains the abstract PPStrategy interface and concrete
  * implementations (e.g. PPPDAStrategy) that define how to evaluate
- * and optimise a projection index for separating classes.
+ * and optimise a projection index for separating groups.
  */
 namespace ppforest2::pp {
   /**

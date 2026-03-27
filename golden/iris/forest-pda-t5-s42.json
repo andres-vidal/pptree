@@ -1,14 +1,14 @@
 {
   "confusion_matrix": {
-    "class_errors": [
+    "group_errors": [
       0.0,
       0.03999999910593033,
       0.05999999865889549
     ],
     "labels": [
-      0,
-      1,
-      2
+      "setosa",
+      "versicolor",
+      "virginica"
     ],
     "matrix": [
       [
@@ -30,12 +30,12 @@
   },
   "error_rate": 0.03333336114883423,
   "meta": {
-    "classes": [
+    "dataset": "iris",
+    "groups": [
       "setosa",
       "versicolor",
       "virginica"
     ],
-    "dataset": "iris",
     "lambda": 0.0,
     "n_vars": 2,
     "platform": "macos-clang",
@@ -47,18 +47,18 @@
     "trees": [
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2
+          "groups": [
+            "setosa",
+            "versicolor",
+            "virginica"
           ],
           "lower": {
-            "classes": [
-              1,
-              2
+            "groups": [
+              "versicolor",
+              "virginica"
             ],
             "lower": {
-              "value": 1
+              "value": "versicolor"
             },
             "pp_index_value": 0.7557956576347351,
             "projector": [
@@ -69,7 +69,7 @@
             ],
             "threshold": 0.5323153734207153,
             "upper": {
-              "value": 2
+              "value": "virginica"
             }
           },
           "pp_index_value": 0.8856639862060547,
@@ -81,19 +81,19 @@
           ],
           "threshold": -0.15578091144561768,
           "upper": {
-            "value": 0
+            "value": "setosa"
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2
+          "groups": [
+            "setosa",
+            "versicolor",
+            "virginica"
           ],
           "lower": {
-            "value": 0
+            "value": "setosa"
           },
           "pp_index_value": 0.8627979755401611,
           "projector": [
@@ -104,12 +104,12 @@
           ],
           "threshold": -0.022096414119005203,
           "upper": {
-            "classes": [
-              1,
-              2
+            "groups": [
+              "versicolor",
+              "virginica"
             ],
             "lower": {
-              "value": 1
+              "value": "versicolor"
             },
             "pp_index_value": 0.7008477449417114,
             "projector": [
@@ -120,20 +120,20 @@
             ],
             "threshold": 0.2894171476364136,
             "upper": {
-              "value": 2
+              "value": "virginica"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2
+          "groups": [
+            "setosa",
+            "versicolor",
+            "virginica"
           ],
           "lower": {
-            "value": 0
+            "value": "setosa"
           },
           "pp_index_value": 0.8634635210037231,
           "projector": [
@@ -144,12 +144,12 @@
           ],
           "threshold": 0.15643122792243958,
           "upper": {
-            "classes": [
-              1,
-              2
+            "groups": [
+              "versicolor",
+              "virginica"
             ],
             "lower": {
-              "value": 2
+              "value": "virginica"
             },
             "pp_index_value": 0.7336528301239014,
             "projector": [
@@ -160,20 +160,20 @@
             ],
             "threshold": -0.3378453850746155,
             "upper": {
-              "value": 1
+              "value": "versicolor"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2
+          "groups": [
+            "setosa",
+            "versicolor",
+            "virginica"
           ],
           "lower": {
-            "value": 0
+            "value": "setosa"
           },
           "pp_index_value": 0.8858149647712708,
           "projector": [
@@ -184,12 +184,12 @@
           ],
           "threshold": -0.017264481633901596,
           "upper": {
-            "classes": [
-              1,
-              2
+            "groups": [
+              "versicolor",
+              "virginica"
             ],
             "lower": {
-              "value": 2
+              "value": "virginica"
             },
             "pp_index_value": 0.6548869609832764,
             "projector": [
@@ -200,20 +200,20 @@
             ],
             "threshold": -0.48074081540107727,
             "upper": {
-              "value": 1
+              "value": "versicolor"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2
+          "groups": [
+            "setosa",
+            "versicolor",
+            "virginica"
           ],
           "lower": {
-            "value": 0
+            "value": "setosa"
           },
           "pp_index_value": 0.8277938365936279,
           "projector": [
@@ -224,12 +224,12 @@
           ],
           "threshold": 0.1355188488960266,
           "upper": {
-            "classes": [
-              1,
-              2
+            "groups": [
+              "versicolor",
+              "virginica"
             ],
             "lower": {
-              "value": 1
+              "value": "versicolor"
             },
             "pp_index_value": 0.8013502955436707,
             "projector": [
@@ -240,7 +240,7 @@
             ],
             "threshold": 0.20637056231498718,
             "upper": {
-              "value": 2
+              "value": "virginica"
             }
           }
         }
@@ -249,156 +249,156 @@
   },
   "oob_error": 0.045112788677215576,
   "predictions": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    0,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "setosa",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "virginica",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "versicolor",
+    "setosa",
+    "versicolor",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "versicolor",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "versicolor",
+    "versicolor",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica",
+    "virginica"
   ],
   "variable_importance": {
     "permuted": [

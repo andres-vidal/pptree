@@ -34,7 +34,7 @@ namespace ppforest2 {
      * @brief Predict a single observation.
      *
      * @param data  Feature vector (p).
-     * @return      Predicted class label.
+     * @return      Predicted group label.
      */
     virtual types::Response predict(const types::FeatureVector& data) const = 0;
 
@@ -42,7 +42,7 @@ namespace ppforest2 {
      * @brief Predict a matrix of observations.
      *
      * @param data  Feature matrix (n × p).
-     * @return      Predicted class labels (n).
+     * @return      Predicted group labels (n).
      */
     virtual types::ResponseVector predict(const types::FeatureMatrix& data) const = 0;
   };

@@ -214,7 +214,7 @@ TEST(ForestSimulation, ManyClasses) {
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
 
-  ASSERT_LT(err, 0.30) << "Forest should handle 10 classes with reasonable error";
+  ASSERT_LT(err, 0.30) << "Forest should handle 10 groups with reasonable error";
 }
 
 TEST(ForestSimulation, HighDimensionality) {
@@ -580,9 +580,9 @@ TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
 
   ASSERT_EQ(preds.size(), 4);
   EXPECT_EQ(preds(0), -1) << "Row 0 in bag";
-  EXPECT_EQ(preds(1), 0) << "Row 1 OOB, x[0]=0.1 < 5 -> class 0";
+  EXPECT_EQ(preds(1), 0) << "Row 1 OOB, x[0]=0.1 < 5 -> group 0";
   EXPECT_EQ(preds(2), -1) << "Row 2 in bag";
-  EXPECT_EQ(preds(3), 1) << "Row 3 OOB, x[0]=9.8 > 5 -> class 1";
+  EXPECT_EQ(preds(3), 1) << "Row 3 OOB, x[0]=9.8 > 5 -> group 1";
 }
 
 TEST(OobPredict, ConsistentWithOobError) {

@@ -25,7 +25,7 @@ only the model structure and metadata.}
 }
 \description{
 Serializes a \code{pptr} or \code{pprf} model to JSON format compatible
-with the C++ CLI. The JSON includes the model structure, class labels,
+with the C++ CLI. The JSON includes the model structure, group labels,
 training parameters, and optionally variable importance metrics.
 }
 \examples{

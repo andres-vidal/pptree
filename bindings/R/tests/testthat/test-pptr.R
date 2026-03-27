@@ -27,10 +27,10 @@ describe("pptr formula interface", {
     expect_equal(model$y, expected)
   })
 
-  it("preserves the classes in the returned model", {
+  it("preserves the groups in the returned model", {
     model <- pptr(Type ~ ., data = iris)
     expected <- levels(iris$Type)
-    expect_equal(model$classes, expected)
+    expect_equal(model$groups, expected)
   })
 
   it("preserves the formula in the returned model", {
@@ -60,10 +60,10 @@ describe("pptr matrix interface", {
     expect_equal(model$y, expected)
   })
 
-  it("preserves the classes in the returned model", {
+  it("preserves the groups in the returned model", {
     model <- pptr(x = iris[, 1:4], y = iris[, 5])
     expected <- levels(iris$Type)
-    expect_equal(model$classes, expected)
+    expect_equal(model$groups, expected)
   })
 
   it("does not have a formula", {
@@ -111,8 +111,8 @@ describe("pptr input validation", {
     expect_error(pptr(x = iris[, 1:4], y = iris[, 5], seed = 1.5), "integer")
   })
 
-  it("rejects single-class y", {
-    expect_error(pptr(x = iris[, 1:4], y = rep("a", 150)), "at least 2 classes")
+  it("rejects single-group y", {
+    expect_error(pptr(x = iris[, 1:4], y = rep("a", 150)), "at least 2 groups")
   })
 
   it("rejects dimension mismatch", {

@@ -38,20 +38,10 @@ NULL
 #' pprf(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #'
 #' # Example 5: formula interface with the `crabs` dataset
-#' pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+#' pprf(Type ~ ., data = crabs)
 #'
 #' # Example 6: formula interface with the `crabs` dataset with regularization
-#' pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
-#'
-#' # Example 7: matrix interface with the `crabs` dataset
-#' x <- crabs[, 2:5]
-#' x$sex <- as.numeric(as.factor(crabs$sex))
-#' pprf(x = x, y = crabs$Type)
-#'
-#' # Example 8: matrix interface with the `crabs` dataset with regularization
-#' x <- crabs[, 2:5]
-#' x$sex <- as.numeric(as.factor(crabs$sex))
-#' pprf(x = x, y = crabs$Type, lambda = 0.5)
+#' pprf(Type ~ ., data = crabs, lambda = 0.5)
 #'
 #' @export
 pprf <- function(
@@ -95,7 +85,7 @@ pprf <- function(
 
   x <- args$x
   y <- args$y
-  classes <- args$classes
+  groups <- args$groups
   formula <- args$formula
 
   if (!is.null(p_vars)) {
@@ -133,7 +123,7 @@ pprf <- function(
             "This can be caused by ill-conditioned variables in the input data, ",
             "or by bootstrap samples that produce singular covariance matrices. ",
             "Consider reviewing your data or adjusting `max_retries` (currently ", max_retries, "). ",
-            "Degenerate nodes predict the class with the most observations. ",
+            "Degenerate nodes predict the group with the most observations. ",
             "Degenerate trees are excluded from variable importance calculations.",
             call. = FALSE)
   }
@@ -142,10 +132,10 @@ pprf <- function(
 
   for (i in 1:size) {
     class(model$trees[[i]]) <- "pptr"
-    model$trees[[i]]$classes <- classes
+    model$trees[[i]]$groups <- groups
   }
 
-  model$classes <- classes
+  model$groups <- groups
   model$formula <- formula
   model$x <- x
   model$y <- y
@@ -171,7 +161,7 @@ pprf <- function(
 #' @param new_data A data frame or matrix of new observations to predict. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.
 #' @param type The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame of vote proportions.
 #' @param ... For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.
-#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per class, where each row sums to 1.
+#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per group, where each row sums to 1.
 #' @seealso \code{\link{pprf}} for training, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}
 #' @examples
 #' # Example 1: with the `iris` dataset
@@ -179,7 +169,7 @@ pprf <- function(
 #' predict(model, iris)
 #'
 #' # Example 2: with the `crabs` dataset
-#' model <- pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+#' model <- pprf(Type ~ ., data = crabs)
 #' predict(model, crabs)
 #'
 #' # Example 3: vote proportions
@@ -193,12 +183,12 @@ predict.pprf <- function(object, new_data = NULL, type = "class", ...) {
   if (type == "prob") {
     probs <- ppforest2_predict_forest_prob(object, x)
     df <- as.data.frame(probs)
-    colnames(df) <- object$classes
+    colnames(df) <- object$groups
     return(df)
   }
 
   y <- ppforest2_predict_tree_forest(object, x)
-  as.factor(object$classes[y])
+  as.factor(object$groups[y])
 }
 
 #' Extracts the formula used to train a pprf model.
@@ -251,15 +241,25 @@ summary.pprf <- function(object, ...) {
   if (!is.null(model$x)) {
     cat("\n")
     cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
-    cat("-------------------------------------\n")
+    cat("\n")
     cat("Size:", length(model$trees), "trees\n")
-    cat(nrow(model$x), "observations of", ncol(model$x), "features\n")
     cat("Regularization parameter:", model$training_spec$lambda, "\n")
-    cat("Classes:\n", paste(model$classes, collapse = "\n "), "\n")
+    cat("\n")
+    cat("Data Summary:\n")
+    cat("  observations:", nrow(model$x), "\n")
+    cat("  features:    ", ncol(model$x), "\n")
+    cat("  groups:      ", length(model$groups), "\n")
+    cat("  group names: ", paste(model$groups, collapse = ", "), "\n")
     if (!is.null(model$formula)) {
-      cat("Formula:\n", deparse(model$formula), "\n")
+      cat("  formula:     ", deparse(model$formula), "\n")
     }
-    cat("-------------------------------------\n")
+    cat("\n")
+    cat("Training Confusion Matrix:\n\n")
+    print_confusion_matrix(ppforest2_predict_tree_forest(model, model$x), model)
+    cat("\n")
+    cat("OOB Confusion Matrix:\n\n")
+    print_oob_confusion_matrix(model) 
+    cat("\n")
     cat("Variable Importance:\n\n")
     p <- length(model$vi$projections)
     vnames <- if (!is.null(colnames(model$x))) colnames(model$x) else paste0("x", seq_len(p))
@@ -279,14 +279,6 @@ summary.pprf <- function(object, ...) {
       cat("Variable contributions can only be theoretically interpreted as such\n")
       cat("if the model was trained on scaled data. Scaling also changes the\n")
       cat("projection-pursuit optimization, which may affect the resulting tree.\n")
-    }
-    cat("-------------------------------------\n")
-    cat("Training Confusion Matrix:\n\n")
-    print_confusion_matrix(ppforest2_predict_tree_forest(model, model$x), model)
-    if (model$oob_error >= 0) {
-      cat("-------------------------------------\n")
-      cat("OOB Confusion Matrix:\n\n")
-      print_oob_confusion_matrix(model)
     }
   }
   cat("\n")

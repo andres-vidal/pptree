@@ -34,12 +34,12 @@ get_node_bfs <- function(root, index) {
 #' Render a projection histogram at a specified split node.
 #'
 #' Projects all training observations onto the node's projector vector,
-#' draws overlapping histograms coloured by class, and marks the split
+#' draws overlapping histograms coloured by group, and marks the split
 #' threshold with a dashed vertical line.  This shows how well the
-#' node's projection separates the classes.
+#' node's projection separates the groups.
 #'
 #' @param model A pptr model with \code{$root}, \code{$x}, \code{$y},
-#'   \code{$classes}.
+#'   \code{$groups}.
 #' @param node 1-based BFS index of the target node (default: root).
 #' @param ... Currently unused.
 #' @return A ggplot2 object.
@@ -54,17 +54,17 @@ plot_projection <- function(model, node = 1L, ...) {
 
   projector <- target_node$projector
   projected <- as.numeric(model$x %*% projector)
-  class_labels <- model$classes[model$y]
+  group_labels <- model$groups[model$y]
 
   df <- data.frame(
     projected = projected,
-    class     = class_labels,
+    group     = group_labels,
     stringsAsFactors = FALSE
   )
 
   threshold <- target_node$threshold
 
-  ggplot2::ggplot(df, ggplot2::aes(x = projected, fill = class)) +
+  ggplot2::ggplot(df, ggplot2::aes(x = projected, fill = group)) +
     ggplot2::geom_histogram(
       bins     = 30,
       alpha    = ppforest2_alpha_proj,

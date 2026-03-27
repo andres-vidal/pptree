@@ -34,7 +34,7 @@ namespace ppforest2::cli {
    * @brief Load or simulate data based on CLI options.
    *
    * If data_path is set, reads a CSV file; otherwise generates simulated data.
-   * Ensures the response vector is contiguous (sorted by class).
+   * Ensures the response vector is contiguous (sorted by group).
    */
   ppforest2::stats::DataPacket read_data(
     const CLIOptions&      params,

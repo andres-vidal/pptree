@@ -228,35 +228,35 @@ BEGIN_RCPP
 END_RCPP
 }
 // ppforest2_save_tree_json
-std::string ppforest2_save_tree_json(const Tree& tree, Rcpp::CharacterVector classes, Rcpp::List vi, Rcpp::List training_spec, int seed, bool include_metrics);
-RcppExport SEXP _ppforest2_ppforest2_save_tree_json(SEXP treeSEXP, SEXP classesSEXP, SEXP viSEXP, SEXP training_specSEXP, SEXP seedSEXP, SEXP include_metricsSEXP) {
+std::string ppforest2_save_tree_json(const Tree& tree, Rcpp::CharacterVector groups, Rcpp::List vi, Rcpp::List training_spec, int seed, bool include_metrics);
+RcppExport SEXP _ppforest2_ppforest2_save_tree_json(SEXP treeSEXP, SEXP groupsSEXP, SEXP viSEXP, SEXP training_specSEXP, SEXP seedSEXP, SEXP include_metricsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type classes(classesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type groups(groupsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type vi(viSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type training_spec(training_specSEXP);
     Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< bool >::type include_metrics(include_metricsSEXP);
-    rcpp_result_gen = Rcpp::wrap(ppforest2_save_tree_json(tree, classes, vi, training_spec, seed, include_metrics));
+    rcpp_result_gen = Rcpp::wrap(ppforest2_save_tree_json(tree, groups, vi, training_spec, seed, include_metrics));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_save_forest_json
-std::string ppforest2_save_forest_json(const Forest& forest, Rcpp::CharacterVector classes, Rcpp::List vi, Rcpp::List training_spec, int seed, double oob_error, bool include_metrics);
-RcppExport SEXP _ppforest2_ppforest2_save_forest_json(SEXP forestSEXP, SEXP classesSEXP, SEXP viSEXP, SEXP training_specSEXP, SEXP seedSEXP, SEXP oob_errorSEXP, SEXP include_metricsSEXP) {
+std::string ppforest2_save_forest_json(const Forest& forest, Rcpp::CharacterVector groups, Rcpp::List vi, Rcpp::List training_spec, int seed, double oob_error, bool include_metrics);
+RcppExport SEXP _ppforest2_ppforest2_save_forest_json(SEXP forestSEXP, SEXP groupsSEXP, SEXP viSEXP, SEXP training_specSEXP, SEXP seedSEXP, SEXP oob_errorSEXP, SEXP include_metricsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type classes(classesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type groups(groupsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type vi(viSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type training_spec(training_specSEXP);
     Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< double >::type oob_error(oob_errorSEXP);
     Rcpp::traits::input_parameter< bool >::type include_metrics(include_metricsSEXP);
-    rcpp_result_gen = Rcpp::wrap(ppforest2_save_forest_json(forest, classes, vi, training_spec, seed, oob_error, include_metrics));
+    rcpp_result_gen = Rcpp::wrap(ppforest2_save_forest_json(forest, groups, vi, training_spec, seed, oob_error, include_metrics));
     return rcpp_result_gen;
 END_RCPP
 }

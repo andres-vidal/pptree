@@ -110,7 +110,7 @@ namespace ppforest2::io {
     const bool show_vi3 = vi3.size() == vi2.size();
     const int rows      = (max_rows > 0 && p > max_rows) ? max_rows : p;
 
-    out.println("{}", emphasis(info("Variable Importance:")));
+    out.println("{}", emphasis("Variable Importance:"));
     out.newline();
 
     // Build columns conditionally
@@ -176,18 +176,52 @@ namespace ppforest2::io {
     out.newline();
   }
 
-  void print_confusion_matrix(Output& out, const stats::ConfusionMatrix& cm, const std::string& title) {
+  void print_confusion_matrix(
+    Output&                         out,
+    const stats::ConfusionMatrix&   cm,
+    const std::string&              title,
+    const std::vector<std::string>& group_names) {
     using namespace style;
 
-    auto class_err = cm.class_errors();
+    auto group_err = cm.group_errors();
+
+    bool has_names = !group_names.empty();
+
+    // Compute column width: max of group name lengths and default width (5).
+    int col_width = 5;
+
+    if (has_names) {
+      for (const auto& [label, idx] : cm.label_index) {
+        int name_len = static_cast<int>(group_names[static_cast<std::size_t>(label)].size());
+
+        if (name_len + 1 > col_width) {
+          col_width = name_len + 1;
+        }
+      }
+    }
+
+    // Compute row label width.
+    int row_label_width = 4;
+
+    if (has_names) {
+      for (const auto& [label, idx] : cm.label_index) {
+        int name_len = static_cast<int>(group_names[static_cast<std::size_t>(label)].size());
+
+        if (name_len > row_label_width) {
+          row_label_width = name_len;
+        }
+      }
+    }
 
     out.println("{}", emphasis(title + ":"));
     out.newline();
 
-    // Header row: class labels
-    std::string header = "    ";
+    // Header row: group labels
+    std::string header(static_cast<std::size_t>(row_label_width), ' ');
+
     for (const auto& [label, idx] : cm.label_index) {
-      header += fmt::format("{:>5}", label);
+      std::string name = has_names ? group_names[static_cast<std::size_t>(label)] : std::to_string(label);
+      header += fmt::format("{:>{}}", name, col_width);
     }
 
     header += "  Error";
@@ -195,11 +229,12 @@ namespace ppforest2::io {
 
     // Data rows
     for (const auto& [label, row_idx] : cm.label_index) {
-      std::string row = fmt::format("{:>4}", label);
+      std::string row_label = has_names ? group_names[static_cast<std::size_t>(label)] : std::to_string(label);
+      std::string row       = fmt::format("{:>{}}", row_label, row_label_width);
 
       for (const auto& [col_label, col_idx] : cm.label_index) {
         int val          = cm.values(row_idx, col_idx);
-        std::string cell = fmt::format("{:>4}", val);
+        std::string cell = fmt::format("{:>{}}", val, col_width - 1);
 
         if (row_idx == col_idx) {
           row += " " + success(cell);
@@ -210,7 +245,7 @@ namespace ppforest2::io {
         }
       }
 
-      row += fmt::format("  {:.1f}%", class_err[row_idx] * 100);
+      row += fmt::format("  {:.1f}%", group_err[row_idx] * 100);
       out.println("{}", row);
     }
 

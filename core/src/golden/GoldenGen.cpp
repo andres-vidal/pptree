@@ -100,7 +100,7 @@ static void generate_golden(const GoldenConfig& config) {
   std::filesystem::create_directories(dir);
 
   DataPacket data                      = io::csv::read_sorted(config.csv_path);
-  std::vector<std::string> class_names = io::csv::read_labels(config.csv_path);
+  std::vector<std::string> group_names = io::csv::read_labels(config.csv_path);
 
   const int n_vars = static_cast<int>(data.x.cols());
 
@@ -113,7 +113,7 @@ static void generate_golden(const GoldenConfig& config) {
   meta["dataset"]  = config.dataset();
   meta["trees"]    = config.trees;
   meta["lambda"]   = config.lambda;
-  meta["classes"]  = class_names;
+  meta["groups"]   = group_names;
 
   if (config.trees > 0) {
     meta["n_vars"]        = config.n_vars;
@@ -125,6 +125,21 @@ static void generate_golden(const GoldenConfig& config) {
   result["meta"] = meta;
 
   // Train and serialize
+  auto to_label = [&group_names](int code) {
+      return group_names[static_cast<std::size_t>(code)];
+    };
+
+  auto labeled_predictions = [&](const ResponseVector& predictions) {
+      std::vector<std::string> labels;
+      labels.reserve(static_cast<std::size_t>(predictions.size()));
+
+      for (int i = 0; i < predictions.size(); ++i) {
+        labels.push_back(to_label(predictions(i)));
+      }
+
+      return labels;
+    };
+
   if (config.trees > 0) {
     Forest forest = Forest::train(
       TrainingSpecUPDA(config.n_vars, config.lambda),
@@ -134,18 +149,17 @@ static void generate_golden(const GoldenConfig& config) {
       config.seed,
       1);
 
-    result["model"] = to_json(forest);
+    result["model"] = to_json(forest, group_names);
 
     ResponseVector predictions = forest.predict(data.x);
-    std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
-    result["predictions"] = pred_vec;
+    result["predictions"] = labeled_predictions(predictions);
 
     FeatureMatrix vote_proportions = forest.predict(data.x, Proportions{});
     result["vote_proportions"] = to_json(vote_proportions);
 
     ConfusionMatrix cm(predictions, data.y);
     result["error_rate"]       = cm.error();
-    result["confusion_matrix"] = to_json(cm);
+    result["confusion_matrix"] = to_json(cm, group_names);
 
     double oob_err = forest.oob_error(data.x, data.y);
     result["oob_error"] = oob_err;
@@ -165,15 +179,14 @@ static void generate_golden(const GoldenConfig& config) {
     RNG rng(config.seed);
     Tree tree = Tree::train(TrainingSpecPDA(config.lambda), data.x, data.y, rng);
 
-    result["model"] = to_json(tree);
+    result["model"] = to_json(tree, group_names);
 
     ResponseVector predictions = tree.predict(data.x);
-    std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
-    result["predictions"] = pred_vec;
+    result["predictions"] = labeled_predictions(predictions);
 
     ConfusionMatrix cm(predictions, data.y);
     result["error_rate"]       = cm.error();
-    result["confusion_matrix"] = to_json(cm);
+    result["confusion_matrix"] = to_json(cm, group_names);
 
     // VI2 only for single tree
     VariableImportance vi;

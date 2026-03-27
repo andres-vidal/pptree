@@ -1,16 +1,16 @@
 {
   "confusion_matrix": {
-    "class_errors": [
+    "group_errors": [
       0.07999999821186066,
       0.03999999910593033,
       0.0,
       0.05999999865889549
     ],
     "labels": [
-      0,
-      1,
-      2,
-      3
+      "BlueMale",
+      "BlueFemale",
+      "OrangeMale",
+      "OrangeFemale"
     ],
     "matrix": [
       [
@@ -41,13 +41,13 @@
   },
   "error_rate": 0.04500001668930054,
   "meta": {
-    "classes": [
+    "dataset": "crab",
+    "groups": [
       "BlueMale",
       "BlueFemale",
       "OrangeMale",
       "OrangeFemale"
     ],
-    "dataset": "crab",
     "lambda": 0.0,
     "n_vars": 3,
     "platform": "macos-clang",
@@ -59,19 +59,19 @@
     "trees": [
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              0,
-              2
+            "groups": [
+              "BlueMale",
+              "OrangeMale"
             ],
             "lower": {
-              "value": 0
+              "value": "BlueMale"
             },
             "pp_index_value": 0.7334357500076294,
             "projector": [
@@ -83,7 +83,7 @@
             ],
             "threshold": 0.22014659643173218,
             "upper": {
-              "value": 2
+              "value": "OrangeMale"
             }
           },
           "pp_index_value": 0.7180262207984924,
@@ -96,12 +96,12 @@
           ],
           "threshold": 0.11239848285913467,
           "upper": {
-            "classes": [
-              1,
-              3
+            "groups": [
+              "BlueFemale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 1
+              "value": "BlueFemale"
             },
             "pp_index_value": 0.7367681860923767,
             "projector": [
@@ -113,26 +113,26 @@
             ],
             "threshold": -0.01551586389541626,
             "upper": {
-              "value": 3
+              "value": "OrangeFemale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              2,
-              3
+            "groups": [
+              "OrangeMale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 2
+              "value": "OrangeMale"
             },
             "pp_index_value": 0.8958601951599121,
             "projector": [
@@ -144,7 +144,7 @@
             ],
             "threshold": 0.24563756585121155,
             "upper": {
-              "value": 3
+              "value": "OrangeFemale"
             }
           },
           "pp_index_value": 0.867453932762146,
@@ -157,12 +157,12 @@
           ],
           "threshold": -0.0226491317152977,
           "upper": {
-            "classes": [
-              0,
-              1
+            "groups": [
+              "BlueMale",
+              "BlueFemale"
             ],
             "lower": {
-              "value": 0
+              "value": "BlueMale"
             },
             "pp_index_value": 0.11589200049638748,
             "projector": [
@@ -174,26 +174,26 @@
             ],
             "threshold": -0.21661409735679626,
             "upper": {
-              "value": 1
+              "value": "BlueFemale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              0,
-              2
+            "groups": [
+              "BlueMale",
+              "OrangeMale"
             ],
             "lower": {
-              "value": 0
+              "value": "BlueMale"
             },
             "pp_index_value": 0.8686891794204712,
             "projector": [
@@ -205,7 +205,7 @@
             ],
             "threshold": 0.07179199904203415,
             "upper": {
-              "value": 2
+              "value": "OrangeMale"
             }
           },
           "pp_index_value": 0.7049495577812195,
@@ -218,12 +218,12 @@
           ],
           "threshold": 0.16662755608558655,
           "upper": {
-            "classes": [
-              1,
-              3
+            "groups": [
+              "BlueFemale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 1
+              "value": "BlueFemale"
             },
             "pp_index_value": 0.7870295643806458,
             "projector": [
@@ -235,26 +235,26 @@
             ],
             "threshold": 0.22791151702404022,
             "upper": {
-              "value": 3
+              "value": "OrangeFemale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              0,
-              1
+            "groups": [
+              "BlueMale",
+              "BlueFemale"
             ],
             "lower": {
-              "value": 0
+              "value": "BlueMale"
             },
             "pp_index_value": 0.7162818312644958,
             "projector": [
@@ -266,7 +266,7 @@
             ],
             "threshold": 0.1384941041469574,
             "upper": {
-              "value": 1
+              "value": "BlueFemale"
             }
           },
           "pp_index_value": 0.8079321384429932,
@@ -279,12 +279,12 @@
           ],
           "threshold": 0.028614923357963562,
           "upper": {
-            "classes": [
-              2,
-              3
+            "groups": [
+              "OrangeMale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 3
+              "value": "OrangeFemale"
             },
             "pp_index_value": 0.7760708928108215,
             "projector": [
@@ -296,26 +296,26 @@
             ],
             "threshold": -0.12300679087638855,
             "upper": {
-              "value": 2
+              "value": "OrangeMale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              1,
-              3
+            "groups": [
+              "BlueFemale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 1
+              "value": "BlueFemale"
             },
             "pp_index_value": 0.8210459351539612,
             "projector": [
@@ -327,7 +327,7 @@
             ],
             "threshold": 0.09306110441684723,
             "upper": {
-              "value": 3
+              "value": "OrangeFemale"
             }
           },
           "pp_index_value": 0.7328575849533081,
@@ -340,12 +340,12 @@
           ],
           "threshold": -0.1345750391483307,
           "upper": {
-            "classes": [
-              0,
-              2
+            "groups": [
+              "BlueMale",
+              "OrangeMale"
             ],
             "lower": {
-              "value": 0
+              "value": "BlueMale"
             },
             "pp_index_value": 0.8931348323822021,
             "projector": [
@@ -357,26 +357,26 @@
             ],
             "threshold": -0.05237807333469391,
             "upper": {
-              "value": 2
+              "value": "OrangeMale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              2,
-              3
+            "groups": [
+              "OrangeMale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 2
+              "value": "OrangeMale"
             },
             "pp_index_value": 0.31661269068717957,
             "projector": [
@@ -388,7 +388,7 @@
             ],
             "threshold": 0.10472531616687775,
             "upper": {
-              "value": 3
+              "value": "OrangeFemale"
             }
           },
           "pp_index_value": 0.7631159424781799,
@@ -401,12 +401,12 @@
           ],
           "threshold": 0.024010905995965004,
           "upper": {
-            "classes": [
-              0,
-              1
+            "groups": [
+              "BlueMale",
+              "BlueFemale"
             ],
             "lower": {
-              "value": 0
+              "value": "BlueMale"
             },
             "pp_index_value": 0.7118873000144958,
             "projector": [
@@ -418,26 +418,26 @@
             ],
             "threshold": 0.10478425025939941,
             "upper": {
-              "value": 1
+              "value": "BlueFemale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              0,
-              1
+            "groups": [
+              "BlueMale",
+              "BlueFemale"
             ],
             "lower": {
-              "value": 1
+              "value": "BlueFemale"
             },
             "pp_index_value": 0.11092805862426758,
             "projector": [
@@ -449,7 +449,7 @@
             ],
             "threshold": 0.4377082586288452,
             "upper": {
-              "value": 0
+              "value": "BlueMale"
             }
           },
           "pp_index_value": 0.8188812136650085,
@@ -462,12 +462,12 @@
           ],
           "threshold": 0.06428814679384232,
           "upper": {
-            "classes": [
-              2,
-              3
+            "groups": [
+              "OrangeMale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 3
+              "value": "OrangeFemale"
             },
             "pp_index_value": 0.8440156579017639,
             "projector": [
@@ -479,26 +479,26 @@
             ],
             "threshold": -0.1869482696056366,
             "upper": {
-              "value": 2
+              "value": "OrangeMale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              0,
-              1
+            "groups": [
+              "BlueMale",
+              "BlueFemale"
             ],
             "lower": {
-              "value": 0
+              "value": "BlueMale"
             },
             "pp_index_value": 0.11035900563001633,
             "projector": [
@@ -510,7 +510,7 @@
             ],
             "threshold": -0.3798242211341858,
             "upper": {
-              "value": 1
+              "value": "BlueFemale"
             }
           },
           "pp_index_value": 0.8749050498008728,
@@ -523,12 +523,12 @@
           ],
           "threshold": 0.0353044718503952,
           "upper": {
-            "classes": [
-              2,
-              3
+            "groups": [
+              "OrangeMale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 2
+              "value": "OrangeMale"
             },
             "pp_index_value": 0.8507530093193054,
             "projector": [
@@ -540,26 +540,26 @@
             ],
             "threshold": 0.2095733880996704,
             "upper": {
-              "value": 3
+              "value": "OrangeFemale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              1,
-              3
+            "groups": [
+              "BlueFemale",
+              "OrangeFemale"
             ],
             "lower": {
-              "value": 1
+              "value": "BlueFemale"
             },
             "pp_index_value": 0.7121198177337646,
             "projector": [
@@ -571,7 +571,7 @@
             ],
             "threshold": -0.006145793944597244,
             "upper": {
-              "value": 3
+              "value": "OrangeFemale"
             }
           },
           "pp_index_value": 0.7511495351791382,
@@ -584,12 +584,12 @@
           ],
           "threshold": -0.10271787643432617,
           "upper": {
-            "classes": [
-              0,
-              2
+            "groups": [
+              "BlueMale",
+              "OrangeMale"
             ],
             "lower": {
-              "value": 0
+              "value": "BlueMale"
             },
             "pp_index_value": 0.7363755702972412,
             "projector": [
@@ -601,32 +601,32 @@
             ],
             "threshold": 0.24525520205497742,
             "upper": {
-              "value": 2
+              "value": "OrangeMale"
             }
           }
         }
       },
       {
         "root": {
-          "classes": [
-            0,
-            1,
-            2,
-            3
+          "groups": [
+            "BlueMale",
+            "BlueFemale",
+            "OrangeMale",
+            "OrangeFemale"
           ],
           "lower": {
-            "classes": [
-              0,
-              1,
-              2
+            "groups": [
+              "BlueMale",
+              "BlueFemale",
+              "OrangeMale"
             ],
             "lower": {
-              "classes": [
-                0,
-                1
+              "groups": [
+                "BlueMale",
+                "BlueFemale"
               ],
               "lower": {
-                "value": 0
+                "value": "BlueMale"
               },
               "pp_index_value": 0.6890980005264282,
               "projector": [
@@ -638,7 +638,7 @@
               ],
               "threshold": 0.1418672800064087,
               "upper": {
-                "value": 1
+                "value": "BlueFemale"
               }
             },
             "pp_index_value": 0.8737398386001587,
@@ -651,7 +651,7 @@
             ],
             "threshold": 0.07124286144971848,
             "upper": {
-              "value": 2
+              "value": "OrangeMale"
             }
           },
           "pp_index_value": 0.6324523091316223,
@@ -664,7 +664,7 @@
           ],
           "threshold": 0.1893818974494934,
           "upper": {
-            "value": 3
+            "value": "OrangeFemale"
           }
         }
       }
@@ -672,206 +672,206 @@
   },
   "oob_error": 0.0913705825805664,
   "predictions": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    0,
-    0,
-    1,
-    0,
-    1,
-    0,
-    0,
-    0,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    3,
-    2,
-    2,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    2,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueFemale",
+    "BlueMale",
+    "BlueMale",
+    "BlueFemale",
+    "BlueMale",
+    "BlueFemale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueFemale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueMale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueMale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "BlueFemale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeFemale",
+    "OrangeMale",
+    "OrangeMale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeMale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale",
+    "OrangeFemale"
   ],
   "variable_importance": {
     "permuted": [

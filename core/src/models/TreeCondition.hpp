@@ -30,8 +30,8 @@ namespace ppforest2 {
 
     /** @brief Training specification used at this split (may be null). */
     TrainingSpec::Ptr training_spec = nullptr;
-    /** @brief Set of class labels reachable from this node. */
-    std::set<types::Response> classes;
+    /** @brief Set of group labels reachable from this node. */
+    std::set<types::Response> groups;
     /** @brief Projection pursuit index value achieved at this split. */
     types::Feature pp_index_value = 0;
 
@@ -40,7 +40,7 @@ namespace ppforest2 {
       TreeNode::Ptr             lower,
       TreeNode::Ptr             upper,
       TrainingSpec::Ptr         training_spec  = nullptr,
-      std::set<types::Response> classes        = {},
+      std::set<types::Response> groups         = {},
       types::Feature            pp_index_value = 0);
 
     void accept(TreeNode::Visitor& visitor) const override;
@@ -55,7 +55,7 @@ namespace ppforest2 {
      * threshold, and delegates to the appropriate child node.
      *
      * @param data  Feature vector (p).
-     * @return      Predicted class label from the reached leaf.
+     * @return      Predicted group label from the reached leaf.
      */
     types::Response predict(const types::FeatureVector& data) const override;
 
@@ -63,12 +63,12 @@ namespace ppforest2 {
       return false;
     }
 
-    int class_count() const override {
-      return static_cast<int>(classes.size());
+    int group_count() const override {
+      return static_cast<int>(groups.size());
     }
 
-    std::set<types::Response> node_classes() const override {
-      return classes;
+    std::set<types::Response> node_groups() const override {
+      return groups;
     }
 
     bool equals(const TreeNode& other) const override;
@@ -80,7 +80,7 @@ namespace ppforest2 {
       TreeNode::Ptr               lower,
       TreeNode::Ptr               upper,
       TrainingSpec::Ptr           training_spec  = nullptr,
-      std::set<types::Response>   classes        = {},
+      std::set<types::Response>   groups         = {},
       types::Feature              pp_index_value = 0);
   };
 }

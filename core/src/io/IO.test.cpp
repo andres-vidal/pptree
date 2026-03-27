@@ -1,0 +1,110 @@
+#include <gtest/gtest.h>
+
+#include "io/IO.hpp"
+#include "io/TempFile.hpp"
+
+#include <fstream>
+
+using namespace ppforest2;
+
+namespace {
+  void write_csv(const std::string& path, const std::string& content) {
+    std::ofstream out(path);
+    out << content;
+    out.close();
+  }
+}
+
+TEST(CSVReadTest, AllNumericFeatures) {
+  io::TempFile tmp(".csv");
+  write_csv(tmp.path(), "a,b,label\n1.0,2.0,x\n3.0,4.0,y\n5.0,6.0,x\n");
+
+  auto data = io::csv::read(tmp.path());
+
+  EXPECT_EQ(data.x.rows(), 3);
+  EXPECT_EQ(data.x.cols(), 2);
+  EXPECT_FLOAT_EQ(data.x(0, 0), 1.0f);
+  EXPECT_FLOAT_EQ(data.x(1, 1), 4.0f);
+  EXPECT_EQ(data.y(0), 0);
+  EXPECT_EQ(data.y(1), 1);
+  EXPECT_EQ(data.y(2), 0);
+}
+
+TEST(CSVReadTest, CategoricalFeatureColumn) {
+  io::TempFile tmp(".csv");
+  write_csv(tmp.path(), "color,size,label\nred,1.0,A\nblue,2.0,B\nred,3.0,A\ngreen,4.0,B\n");
+
+  auto data = io::csv::read(tmp.path());
+
+  EXPECT_EQ(data.x.rows(), 4);
+  EXPECT_EQ(data.x.cols(), 2);
+
+  // "color" column: red=0, blue=1, green=2 (order of first appearance)
+  EXPECT_FLOAT_EQ(data.x(0, 0), 0.0f);  // red
+  EXPECT_FLOAT_EQ(data.x(1, 0), 1.0f);  // blue
+  EXPECT_FLOAT_EQ(data.x(2, 0), 0.0f);  // red
+  EXPECT_FLOAT_EQ(data.x(3, 0), 2.0f);  // green
+
+  // "size" column: numeric, unchanged
+  EXPECT_FLOAT_EQ(data.x(0, 1), 1.0f);
+  EXPECT_FLOAT_EQ(data.x(1, 1), 2.0f);
+}
+
+TEST(CSVReadTest, MultipleCategoricalColumns) {
+  io::TempFile tmp(".csv");
+  write_csv(tmp.path(), "color,shape,val,label\nred,circle,1.0,X\nblue,square,2.0,Y\nred,circle,3.0,X\n");
+
+  auto data = io::csv::read(tmp.path());
+
+  EXPECT_EQ(data.x.rows(), 3);
+  EXPECT_EQ(data.x.cols(), 3);
+
+  // color: red=0, blue=1
+  EXPECT_FLOAT_EQ(data.x(0, 0), 0.0f);
+  EXPECT_FLOAT_EQ(data.x(1, 0), 1.0f);
+  EXPECT_FLOAT_EQ(data.x(2, 0), 0.0f);
+
+  // shape: circle=0, square=1
+  EXPECT_FLOAT_EQ(data.x(0, 1), 0.0f);
+  EXPECT_FLOAT_EQ(data.x(1, 1), 1.0f);
+  EXPECT_FLOAT_EQ(data.x(2, 1), 0.0f);
+
+  // val: numeric
+  EXPECT_FLOAT_EQ(data.x(0, 2), 1.0f);
+}
+
+TEST(CSVReadTest, GroupNamesPopulated) {
+  io::TempFile tmp(".csv");
+  write_csv(tmp.path(), "x,label\n1.0,setosa\n2.0,virginica\n3.0,setosa\n");
+
+  auto data = io::csv::read(tmp.path());
+
+  ASSERT_EQ(data.group_names.size(), 2u);
+  EXPECT_EQ(data.group_names[0], "setosa");
+  EXPECT_EQ(data.group_names[1], "virginica");
+}
+
+TEST(CSVReadTest, GroupNamesPreservedAfterSort) {
+  io::TempFile tmp(".csv");
+  write_csv(tmp.path(), "x,label\n1.0,B\n2.0,A\n3.0,B\n4.0,A\n");
+
+  auto data = io::csv::read_sorted(tmp.path());
+
+  ASSERT_EQ(data.group_names.size(), 2u);
+  EXPECT_EQ(data.group_names[0], "B");
+  EXPECT_EQ(data.group_names[1], "A");
+}
+
+TEST(CSVReadTest, CrabsDatasetWithCategoricalSex) {
+  auto data = io::csv::read(PPFOREST2_DATA_DIR "/crabs.csv");
+
+  EXPECT_EQ(data.x.cols(), 7);  // sex + index + 5 morphometrics
+  EXPECT_EQ(data.x.rows(), 200);
+
+  // "sex" is the first column and is categorical (M/F)
+  // All values should be 0 or 1
+  for (int i = 0; i < data.x.rows(); ++i) {
+    float val = data.x(i, 0);
+    EXPECT_TRUE(val == 0.0f || val == 1.0f) << "Row " << i << " sex=" << val;
+  }
+}

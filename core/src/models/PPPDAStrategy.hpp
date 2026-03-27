@@ -8,7 +8,7 @@ namespace ppforest2::pp {
    * @brief Penalized Discriminant Analysis projection pursuit strategy.
    *
    * Optimizes a linear discriminant projection using a penalized
-   * between-class / within-class variance ratio.  The @c lambda
+   * between-group / within-group variance ratio.  The @c lambda
    * parameter controls the penalty strength in the LDA index.
    */
   struct PPPDAStrategy : public PPStrategy {

@@ -4,7 +4,7 @@
  * ppforest2 uses the Visitor pattern (double dispatch) to traverse
  * trees and models without `dynamic_cast`.  You can add new traversal
  * logic — statistics, export formats, analysis — by implementing a
- * visitor, without modifying the model classes.
+ * visitor, without modifying the model types.
  *
  * Three visitor interfaces are available:
  *
@@ -50,12 +50,12 @@
  * - `projector` — the projection vector (p) used at this split
  * - `threshold` — the split threshold in projected space
  * - `lower` / `upper` — child nodes (TreeNode::Ptr)
- * - `classes` — set of class labels reachable from this node
+ * - `groups` — set of group labels reachable from this node
  * - `pp_index_value` — the PP index value achieved at this split
  * - `training_spec` — the TrainingSpec used to build this subtree
  *
  * **TreeResponse** (leaf node) provides:
- * - `value` — the predicted class label
+ * - `value` — the predicted group label
  *
  * @subsection vis_treenode_traversal Traversal pattern
  *
@@ -189,7 +189,7 @@
  * @code
  *   AllLabelsVisitor visitor;
  *   model.accept(visitor);
- *   // visitor.labels contains all class labels in the model
+ *   // visitor.labels contains all group labels in the model
  * @endcode
  *
  * @section vis_specvisitor Implementing a TrainingSpec::Visitor

@@ -13,7 +13,7 @@ namespace ppforest2 {
    *
    * Each internal node projects data onto a linear combination of
    * features and splits on the projected value.  Leaf nodes hold
-   * class labels.
+   * group labels.
    *
    * @code
    *   TrainingSpecPDA spec(lambda: 0.0);

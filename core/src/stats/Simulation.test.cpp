@@ -21,10 +21,10 @@ TEST(Simulate, CorrectNumberOfClasses) {
   RNG rng(42);
   auto data = simulate(90, 4, 3, rng);
 
-  ASSERT_EQ(data.classes.size(), 3);
-  ASSERT_TRUE(data.classes.count(0));
-  ASSERT_TRUE(data.classes.count(1));
-  ASSERT_TRUE(data.classes.count(2));
+  ASSERT_EQ(data.groups.size(), 3);
+  ASSERT_TRUE(data.groups.count(0));
+  ASSERT_TRUE(data.groups.count(1));
+  ASSERT_TRUE(data.groups.count(2));
 }
 
 TEST(Simulate, BalancedClasses) {
@@ -51,14 +51,14 @@ TEST(Simulate, TwoClasses) {
   auto data = simulate(50, 2, 2, rng);
 
   ASSERT_EQ(data.x.rows(), 50);
-  ASSERT_EQ(data.classes.size(), 2);
+  ASSERT_EQ(data.groups.size(), 2);
 }
 
 TEST(Simulate, ManyClasses) {
   RNG rng(42);
   auto data = simulate(100, 4, 10, rng);
 
-  ASSERT_EQ(data.classes.size(), 10);
+  ASSERT_EQ(data.groups.size(), 10);
   ASSERT_EQ(data.x.rows(), 100);
 }
 
@@ -79,7 +79,7 @@ TEST(Simulate, CustomParams) {
   auto data = simulate(60, 2, 3, rng, params);
 
   ASSERT_EQ(data.x.rows(), 60);
-  ASSERT_EQ(data.classes.size(), 3);
+  ASSERT_EQ(data.groups.size(), 3);
 }
 
 TEST(Simulate, Deterministic) {
@@ -112,7 +112,7 @@ TEST(Split, PreservesClassProportions) {
 
   ASSERT_EQ(s.tr.size() + s.te.size(), 90);
 
-  // With 30 per class and 0.8 ratio, expect ~24 train per class
+  // With 30 per group and 0.8 ratio, expect ~24 train per group
   // Total train should be ~72
   ASSERT_GE(s.tr.size(), 60);
   ASSERT_LE(s.tr.size(), 78);

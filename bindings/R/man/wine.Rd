@@ -15,7 +15,7 @@ A dataset containing 178 observations from 3 wine grown cultivares in Italy.
 }
 \details{
 \describe{
-  \item{Type}{ Class variable has 3 classes that are 3 different wine grown cultivares in Italy. }
+  \item{Type}{ Group variable has 3 groups that are 3 different wine grown cultivars in Italy. }
   \item{X1 to X13}{Check vbles}
 }
 }

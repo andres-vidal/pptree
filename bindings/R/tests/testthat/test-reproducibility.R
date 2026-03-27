@@ -31,13 +31,13 @@ as_mat <- function(x) {
   do.call(rbind, lapply(x, unlist))
 }
 
-# Golden files use C++ class ordering (order of first appearance in CSV).
+# Golden files use C++ group ordering (order of first appearance in CSV).
 # R uses alphabetical factor levels by default. To ensure the R model is
 # trained on identically-ordered data, we reorder the factor levels to
 # match the golden file before training.
 prepare_data <- function(data, golden) {
-  golden_classes <- as_vec(golden$meta$classes)
-  data$Type <- factor(data$Type, levels = golden_classes)
+  golden_groups <- as_vec(golden$meta$groups)
+  data$Type <- factor(data$Type, levels = golden_groups)
   data
 }
 
@@ -46,27 +46,38 @@ prepare_data <- function(data, golden) {
 # ---------------------------------------------------------------------------
 
 # Normalize a node to a canonical representation for comparison.
-# R model nodes use 1-based class indices; golden JSON uses 0-based.
-# Both are converted to 0-based with consistent numeric types.
-normalize_node <- function(node, r_to_cpp = FALSE) {
-  offset <- if (r_to_cpp) 1L else 0L
+# R model nodes use 1-based group indices; golden JSON uses string labels.
+# R indices are mapped to string labels via group_names for comparison.
+normalize_node <- function(node, group_names = NULL) {
   if (!is.null(node$value)) {
-    list(value = as.numeric(node$value) - offset)
+    value <- if (!is.null(group_names)) {
+      group_names[as.integer(node$value)]
+    } else {
+      node$value
+    }
+
+    list(value = value)
   } else {
+    groups <- if (!is.null(group_names)) {
+      sort(group_names[as.integer(unlist(node$groups))])
+    } else {
+      sort(as.character(unlist(node$groups)))
+    }
+
     list(
       projector      = as.numeric(unlist(node$projector)),
       threshold      = as.numeric(node$threshold),
       pp_index_value = as.numeric(node$pp_index_value),
-      classes        = sort(as.integer(unlist(node$classes)) - offset),
-      lower          = normalize_node(node$lower, r_to_cpp),
-      upper          = normalize_node(node$upper, r_to_cpp)
+      groups         = groups,
+      lower          = normalize_node(node$lower, group_names),
+      upper          = normalize_node(node$upper, group_names)
     )
   }
 }
 
-compare_tree <- function(actual_root, expected_root, info = "") {
-  actual <- normalize_node(actual_root, r_to_cpp = TRUE)
-  expected <- normalize_node(expected_root, r_to_cpp = FALSE)
+compare_tree <- function(actual_root, expected_root, group_names, info = "") {
+  actual <- normalize_node(actual_root, group_names = group_names)
+  expected <- normalize_node(expected_root, group_names = NULL)
   expect_equal(actual, expected, tolerance = 1e-3, info = info)
 }
 
@@ -76,9 +87,8 @@ compare_tree <- function(actual_root, expected_root, info = "") {
 
 compare_predictions <- function(model, golden, data) {
   predicted <- predict(model, data)
-  golden_classes <- as_vec(golden$meta$classes)
-  preds <- as.integer(as_vec(golden$predictions))
-  expected <- factor(golden_classes[preds + 1L], levels = levels(predicted))
+  golden_preds <- as.character(as_vec(golden$predictions))
+  expected <- factor(golden_preds, levels = levels(predicted))
   expect_equal(predicted, expected)
 }
 
@@ -91,29 +101,30 @@ compare_error_rate <- function(model, golden, data, response) {
 compare_confusion_matrix <- function(model, golden, data, response) {
   predicted <- predict(model, data)
   expected_cm <- golden$confusion_matrix
+  golden_groups <- as.character(as_vec(golden$meta$groups))
 
-  n_classes <- length(model$classes)
-  # Align predicted levels with response levels (golden class ordering)
+  n_groups <- length(model$groups)
+  # Align predicted levels with response levels (golden group ordering)
   predicted <- factor(predicted, levels = levels(response))
   actual_idx <- as.integer(response)
   pred_idx <- as.integer(predicted)
 
-  cm <- matrix(0L, nrow = n_classes, ncol = n_classes)
+  cm <- matrix(0L, nrow = n_groups, ncol = n_groups)
   for (i in seq_along(actual_idx)) {
     cm[actual_idx[i], pred_idx[i]] <- cm[actual_idx[i], pred_idx[i]] + 1L
   }
 
   expect_equal(cm, as_mat(expected_cm$matrix))
-  expect_equal(as.integer(as_vec(expected_cm$labels)), seq(0L, n_classes - 1L))
+  expect_equal(as.character(as_vec(expected_cm$labels)), golden_groups)
 
-  class_errors <- numeric(n_classes)
-  for (i in seq_len(n_classes)) {
+  group_errors <- numeric(n_groups)
+  for (i in seq_len(n_groups)) {
     row_total <- sum(cm[i, ])
     if (row_total > 0) {
-      class_errors[i] <- 1 - cm[i, i] / row_total
+      group_errors[i] <- 1 - cm[i, i] / row_total
     }
   }
-  expect_equal(class_errors, as.numeric(as_vec(expected_cm$class_errors)),
+  expect_equal(group_errors, as.numeric(as_vec(expected_cm$group_errors)),
     tolerance = 1e-3)
 }
 
@@ -139,7 +150,7 @@ describe("Reproducibility: iris tree-pda-s42", {
   model <- pptr(Type ~ ., data = d, seed = 42L)
 
   it("model structure matches golden file", {
-    compare_tree(model$root, golden$model$root)
+    compare_tree(model$root, golden$model$root, as_vec(golden$meta$groups))
   })
 
   it("predictions match golden file", {
@@ -169,7 +180,7 @@ describe("Reproducibility: crab tree-pda-s42", {
   model <- pptr(Type ~ ., data = d, seed = 42L)
 
   it("model structure matches golden file", {
-    compare_tree(model$root, golden$model$root)
+    compare_tree(model$root, golden$model$root, as_vec(golden$meta$groups))
   })
 
   it("predictions match golden file", {
@@ -201,7 +212,7 @@ describe("Reproducibility: iris forest-pda-t5-s42", {
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
       compare_tree(model$trees[[i]]$root, golden$model$trees[[i]]$root,
-        info = paste("tree", i))
+        as_vec(golden$meta$groups), info = paste("tree", i))
     }
   })
 
@@ -250,7 +261,7 @@ describe("Reproducibility: iris forest-pda-l05-t5-s42", {
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
       compare_tree(model$trees[[i]]$root, golden$model$trees[[i]]$root,
-        info = paste("tree", i))
+        as_vec(golden$meta$groups), info = paste("tree", i))
     }
   })
 
@@ -299,7 +310,7 @@ describe("Reproducibility: crab forest-pda-t10-s42", {
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
       compare_tree(model$trees[[i]]$root, golden$model$trees[[i]]$root,
-        info = paste("tree", i))
+        as_vec(golden$meta$groups), info = paste("tree", i))
     }
   })
 
@@ -348,7 +359,7 @@ describe("Reproducibility: wine forest-pda-t10-s42", {
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
       compare_tree(model$trees[[i]]$root, golden$model$trees[[i]]$root,
-        info = paste("tree", i))
+        as_vec(golden$meta$groups), info = paste("tree", i))
     }
   })
 
@@ -397,7 +408,7 @@ describe("Reproducibility: glass forest-pda-t10-s42", {
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
       compare_tree(model$trees[[i]]$root, golden$model$trees[[i]]$root,
-        info = paste("tree", i))
+        as_vec(golden$meta$groups), info = paste("tree", i))
     }
   })
 

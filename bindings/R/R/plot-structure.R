@@ -4,38 +4,38 @@
 
 #' Compute histogram bar rectangles for one internal (condition) node.
 #'
-#' Bins the projected values by class, then maps bin coordinates from
+#' Bins the projected values by group, then maps bin coordinates from
 #' projection space to the node's rectangle in the tree layout canvas.
 #' This is NOT a standard ggplot2 \code{geom_histogram} — it produces raw
 #' rectangle coordinates (xmin/xmax/ymin/ymax) that are drawn with
 #' \code{geom_rect} so each node's histogram is embedded inside its box.
 #'
 #' @param nd A node data list from \code{ppforest2_tree_node_data()},
-#'   with \code{$projected} (numeric), \code{$classes} (integer),
+#'   with \code{$projected} (numeric), \code{$groups} (integer),
 #'   and \code{$threshold} (numeric).
 #' @param cx,cy Center position of the node on the layout canvas.
 #' @param node_w,node_h Width and height of the node rectangle.
-#' @param class_labels Character vector of class names (model$classes).
+#' @param group_labels Character vector of group names (model$groups).
 #' @param n_bins Number of histogram bins (default 15).
 #' @return List with:
 #'   \describe{
-#'     \item{bars}{data.frame with xmin, xmax, ymin, ymax, class columns}
+#'     \item{bars}{data.frame with xmin, xmax, ymin, ymax, group columns}
 #'     \item{thr_x}{x-coordinate of the threshold line in canvas space}
 #'     \item{thr_y_min, thr_y_max}{y-extent of the threshold line}
 #'     \item{ticks}{data.frame with x, y, label for axis tick labels}
 #'   }
 #'   or NULL if no non-empty bins exist.
 #' @noRd
-compute_histogram_bars <- function(nd, cx, cy, node_w, node_h, class_labels, n_bins = 15) {
+compute_histogram_bars <- function(nd, cx, cy, node_w, node_h, group_labels, n_bins = 15) {
   vals <- nd$projected
-  cls <- class_labels[nd$classes]
+  cls <- group_labels[nd$groups]
   threshold <- nd$threshold
 
   breaks <- seq(min(vals), max(vals), length.out = n_bins + 1)
-  unique_classes <- unique(cls)
+  unique_groups <- unique(cls)
 
   bars <- list()
-  for (cl in unique_classes) {
+  for (cl in unique_groups) {
     cl_vals <- vals[cls == cl]
     h <- graphics::hist(cl_vals, breaks = breaks, plot = FALSE)
     if (any(h$counts > 0)) {
@@ -43,7 +43,7 @@ compute_histogram_bars <- function(nd, cx, cy, node_w, node_h, class_labels, n_b
         bin_left  = h$breaks[-length(h$breaks)],
         bin_right = h$breaks[-1],
         count     = h$counts,
-        class     = cl,
+        group     = cl,
         stringsAsFactors = FALSE
       )
     }
@@ -138,12 +138,12 @@ format_projector <- function(projector, var_names, max_terms = 4L) {
 #' Draws a tree diagram on a 2D canvas with:
 #' \itemize{
 #'   \item Edges connecting parent to child nodes (grey segments with labels)
-#'   \item Internal nodes as white rectangles containing stacked class
+#'   \item Internal nodes as white rectangles containing stacked group
 #'     histograms of the projected values at that split, with a dashed
 #'     threshold line
 #'   \item A compact projector equation below each internal node showing
 #'     the top coefficients (controlled by \code{max_terms})
-#'   \item Leaf nodes as class-colored rectangles with the predicted class
+#'   \item Leaf nodes as group-colored rectangles with the predicted group
 #'     label
 #' }
 #'
@@ -153,7 +153,7 @@ format_projector <- function(projector, var_names, max_terms = 4L) {
 #' through the tree.
 #'
 #' @param model A pptr model with \code{$root}, \code{$x}, \code{$y},
-#'   \code{$classes}.
+#'   \code{$groups}.
 #' @param max_terms Maximum number of projector terms to display per node
 #'   (default 3).  Only the largest-magnitude coefficients are shown.
 #' @param ... Currently unused.
@@ -161,8 +161,8 @@ format_projector <- function(projector, var_names, max_terms = 4L) {
 #' @noRd
 plot_tree_structure <- function(model, max_terms = 3L, ...) {
   nodes <- ppforest2_tree_node_data(model, model$x, model$y)
-  class_labels <- model$classes
-  class_colors <- get_class_colors(class_labels)
+  group_labels <- model$groups
+  group_colors <- get_group_colors(group_labels)
   var_names <- get_variable_names(model)
 
   node_w <- ppforest2_node_w
@@ -190,11 +190,11 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     nd <- nodes[[row$node_idx]]
 
     if (nd$is_leaf) {
-      predicted <- class_labels[nd$value]
+      predicted <- group_labels[nd$value]
       leaf_bg_df[[length(leaf_bg_df) + 1L]] <- data.frame(
         xmin = row$x - leaf_w / 2, xmax = row$x + leaf_w / 2,
         ymin = row$y - leaf_h / 2, ymax = row$y + leaf_h / 2,
-        class = predicted,
+        group = predicted,
         stringsAsFactors = FALSE
       )
       leaf_label_df[[length(leaf_label_df) + 1L]] <- data.frame(
@@ -208,7 +208,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
         stringsAsFactors = FALSE
       )
 
-      hist_data <- compute_histogram_bars(nd, row$x, row$y, node_w, node_h, class_labels)
+      hist_data <- compute_histogram_bars(nd, row$x, row$y, node_w, node_h, group_labels)
 
       if (!is.null(hist_data)) {
         all_bars[[length(all_bars) + 1L]] <- hist_data$bars
@@ -276,7 +276,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     p <- p + ggplot2::geom_rect(
       data = bar_df,
       ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
-                   fill = class),
+                   fill = group),
       alpha = ppforest2_alpha_hist, color = NA
     )
   }
@@ -304,7 +304,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     p <- p + ggplot2::geom_rect(
       data = leaf_bg,
       ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
-                   fill = class),
+                   fill = group),
       alpha = ppforest2_alpha_leaf, color = ppforest2_col_border, linewidth = ppforest2_lw_light
     )
   }
@@ -329,7 +329,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
 
   # Color scale and title
   p <- p +
-    ggplot2::scale_fill_manual(values = class_colors, name = "Class") +
+    ggplot2::scale_fill_manual(values = group_colors, name = "Class") +
     ggplot2::ggtitle("PP Decision Tree Structure") +
     ggplot2::coord_cartesian(
       xlim = c(min(node_df$x) - node_w / 2 - 0.2,

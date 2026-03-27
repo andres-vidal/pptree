@@ -80,19 +80,22 @@ namespace {
     return GOLDEN_DIR + "/" + dataset + "/" + slug + ".json";
   }
 
-  void compare_predictions(const json& expected_json, const ResponseVector& actual) {
-    auto expected = expected_json.get<std::vector<int>>();
+  void compare_predictions(const json& expected_json, const ResponseVector& actual,
+    const std::vector<std::string>& group_names) {
+    auto expected = expected_json.get<std::vector<std::string>>();
 
     ASSERT_EQ(static_cast<int>(expected.size()), actual.size()) << "Prediction count mismatch";
 
     for (int i = 0; i < actual.size(); ++i) {
-      EXPECT_EQ(expected[i], actual(i)) << "Prediction mismatch at index " << i;
+      std::string actual_label = group_names[static_cast<std::size_t>(actual(i))];
+      EXPECT_EQ(expected[static_cast<std::size_t>(i)], actual_label) << "Prediction mismatch at index " << i;
     }
   }
 
-  void compare_confusion_matrix(const json& expected_json, const ConfusionMatrix& actual) {
+  void compare_confusion_matrix(const json& expected_json, const ConfusionMatrix& actual,
+    const std::vector<std::string>& group_names) {
     auto expected_matrix = expected_json["matrix"];
-    auto expected_labels = expected_json["labels"].get<std::vector<int>>();
+    auto expected_labels = expected_json["labels"].get<std::vector<std::string>>();
 
     ASSERT_EQ(static_cast<int>(expected_matrix.size()), actual.values.rows());
 
@@ -103,9 +106,9 @@ namespace {
     }
 
     // Compare labels
-    std::vector<int> actual_labels;
+    std::vector<std::string> actual_labels;
     for (const auto& [label, idx] : actual.label_index) {
-      actual_labels.push_back(label);
+      actual_labels.push_back(group_names[static_cast<std::size_t>(label)]);
     }
 
     ASSERT_EQ(expected_labels, actual_labels);
@@ -130,17 +133,17 @@ namespace {
     float tolerance, const std::string& path) {
     if (expected.contains("value")) {
       ASSERT_TRUE(actual.contains("value")) << path << ": expected leaf node";
-      EXPECT_EQ(expected["value"].get<int>(), actual["value"].get<int>())
+      EXPECT_EQ(expected["value"].get<std::string>(), actual["value"].get<std::string>())
         << path << ".value mismatch";
       return;
     }
 
     ASSERT_TRUE(actual.contains("projector")) << path << ": expected condition node";
 
-    // Compare classes (exact int equality)
-    auto expected_classes = expected["classes"].get<std::vector<int>>();
-    auto actual_classes   = actual["classes"].get<std::vector<int>>();
-    EXPECT_EQ(expected_classes, actual_classes) << path << ".classes mismatch";
+    // Compare groups (string labels)
+    auto expected_groups = expected["groups"].get<std::vector<std::string>>();
+    auto actual_groups   = actual["groups"].get<std::vector<std::string>>();
+    EXPECT_EQ(expected_groups, actual_groups) << path << ".groups mismatch";
 
     // Compare floats with tolerance
     EXPECT_NEAR(expected["pp_index_value"].get<float>(),
@@ -167,14 +170,14 @@ namespace {
   }
 
   void compare_model_structure(const json& expected_json, const Tree& actual,
-    float tolerance = 1e-3f) {
-    json actual_json = serialization::to_json(actual);
+    const std::vector<std::string>& group_names, float tolerance = 1e-3f) {
+    json actual_json = serialization::to_json(actual, group_names);
     compare_node(expected_json["root"], actual_json["root"], tolerance, "root");
   }
 
   void compare_model_structure(const json& expected_json, const Forest& actual,
-    float tolerance = 1e-3f) {
-    json actual_json     = serialization::to_json(actual);
+    const std::vector<std::string>& group_names, float tolerance = 1e-3f) {
+    json actual_json     = serialization::to_json(actual, group_names);
     auto& expected_trees = expected_json["trees"];
     auto& actual_trees   = actual_json["trees"];
 
@@ -209,20 +212,21 @@ namespace {
           auto path = resolve_golden_path(dataset_name, slug_name);                         \
           invariant(std::filesystem::exists(path), "Golden file missing: " + path);         \
                                                                                             \
-          auto golden = load_golden(path);                                                  \
-          auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                    \
+          auto golden      = load_golden(path);                                             \
+          auto group_names = golden["meta"]["groups"].get<std::vector<std::string>>();      \
+          auto data        = io::csv::read_sorted(DATA_DIR + "/" + csv_file);               \
                                                                                             \
           RNG rng(seed_val);                                                                \
           Tree tree = Tree::train(TrainingSpecPDA(lambda_val), data.x, data.y, rng);        \
                                                                                             \
-          compare_model_structure(golden["model"], tree);                                   \
+          compare_model_structure(golden["model"], tree, group_names);                      \
                                                                                             \
           auto predictions = tree.predict(data.x);                                          \
-          compare_predictions(golden["predictions"], predictions);                          \
+          compare_predictions(golden["predictions"], predictions, group_names);             \
                                                                                             \
           ConfusionMatrix cm(predictions, data.y);                                          \
           EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                \
-          compare_confusion_matrix(golden["confusion_matrix"], cm);                         \
+          compare_confusion_matrix(golden["confusion_matrix"], cm, group_names);            \
                                                                                             \
           if (golden.contains("variable_importance")) {                                     \
             const int n_vars    = static_cast<int>(data.x.cols());                          \
@@ -239,21 +243,22 @@ namespace {
           auto path = resolve_golden_path(dataset_name, slug_name);                             \
           invariant(std::filesystem::exists(path), "Golden file missing: " + path);             \
                                                                                                 \
-          auto golden = load_golden(path);                                                      \
-          auto data   = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                        \
+          auto golden      = load_golden(path);                                                 \
+          auto group_names = golden["meta"]["groups"].get<std::vector<std::string>>();          \
+          auto data        = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                   \
                                                                                                 \
           Forest forest = Forest::train(                                                        \
             TrainingSpecUPDA(n_vars_val, lambda_val),                                           \
             data.x, data.y, n_trees, seed_val, 1);                                              \
                                                                                                 \
-          compare_model_structure(golden["model"], forest);                                     \
+          compare_model_structure(golden["model"], forest, group_names);                        \
                                                                                                 \
           auto predictions = forest.predict(data.x);                                            \
-          compare_predictions(golden["predictions"], predictions);                              \
+          compare_predictions(golden["predictions"], predictions, group_names);                 \
                                                                                                 \
           ConfusionMatrix cm(predictions, data.y);                                              \
           EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                    \
-          compare_confusion_matrix(golden["confusion_matrix"], cm);                             \
+          compare_confusion_matrix(golden["confusion_matrix"], cm, group_names);                \
                                                                                                 \
           if (golden.contains("oob_error")) {                                                   \
             double oob_err = forest.oob_error(data.x, data.y);                                  \

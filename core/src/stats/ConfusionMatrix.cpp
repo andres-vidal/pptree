@@ -47,7 +47,7 @@ namespace ppforest2::stats {
     }
   }
 
-  types::Vector<float> ConfusionMatrix::class_errors() const {
+  types::Vector<float> ConfusionMatrix::group_errors() const {
     Matrix<int> error_matrix = values;
     error_matrix.diagonal().setZero();
 

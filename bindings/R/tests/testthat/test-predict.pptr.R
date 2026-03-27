@@ -13,7 +13,7 @@ describe("predict.pptr", {
       expect_equal(length(predictions), nrow(iris))
     })
 
-    it("returns a factor with the same levels as the classes in the model", {
+    it("returns a factor with the same levels as the groups in the model", {
       model <- pptr(Type ~ ., data = iris)
       predictions <- predict(model, iris)
       expect_equal(levels(predictions), levels(iris$Type))
@@ -36,7 +36,7 @@ describe("predict.pptr", {
       expect_equal(length(predictions), nrow(x))
     })
 
-    it("returns a factor with the same levels as the classes in the model", {
+    it("returns a factor with the same levels as the groups in the model", {
       x <- crabs[, 2:5]
       x$sex <- as.numeric(as.factor(crabs$sex))
       model <- pptr(x = x, y = crabs$Type)
@@ -46,7 +46,7 @@ describe("predict.pptr", {
   })
 
   describe("with type = 'prob'", {
-    it("returns a data frame with one column per class", {
+    it("returns a data frame with one column per group", {
       model <- pptr(Type ~ ., data = iris)
       probs <- predict(model, iris, type = "prob")
       expect_true(is.data.frame(probs))
@@ -62,12 +62,12 @@ describe("predict.pptr", {
       expect_true(all(probs == 0 | probs == 1))
     })
 
-    it("the 1.0 column matches the class prediction", {
+    it("the 1.0 column matches the group prediction", {
       model <- pptr(Type ~ ., data = iris)
-      class_preds <- predict(model, iris, type = "class")
+      group_preds <- predict(model, iris, type = "class")
       prob_preds <- predict(model, iris, type = "prob")
       for (i in seq_len(nrow(iris))) {
-        expect_equal(prob_preds[i, as.character(class_preds[i])], 1.0)
+        expect_equal(prob_preds[i, as.character(group_preds[i])], 1.0)
       }
     })
   })

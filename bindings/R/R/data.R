@@ -25,7 +25,7 @@ NULL
 #'  from two species of crab (blue and orange), there are 50 specimens of each sex of each species,
 #'   collected on site at Fremantle, Western Australia.
 #' \describe{
-#'   \item{Type}{ is the class variable and has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale)}.
+#'   \item{Type}{ is the group variable and has 4 groups with the combinations of species and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale)}.
 #'   \item{FL}{the size of the frontal lobe length, in mm}
 #'   \item{RW}{rear width, in mm}
 #'   \item{CL}{length of midline of the carapace, in mm}
@@ -46,7 +46,7 @@ NULL
 #' There are 159 fishes of 7 species are caught and measured. Altogether there are
 #' 7 variables.  All the fishes are caught from the same lake(Laengelmavesi) near Tampere in Finland.
 #' \describe{
-#' 	 \item{Type}{ has 7 fish classes, with 35 cases of Bream, 11 cases of Parkki, 56 cases of Perch 17 cases of Pike, 20 cases of Roach, 14 cases of Smelt and 6 cases of Whitewish.}
+#' 	 \item{Type}{ has 7 fish groups, with 35 cases of Bream, 11 cases of Parkki, 56 cases of Perch 17 cases of Pike, 20 cases of Roach, 14 cases of Smelt and 6 cases of Whitewish.}
 #' 	 \item{weight}{ Weight of the fish (in grams)}
 #' 	 \item{length1}{ Length from the nose to the beginning of the tail (in cm)}
 #' 	 \item{length2}{ Length from the nose to the notch of the tail (in cm)}
@@ -138,9 +138,9 @@ NULL
 
 #' Leukemia Dataset
 #'
-#' This dataset comes from a study of gene expression in two types of acute leukemias, acute lymphoblastic leukemia (ALL) and acute myeloid leukemia (AML). Gene expression levels were measured using Affymetrix high density oligonucleotide arrays containing 6817 human genes. A dataset containing 72 observations from 3 leukemia types classes.
+#' This dataset comes from a study of gene expression in two types of acute leukemias, acute lymphoblastic leukemia (ALL) and acute myeloid leukemia (AML). Gene expression levels were measured using Affymetrix high density oligonucleotide arrays containing 6817 human genes. A dataset containing 72 observations from 3 leukemia type groups.
 #' \describe{
-#'   \item{Type}{ has 3 classes with 38 cases of B-cell ALL, 25 cases of AML and 9 cases of T-cell ALL}.
+#'   \item{Type}{ has 3 groups with 38 cases of B-cell ALL, 25 cases of AML and 9 cases of T-cell ALL}.
 #'   \item{Gene1 to Gen 40}{ gene expression levels}
 #' }
 #' @docType data
@@ -155,7 +155,7 @@ NULL
 #'
 #' Gene expression in the three most prevalent adult lymphoid malignancies: B-cell chronic lymphocytic leukemia (B-CLL), follicular lymphoma (FL), and diffuse large B-cell lym- phoma (DLBCL). Gene expression levels were measured using a specialized cDNA microarray, the Lymphochip, containing genes that are preferentially expressed in lymphoid cells or that are of known immunologic or oncologic importance. This dataset contain 80 observations from 3 lymphoma types.
 #' \describe{
-#'   \item{Type}{ Class variable has 3 classes with 29 cases of B-cell ALL (B-CLL), 42 cases of diffuse large B-cell lymphoma (DLBCL) and 9 cases of follicular lymphoma (FL)}.
+#'   \item{Type}{ Group variable has 3 groups with 29 cases of B-cell ALL (B-CLL), 42 cases of diffuse large B-cell lymphoma (DLBCL) and 9 cases of follicular lymphoma (FL)}.
 #'   \item{Gene1 to Gen 50}{gene expression}
 #'   }
 #'
@@ -188,7 +188,7 @@ NULL
 #'
 #' Contains  572 observations and 10 variables
 #' \describe{
-#'   \item{Region}{Three super-classes of Italy: North, South and the island of Sardinia }
+#'   \item{Region}{Three super-groups of Italy: North, South and the island of Sardinia }
 #'   \item{area}{ Nine collection areas: three from North, four from South and 2 from Sardinia}
 #'   \item{palmitic}{ fatty acids percent x 100}
 #'   \item{palmitoleic}{ fatty acids percent x 100 }
@@ -211,7 +211,7 @@ NULL
 #'
 #' A dataset containing 195 observations from 2 parkinson types.
 #' \describe{
-#'  \item{Type}{ Class variable has 2 classes, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures}.
+#'  \item{Type}{ Group variable has 2 groups, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures}.
 #'   \item{X1}{ Average vocal fundamental frequency}
 #'   \item{X2}{ Maximum vocal fundamental frequency}
 #'   \item{X3}{ Minimum vocal fundamental frequency}
@@ -249,7 +249,7 @@ NULL
 #' A dataset containing 178 observations from 3 wine grown cultivares in Italy.
 #'
 #' \describe{
-#'   \item{Type}{ Class variable has 3 classes that are 3 different wine grown cultivares in Italy. }
+#'   \item{Type}{ Group variable has 3 groups that are 3 different wine grown cultivars in Italy. }
 #'   \item{X1 to X13}{Check vbles}
 #' }
 #'

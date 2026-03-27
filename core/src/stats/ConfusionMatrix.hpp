@@ -10,17 +10,17 @@
 
 namespace ppforest2::stats {
   /**
-   * @brief Build a sorted mapping from unique class labels to contiguous indices.
-   * @param groups A response vector containing class labels.
+   * @brief Build a sorted mapping from unique group labels to contiguous indices.
+   * @param groups A response vector containing group labels.
    * @return A map from label value to its 0-based index.
    */
   std::map<int, int> get_labels_map(const types::ResponseVector& groups);
 
   /**
-   * @brief A confusion matrix comparing predicted vs actual class labels.
+   * @brief A confusion matrix comparing predicted vs actual group labels.
    *
-   * Rows correspond to actual classes and columns to predicted classes.
-   * Provides overall error rate, per-class error rates, JSON serialization,
+   * Rows correspond to actual groups and columns to predicted groups.
+   * Provides overall error rate, per-group error rates, JSON serialization,
    * and formatted terminal printing with diagonal highlighting and marginal errors.
    *
    * @code
@@ -28,26 +28,26 @@ namespace ppforest2::stats {
    *   ConfusionMatrix cm(preds, y_test);
    *
    *   float err = cm.error();                  // overall error rate
-   *   auto per_class = cm.class_errors();      // per-class error rates
+   *   auto per_class = cm.group_errors();      // per-group error rates
    * @endcode
    */
   struct ConfusionMatrix {
     types::Matrix<int> values;         ///< The NxN confusion matrix (actual x predicted).
-    std::map<int, int> label_index;    ///< Map from class label to matrix row/column index.
+    std::map<int, int> label_index;    ///< Map from group label to matrix row/column index.
 
     /**
      * @brief Construct a confusion matrix from predictions and actual labels.
-     * @param predictions The predicted class labels.
-     * @param actual      The true class labels (must have the same size).
+     * @param predictions The predicted group labels.
+     * @param actual      The true group labels (must have the same size).
      * @throws std::invalid_argument If predictions and actual have different sizes.
      */
     ConfusionMatrix(const types::ResponseVector& predictions, const types::ResponseVector& actual);
 
     /**
-     * @brief Compute per-class error rates.
-     * @return A vector of error rates (one per class), where 0 = perfect, 1 = all wrong.
+     * @brief Compute per-group error rates.
+     * @return A vector of error rates (one per group), where 0 = perfect, 1 = all wrong.
      */
-    types::Vector<float> class_errors() const;
+    types::Vector<float> group_errors() const;
 
     /**
      * @brief Compute the overall error rate (1 - accuracy).

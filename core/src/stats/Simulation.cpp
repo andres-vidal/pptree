@@ -42,7 +42,7 @@ namespace ppforest2::stats {
     train_indices.reserve(train_size);
     test_indices.reserve(n - train_size);
 
-    for (const auto& group : data.classes) {
+    for (const auto& group : data.groups) {
       int group_start      = spec.group_start(group);
       int group_size       = spec.group_size(group);
       int group_end        = group_start + group_size - 1;

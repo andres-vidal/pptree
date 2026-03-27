@@ -71,11 +71,14 @@ namespace {
   }
 
   void save_model(
-    io::Output &        out,
-    const Model&       model,
-    const CLIOptions&  params,
-    const std::string& path) {
-    json output = serialization::to_json(model);
+    io::Output &                    out,
+    const Model&                   model,
+    const CLIOptions&              params,
+    const std::string&             path,
+    const std::vector<std::string>& group_names) {
+    json output = group_names.empty()
+      ? serialization::to_json(model)
+      : serialization::to_json(model, group_names);
 
     json config;
     config["trees"]   = params.model.trees;
@@ -93,6 +96,10 @@ namespace {
 
     output["config"] = config;
 
+    if (!group_names.empty()) {
+      output["meta"]["groups"] = group_names;
+    }
+
     io::json::write_file(output, path);
 
     out.saved("model", path);
@@ -104,8 +111,10 @@ namespace {
     const CLIOptions& params,
     int               n_train,
     int               n_test) {
-    std::string model_type = params.model.trees > 0 ? "Random Forest" : "Single Decision Tree";
-    out.println("{}", emphasis("Training " + model_type));
+    std::string model_type = params.model.trees > 0
+      ? "Random Forest of Projection-Pursuit Oblique Decision Trees"
+      : "Projection-Pursuit Oblique Decision Tree";
+    out.println("{}", emphasis(model_type));
     out.newline();
 
     std::vector<Column> columns = {
@@ -121,23 +130,59 @@ namespace {
 
     if (params.model.trees > 0) {
       out.println("{}", format_row(columns, { "trees", std::to_string(params.model.trees) }));
-      out.println("{}", format_row(columns, { "variables/split",
-                                              fmt::format("{} ({}%){}", params.model.n_vars, static_cast<int>(params.model.p_vars * 100), default_tag(params.model.used_default_vars)) }));
-      out.println("{}", format_row(columns, { "threads",
-                                              fmt::format("{}{}", params.model.threads, default_tag(params.model.used_default_threads)) }));
-      out.println("{}", format_row(columns, { "seed",
-                                              fmt::format("{}{}", params.model.seed, default_tag(params.model.used_default_seed)) }));
+      out.println("{}", format_row(columns, { "variables/split", fmt::format("{} ({}%){}", params.model.n_vars, static_cast<int>(params.model.p_vars * 100), default_tag(params.model.used_default_vars)) }));
+      out.println("{}", format_row(columns, { "threads", fmt::format("{}{}", params.model.threads, default_tag(params.model.used_default_threads)) }));
+      out.println("{}", format_row(columns, { "seed", fmt::format("{}{}", params.model.seed, default_tag(params.model.used_default_seed)) }));
     }
 
     std::string method = params.model.lambda == 0 ? "LDA" : "PDA";
-    out.println("{}", format_row(columns, { "method",
-                                            fmt::format("{} (lambda={})", method, params.model.lambda) }));
+    out.println("{}", format_row(columns, { "method", fmt::format("{} (lambda={})", method, params.model.lambda) }));
 
     if (n_train > 0 && n_test > 0) {
-      out.println("{}", format_row(columns, { "training samples",
-                                              fmt::format("{} ({}%)", n_train, static_cast<int>(params.evaluate.train_ratio * 100)) }));
-      out.println("{}", format_row(columns, { "test samples",
-                                              fmt::format("{} ({}%)", n_test, static_cast<int>((1 - params.evaluate.train_ratio) * 100)) }));
+      out.println("{}", format_row(columns, { "training samples", fmt::format("{} ({}%)", n_train, static_cast<int>(params.evaluate.train_ratio * 100)) }));
+      out.println("{}", format_row(columns, { "test samples", fmt::format("{} ({}%)", n_test, static_cast<int>((1 - params.evaluate.train_ratio) * 100)) }));
+    }
+
+    out.dedent();
+    out.newline();
+  }
+
+  void print_data_summary(
+    io::Output&                     out,
+    const FeatureMatrix&            x,
+    const ResponseVector&           y,
+    const std::vector<std::string>& group_names) {
+    std::vector<Column> columns = {
+      { "Property", 18, Align::left },
+      { "Value",    30, Align::left },
+    };
+
+    out.indent();
+    out.println("{}", emphasis("Data Summary"));
+    out.newline();
+
+    Row header = header_labels(columns);
+    out.println("{}", format_row(columns, header));
+    out.println("{}", muted(format_separator(columns)));
+
+    out.println("{}", format_row(columns, { "observations", std::to_string(x.rows()) }));
+    out.println("{}", format_row(columns, { "features", std::to_string(x.cols()) }));
+
+    int n_groups = group_names.empty()
+      ? static_cast<int>((y.array().maxCoeff() + 1))
+      : static_cast<int>(group_names.size());
+    out.println("{}", format_row(columns, { "groups", std::to_string(n_groups) }));
+
+    if (!group_names.empty()) {
+      std::string names;
+
+      for (std::size_t i = 0; i < group_names.size(); ++i) {
+        if (i > 0) names += ", ";
+
+        names += group_names[i];
+      }
+
+      out.println("{}", format_row(columns, { "group names", names }));
     }
 
     out.dedent();
@@ -167,7 +212,7 @@ namespace {
       simulation_params.sd              = params.simulation.sd;
 
       try {
-        return simulate(params.simulation.rows, params.simulation.cols, params.simulation.classes, rng, simulation_params);
+        return simulate(params.simulation.rows, params.simulation.cols, params.simulation.n_groups, rng, simulation_params);
       } catch (const std::exception& e) {
         fmt::print(stderr, "Error simulating data: {}\n", e.what());
         exit(1);
@@ -217,6 +262,8 @@ namespace {
     FeatureMatrix x  = data.x;
     ResponseVector y = data.y;
 
+    print_data_summary(out, x, y, data.group_names);
+
     const auto train_result = train_model(x, y, params, rng);
 
     out.indent();
@@ -239,7 +286,7 @@ namespace {
     train_result.model->accept(deg_check);
 
     if (!params.save_path.empty()) {
-      save_model(out, *train_result.model, params, params.save_path);
+      save_model(out, *train_result.model, params, params.save_path, data.group_names);
     } else {
       out.println("not saved {}", muted("(used --no-save)"));
     }
@@ -252,7 +299,7 @@ namespace {
       out.println("or by bootstrap samples that produce singular covariance matrices.");
       out.println("Consider reviewing your data or adjusting --max-retries (currently {}).",
       params.model.max_retries);
-      out.println("Degenerate nodes predict the class with the most observations.");
+      out.println("Degenerate nodes predict the group with the most observations.");
       out.println("Degenerate trees are excluded from variable importance calculations.");
       out.newline();
     }
@@ -317,7 +364,7 @@ namespace {
         out.newline();
 
         if (metrics_visitor.oob_cm) {
-          print_confusion_matrix(out, *metrics_visitor.oob_cm, "OOB Confusion Matrix");
+          print_confusion_matrix(out, *metrics_visitor.oob_cm, "OOB Confusion Matrix", data.group_names);
         }
       }
 
@@ -332,7 +379,9 @@ namespace {
         }
 
         if (metrics_visitor.oob_cm) {
-          saved["oob_confusion_matrix"] = serialization::to_json(*metrics_visitor.oob_cm);
+          saved["oob_confusion_matrix"] = data.group_names.empty()
+            ? serialization::to_json(*metrics_visitor.oob_cm)
+            : serialization::to_json(*metrics_visitor.oob_cm, data.group_names);
         }
 
         saved["variable_importance"] = serialization::to_json(vi);

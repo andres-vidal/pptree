@@ -13,7 +13,7 @@ describe("predict.pprf", {
       expect_equal(length(predictions), nrow(iris))
     })
 
-    it("returns a factor with the same levels as the classes in the model", {
+    it("returns a factor with the same levels as the groups in the model", {
       model <- pprf(Type ~ ., data = iris, n_threads = 1)
       predictions <- predict(model, iris)
       expect_equal(levels(predictions), levels(iris$Type))
@@ -36,7 +36,7 @@ describe("predict.pprf", {
       expect_equal(length(predictions), nrow(x))
     })
 
-    it("returns a factor with the same levels as the classes in the model", {
+    it("returns a factor with the same levels as the groups in the model", {
       x <- crabs[, 2:5]
       x$sex <- as.numeric(as.factor(crabs$sex))
       model <- pprf(x = x, y = crabs$Type, n_threads = 1)
@@ -46,7 +46,7 @@ describe("predict.pprf", {
   })
 
   describe("with type = 'prob'", {
-    it("returns a data frame with one column per class", {
+    it("returns a data frame with one column per group", {
       model <- pprf(Type ~ ., data = iris, n_threads = 1)
       probs <- predict(model, iris, type = "prob")
       expect_true(is.data.frame(probs))

@@ -27,7 +27,7 @@ describe("parsnip integration", {
       expect_s3_class(fit$fit, "pprf")
     })
 
-    it("can predict classes via parsnip", {
+    it("can predict groups via parsnip", {
       spec <- pp_rand_forest() |>
         set_engine("ppforest2") |>
         set_mode("classification")
@@ -68,7 +68,7 @@ describe("parsnip integration", {
       expect_s3_class(fit$fit, "pptr")
     })
 
-    it("can predict classes via parsnip", {
+    it("can predict groups via parsnip", {
       spec <- pp_tree() |>
         set_engine("ppforest2") |>
         set_mode("classification")

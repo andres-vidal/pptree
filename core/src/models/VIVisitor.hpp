@@ -9,7 +9,7 @@ namespace ppforest2 {
   /**
    * @brief Visitor that accumulates per-variable contributions for VI2 and VI3.
    *
-   * Traverses a single tree and, at each split node s with G_s classes and
+   * Traverses a single tree and, at each split node s with G_s groups and
    * PP index I_s, accumulates:
    *
    *   vi2_contributions[j] += |a_j| / G_s
@@ -50,7 +50,7 @@ namespace ppforest2 {
      */
     void visit(const TreeCondition &node) override {
       const int n_vars         = static_cast<int>(vi2_contributions.size());
-      const int G_s            = static_cast<int>(node.classes.size());
+      const int G_s            = static_cast<int>(node.groups.size());
       const types::Feature I_s = node.pp_index_value;
 
       for (int j = 0; j < n_vars && j < node.projector.size(); ++j) {

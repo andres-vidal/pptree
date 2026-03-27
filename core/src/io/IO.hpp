@@ -51,8 +51,9 @@ namespace ppforest2::io::csv {
   /**
    * @brief Read a CSV file into a DataPacket.
    *
-   * Assumes the last column is the response variable (class label as string)
-   * and all preceding columns are numeric features. String labels are mapped
+   * Assumes the last column is the response variable (group label as string)
+   * and all preceding columns are features. Categorical feature columns are
+   * automatically detected and integer-encoded. String labels are mapped
    * to contiguous integer codes starting at 0.
    *
    * @param filename Path to the CSV file.
@@ -73,13 +74,13 @@ namespace ppforest2::io::csv {
   stats::DataPacket read_sorted(const std::string& filename);
 
   /**
-   * @brief Read class label names from a CSV file in the order they first appear.
+   * @brief Read group label names from a CSV file in the order they first appear.
    *
    * Returns a vector where index i is the string label that maps to integer code i,
    * matching the encoding produced by read().
    *
    * @param filename Path to the CSV file.
-   * @return A vector of class label strings, ordered by their integer code.
+   * @return A vector of group label strings, ordered by their integer code.
    */
   std::vector<std::string> read_labels(const std::string& filename);
 

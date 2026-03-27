@@ -57,7 +57,7 @@ ppforest2 evaluate --data data.csv --trees 100 --train-ratio 0.7
 # Evaluate with fixed iterations (disables convergence)
 ppforest2 evaluate --data data.csv --trees 100 -i 10 --train-ratio 0.7
 
-# Evaluate on simulated data (1000 rows, 10 features, 3 classes)
+# Evaluate on simulated data (1000 rows, 10 features, 3 groups)
 ppforest2 evaluate --simulate 1000x10x3 --trees 50
 
 # Run performance benchmarks across scenarios
@@ -184,7 +184,7 @@ ppforest2 predict -M model.json -d test.csv --no-proportions -o predictions.json
 | `--no-metrics`           | —             | Omit error rate and confusion matrix from output  |
 | `--no-proportions`       | —             | Omit vote proportions from output (forest only)   |
 
-If the CSV includes response labels, the tool reports the error rate and confusion matrix. For forest models, the JSON output includes per-class vote proportions by default; use `--no-proportions` to omit them.
+If the CSV includes response labels, the tool reports the error rate and confusion matrix. For forest models, the JSON output includes per-group vote proportions by default; use `--no-proportions` to omit them.
 
 ### `evaluate` — Train-Test Evaluation
 
@@ -194,7 +194,7 @@ Split data into training and test sets, train a model, and measure performance. 
 # Evaluate on a CSV file
 ppforest2 evaluate -d data.csv -t 50 -p 0.7
 
-# Evaluate on simulated data (1000 rows, 10 features, 3 classes)
+# Evaluate on simulated data (1000 rows, 10 features, 3 groups)
 ppforest2 evaluate --simulate 1000x10x3 -t 50
 
 # Fixed iterations (disables convergence)
@@ -206,14 +206,14 @@ ppforest2 evaluate -d data.csv -t 50 -i 20
 | Flag                     | Description                                       |
 |--------------------------|---------------------------------------------------|
 | `-d, --data <file>`      | CSV file                                          |
-| `--simulate NxMxK`       | Generate synthetic data (rows × features × classes) |
+| `--simulate NxMxK`       | Generate synthetic data (rows × features × groups) |
 
 **Simulation parameters** (only with `--simulate`):
 
 | Flag                            | Default  | Description                           |
 |---------------------------------|----------|---------------------------------------|
 | `--simulate-mean <X>`           | `100.0`  | Feature mean                          |
-| `--simulate-mean-separation <X>`| `50.0`   | Mean separation between classes       |
+| `--simulate-mean-separation <X>`| `50.0`   | Mean separation between groups        |
 | `--simulate-sd <X>`             | `10.0`   | Standard deviation                    |
 
 **Iteration control:**
@@ -292,7 +292,7 @@ The C++ core uses two design patterns to keep the algorithm extensible without h
 
 - **Strategy** — The projection-pursuit optimization step (`PPStrategy`), dimensionality reduction step (`DRStrategy`), and split-point rule (`SRStrategy`) are each defined as abstract interfaces. Concrete implementations (e.g. `PPPDAStrategy`, `DRUniformStrategy`) are composed at runtime via `TrainingSpec`, so new optimization criteria or variable selection methods can be added without changing the tree-building logic.
 
-- **Visitor** — `TreeNode::Visitor` dispatches over the two node types (internal `TreeCondition` and leaf `TreeResponse`) and `Model::Visitor` dispatches over `Tree` and `Forest`. This avoids `dynamic_cast` and keeps traversal logic (serialization, visualization layout, variable importance) decoupled from the model classes themselves.
+- **Visitor** — `TreeNode::Visitor` dispatches over the two node types (internal `TreeCondition` and leaf `TreeResponse`) and `Model::Visitor` dispatches over `Tree` and `Forest`. This avoids `dynamic_cast` and keeps traversal logic (serialization, visualization layout, variable importance) decoupled from the model types themselves.
 
 ## Prerequisites
 

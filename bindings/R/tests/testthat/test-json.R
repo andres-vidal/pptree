@@ -29,13 +29,13 @@ describe("save_json / load_json round-trip", {
       expect_equal(loaded$vi$projections, model$vi$projections, tolerance = 1e-4)
     })
 
-    it("preserves class labels after round-trip", {
+    it("preserves group labels after round-trip", {
       model <- pptr(Type ~ ., data = iris, seed = 42)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
 
-      expect_equal(loaded$classes, model$classes)
+      expect_equal(loaded$groups, model$groups)
     })
 
     it("preserves training spec after round-trip", {
@@ -95,7 +95,7 @@ describe("save_json / load_json round-trip", {
       expect_equal(loaded$oob_error, model$oob_error, tolerance = 1e-5)
     })
 
-    it("preserves class labels on individual trees", {
+    it("preserves group labels on individual trees", {
       model <- pprf(Type ~ ., data = iris, size = 3, seed = 42)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
@@ -103,7 +103,7 @@ describe("save_json / load_json round-trip", {
 
       for (i in seq_along(loaded$trees)) {
         expect_s3_class(loaded$trees[[i]], "pptr")
-        expect_equal(loaded$trees[[i]]$classes, model$classes)
+        expect_equal(loaded$trees[[i]]$groups, model$groups)
       }
     })
   })
@@ -136,7 +136,7 @@ describe("load_json from golden files", {
 
     loaded <- load_json(path)
     expect_s3_class(loaded, "pptr")
-    expect_equal(loaded$classes, c("setosa", "versicolor", "virginica"))
+    expect_equal(loaded$groups, c("setosa", "versicolor", "virginica"))
 
     x <- as.matrix(iris[, 1:4])
     preds <- predict(loaded, x)

@@ -2,25 +2,38 @@
 #include "models/Projector.hpp"
 
 #include <Eigen/Dense>
+#include <algorithm>
 
 using namespace ppforest2::types;
 
 namespace ppforest2::serialization {
   void JsonNodeVisitor::visit(const TreeCondition& node) {
     JsonNodeVisitor lower_visitor;
+    lower_visitor.group_names = group_names;
     node.lower->accept(lower_visitor);
 
     JsonNodeVisitor upper_visitor;
+    upper_visitor.group_names = group_names;
     node.upper->accept(upper_visitor);
 
     result = json{
       { "projector",      node.projector },
       { "threshold",      node.threshold },
       { "pp_index_value", node.pp_index_value },
-      { "classes",        node.classes },
       { "lower",          lower_visitor.result },
       { "upper",          upper_visitor.result },
     };
+
+    if (group_names) {
+      std::vector<std::string> named_groups;
+      for (auto g : node.groups) {
+        named_groups.push_back((*group_names)[static_cast<std::size_t>(g)]);
+      }
+
+      result["groups"] = named_groups;
+    } else {
+      result["groups"] = node.groups;
+    }
 
     if (node.degenerate) {
       result["degenerate"] = true;
@@ -28,7 +41,11 @@ namespace ppforest2::serialization {
   }
 
   void JsonNodeVisitor::visit(const TreeResponse& node) {
-    result = json{ { "value", node.value } };
+    if (group_names) {
+      result = json{ { "value", (*group_names)[static_cast<std::size_t>(node.value)] } };
+    } else {
+      result = json{ { "value", node.value } };
+    }
 
     if (node.degenerate) {
       result["degenerate"] = true;
@@ -36,15 +53,26 @@ namespace ppforest2::serialization {
   }
 
   void JsonModelVisitor::visit(const Tree& tree) {
-    result = json{ { "model_type", "tree" }, { "model", to_json(tree) } };
+    result = group_names
+      ? json{ { "model_type", "tree" }, { "model", to_json(tree, *group_names) } }
+      : json{ { "model_type", "tree" }, { "model", to_json(tree) } };
   }
 
   void JsonModelVisitor::visit(const Forest& forest) {
-    result = json{ { "model_type", "forest" }, { "model", to_json(forest) } };
+    result = group_names
+      ? json{ { "model_type", "forest" }, { "model", to_json(forest, *group_names) } }
+      : json{ { "model_type", "forest" }, { "model", to_json(forest) } };
   }
 
   json to_json(const Model& model) {
     JsonModelVisitor visitor;
+    model.accept(visitor);
+    return visitor.result;
+  }
+
+  json to_json(const Model& model, const GroupNames& group_names) {
+    JsonModelVisitor visitor;
+    visitor.group_names = &group_names;
     model.accept(visitor);
     return visitor.result;
   }
@@ -102,9 +130,9 @@ namespace ppforest2::serialization {
 
     j["labels"] = labels;
 
-    auto ce = cm.class_errors();
+    auto ce = cm.group_errors();
     std::vector<float> ce_vec(ce.data(), ce.data() + ce.size());
-    j["class_errors"] = ce_vec;
+    j["group_errors"] = ce_vec;
 
     return j;
   }
@@ -132,6 +160,67 @@ namespace ppforest2::serialization {
     return j;
   }
 
+  json to_json(const TreeNode& node, const GroupNames& group_names) {
+    JsonNodeVisitor visitor;
+    visitor.group_names = &group_names;
+    node.accept(visitor);
+    return visitor.result;
+  }
+
+  json to_json(const Tree& tree, const GroupNames& group_names) {
+    return json{ { "root", to_json(*tree.root, group_names) } };
+  }
+
+  json to_json(const BootstrapTree& tree, const GroupNames& group_names) {
+    return to_json(static_cast<const Tree&>(tree), group_names);
+  }
+
+  json to_json(const Forest& forest, const GroupNames& group_names) {
+    std::vector<json> trees_json;
+    trees_json.reserve(forest.trees.size());
+
+    for (const auto& tree : forest.trees) {
+      trees_json.push_back(to_json(*tree, group_names));
+    }
+
+    json result = json{ { "trees", trees_json } };
+
+    if (forest.degenerate) {
+      result["degenerate"] = true;
+    }
+
+    return result;
+  }
+
+  json to_json(const stats::ConfusionMatrix& cm, const GroupNames& group_names) {
+    json j;
+
+    std::vector<std::vector<int>> matrix_data;
+    for (int i = 0; i < cm.values.rows(); ++i) {
+      std::vector<int> row;
+      for (int col = 0; col < cm.values.cols(); ++col) {
+        row.push_back(cm.values(i, col));
+      }
+
+      matrix_data.push_back(row);
+    }
+
+    j["matrix"] = matrix_data;
+
+    std::vector<std::string> labels;
+    for (const auto& [label, idx] : cm.label_index) {
+      labels.push_back(group_names[static_cast<std::size_t>(label)]);
+    }
+
+    j["labels"] = labels;
+
+    auto ce = cm.group_errors();
+    std::vector<float> ce_vec(ce.data(), ce.data() + ce.size());
+    j["group_errors"] = ce_vec;
+
+    return j;
+  }
+
   json to_json(const FeatureMatrix& matrix) {
     std::vector<std::vector<Feature>> rows;
     rows.reserve(static_cast<std::size_t>(matrix.rows()));
@@ -149,13 +238,38 @@ namespace ppforest2::serialization {
     return json(rows);
   }
 
+  static bool has_string_labels(const json& model_json) {
+    const json *node = nullptr;
+
+    if (model_json.contains("root")) {
+      node = &model_json["root"];
+    } else if (model_json.contains("trees") && !model_json["trees"].empty()) {
+      node = &model_json["trees"][0]["root"];
+    }
+
+    if (!node) return false;
+
+    while (node->contains("lower"))
+      node = &(*node)["lower"];
+
+    return node->contains("value") && (*node)["value"].is_string();
+  }
+
   Model::Ptr model_from_json(const json& j) {
     std::string model_type = j.value("model_type", "tree");
+    const auto& model_json = j["model"];
+
+    bool labeled = has_string_labels(model_json)
+      && j.contains("meta") && j["meta"].contains("groups");
 
     if (model_type == "forest") {
-      return std::make_unique<Forest>(forest_from_json(j["model"]));
+      return labeled
+        ? std::make_unique<Forest>(forest_from_json(model_json, j["meta"]["groups"].get<GroupNames>()))
+        : std::make_unique<Forest>(forest_from_json(model_json));
     } else if (model_type == "tree") {
-      return std::make_unique<Tree>(tree_from_json(j["model"]));
+      return labeled
+        ? std::make_unique<Tree>(tree_from_json(model_json, j["meta"]["groups"].get<GroupNames>()))
+        : std::make_unique<Tree>(tree_from_json(model_json));
     } else {
       throw std::invalid_argument("Invalid model type: " + model_type);
     }
@@ -177,10 +291,10 @@ namespace ppforest2::serialization {
     const Feature threshold      = j["threshold"].get<Feature>();
     const Feature pp_index_value = j.value("pp_index_value", Feature(0));
 
-    std::set<Response> classes;
+    std::set<Response> groups;
 
-    if (j.contains("classes")) {
-      classes = j["classes"].get<std::set<Response>>();
+    if (j.contains("groups")) {
+      groups = j["groups"].get<std::set<Response>>();
     }
 
     auto lower = node_from_json(j["lower"]);
@@ -189,7 +303,7 @@ namespace ppforest2::serialization {
     auto node = TreeCondition::make(
       projector, threshold,
       std::move(lower), std::move(upper),
-      nullptr, classes, pp_index_value);
+      nullptr, groups, pp_index_value);
     node->degenerate = node->degenerate || j.value("degenerate", false);
     return node;
   }
@@ -204,6 +318,61 @@ namespace ppforest2::serialization {
 
     for (const auto& tree_json : j.at("trees")) {
       forest.add_tree(std::make_unique<BootstrapTree>(node_from_json(tree_json.at("root"))));
+    }
+
+    return forest;
+  }
+
+  static Response label_to_code(const std::string& label, const GroupNames& group_names) {
+    auto it = std::find(group_names.begin(), group_names.end(), label);
+    return static_cast<Response>(std::distance(group_names.begin(), it));
+  }
+
+  TreeNode::Ptr node_from_json(const json& j, const GroupNames& group_names) {
+    if (j.contains("value")) {
+      auto leaf = TreeResponse::make(label_to_code(j["value"].get<std::string>(), group_names));
+      leaf->degenerate = j.value("degenerate", false);
+      return leaf;
+    }
+
+    const auto proj_vec = j["projector"].get<std::vector<Feature>>();
+
+    pp::Projector projector = Eigen::Map<const pp::Projector>(
+      proj_vec.data(),
+      static_cast<int>(proj_vec.size()));
+
+    const Feature threshold      = j["threshold"].get<Feature>();
+    const Feature pp_index_value = j.value("pp_index_value", Feature(0));
+
+    std::set<Response> groups;
+
+    if (j.contains("groups")) {
+      for (const auto& name : j["groups"]) {
+        groups.insert(label_to_code(name.get<std::string>(), group_names));
+      }
+    }
+
+    auto lower = node_from_json(j["lower"], group_names);
+    auto upper = node_from_json(j["upper"], group_names);
+
+    auto node = TreeCondition::make(
+      projector, threshold,
+      std::move(lower), std::move(upper),
+      nullptr, groups, pp_index_value);
+    node->degenerate = node->degenerate || j.value("degenerate", false);
+    return node;
+  }
+
+  Tree tree_from_json(const json& j, const GroupNames& group_names) {
+    return Tree(node_from_json(j["root"], group_names));
+  }
+
+  Forest forest_from_json(const json& j, const GroupNames& group_names) {
+    Forest forest;
+    forest.degenerate = j.value("degenerate", false);
+
+    for (const auto& tree_json : j.at("trees")) {
+      forest.add_tree(std::make_unique<BootstrapTree>(node_from_json(tree_json.at("root"), group_names)));
     }
 
     return forest;

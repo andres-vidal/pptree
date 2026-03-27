@@ -62,7 +62,7 @@ describe("plot.pptr boundaries", {
     expect_true(is.list(regions))
     expect_true(length(regions) > 0)
     r <- regions[[1]]
-    expect_true(all(c("x", "y", "class") %in% names(r)))
+    expect_true(all(c("x", "y", "group") %in% names(r)))
     expect_true(length(r$x) >= 3)
     expect_equal(length(r$x), length(r$y))
   })

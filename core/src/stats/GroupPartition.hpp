@@ -17,8 +17,8 @@ namespace ppforest2::stats {
    * @brief Contiguous-block representation of grouped observations.
    *
    * Assumes the response vector is sorted so that observations of the
-   * same class are contiguous.  Stores the start/end row indices of
-   * each class block and provides efficient extraction, subsetting,
+   * same group are contiguous.  Stores the start/end row indices of
+   * each group block and provides efficient extraction, subsetting,
    * and computation of between- and within-group statistics.
    *
    * Groups can be hierarchically merged via remap(), which assigns
@@ -53,7 +53,7 @@ namespace ppforest2::stats {
       /**
        * @brief Construct from a sorted response vector.
        *
-       * @param y  Response vector (n) with contiguous class blocks.
+       * @param y  Response vector (n) with contiguous group blocks.
        */
       GroupPartition(const types::ResponseVector& y);
 

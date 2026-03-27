@@ -10,7 +10,7 @@
  * C++ (this module) handles geometry and tree traversal:
  *
  * - **NodeDataVisitor** — Routes observations through the tree, collects
- *   per-node projected values and class labels for histogram rendering in
+ *   per-node projected values and group labels for histogram rendering in
  *   the tree structure diagram.
  *
  * - **BoundaryVisitor** — Projects each split's decision boundary line
@@ -72,7 +72,7 @@ namespace ppforest2::viz {
    * For internal (condition) nodes:
    *   - @c projected_values: dot product of each reaching observation with
    *     the node's projector vector.
-   *   - @c classes: class label (1-indexed response) of each reaching
+   *   - @c groups: group label (1-indexed response) of each reaching
    *     observation, parallel to @c projected_values.
    *   - @c projector, @c threshold: the split parameters (copied for
    *     convenience so the R side can render histograms without re-accessing
@@ -80,8 +80,8 @@ namespace ppforest2::viz {
    *
    * For leaf (response) nodes:
    *   - @c projected_values is empty.
-   *   - @c classes contains labels of observations reaching the leaf.
-   *   - @c value is the predicted class (0-indexed response).
+   *   - @c groups contains labels of observations reaching the leaf.
+   *   - @c value is the predicted group (0-indexed response).
    */
   struct NodeData {
     bool is_leaf;
@@ -90,7 +90,7 @@ namespace ppforest2::viz {
     types::Feature threshold;
     types::Response value;
     std::vector<types::Feature> projected_values;
-    std::vector<types::Response> classes;
+    std::vector<types::Response> groups;
   };
 
   /**
@@ -105,7 +105,7 @@ namespace ppforest2::viz {
    * @endcode
    *
    * At each split node the visitor projects all reaching observations onto
-   * the node's projector, records the projected values and class labels,
+   * the node's projector, records the projected values and group labels,
    * partitions observation indices by the threshold, and recurses into the
    * lower and upper children.  Nodes are accumulated in **pre-order**
    * (parent before children, left before right).
@@ -174,7 +174,7 @@ namespace ppforest2::viz {
   };
 
   /**
-   * @brief A convex decision region polygon in 2D with its predicted class.
+   * @brief A convex decision region polygon in 2D with its predicted group.
    *
    * Each leaf in the tree produces one region: the bounding box clipped by
    * all ancestor half-space constraints (Sutherland–Hodgman algorithm).
@@ -193,7 +193,7 @@ namespace ppforest2::viz {
    */
   struct RegionPolygon {
     std::vector<std::pair<types::Feature, types::Feature>> vertices;
-    types::Response predicted_class;  ///< 0-indexed class label from the leaf.
+    types::Response predicted_group;  ///< 0-indexed group label from the leaf.
   };
 
   // ===================================================================

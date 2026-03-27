@@ -101,7 +101,7 @@
  * - **PPStrategy** — projection pursuit index optimisation. \n
  *   Built-in: PPPDAStrategy (Generalised LDA, with optional PDA
  *   penalty via @c lambda).  @c lambda = 0 gives standard LDA;
- *   @c lambda in (0, 1] penalises the within-class covariance matrix.
+ *   @c lambda in (0, 1] penalises the within-group covariance matrix.
  *
  * - **DRStrategy** — dimensionality reduction (variable subset selection). \n
  *   Built-in: DRNoopStrategy (use all variables, for single trees),
@@ -130,7 +130,7 @@
  * @section visitor_pattern Visitor pattern
  *
  * Two visitor interfaces avoid `dynamic_cast` and keep traversal logic
- * decoupled from the model classes:
+ * decoupled from the model types:
  *
  * - **TreeNode::Visitor** — dispatches over internal nodes (TreeCondition)
  *   and leaf nodes (TreeResponse).  Used by serialisation, visualisation,

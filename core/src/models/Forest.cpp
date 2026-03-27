@@ -100,13 +100,13 @@ namespace ppforest2 {
   FeatureMatrix Forest::predict(const FeatureMatrix& data, Proportions) const {
     invariant(!trees.empty(), "Forest has no trees.");
 
-    std::set<Response> class_set = trees[0]->root->node_classes();
-    std::vector<Response> classes(class_set.begin(), class_set.end());
-    int G = static_cast<int>(classes.size());
+    std::set<Response> group_set = trees[0]->root->node_groups();
+    std::vector<Response> groups(group_set.begin(), group_set.end());
+    int G = static_cast<int>(groups.size());
 
-    std::map<Response, int> class_to_col;
+    std::map<Response, int> group_to_col;
     for (int g = 0; g < G; ++g) {
-      class_to_col[classes[static_cast<std::size_t>(g)]] = g;
+      group_to_col[groups[static_cast<std::size_t>(g)]] = g;
     }
 
     int n                     = static_cast<int>(data.rows());
@@ -115,9 +115,9 @@ namespace ppforest2 {
     for (int i = 0; i < n; ++i) {
       for (const auto& tree : trees) {
         Response pred = tree->predict((FeatureVector)data.row(i));
-        auto it       = class_to_col.find(pred);
+        auto it       = group_to_col.find(pred);
 
-        if (it != class_to_col.end()) {
+        if (it != group_to_col.end()) {
           proportions(i, it->second) += 1;
         }
       }

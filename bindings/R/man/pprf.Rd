@@ -65,20 +65,10 @@ pprf(x = iris[, 1:4], y = iris[, 5])
 pprf(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 
 # Example 5: formula interface with the `crabs` dataset
-pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+pprf(Type ~ ., data = crabs)
 
 # Example 6: formula interface with the `crabs` dataset with regularization
-pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
-
-# Example 7: matrix interface with the `crabs` dataset
-x <- crabs[, 2:5]
-x$sex <- as.numeric(as.factor(crabs$sex))
-pprf(x = x, y = crabs$Type)
-
-# Example 8: matrix interface with the `crabs` dataset with regularization
-x <- crabs[, 2:5]
-x$sex <- as.numeric(as.factor(crabs$sex))
-pprf(x = x, y = crabs$Type, lambda = 0.5)
+pprf(Type ~ ., data = crabs, lambda = 0.5)
 
 }
 \seealso{

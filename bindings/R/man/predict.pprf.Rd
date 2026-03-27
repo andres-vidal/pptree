@@ -16,7 +16,7 @@
 \item{...}{For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.}
 }
 \value{
-If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per class, where each row sums to 1.
+If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per group, where each row sums to 1.
 }
 \description{
 Predicts the labels or vote proportions of a set of observations using a pprf model.
@@ -27,7 +27,7 @@ model <- pprf(Type ~ ., data = iris)
 predict(model, iris)
 
 # Example 2: with the `crabs` dataset
-model <- pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+model <- pprf(Type ~ ., data = crabs)
 predict(model, crabs)
 
 # Example 3: vote proportions

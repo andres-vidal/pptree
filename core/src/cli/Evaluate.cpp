@@ -50,7 +50,7 @@ namespace ppforest2::cli {
     ->check(CLI::PositiveNumber);
     sub->add_option("--simulate-mean", params.simulation.mean, "Mean for simulated data (default: 100.0)")
     ->needs(sim_opt);
-    sub->add_option("--simulate-mean-separation", params.simulation.mean_separation, "Mean separation between classes (default: 50.0)")
+    sub->add_option("--simulate-mean-separation", params.simulation.mean_separation, "Mean separation between groups (default: 50.0)")
     ->needs(sim_opt)
     ->check(CLI::PositiveNumber);
     sub->add_option("--simulate-sd", params.simulation.sd, "Standard deviation for simulated data (default: 10.0)")

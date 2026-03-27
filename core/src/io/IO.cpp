@@ -72,62 +72,109 @@ namespace ppforest2::io::json {
 }
 
 namespace ppforest2::io::csv {
+namespace {
+  bool is_numeric(const std::string& s) {
+    if (s.empty()) return false;
+
+    char *end = nullptr;
+    std::strtod(s.c_str(), &end);
+    return end != s.c_str() && *end == '\0';
+  }
+
+  struct CategoricalEncoder {
+    std::unordered_map<std::string, int> mapping;
+
+    types::Feature encode(const std::string& value) {
+      auto it = mapping.find(value);
+
+      if (it == mapping.end()) {
+        int code = static_cast<int>(mapping.size());
+        mapping[value] = code;
+        return static_cast<types::Feature>(code);
+      }
+
+      return static_cast<types::Feature>(it->second);
+    }
+  };
+}
+
   stats::DataPacket read(const std::string& filename) {
     ::csv::CSVReader reader(filename);
-    std::vector<std::vector<types::Feature>> featureData;
-    std::vector<std::string> rawLabels;
 
-    int row_num = 0;
+    // First pass: read all raw string values to detect categorical columns.
+    std::vector<std::vector<std::string>> raw_rows;
+    int n_cols = 0;
 
     for (::csv::CSVRow& row : reader) {
-      ++row_num;
+      int row_num = static_cast<int>(raw_rows.size()) + 1;
       ppforest2::user_error(row.size() >= 2, fmt::format("Row {} has only {} column(s) — expected at least 2 (features + label)", row_num, row.size()));
 
-      std::vector<types::Feature> currentFeatures;
-      for (int j = 0; j < row.size() - 1; ++j) {
-        currentFeatures.push_back(row[j].get<types::Feature>());
+      std::vector<std::string> values;
+
+      for (int j = 0; j < row.size(); ++j) {
+        values.push_back(row[j].get<std::string>());
       }
 
-      featureData.push_back(std::move(currentFeatures));
-
-      // Read the last column as a string.
-      std::string labelStr = row[row.size() - 1].get<std::string>();
-      rawLabels.push_back(labelStr);
-    }
-
-    ppforest2::user_error(!featureData.empty(), "CSV file is empty or has no data rows");
-
-    // Map string labels to integer codes.
-    std::unordered_map<std::string, int> labelMapping;
-    std::vector<int> labels;
-    int labelIndex = 0;
-    for (const auto &labelStr : rawLabels) {
-      if (labelMapping.find(labelStr) == labelMapping.end()) {
-        labelMapping[labelStr] = labelIndex++;
+      if (n_cols == 0) {
+        n_cols = static_cast<int>(values.size());
       }
 
-      labels.push_back(labelMapping[labelStr]);
+      raw_rows.push_back(std::move(values));
     }
 
-    // Determine dimensions for feature matrix.
-    const int n = featureData.size();
-    const int p = featureData[0].size();
+    ppforest2::user_error(!raw_rows.empty(), "CSV file is empty or has no data rows");
 
-    types::FeatureMatrix x(n, p);
-    for (int i = 0; i < n; ++i) {
-      ppforest2::user_error(featureData[i].size() == p, fmt::format("Row {} has {} feature column(s), expected {} (same as row 1)", i + 1, featureData[i].size(), p));
+    const int n_features = n_cols - 1;
 
-      for (int j = 0; j < p; ++j) {
-        x(i, j) = featureData[i][j];
+    // Detect which feature columns are categorical (non-numeric).
+    std::vector<bool> is_categorical(static_cast<std::size_t>(n_features), false);
+
+    for (int j = 0; j < n_features; ++j) {
+      for (const auto& row : raw_rows) {
+        if (!is_numeric(row[static_cast<std::size_t>(j)])) {
+          is_categorical[static_cast<std::size_t>(j)] = true;
+          break;
+        }
       }
     }
 
+    // Encode features (numeric or categorical) and response labels.
+    std::vector<CategoricalEncoder> encoders(static_cast<std::size_t>(n_features));
+
+    const int n = static_cast<int>(raw_rows.size());
+
+    types::FeatureMatrix x(n, n_features);
     types::ResponseVector y(n);
+
+    std::unordered_map<std::string, int> label_mapping;
+    std::vector<std::string> label_names;
+
     for (int i = 0; i < n; ++i) {
-      y[i] = labels[i];
+      const auto& row = raw_rows[static_cast<std::size_t>(i)];
+      ppforest2::user_error(static_cast<int>(row.size()) == n_cols, fmt::format("Row {} has {} column(s), expected {} (same as row 1)", i + 1, row.size(), n_cols));
+
+      for (int j = 0; j < n_features; ++j) {
+        const auto& val = row[static_cast<std::size_t>(j)];
+
+        if (is_categorical[static_cast<std::size_t>(j)]) {
+          x(i, j) = encoders[static_cast<std::size_t>(j)].encode(val);
+        } else {
+          x(i, j) = std::stof(val);
+        }
+      }
+
+      // Response label (last column).
+      const std::string& label_str = row[static_cast<std::size_t>(n_cols - 1)];
+
+      if (label_mapping.find(label_str) == label_mapping.end()) {
+        label_mapping[label_str] = static_cast<int>(label_names.size());
+        label_names.push_back(label_str);
+      }
+
+      y[i] = label_mapping[label_str];
     }
 
-    return stats::DataPacket(x, y);
+    return stats::DataPacket(x, y, label_names);
   }
 
   std::vector<std::string> read_labels(const std::string& filename) {
@@ -157,7 +204,7 @@ namespace ppforest2::io::csv {
       stats::sort(x, y);
     }
 
-    return stats::DataPacket(x, y);
+    return stats::DataPacket(x, y, data.group_names);
   }
 
   void write(const stats::DataPacket& data, const std::string& filename) {
