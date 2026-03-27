@@ -225,18 +225,18 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 5: formula interface with the `crabs` dataset</span></span></span>
-<span class="r-in"><span><span class="fu">pprf</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">sex</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">crabs</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pprf</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crabs</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.04 0.02 0 -0.04 0.03 0.04 ] * x) &lt; 0.1272064:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.1 0 0 0 0 0 0 ] * x) &lt; 0.04637025:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.04 0.01 0 -0.04 0.03 0.01 ] * x) &lt; 0.07738496:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.14 0 0 0 0 0 0 ] * x) &lt; 0.07229224:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
@@ -244,60 +244,18 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 6: formula interface with the `crabs` dataset with regularization</span></span></span>
-<span class="r-in"><span><span class="fu">pprf</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">sex</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">crabs</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pprf</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crabs</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 0 0 0 0.01 -0.01 ] * x) &lt; 0.3201671:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 -0.01 0.01 0 0 0 0.01 ] * x) &lt; 0.3337918:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 0 0 0 0.01 -0.01 ] * x) &lt; 0.3204295:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 7: matrix interface with the `crabs` dataset</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">crabs</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">x</span><span class="op">$</span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">crabs</span><span class="op">$</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">pprf</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">crabs</span><span class="op">$</span><span class="va">Type</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.06 0.02 0.02 -0.05 0.04 ] * x) &lt; 0.1417684:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.06 0.01 0.02 -0.04 0.02 ] * x) &lt; 0.1080204:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 8: matrix interface with the `crabs` dataset with regularization</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">crabs</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">x</span><span class="op">$</span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">crabs</span><span class="op">$</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">pprf</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">crabs</span><span class="op">$</span><span class="va">Type</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.02 0.01 0 0 0.01 ] * x) &lt; 0.3581609:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.02 0.01 0 0 0.03 ] * x) &lt; 0.3663714:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 0 0.01 0 0 0 0.01 ] * x) &lt; 0.3286325:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>

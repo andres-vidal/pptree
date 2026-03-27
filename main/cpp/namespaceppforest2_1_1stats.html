@@ -113,10 +113,10 @@ $(function(){initNavTree('namespaceppforest2_1_1stats.html',''); initResizable(t
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1stats_1_1ConfusionMatrix.html">ConfusionMatrix</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A confusion matrix comparing predicted vs actual class labels.  <a href="structppforest2_1_1stats_1_1ConfusionMatrix.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A confusion matrix comparing predicted vs actual group labels.  <a href="structppforest2_1_1stats_1_1ConfusionMatrix.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1stats_1_1DataPacket.html">DataPacket</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bundled dataset: features, responses, and class labels.  <a href="structppforest2_1_1stats_1_1DataPacket.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bundled dataset: features, responses, and group labels.  <a href="structppforest2_1_1stats_1_1DataPacket.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contiguous-block representation of grouped observations.  <a href="classppforest2_1_1stats_1_1GroupPartition.html#details">More...</a><br /></td></tr>
@@ -148,7 +148,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a7a9ab29c5165bf5acb78e69f78458c52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error rate of a prediction.  <br /></td></tr>
 <tr class="separator:a7a9ab29c5165bf5acb78e69f78458c52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ef348216200ff629b08c457e5ebccd8" id="r_a0ef348216200ff629b08c457e5ebccd8"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ef348216200ff629b08c457e5ebccd8">get_labels_map</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;groups)</td></tr>
-<tr class="memdesc:a0ef348216200ff629b08c457e5ebccd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build a sorted mapping from unique class labels to contiguous indices.  <br /></td></tr>
+<tr class="memdesc:a0ef348216200ff629b08c457e5ebccd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build a sorted mapping from unique group labels to contiguous indices.  <br /></td></tr>
 <tr class="separator:a0ef348216200ff629b08c457e5ebccd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a847826ab1262d5fe5c802ecafaf332b6" id="r_a847826ab1262d5fe5c802ecafaf332b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a847826ab1262d5fe5c802ecafaf332b6">sd</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;data)</td></tr>
 <tr class="memdesc:a847826ab1262d5fe5c802ecafaf332b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Column-wise sample standard deviation of a matrix.  <br /></td></tr>
@@ -157,13 +157,13 @@ Functions</h2></td></tr>
 <tr class="memdesc:a80225d623d30b503146bc9a03e8b1327"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample standard deviation of a vector.  <br /></td></tr>
 <tr class="separator:a80225d623d30b503146bc9a03e8b1327"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a917d81236d7b2dc7432e1d34c0c2bab1" id="r_a917d81236d7b2dc7432e1d34c0c2bab1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1stats_1_1DataPacket.html">DataPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a917d81236d7b2dc7432e1d34c0c2bab1">simulate</a> (int n, int p, int G, <a class="el" href="#a8e3a1f81a376373936a72c8ba6061567">RNG</a> &amp;rng, const <a class="el" href="structppforest2_1_1stats_1_1SimulationParams.html">SimulationParams</a> &amp;params=<a class="el" href="structppforest2_1_1stats_1_1SimulationParams.html">SimulationParams</a>{})</td></tr>
-<tr class="memdesc:a917d81236d7b2dc7432e1d34c0c2bab1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a simulated dataset with G classes, n rows, and p features.  <br /></td></tr>
+<tr class="memdesc:a917d81236d7b2dc7432e1d34c0c2bab1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a simulated dataset with G groups, n rows, and p features.  <br /></td></tr>
 <tr class="separator:a917d81236d7b2dc7432e1d34c0c2bab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5fea02c8d682b90a47fd016d536b820" id="r_ab5fea02c8d682b90a47fd016d536b820"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5fea02c8d682b90a47fd016d536b820">sort</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y)</td></tr>
 <tr class="memdesc:ab5fea02c8d682b90a47fd016d536b820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort a feature matrix and a response vector by the response values.  <br /></td></tr>
 <tr class="separator:ab5fea02c8d682b90a47fd016d536b820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7544bfd87b8aeb5d134d987a6a2aa8e9" id="r_a7544bfd87b8aeb5d134d987a6a2aa8e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1stats_1_1Split.html">Split</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7544bfd87b8aeb5d134d987a6a2aa8e9">split</a> (const <a class="el" href="structppforest2_1_1stats_1_1DataPacket.html">DataPacket</a> &amp;data, float train_ratio, <a class="el" href="#a8e3a1f81a376373936a72c8ba6061567">RNG</a> &amp;rng)</td></tr>
-<tr class="memdesc:a7544bfd87b8aeb5d134d987a6a2aa8e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform a stratified random train/test split on a <a class="el" href="structppforest2_1_1stats_1_1DataPacket.html" title="Bundled dataset: features, responses, and class labels.">DataPacket</a>.  <br /></td></tr>
+<tr class="memdesc:a7544bfd87b8aeb5d134d987a6a2aa8e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform a stratified random train/test split on a <a class="el" href="structppforest2_1_1stats_1_1DataPacket.html" title="Bundled dataset: features, responses, and group labels.">DataPacket</a>.  <br /></td></tr>
 <tr class="separator:a7544bfd87b8aeb5d134d987a6a2aa8e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a116d95f97b06a0c8b60db844c607ce25" id="r_a116d95f97b06a0c8b60db844c607ce25"><td class="memItemLeft" align="right" valign="top">std::set&lt; <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a116d95f97b06a0c8b60db844c607ce25">unique</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;column)</td></tr>
 <tr class="memdesc:a116d95f97b06a0c8b60db844c607ce25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique values of a response vector.  <br /></td></tr>
@@ -265,10 +265,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Build a sorted mapping from unique class labels to contiguous indices. </p>
+<p>Build a sorted mapping from unique group labels to contiguous indices. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">groups</td><td>A response vector containing class labels. </td></tr>
+    <tr><td class="paramname">groups</td><td>A response vector containing group labels. </td></tr>
   </table>
   </dd>
 </dl>
@@ -362,19 +362,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Generate a simulated dataset with G classes, n rows, and p features. </p>
-<p>Each class is drawn from a normal distribution with a shifted mean. The resulting data is sorted by class label.</p>
+<p>Generate a simulated dataset with G groups, n rows, and p features. </p>
+<p>Each group is drawn from a normal distribution with a shifted mean. The resulting data is sorted by group label.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">n</td><td>Number of rows (observations). </td></tr>
     <tr><td class="paramname">p</td><td>Number of feature columns. </td></tr>
-    <tr><td class="paramname">G</td><td>Number of classes (must be &gt; 1). </td></tr>
+    <tr><td class="paramname">G</td><td>Number of groups (must be &gt; 1). </td></tr>
     <tr><td class="paramname">rng</td><td>Random number generator. </td></tr>
     <tr><td class="paramname">params</td><td>Simulation parameters (mean, separation, sd). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structppforest2_1_1stats_1_1DataPacket.html" title="Bundled dataset: features, responses, and class labels.">DataPacket</a> with the simulated feature matrix and response vector. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structppforest2_1_1stats_1_1DataPacket.html" title="Bundled dataset: features, responses, and group labels.">DataPacket</a> with the simulated feature matrix and response vector. </dd></dl>
 
 </div>
 </div>
@@ -432,8 +432,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Perform a stratified random train/test split on a <a class="el" href="structppforest2_1_1stats_1_1DataPacket.html" title="Bundled dataset: features, responses, and class labels.">DataPacket</a>. </p>
-<p>Samples indices within each class proportional to train_ratio so that class balance is preserved in both train and test sets.</p>
+<p>Perform a stratified random train/test split on a <a class="el" href="structppforest2_1_1stats_1_1DataPacket.html" title="Bundled dataset: features, responses, and group labels.">DataPacket</a>. </p>
+<p>Samples indices within each group proportional to train_ratio so that group balance is preserved in both train and test sets.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>The full dataset. </td></tr>

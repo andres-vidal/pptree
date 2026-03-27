@@ -36,25 +36,12 @@ summary(model)
 #> Size: 2 trees
 #> 150 observations of 4 features
 #> Regularization parameter: 0 
-#> Classes:
+#> Groups:
 #>  setosa
 #>  versicolor
 #>  virginica 
 #> Formula:
 #>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
-#> Variable Importance:
-#> 
-#>       Variable         σ Projection   Weighted   Permuted
-#> 1 Petal.Length 1.7652982 0.09674555 0.08712038 0.47511965
-#> 2  Petal.Width 0.7622377 0.06783789 0.05630573 0.24130782
-#> 3  Sepal.Width 0.4358663 0.02741493 0.02527830 0.06331739
-#> 4 Sepal.Length 0.8280661 0.02343013 0.02004903 0.04545453
-#> 
-#> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).
-#> Variable contributions can only be theoretically interpreted as such
-#> if the model was trained on scaled data. Scaling also changes the
-#> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
 #> Training Confusion Matrix:
 #> 
@@ -62,18 +49,30 @@ summary(model)
 #> Actual       setosa versicolor virginica
 #>   setosa         50          0         0
 #>   versicolor      0         49         1
-#>   virginica       0          2        48
+#>   virginica       0          1        49
 #> 
-#> Training error: 2%
-#> -------------------------------------
+#> Training error: 1.33%
 #> OOB Confusion Matrix:
 #> 
 #>             Predicted
 #> Actual       setosa versicolor virginica
-#>   setosa         30          0         0
-#>   versicolor      0         30         1
-#>   virginica       0          1        28
+#>   setosa         33          0         0
+#>   versicolor      0         27         1
+#>   virginica       0          0        31
 #> 
-#> OOB error: 2.22%
+#> OOB error: 1.09%
+#> -------------------------------------
+#> Variable Importance:
+#> 
+#>       Variable         σ Projection   Weighted   Permuted
+#> 1 Petal.Length 1.7652982 0.09914511 0.09107455 0.47878787
+#> 2  Petal.Width 0.7622377 0.06957345 0.05445680 0.29393938
+#> 3 Sepal.Length 0.8280661 0.02843781 0.02532409 0.03333333
+#> 4  Sepal.Width 0.4358663 0.02132891 0.01973198 0.04545456
+#> 
+#> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).
+#> Variable contributions can only be theoretically interpreted as such
+#> if the model was trained on scaled data. Scaling also changes the
+#> projection-pursuit optimization, which may affect the resulting tree.
 #> 
 ```

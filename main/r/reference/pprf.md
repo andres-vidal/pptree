@@ -212,18 +212,18 @@ pprf(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #> 
 
 # Example 5: formula interface with the `crabs` dataset
-pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+pprf(Type ~ ., data = crabs)
 #> 
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.04 0.02 0 -0.04 0.03 0.04 ] * x) < 0.1272064:
-#>   Predict: B 
-#> Else:
+#> If ([ 0.1 0 0 0 0 0 0 ] * x) < 0.04637025:
 #>   Predict: O 
+#> Else:
+#>   Predict: B 
 #> 
 #> Tree 2:
-#> If ([ 0.04 0.01 0 -0.04 0.03 0.01 ] * x) < 0.07738496:
+#> If ([ 0.14 0 0 0 0 0 0 ] * x) < 0.07229224:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
@@ -231,60 +231,18 @@ pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
 #> 
 
 # Example 6: formula interface with the `crabs` dataset with regularization
-pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
+pprf(Type ~ ., data = crabs, lambda = 0.5)
 #> 
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.01 0 0 0 0.01 -0.01 ] * x) < 0.3201671:
+#> If ([ 0.01 -0.01 0.01 0 0 0 0.01 ] * x) < 0.3337918:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0.01 0 0 0 0.01 -0.01 ] * x) < 0.3204295:
-#>   Predict: B 
-#> Else:
-#>   Predict: O 
-#> 
-#> 
-
-# Example 7: matrix interface with the `crabs` dataset
-x <- crabs[, 2:5]
-x$sex <- as.numeric(as.factor(crabs$sex))
-pprf(x = x, y = crabs$Type)
-#> 
-#> Random Forest of Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
-#> Tree 1:
-#> If ([ 0.06 0.02 0.02 -0.05 0.04 ] * x) < 0.1417684:
-#>   Predict: B 
-#> Else:
-#>   Predict: O 
-#> 
-#> Tree 2:
-#> If ([ 0.06 0.01 0.02 -0.04 0.02 ] * x) < 0.1080204:
-#>   Predict: B 
-#> Else:
-#>   Predict: O 
-#> 
-#> 
-
-# Example 8: matrix interface with the `crabs` dataset with regularization
-x <- crabs[, 2:5]
-x$sex <- as.numeric(as.factor(crabs$sex))
-pprf(x = x, y = crabs$Type, lambda = 0.5)
-#> 
-#> Random Forest of Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
-#> Tree 1:
-#> If ([ 0.02 0.01 0 0 0.01 ] * x) < 0.3581609:
-#>   Predict: B 
-#> Else:
-#>   Predict: O 
-#> 
-#> Tree 2:
-#> If ([ 0.02 0.01 0 0 0.03 ] * x) < 0.3663714:
+#> If ([ 0 0 0.01 0 0 0 0.01 ] * x) < 0.3286325:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 

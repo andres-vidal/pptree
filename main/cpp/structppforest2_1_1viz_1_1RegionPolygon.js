@@ -1,5 +1,5 @@
 var structppforest2_1_1viz_1_1RegionPolygon =
 [
-    [ "predicted_class", "structppforest2_1_1viz_1_1RegionPolygon.html#ae9b57871f9ecbf909deff95e4f9765ea", null ],
+    [ "predicted_group", "structppforest2_1_1viz_1_1RegionPolygon.html#afccee5e571135058b266e94b29920bd1", null ],
     [ "vertices", "structppforest2_1_1viz_1_1RegionPolygon.html#aaf6d58a25de78ffb7f5b8d4913c2755a", null ]
 ];

@@ -117,40 +117,20 @@ pptr(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #> 
 
 # Example 5: formula interface with the `crabs` dataset
-pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+pptr(Type ~ ., data = crabs)
 #> 
 #> Project-Pursuit Oblique Decision Tree:
-#> If ([ 0.04 0.01 0.01 -0.04 0.03 0.02 ] * x) < 0.07781532:
+#> If ([ 0 0 0 0 0 0 0 ] * x) < 0.004743028:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 
 # Example 6: formula interface with the `crabs` dataset with regularization
-pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs, lambda = 0.5)
+pptr(Type ~ ., data = crabs, lambda = 0.5)
 #> 
 #> Project-Pursuit Oblique Decision Tree:
-#> If ([ 0.01 0 0 0 0.01 0 ] * x) < 0.3234434:
-#>   Predict: B 
-#> Else:
-#>   Predict: O 
-#> 
-
-# Example 7: matrix interface with the `crabs` dataset
-x <- crabs[, 2:5]
-x$sex <- as.numeric(as.factor(crabs$sex))
-pptr(x = x, y = crabs$Type)
-#> If ([ 0.06 0.01 0.03 -0.05 0.02 ] * x) < 0.1153606:
-#>   Predict: B 
-#> Else:
-#>   Predict: O 
-#> 
-
-# Example 8: matrix interface with the `crabs` dataset with regularization
-x <- crabs[, 2:5]
-x$sex <- as.numeric(as.factor(crabs$sex))
-pptr(x = x, y = crabs$Type, lambda = 0.5)
-#> If ([ 0.02 0.01 0 0 0 ] * x) < 0.3518856:
+#> If ([ 0 0 0.01 0 0 0 0.01 ] * x) < 0.324472:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 

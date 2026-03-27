@@ -102,7 +102,7 @@ $(function(){initNavTree('extending_visitors.html',''); initResizable(true); });
   <div class="headertitle"><div class="title">Extending: Custom Visitors</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="el" href="namespaceppforest2.html">ppforest2</a> uses the Visitor pattern (double dispatch) to traverse trees and models without <code>dynamic_cast</code>. You can add new traversal logic — statistics, export formats, analysis — by implementing a visitor, without modifying the model classes.</p>
+<div class="textblock"><p><a class="el" href="namespaceppforest2.html">ppforest2</a> uses the Visitor pattern (double dispatch) to traverse trees and models without <code>dynamic_cast</code>. You can add new traversal logic — statistics, export formats, analysis — by implementing a visitor, without modifying the model types.</p>
 <p>Three visitor interfaces are available:</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -140,12 +140,12 @@ Interface to implement</h2>
 <li><code>projector</code> — the projection vector (p) used at this split</li>
 <li><code>threshold</code> — the split threshold in projected space</li>
 <li><code>lower</code> / <code>upper</code> — child nodes (TreeNode::Ptr)</li>
-<li><code>classes</code> — set of class labels reachable from this node</li>
+<li><code>groups</code> — set of group labels reachable from this node</li>
 <li><code>pp_index_value</code> — the PP index value achieved at this split</li>
 <li><code>training_spec</code> — the TrainingSpec used to build this subtree</li>
 </ul>
 <p><b>TreeResponse</b> (leaf node) provides:</p><ul>
-<li><code>value</code> — the predicted class label</li>
+<li><code>value</code> — the predicted group label</li>
 </ul>
 <h2><a class="anchor" id="vis_treenode_traversal"></a>
 Traversal pattern</h2>
@@ -253,7 +253,7 @@ Example: collecting all leaf labels</h2>
 <div class="line">};</div>
 </div><!-- fragment --><p>Usage: </p><div class="fragment"><div class="line">AllLabelsVisitor visitor;</div>
 <div class="line">model.accept(visitor);</div>
-<div class="line"><span class="comment">// visitor.labels contains all class labels in the model</span></div>
+<div class="line"><span class="comment">// visitor.labels contains all group labels in the model</span></div>
 </div><!-- fragment --><h1><a class="anchor" id="vis_specvisitor"></a>
 Implementing a TrainingSpec::Visitor</h1>
 <p>TrainingSpec::Visitor dispatches over concrete TrainingSpec subclasses, giving type-safe access to their parameters (e.g. <code>lambda</code>, <code>n_vars</code>).</p>

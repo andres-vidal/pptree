@@ -113,10 +113,10 @@ $(function(){initNavTree('structppforest2_1_1viz_1_1NodeData.html',''); initResi
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:abefd12391d8f7be6525933d855f07f31" id="r_abefd12391d8f7be6525933d855f07f31"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abefd12391d8f7be6525933d855f07f31">classes</a></td></tr>
-<tr class="separator:abefd12391d8f7be6525933d855f07f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb2b3fbc6b5a6b7307f3df747fcf9608" id="r_abb2b3fbc6b5a6b7307f3df747fcf9608"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abb2b3fbc6b5a6b7307f3df747fcf9608">depth</a></td></tr>
 <tr class="separator:abb2b3fbc6b5a6b7307f3df747fcf9608"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c69d83b789e1b5ba3534d881b6a8a08" id="r_a4c69d83b789e1b5ba3534d881b6a8a08"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c69d83b789e1b5ba3534d881b6a8a08">groups</a></td></tr>
+<tr class="separator:a4c69d83b789e1b5ba3534d881b6a8a08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab1f8921c5f52c1db30860b7f14acfab" id="r_aab1f8921c5f52c1db30860b7f14acfab"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab1f8921c5f52c1db30860b7f14acfab">is_leaf</a></td></tr>
 <tr class="separator:aab1f8921c5f52c1db30860b7f14acfab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace58e17809ab9eaddad15054fda49529" id="r_ace58e17809ab9eaddad15054fda49529"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace58e17809ab9eaddad15054fda49529">projected_values</a></td></tr>
@@ -132,29 +132,15 @@ Public Attributes</h2></td></tr>
 <div class="textblock"><p>Per-node data collected by routing observations through the tree. </p>
 <p>For internal (condition) nodes:</p><ul>
 <li><code>projected_values:</code> dot product of each reaching observation with the node's projector vector.</li>
-<li><code>classes:</code> class label (1-indexed response) of each reaching observation, parallel to <code>projected_values</code>.</li>
+<li><code>groups:</code> group label (1-indexed response) of each reaching observation, parallel to <code>projected_values</code>.</li>
 <li><code>projector</code>, <code>threshold:</code> the split parameters (copied for convenience so the R side can render histograms without re-accessing the tree).</li>
 </ul>
 <p>For leaf (response) nodes:</p><ul>
 <li><code>projected_values</code> is empty.</li>
-<li><code>classes</code> contains labels of observations reaching the leaf.</li>
-<li><code>value</code> is the predicted class (0-indexed response). </li>
+<li><code>groups</code> contains labels of observations reaching the leaf.</li>
+<li><code>value</code> is the predicted group (0-indexed response). </li>
 </ul>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="abefd12391d8f7be6525933d855f07f31" name="abefd12391d8f7be6525933d855f07f31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abefd12391d8f7be6525933d855f07f31">&#9670;&#160;</a></span>classes</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a>&gt; ppforest2::viz::NodeData::classes</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="abb2b3fbc6b5a6b7307f3df747fcf9608" name="abb2b3fbc6b5a6b7307f3df747fcf9608"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abb2b3fbc6b5a6b7307f3df747fcf9608">&#9670;&#160;</a></span>depth</h2>
 
@@ -163,6 +149,20 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int ppforest2::viz::NodeData::depth</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4c69d83b789e1b5ba3534d881b6a8a08" name="a4c69d83b789e1b5ba3534d881b6a8a08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c69d83b789e1b5ba3534d881b6a8a08">&#9670;&#160;</a></span>groups</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a>&gt; ppforest2::viz::NodeData::groups</td>
         </tr>
       </table>
 </div><div class="memdoc">

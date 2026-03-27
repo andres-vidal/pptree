@@ -7,8 +7,8 @@ Fremantle, Western Australia.
 
 - Type:
 
-  is the class variable and has 4 classes with the combinations of
-  specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale)
+  is the group variable and has 4 groups with the combinations of
+  species and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale)
 
 - FL:
 

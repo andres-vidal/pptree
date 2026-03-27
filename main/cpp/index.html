@@ -193,7 +193,7 @@ Strategy pattern</h1>
 <p>Tree training is parameterised by three pluggable strategies. Concrete implementations are composed at runtime via TrainingSpec, so new optimisation criteria or variable selection methods can be added without changing the tree-building logic.</p>
 <ul>
 <li><b>PPStrategy</b> — projection pursuit index optimisation. <br  />
- Built-in: PPPDAStrategy (Generalised LDA, with optional PDA penalty via <code>lambda</code>). <code>lambda</code> = 0 gives standard LDA; <code>lambda</code> in (0, 1] penalises the within-class covariance matrix.</li>
+ Built-in: PPPDAStrategy (Generalised LDA, with optional PDA penalty via <code>lambda</code>). <code>lambda</code> = 0 gives standard LDA; <code>lambda</code> in (0, 1] penalises the within-group covariance matrix.</li>
 <li><b>DRStrategy</b> — dimensionality reduction (variable subset selection). <br  />
  Built-in: DRNoopStrategy (use all variables, for single trees), DRUniformStrategy (sample <code>n_vars</code> uniformly at random, for forests).</li>
 <li><b>SRStrategy</b> — split threshold computation. <br  />
@@ -212,7 +212,7 @@ Strategy pattern</h1>
 </div><!-- fragment --><p>For a step-by-step guide to implementing new strategies, see <a class="el" href="extending_strategies.html">Extending: Custom Strategies</a>.</p>
 <h1><a class="anchor" id="visitor_pattern"></a>
 Visitor pattern</h1>
-<p>Two visitor interfaces avoid <code>dynamic_cast</code> and keep traversal logic decoupled from the model classes:</p>
+<p>Two visitor interfaces avoid <code>dynamic_cast</code> and keep traversal logic decoupled from the model types:</p>
 <ul>
 <li><b>TreeNode::Visitor</b> — dispatches over internal nodes (TreeCondition) and leaf nodes (TreeResponse). Used by serialisation, visualisation, and variable importance.</li>
 <li><b>Model::Visitor</b> — dispatches over Tree and Forest. Used by the serialisation layer.</li>

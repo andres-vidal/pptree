@@ -150,9 +150,9 @@ Functions</h2></td></tr>
 <tr class="memitem:af3bea8d81a602627c7d483ac468c0870" id="r_af3bea8d81a602627c7d483ac468c0870"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af3bea8d81a602627c7d483ac468c0870">now_iso8601</a> ()</td></tr>
 <tr class="memdesc:af3bea8d81a602627c7d483ac468c0870"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current local time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SS).  <br /></td></tr>
 <tr class="separator:af3bea8d81a602627c7d483ac468c0870"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3c3434cd455c533e7c15c2adc26cf55" id="r_ac3c3434cd455c533e7c15c2adc26cf55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac3c3434cd455c533e7c15c2adc26cf55">print_confusion_matrix</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;cm, const std::string &amp;title=&quot;Confusion Matrix&quot;)</td></tr>
-<tr class="memdesc:ac3c3434cd455c533e7c15c2adc26cf55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted confusion matrix to stdout.  <br /></td></tr>
-<tr class="separator:ac3c3434cd455c533e7c15c2adc26cf55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa58e461778488be973d454c41b704dd9" id="r_aa58e461778488be973d454c41b704dd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa58e461778488be973d454c41b704dd9">print_confusion_matrix</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;cm, const std::string &amp;title=&quot;Confusion Matrix&quot;, const std::vector&lt; std::string &gt; &amp;group_names={})</td></tr>
+<tr class="memdesc:aa58e461778488be973d454c41b704dd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted confusion matrix to stdout.  <br /></td></tr>
+<tr class="separator:aa58e461778488be973d454c41b704dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad87ca824e129347e3b2b308fbea618b0" id="r_ad87ca824e129347e3b2b308fbea618b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad87ca824e129347e3b2b308fbea618b0">print_results</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1io_1_1ModelStats.html">ModelStats</a> &amp;stats)</td></tr>
 <tr class="memdesc:ad87ca824e129347e3b2b308fbea618b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print evaluation results (timing, errors, memory) to stdout.  <br /></td></tr>
 <tr class="separator:ad87ca824e129347e3b2b308fbea618b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -272,8 +272,8 @@ template&lt;typename F&gt; </div>
 
 </div>
 </div>
-<a id="ac3c3434cd455c533e7c15c2adc26cf55" name="ac3c3434cd455c533e7c15c2adc26cf55"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac3c3434cd455c533e7c15c2adc26cf55">&#9670;&#160;</a></span>print_confusion_matrix()</h2>
+<a id="aa58e461778488be973d454c41b704dd9" name="aa58e461778488be973d454c41b704dd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa58e461778488be973d454c41b704dd9">&#9670;&#160;</a></span>print_confusion_matrix()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,13 +291,18 @@ template&lt;typename F&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>title</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;Confusion&#160;Matrix&quot;</span>&#160;)</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>title</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;Confusion&#160;Matrix&quot;</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>group_names</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Print a formatted confusion matrix to stdout. </p>
-<p>Displays the confusion matrix with class labels, diagonal highlighting, and per-class error rates.</p>
+<p>Displays the confusion matrix with group labels, diagonal highlighting, and per-group error rates.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">out</td><td><a class="el" href="structppforest2_1_1io_1_1Output.html" title="Quiet-aware, indentation-aware output context.">Output</a> context. </td></tr>

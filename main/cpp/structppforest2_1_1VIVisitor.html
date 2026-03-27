@@ -138,7 +138,7 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Visitor that accumulates per-variable contributions for VI2 and VI3. </p>
-<p>Traverses a single tree and, at each split node s with G_s classes and PP index I_s, accumulates:</p>
+<p>Traverses a single tree and, at each split node s with G_s groups and PP index I_s, accumulates:</p>
 <p>vi2_contributions[j] += |a_j| / G_s vi3_contributions[j] += I_s * |a_j|</p>
 <p>When <code class="param">scale</code> is provided, each |a_j| is multiplied by σ_j so that coefficients are comparable across variables with different units.</p>
 <p>The caller is responsible for forest-level aggregation and normalization described in Da Silva et al. (2021). </p>

@@ -20,7 +20,7 @@
   and
   [`pprf()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pprf.md)
   with formula and matrix interfaces.
-- R: [`predict()`](https://rdrr.io/r/stats/predict.html) with class
+- R: [`predict()`](https://rdrr.io/r/stats/predict.html) with group
   labels (`type = "class"`) or vote proportions (`type = "prob"`).
 - R:
   [`save_json()`](https://andres-vidal.github.io/ppforest2/main/r/reference/save_json.md)

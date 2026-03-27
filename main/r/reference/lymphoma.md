@@ -10,7 +10,7 @@ observations from 3 lymphoma types.
 
 - Type:
 
-  Class variable has 3 classes with 29 cases of B-cell ALL (B-CLL), 42
+  Group variable has 3 groups with 29 cases of B-cell ALL (B-CLL), 42
   cases of diffuse large B-cell lymphoma (DLBCL) and 9 cases of
   follicular lymphoma (FL)
 

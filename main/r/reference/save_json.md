@@ -1,7 +1,7 @@
 # Save a model to a JSON file.
 
 Serializes a `pptr` or `pprf` model to JSON format compatible with the
-C++ CLI. The JSON includes the model structure, class labels, training
+C++ CLI. The JSON includes the model structure, group labels, training
 parameters, and optionally variable importance metrics.
 
 ## Usage

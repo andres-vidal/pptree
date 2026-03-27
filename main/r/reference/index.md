@@ -46,7 +46,7 @@
   : Predicts the labels or vote proportions of a set of observations
   using a pprf model.
 - [`predict(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/predict.pptr.md)
-  : Predicts the labels or class indicators of a set of observations
+  : Predicts the labels or group indicators of a set of observations
   using a pptr model.
 - [`print(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pprf.md)
   : Prints a pprf model.

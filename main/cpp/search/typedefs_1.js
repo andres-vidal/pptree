@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['json_0',['json',['../namespaceppforest2_1_1serialization.html#afced42a0b2c517da2664a9a849d90899',1,'ppforest2::serialization']]]
+  ['groupnames_0',['GroupNames',['../namespaceppforest2_1_1serialization.html#a765380bc535afaefa14aa99a8ff8aae4',1,'ppforest2::serialization']]]
 ];

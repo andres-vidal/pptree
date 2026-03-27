@@ -1,6 +1,6 @@
-# Predicts the labels or class indicators of a set of observations using a pptr model.
+# Predicts the labels or group indicators of a set of observations using a pptr model.
 
-Predicts the labels or class indicators of a set of observations using a
+Predicts the labels or group indicators of a set of observations using a
 pptr model.
 
 ## Usage
@@ -25,7 +25,7 @@ predict(object, new_data = NULL, type = "class", ...)
 
   The type of prediction: `"class"` (default) returns a factor of
   predicted labels, `"prob"` returns a data frame with 1.0 for the
-  predicted class and 0.0 elsewhere.
+  predicted group and 0.0 elsewhere.
 
 - ...:
 
@@ -35,7 +35,7 @@ predict(object, new_data = NULL, type = "class", ...)
 ## Value
 
 If `type = "class"`, a factor of predicted labels. If `type = "prob"`, a
-data frame with one column per class.
+data frame with one column per group.
 
 ## See also
 
@@ -78,13 +78,13 @@ predict(model, iris)
 #> Levels: setosa versicolor virginica
 
 # Example 2: with the `crabs` dataset
-model <- pptr(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+model <- pptr(Type ~ ., data = crabs)
 predict(model, crabs)
-#>   [1] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
-#>  [38] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
-#>  [75] B B B B B B B B B B B B B B B B B B B B B B B B B B O O O O O O O O O O O
-#> [112] O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
-#> [149] O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
+#>   [1] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B O B B B B B O O
+#>  [38] O O O O O O O O O O O O O B B B B B B B B B B B B B B B B B B B B B B B B
+#>  [75] B B B B B B B B B B B B B B B B B B B B B O O O O O B B B B B B B B B B B
+#> [112] B B B B B B B B O B O O O O O O O O O O O O O O O O O O O O O O O O O O O
+#> [149] O O B B B B B B B B B B O O O O O O O O O O O O O O O O O O O O O O O O O
 #> [186] O O O O O O O O O O O O O O O
 #> Levels: B O
 

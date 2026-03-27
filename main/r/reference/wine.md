@@ -17,8 +17,8 @@ A data frame with 178 rows and 14 variables
 
 - Type:
 
-  Class variable has 3 classes that are 3 different wine grown
-  cultivares in Italy.
+  Group variable has 3 groups that are 3 different wine grown cultivars
+  in Italy.
 
 - X1 to X13:
 
