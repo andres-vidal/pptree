@@ -48,7 +48,9 @@ plot(x, type = "importance", metric = NULL, tree_index = 1L, node = 1L, ...)
 
 ## Value
 
-A ggplot2 object (invisibly), or `NULL` for the grid layout.
+A ggplot2-compatible object (invisibly). The importance grid returns a
+patchwork object that works with
+[`ggplot2::ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html).
 
 ## Examples
 

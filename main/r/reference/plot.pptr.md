@@ -44,7 +44,9 @@ plot(x, type = NULL, metric = NULL, node = 1L, ...)
 
 ## Value
 
-A ggplot2 object (invisibly), or `NULL` for the mosaic layout.
+A ggplot2-compatible object (invisibly). The mosaic layout returns a
+patchwork object that works with
+[`ggplot2::ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html).
 
 ## Examples
 

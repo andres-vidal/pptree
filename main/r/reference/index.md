@@ -22,6 +22,8 @@
   : Iris Flower Dataset
 - [`leukemia`](https://andres-vidal.github.io/ppforest2/main/r/reference/leukemia.md)
   : Leukemia Dataset
+- [`load_json()`](https://andres-vidal.github.io/ppforest2/main/r/reference/load_json.md)
+  : Load a model from a JSON file.
 - [`lymphoma`](https://andres-vidal.github.io/ppforest2/main/r/reference/lymphoma.md)
   : Lymphoma Dataset
 - [`olive`](https://andres-vidal.github.io/ppforest2/main/r/reference/olive.md)
@@ -50,6 +52,8 @@
   : Prints a pprf model.
 - [`print(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pptr.md)
   : Prints a pptr model.
+- [`save_json()`](https://andres-vidal.github.io/ppforest2/main/r/reference/save_json.md)
+  : Save a model to a JSON file.
 - [`summary(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md)
   : Summarizes a pprf model.
 - [`summary(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md)

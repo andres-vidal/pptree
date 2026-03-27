@@ -58,6 +58,8 @@ A pptr model trained on `x` and `y`.
 [`formula.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pptr.md),
 [`summary.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md),
 [`print.pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pptr.md),
+[`save_json`](https://andres-vidal.github.io/ppforest2/main/r/reference/save_json.md),
+[`load_json`](https://andres-vidal.github.io/ppforest2/main/r/reference/load_json.md),
 [`pp_tree`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_tree.md)
 for parsnip integration,
 [`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/main/r/articles/introduction.md)

@@ -25,6 +25,7 @@ pprf(
   n_vars = NULL,
   p_vars = NULL,
   seed = NULL,
+  max_retries = 3L,
   n_threads = NULL
 )
 ```
@@ -79,6 +80,12 @@ pprf(
   directly. The same seed is used for training and for computing
   permuted variable importance.
 
+- max_retries:
+
+  Maximum number of retries for degenerate trees (default: 3). When a
+  bootstrap sample yields a singular covariance matrix, the tree is
+  retrained with a different seed up to this many times.
+
 - n_threads:
 
   The number of threads to use. The default is the number of cores
@@ -94,6 +101,8 @@ A pprf model trained on `x` and `y`.
 [`formula.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pprf.md),
 [`summary.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md),
 [`print.pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/print.pprf.md),
+[`save_json`](https://andres-vidal.github.io/ppforest2/main/r/reference/save_json.md),
+[`load_json`](https://andres-vidal.github.io/ppforest2/main/r/reference/load_json.md),
 [`pp_rand_forest`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_rand_forest.md)
 for parsnip integration,
 [`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/main/r/articles/introduction.md)

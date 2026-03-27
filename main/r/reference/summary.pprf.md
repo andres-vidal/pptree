@@ -42,7 +42,6 @@ summary(model)
 #>  virginica 
 #> Formula:
 #>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> OOB error: 2.22 %
 #> -------------------------------------
 #> Variable Importance:
 #> 
@@ -57,7 +56,7 @@ summary(model)
 #> if the model was trained on scaled data. Scaling also changes the
 #> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
-#> Confusion Matrix:
+#> Training Confusion Matrix:
 #> 
 #>             Predicted
 #> Actual       setosa versicolor virginica
@@ -65,7 +64,16 @@ summary(model)
 #>   versicolor      0         49         1
 #>   virginica       0          2        48
 #> 
-#> Training error: 2 %
-#> OOB error: 2.22 %
+#> Training error: 2%
+#> -------------------------------------
+#> OOB Confusion Matrix:
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         30          0         0
+#>   versicolor      0         30         1
+#>   virginica       0          1        28
+#> 
+#> OOB error: 2.22%
 #> 
 ```

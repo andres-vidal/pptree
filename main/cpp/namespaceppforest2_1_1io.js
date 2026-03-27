@@ -31,7 +31,7 @@ var namespaceppforest2_1_1io =
     [ "check_file_not_exists", "namespaceppforest2_1_1io.html#ab05c747dc852ed977dcdb58e81bc42f9", null ],
     [ "measure_time_ms", "namespaceppforest2_1_1io.html#a27548afe6815bfe21d68e54f71b37fdd", null ],
     [ "now_iso8601", "namespaceppforest2_1_1io.html#af3bea8d81a602627c7d483ac468c0870", null ],
-    [ "print_confusion_matrix", "namespaceppforest2_1_1io.html#a2729c205e80189c1981c82bb5d571fac", null ],
+    [ "print_confusion_matrix", "namespaceppforest2_1_1io.html#ac3c3434cd455c533e7c15c2adc26cf55", null ],
     [ "print_results", "namespaceppforest2_1_1io.html#ad87ca824e129347e3b2b308fbea618b0", null ],
     [ "print_variable_importance", "namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7", null ]
 ];

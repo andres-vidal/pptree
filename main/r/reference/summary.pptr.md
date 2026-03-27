@@ -63,6 +63,6 @@ summary(model)
 #>   versicolor      0         48         2
 #>   virginica       0          1        49
 #> 
-#> Training error: 2 %
+#> Training error: 2%
 #> 
 ```

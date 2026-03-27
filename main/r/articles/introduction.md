@@ -69,7 +69,7 @@ summary(tree)
 #>   versicolor      0         48         2
 #>   virginica       0          1        49
 #> 
-#> Training error: 2 %
+#> Training error: 2%
 ```
 
 Predict new observations:
@@ -104,7 +104,6 @@ summary(forest)
 #>  virginica 
 #> Formula:
 #>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> OOB error: 4 %
 #> -------------------------------------
 #> Variable Importance:
 #> 
@@ -119,7 +118,7 @@ summary(forest)
 #> if the model was trained on scaled data. Scaling also changes the
 #> projection-pursuit optimization, which may affect the resulting tree.
 #> -------------------------------------
-#> Confusion Matrix:
+#> Training Confusion Matrix:
 #> 
 #>             Predicted
 #> Actual       setosa versicolor virginica
@@ -127,8 +126,17 @@ summary(forest)
 #>   versicolor      0         48         2
 #>   virginica       0          4        46
 #> 
-#> Training error: 4 %
-#> OOB error: 4 %
+#> Training error: 4%
+#> -------------------------------------
+#> OOB Confusion Matrix:
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          4        46
+#> 
+#> OOB error: 4%
 ```
 
 The summary shows the OOB (out-of-bag) error estimate and three variable
@@ -243,7 +251,7 @@ summary(tree_pda)
 #>   versicolor      0         47         3
 #>   virginica       0          3        47
 #> 
-#> Training error: 4 %
+#> Training error: 4%
 ```
 
 ## Tidymodels integration

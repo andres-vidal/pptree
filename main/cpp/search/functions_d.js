@@ -14,7 +14,7 @@ var searchData=
   ['print_5fbenchmark_5fmarkdown_11',['print_benchmark_markdown',['../namespaceppforest2_1_1cli.html#a8c6ca026e9e9840a3111d537a9f3d0ff',1,'ppforest2::cli']]],
   ['print_5fbenchmark_5ftable_12',['print_benchmark_table',['../namespaceppforest2_1_1cli.html#a2ea0d7abc2027072d9fba8d2f5a01401',1,'ppforest2::cli']]],
   ['print_5fconfiguration_13',['print_configuration',['../namespaceppforest2_1_1cli.html#a2afdb1db7e587706c8fb776dd05acba9',1,'ppforest2::cli']]],
-  ['print_5fconfusion_5fmatrix_14',['print_confusion_matrix',['../namespaceppforest2_1_1io.html#a2729c205e80189c1981c82bb5d571fac',1,'ppforest2::io']]],
+  ['print_5fconfusion_5fmatrix_14',['print_confusion_matrix',['../namespaceppforest2_1_1io.html#ac3c3434cd455c533e7c15c2adc26cf55',1,'ppforest2::io']]],
   ['print_5fresults_15',['print_results',['../namespaceppforest2_1_1io.html#ad87ca824e129347e3b2b308fbea618b0',1,'ppforest2::io']]],
   ['print_5fvariable_5fimportance_16',['print_variable_importance',['../namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7',1,'ppforest2::io']]],
   ['println_17',['println',['../structppforest2_1_1io_1_1Output.html#aad1af2cabeaae871adb58a19d4d6bb20',1,'ppforest2::io::Output']]],
