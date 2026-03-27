@@ -32,16 +32,16 @@ model <- pptr(Type ~ ., data = iris)
 summary(model)
 #> 
 #> Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
-#> 150 observations of 4 features
+#> 
 #> Regularization parameter: 0 
-#> Groups:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
 #> Confusion Matrix:
 #> 
 #>             Predicted
@@ -51,7 +51,7 @@ summary(model)
 #>   virginica       0          1        49
 #> 
 #> Training error: 2%
-#> -------------------------------------
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection

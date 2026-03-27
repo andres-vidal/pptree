@@ -32,17 +32,17 @@ model <- pprf(Type ~ ., data = iris)
 summary(model)
 #> 
 #> Random Forest of Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
+#> 
 #> Size: 2 trees
-#> 150 observations of 4 features
 #> Regularization parameter: 0 
-#> Groups:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
 #> Training Confusion Matrix:
 #> 
 #>             Predicted
@@ -52,7 +52,7 @@ summary(model)
 #>   virginica       0          1        49
 #> 
 #> Training error: 1.33%
-#> -------------------------------------
+#> 
 #> OOB Confusion Matrix:
 #> 
 #>             Predicted
@@ -62,7 +62,7 @@ summary(model)
 #>   virginica       0          0        31
 #> 
 #> OOB error: 1.09%
-#> -------------------------------------
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection   Weighted   Permuted

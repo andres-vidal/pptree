@@ -38,16 +38,16 @@ importance:
 summary(tree)
 #> 
 #> Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
-#> 150 observations of 4 features
+#> 
 #> Regularization parameter: 0 
-#> Groups:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
 #> Confusion Matrix:
 #> 
 #>             Predicted
@@ -57,7 +57,7 @@ summary(tree)
 #>   virginica       0          1        49
 #> 
 #> Training error: 2%
-#> -------------------------------------
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection
@@ -94,17 +94,17 @@ forest <- pprf(Type ~ ., data = iris, size = 100, n_vars = 2, seed = 42)
 summary(forest)
 #> 
 #> Random Forest of Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
+#> 
 #> Size: 100 trees
-#> 150 observations of 4 features
 #> Regularization parameter: 0 
-#> Groups:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
 #> Training Confusion Matrix:
 #> 
 #>             Predicted
@@ -114,7 +114,7 @@ summary(forest)
 #>   virginica       0          4        46
 #> 
 #> Training error: 4%
-#> -------------------------------------
+#> 
 #> OOB Confusion Matrix:
 #> 
 #>             Predicted
@@ -124,7 +124,7 @@ summary(forest)
 #>   virginica       0          4        46
 #> 
 #> OOB error: 4%
-#> -------------------------------------
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection    Weighted   Permuted
@@ -220,16 +220,16 @@ tree_pda <- pptr(Type ~ ., data = iris, lambda = 0.5, seed = 42)
 summary(tree_pda)
 #> 
 #> Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
-#> 150 observations of 4 features
+#> 
 #> Regularization parameter: 0.5 
-#> Groups:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
 #> Confusion Matrix:
 #> 
 #>             Predicted
@@ -239,7 +239,7 @@ summary(tree_pda)
 #>   virginica       0          3        47
 #> 
 #> Training error: 4%
-#> -------------------------------------
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ  Projection
