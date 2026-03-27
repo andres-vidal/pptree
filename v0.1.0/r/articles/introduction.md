@@ -3,7 +3,7 @@
 ppforest2 builds oblique decision trees and random forests using
 projection pursuit. Instead of splitting on a single variable at each
 node, it finds a linear combination of variables that best separates the
-classes.
+groups.
 
 ## Single tree
 
@@ -38,16 +38,26 @@ importance:
 summary(tree)
 #> 
 #> Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
-#> 150 observations of 4 features
+#> 
 #> Regularization parameter: 0 
-#> Classes:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
+#> Confusion Matrix:
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          1        49
+#> 
+#> Training error: 2%
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection
@@ -60,16 +70,6 @@ summary(tree)
 #> Variable contributions can only be theoretically interpreted as such
 #> if the model was trained on scaled data. Scaling also changes the
 #> projection-pursuit optimization, which may affect the resulting tree.
-#> -------------------------------------
-#> Confusion Matrix:
-#> 
-#>             Predicted
-#> Actual       setosa versicolor virginica
-#>   setosa         50          0         0
-#>   versicolor      0         48         2
-#>   virginica       0          1        49
-#> 
-#> Training error: 2 %
 ```
 
 Predict new observations:
@@ -94,18 +94,37 @@ forest <- pprf(Type ~ ., data = iris, size = 100, n_vars = 2, seed = 42)
 summary(forest)
 #> 
 #> Random Forest of Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
+#> 
 #> Size: 100 trees
-#> 150 observations of 4 features
 #> Regularization parameter: 0 
-#> Classes:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> OOB error: 4 %
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
+#> Training Confusion Matrix:
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          4        46
+#> 
+#> Training error: 4%
+#> 
+#> OOB Confusion Matrix:
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          4        46
+#> 
+#> OOB error: 4%
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection    Weighted   Permuted
@@ -118,17 +137,6 @@ summary(forest)
 #> Variable contributions can only be theoretically interpreted as such
 #> if the model was trained on scaled data. Scaling also changes the
 #> projection-pursuit optimization, which may affect the resulting tree.
-#> -------------------------------------
-#> Confusion Matrix:
-#> 
-#>             Predicted
-#> Actual       setosa versicolor virginica
-#>   setosa         50          0         0
-#>   versicolor      0         48         2
-#>   virginica       0          4        46
-#> 
-#> Training error: 4 %
-#> OOB error: 4 %
 ```
 
 The summary shows the OOB (out-of-bag) error estimate and three variable
@@ -212,16 +220,26 @@ tree_pda <- pptr(Type ~ ., data = iris, lambda = 0.5, seed = 42)
 summary(tree_pda)
 #> 
 #> Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
-#> 150 observations of 4 features
+#> 
 #> Regularization parameter: 0.5 
-#> Classes:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
+#> Confusion Matrix:
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         47         3
+#>   virginica       0          3        47
+#> 
+#> Training error: 4%
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ  Projection
@@ -234,16 +252,6 @@ summary(tree_pda)
 #> Variable contributions can only be theoretically interpreted as such
 #> if the model was trained on scaled data. Scaling also changes the
 #> projection-pursuit optimization, which may affect the resulting tree.
-#> -------------------------------------
-#> Confusion Matrix:
-#> 
-#>             Predicted
-#> Actual       setosa versicolor virginica
-#>   setosa         50          0         0
-#>   versicolor      0         47         3
-#>   virginica       0          3        47
-#> 
-#> Training error: 4 %
 ```
 
 ## Tidymodels integration

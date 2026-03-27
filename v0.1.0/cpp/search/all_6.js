@@ -9,7 +9,7 @@ var searchData=
   ['forest_6',['Forest',['../structppforest2_1_1Forest.html',1,'ppforest2::Forest'],['../structppforest2_1_1Forest.html#aebf6bbdeb3ff9672fc037cc5f48a5e8c',1,'ppforest2::Forest::Forest()'],['../structppforest2_1_1Forest.html#a8cb214a2162ed9f7cef5c59779ae0209',1,'ppforest2::Forest::Forest(TrainingSpec::Ptr &amp;&amp;training_spec, int seed)']]],
   ['forest_7',['Training a random forest',['../index.html#train_forest',1,'']]],
   ['forest_2ehpp_8',['Forest.hpp',['../Forest_8hpp.html',1,'']]],
-  ['forest_5ffrom_5fjson_9',['forest_from_json',['../namespaceppforest2_1_1serialization.html#acb1f75bf0934a1093a5aec7e8731368b',1,'ppforest2::serialization']]],
+  ['forest_5ffrom_5fjson_9',['forest_from_json',['../namespaceppforest2_1_1serialization.html#acb1f75bf0934a1093a5aec7e8731368b',1,'ppforest2::serialization::forest_from_json(const json &amp;j)'],['../namespaceppforest2_1_1serialization.html#a37103fb28223745c43876d65704a4c41',1,'ppforest2::serialization::forest_from_json(const json &amp;j, const GroupNames &amp;group_names)']]],
   ['format_10',['format',['../structppforest2_1_1cli_1_1BenchmarkParams.html#aab83bf598da28d07ec276532bebfe69f',1,'ppforest2::cli::BenchmarkParams::format'],['../structppforest2_1_1cli_1_1SimulateParams.html#af1695a357c09532387cd738275c592a0',1,'ppforest2::cli::SimulateParams::format']]],
   ['format_5fmd_5frow_11',['format_md_row',['../namespaceppforest2_1_1io_1_1layout.html#a665671be7e16794fc46d803051dd3493',1,'ppforest2::io::layout']]],
   ['format_5fmd_5fseparator_12',['format_md_separator',['../namespaceppforest2_1_1io_1_1layout.html#a61070d5fb9ca7d772bc39584f769e4c0',1,'ppforest2::io::layout']]],

@@ -34,7 +34,7 @@ predict(object, new_data = NULL, type = "class", ...)
 ## Value
 
 If `type = "class"`, a factor of predicted labels. If `type = "prob"`, a
-data frame with one column per class, where each row sums to 1.
+data frame with one column per group, where each row sums to 1.
 
 ## See also
 
@@ -70,21 +70,21 @@ predict(model, iris)
 #> [109] virginica  virginica  virginica  virginica  virginica  virginica 
 #> [115] virginica  virginica  virginica  virginica  virginica  virginica 
 #> [121] virginica  virginica  virginica  virginica  virginica  virginica 
-#> [127] virginica  virginica  virginica  versicolor virginica  virginica 
-#> [133] virginica  versicolor versicolor virginica  virginica  virginica 
+#> [127] virginica  virginica  virginica  virginica  virginica  virginica 
+#> [133] virginica  versicolor virginica  virginica  virginica  virginica 
 #> [139] virginica  virginica  virginica  virginica  virginica  virginica 
 #> [145] virginica  virginica  virginica  virginica  virginica  virginica 
 #> Levels: setosa versicolor virginica
 
 # Example 2: with the `crabs` dataset
-model <- pprf(Type ~ . - sex + as.numeric(as.factor(sex)), data = crabs)
+model <- pprf(Type ~ ., data = crabs)
 predict(model, crabs)
-#>   [1] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
-#>  [38] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
+#>   [1] O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
+#>  [38] O O O O O O O O O O O O O B B B B B B B B B B B B B B B B B B B B B B B B
 #>  [75] B B B B B B B B B B B B B B B B B B B B B B B B B B O O O O O O O O O O O
 #> [112] O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
-#> [149] O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
-#> [186] O O O O O O O O O O O O O O O
+#> [149] O O B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
+#> [186] B B B B B B B B B B B B B B B
 #> Levels: B O
 
 # Example 3: vote proportions
@@ -159,11 +159,11 @@ predict(model, iris, type = "prob")
 #> 66       0        1.0       0.0
 #> 67       0        1.0       0.0
 #> 68       0        1.0       0.0
-#> 69       0        0.0       1.0
+#> 69       0        1.0       0.0
 #> 70       0        1.0       0.0
-#> 71       0        1.0       0.0
+#> 71       0        0.0       1.0
 #> 72       0        1.0       0.0
-#> 73       0        0.0       1.0
+#> 73       0        1.0       0.0
 #> 74       0        1.0       0.0
 #> 75       0        1.0       0.0
 #> 76       0        1.0       0.0
@@ -220,11 +220,11 @@ predict(model, iris, type = "prob")
 #> 127      0        0.0       1.0
 #> 128      0        0.0       1.0
 #> 129      0        0.0       1.0
-#> 130      0        0.0       1.0
+#> 130      0        0.5       0.5
 #> 131      0        0.0       1.0
 #> 132      0        0.0       1.0
 #> 133      0        0.0       1.0
-#> 134      0        0.5       0.5
+#> 134      0        1.0       0.0
 #> 135      0        0.0       1.0
 #> 136      0        0.0       1.0
 #> 137      0        0.0       1.0

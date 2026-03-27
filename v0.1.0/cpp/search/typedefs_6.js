@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vector_0',['Vector',['../namespaceppforest2_1_1types.html#a6b0f2fc1c6c2d1f5fac68202619e33f8',1,'ppforest2::types']]]
+  ['threshold_0',['Threshold',['../namespaceppforest2.html#ad86c43fe58242b878d5590d1d130772a',1,'ppforest2']]]
 ];

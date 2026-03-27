@@ -33,8 +33,8 @@ print(model)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0 0.05 -0.03 -0.02 ] * x) < 0.03828842:
-#>  If ([ 0.01 0.07 -0.05 -0.21 ] * x) < -0.3441847:
+#> If ([ 0.02 0.03 -0.05 -0.01 ] * x) < 0.06364958:
+#>  If ([ 0.03 0.1 -0.08 -0.18 ] * x) < -0.177694:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -42,13 +42,13 @@ print(model)
 #>   Predict: setosa 
 #> 
 #> Tree 2:
-#> If ([ 0.02 0.04 -0.04 -0.01 ] * x) < 0.0853334:
-#>  If ([ 0.05 0.09 -0.07 -0.17 ] * x) < -0.09787051:
+#> If ([ 0.01 -0.07 0.02 0.03 ] * x) < -0.0747469:
+#>   Predict: setosa 
+#> Else:
+#>  If ([ 0.03 0.11 -0.09 -0.15 ] * x) < -0.1686251:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
-#> Else:
-#>   Predict: setosa 
 #> 
 #> 
 ```

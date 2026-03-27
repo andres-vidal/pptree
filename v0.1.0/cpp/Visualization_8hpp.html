@@ -146,7 +146,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visitor that routes observations through the tree and collects per-node projection data for histogram rendering.  <a href="structppforest2_1_1viz_1_1NodeDataVisitor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1viz_1_1RegionPolygon.html">ppforest2::viz::RegionPolygon</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A convex decision region polygon in 2D with its predicted class.  <a href="structppforest2_1_1viz_1_1RegionPolygon.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A convex decision region polygon in 2D with its predicted group.  <a href="structppforest2_1_1viz_1_1RegionPolygon.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1viz_1_1RegionVisitor.html">ppforest2::viz::RegionVisitor</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visitor that collects convex decision region polygons.  <a href="structppforest2_1_1viz_1_1RegionVisitor.html#details">More...</a><br /></td></tr>
@@ -195,7 +195,7 @@ Functions</h2></td></tr>
 Architecture</h1>
 <p>C++ (this module) handles geometry and tree traversal:</p>
 <ul>
-<li><b>NodeDataVisitor</b> — Routes observations through the tree, collects per-node projected values and class labels for histogram rendering in the tree structure diagram.</li>
+<li><b>NodeDataVisitor</b> — Routes observations through the tree, collects per-node projected values and group labels for histogram rendering in the tree structure diagram.</li>
 <li><b>BoundaryVisitor</b> — Projects each split's decision boundary line into a 2D feature plane and clips it to the visible bounding box and all ancestor half-space constraints using parametric line clipping.</li>
 <li><b>RegionVisitor</b> — Computes convex decision region polygons for each leaf via Sutherland–Hodgman polygon clipping against ancestor half-spaces. Produces one polygon per reachable leaf.</li>
 <li><b>compute_tree_layout</b> — Positions tree nodes on a 2D canvas with a recursive left-aligned layout algorithm.</li>

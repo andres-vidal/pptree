@@ -80,7 +80,7 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="predict.pptr.html">predict.pptr</a></code>, <code><a href="formula.pptr.html">formula.pptr</a></code>, <code><a href="summary.pptr.html">summary.pptr</a></code>, <code><a href="print.pptr.html">print.pptr</a></code>, <code><a href="pp_tree.html">pp_tree</a></code> for parsnip integration, <code><a href="../articles/introduction.html">vignette("introduction")</a></code> for a tutorial</p></div>
+    <div class="dont-index"><p><code><a href="predict.pptr.html">predict.pptr</a></code>, <code><a href="formula.pptr.html">formula.pptr</a></code>, <code><a href="summary.pptr.html">summary.pptr</a></code>, <code><a href="print.pptr.html">print.pptr</a></code>, <code><a href="save_json.html">save_json</a></code>, <code><a href="load_json.html">load_json</a></code>, <code><a href="pp_tree.html">pp_tree</a></code> for parsnip integration, <code><a href="../articles/introduction.html">vignette("introduction")</a></code> for a tutorial</p></div>
     </div>
 
     <div class="section level2">
@@ -135,40 +135,20 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 5: formula interface with the `crabs` dataset</span></span></span>
-<span class="r-in"><span><span class="fu">pptr</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">sex</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">crabs</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pptr</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crabs</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Project-Pursuit Oblique Decision Tree:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.04 0.01 0.01 -0.04 0.03 0.02 ] * x) &lt; 0.07781532:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 0 0 0 0 0 0 ] * x) &lt; 0.004743028:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 6: formula interface with the `crabs` dataset with regularization</span></span></span>
-<span class="r-in"><span><span class="fu">pptr</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">sex</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">crabs</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pptr</span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crabs</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Project-Pursuit Oblique Decision Tree:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 0 0 0 0.01 0 ] * x) &lt; 0.3234434:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 7: matrix interface with the `crabs` dataset</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">crabs</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">x</span><span class="op">$</span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">crabs</span><span class="op">$</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">pptr</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">crabs</span><span class="op">$</span><span class="va">Type</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.06 0.01 0.03 -0.05 0.02 ] * x) &lt; 0.1153606:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 8: matrix interface with the `crabs` dataset with regularization</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">crabs</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">x</span><span class="op">$</span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">crabs</span><span class="op">$</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">pptr</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">crabs</span><span class="op">$</span><span class="va">Type</span>, lambda <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.02 0.01 0 0 0 ] * x) &lt; 0.3518856:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 0 0.01 0 0 0 0.01 ] * x) &lt; 0.324472:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>

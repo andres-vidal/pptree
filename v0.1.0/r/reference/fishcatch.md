@@ -6,7 +6,7 @@ lake(Laengelmavesi) near Tampere in Finland.
 
 - Type:
 
-  has 7 fish classes, with 35 cases of Bream, 11 cases of Parkki, 56
+  has 7 fish groups, with 35 cases of Bream, 11 cases of Parkki, 56
   cases of Perch 17 cases of Pike, 20 cases of Roach, 14 cases of Smelt
   and 6 cases of Whitewish.
 

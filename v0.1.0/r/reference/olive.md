@@ -4,7 +4,7 @@ Contains 572 observations and 10 variables
 
 - Region:
 
-  Three super-classes of Italy: North, South and the island of Sardinia
+  Three super-groups of Italy: North, South and the island of Sardinia
 
 - area:
 

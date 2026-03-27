@@ -67,41 +67,49 @@
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Size: 2 trees</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150 observations of 4 features</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Regularization parameter: 0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Classes:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  setosa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  versicolor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  virginica </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Formula:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> OOB error: 2.22 %</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Importance:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Variable         σ Projection   Weighted   Permuted</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Petal.Length 1.7652982 0.09674555 0.08712038 0.47511965</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Petal.Width 0.7622377 0.06783789 0.05630573 0.24130782</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Sepal.Width 0.4358663 0.02741493 0.02527830 0.06331739</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 Sepal.Length 0.8280661 0.02343013 0.02004903 0.04545453</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Data Summary:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   observations: 150 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   features:     4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   groups:       3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   group names:  setosa, versicolor, virginica </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Variable contributions can only be theoretically interpreted as such</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> if the model was trained on scaled data. Scaling also changes the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> projection-pursuit optimization, which may affect the resulting tree.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Confusion Matrix:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Training Confusion Matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             Predicted</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Actual       setosa versicolor virginica</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   setosa         50          0         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   versicolor      0         49         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   virginica       0          2        48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   virginica       0          1        49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Training error: 2 %</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> OOB error: 2.22 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Training error: 1.33%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> OOB Confusion Matrix:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             Predicted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Actual       setosa versicolor virginica</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   setosa         33          0         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   versicolor      0         27         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   virginica       0          0        31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> OOB error: 1.09%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Importance:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Variable         σ Projection   Weighted   Permuted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Petal.Length 1.7652982 0.09914511 0.09107455 0.47878787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Petal.Width 0.7622377 0.06957345 0.05445680 0.29393938</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Sepal.Length 0.8280661 0.02843781 0.02532409 0.03333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Sepal.Width 0.4358663 0.02132891 0.01973198 0.04545456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable contributions can only be theoretically interpreted as such</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> if the model was trained on scaled data. Scaling also changes the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> projection-pursuit optimization, which may affect the resulting tree.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

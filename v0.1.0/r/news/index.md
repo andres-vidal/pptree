@@ -20,9 +20,13 @@
   and
   [`pprf()`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pprf.md)
   with formula and matrix interfaces.
-- R: [`predict()`](https://rdrr.io/r/stats/predict.html) with class
+- R: [`predict()`](https://rdrr.io/r/stats/predict.html) with group
   labels (`type = "class"`) or vote proportions (`type = "prob"`).
-- R: `save_json()` and `load_json()` for model persistence.
+- R:
+  [`save_json()`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/save_json.md)
+  and
+  [`load_json()`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/load_json.md)
+  for model persistence.
 - R: tidymodels/parsnip integration:
   [`pp_tree()`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pp_tree.md)
   and

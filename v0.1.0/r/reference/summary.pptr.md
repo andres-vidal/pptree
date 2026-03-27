@@ -32,16 +32,26 @@ model <- pptr(Type ~ ., data = iris)
 summary(model)
 #> 
 #> Project-Pursuit Oblique Decision Tree
-#> -------------------------------------
-#> 150 observations of 4 features
+#> 
 #> Regularization parameter: 0 
-#> Classes:
-#>  setosa
-#>  versicolor
-#>  virginica 
-#> Formula:
-#>  Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
-#> -------------------------------------
+#> 
+#> Data Summary:
+#>   observations: 150 
+#>   features:     4 
+#>   groups:       3 
+#>   group names:  setosa, versicolor, virginica 
+#>   formula:      Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width -      1 
+#> 
+#> Confusion Matrix:
+#> 
+#>             Predicted
+#> Actual       setosa versicolor virginica
+#>   setosa         50          0         0
+#>   versicolor      0         48         2
+#>   virginica       0          1        49
+#> 
+#> Training error: 2%
+#> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection
@@ -54,15 +64,5 @@ summary(model)
 #> Variable contributions can only be theoretically interpreted as such
 #> if the model was trained on scaled data. Scaling also changes the
 #> projection-pursuit optimization, which may affect the resulting tree.
-#> -------------------------------------
-#> Confusion Matrix:
-#> 
-#>             Predicted
-#> Actual       setosa versicolor virginica
-#>   setosa         50          0         0
-#>   versicolor      0         48         2
-#>   virginica       0          1        49
-#> 
-#> Training error: 2 %
 #> 
 ```
