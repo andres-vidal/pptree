@@ -14,6 +14,7 @@ pprf(
   n_vars = NULL,
   p_vars = NULL,
   seed = NULL,
+  max_retries = 3L,
   n_threads = NULL
 )
 }
@@ -35,6 +36,8 @@ pprf(
 \item{p_vars}{The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, \code{p_vars = 0.5} uses half the features. Cannot be used together with \code{n_vars}.}
 
 \item{seed}{An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.}
+
+\item{max_retries}{Maximum number of retries for degenerate trees (default: 3). When a bootstrap sample yields a singular covariance matrix, the tree is retrained with a different seed up to this many times.}
 
 \item{n_threads}{The number of threads to use. The default is the number of cores available.}
 }
@@ -79,5 +82,5 @@ pprf(x = x, y = crabs$Type, lambda = 0.5)
 
 }
 \seealso{
-\code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{vignette("introduction")} for a tutorial
+\code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{vignette("introduction")} for a tutorial
 }
