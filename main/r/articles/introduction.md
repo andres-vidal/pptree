@@ -114,6 +114,7 @@ summary(forest)
 #>   virginica       0          4        46
 #> 
 #> Training error: 4%
+#> -------------------------------------
 #> OOB Confusion Matrix:
 #> 
 #>             Predicted

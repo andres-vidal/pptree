@@ -52,6 +52,7 @@ summary(model)
 #>   virginica       0          1        49
 #> 
 #> Training error: 1.33%
+#> -------------------------------------
 #> OOB Confusion Matrix:
 #> 
 #>             Predicted
