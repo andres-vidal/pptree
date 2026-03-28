@@ -3,7 +3,7 @@ var searchData=
   ['feature_0',['Feature',['../namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c',1,'ppforest2::types']]],
   ['featurematrix_1',['FeatureMatrix',['../namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d',1,'ppforest2::types']]],
   ['featurevector_2',['FeatureVector',['../namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c',1,'ppforest2::types']]],
-  ['file_3',['file',['../classppforest2_1_1io_1_1TempDir.html#a155f823f48d4e0fb7f4180235d682d55',1,'ppforest2::io::TempDir']]],
+  ['file_3',['file',['../classppforest2_1_1io_1_1TempDir.html#a155f823f48d4e0fb7f4180235d682d55',1,'ppforest2::io::TempDir::file()'],['../classTempDir.html#a155f823f48d4e0fb7f4180235d682d55',1,'TempDir::file()']]],
   ['fixed_5fvars_4',['fixed_vars',['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a11092d4739350d7e2288232c276c726a',1,'ppforest2::viz::BoundaryVisitor::fixed_vars'],['../structppforest2_1_1viz_1_1RegionVisitor.html#a9d2be2d66077ab5fa35005fa9a7ba4f9',1,'ppforest2::viz::RegionVisitor::fixed_vars']]],
   ['flush_5',['flush',['../structppforest2_1_1io_1_1Output.html#a3af377b8a53f2166f839cdf5af89be89',1,'ppforest2::io::Output']]],
   ['forest_6',['Forest',['../structppforest2_1_1Forest.html',1,'ppforest2::Forest'],['../structppforest2_1_1Forest.html#aebf6bbdeb3ff9672fc037cc5f48a5e8c',1,'ppforest2::Forest::Forest()'],['../structppforest2_1_1Forest.html#a8cb214a2162ed9f7cef5c59779ae0209',1,'ppforest2::Forest::Forest(TrainingSpec::Ptr &amp;&amp;training_spec, int seed)']]],

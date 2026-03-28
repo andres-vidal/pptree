@@ -167,6 +167,10 @@ Functions</h2></td></tr>
 <tr class="separator:a5c4d68089d7b011a19c406d5acf6aea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb1f75bf0934a1093a5aec7e8731368b" id="r_acb1f75bf0934a1093a5aec7e8731368b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1Forest.html">Forest</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acb1f75bf0934a1093a5aec7e8731368b">forest_from_json</a> (const <a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> &amp;j)</td></tr>
 <tr class="separator:acb1f75bf0934a1093a5aec7e8731368b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a329ee6a9f01d92df065ba7c5d57d2df9" id="r_a329ee6a9f01d92df065ba7c5d57d2df9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a329ee6a9f01d92df065ba7c5d57d2df9">confusion_matrix_from_json</a> (const <a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> &amp;j)</td></tr>
+<tr class="separator:a329ee6a9f01d92df065ba7c5d57d2df9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5abf264f6fb5592d803b009ab4ed817" id="r_ab5abf264f6fb5592d803b009ab4ed817"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1VariableImportance.html">VariableImportance</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5abf264f6fb5592d803b009ab4ed817">variable_importance_from_json</a> (const <a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> &amp;j)</td></tr>
+<tr class="separator:ab5abf264f6fb5592d803b009ab4ed817"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Labeled deserialization (maps string labels back to integer codes)</div></td></tr>
 <tr class="memitem:a6b8b7ff85a1e2be677b7754b7820e796" id="r_a6b8b7ff85a1e2be677b7754b7820e796"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1TreeNode.html#aa03af85bbfe1c0f8d8ce50f18c96623c">TreeNode::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6b8b7ff85a1e2be677b7754b7820e796">node_from_json</a> (const <a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> &amp;j, const <a class="el" href="#a765380bc535afaefa14aa99a8ff8aae4">GroupNames</a> &amp;group_names)</td></tr>
 <tr class="separator:a6b8b7ff85a1e2be677b7754b7820e796"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,13 +207,11 @@ Functions</h2></td></tr>
 <p>Uses nlohmann/json. Provides <a class="el" href="#a5f98c94cb33ab84c91b2fba714093277">to_json()</a> for serializing trees, forests, confusion matrices, and variable importance to JSON, and *_from_json() for deserializing them back. Also provides ostream operators for convenient text output.</p>
 <div class="fragment"><div class="line"><span class="comment">// Serialize a forest to JSON and write to file:</span></div>
 <div class="line"><span class="keyword">auto</span> j = <a class="code hl_function" href="#a5f98c94cb33ab84c91b2fba714093277">serialization::to_json</a>(forest);</div>
-<div class="line"><a class="code hl_function" href="namespaceppforest2_1_1io_1_1json.html#a44bb543f8cffdb55c94bbcced935199e">io::json::write_file</a>(j, <span class="stringliteral">&quot;model.json&quot;</span>);</div>
+<div class="line">io::json::write_file(j, <span class="stringliteral">&quot;model.json&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Read and deserialize:</span></div>
-<div class="line"><span class="keyword">auto</span> j2 = <a class="code hl_function" href="namespaceppforest2_1_1io_1_1json.html#a4bd6f2f3f8eefd20024552c81f49ab23">io::json::read_file</a>(<span class="stringliteral">&quot;model.json&quot;</span>);</div>
+<div class="line"><span class="keyword">auto</span> j2 = io::json::read_file(<span class="stringliteral">&quot;model.json&quot;</span>);</div>
 <div class="line"><a class="code hl_struct" href="structppforest2_1_1Forest.html">Forest</a> restored = <a class="code hl_function" href="#acb1f75bf0934a1093a5aec7e8731368b">serialization::forest_from_json</a>(j2);</div>
-<div class="ttc" id="anamespaceppforest2_1_1io_1_1json_html_a44bb543f8cffdb55c94bbcced935199e"><div class="ttname"><a href="namespaceppforest2_1_1io_1_1json.html#a44bb543f8cffdb55c94bbcced935199e">ppforest2::io::json::write_file</a></div><div class="ttdeci">void write_file(const nlohmann::json &amp;data, const std::string &amp;path)</div><div class="ttdoc">Write a JSON object to a file (pretty-printed with indent 2).</div></div>
-<div class="ttc" id="anamespaceppforest2_1_1io_1_1json_html_a4bd6f2f3f8eefd20024552c81f49ab23"><div class="ttname"><a href="namespaceppforest2_1_1io_1_1json.html#a4bd6f2f3f8eefd20024552c81f49ab23">ppforest2::io::json::read_file</a></div><div class="ttdeci">nlohmann::json read_file(const std::string &amp;path)</div><div class="ttdoc">Read a JSON file and parse its contents.</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1serialization_html_a5f98c94cb33ab84c91b2fba714093277"><div class="ttname"><a href="#a5f98c94cb33ab84c91b2fba714093277">ppforest2::serialization::to_json</a></div><div class="ttdeci">json to_json(const Model &amp;model)</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1serialization_html_acb1f75bf0934a1093a5aec7e8731368b"><div class="ttname"><a href="#acb1f75bf0934a1093a5aec7e8731368b">ppforest2::serialization::forest_from_json</a></div><div class="ttdeci">Forest forest_from_json(const json &amp;j)</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html"><div class="ttname"><a href="structppforest2_1_1Forest.html">ppforest2::Forest</a></div><div class="ttdoc">A projection pursuit random forest.</div><div class="ttdef"><b>Definition</b> Forest.hpp:40</div></div>
@@ -245,6 +247,23 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a329ee6a9f01d92df065ba7c5d57d2df9" name="a329ee6a9f01d92df065ba7c5d57d2df9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a329ee6a9f01d92df065ba7c5d57d2df9">&#9670;&#160;</a></span>confusion_matrix_from_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structppforest2_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> ppforest2::serialization::confusion_matrix_from_json </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="acb1f75bf0934a1093a5aec7e8731368b" name="acb1f75bf0934a1093a5aec7e8731368b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acb1f75bf0934a1093a5aec7e8731368b">&#9670;&#160;</a></span>forest_from_json() <span class="overload">[1/2]</span></h2>
 
@@ -829,6 +848,23 @@ template&lt;typename V&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="#a765380bc535afaefa14aa99a8ff8aae4">GroupNames</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>group_names</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab5abf264f6fb5592d803b009ab4ed817" name="ab5abf264f6fb5592d803b009ab4ed817"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5abf264f6fb5592d803b009ab4ed817">&#9670;&#160;</a></span>variable_importance_from_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structppforest2_1_1VariableImportance.html">VariableImportance</a> ppforest2::serialization::variable_importance_from_json </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">

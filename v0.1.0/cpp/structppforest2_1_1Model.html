@@ -103,6 +103,7 @@ $(function(){initNavTree('structppforest2_1_1Model.html',''); initResizable(true
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structppforest2_1_1Model-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ppforest2::Model Struct Reference<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
@@ -137,6 +138,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a357acb53e57a5e1f5e3ea422d5c241ba" id="r_a357acb53e57a5e1f5e3ea422d5c241ba"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a357acb53e57a5e1f5e3ea422d5c241ba">predict</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> &amp;data) const =0</td></tr>
 <tr class="memdesc:a357acb53e57a5e1f5e3ea422d5c241ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predict a single observation.  <br /></td></tr>
 <tr class="separator:a357acb53e57a5e1f5e3ea422d5c241ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a5fbf7fb1e8e977ab594121f3f0dc988c" id="r_a5fbf7fb1e8e977ab594121f3f0dc988c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fbf7fb1e8e977ab594121f3f0dc988c">degenerate</a> = false</td></tr>
+<tr class="memdesc:a5fbf7fb1e8e977ab594121f3f0dc988c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the model contains degenerate nodes/splits.  <br /></td></tr>
+<tr class="separator:a5fbf7fb1e8e977ab594121f3f0dc988c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract base class for predictive models (trees and forests). </p>
@@ -280,6 +287,23 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Predicted group label. </dd></dl>
 
 <p>Implemented in <a class="el" href="structppforest2_1_1Forest.html#a4b767e43cb29fc1273b34d1077d54c5a">ppforest2::Forest</a>, and <a class="el" href="structppforest2_1_1Tree.html#a203b147b705c97025bdb3d762ed4bf2e">ppforest2::Tree</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5fbf7fb1e8e977ab594121f3f0dc988c" name="a5fbf7fb1e8e977ab594121f3f0dc988c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fbf7fb1e8e977ab594121f3f0dc988c">&#9670;&#160;</a></span>degenerate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ppforest2::Model::degenerate = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether the model contains degenerate nodes/splits. </p>
 
 </div>
 </div>

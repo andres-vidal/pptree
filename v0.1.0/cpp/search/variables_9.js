@@ -9,5 +9,7 @@ var searchData=
   ['mean_5ftr_5ferror_6',['mean_tr_error',['../structppforest2_1_1cli_1_1ScenarioResult.html#aa94a7fa50631b86fcefb39f3a32542b8',1,'ppforest2::cli::ScenarioResult']]],
   ['min_7',['min',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html#a7965f5105cc03e16265354c8b5c046a1',1,'ppforest2::cli::ConvergenceCriteria::min'],['../structppforest2_1_1cli_1_1ConvergenceParams.html#a689625574b8ec2385c0ee01eef555dcc',1,'ppforest2::cli::ConvergenceParams::min']]],
   ['model_8',['model',['../structppforest2_1_1cli_1_1CLIOptions.html#ac7a69feadc50fe215476c53634b6c17f',1,'ppforest2::cli::CLIOptions::model'],['../structppforest2_1_1cli_1_1TrainResult.html#acc3f1d0ac6c37a831b7f74c5c55c792c',1,'ppforest2::cli::TrainResult::model']]],
-  ['model_5fpath_9',['model_path',['../structppforest2_1_1cli_1_1CLIOptions.html#ab1edf18b4f200cfbf2980ec460f47e32',1,'ppforest2::cli::CLIOptions']]]
+  ['model_5f_9',['model_',['../classSavedModelTest.html#a9bbffaa324e3084834d978e0a3a7c672',1,'SavedModelTest']]],
+  ['model_5fjson_5f_10',['model_json_',['../classSavedModelTest.html#af49866b86e00de7e7f1cad4676daec7a',1,'SavedModelTest']]],
+  ['model_5fpath_11',['model_path',['../structppforest2_1_1cli_1_1CLIOptions.html#ab1edf18b4f200cfbf2980ec460f47e32',1,'ppforest2::cli::CLIOptions']]]
 ];

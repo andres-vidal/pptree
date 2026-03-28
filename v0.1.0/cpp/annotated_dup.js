@@ -26,6 +26,7 @@ var annotated_dup =
         [ "layout", "namespaceppforest2_1_1io_1_1layout.html", [
           [ "Column", "structppforest2_1_1io_1_1layout_1_1Column.html", "structppforest2_1_1io_1_1layout_1_1Column" ]
         ] ],
+        [ "ConfigDisplayHints", "structppforest2_1_1io_1_1ConfigDisplayHints.html", "structppforest2_1_1io_1_1ConfigDisplayHints" ],
         [ "ModelStats", "structppforest2_1_1io_1_1ModelStats.html", "structppforest2_1_1io_1_1ModelStats" ],
         [ "Output", "structppforest2_1_1io_1_1Output.html", "structppforest2_1_1io_1_1Output" ],
         [ "TempDir", "classppforest2_1_1io_1_1TempDir.html", "classppforest2_1_1io_1_1TempDir" ],
@@ -80,5 +81,9 @@ var annotated_dup =
       [ "UserError", "classppforest2_1_1UserError.html", null ],
       [ "VariableImportance", "structppforest2_1_1VariableImportance.html", "structppforest2_1_1VariableImportance" ],
       [ "VIVisitor", "structppforest2_1_1VIVisitor.html", "structppforest2_1_1VIVisitor" ]
-    ] ]
+    ] ],
+    [ "ProcessResult", "structProcessResult.html", "structProcessResult" ],
+    [ "SavedModelTest", "classSavedModelTest.html", "classSavedModelTest" ],
+    [ "TempDir", "classTempDir.html", "classTempDir" ],
+    [ "TempFile", "classTempFile.html", "classTempFile" ]
 ];

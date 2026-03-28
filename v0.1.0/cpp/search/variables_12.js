@@ -6,7 +6,8 @@ var searchData=
   ['var_5fj_3',['var_j',['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a254c687f33c265a008e40a86d1144f18',1,'ppforest2::viz::BoundaryVisitor::var_j'],['../structppforest2_1_1viz_1_1RegionVisitor.html#a9901ddf9136b0e12b8b23278468787b3',1,'ppforest2::viz::RegionVisitor::var_j']]],
   ['vars_4',['vars',['../structppforest2_1_1cli_1_1Scenario.html#adcb93bd1ba2ced538d73ff0761f67a95',1,'ppforest2::cli::Scenario::vars'],['../structppforest2_1_1cli_1_1ScenarioResult.html#a7fc4bdcadf56e1c89f27fc3696c2ef19',1,'ppforest2::cli::ScenarioResult::vars']]],
   ['vars_5finput_5',['vars_input',['../structppforest2_1_1cli_1_1ModelParams.html#ae4084e7308940cdb2ad792c17f17e1a2',1,'ppforest2::cli::ModelParams']]],
-  ['vertices_6',['vertices',['../structppforest2_1_1viz_1_1RegionPolygon.html#aaf6d58a25de78ffb7f5b8d4913c2755a',1,'ppforest2::viz::RegionPolygon']]],
-  ['vi2_5fcontributions_7',['vi2_contributions',['../structppforest2_1_1VIVisitor.html#a79401108bcca41308bc44ecf85efca19',1,'ppforest2::VIVisitor']]],
-  ['vi3_5fcontributions_8',['vi3_contributions',['../structppforest2_1_1VIVisitor.html#aa6a120367d17b321103fb422e603e1b5',1,'ppforest2::VIVisitor']]]
+  ['vars_5fpercent_6',['vars_percent',['../structppforest2_1_1io_1_1ConfigDisplayHints.html#a23885deb5e356f5fdef397a11453bd60',1,'ppforest2::io::ConfigDisplayHints']]],
+  ['vertices_7',['vertices',['../structppforest2_1_1viz_1_1RegionPolygon.html#aaf6d58a25de78ffb7f5b8d4913c2755a',1,'ppforest2::viz::RegionPolygon']]],
+  ['vi2_5fcontributions_8',['vi2_contributions',['../structppforest2_1_1VIVisitor.html#a79401108bcca41308bc44ecf85efca19',1,'ppforest2::VIVisitor']]],
+  ['vi3_5fcontributions_9',['vi3_contributions',['../structppforest2_1_1VIVisitor.html#aa6a120367d17b321103fb422e603e1b5',1,'ppforest2::VIVisitor']]]
 ];

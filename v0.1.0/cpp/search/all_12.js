@@ -2,7 +2,7 @@ var searchData=
 [
   ['random_20forest_0',['Training a random forest',['../index.html#train_forest',1,'']]],
   ['random_20projection_20strategy_1',['Example: a random projection strategy',['../extending_strategies.html#strat_pp_example',1,'']]],
-  ['read_2',['read',['../classppforest2_1_1io_1_1TempFile.html#a71ffc222ef84f37605f2a88e636f9710',1,'ppforest2::io::TempFile::read()'],['../namespaceppforest2_1_1io_1_1csv.html#a4090cd2d7d357ff9c4d8f5fa1313d87f',1,'ppforest2::io::csv::read()']]],
+  ['read_2',['read',['../classppforest2_1_1io_1_1TempFile.html#a71ffc222ef84f37605f2a88e636f9710',1,'ppforest2::io::TempFile::read()'],['../classTempFile.html#a71ffc222ef84f37605f2a88e636f9710',1,'TempFile::read()'],['../namespaceppforest2_1_1io_1_1csv.html#a4090cd2d7d357ff9c4d8f5fa1313d87f',1,'ppforest2::io::csv::read()']]],
   ['read_5fdata_3',['read_data',['../namespaceppforest2_1_1cli.html#ac9712ade1bf2b2a5e27442e64e33bc56',1,'ppforest2::cli']]],
   ['read_5ffile_4',['read_file',['../namespaceppforest2_1_1io_1_1json.html#a4bd6f2f3f8eefd20024552c81f49ab23',1,'ppforest2::io::json']]],
   ['read_5flabels_5',['read_labels',['../namespaceppforest2_1_1io_1_1csv.html#aeb2d17fe7babc9799666d0d98ef911f7',1,'ppforest2::io::csv']]],
@@ -26,9 +26,11 @@ var searchData=
   ['rows_23',['rows',['../structppforest2_1_1cli_1_1SimulateParams.html#a77dc759a5167ccbd01aeda7ec3bd2d4e',1,'ppforest2::cli::SimulateParams::rows'],['../Macros_8hpp.html#a71bf0955969d93eefeb1568ce5e8c0d2',1,'rows():&#160;Macros.hpp']]],
   ['run_5fbenchmark_24',['run_benchmark',['../namespaceppforest2_1_1cli.html#a2ebbb070a90b0d0994feb45deb58d5e1',1,'ppforest2::cli']]],
   ['run_5fevaluate_25',['run_evaluate',['../namespaceppforest2_1_1cli.html#a5bc7e021884390ba232de5c2a3f5b696',1,'ppforest2::cli']]],
-  ['run_5fpredict_26',['run_predict',['../namespaceppforest2_1_1cli.html#ada7599b95483cd00ec94f3c4fa50a452',1,'ppforest2::cli']]],
-  ['run_5fscenario_27',['run_scenario',['../namespaceppforest2_1_1cli.html#a91124ec5682f6ee3e52c71731e8717ca',1,'ppforest2::cli']]],
-  ['run_5fsuite_28',['run_suite',['../namespaceppforest2_1_1cli.html#a927afd38346bebbf3da4900795381846',1,'ppforest2::cli']]],
-  ['run_5ftrain_29',['run_train',['../namespaceppforest2_1_1cli.html#a3b20329dca2d5eeac9cd7a46f42408c3',1,'ppforest2::cli']]],
-  ['runs_30',['runs',['../structppforest2_1_1cli_1_1ScenarioResult.html#a212b9b0d7890c264c7cab41696747c65',1,'ppforest2::cli::ScenarioResult']]]
+  ['run_5fppforest2_26',['run_ppforest2',['../CLI_8integration_8hpp.html#ad0f8c4f31bf00dcd35e83b2ca6ee5c29',1,'CLI.integration.hpp']]],
+  ['run_5fpredict_27',['run_predict',['../namespaceppforest2_1_1cli.html#ada7599b95483cd00ec94f3c4fa50a452',1,'ppforest2::cli']]],
+  ['run_5fscenario_28',['run_scenario',['../namespaceppforest2_1_1cli.html#a91124ec5682f6ee3e52c71731e8717ca',1,'ppforest2::cli']]],
+  ['run_5fsuite_29',['run_suite',['../namespaceppforest2_1_1cli.html#a927afd38346bebbf3da4900795381846',1,'ppforest2::cli']]],
+  ['run_5fsummarize_30',['run_summarize',['../namespaceppforest2_1_1cli.html#a9f6eae81f9abe8d62d6cc5a47e5eff41',1,'ppforest2::cli']]],
+  ['run_5ftrain_31',['run_train',['../namespaceppforest2_1_1cli.html#a3b20329dca2d5eeac9cd7a46f42408c3',1,'ppforest2::cli']]],
+  ['runs_32',['runs',['../structppforest2_1_1cli_1_1ScenarioResult.html#a212b9b0d7890c264c7cab41696747c65',1,'ppforest2::cli::ScenarioResult']]]
 ];

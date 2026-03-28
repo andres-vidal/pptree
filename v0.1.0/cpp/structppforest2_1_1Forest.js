@@ -12,7 +12,6 @@ var structppforest2_1_1Forest =
     [ "predict", "structppforest2_1_1Forest.html#a210a28eb2d3e7d327fb158f1661a982b", null ],
     [ "predict", "structppforest2_1_1Forest.html#a4b767e43cb29fc1273b34d1077d54c5a", null ],
     [ "train", "structppforest2_1_1Forest.html#aae448c9c9777b0e0d449504a033a2a7a", null ],
-    [ "degenerate", "structppforest2_1_1Forest.html#a66491ed73ce203326267275601af7db6", null ],
     [ "seed", "structppforest2_1_1Forest.html#a2bb8cefb0eb540d08e8e26b99883e7cc", null ],
     [ "training_spec", "structppforest2_1_1Forest.html#a94eaa10b52e2787be14d3a60f6f68514", null ],
     [ "trees", "structppforest2_1_1Forest.html#ad5d1affa0b4c09155a5ce0e630bcafac", null ]

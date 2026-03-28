@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['tempdir_0',['TempDir',['../classppforest2_1_1io_1_1TempDir.html',1,'ppforest2::io']]],
-  ['tempfile_1',['TempFile',['../classppforest2_1_1io_1_1TempFile.html',1,'ppforest2::io']]],
+  ['tempdir_0',['TempDir',['../classppforest2_1_1io_1_1TempDir.html',1,'ppforest2::io::TempDir'],['../classTempDir.html',1,'TempDir']]],
+  ['tempfile_1',['TempFile',['../classppforest2_1_1io_1_1TempFile.html',1,'ppforest2::io::TempFile'],['../classTempFile.html',1,'TempFile']]],
   ['trainingspec_2',['TrainingSpec',['../structppforest2_1_1TrainingSpec.html',1,'ppforest2']]],
   ['trainingspecpda_3',['TrainingSpecPDA',['../structppforest2_1_1TrainingSpecPDA.html',1,'ppforest2']]],
   ['trainingspecupda_4',['TrainingSpecUPDA',['../structppforest2_1_1TrainingSpecUPDA.html',1,'ppforest2']]],
