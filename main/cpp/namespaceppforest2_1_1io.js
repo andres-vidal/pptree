@@ -34,6 +34,7 @@ var namespaceppforest2_1_1io =
     [ "now_iso8601", "namespaceppforest2_1_1io.html#af3bea8d81a602627c7d483ac468c0870", null ],
     [ "print_configuration", "namespaceppforest2_1_1io.html#a7dc8a781bbe1c7c8f4290543fc19d46c", null ],
     [ "print_confusion_matrix", "namespaceppforest2_1_1io.html#aa58e461778488be973d454c41b704dd9", null ],
+    [ "print_data_summary", "namespaceppforest2_1_1io.html#a19eaf80911f0791e0580745b98b0d9c1", null ],
     [ "print_results", "namespaceppforest2_1_1io.html#ad87ca824e129347e3b2b308fbea618b0", null ],
     [ "print_summary", "namespaceppforest2_1_1io.html#aa33ed0297f11b5cc3875f3efba7049bf", null ],
     [ "print_variable_importance", "namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7", null ]

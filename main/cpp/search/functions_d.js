@@ -15,10 +15,11 @@ var searchData=
   ['print_5fbenchmark_5ftable_12',['print_benchmark_table',['../namespaceppforest2_1_1cli.html#a2ea0d7abc2027072d9fba8d2f5a01401',1,'ppforest2::cli']]],
   ['print_5fconfiguration_13',['print_configuration',['../namespaceppforest2_1_1io.html#a7dc8a781bbe1c7c8f4290543fc19d46c',1,'ppforest2::io']]],
   ['print_5fconfusion_5fmatrix_14',['print_confusion_matrix',['../namespaceppforest2_1_1io.html#aa58e461778488be973d454c41b704dd9',1,'ppforest2::io']]],
-  ['print_5fresults_15',['print_results',['../namespaceppforest2_1_1io.html#ad87ca824e129347e3b2b308fbea618b0',1,'ppforest2::io']]],
-  ['print_5fsummary_16',['print_summary',['../namespaceppforest2_1_1io.html#aa33ed0297f11b5cc3875f3efba7049bf',1,'ppforest2::io']]],
-  ['print_5fvariable_5fimportance_17',['print_variable_importance',['../namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7',1,'ppforest2::io']]],
-  ['println_18',['println',['../structppforest2_1_1io_1_1Output.html#aad1af2cabeaae871adb58a19d4d6bb20',1,'ppforest2::io::Output']]],
-  ['progress_19',['progress',['../structppforest2_1_1io_1_1Output.html#a4c6405f8250f801e4f0f1121c641296e',1,'ppforest2::io::Output']]],
-  ['project_5f2d_20',['project_2d',['../namespaceppforest2_1_1viz.html#aecf8445cb02b9492172d5d8e0c020ac8',1,'ppforest2::viz']]]
+  ['print_5fdata_5fsummary_15',['print_data_summary',['../namespaceppforest2_1_1io.html#a19eaf80911f0791e0580745b98b0d9c1',1,'ppforest2::io']]],
+  ['print_5fresults_16',['print_results',['../namespaceppforest2_1_1io.html#ad87ca824e129347e3b2b308fbea618b0',1,'ppforest2::io']]],
+  ['print_5fsummary_17',['print_summary',['../namespaceppforest2_1_1io.html#aa33ed0297f11b5cc3875f3efba7049bf',1,'ppforest2::io']]],
+  ['print_5fvariable_5fimportance_18',['print_variable_importance',['../namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7',1,'ppforest2::io']]],
+  ['println_19',['println',['../structppforest2_1_1io_1_1Output.html#aad1af2cabeaae871adb58a19d4d6bb20',1,'ppforest2::io::Output']]],
+  ['progress_20',['progress',['../structppforest2_1_1io_1_1Output.html#a4c6405f8250f801e4f0f1121c641296e',1,'ppforest2::io::Output']]],
+  ['project_5f2d_21',['project_2d',['../namespaceppforest2_1_1viz.html#aecf8445cb02b9492172d5d8e0c020ac8',1,'ppforest2::viz']]]
 ];

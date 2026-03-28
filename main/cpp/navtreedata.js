@@ -76,7 +76,7 @@ var NAVTREE =
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
-        [ "Functions", "functions_func.html", null ],
+        [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", "functions_vars" ],
         [ "Typedefs", "functions_type.html", null ]
       ] ]
@@ -97,11 +97,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BenchmarkParams_8hpp.html",
-"extending_strategies.html#strat_compose_subclass",
-"namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da",
-"structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516",
-"structppforest2_1_1cli_1_1VarsSpec.html",
-"structppforest2_1_1viz_1_1BoundaryVisitor.html#a0d233281d9f3867707bd8604e4350f74"
+"extending_strategies.html#strat_compose",
+"namespaceppforest2_1_1serialization.html#adc903606c521ef56dc9d09c08696a240",
+"structppforest2_1_1TreeNode.html#acf538798f71c698194827b16a4bd100a",
+"structppforest2_1_1cli_1_1SimulateParams.html#ac75c78a938a3f6f887f843da646f8a0b",
+"structppforest2_1_1stats_1_1Split.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

@@ -2,6 +2,7 @@ var classppforest2_1_1stats_1_1GroupPartition =
 [
     [ "GroupPartition", "classppforest2_1_1stats_1_1GroupPartition.html#a7e7a8ac88580ee9f420c3c0bed63b729", null ],
     [ "bgss", "classppforest2_1_1stats_1_1GroupPartition.html#ad333402a7077876e72f7e8439cc8dd20", null ],
+    [ "collapse", "classppforest2_1_1stats_1_1GroupPartition.html#ae309e07418f3315f94e4501646cff612", null ],
     [ "data", "classppforest2_1_1stats_1_1GroupPartition.html#a7f0b5e9655ac768680d0b878f28add11", null ],
     [ "group", "classppforest2_1_1stats_1_1GroupPartition.html#a92f54a9c3b6c7d8f9bcc0bcd468e01cb", null ],
     [ "group_end", "classppforest2_1_1stats_1_1GroupPartition.html#abc0ff590e44b834f19270b005b70d1cf", null ],
