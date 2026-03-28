@@ -5,6 +5,7 @@ var hierarchy =
     [ "ppforest2::viz::BoundarySegment", "structppforest2_1_1viz_1_1BoundarySegment.html", null ],
     [ "ppforest2::cli::CLIOptions", "structppforest2_1_1cli_1_1CLIOptions.html", null ],
     [ "ppforest2::io::layout::Column", "structppforest2_1_1io_1_1layout_1_1Column.html", null ],
+    [ "ppforest2::io::ConfigDisplayHints", "structppforest2_1_1io_1_1ConfigDisplayHints.html", null ],
     [ "ppforest2::stats::ConfusionMatrix", "structppforest2_1_1stats_1_1ConfusionMatrix.html", null ],
     [ "ppforest2::cli::ConvergenceCriteria", "structppforest2_1_1cli_1_1ConvergenceCriteria.html", null ],
     [ "ppforest2::cli::ConvergenceParams", "structppforest2_1_1cli_1_1ConvergenceParams.html", null ],
@@ -35,6 +36,7 @@ var hierarchy =
     [ "ppforest2::pp::PPStrategy", "structppforest2_1_1pp_1_1PPStrategy.html", [
       [ "ppforest2::pp::PPPDAStrategy", "structppforest2_1_1pp_1_1PPPDAStrategy.html", null ]
     ] ],
+    [ "ProcessResult", "structProcessResult.html", null ],
     [ "ppforest2::Proportions", "structppforest2_1_1Proportions.html", null ],
     [ "ppforest2::viz::RegionPolygon", "structppforest2_1_1viz_1_1RegionPolygon.html", null ],
     [ "std::runtime_error", null, [
@@ -50,7 +52,12 @@ var hierarchy =
     ] ],
     [ "ppforest2::cli::SuiteResult", "structppforest2_1_1cli_1_1SuiteResult.html", null ],
     [ "ppforest2::io::TempDir", "classppforest2_1_1io_1_1TempDir.html", null ],
+    [ "TempDir", "classTempDir.html", null ],
     [ "ppforest2::io::TempFile", "classppforest2_1_1io_1_1TempFile.html", null ],
+    [ "TempFile", "classTempFile.html", null ],
+    [ "testing::Test", null, [
+      [ "SavedModelTest", "classSavedModelTest.html", null ]
+    ] ],
     [ "ppforest2::TrainingSpec", "structppforest2_1_1TrainingSpec.html", [
       [ "ppforest2::TrainingSpecPDA", "structppforest2_1_1TrainingSpecPDA.html", null ],
       [ "ppforest2::TrainingSpecUPDA", "structppforest2_1_1TrainingSpecUPDA.html", null ]

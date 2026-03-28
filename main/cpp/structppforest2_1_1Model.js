@@ -5,5 +5,6 @@ var structppforest2_1_1Model =
     [ "~Model", "structppforest2_1_1Model.html#af5ba2e98757f7e4f53ec963f40b39b2d", null ],
     [ "accept", "structppforest2_1_1Model.html#ad36801ffbde49f31de900e6bf770d010", null ],
     [ "predict", "structppforest2_1_1Model.html#a78ce1b83a0b085bd8126761ecae7d864", null ],
-    [ "predict", "structppforest2_1_1Model.html#a357acb53e57a5e1f5e3ea422d5c241ba", null ]
+    [ "predict", "structppforest2_1_1Model.html#a357acb53e57a5e1f5e3ea422d5c241ba", null ],
+    [ "degenerate", "structppforest2_1_1Model.html#a5fbf7fb1e8e977ab594121f3f0dc988c", null ]
 ];

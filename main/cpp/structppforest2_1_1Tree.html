@@ -122,9 +122,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af79f91e98bc4ff581a69a8afd8480137" id="r_af79f91e98bc4ff581a69a8afd8480137"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af79f91e98bc4ff581a69a8afd8480137">accept</a> (<a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Model::Visitor</a> &amp;visitor) const override</td></tr>
 <tr class="memdesc:af79f91e98bc4ff581a69a8afd8480137"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a model visitor (double dispatch).  <br /></td></tr>
 <tr class="separator:af79f91e98bc4ff581a69a8afd8480137"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ad04268cff376dcb62b4713cedb6a9a" id="r_a9ad04268cff376dcb62b4713cedb6a9a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ad04268cff376dcb62b4713cedb6a9a">is_degenerate</a> () const</td></tr>
-<tr class="memdesc:a9ad04268cff376dcb62b4713cedb6a9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether any node in the tree had a degenerate split.  <br /></td></tr>
-<tr class="separator:a9ad04268cff376dcb62b4713cedb6a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0dbcf2386171b330973a0f868daa43c" id="r_ab0dbcf2386171b330973a0f868daa43c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0dbcf2386171b330973a0f868daa43c">operator!=</a> (const <a class="el" href="structppforest2_1_1Tree.html">Tree</a> &amp;other) const</td></tr>
 <tr class="separator:ab0dbcf2386171b330973a0f868daa43c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a978854db1e371ec29b9f4aeaaa121529" id="r_a978854db1e371ec29b9f4aeaaa121529"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a978854db1e371ec29b9f4aeaaa121529">operator==</a> (const <a class="el" href="structppforest2_1_1Tree.html">Tree</a> &amp;other) const</td></tr>
@@ -156,6 +153,10 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a78c666fa9e4d2d90889298676b8c53e9" id="r_a78c666fa9e4d2d90889298676b8c53e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78c666fa9e4d2d90889298676b8c53e9">training_spec</a></td></tr>
 <tr class="memdesc:a78c666fa9e4d2d90889298676b8c53e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training specification used to build this tree.  <br /></td></tr>
 <tr class="separator:a78c666fa9e4d2d90889298676b8c53e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_attribs_structppforest2_1_1Model"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_attribs_structppforest2_1_1Model')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="structppforest2_1_1Model.html">ppforest2::Model</a></td></tr>
+<tr class="memitem:a5fbf7fb1e8e977ab594121f3f0dc988c inherit pub_attribs_structppforest2_1_1Model" id="r_a5fbf7fb1e8e977ab594121f3f0dc988c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Model.html#a5fbf7fb1e8e977ab594121f3f0dc988c">degenerate</a> = false</td></tr>
+<tr class="memdesc:a5fbf7fb1e8e977ab594121f3f0dc988c inherit pub_attribs_structppforest2_1_1Model"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the model contains degenerate nodes/splits.  <br /></td></tr>
+<tr class="separator:a5fbf7fb1e8e977ab594121f3f0dc988c inherit pub_attribs_structppforest2_1_1Model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -253,33 +254,6 @@ Additional Inherited Members</h2></td></tr>
 <p>Accept a model visitor (double dispatch). </p>
 
 <p>Implements <a class="el" href="structppforest2_1_1Model.html#ad36801ffbde49f31de900e6bf770d010">ppforest2::Model</a>.</p>
-
-</div>
-</div>
-<a id="a9ad04268cff376dcb62b4713cedb6a9a" name="a9ad04268cff376dcb62b4713cedb6a9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ad04268cff376dcb62b4713cedb6a9a">&#9670;&#160;</a></span>is_degenerate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ppforest2::Tree::is_degenerate </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Whether any node in the tree had a degenerate split. </p>
 
 </div>
 </div>

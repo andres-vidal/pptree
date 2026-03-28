@@ -4,6 +4,7 @@ var namespaceppforest2_1_1serialization =
     [ "JsonNodeVisitor", "structppforest2_1_1serialization_1_1JsonNodeVisitor.html", "structppforest2_1_1serialization_1_1JsonNodeVisitor" ],
     [ "GroupNames", "namespaceppforest2_1_1serialization.html#a765380bc535afaefa14aa99a8ff8aae4", null ],
     [ "json", "namespaceppforest2_1_1serialization.html#afced42a0b2c517da2664a9a849d90899", null ],
+    [ "confusion_matrix_from_json", "namespaceppforest2_1_1serialization.html#a329ee6a9f01d92df065ba7c5d57d2df9", null ],
     [ "forest_from_json", "namespaceppforest2_1_1serialization.html#acb1f75bf0934a1093a5aec7e8731368b", null ],
     [ "forest_from_json", "namespaceppforest2_1_1serialization.html#a37103fb28223745c43876d65704a4c41", null ],
     [ "model_from_json", "namespaceppforest2_1_1serialization.html#adc903606c521ef56dc9d09c08696a240", null ],
@@ -33,5 +34,6 @@ var namespaceppforest2_1_1serialization =
     [ "to_json", "namespaceppforest2_1_1serialization.html#a65407d260eef286ca5617c89507e4ee2", null ],
     [ "to_json", "namespaceppforest2_1_1serialization.html#a6c4ace5db0792efcaa22ddc44931a78b", null ],
     [ "tree_from_json", "namespaceppforest2_1_1serialization.html#a5c4d68089d7b011a19c406d5acf6aea7", null ],
-    [ "tree_from_json", "namespaceppforest2_1_1serialization.html#a790106cccb9ca36bc23cd41985357430", null ]
+    [ "tree_from_json", "namespaceppforest2_1_1serialization.html#a790106cccb9ca36bc23cd41985357430", null ],
+    [ "variable_importance_from_json", "namespaceppforest2_1_1serialization.html#ab5abf264f6fb5592d803b009ab4ed817", null ]
 ];

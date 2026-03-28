@@ -23,6 +23,7 @@ var namespaceppforest2_1_1io =
       [ "success", "namespaceppforest2_1_1io_1_1style.html#a54edc627ad5d004ce526c46686cd68bb", null ],
       [ "warning", "namespaceppforest2_1_1io_1_1style.html#a88c2187936a74e14b832f2a6d1cced36", null ]
     ] ],
+    [ "ConfigDisplayHints", "structppforest2_1_1io_1_1ConfigDisplayHints.html", "structppforest2_1_1io_1_1ConfigDisplayHints" ],
     [ "ModelStats", "structppforest2_1_1io_1_1ModelStats.html", "structppforest2_1_1io_1_1ModelStats" ],
     [ "Output", "structppforest2_1_1io_1_1Output.html", "structppforest2_1_1io_1_1Output" ],
     [ "TempDir", "classppforest2_1_1io_1_1TempDir.html", "classppforest2_1_1io_1_1TempDir" ],
@@ -31,7 +32,9 @@ var namespaceppforest2_1_1io =
     [ "check_file_not_exists", "namespaceppforest2_1_1io.html#ab05c747dc852ed977dcdb58e81bc42f9", null ],
     [ "measure_time_ms", "namespaceppforest2_1_1io.html#a27548afe6815bfe21d68e54f71b37fdd", null ],
     [ "now_iso8601", "namespaceppforest2_1_1io.html#af3bea8d81a602627c7d483ac468c0870", null ],
+    [ "print_configuration", "namespaceppforest2_1_1io.html#a7dc8a781bbe1c7c8f4290543fc19d46c", null ],
     [ "print_confusion_matrix", "namespaceppforest2_1_1io.html#aa58e461778488be973d454c41b704dd9", null ],
     [ "print_results", "namespaceppforest2_1_1io.html#ad87ca824e129347e3b2b308fbea618b0", null ],
+    [ "print_summary", "namespaceppforest2_1_1io.html#aa33ed0297f11b5cc3875f3efba7049bf", null ],
     [ "print_variable_importance", "namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7", null ]
 ];

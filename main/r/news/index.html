@@ -40,12 +40,15 @@
 <ul><li>Core: Projection-pursuit oblique decision trees and random forests for classification, using LDA/PDA optimization.</li>
 <li>Core: Random uniform variable selection per split for forest diversity.</li>
 <li>Core: Three variable importance measures: permuted (VI1), projections (VI2), and weighted projections (VI3).</li>
-<li>Core: Out-of-bag error estimation for forests.</li>
+<li>Core: Out-of-bag error and confusion matrix for forests, with bootstrap sample indices persisted for recomputation.</li>
+<li>Core: Degenerate split detection when projection-pursuit cannot find a useful projection.</li>
 <li>Core: OpenMP multi-threaded forest training.</li>
 <li>Core: JSON serialization for trained models.</li>
 <li>Core: Cross-platform reproducibility: identical results for the same seed on Linux, macOS, and Windows.</li>
 <li>R: <code><a href="../reference/pptr.html">pptr()</a></code> and <code><a href="../reference/pprf.html">pprf()</a></code> with formula and matrix interfaces.</li>
 <li>R: <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> with group labels (<code>type = "class"</code>) or vote proportions (<code>type = "prob"</code>).</li>
+<li>R: Training and OOB confusion matrices displayed by <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>.</li>
+<li>R: Degenerate split warnings when projection-pursuit cannot separate groups.</li>
 <li>R: <code><a href="../reference/save_json.html">save_json()</a></code> and <code><a href="../reference/load_json.html">load_json()</a></code> for model persistence.</li>
 <li>R: tidymodels/parsnip integration: <code><a href="../reference/pp_tree.html">pp_tree()</a></code> and <code><a href="../reference/pp_rand_forest.html">pp_rand_forest()</a></code> model specifications.</li>
 <li>R: ggplot2 visualizations: tree diagrams, variable importance plots, projection histograms, and decision boundary plots.</li>
@@ -53,6 +56,7 @@
 <li>CLI: <code>train</code>: fit a tree or forest from CSV, save as JSON.</li>
 <li>CLI: <code>predict</code>: classify new data with a saved model.</li>
 <li>CLI: <code>evaluate</code>: train/test evaluation with smart convergence.</li>
+<li>CLI: <code>summarize</code>: display model configuration, data summary, and metrics from a saved model JSON. Supports <code>--data</code> to recompute metrics from training data.</li>
 <li>CLI: <code>benchmark</code>: multi-scenario performance benchmarks with baseline comparison.</li>
 </ul></div>
 </div>

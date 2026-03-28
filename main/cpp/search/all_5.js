@@ -19,10 +19,11 @@ var searchData=
   ['example_3a_20median_20based_20split_16',['Example: median-based split',['../extending_strategies.html#strat_sr_example',1,'']]],
   ['example_3a_20top_20variance_20variable_20selection_17',['Example: top-variance variable selection',['../extending_strategies.html#strat_dr_example',1,'']]],
   ['existing_20visitors_20as_20reference_18',['Existing visitors as reference',['../extending_visitors.html#vis_existing',1,'']]],
-  ['expand_19',['expand',['../structppforest2_1_1dr_1_1DRResult.html#aeb3458ee4d7a08556ae3b326c4fb678b',1,'ppforest2::dr::DRResult']]],
-  ['export_5fpath_20',['export_path',['../structppforest2_1_1cli_1_1EvaluateParams.html#a661eccd34b18a474550737dd3cd23ac7',1,'ppforest2::cli::EvaluateParams']]],
-  ['extending_2dstrategies_2edox_21',['extending-strategies.dox',['../extending-strategies_8dox.html',1,'']]],
-  ['extending_2dvisitors_2edox_22',['extending-visitors.dox',['../extending-visitors_8dox.html',1,'']]],
-  ['extending_3a_20custom_20strategies_23',['Extending: Custom Strategies',['../extending_strategies.html',1,'']]],
-  ['extending_3a_20custom_20visitors_24',['Extending: Custom Visitors',['../extending_visitors.html',1,'']]]
+  ['exit_5fcode_19',['exit_code',['../structProcessResult.html#a6bea2cfcdb5447b1455065b122d67f96',1,'ProcessResult']]],
+  ['expand_20',['expand',['../structppforest2_1_1dr_1_1DRResult.html#aeb3458ee4d7a08556ae3b326c4fb678b',1,'ppforest2::dr::DRResult']]],
+  ['export_5fpath_21',['export_path',['../structppforest2_1_1cli_1_1EvaluateParams.html#a661eccd34b18a474550737dd3cd23ac7',1,'ppforest2::cli::EvaluateParams']]],
+  ['extending_2dstrategies_2edox_22',['extending-strategies.dox',['../extending-strategies_8dox.html',1,'']]],
+  ['extending_2dvisitors_2edox_23',['extending-visitors.dox',['../extending-visitors_8dox.html',1,'']]],
+  ['extending_3a_20custom_20strategies_24',['Extending: Custom Strategies',['../extending_strategies.html',1,'']]],
+  ['extending_3a_20custom_20visitors_25',['Extending: Custom Visitors',['../extending_visitors.html',1,'']]]
 ];
