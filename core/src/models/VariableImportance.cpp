@@ -48,7 +48,7 @@ namespace ppforest2 {
     for (int k = 0; k < B; ++k) {
       const BootstrapTree& tree = *forest.trees[k];
 
-      if (tree.is_degenerate()) {
+      if (tree.degenerate) {
         continue;
       }
 
@@ -143,7 +143,7 @@ namespace ppforest2 {
     for (int k = 0; k < B; ++k) {
       const BootstrapTree& tree = *forest.trees[k];
 
-      if (tree.is_degenerate()) {
+      if (tree.degenerate) {
         continue;
       }
 
@@ -191,7 +191,7 @@ namespace ppforest2 {
     for (int k = 0; k < B; ++k) {
       const BootstrapTree& tree = *forest.trees[k];
 
-      if (tree.is_degenerate()) {
+      if (tree.degenerate) {
         continue;
       }
 

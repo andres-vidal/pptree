@@ -114,7 +114,6 @@ namespace {
     ppforest2::stats::RNG& rng) {
     // Run warmup iterations (discarded)
     if (params.convergence.warmup > 0) {
-      out.indent();
       out.println("Running {} warmup iterations:", emphasis(std::to_string(params.convergence.warmup)));
     }
 
@@ -125,14 +124,11 @@ namespace {
     }
 
     if (params.convergence.warmup > 0) {
-      out.dedent();
       out.newline();
     }
 
     // Determine iteration mode
     int max_iters = params.convergence.enabled ? params.convergence.max : params.evaluate.iterations;
-
-    out.indent();
 
     if (params.convergence.enabled) {
       out.println("Running up to {} iterations (converge at CV < {:.0f}%):",
@@ -187,8 +183,6 @@ namespace {
     } else {
       out.newline();
     }
-
-    out.dedent();
 
     // Build ModelStats from collected vectors
     io::ModelStats model_stats;
@@ -246,7 +240,6 @@ namespace {
 }
 
   int run_evaluate(CLIOptions& params) {
-    // Validate output paths before doing work
     if (!params.output_path.empty()) {
       io::check_file_not_exists(params.output_path);
     }
@@ -269,16 +262,34 @@ namespace {
 
     io::Output out(params.quiet);
 
-    print_configuration(out, params, tr_x.rows(), te_x.rows());
+    {
+      json config;
+      config["trees"]   = params.model.trees;
+      config["lambda"]  = params.model.lambda;
+      config["seed"]    = params.model.seed;
+      config["threads"] = params.model.threads;
+
+      if (params.model.trees > 0 && params.model.n_vars > 0) {
+        config["vars"] = params.model.n_vars;
+      }
+
+      io::ConfigDisplayHints hints;
+      hints.vars_percent     = params.model.trees > 0 ? static_cast<int>(params.model.p_vars * 100) : -1;
+      hints.default_vars     = params.model.used_default_vars;
+      hints.default_threads  = params.model.used_default_threads;
+      hints.default_seed     = params.model.used_default_seed;
+      hints.training_samples = fmt::format("{} ({}%)", tr_x.rows(), static_cast<int>(params.evaluate.train_ratio * 100));
+      hints.test_samples     = fmt::format("{} ({}%)", te_x.rows(), static_cast<int>((1 - params.evaluate.train_ratio) * 100));
+
+      io::print_configuration(out, config, hints);
+    }
 
     auto eval_result = evaluate_model(out, tr_x, te_x, tr_y, te_y, params, rng);
 
     // Measure peak RSS after evaluation
     eval_result.stats.peak_rss_bytes = ppforest2::sys::get_peak_rss_bytes();
 
-    out.indent();
     print_results(out, eval_result.stats);
-    out.dedent();
 
     // Save results to file if requested
     if (!params.output_path.empty()) {

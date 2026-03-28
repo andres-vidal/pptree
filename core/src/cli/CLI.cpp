@@ -7,6 +7,7 @@
 #include "cli/Predict.hpp"
 #include "cli/Evaluate.hpp"
 #include "cli/Benchmark.hpp"
+#include "cli/Summarize.hpp"
 #include "io/Color.hpp"
 #include "io/IO.hpp"
 
@@ -44,6 +45,8 @@ int main(int argc, char *argv[]) {
     case Subcommand::evaluate:  return run_evaluate(params);
 
     case Subcommand::benchmark: return run_benchmark(params, argv[0]);
+
+    case Subcommand::summarize: return run_summarize(params);
 
     default:
       fmt::print(stderr, "Error: No subcommand specified\n");

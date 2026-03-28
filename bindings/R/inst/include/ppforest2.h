@@ -82,15 +82,10 @@ namespace Rcpp {
   }
 
   SEXP wrap(const Tree &tree) {
-    Rcpp::List result = Rcpp::List::create(
+    return Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
-      Rcpp::Named("root")          = Rcpp::wrap(*tree.root));
-
-    if (tree.is_degenerate()) {
-      result["degenerate"] = true;
-    }
-
-    return result;
+      Rcpp::Named("root")          = Rcpp::wrap(*tree.root),
+      Rcpp::Named("degenerate")    = tree.degenerate);
   }
 
   SEXP wrap(const BootstrapTree &tree) {
@@ -107,16 +102,11 @@ namespace Rcpp {
       trees[i] = wrap(*forest.trees[i]);
     }
 
-    Rcpp::List result = Rcpp::List::create(
+    return Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
       Rcpp::Named("seed")          = Rcpp::wrap(forest.seed),
-      Rcpp::Named("trees")         = trees);
-
-    if (forest.degenerate) {
-      result["degenerate"] = true;
-    }
-
-    return result;
+      Rcpp::Named("trees")         = trees,
+      Rcpp::Named("degenerate")    = forest.degenerate);
   }
 
   SEXP wrap(const TrainingSpec &spec) {

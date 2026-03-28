@@ -180,14 +180,22 @@ if(NOT PPFOREST2_CORE_ONLY)
     src/serialization/Json.test.cpp
     src/utils/Math.test.cpp
     src/utils/Invariant.test.cpp
+    src/utils/System.test.cpp
     src/cli/CLIOptions.test.cpp
+    src/cli/Train.integration.test.cpp
+    src/cli/Predict.integration.test.cpp
+    src/cli/Evaluate.integration.test.cpp
+    src/cli/Summarize.integration.test.cpp
+    src/cli/Benchmark.integration.test.cpp
+    src/cli/Reproducibility.integration.test.cpp
     src/cli/CLI.integration.test.cpp
     src/golden/Reproducibility.test.cpp
     src/golden/Threading.test.cpp
     src/cli/VarsSpec.test.cpp
     src/cli/Benchmark.test.cpp
     src/cli/BenchmarkReport.test.cpp
-    src/io/IO.test.cpp)
+    src/io/IO.test.cpp
+    src/io/Presentation.test.cpp)
 
   add_executable(ppforest2-test ${PPFOREST2_TEST_SRC} $<TARGET_OBJECTS:ppforest2-cli>)
 

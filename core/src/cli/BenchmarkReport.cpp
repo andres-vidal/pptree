@@ -127,7 +127,6 @@ namespace {
       if (header[i] == "delta") header[i] = muted("delta");
     }
 
-    out.indent();
     out.println("{}", format_row(columns, header));
     out.println("{}", muted(format_separator(columns)));
 
@@ -199,15 +198,11 @@ namespace {
       out.println("{}", format_row(columns, cells));
     }
 
-    out.dedent();
-
     // Footer
     out.newline();
-    out.indent();
     out.println("{} scenarios completed in {:.1f}s",
     emphasis(std::to_string(current.results.size())),
     current.total_time_ms / 1000.0);
-    out.dedent();
     out.newline();
   }
 

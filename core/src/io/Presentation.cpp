@@ -5,6 +5,7 @@
  */
 #include "io/Presentation.hpp"
 #include "io/Table.hpp"
+#include "serialization/Json.hpp"
 
 #include <fmt/format.h>
 #include <algorithm>
@@ -250,5 +251,187 @@ namespace ppforest2::io {
     }
 
     out.newline();
+  }
+
+  void print_configuration(
+    Output&                   out,
+    const nlohmann::json&     config,
+    const ConfigDisplayHints& hints) {
+    using namespace style;
+    using namespace layout;
+
+    auto dtag = [&](bool is_default) -> std::string {
+        return is_default ? " " + muted("(default)") : "";
+      };
+
+    std::string model_type = config.value("trees", 0) > 0
+      ? "Random Forest of Projection-Pursuit Oblique Decision Trees"
+      : "Projection-Pursuit Oblique Decision Tree";
+
+    out.println("{}", emphasis(model_type));
+    out.newline();
+
+    std::vector<Column> columns = {
+      { "Parameter", 18, Align::left },
+      { "Value",     30, Align::left },
+    };
+
+    Row header = header_labels(columns);
+    out.println("{}", format_row(columns, header));
+    out.println("{}", muted(format_separator(columns)));
+
+    int trees = config.value("trees", 0);
+
+    if (trees > 0) {
+      out.println("{}", format_row(columns, { "trees", std::to_string(trees) }));
+
+      if (config.contains("vars")) {
+        std::string vars_str = std::to_string(config["vars"].get<int>());
+
+        if (hints.vars_percent >= 0) {
+          vars_str += fmt::format(" ({}%)", hints.vars_percent);
+        }
+
+        vars_str += dtag(hints.default_vars);
+        out.println("{}", format_row(columns, { "variables/split", vars_str }));
+      }
+
+      out.println("{}", format_row(columns, { "threads", fmt::format("{}{}", config.value("threads", 1), dtag(hints.default_threads)) }));
+      out.println("{}", format_row(columns, { "seed", fmt::format("{}{}", config.value("seed", 0), dtag(hints.default_seed)) }));
+    }
+
+    float lambda       = config.value("lambda", 0.5f);
+    std::string method = lambda == 0 ? "LDA" : "PDA";
+    out.println("{}", format_row(columns, { "method", fmt::format("{} (lambda={})", method, lambda) }));
+
+    if (!hints.training_samples.empty()) {
+      out.println("{}", format_row(columns, { "training samples", hints.training_samples }));
+      out.println("{}", format_row(columns, { "test samples", hints.test_samples }));
+    }
+
+    if (config.contains("data")) {
+      out.println("{}", format_row(columns, { "training data", config["data"].get<std::string>() }));
+    }
+
+    out.newline();
+  }
+
+namespace {
+  using json = nlohmann::json;
+
+  void print_data_summary(
+    Output &      out,
+    const json&  meta) {
+    using namespace style;
+    using namespace layout;
+
+    std::vector<Column> columns = {
+      { "Property", 18, Align::left },
+      { "Value",    30, Align::left },
+    };
+
+    out.println("{}", emphasis("Data Summary"));
+    out.newline();
+
+    Row header = header_labels(columns);
+    out.println("{}", format_row(columns, header));
+    out.println("{}", muted(format_separator(columns)));
+
+    if (meta.contains("observations")) {
+      out.println("{}", format_row(columns, { "observations", std::to_string(meta["observations"].get<int>()) }));
+    }
+
+    if (meta.contains("features")) {
+      out.println("{}", format_row(columns, { "features", std::to_string(meta["features"].get<int>()) }));
+    }
+
+    if (meta.contains("groups")) {
+      auto group_names = meta["groups"].get<std::vector<std::string>>();
+      out.println("{}", format_row(columns, { "groups", std::to_string(group_names.size()) }));
+
+      std::string names;
+
+      for (std::size_t i = 0; i < group_names.size(); ++i) {
+        if (i > 0) names += ", ";
+
+        names += group_names[i];
+      }
+
+      out.println("{}", format_row(columns, { "group names", names }));
+    }
+
+    out.newline();
+  }
+}
+
+  void print_summary(
+    Output&                   out,
+    const nlohmann::json&     model_data,
+    const ConfigDisplayHints& hints) {
+    using namespace style;
+
+    std::vector<std::string> group_names;
+
+    if (model_data.contains("meta") && model_data["meta"].contains("groups")) {
+      group_names = model_data["meta"]["groups"].get<std::vector<std::string>>();
+    }
+
+    if (model_data.contains("config")) {
+      print_configuration(out, model_data["config"], hints);
+    }
+
+    if (model_data.contains("meta")) {
+      print_data_summary(out, model_data["meta"]);
+    }
+
+    if (model_data.contains("training_duration_ms")) {
+      out.print("Trained in {}ms", emphasis(std::to_string(model_data["training_duration_ms"].get<long long>())));
+
+      if (model_data.contains("save_path")) {
+        out.print(", ");
+        out.saved("model", model_data["save_path"].get<std::string>());
+      } else {
+        out.newline();
+      }
+
+      out.newline();
+    }
+
+    bool is_degenerate = model_data.contains("model")
+    && model_data["model"].value("degenerate", false);
+
+    if (is_degenerate) {
+      out.println("{} Some splits could not separate groups (degenerate nodes).", emphasis(warning("Warning:")));
+      out.println("This can be caused by ill-conditioned variables in the input data,");
+      out.println("or by bootstrap samples that produce singular covariance matrices.");
+      out.println("Degenerate nodes predict the group with the most observations.");
+      out.println("Degenerate trees are excluded from variable importance calculations.");
+      out.newline();
+    }
+
+    // Training confusion matrix
+    if (model_data.contains("training_confusion_matrix")) {
+      auto cm = serialization::confusion_matrix_from_json(model_data["training_confusion_matrix"]);
+      out.println("{} {}", emphasis("Training Error:"), fmt::format("{:.2f}%", cm.error() * 100));
+      print_confusion_matrix(out, cm, "Training Confusion Matrix", group_names);
+    }
+
+    // OOB error and confusion matrix
+    if (model_data.contains("oob_error")) {
+      out.println("{} {}", emphasis("OOB Error:"), fmt::format("{:.2f}%", model_data["oob_error"].get<double>() * 100));
+    }
+
+    if (model_data.contains("oob_confusion_matrix")) {
+      auto cm = serialization::confusion_matrix_from_json(model_data["oob_confusion_matrix"]);
+      print_confusion_matrix(out, cm, "OOB Confusion Matrix", group_names);
+    } else {
+      out.newline();
+    }
+
+    // Variable importance
+    if (model_data.contains("variable_importance")) {
+      auto vi = serialization::variable_importance_from_json(model_data["variable_importance"]);
+      print_variable_importance(out, vi);
+    }
   }
 }

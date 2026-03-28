@@ -161,12 +161,16 @@ namespace {
       group_names = model_data["meta"]["groups"].get<std::vector<std::string>>();
     }
 
-    // Terminal output: only metrics
+    // Terminal output
     if (show_metrics) {
+      std::string model_type = model_data.value("model_type", "tree") == "forest"
+        ? "Random Forest" : "Decision Tree";
+
+      out.println("{}", emphasis("Prediction results for " + model_type));
+      out.newline();
+
       ConfusionMatrix cm(predictions, data.y);
-      out.newline();
-      out.println("{}{:.2f}%", emphasis("Error rate: "), cm.error() * 100);
-      out.newline();
+      out.println("{} {}", emphasis("Error:"), fmt::format("{:.2f}%", cm.error() * 100));
       print_confusion_matrix(out, cm, "Confusion Matrix", group_names);
     }
 

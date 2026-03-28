@@ -7,6 +7,7 @@
 #include "cli/Predict.hpp"
 #include "cli/Evaluate.hpp"
 #include "cli/Benchmark.hpp"
+#include "cli/Summarize.hpp"
 #include "cli/VarsSpec.hpp"
 
 #include <CLI/CLI.hpp>
@@ -205,10 +206,11 @@ namespace {
   }
 
   void post_parse(CLIOptions & params, CLI::App& app) {
-    auto *train_sub   = app.get_subcommand("train");
-    auto *predict_sub = app.get_subcommand("predict");
-    auto *eval_sub    = app.get_subcommand("evaluate");
-    auto *bench_sub   = app.get_subcommand("benchmark");
+    auto *train_sub     = app.get_subcommand("train");
+    auto *predict_sub   = app.get_subcommand("predict");
+    auto *eval_sub      = app.get_subcommand("evaluate");
+    auto *bench_sub     = app.get_subcommand("benchmark");
+    auto *summarize_sub = app.get_subcommand("summarize");
 
     // Determine subcommand
     if (train_sub->parsed()) {
@@ -219,6 +221,8 @@ namespace {
       params.subcommand = Subcommand::evaluate;
     } else if (bench_sub->parsed()) {
       params.subcommand = Subcommand::benchmark;
+    } else if (summarize_sub->parsed()) {
+      params.subcommand = Subcommand::summarize;
     }
 
     // Handle --no-save for train
@@ -360,7 +364,7 @@ namespace {
     // Global options
     app.add_flag("--quiet,-q", params.quiet, "Suppress all terminal output");
     app.add_flag("--no-color", params.no_color, "Disable colored output");
-    app.config_formatter(std::make_shared<ConfigJSON>(std::vector<std::string>{ "train", "predict", "evaluate", "benchmark" }));
+    app.config_formatter(std::make_shared<ConfigJSON>(std::vector<std::string>{ "train", "predict", "evaluate", "benchmark", "summarize" }));
     app.set_config("--config", "", "Read parameters from JSON config file");
 
     // Subcommands
@@ -368,6 +372,7 @@ namespace {
     setup_predict(app, params);
     setup_evaluate(app, params);
     setup_benchmark(app, params);
+    setup_summarize(app, params);
 
     // Parse
     try {

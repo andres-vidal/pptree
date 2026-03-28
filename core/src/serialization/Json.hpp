@@ -80,6 +80,8 @@ namespace ppforest2::serialization {
   TreeNode::Ptr node_from_json(const json& j);
   Tree tree_from_json(const json& j);
   Forest forest_from_json(const json& j);
+  stats::ConfusionMatrix confusion_matrix_from_json(const json& j);
+  VariableImportance variable_importance_from_json(const json& j);
 
   /** @name Labeled deserialization (maps string labels back to integer codes) */
   TreeNode::Ptr node_from_json(const json& j, const GroupNames& group_names);
@@ -124,4 +126,6 @@ namespace ppforest2::serialization {
     json json_map(string_map);
     return ostream << json_map.dump();
   }
+
+  ///@}
 }

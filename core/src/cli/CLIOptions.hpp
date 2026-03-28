@@ -20,7 +20,7 @@
  */
 namespace ppforest2::cli {
   /** @brief Available CLI subcommands. */
-  enum class Subcommand { none, train, predict, evaluate, benchmark };
+  enum class Subcommand { none, train, predict, evaluate, benchmark, summarize };
 
   /**
    * @brief All CLI options and runtime parameters.

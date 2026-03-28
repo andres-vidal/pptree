@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 #include "serialization/Json.hpp"
+#include "models/BootstrapTree.hpp"
 #include "utils/Invariant.hpp"
 #include "utils/Macros.hpp"
 
@@ -224,4 +225,78 @@ TEST(JsonRoundTrip, ModelFromJsonFile) {
     auto model = model_from_json(j);
     ASSERT_NE(model, nullptr);
   });
+}
+
+// ---------------------------------------------------------------------------
+// Serialization structure tests — verify JSON shape without training
+// ---------------------------------------------------------------------------
+
+TEST(JsonStructure, TreeAlwaysHasDegenerate) {
+  auto golden      = load_golden(GOLDEN_DIR + "/iris/tree-pda-s42.json");
+  auto group_names = golden["meta"]["groups"].get<GroupNames>();
+
+  Tree tree = tree_from_json(golden["model"], group_names);
+  json j    = to_json(tree, group_names);
+
+  EXPECT_TRUE(j.contains("degenerate"));
+  EXPECT_FALSE(j["degenerate"].get<bool>());
+}
+
+TEST(JsonStructure, ForestAlwaysHasDegenerate) {
+  auto golden      = load_golden(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
+  auto group_names = golden["meta"]["groups"].get<GroupNames>();
+
+  Forest forest = forest_from_json(golden["model"], group_names);
+  json j        = to_json(forest, group_names);
+
+  EXPECT_TRUE(j.contains("degenerate"));
+  EXPECT_FALSE(j["degenerate"].get<bool>());
+}
+
+TEST(JsonStructure, ConfusionMatrixRoundTrip) {
+  ResponseVector predictions(6);
+  predictions << 0, 0, 1, 1, 2, 2;
+
+  ResponseVector actual(6);
+  actual << 0, 1, 1, 1, 2, 0;
+
+  ConfusionMatrix cm(predictions, actual);
+  json j = to_json(cm);
+
+  auto restored = confusion_matrix_from_json(j);
+
+  EXPECT_EQ(restored.values.rows(), cm.values.rows());
+  EXPECT_EQ(restored.values.cols(), cm.values.cols());
+  EXPECT_EQ(restored.values, cm.values);
+}
+
+TEST(JsonStructure, ForestSampleIndicesRoundTrip) {
+  auto golden      = load_golden(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
+  auto group_names = golden["meta"]["groups"].get<GroupNames>();
+  json model_json  = golden["model"];
+
+  Forest forest     = forest_from_json(model_json, group_names);
+  json roundtripped = to_json(forest, group_names);
+
+  for (size_t i = 0; i < forest.trees.size(); ++i) {
+    auto *bt = dynamic_cast<const BootstrapTree *>(forest.trees[i].get());
+    ASSERT_NE(bt, nullptr) << "Tree " << i << " should be a BootstrapTree";
+    EXPECT_FALSE(bt->sample_indices.empty()) << "Tree " << i << " should have sample_indices";
+
+    auto rt_indices = roundtripped["trees"][i]["sample_indices"].get<std::vector<int>>();
+    EXPECT_EQ(rt_indices, bt->sample_indices) << "Tree " << i << " sample_indices should round-trip";
+  }
+}
+
+TEST(JsonStructure, VariableImportanceRoundTrip) {
+  VariableImportance vi;
+  vi.scale       = types::FeatureVector::Ones(4);
+  vi.projections = types::FeatureVector::Random(4);
+
+  json j = to_json(vi);
+
+  auto restored = variable_importance_from_json(j);
+
+  EXPECT_EQ(restored.projections.size(), vi.projections.size());
+  EXPECT_EQ(restored.scale.size(), vi.scale.size());
 }

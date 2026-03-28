@@ -74,11 +74,6 @@ namespace ppforest2 {
     types::Response predict(const types::FeatureVector& data) const override;
     types::ResponseVector predict(const types::FeatureMatrix& data) const override;
 
-    /** @brief Whether any node in the tree had a degenerate split. */
-    bool is_degenerate() const {
-      return root && root->degenerate;
-    }
-
     bool operator==(const Tree& other) const;
     bool operator!=(const Tree& other) const;
   };

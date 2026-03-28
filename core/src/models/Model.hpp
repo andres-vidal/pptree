@@ -27,6 +27,9 @@ namespace ppforest2 {
 
     virtual ~Model() = default;
 
+    /** @brief Whether the model contains degenerate nodes/splits. */
+    bool degenerate = false;
+
     /** @brief Accept a model visitor (double dispatch). */
     virtual void accept(Visitor& visitor) const = 0;
 

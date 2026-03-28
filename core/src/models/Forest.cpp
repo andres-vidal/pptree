@@ -39,7 +39,7 @@ namespace ppforest2 {
         RNG rng(static_cast<uint64_t>(seed), stream);
         trees[i] = BootstrapTree::train(training_spec, x, group_spec, rng);
 
-        if (!trees[i]->is_degenerate()) {
+        if (!trees[i]->degenerate) {
           break;
         }
       }
@@ -48,7 +48,7 @@ namespace ppforest2 {
     Forest forest(training_spec.clone(), seed);
 
     for (auto& tree : trees) {
-      if (tree->is_degenerate()) {
+      if (tree->degenerate) {
         forest.degenerate = true;
       }
 

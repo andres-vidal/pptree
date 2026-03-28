@@ -5,7 +5,9 @@ add_library(ppforest2-cli OBJECT
   Predict.cpp
   Evaluate.cpp
   Benchmark.cpp
-  BenchmarkReport.cpp)
+  BenchmarkReport.cpp
+  Summarize.cpp
+  Metrics.cpp)
 
 target_include_directories(ppforest2-cli PRIVATE
   ${csv_SOURCE_DIR}/include)

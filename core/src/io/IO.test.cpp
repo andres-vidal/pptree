@@ -1,3 +1,7 @@
+/**
+ * @file IO.test.cpp
+ * @brief Unit tests for CSV reading and file helper utilities.
+ */
 #include <gtest/gtest.h>
 
 #include "io/IO.hpp"
@@ -6,6 +10,13 @@
 #include <fstream>
 
 using namespace ppforest2;
+
+#ifndef PPFOREST2_DATA_DIR
+#error "PPFOREST2_DATA_DIR must be defined"
+#endif
+
+static const std::string DATA_DIR  = PPFOREST2_DATA_DIR;
+static const std::string IRIS_PATH = DATA_DIR + "/iris.csv";
 
 namespace {
   void write_csv(const std::string& path, const std::string& content) {
@@ -107,4 +118,64 @@ TEST(CSVReadTest, CrabsDatasetWithCategoricalSex) {
     float val = data.x(i, 0);
     EXPECT_TRUE(val == 0.0f || val == 1.0f) << "Row " << i << " sex=" << val;
   }
+}
+
+// ---------------------------------------------------------------------------
+// File helpers — io::json::ensure_extension, check_*_not_exists
+// ---------------------------------------------------------------------------
+
+/**
+ * @brief Death-test predicate: matches any non-zero exit code.
+ */
+class ExitedWithNonZero {
+  public:
+    bool operator()(int exit_status) const {
+      #ifdef _WIN32
+      return exit_status != 0;
+
+      #else
+      return testing::ExitedWithCode(0)(exit_status) == false && WIFEXITED(exit_status);
+
+      #endif
+    }
+};
+
+/* Path already ending in .json is returned unchanged. */
+TEST(FileHelpers, EnsureJsonExtensionWithExtension) {
+  EXPECT_EQ(io::json::ensure_extension("model.json"), "model.json");
+}
+
+/* Path without extension gets .json appended. */
+TEST(FileHelpers, EnsureJsonExtensionWithoutExtension) {
+  EXPECT_EQ(io::json::ensure_extension("model"), "model.json");
+}
+
+/* Non-.json extension gets .json added (e.g. .txt -> .txt.json). */
+TEST(FileHelpers, EnsureJsonExtensionWithOtherExtension) {
+  EXPECT_EQ(io::json::ensure_extension("model.txt"), "model.txt.json");
+}
+
+/* Full path without extension gets .json appended. */
+TEST(FileHelpers, EnsureJsonExtensionWithPath) {
+  EXPECT_EQ(io::json::ensure_extension("/tmp/model"), "/tmp/model.json");
+}
+
+/* check_file_not_exists succeeds for a nonexistent path. */
+TEST(FileHelpers, CheckFileNotExistsOnNonexistent) {
+  io::check_file_not_exists("/nonexistent/path/that/doesnt/exist.json");
+}
+
+/* check_file_not_exists exits for an existing file. */
+TEST(FileHelpers, CheckFileNotExistsOnExisting) {
+  EXPECT_EXIT(io::check_file_not_exists(IRIS_PATH), ExitedWithNonZero(), "");
+}
+
+/* check_dir_not_exists succeeds for a nonexistent path. */
+TEST(FileHelpers, CheckDirNotExistsOnNonexistent) {
+  io::check_dir_not_exists("/nonexistent/path/that/doesnt/exist");
+}
+
+/* check_dir_not_exists exits for an existing directory. */
+TEST(FileHelpers, CheckDirNotExistsOnExisting) {
+  EXPECT_EXIT(io::check_dir_not_exists(DATA_DIR), ExitedWithNonZero(), "");
 }

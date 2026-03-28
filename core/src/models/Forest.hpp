@@ -62,8 +62,6 @@ namespace ppforest2 {
     std::vector<BootstrapTree::Ptr> trees;
     TrainingSpec::Ptr training_spec;
     const int seed = 0;
-    /** @brief True if any tree remains degenerate after retries. */
-    bool degenerate = false;
 
     Forest();
     Forest(TrainingSpec::Ptr&& training_spec, int seed);

@@ -43,18 +43,22 @@
     "trees": 0
   },
   "model": {
+    "degenerate": false,
     "root": {
+      "degenerate": false,
       "groups": [
         "setosa",
         "versicolor",
         "virginica"
       ],
       "lower": {
+        "degenerate": false,
         "groups": [
           "versicolor",
           "virginica"
         ],
         "lower": {
+          "degenerate": false,
           "value": "virginica"
         },
         "pp_index_value": 0.7838900089263916,
@@ -66,6 +70,7 @@
         ],
         "threshold": -0.20751327276229858,
         "upper": {
+          "degenerate": false,
           "value": "versicolor"
         }
       },
@@ -78,6 +83,7 @@
       ],
       "threshold": 0.06660760939121246,
       "upper": {
+        "degenerate": false,
         "value": "setosa"
       }
     }

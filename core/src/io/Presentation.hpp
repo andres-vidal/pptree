@@ -92,4 +92,44 @@ namespace ppforest2::io {
     const stats::ConfusionMatrix&   cm,
     const std::string&              title       = "Confusion Matrix",
     const std::vector<std::string>& group_names = {});
+
+  /**
+   * @brief Optional display hints for print_configuration.
+   *
+   * When printing a freshly trained model, callers can provide extra
+   * context (default-value tags, vars percentage, train/test split)
+   * that isn't stored in the saved config JSON.
+   */
+  struct ConfigDisplayHints {
+    int vars_percent     = -1;
+    bool default_vars    = false;
+    bool default_threads = false;
+    bool default_seed    = false;
+    std::string training_samples;
+    std::string test_samples;
+  };
+
+  /**
+   * @brief Print model configuration table from a JSON config object.
+   *
+   * @param out    Output context.
+   * @param config The config JSON (trees, lambda, seed, threads, vars, data).
+   * @param hints  Optional display hints for richer output (defaults, percentages).
+   */
+  void print_configuration(
+    Output&                   out,
+    const nlohmann::json&     config,
+    const ConfigDisplayHints& hints = {});
+
+  /**
+   * @brief Display a full model summary from its JSON representation.
+   *
+   * Shows configuration, data summary, training/OOB confusion matrices,
+   * degenerate warnings, timing, and variable importance.
+   * Used by both `run_train` (after training) and `run_summarize` (from file).
+   */
+  void print_summary(
+    Output&                   out,
+    const nlohmann::json&     model_data,
+    const ConfigDisplayHints& hints = {});
 }

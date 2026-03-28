@@ -35,6 +35,9 @@ namespace ppforest2::stats {
     types::Matrix<int> values;         ///< The NxN confusion matrix (actual x predicted).
     std::map<int, int> label_index;    ///< Map from group label to matrix row/column index.
 
+    /** @brief Default-construct an empty confusion matrix. */
+    ConfusionMatrix() = default;
+
     /**
      * @brief Construct a confusion matrix from predictions and actual labels.
      * @param predictions The predicted group labels.

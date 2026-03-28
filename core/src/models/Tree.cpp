@@ -284,11 +284,13 @@ namespace {
   Tree::Tree(TreeNode::Ptr root) :
     root(std::move(root)),
     training_spec(TrainingSpecPDA::make(0.5)) {
+    degenerate = this->root && this->root->degenerate;
   }
 
   Tree::Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec) :
     root(std::move(root)),
     training_spec(std::move(training_spec)) {
+    degenerate = this->root && this->root->degenerate;
   }
 
   Response Tree::predict(const FeatureVector& data) const {

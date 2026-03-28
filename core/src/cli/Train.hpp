@@ -50,15 +50,6 @@ namespace ppforest2::cli {
     ppforest2::stats::RNG&                  rng);
 
   /**
-   * @brief Print the training configuration summary.
-   */
-  void print_configuration(
-    io::Output&       out,
-    const CLIOptions& params,
-    int               n_train = 0,
-    int               n_test  = 0);
-
-  /**
    * @brief Run the train subcommand.
    * @return Exit code (0 on success).
    */

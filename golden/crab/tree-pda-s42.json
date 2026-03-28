@@ -55,7 +55,9 @@
     "trees": 0
   },
   "model": {
+    "degenerate": false,
     "root": {
+      "degenerate": false,
       "groups": [
         "BlueMale",
         "BlueFemale",
@@ -63,11 +65,13 @@
         "OrangeFemale"
       ],
       "lower": {
+        "degenerate": false,
         "groups": [
           "BlueMale",
           "BlueFemale"
         ],
         "lower": {
+          "degenerate": false,
           "value": "BlueMale"
         },
         "pp_index_value": 0.7117377519607544,
@@ -80,6 +84,7 @@
         ],
         "threshold": 0.16444548964500427,
         "upper": {
+          "degenerate": false,
           "value": "BlueFemale"
         }
       },
@@ -93,11 +98,13 @@
       ],
       "threshold": 0.03410697728395462,
       "upper": {
+        "degenerate": false,
         "groups": [
           "OrangeMale",
           "OrangeFemale"
         ],
         "lower": {
+          "degenerate": false,
           "value": "OrangeMale"
         },
         "pp_index_value": 0.8201932907104492,
@@ -110,6 +117,7 @@
         ],
         "threshold": 0.1984570324420929,
         "upper": {
+          "degenerate": false,
           "value": "OrangeFemale"
         }
       }

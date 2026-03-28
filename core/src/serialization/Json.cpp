@@ -1,5 +1,6 @@
 #include "serialization/Json.hpp"
 #include "models/Projector.hpp"
+#include "models/TrainingSpecPDA.hpp"
 
 #include <Eigen/Dense>
 #include <algorithm>
@@ -22,6 +23,7 @@ namespace ppforest2::serialization {
       { "pp_index_value", node.pp_index_value },
       { "lower",          lower_visitor.result },
       { "upper",          upper_visitor.result },
+      { "degenerate",     node.degenerate },
     };
 
     if (group_names) {
@@ -34,21 +36,19 @@ namespace ppforest2::serialization {
     } else {
       result["groups"] = node.groups;
     }
-
-    if (node.degenerate) {
-      result["degenerate"] = true;
-    }
   }
 
   void JsonNodeVisitor::visit(const TreeResponse& node) {
     if (group_names) {
-      result = json{ { "value", (*group_names)[static_cast<std::size_t>(node.value)] } };
+      result = json{
+        { "value",      (*group_names)[static_cast<std::size_t>(node.value)] },
+        { "degenerate", node.degenerate },
+      };
     } else {
-      result = json{ { "value", node.value } };
-    }
-
-    if (node.degenerate) {
-      result["degenerate"] = true;
+      result = json{
+        { "value",      node.value },
+        { "degenerate", node.degenerate },
+      };
     }
   }
 
@@ -84,11 +84,16 @@ namespace ppforest2::serialization {
   }
 
   json to_json(const Tree& tree) {
-    return json{ { "root", to_json(*tree.root) } };
+    return json{
+      { "root",       to_json(*tree.root) },
+      { "degenerate", tree.degenerate },
+    };
   }
 
   json to_json(const BootstrapTree& tree) {
-    return to_json(static_cast<const Tree&>(tree));
+    json result = to_json(static_cast<const Tree&>(tree));
+    result["sample_indices"] = tree.sample_indices;
+    return result;
   }
 
   json to_json(const Forest& forest) {
@@ -99,13 +104,10 @@ namespace ppforest2::serialization {
       trees_json.push_back(to_json(*tree));
     }
 
-    json result = json{ { "trees", trees_json } };
-
-    if (forest.degenerate) {
-      result["degenerate"] = true;
-    }
-
-    return result;
+    return json{
+      { "trees",      trees_json },
+      { "degenerate", forest.degenerate },
+    };
   }
 
   json to_json(const stats::ConfusionMatrix& cm) {
@@ -168,11 +170,16 @@ namespace ppforest2::serialization {
   }
 
   json to_json(const Tree& tree, const GroupNames& group_names) {
-    return json{ { "root", to_json(*tree.root, group_names) } };
+    return json{
+      { "root",       to_json(*tree.root, group_names) },
+      { "degenerate", tree.degenerate },
+    };
   }
 
   json to_json(const BootstrapTree& tree, const GroupNames& group_names) {
-    return to_json(static_cast<const Tree&>(tree), group_names);
+    json result = to_json(static_cast<const Tree&>(tree), group_names);
+    result["sample_indices"] = tree.sample_indices;
+    return result;
   }
 
   json to_json(const Forest& forest, const GroupNames& group_names) {
@@ -183,13 +190,10 @@ namespace ppforest2::serialization {
       trees_json.push_back(to_json(*tree, group_names));
     }
 
-    json result = json{ { "trees", trees_json } };
-
-    if (forest.degenerate) {
-      result["degenerate"] = true;
-    }
-
-    return result;
+    return json{
+      { "trees",      trees_json },
+      { "degenerate", forest.degenerate },
+    };
   }
 
   json to_json(const stats::ConfusionMatrix& cm, const GroupNames& group_names) {
@@ -317,7 +321,14 @@ namespace ppforest2::serialization {
     forest.degenerate = j.value("degenerate", false);
 
     for (const auto& tree_json : j.at("trees")) {
-      forest.add_tree(std::make_unique<BootstrapTree>(node_from_json(tree_json.at("root"))));
+      auto sample_indices = tree_json.contains("sample_indices")
+        ? tree_json["sample_indices"].get<std::vector<int>>()
+        : std::vector<int>{};
+
+      forest.add_tree(std::make_unique<BootstrapTree>(
+          node_from_json(tree_json.at("root")),
+          TrainingSpecPDA::make(0.5),
+          std::move(sample_indices)));
     }
 
     return forest;
@@ -372,10 +383,66 @@ namespace ppforest2::serialization {
     forest.degenerate = j.value("degenerate", false);
 
     for (const auto& tree_json : j.at("trees")) {
-      forest.add_tree(std::make_unique<BootstrapTree>(node_from_json(tree_json.at("root"), group_names)));
+      auto sample_indices = tree_json.contains("sample_indices")
+        ? tree_json["sample_indices"].get<std::vector<int>>()
+        : std::vector<int>{};
+
+      forest.add_tree(std::make_unique<BootstrapTree>(
+          node_from_json(tree_json.at("root"), group_names),
+          TrainingSpecPDA::make(0.5),
+          std::move(sample_indices)));
     }
 
     return forest;
+  }
+
+  stats::ConfusionMatrix confusion_matrix_from_json(const json& j) {
+    stats::ConfusionMatrix cm;
+
+    auto matrix_data = j["matrix"];
+    int n            = static_cast<int>(matrix_data.size());
+    cm.values = types::Matrix<int>::Zero(n, n);
+
+    for (int i = 0; i < n; ++i) {
+      for (int col = 0; col < n; ++col) {
+        cm.values(i, col) = matrix_data[static_cast<std::size_t>(i)][static_cast<std::size_t>(col)].get<int>();
+      }
+    }
+
+    const auto& labels = j["labels"];
+
+    for (int i = 0; i < n; ++i) {
+      if (labels[static_cast<std::size_t>(i)].is_number_integer()) {
+        cm.label_index[labels[static_cast<std::size_t>(i)].get<int>()] = i;
+      } else {
+        cm.label_index[i] = i;
+      }
+    }
+
+    return cm;
+  }
+
+  VariableImportance variable_importance_from_json(const json& j) {
+    VariableImportance vi;
+
+    auto scale_vec = j["scale"].get<std::vector<float>>();
+    auto proj_vec  = j["projections"].get<std::vector<float>>();
+    int p          = static_cast<int>(proj_vec.size());
+
+    vi.scale       = Eigen::Map<const types::FeatureVector>(scale_vec.data(), p);
+    vi.projections = Eigen::Map<const types::FeatureVector>(proj_vec.data(), p);
+
+    if (j.contains("weighted_projections") && !j["weighted_projections"].empty()) {
+      auto wp_vec = j["weighted_projections"].get<std::vector<float>>();
+      vi.weighted_projections = Eigen::Map<const types::FeatureVector>(wp_vec.data(), p);
+    }
+
+    if (j.contains("permuted") && !j["permuted"].empty()) {
+      auto perm_vec = j["permuted"].get<std::vector<float>>();
+      vi.permuted = Eigen::Map<const types::FeatureVector>(perm_vec.data(), p);
+    }
+
+    return vi;
   }
 
   std::ostream& operator<<(std::ostream& os, const TreeNode& node) {

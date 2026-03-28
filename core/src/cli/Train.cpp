@@ -3,6 +3,7 @@
  * @brief Model training utilities and train subcommand handler.
  */
 #include "cli/Train.hpp"
+#include "cli/Metrics.hpp"
 #include "ppforest2.hpp"
 
 #include <CLI/CLI.hpp>
@@ -10,11 +11,8 @@
 #include <fstream>
 
 #include "stats/Simulation.hpp"
-#include "stats/ConfusionMatrix.hpp"
 #include "io/Presentation.hpp"
-#include "io/Color.hpp"
 #include "io/Output.hpp"
-#include "io/Table.hpp"
 #include "io/IO.hpp"
 #include "io/Timing.hpp"
 #include "serialization/Json.hpp"
@@ -25,13 +23,7 @@
 using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
-using namespace ppforest2::io::style;
-using namespace ppforest2::io::layout;
 using json = nlohmann::json;
-
-using ppforest2::variable_importance_permuted;
-using ppforest2::variable_importance_projections;
-using ppforest2::variable_importance_weighted_projections;
 
 namespace ppforest2::cli {
   void add_model_options(CLI::App *sub, ModelParams& model) {
@@ -64,18 +56,12 @@ namespace ppforest2::cli {
 
 namespace ppforest2::cli {
 namespace {
-  std::string default_tag(bool is_default) {
-    if (!is_default) return "";
-
-    return " " + muted("(default)");
-  }
-
-  void save_model(
-    io::Output &                    out,
-    const Model&                   model,
-    const CLIOptions&              params,
-    const std::string&             path,
-    const std::vector<std::string>& group_names) {
+  json build_model_json(
+    const Model&                    model,
+    const CLIOptions&               params,
+    const std::vector<std::string>& group_names,
+    int n_observations,
+    int n_features) {
     json output = group_names.empty()
       ? serialization::to_json(model)
       : serialization::to_json(model, group_names);
@@ -96,98 +82,19 @@ namespace {
 
     output["config"] = config;
 
+    json meta;
+    meta["observations"] = n_observations;
+    meta["features"]     = n_features;
+
     if (!group_names.empty()) {
-      output["meta"]["groups"] = group_names;
+      meta["groups"] = group_names;
     }
 
-    io::json::write_file(output, path);
+    output["meta"] = meta;
 
-    out.saved("model", path);
+    return output;
   }
 }
-
-  void print_configuration(
-    io::Output&       out,
-    const CLIOptions& params,
-    int               n_train,
-    int               n_test) {
-    std::string model_type = params.model.trees > 0
-      ? "Random Forest of Projection-Pursuit Oblique Decision Trees"
-      : "Projection-Pursuit Oblique Decision Tree";
-    out.println("{}", emphasis(model_type));
-    out.newline();
-
-    std::vector<Column> columns = {
-      { "Parameter", 18, Align::left },
-      { "Value",     30, Align::left },
-    };
-
-    out.indent();
-
-    Row header = header_labels(columns);
-    out.println("{}", format_row(columns, header));
-    out.println("{}", muted(format_separator(columns)));
-
-    if (params.model.trees > 0) {
-      out.println("{}", format_row(columns, { "trees", std::to_string(params.model.trees) }));
-      out.println("{}", format_row(columns, { "variables/split", fmt::format("{} ({}%){}", params.model.n_vars, static_cast<int>(params.model.p_vars * 100), default_tag(params.model.used_default_vars)) }));
-      out.println("{}", format_row(columns, { "threads", fmt::format("{}{}", params.model.threads, default_tag(params.model.used_default_threads)) }));
-      out.println("{}", format_row(columns, { "seed", fmt::format("{}{}", params.model.seed, default_tag(params.model.used_default_seed)) }));
-    }
-
-    std::string method = params.model.lambda == 0 ? "LDA" : "PDA";
-    out.println("{}", format_row(columns, { "method", fmt::format("{} (lambda={})", method, params.model.lambda) }));
-
-    if (n_train > 0 && n_test > 0) {
-      out.println("{}", format_row(columns, { "training samples", fmt::format("{} ({}%)", n_train, static_cast<int>(params.evaluate.train_ratio * 100)) }));
-      out.println("{}", format_row(columns, { "test samples", fmt::format("{} ({}%)", n_test, static_cast<int>((1 - params.evaluate.train_ratio) * 100)) }));
-    }
-
-    out.dedent();
-    out.newline();
-  }
-
-  void print_data_summary(
-    io::Output&                     out,
-    const FeatureMatrix&            x,
-    const ResponseVector&           y,
-    const std::vector<std::string>& group_names) {
-    std::vector<Column> columns = {
-      { "Property", 18, Align::left },
-      { "Value",    30, Align::left },
-    };
-
-    out.indent();
-    out.println("{}", emphasis("Data Summary"));
-    out.newline();
-
-    Row header = header_labels(columns);
-    out.println("{}", format_row(columns, header));
-    out.println("{}", muted(format_separator(columns)));
-
-    out.println("{}", format_row(columns, { "observations", std::to_string(x.rows()) }));
-    out.println("{}", format_row(columns, { "features", std::to_string(x.cols()) }));
-
-    int n_groups = group_names.empty()
-      ? static_cast<int>((y.array().maxCoeff() + 1))
-      : static_cast<int>(group_names.size());
-    out.println("{}", format_row(columns, { "groups", std::to_string(n_groups) }));
-
-    if (!group_names.empty()) {
-      std::string names;
-
-      for (std::size_t i = 0; i < group_names.size(); ++i) {
-        if (i > 0) names += ", ";
-
-        names += group_names[i];
-      }
-
-      out.println("{}", format_row(columns, { "group names", names }));
-    }
-
-    out.dedent();
-    out.newline();
-  }
 
   DataPacket read_data(const CLIOptions& params, ppforest2::stats::RNG& rng) {
     if (!params.data_path.empty()) {
@@ -257,137 +164,38 @@ namespace {
     auto data = read_data(params, rng);
 
     init_params(params, data.x.cols());
-    print_configuration(out, params);
 
     FeatureMatrix x  = data.x;
     ResponseVector y = data.y;
 
-    print_data_summary(out, x, y, data.group_names);
-
     const auto train_result = train_model(x, y, params, rng);
 
-    out.indent();
-    out.print("Trained in {}ms", emphasis(std::to_string(train_result.duration)));
+    // Build the model JSON
+    json model_json = build_model_json(
+      *train_result.model, params, data.group_names,
+      static_cast<int>(x.rows()), static_cast<int>(x.cols()));
 
-    // Warn about degenerate trees
-    struct DegenerateCheckVisitor : Model::Visitor {
-      bool is_degenerate = false;
+    model_json["training_duration_ms"] = train_result.duration;
 
-      void visit(const Forest& forest) override {
-        is_degenerate = forest.degenerate;
-      }
-
-      void visit(const Tree& tree) override {
-        is_degenerate = tree.is_degenerate();
-      }
-    };
-
-    DegenerateCheckVisitor deg_check;
-    train_result.model->accept(deg_check);
-
-    if (!params.save_path.empty()) {
-      save_model(out, *train_result.model, params, params.save_path, data.group_names);
-    } else {
-      out.println("not saved {}", muted("(used --no-save)"));
-    }
-
-    out.newline();
-
-    if (deg_check.is_degenerate) {
-      out.println("{} Some splits could not separate groups (degenerate nodes).", emphasis(warning("Warning:")));
-      out.println("This can be caused by ill-conditioned variables in the input data,");
-      out.println("or by bootstrap samples that produce singular covariance matrices.");
-      out.println("Consider reviewing your data or adjusting --max-retries (currently {}).",
-      params.model.max_retries);
-      out.println("Degenerate nodes predict the group with the most observations.");
-      out.println("Degenerate trees are excluded from variable importance calculations.");
-      out.newline();
-    }
-
+    // Compute and add metrics to JSON
     if (!params.no_metrics) {
-      VariableImportance vi;
-      double oob_err = -1.0;
-
-      const int n_vars = static_cast<int>(x.cols());
-
-      vi.scale = stats::sd(x);
-      vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
-
-      struct MetricsVisitor : Model::Visitor {
-        const FeatureMatrix& x;
-        const ResponseVector& y;
-        const CLIOptions& params;
-        int n_vars;
-        VariableImportance& vi;
-        double& oob_err;
-        std::unique_ptr<ConfusionMatrix> oob_cm;
-
-        MetricsVisitor(const FeatureMatrix& x, const ResponseVector& y,
-        const CLIOptions& params, int n_vars,
-        VariableImportance & vi, double& oob_err) :
-          x(x), y(y), params(params), n_vars(n_vars), vi(vi), oob_err(oob_err) {
-        }
-
-        void visit(const Forest& forest) override {
-          ResponseVector oob_preds = forest.oob_predict(x);
-
-          std::vector<int> oob_rows;
-
-          for (int i = 0; i < oob_preds.size(); ++i) {
-            if (oob_preds(i) >= 0) {
-              oob_rows.push_back(i);
-            }
-          }
-
-          if (!oob_rows.empty()) {
-            ResponseVector preds_oob = oob_preds(oob_rows, Eigen::all).eval();
-            ResponseVector y_oob     = y(oob_rows, Eigen::all).eval();
-            oob_err = stats::error_rate(preds_oob, y_oob);
-            oob_cm  = std::make_unique<ConfusionMatrix>(preds_oob, y_oob);
-          }
-
-          vi.permuted             = variable_importance_permuted(forest, x, y, params.model.seed);
-          vi.projections          = variable_importance_projections(forest, n_vars, &vi.scale);
-          vi.weighted_projections = variable_importance_weighted_projections(forest, x, y, &vi.scale);
-        }
-
-        void visit(const Tree& tree) override {
-          vi.projections = variable_importance_projections(tree, n_vars, &vi.scale);
-        }
-      };
-
-      MetricsVisitor metrics_visitor(x, y, params, n_vars, vi, oob_err);
-      train_result.model->accept(metrics_visitor);
-
-      if (oob_err >= 0.0) {
-        out.println("{} {}", emphasis("OOB error:"), fmt::format("{:.2f}%", oob_err * 100));
-        out.newline();
-
-        if (metrics_visitor.oob_cm) {
-          print_confusion_matrix(out, *metrics_visitor.oob_cm, "OOB Confusion Matrix", data.group_names);
-        }
-      }
-
-      print_variable_importance(out, vi);
-      out.dedent();
-
-      if (!params.save_path.empty()) {
-        json saved = io::json::read_file(params.save_path);
-
-        if (oob_err >= 0.0) {
-          saved["oob_error"] = oob_err;
-        }
-
-        if (metrics_visitor.oob_cm) {
-          saved["oob_confusion_matrix"] = data.group_names.empty()
-            ? serialization::to_json(*metrics_visitor.oob_cm)
-            : serialization::to_json(*metrics_visitor.oob_cm, data.group_names);
-        }
-
-        saved["variable_importance"] = serialization::to_json(vi);
-        io::json::write_file(saved, params.save_path);
-      }
+      compute_metrics(model_json, *train_result.model, x, y,
+      data.group_names, params.model.seed);
     }
+
+    // Save model
+    if (!params.save_path.empty()) {
+      io::json::write_file(model_json, params.save_path);
+      model_json["save_path"] = params.save_path;
+    }
+
+    io::ConfigDisplayHints hints;
+    hints.vars_percent    = params.model.trees > 0 ? static_cast<int>(params.model.p_vars * 100) : -1;
+    hints.default_vars    = params.model.used_default_vars;
+    hints.default_threads = params.model.used_default_threads;
+    hints.default_seed    = params.model.used_default_seed;
+
+    io::print_summary(out, model_json, hints);
 
     return 0;
   }
