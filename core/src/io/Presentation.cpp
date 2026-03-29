@@ -5,6 +5,9 @@
  */
 #include "io/Presentation.hpp"
 #include "io/Table.hpp"
+#include "models/DRStrategy.hpp"
+#include "models/PPStrategy.hpp"
+#include "models/SRStrategy.hpp"
 #include "serialization/Json.hpp"
 
 #include <fmt/format.h>
@@ -268,6 +271,20 @@ namespace ppforest2::io {
     out.newline();
   }
 
+namespace {
+  std::string json_value_to_string(const nlohmann::json& v) {
+    if (v.is_string()) return v.get<std::string>();
+
+    if (v.is_number_integer()) return std::to_string(v.get<int>());
+
+    if (v.is_number_float()) return fmt::format("{}", v.get<double>());
+
+    if (v.is_boolean()) return v.get<bool>() ? "true" : "false";
+
+    return v.dump();
+  }
+}
+
   void print_configuration(
     Output&                   out,
     const nlohmann::json&     config,
@@ -276,10 +293,12 @@ namespace ppforest2::io {
     using namespace layout;
 
     auto dtag = [&](bool is_default) -> std::string {
-        return is_default ? " " + muted("(default)") : "";
-      };
+      return is_default ? " " + muted("(default)") : "";
+    };
 
-    std::string model_type = config.value("trees", 0) > 0
+    int size = config.value("size", 0);
+
+    std::string model_type = size > 0
       ? "Random Forest of Projection-Pursuit Oblique Decision Trees"
       : "Projection-Pursuit Oblique Decision Tree";
 
@@ -295,29 +314,47 @@ namespace ppforest2::io {
     out.println("{}", format_row(columns, header));
     out.println("{}", muted(format_separator(columns)));
 
-    int trees = config.value("trees", 0);
+    // Strategy sections: pp, dr, sr
+    // Resolve display names by instantiating strategies from JSON via the registry.
+    auto strategy_display_name = [](const std::string& key, const nlohmann::json& section) -> std::string {
+      try {
+        if (key == "pp") return pp::PPStrategy::from_json(section)->display_name();
 
-    if (trees > 0) {
-      out.println("{}", format_row(columns, { "trees", std::to_string(trees) }));
+        if (key == "dr") return dr::DRStrategy::from_json(section)->display_name();
 
-      if (config.contains("vars")) {
-        std::string vars_str = std::to_string(config["vars"].get<int>());
-
-        if (hints.vars_percent >= 0) {
-          vars_str += fmt::format(" ({}%)", hints.vars_percent);
-        }
-
-        vars_str += dtag(hints.default_vars);
-        out.println("{}", format_row(columns, { "variables/split", vars_str }));
+        if (key == "sr") return sr::SRStrategy::from_json(section)->display_name();
+      } catch (...) {
       }
+      return section.value("name", key);
+    };
 
-      out.println("{}", format_row(columns, { "threads", fmt::format("{}{}", config.value("threads", 1), dtag(hints.default_threads)) }));
-      out.println("{}", format_row(columns, { "seed", fmt::format("{}{}", config.value("seed", 0), dtag(hints.default_seed)) }));
+    for (const auto& key : { "pp", "dr", "sr" }) {
+      if (!config.contains(key)) continue;
+
+      const auto& section = config[key];
+      std::string display = strategy_display_name(key, section);
+      out.println("{}", format_row(columns, { std::string(key) + " method", display }));
+
+      for (const auto& [k, v] : section.items()) {
+        if (k == "name") continue;
+
+        std::string value = json_value_to_string(v);
+
+        if (k == "n_vars" && hints.vars_percent >= 0) value += fmt::format(" ({}%)", hints.vars_percent);
+
+        if (k == "n_vars" && hints.default_vars) value += dtag(true);
+
+        out.println("{}", format_row(columns, { k, value }));
+      }
     }
 
-    float lambda       = config.value("lambda", 0.5f);
-    std::string method = lambda == 0 ? "LDA" : "PDA";
-    out.println("{}", format_row(columns, { "method", fmt::format("{} (lambda={})", method, lambda) }));
+    // Top-level parameters
+    if (size > 0) {
+      out.println("{}", format_row(columns, { "trees", std::to_string(size) }));
+      out.println("{}", format_row(columns, { "threads", fmt::format("{}{}", config.value("threads", 1), dtag(hints.default_threads)) }));
+    }
+
+    out.println("{}", format_row(columns, { "seed", fmt::format("{}{}", config.value("seed", 0), dtag(hints.default_seed)) }));
 
     if (!hints.training_samples.empty()) {
       out.println("{}", format_row(columns, { "training samples", hints.training_samples }));
@@ -418,7 +455,7 @@ namespace ppforest2::io {
     }
 
     bool is_degenerate = model_data.contains("model")
-      && model_data["model"].value("degenerate", false);
+    && model_data["model"].value("degenerate", false);
 
     if (is_degenerate) {
       out.println("{} Some splits could not separate groups (degenerate nodes).", emphasis(warning("Warning:")));
@@ -431,7 +468,7 @@ namespace ppforest2::io {
 
     // Training confusion matrix
     if (model_data.contains("training_confusion_matrix")) {
-      auto cm = serialization::confusion_matrix_from_json(model_data["training_confusion_matrix"]);
+      auto cm = model_data["training_confusion_matrix"].get<stats::ConfusionMatrix>();
       out.println("{} {}", emphasis("Training Error:"), fmt::format("{:.2f}%", cm.error() * 100));
       print_confusion_matrix(out, cm, "Training Confusion Matrix", group_names);
     }
@@ -442,7 +479,7 @@ namespace ppforest2::io {
     }
 
     if (model_data.contains("oob_confusion_matrix")) {
-      auto cm = serialization::confusion_matrix_from_json(model_data["oob_confusion_matrix"]);
+      auto cm = model_data["oob_confusion_matrix"].get<stats::ConfusionMatrix>();
       print_confusion_matrix(out, cm, "OOB Confusion Matrix", group_names);
     } else {
       out.newline();
@@ -450,7 +487,7 @@ namespace ppforest2::io {
 
     // Variable importance
     if (model_data.contains("variable_importance")) {
-      auto vi = serialization::variable_importance_from_json(model_data["variable_importance"]);
+      auto vi = model_data["variable_importance"].get<VariableImportance>();
       print_variable_importance(out, vi, feature_names);
     }
   }

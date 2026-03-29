@@ -19,7 +19,6 @@
 #include <sstream>
 #include <cmath>
 #include <algorithm>
-#include <functional>
 #include <set>
 
 #ifdef _OPENMP
@@ -33,176 +32,182 @@
 namespace ppforest2::cli {
 namespace {
   /**
-   * @brief JSON config file adapter for CLI11.
+   * @brief Check whether a CLI option was explicitly set on the command line.
    *
-   * Reads and writes CLI11 options from/to JSON files.
-   * Supports broadcasting top-level keys to all subcommands
-   * listed in `subcommand_names_`.
+   * Searches the parsed subcommand first, then the global app.
    */
-  class ConfigJSON : public CLI::Config {
-    public:
-      ConfigJSON(std::vector<std::string> subcommand_names = {})
-        : subcommand_names_(std::move(subcommand_names)) {
-      }
+  bool cli_set(const std::string& flag, CLI::App * sub, CLI::App& app) {
+    if (auto *opt = sub->get_option_no_throw("--" + flag))
+      if (opt->count() > 0) return true;
 
-      std::string to_config(const CLI::App * app, bool default_also, bool, std::string) const override {
-        nlohmann::json j;
+    if (auto *opt = app.get_option_no_throw("--" + flag))
+      if (opt->count() > 0) return true;
 
-        for (const CLI::Option *opt : app->get_options({})) {
-          if (!opt->get_lnames().empty() && opt->get_configurable()) {
-            std::string name = opt->get_lnames()[0];
-
-            if (opt->get_type_size() != 0) {
-              if (opt->count() == 1) j[name] = opt->results().at(0);
-              else if (opt->count() > 1) j[name] = opt->results();
-              else if (default_also && !opt->get_default_str().empty()) j[name] = opt->get_default_str();
-            } else if (opt->count() == 1) {
-              j[name] = true;
-            } else if (opt->count() > 1) {
-              j[name] = opt->count();
-            } else if (opt->count() == 0 && default_also) {
-              j[name] = false;
-            }
-          }
-        }
-
-        for (const CLI::App *subcom : app->get_subcommands({})) {
-          j[subcom->get_name()] = nlohmann::json(to_config(subcom, default_also, false, ""));
-        }
-
-        return j.dump(4);
-      }
-
-      std::vector<CLI::ConfigItem> from_config(std::istream &input) const override {
-        nlohmann::json j;
-        input >> j;
-        return _from_config(j);
-      }
-
-    private:
-      std::vector<std::string> subcommand_names_;
-
-      std::vector<CLI::ConfigItem>
-      _from_config(nlohmann::json j, std::string name = "", std::vector<std::string> prefix = {}) const {
-        std::vector<CLI::ConfigItem> results;
-
-        if (j.is_object()) {
-          for (auto item = j.begin(); item != j.end(); ++item) {
-            auto copy_prefix = prefix;
-
-            if (!name.empty()) copy_prefix.push_back(name);
-
-            // Normalize: accept both snake_case and kebab-case keys
-            std::string key = item.key();
-            std::replace(key.begin(), key.end(), '_', '-');
-
-            auto sub_results = _from_config(*item, key, copy_prefix);
-            results.insert(results.end(), sub_results.begin(), sub_results.end());
-          }
-        } else if (!name.empty()) {
-          if (prefix.empty() && !subcommand_names_.empty()) {
-            for (const auto& sub_name : subcommand_names_) {
-              results.emplace_back();
-              CLI::ConfigItem &res = results.back();
-              res.name    = name;
-              res.parents = { sub_name };
-              _set_inputs(res, j);
-            }
-          } else {
-            results.emplace_back();
-            CLI::ConfigItem &res = results.back();
-            res.name    = name;
-            res.parents = prefix;
-            _set_inputs(res, j);
-          }
-        }
-
-        return results;
-      }
-
-      void _set_inputs(CLI::ConfigItem &res, const nlohmann::json &j) const {
-        if (j.is_boolean()) {
-          res.inputs = { j.get<bool>() ? "true" : "false" };
-        } else if (j.is_number()) {
-          std::stringstream ss;
-          ss << j.get<double>();
-          res.inputs = { ss.str() };
-        } else if (j.is_string()) {
-          res.inputs = { j.get<std::string>() };
-        } else if (j.is_array()) {
-          for (const auto &val : j) {
-            res.inputs.push_back(val.get<std::string>());
-          }
-        } else {
-          throw CLI::ConversionError("Failed to convert " + res.name);
-        }
-      }
-  };
+    return false;
+  }
 
   /**
-   * @brief Warn about unrecognized keys in a JSON config file.
+   * @brief Parse a CLI strategy string into a JSON object.
    *
-   * CLI11's built-in config_extras_mode doesn't work with the
-   * broadcast pattern used by ConfigJSON (top-level keys forwarded
-   * to all subcommands), so we validate keys manually by walking
-   * the config JSON and checking against registered option names.
+   * Converts e.g. `"pda:lambda=0.3"` to `{"name": "pda", "lambda": 0.3}`.
+   * Values are auto-detected as integer, float, or string.
    */
-  void warn_unknown_config_keys(io::Output& out, const CLI::App& app) {
-    auto *config_opt = app.get_config_ptr();
-
-    if (!config_opt || config_opt->count() == 0) return;
-
-    std::string config_path = config_opt->results().at(0);
-    std::ifstream file(config_path);
-
-    if (!file.is_open()) return;
-
+  nlohmann::json strategy_string_to_json(const std::string& input) {
     nlohmann::json j;
 
+    auto colon = input.find(':');
+    j["name"] = (colon == std::string::npos) ? input : input.substr(0, colon);
+
+    if (colon == std::string::npos) return j;
+
+    std::string rest = input.substr(colon + 1);
+    std::istringstream ss(rest);
+    std::string token;
+
+    while (std::getline(ss, token, ',')) {
+      auto eq = token.find('=');
+
+      if (eq == std::string::npos) {
+        throw std::runtime_error(
+          "Invalid parameter (expected key=value): " + token);
+      }
+
+      std::string key = token.substr(0, eq);
+      std::string val = token.substr(eq + 1);
+
+      // Apply CLI → JSON key aliases
+      if (key == "vars") key = "n_vars";
+
+      // Auto-detect value type: integer → float → string
+      try {
+        size_t pos = 0;
+        int ival   = std::stoi(val, &pos);
+
+        if (pos == val.size()) {
+          j[key] = ival;
+          continue;
+        }
+      } catch (...) {
+      }
+
+      try {
+        size_t pos  = 0;
+        double dval = std::stod(val, &pos);
+
+        if (pos == val.size()) {
+          j[key] = dval;
+          continue;
+        }
+      } catch (...) {
+      }
+
+      j[key] = val;
+    }
+
+    return j;
+  }
+
+  /**
+   * @brief Load a JSON config file and apply values to CLI options.
+   *
+   * Config values are only applied where the CLI did not set an explicit
+   * value.  Strategy objects (pp, dr, sr) flow through as JSON directly
+   * without flattening to CLI strings.
+   */
+  void apply_config(CLIOptions & params, CLI::App& app) {
+    std::ifstream file(params.config_path);
+
+    if (!file.is_open()) {
+      fmt::print(stderr, "Error: Cannot open config file: {}\n", params.config_path);
+      std::exit(1);
+    }
+
+    nlohmann::json config;
     try {
-      file >> j;
-    } catch (...) {
-      return;
+      file >> config;
+    } catch (const std::exception& e) {
+      fmt::print(stderr, "Error: Invalid JSON in config file: {}\n", e.what());
+      std::exit(1);
     }
 
-    if (!j.is_object()) return;
+    if (!config.is_object()) return;
 
-    // Collect all known option names and subcommand names
-    std::set<std::string> known;
-
-    for (const CLI::Option *opt : app.get_options({})) {
-      for (const auto& name : opt->get_lnames()) {
-        known.insert(name);
+    // Find the parsed subcommand
+    CLI::App *sub = nullptr;
+    for (auto *s : app.get_subcommands()) {
+      if (s->parsed()) {
+        sub = s; break;
       }
     }
 
-    for (const CLI::App *sub : app.get_subcommands({})) {
-      known.insert(sub->get_name());
+    if (!sub) return;
 
-      for (const CLI::Option *opt : sub->get_options({})) {
-        for (const auto& name : opt->get_lnames()) {
-          known.insert(name);
-        }
-      }
-    }
+    // Helper: apply a scalar config value if the CLI didn't set it.
+    auto apply = [&](const std::string& flag, const std::string& key, auto& field) {
+      if (cli_set(flag, sub, app)) return;
 
-    // Walk config JSON and warn about unknown keys
-    std::function<void(const nlohmann::json&, const std::string&)> check;
-    check = [&](const nlohmann::json& obj, const std::string& context) {
-      for (auto it = obj.begin(); it != obj.end(); ++it) {
-        std::string key = it.key();
-        std::replace(key.begin(), key.end(), '_', '-');
+      if (!config.contains(key)) return;
 
-        if (known.find(key) == known.end()) {
-          std::string full_key = context.empty() ? it.key() : context + "." + it.key();
-          out.println("Warning: Unknown config key '{}' — ignoring", full_key);
-        } else if (it->is_object()) {
-          check(*it, key);
-        }
-      }
+      using T = std::decay_t<decltype(field)>;
+      field   = config[key].get<T>();
     };
 
-    check(j, "");
+    // Model params
+    apply("size",        "size",        params.model.size);
+    apply("lambda",      "lambda",      params.model.lambda);
+    apply("seed",        "seed",        params.model.seed);
+    apply("threads",     "threads",     params.model.threads);
+    apply("max-retries", "max_retries", params.model.max_retries);
+
+    // Vars (string or number in config)
+    if (!cli_set("vars", sub, app) && config.contains("vars")) {
+      auto& v = config["vars"];
+
+      if (v.is_string()) params.model.vars_input = v.get<std::string>();
+      else if (v.is_number_integer()) params.model.vars_input = std::to_string(v.get<int>());
+      else if (v.is_number_float()) params.model.vars_input = fmt::format("{:g}", v.get<double>());
+    }
+
+    // Data path
+    apply("data", "data", params.data_path);
+
+    // Evaluate params
+    apply("train-ratio", "train_ratio", params.evaluate.train_ratio);
+    apply("iterations",  "iterations",  params.evaluate.iterations);
+
+    // Strategy objects: store JSON directly if CLI didn't provide
+    // explicit strategy flags or shortcut params for that strategy.
+    bool cli_pp = cli_set("pp", sub, app) || cli_set("lambda", sub, app);
+    bool cli_dr = cli_set("dr", sub, app) || cli_set("vars", sub, app);
+    bool cli_sr = cli_set("sr", sub, app);
+
+    if (!cli_pp && config.contains("pp")) {
+      if (config["pp"].is_object()) params.model.pp_config = config["pp"];
+      else if (config["pp"].is_string()) params.model.pp_input = config["pp"].get<std::string>();
+    }
+
+    if (!cli_dr && config.contains("dr")) {
+      if (config["dr"].is_object()) params.model.dr_config = config["dr"];
+      else if (config["dr"].is_string()) params.model.dr_input = config["dr"].get<std::string>();
+    }
+
+    if (!cli_sr && config.contains("sr")) {
+      if (config["sr"].is_object()) params.model.sr_config = config["sr"];
+      else if (config["sr"].is_string()) params.model.sr_input = config["sr"].get<std::string>();
+    }
+
+    // Warn about unknown keys
+    io::Output out(params.quiet);
+    static const std::set<std::string> known = {
+      "size", "lambda", "seed", "threads", "max_retries", "vars",
+      "pp", "dr", "sr", "data", "train_ratio", "iterations",
+    };
+
+    for (auto it = config.begin(); it != config.end(); ++it) {
+      if (known.find(it.key()) == known.end()) {
+        out.println("Warning: Unknown config key '{}' — ignoring", it.key());
+      }
+    }
   }
 
   void post_parse(CLIOptions & params, CLI::App& app) {
@@ -233,6 +238,107 @@ namespace {
     // Evaluate has no --save
     if (params.subcommand == Subcommand::evaluate) {
       params.save_path.clear();
+    }
+
+    // Apply config file (before interpreting strategy inputs)
+    if (!params.config_path.empty()) {
+      apply_config(params, app);
+    }
+
+    // Populate *_config from *_input strings so downstream code
+    // only needs to check one field per strategy.
+    auto parse_strategy_input = [](const std::string& input, const std::string& flag) {
+      try {
+        return strategy_string_to_json(input);
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "Error: Invalid --{} strategy: {}\n", flag, e.what());
+        std::exit(1);
+      }
+    };
+
+    if (!params.model.pp_input.empty()) {
+      params.model.pp_config = parse_strategy_input(params.model.pp_input, "pp");
+    }
+
+    if (!params.model.dr_input.empty()) {
+      params.model.dr_config = parse_strategy_input(params.model.dr_input, "dr");
+    }
+
+    if (!params.model.sr_input.empty()) {
+      params.model.sr_config = parse_strategy_input(params.model.sr_input, "sr");
+    }
+
+    // Validate strategy configs (from CLI strings or config file objects)
+    if (!params.model.pp_config.is_null()) {
+      try {
+        pp::PPStrategy::from_json(params.model.pp_config);
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "Error: Invalid pp strategy: {}\n", e.what());
+        std::exit(1);
+      }
+    }
+
+    if (!params.model.dr_config.is_null()) {
+      try {
+        auto dr_json = params.model.dr_config;
+
+        if (dr_json.contains("n_vars")) {
+          // n_vars can be an integer (count) or float (proportion).
+          // Pass through vars_input for resolution in init_params.
+          if (dr_json["n_vars"].is_number_integer()) {
+            params.model.vars_input = std::to_string(dr_json["n_vars"].get<int>());
+          } else {
+            params.model.vars_input = fmt::format("{:g}", dr_json["n_vars"].get<double>());
+          }
+
+          // Validate with from_json. For proportions (float), substitute
+          // a dummy integer so from_json can validate the strategy name.
+          if (!dr_json["n_vars"].is_number_integer()) {
+            dr_json["n_vars"] = 1;
+          }
+
+          dr::DRStrategy::from_json(dr_json);
+        } else {
+          // No n_vars (e.g. noop): validate and set sentinel
+          dr::DRStrategy::from_json(dr_json);
+          params.model.n_vars = 0;
+          params.model.p_vars = -1;
+        }
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "Error: Invalid dr strategy: {}\n", e.what());
+        std::exit(1);
+      }
+    }
+
+    if (!params.model.sr_config.is_null()) {
+      try {
+        sr::SRStrategy::from_json(params.model.sr_config);
+      } catch (const std::exception& e) {
+        fmt::print(stderr, "Error: Invalid sr strategy: {}\n", e.what());
+        std::exit(1);
+      }
+    }
+
+    // Validate scalar ranges (these may have come from config file,
+    // bypassing CLI11's range checks)
+    if (params.model.lambda != -1 && (params.model.lambda < 0 || params.model.lambda > 1)) {
+      fmt::print(stderr, "Error: lambda must be between 0 and 1\n");
+      std::exit(1);
+    }
+
+    if (params.model.size < 0) {
+      fmt::print(stderr, "Error: size must be non-negative\n");
+      std::exit(1);
+    }
+
+    if (params.model.threads != -1 && params.model.threads <= 0) {
+      fmt::print(stderr, "Error: threads must be positive\n");
+      std::exit(1);
+    }
+
+    if (params.model.max_retries < 0) {
+      fmt::print(stderr, "Error: max_retries must be non-negative\n");
+      std::exit(1);
     }
 
     // Interpret --vars input
@@ -290,13 +396,12 @@ namespace {
     }
 
     io::Output out(params.quiet);
-    warn_unknown_config_keys(out, app);
     warn_unused_params(out, params);
   }
-}
+} // anonymous namespace
 
   void warn_unused_params(io::Output& out, const CLIOptions& params) {
-    if (params.model.trees == 0) {
+    if (params.model.size == 0) {
       bool has_warnings = false;
 
       if (params.model.threads != -1) {
@@ -340,7 +445,7 @@ namespace {
       params.model.used_default_threads = true;
     }
 
-    if (total_vars > 0 && params.model.trees > 0) {
+    if (total_vars > 0 && params.model.size > 0) {
       if (params.model.n_vars != -1) {
         params.model.p_vars = static_cast<float>(params.model.n_vars) / total_vars;
       } else if (params.model.p_vars != -1) {
@@ -350,6 +455,23 @@ namespace {
         params.model.n_vars            = std::round(total_vars * params.model.p_vars);
         params.model.used_default_vars = true;
       }
+    }
+
+    // Populate strategy config defaults (now that lambda/n_vars are resolved)
+    if (params.model.pp_config.is_null()) {
+      params.model.pp_config = { { "name", "pda" }, { "lambda", params.model.lambda } };
+    }
+
+    if (params.model.dr_config.is_null()) {
+      if (params.model.size > 0 && params.model.n_vars > 0) {
+        params.model.dr_config = { { "name", "uniform" }, { "n_vars", params.model.n_vars } };
+      } else {
+        params.model.dr_config = { { "name", "noop" } };
+      }
+    }
+
+    if (params.model.sr_config.is_null()) {
+      params.model.sr_config = { { "name", "mean_of_means" } };
     }
   }
 
@@ -364,8 +486,8 @@ namespace {
     // Global options
     app.add_flag("--quiet,-q", params.quiet, "Suppress all terminal output");
     app.add_flag("--no-color", params.no_color, "Disable colored output");
-    app.config_formatter(std::make_shared<ConfigJSON>(std::vector<std::string>{ "train", "predict", "evaluate", "benchmark", "summarize" }));
-    app.set_config("--config", "", "Read parameters from JSON config file");
+    app.add_option("--config", params.config_path, "Read parameters from JSON config file")
+    ->check(CLI::ExistingFile);
 
     // Subcommands
     setup_train(app, params);

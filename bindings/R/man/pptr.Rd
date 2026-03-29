@@ -4,7 +4,16 @@
 \alias{pptr}
 \title{Trains a Project-Pursuit oblique decision tree.}
 \usage{
-pptr(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0, seed = NULL)
+pptr(
+  formula = NULL,
+  data = NULL,
+  x = NULL,
+  y = NULL,
+  lambda = 0,
+  seed = NULL,
+  pp = NULL,
+  sr = NULL
+)
 }
 \arguments{
 \item{formula}{A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.}
@@ -15,9 +24,13 @@ pptr(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0, seed = NULL)
 
 \item{y}{A matrix containing the labels for each observation.}
 
-\item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).}
+\item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA). Cannot be used together with \code{pp}.}
 
 \item{seed}{An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly.}
+
+\item{pp}{A projection pursuit strategy object created by \code{\link{pp_pda}}. Cannot be used together with \code{lambda}.}
+
+\item{sr}{A split rule strategy object created by \code{\link{sr_mean_of_means}} (default).}
 }
 \value{
 A pptr model trained on \code{x} and \code{y}.
@@ -48,5 +61,5 @@ pptr(Type ~ ., data = crabs, lambda = 0.5)
 
 }
 \seealso{
-\code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{vignette("introduction")} for a tutorial
+\code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{sr_mean_of_means}}, \code{vignette("introduction")} for a tutorial
 }

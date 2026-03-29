@@ -6,13 +6,12 @@
  * logic — statistics, export formats, analysis — by implementing a
  * visitor, without modifying the model types.
  *
- * Three visitor interfaces are available:
+ * Two visitor interfaces are available:
  *
  * | Interface            | Dispatches over                   | Use when |
  * |----------------------|-----------------------------------|----------|
  * | TreeNode::Visitor      | TreeCondition (split), TreeResponse (leaf) | You need to walk the tree structure |
  * | Model::Visitor         | Tree, Forest                      | You need to handle trees and forests differently |
- * | TrainingSpec::Visitor  | TrainingSpecPDA, TrainingSpecUPDA | You need type-safe access to spec parameters |
  *
  * @section vis_dispatch How double dispatch works
  *
@@ -192,21 +191,6 @@
  *   // visitor.labels contains all group labels in the model
  * @endcode
  *
- * @section vis_specvisitor Implementing a TrainingSpec::Visitor
- *
- * TrainingSpec::Visitor dispatches over concrete TrainingSpec subclasses,
- * giving type-safe access to their parameters (e.g. `lambda`, `n_vars`).
- *
- * @code
- *   struct TrainingSpec::Visitor {
- *     virtual void visit(const TrainingSpecPDA& spec) = 0;
- *     virtual void visit(const TrainingSpecUPDA& spec) = 0;
- *   };
- * @endcode
- *
- * If you add a new TrainingSpec subclass, add a corresponding
- * `visit()` overload to TrainingSpec::Visitor.
- *
  * @section vis_existing Existing visitors as reference
  *
  * | Visitor            | File                          | Purpose |
@@ -236,6 +220,6 @@
  *   walk the full tree.  Omit these calls if you only need to inspect
  *   the root.
  *
- * @see TreeNode::Visitor, Model::Visitor, TrainingSpec::Visitor,
+ * @see TreeNode::Visitor, Model::Visitor,
  *      VIVisitor, TreeCondition, TreeResponse
  */

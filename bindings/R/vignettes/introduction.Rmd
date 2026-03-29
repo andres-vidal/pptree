@@ -25,7 +25,7 @@ Train a projection-pursuit tree on the iris dataset:
 ```{r tree}
 library(ppforest2)
 
-tree <- pptr(Type ~ ., data = iris, seed = 42)
+tree <- pptr(Type ~ ., data = iris, seed = 0)
 tree
 ```
 
@@ -47,7 +47,7 @@ table(predicted = preds, actual = iris$Type)
 Train a forest of 100 trees, each considering 2 randomly chosen variables at each split:
 
 ```{r forest}
-forest <- pprf(Type ~ ., data = iris, size = 100, n_vars = 2, seed = 42)
+forest <- pprf(Type ~ ., data = iris, size = 100, n_vars = 2, seed = 0)
 summary(forest)
 ```
 
@@ -105,8 +105,41 @@ plot(forest, type = "structure", tree_index = 1)
 Set `lambda > 0` to use Penalized Discriminant Analysis instead of LDA. This can help when features are highly correlated:
 
 ```{r pda}
-tree_pda <- pptr(Type ~ ., data = iris, lambda = 0.5, seed = 42)
+tree_pda <- pptr(Type ~ ., data = iris, lambda = 0.5, seed = 0)
 summary(tree_pda)
+```
+
+## Explicit strategy selection
+
+For more control, you can pass strategy objects directly instead of using the shortcut parameters (`lambda`, `n_vars`, `p_vars`). This is equivalent but makes the strategy choice explicit:
+
+```{r strategies}
+# These two calls produce identical results:
+forest_shortcut <- pprf(Type ~ ., data = iris, size = 10, lambda = 0.5, n_vars = 2, seed = 0)
+
+forest_explicit <- pprf(Type ~ ., data = iris, size = 10, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2), seed = )
+
+all.equal(predict(forest_shortcut, iris), predict(forest_explicit, iris))
+```
+
+Available strategy constructors:
+
+- `pp_pda(lambda)` — PDA projection pursuit (`lambda = 0` for LDA)
+- `dr_uniform(n_vars)` or `dr_uniform(p_vars)` — random variable selection
+- `dr_noop()` — use all variables (default for single trees)
+- `sr_mean_of_means()` — midpoint split rule (default)
+
+Strategy objects can also be passed as engine arguments in parsnip:
+
+```{r strategies-parsnip, eval = requireNamespace("parsnip", quietly = TRUE)}
+library(parsnip)
+
+spec <- pp_rand_forest(trees = 10) |>
+  set_engine("ppforest2", pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2)) |>
+  set_mode("classification")
+
+fit <- spec |> fit(Type ~ ., data = iris)
+predict(fit, iris[1:5, ])
 ```
 
 ## Tidymodels integration

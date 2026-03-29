@@ -9,13 +9,13 @@ skip_if_not_installed("ggplot2")
 
 describe("plot.pptr structure", {
   it("returns a ggplot object for type = 'structure'", {
-    model <- pptr(Type ~ ., data = iris, seed = 42L)
+    model <- pptr(Type ~ ., data = iris, seed = 0)
     p <- plot(model, type = "structure")
     expect_s3_class(p, "ggplot")
   })
 
   it("tree plot uses C++ node data with histograms", {
-    model <- pptr(Type ~ ., data = iris, seed = 42L)
+    model <- pptr(Type ~ ., data = iris, seed = 0)
     nodes <- ppforest2:::ppforest2_tree_node_data(model, model$x, model$y)
     expect_true(length(nodes) > 0)
     expect_false(nodes[[1]]$is_leaf)
@@ -24,14 +24,14 @@ describe("plot.pptr structure", {
   })
 
   it("default plot renders mosaic without error", {
-    model <- pptr(Type ~ ., data = iris, seed = 42L)
+    model <- pptr(Type ~ ., data = iris, seed = 0)
     expect_no_error(plot(model))
   })
 })
 
 describe("plot.pprf structure", {
   it("returns a ggplot object for type = 'structure'", {
-    model <- pprf(Type ~ ., data = iris, size = 5, seed = 42L, n_threads = 1)
+    model <- pprf(Type ~ ., data = iris, size = 5, seed = 0, threads = 1)
     p <- plot(model, type = "structure", tree_index = 1)
     expect_s3_class(p, "ggplot")
   })

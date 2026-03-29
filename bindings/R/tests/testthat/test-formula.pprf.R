@@ -7,7 +7,7 @@ library(ppforest2)
 
 describe("formula.pprf", {
   it("on an object created with the formula interface, returns the formula used to create the model", {
-    model <- pprf(Type ~ ., data = iris, n_threads = 1)
+    model <- pprf(Type ~ ., data = iris, threads = 1)
     expect_equal(
       formula(model),
       Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 1
@@ -15,7 +15,7 @@ describe("formula.pprf", {
   })
 
   it("on an object created with the matrix interface, returns NULL", {
-    model <- pprf(x = iris[, 1:4], y = iris[, 5], n_threads = 1)
+    model <- pprf(x = iris[, 1:4], y = iris[, 5], threads = 1)
     expect_equal(formula(model), NULL)
   })
 })

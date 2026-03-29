@@ -193,17 +193,9 @@ namespace {
     return { model_stats };
   }
 
-  json build_export_config(const CLIOptions& params) {
+  json build_export_config(const CLIOptions& params, const TrainingSpec& spec) {
     json config;
-
-    config["trees"]   = params.model.trees;
-    config["lambda"]  = params.model.lambda;
-    config["seed"]    = params.model.seed;
-    config["threads"] = params.model.threads;
-
-    if (params.model.trees > 0 && params.model.n_vars > 0) {
-      config["vars"] = params.model.n_vars;
-    }
+    spec.to_json(config);
 
     config["train-ratio"] = params.evaluate.train_ratio;
 
@@ -222,13 +214,14 @@ namespace {
   void export_experiment(
     io::Output &              out,
     const CLIOptions&        params,
+    const TrainingSpec&      spec,
     const DataPacket&        full_data,
     const EvaluateResult&    eval_result) {
     std::string dir = params.evaluate.export_path;
 
     std::filesystem::create_directories(dir);
 
-    json config = build_export_config(params);
+    json config = build_export_config(params, spec);
     io::json::write_file(config, dir + "/config.json");
 
     io::csv::write(full_data, dir + "/data.csv");
@@ -262,19 +255,20 @@ namespace {
 
     io::Output out(params.quiet);
 
+    auto dr = (params.model.size > 0 && params.model.n_vars > 0)
+      ? dr::uniform(params.model.n_vars)
+      : dr::noop();
+
+    auto spec = TrainingSpec::make(
+      pp::pda(params.model.lambda), std::move(dr), sr::mean_of_means(),
+      params.model.size, params.model.seed, params.model.threads, params.model.max_retries);
+
     {
       json config;
-      config["trees"]   = params.model.trees;
-      config["lambda"]  = params.model.lambda;
-      config["seed"]    = params.model.seed;
-      config["threads"] = params.model.threads;
-
-      if (params.model.trees > 0 && params.model.n_vars > 0) {
-        config["vars"] = params.model.n_vars;
-      }
+      spec->to_json(config);
 
       io::ConfigDisplayHints hints;
-      hints.vars_percent     = params.model.trees > 0 ? static_cast<int>(params.model.p_vars * 100) : -1;
+      hints.vars_percent     = params.model.size > 0 ? static_cast<int>(params.model.p_vars * 100) : -1;
       hints.default_vars     = params.model.used_default_vars;
       hints.default_threads  = params.model.used_default_threads;
       hints.default_seed     = params.model.used_default_seed;
@@ -311,7 +305,7 @@ namespace {
 
     // Export experiment bundle if requested
     if (!params.evaluate.export_path.empty()) {
-      export_experiment(out, params, full_data, eval_result);
+      export_experiment(out, params, *spec, full_data, eval_result);
     }
 
     return 0;

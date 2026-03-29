@@ -74,9 +74,9 @@ describe("pptr matrix interface", {
 
 describe("pptr reproducibility", {
   it("produces identical predictions with set.seed", {
-    set.seed(42)
+    set.seed(0)
     model1 <- pptr(Type ~ ., data = iris)
-    set.seed(42)
+    set.seed(0)
     model2 <- pptr(Type ~ ., data = iris)
     expect_equal(predict(model1, iris), predict(model2, iris))
   })
@@ -88,8 +88,8 @@ describe("pptr reproducibility", {
   })
 
   it("stores the explicit seed in the model", {
-    model <- pptr(Type ~ ., data = iris, seed = 42L)
-    expect_equal(model$seed, 42L)
+    model <- pptr(Type ~ ., data = iris, seed = 0)
+    expect_equal(model$seed, 0)
   })
 
   it("stores the generated seed when seed is NULL", {
@@ -123,16 +123,59 @@ describe("pptr input validation", {
 describe("pptr training spec", {
   it("preserves the lambda parameter in the returned model", {
     model <- pptr(Type ~ ., data = iris, lambda = 0.5)
-    expect_equal(model$training_spec$lambda, 0.5)
+    expect_equal(model$training_spec$pp$lambda, 0.5)
   })
 
   it("the lambda parameter is 0 by default", {
     model <- pptr(Type ~ ., data = iris)
-    expect_equal(model$training_spec$lambda, 0)
+    expect_equal(model$training_spec$pp$lambda, 0)
   })
 
-  it("the training strategy is pda", {
+  it("the pp strategy is pda", {
     model <- pptr(Type ~ ., data = iris)
-    expect_equal(model$training_spec$strategy, "pda")
+    expect_equal(model$training_spec$pp$name, "pda")
+  })
+
+  it("the dr strategy is noop", {
+    model <- pptr(Type ~ ., data = iris)
+    expect_equal(model$training_spec$dr$name, "noop")
+  })
+})
+
+describe("pptr with strategy objects", {
+  it("trains with pp = pp_pda()", {
+    model <- pptr(Type ~ ., data = iris, pp = pp_pda(0.5), seed = 0)
+    expect_s3_class(model, "pptr")
+    expect_equal(model$training_spec$pp$lambda, 0.5)
+  })
+
+  it("trains with pp = pp_pda(0) (LDA)", {
+    model <- pptr(Type ~ ., data = iris, pp = pp_pda(0), seed = 0)
+    expect_s3_class(model, "pptr")
+    expect_equal(model$training_spec$pp$lambda, 0)
+  })
+
+  it("produces same results as lambda shortcut", {
+    model_shortcut <- pptr(Type ~ ., data = iris, lambda = 0.5, seed = 0)
+    model_strategy <- pptr(Type ~ ., data = iris, pp = pp_pda(0.5), seed = 0)
+    expect_equal(predict(model_shortcut, iris), predict(model_strategy, iris))
+  })
+
+  it("errors when mixing pp and lambda", {
+    expect_error(
+      pptr(Type ~ ., data = iris, pp = pp_pda(0.5), lambda = 0.3),
+      "Cannot use `pp` together with `lambda`")
+  })
+
+  it("rejects non-pp_strategy objects", {
+    expect_error(
+      pptr(Type ~ ., data = iris, pp = list(name = "pda", lambda = 0.5)),
+      "pp_strategy")
+  })
+
+  it("rejects non-sr_strategy objects", {
+    expect_error(
+      pptr(Type ~ ., data = iris, sr = list(name = "mean_of_means")),
+      "sr_strategy")
   })
 })

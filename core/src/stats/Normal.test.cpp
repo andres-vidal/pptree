@@ -111,7 +111,7 @@ static double phi(double x) {
  * the denormalize() step (mean + std_dev * z) is correct.
  */
 TEST(Normal, MeanConvergesToTheory) {
-  RNG rng(42);
+  RNG rng(0);
   Normal normal(5.0f, 2.0f);
 
   constexpr int N     = 100000;
@@ -137,7 +137,7 @@ TEST(Normal, MeanConvergesToTheory) {
  * denominator) is an unbiased estimator of σ².
  */
 TEST(Normal, VarianceConvergesToTheory) {
-  RNG rng(42);
+  RNG rng(0);
   Normal normal(0.0f, 3.0f);
 
   constexpr int N           = 100000;
@@ -170,7 +170,7 @@ TEST(Normal, VarianceConvergesToTheory) {
  * For a symmetric distribution, γ₁ = 0.
  */
 TEST(Normal, SkewnessNearZero) {
-  RNG rng(42);
+  RNG rng(0);
   Normal normal(0.0f, 1.0f);
 
   constexpr int N = 100000;
@@ -208,7 +208,7 @@ TEST(Normal, SkewnessNearZero) {
  * lowering the kurtosis).
  */
 TEST(Normal, KurtosisNearThree) {
-  RNG rng(42);
+  RNG rng(0);
   Normal normal(0.0f, 1.0f);
 
   constexpr int N = 100000;
@@ -274,7 +274,7 @@ TEST(Normal, KurtosisNearThree) {
  * Tests the full pipeline: gen_unif01() → Box-Muller → caching → output.
  */
 TEST(Normal, KolmogorovSmirnovStandardNormal) {
-  RNG rng(42);
+  RNG rng(0);
   Normal normal(0.0f, 1.0f);
 
   constexpr int N = 100000;
@@ -352,7 +352,7 @@ TEST(Normal, KolmogorovSmirnovShiftedNormal) {
 // ---------------------------------------------------------------------------
 
 TEST(Normal, Lag1AutocorrelationNearZero) {
-  RNG rng(42);
+  RNG rng(0);
   Normal normal(0.0f, 1.0f);
 
   constexpr int N = 100000;
@@ -390,7 +390,7 @@ TEST(Normal, Lag1AutocorrelationNearZero) {
 // ---------------------------------------------------------------------------
 
 TEST(Normal, BatchMeanConverges) {
-  RNG rng(42);
+  RNG rng(0);
   Normal normal(0.0f, 1.0f);
 
   auto samples = normal(100000, rng);
@@ -408,7 +408,7 @@ TEST(Normal, BatchMeanConverges) {
 }
 
 TEST(Normal, BatchSizeIsCorrect) {
-  RNG rng(42);
+  RNG rng(0);
   Normal normal(0.0f, 1.0f);
 
   auto samples = normal(500, rng);

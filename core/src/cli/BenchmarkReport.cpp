@@ -98,7 +98,7 @@ namespace {
       { "n",          6, Align::right },
       { "p",          4, Align::right },
       { "g",          3, Align::right },
-      { "trees",      6, Align::right },
+      { "size",       6, Align::right },
       { "vars",       5, Align::right },
       { "split",      5, Align::right },
       { "iters",      5, Align::right },
@@ -133,7 +133,7 @@ namespace {
     // Data rows
     for (const auto& r : current.results) {
       std::string time_str = fmt::format("{:.1f} +/- {:.1f}", r.mean_time_ms, r.std_time_ms);
-      std::string vars_str = r.trees > 0
+      std::string vars_str = r.size > 0
         ? fmt::format("{:.2f}", r.vars)
         : muted("--");
       std::string split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
@@ -146,7 +146,7 @@ namespace {
         fmt::format("{}", r.n),
         fmt::format("{}", r.p),
         fmt::format("{}", r.g),
-        fmt::format("{}", r.trees),
+        fmt::format("{}", r.size),
         vars_str,
         split_str,
         fmt::format("{}", r.runs),
@@ -239,7 +239,7 @@ namespace {
       { "n",         0, Align::right },
       { "p",         0, Align::right },
       { "g",         0, Align::right },
-      { "trees",     0, Align::right },
+      { "size",      0, Align::right },
       { "vars",      0, Align::right },
       { "split",     0, Align::right },
       { "iters",     0, Align::right },
@@ -266,7 +266,7 @@ namespace {
     // Data rows
     for (const auto& r : current.results) {
       std::string time_str   = fmt::format("{:.1f} \xC2\xB1 {:.1f}", r.mean_time_ms, r.std_time_ms);
-      std::string vars_str   = r.trees > 0 ? fmt::format("{:.2f}", r.vars) : "--";
+      std::string vars_str   = r.size > 0 ? fmt::format("{:.2f}", r.vars) : "--";
       std::string split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
       std::string rss_str    = format_rss(r.peak_rss_mb);
       std::string tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
@@ -277,7 +277,7 @@ namespace {
         fmt::format("{}", r.n),
         fmt::format("{}", r.p),
         fmt::format("{}", r.g),
-        fmt::format("{}", r.trees),
+        fmt::format("{}", r.size),
         vars_str,
         split_str,
         fmt::format("{}", r.runs),
@@ -346,7 +346,7 @@ namespace {
     // Data rows
     for (const auto& r : result.results) {
       file << fmt::format("{},{},{},{},{},{:.2f},{:.2f},{},{:.2f},{:.2f},{:.4f},{:.4f},{:.1f},{:.0f}\n",
-      r.name, r.n, r.p, r.g, r.trees, r.vars, r.train_ratio, r.runs,
+      r.name, r.n, r.p, r.g, r.size, r.vars, r.train_ratio, r.runs,
       r.mean_time_ms, r.std_time_ms,
       r.mean_tr_error, r.mean_te_error,
       r.peak_rss_mb, r.scenario_time_ms);

@@ -8,7 +8,6 @@
 
 using namespace ppforest2::types;
 using namespace ppforest2::pp;
-using namespace ppforest2::stats;
 
 namespace ppforest2 {
   TreeCondition::TreeCondition(
@@ -16,14 +15,12 @@ namespace ppforest2 {
     Threshold          threshold,
     TreeNode::Ptr      lower,
     TreeNode::Ptr      upper,
-    TrainingSpec::Ptr  training_spec,
     std::set<Response> groups,
     Feature            pp_index_value) :
     projector(std::move(projector)),
     threshold(std::move(threshold)),
     lower(std::move(lower)),
     upper(std::move(upper)),
-    training_spec(std::move(training_spec)),
     groups(std::move(groups)),
     pp_index_value(pp_index_value) {
     degenerate = this->lower->degenerate || this->upper->degenerate;
@@ -59,14 +56,11 @@ namespace ppforest2 {
   }
 
   TreeNode::Ptr TreeCondition::clone() const {
-    TrainingSpec::Ptr spec_clone = training_spec ? training_spec->clone() : nullptr;
-
     return make(
       projector,
       threshold,
       lower->clone(),
       upper->clone(),
-      std::move(spec_clone),
       groups,
       pp_index_value);
   }
@@ -76,7 +70,6 @@ namespace ppforest2 {
     Threshold          threshold,
     TreeNode::Ptr      lower,
     TreeNode::Ptr      upper,
-    TrainingSpec::Ptr  training_spec,
     std::set<Response> groups,
     Feature            pp_index_value) {
     return std::make_unique<TreeCondition>(
@@ -84,7 +77,6 @@ namespace ppforest2 {
       std::move(threshold),
       std::move(lower),
       std::move(upper),
-      std::move(training_spec),
       std::move(groups),
       pp_index_value
       );

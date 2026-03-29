@@ -1,7 +1,9 @@
 #pragma once
 
 #include "utils/Types.hpp"
+#include "utils/JsonValidation.hpp"
 #include "models/PPStrategy.hpp"
+#include "models/Strategy.hpp"
 
 namespace ppforest2::pp {
   /**
@@ -12,12 +14,12 @@ namespace ppforest2::pp {
    * parameter controls the penalty strength in the LDA index.
    */
   struct PPPDAStrategy : public PPStrategy {
-    /** @brief Penalty parameter for the LDA index (0 = standard LDA). */
-    const float lambda;
-
     explicit PPPDAStrategy(float lambda);
 
-    PPStrategy::Ptr clone() const override;
+    void to_json(nlohmann::json& j) const override;
+    std::string display_name() const override {
+      return lambda == 0 ? "LDA" : "PDA";
+    }
 
     types::Feature index(
       const types::FeatureMatrix&  x,
@@ -28,14 +30,15 @@ namespace ppforest2::pp {
       const types::FeatureMatrix&  x,
       const stats::GroupPartition& group_spec) const override;
 
-    static PPStrategy::Ptr make(float lambda);
+    static PPStrategy::Ptr from_json(const nlohmann::json& j);
+
+    PPFOREST2_REGISTER_STRATEGY(PPStrategy, "pda")
+
+    private:
+      /** @brief Penalty parameter for the LDA index (0 = standard LDA). */
+      const float lambda;
   };
 
-  /**
-   * @brief Factory function for a PDA projection pursuit strategy.
-   *
-   * @param lambda  Penalty parameter.
-   * @return        Owned pointer to a PPPDAStrategy.
-   */
+  /** @brief Factory function for a PDA projection pursuit strategy. */
   PPStrategy::Ptr pda(float lambda);
 }

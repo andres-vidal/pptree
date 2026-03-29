@@ -14,11 +14,9 @@
 #include "stats/ConfusionMatrix.hpp"
 #include "models/Tree.hpp"
 #include "models/Forest.hpp"
-#include "models/TrainingSpecPDA.hpp"
-#include "models/TrainingSpecUPDA.hpp"
+#include "models/TrainingSpec.hpp"
 #include "models/VariableImportance.hpp"
 #include "serialization/Json.hpp"
-#include "cli/Metrics.hpp"
 #include "io/Color.hpp"
 #include "io/IO.hpp"
 
@@ -55,7 +53,7 @@ static const std::string PLATFORM   = PPFOREST2_PLATFORM;
 
 struct GoldenConfig {
   std::string csv_path;
-  int trees;                // 0 = single tree
+  int size;                 // 0 = single tree
   float lambda;
   int n_vars;               // ignored for single tree
   int seed;
@@ -67,7 +65,7 @@ struct GoldenConfig {
   std::string slug() const {
     std::string s;
 
-    if (trees > 0) {
+    if (size > 0) {
       s = (lambda > 0) ? "forest-pda" : "forest-pda";
 
       if (lambda > 0) {
@@ -76,7 +74,7 @@ struct GoldenConfig {
         s += fmt::format("-l{}", l);
       }
 
-      s += fmt::format("-t{}", trees);
+      s += fmt::format("-n{}", size);
     } else {
       s = "tree-pda";
     }
@@ -102,43 +100,37 @@ static void generate_golden(const GoldenConfig& config) {
 
   DataPacket data = io::csv::read_sorted(config.csv_path);
 
-  // Build config JSON — shared fields plus golden-specific (platform, dataset).
-  json cfg;
-  cfg["trees"]    = config.trees;
-  cfg["lambda"]   = config.lambda;
-  cfg["seed"]     = config.seed;
-  cfg["platform"] = PLATFORM;
-  cfg["dataset"]  = config.dataset();
-
-  if (config.trees > 0) {
-    cfg["vars"] = config.n_vars;
-  }
-
   // Train
-  Model::Ptr model;
+  auto dr = (config.size > 0)
+    ? dr::uniform(config.n_vars)
+    : dr::noop();
 
-  if (config.trees > 0) {
-    model = Forest::make(
-      TrainingSpecUPDA(config.n_vars, config.lambda),
-      data.x, data.y, config.trees, config.seed, 1);
-  } else {
-    RNG rng(config.seed);
-    model = Tree::make(
-      TrainingSpecPDA(config.lambda), data.x, data.y, rng);
-  }
+  TrainingSpec spec(
+    pp::pda(config.lambda), std::move(dr), sr::mean_of_means(),
+    config.size, config.seed, 1);
 
-  // Serialize model + meta + config
-  json result = serialization::build_model_json(
-    *model, cfg, data.group_names, data.feature_names,
-    static_cast<int>(data.x.rows()), static_cast<int>(data.x.cols()));
+  auto model = Model::train(spec, data.x, data.y);
 
-  // Metrics (VI, confusion matrices, OOB)
-  cli::compute_metrics(result, *model, data.x, data.y, data.group_names, config.seed);
+  // Serialize model + meta + config + metrics
+  serialization::Export<Model::Ptr> model_export{
+    std::move(model),
+    data.group_names,
+    nullptr,
+    static_cast<int>(data.x.rows()),
+    static_cast<int>(data.x.cols()),
+    data.feature_names,
+  };
+
+  model_export.compute_metrics(data.x, data.y);
+
+  json result = model_export.to_json();
+  result["config"]["platform"] = PLATFORM;
+  result["config"]["dataset"]  = config.dataset();
 
   // Golden-specific fields
-  ResponseVector predictions = model->predict(data.x);
+  ResponseVector predictions = model_export.model->predict(data.x);
   result["predictions"]      = serialization::to_labels(predictions, data.group_names);
-  result["vote_proportions"] = to_json(model->predict(data.x, Proportions{}));
+  result["vote_proportions"] = to_json(model_export.model->predict(data.x, Proportions{}));
 
   ConfusionMatrix cm(predictions, data.y);
   result["error_rate"] = cm.error();
@@ -154,13 +146,13 @@ int main(int argc, char *argv[]) {
   fmt::print("Platform: {}\n\n", PLATFORM);
 
   std::vector<GoldenConfig> configs = {
-    { DATA_DIR + "/iris.csv",  0,  0.0f, 0, 42 },
-    { DATA_DIR + "/iris.csv",  5,  0.0f, 2, 42 },
-    { DATA_DIR + "/iris.csv",  5,  0.5f, 2, 42 },
-    { DATA_DIR + "/crab.csv",  0,  0.0f, 0, 42 },
-    { DATA_DIR + "/crab.csv",  10, 0.0f, 3, 42 },
-    { DATA_DIR + "/wine.csv",  10, 0.0f, 4, 42 },
-    { DATA_DIR + "/glass.csv", 10, 0.0f, 3, 42 },
+    { DATA_DIR + "/iris.csv",  0,  0.0f, 0, 0 },
+    { DATA_DIR + "/iris.csv",  5,  0.0f, 2, 0 },
+    { DATA_DIR + "/iris.csv",  5,  0.5f, 2, 0 },
+    { DATA_DIR + "/crab.csv",  0,  0.0f, 0, 0 },
+    { DATA_DIR + "/crab.csv",  10, 0.0f, 3, 0 },
+    { DATA_DIR + "/wine.csv",  10, 0.0f, 4, 0 },
+    { DATA_DIR + "/glass.csv", 10, 0.0f, 3, 0 },
   };
 
   for (const auto& config : configs) {

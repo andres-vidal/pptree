@@ -12,6 +12,7 @@
 #include "cli/BenchmarkParams.hpp"
 #include "io/Output.hpp"
 
+#include <nlohmann/json.hpp>
 #include <string>
 
 /**
@@ -47,6 +48,9 @@ namespace ppforest2::cli {
     bool no_metrics     = false;
     bool no_color       = false;
     bool no_proportions = false;
+
+    /** @brief Path to JSON config file (--config). */
+    std::string config_path;
   };
 
   /**

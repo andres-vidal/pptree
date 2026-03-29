@@ -69,7 +69,7 @@ TEST_F(SummarizeTest, NoEphemeralFields) {
 TEST(CLISummarize, SummarizeNoMetricsModel) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-metrics -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-metrics -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   auto result = run_ppforest2("--no-color summarize -M " + model.path());
@@ -89,7 +89,7 @@ TEST(CLISummarize, SummarizeNoMetricsModel) {
 TEST(CLISummarize, SummarizeWithDataRecomputesMetrics) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-metrics -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-metrics -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   auto result = run_ppforest2("--no-color summarize -M " + model.path() + " -d " + IRIS_CSV);

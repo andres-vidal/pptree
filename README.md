@@ -48,6 +48,9 @@ make build
 # Train a forest on a CSV dataset and save the model
 ppforest2 train --data data.csv --trees 100 --lambda 0.5 --save model.json
 
+# Explicit strategy selection (equivalent to the above)
+ppforest2 train --data data.csv --trees 100 --pp pda:lambda=0.5 --save model.json
+
 # Predict on new data using a saved model
 ppforest2 predict --model model.json --data test.csv
 
@@ -85,6 +88,9 @@ forest <- pprf(Type ~ ., data = iris, size = 50)
 predict(forest, iris)
 predict(forest, iris, type = "prob")   # vote proportions
 summary(forest)                        # variable importance & model info
+
+# Explicit strategy selection (equivalent to lambda + n_vars shortcuts)
+forest <- pprf(Type ~ ., data = iris, size = 50, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2))
 ```
 
 Visualize models (requires `ggplot2`):
@@ -152,17 +158,21 @@ ppforest2 train -d data.csv --no-save            # train without saving
 ppforest2 train -d data.csv --no-metrics         # skip variable importance
 ```
 
-| Flag                     | Default       | Description                                       |
-|--------------------------|---------------|---------------------------------------------------|
-| `-d, --data <file>`      | *(required)*  | CSV training data                                 |
-| `-t, --trees <N>`        | `100`         | Number of trees (`0` for a single tree)           |
-| `-l, --lambda <X>`       | `0.5`         | PDA penalty; `0` = LDA, `(0,1]` = PDA             |
-| `-r, --seed <N>`         | *(random)*    | Random seed for reproducibility                   |
+| Flag                     | Default       | Description                                                        |
+|--------------------------|---------------|--------------------------------------------------------------------|
+| `-d, --data <file>`      | *(required)*  | CSV training data                                                  |
+| `-t, --trees <N>`        | `100`         | Number of trees (`0` for a single tree)                            |
+| `-l, --lambda <X>`       | `0.5`         | PDA penalty; `0` = LDA, `(0,1]` = PDA                              |
+| `-r, --seed <N>`         | *(random)*    | Random seed for reproducibility                                    |
 | `-v, --vars <spec>`      | `0.5`         | Features per split (see [Variable selection](#variable-selection)) |
-| `--threads <N>`          | *(all cores)* | Number of OpenMP threads                          |
-| `-s, --save <file>`      | `model.json`  | Output model path (`.json` added if missing)      |
-| `--no-save`              | —             | Skip saving the model                             |
-| `--no-metrics`           | —             | Skip variable importance computation              |
+| `--threads <N>`          | *(all cores)* | Number of OpenMP threads                                           |
+| `--max-retries <N>`      | `3`           | Max retries for degenerate trees                                   |
+| `--pp <spec>`            | —             | PP strategy (e.g. `pda`, `pda:lambda=0.5`); excludes `--lambda`    |
+| `--dr <spec>`            | —             | DR strategy (e.g. `noop`, `uniform:vars=3`); excludes `--vars`     |
+| `--sr <spec>`            | —             | SR strategy (e.g. `mean_of_means`)                                 |
+| `-s, --save <file>`      | `model.json`  | Output model path (`.json` added if missing)                       |
+| `--no-save`              | —             | Skip saving the model                                              |
+| `--no-metrics`           | —             | Skip variable importance computation                               |
 
 The saved model JSON includes the full serialization, training configuration, variable importance metrics, and OOB error (forests only).
 
@@ -290,7 +300,7 @@ The project is organized into a shared C++ core and language-specific bindings:
 
 The C++ core uses two design patterns to keep the algorithm extensible without heavily modifying existing code:
 
-- **Strategy** — The projection-pursuit optimization step (`PPStrategy`), dimensionality reduction step (`DRStrategy`), and split-point rule (`SRStrategy`) are each defined as abstract interfaces. Concrete implementations (e.g. `PPPDAStrategy`, `DRUniformStrategy`) are composed at runtime via `TrainingSpec`, so new optimization criteria or variable selection methods can be added without changing the tree-building logic.
+- **Strategy** — The projection-pursuit optimization step (`PPStrategy`), dimensionality reduction step (`DRStrategy`), and split-point rule (`SRStrategy`) are each defined as abstract interfaces. Concrete implementations (e.g. `PPPDAStrategy`, `DRUniformStrategy`) are composed at runtime via `TrainingSpec`, a single concrete class that holds the three strategy objects (via `shared_ptr`) together with forest-level parameters (size, seed, threads, max retries). New optimization criteria or variable selection methods can be added without changing the tree-building logic — just implement the interface and pass it to `TrainingSpec`. Each strategy implements `to_json()` for serialization.
 
 - **Visitor** — `TreeNode::Visitor` dispatches over the two node types (internal `TreeCondition` and leaf `TreeResponse`) and `Model::Visitor` dispatches over `Tree` and `Forest`. This avoids `dynamic_cast` and keeps traversal logic (serialization, visualization layout, variable importance) decoupled from the model types themselves.
 
@@ -449,7 +459,7 @@ Scenarios are defined in JSON with shared defaults and per-scenario overrides:
 {
   "defaults": {
     "trees": 100, "lambda": 0.5, "vars": 0.5,
-    "seed": 42, "warmup": 2,
+    "seed": 0, "warmup": 2,
     "convergence": { "cv": 0.05, "max": 200 }
   },
   "scenarios": [

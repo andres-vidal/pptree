@@ -5,83 +5,110 @@
 #include "models/DRNoopStrategy.hpp"
 #include "models/SRMeanOfMeansStrategy.hpp"
 
-
 #include <memory>
-#include <map>
+#include <thread>
+#include <nlohmann/json.hpp>
 
 namespace ppforest2 {
-  struct TrainingSpecPDA;
-  struct TrainingSpecUPDA;
-
   /**
-   * @brief Abstract training configuration for projection pursuit trees.
+   * @brief Training configuration for projection pursuit trees and forests.
    *
    * Composes a projection pursuit strategy (PPStrategy), a
    * dimensionality reduction strategy (DRStrategy), and a split
-   * strategy (SRStrategy).  Concrete subclasses (TrainingSpecPDA,
-   * TrainingSpecUPDA) provide specific parameter combinations.
+   * strategy (SRStrategy), together with forest-level parameters
+   * (size, seed, threads, max retries).
    *
-   * For most use cases, use the ready-made subclasses:
+   * TrainingSpec is a concrete class — new strategies are plugged in
+   * via the constructor, not by subclassing:
    * @code
-   *   // Single tree — PDA with all variables:
-   *   TrainingSpecPDA spec(lambda: 0.0);
+   *   // Single tree with PDA:
+   *   TrainingSpec spec(pp::pda(0.5), dr::noop(), sr::mean_of_means());
    *
-   *   // Random forest — PDA with uniform variable selection:
-   *   TrainingSpecUPDA spec(n_vars: 3, lambda: 0.5);
+   *   // Random forest with uniform variable selection:
+   *   TrainingSpec spec(pp::pda(0.0), dr::uniform(3), sr::mean_of_means(),
+   *                     100, 0);  // size, seed
+   *
+   *   // Custom strategy:
+   *   TrainingSpec spec(my_custom_pp(), dr::uniform(5), sr::mean_of_means(),
+   *                     200, 7);  // size, seed
    * @endcode
    *
-   * For custom strategy composition:
-   * @code
-   *   auto spec = std::make_unique<TrainingSpec>(
-   *     pp::pda(0.5),          // PDA with lambda = 0.5
-   *     dr::uniform(4),         // sample 4 variables per split
-   *     sr::mean_of_means());   // midpoint of group means
-   * @endcode
-   *
-   * @see TrainingSpecPDA, TrainingSpecUPDA
+   * Strategies are held via shared_ptr and are immutable after
+   * construction, so TrainingSpec can be freely copied and shared
+   * across trees without deep cloning.
    */
   struct TrainingSpec {
-    using Ptr = std::unique_ptr<TrainingSpec>;
-
-    /**
-     * @brief Visitor interface for training specification dispatch.
-     *
-     * Distinguishes between PDA (all variables) and UPDA (uniform
-     * random variable subset) training configurations.
-     */
-    struct Visitor {
-      virtual void visit(const TrainingSpecPDA &spec)  = 0;
-      virtual void visit(const TrainingSpecUPDA &spec) = 0;
-    };
+    using Ptr = std::shared_ptr<TrainingSpec>;
 
     /** @brief Projection pursuit optimization strategy. */
-    const std::unique_ptr<pp::PPStrategy> pp_strategy;
+    const pp::PPStrategy::Ptr pp_strategy;
     /** @brief Dimensionality reduction strategy. */
-    const std::unique_ptr<dr::DRStrategy> dr_strategy;
+    const dr::DRStrategy::Ptr dr_strategy;
     /** @brief Group splitting rule strategy. */
-    const std::unique_ptr<sr::SRStrategy> sr_strategy;
+    const sr::SRStrategy::Ptr sr_strategy;
 
+    /** @brief Number of trees (0 = single tree). */
+    const int size;
+    /** @brief RNG seed. */
+    const int seed;
+    /** @brief Number of threads for parallel forest training. */
+    const int threads;
+    /** @brief Maximum retry attempts for degenerate trees. */
+    const int max_retries;
+
+    /**
+     * @brief Construct a training specification.
+     *
+     * @param pp           Projection pursuit strategy.
+     * @param dr           Dimensionality reduction strategy.
+     * @param sr           Split rule strategy.
+     * @param size         Number of trees (0 = single tree).
+     * @param seed         RNG seed.
+     * @param threads    Number of threads (0 = hardware concurrency).
+     * @param max_retries  Maximum retry attempts for degenerate trees.
+     */
     TrainingSpec(
-      std::unique_ptr<pp::PPStrategy> pp_strategy,
-      std::unique_ptr<dr::DRStrategy> dr_strategy,
-      std::unique_ptr<sr::SRStrategy> sr_strategy) :
-      pp_strategy(std::move(pp_strategy)),
-      dr_strategy(std::move(dr_strategy)),
-      sr_strategy(std::move(sr_strategy)) {
+      pp::PPStrategy::Ptr pp,
+      dr::DRStrategy::Ptr dr,
+      sr::SRStrategy::Ptr sr,
+      int                 size        = 0,
+      int                 seed        = 0,
+      int                 threads     = 0,
+      int                 max_retries = 3);
+
+    /** @brief Whether this specification describes a forest (size > 0). */
+    bool is_forest() const {
+      return size > 0;
     }
 
-    TrainingSpec(const TrainingSpec& other) :
-      pp_strategy(other.pp_strategy->clone()),
-      dr_strategy(other.dr_strategy->clone()),
-      sr_strategy(other.sr_strategy->clone()) {
+    /** @brief Serialize the training spec to JSON. */
+    void to_json(nlohmann::json& j) const;
+
+    /** @brief Deserialize a training spec from JSON. */
+    static Ptr from_json(const nlohmann::json& j);
+
+    /**
+     * @brief Create a shared pointer to a TrainingSpec.
+     *
+     * Convenience factory that forwards all arguments to the constructor.
+     *
+     * @return Shared pointer to a new TrainingSpec.
+     */
+    template<typename ... Args>
+    static Ptr make(Args&&... args) {
+      return std::make_shared<TrainingSpec>(std::forward<Args>(args)...);
     }
 
-    virtual ~TrainingSpec() = default;
-
-    /** @brief Accept a training spec visitor (double dispatch). */
-    virtual void accept(Visitor &visitor) const = 0;
-
-    /** @brief Deep copy of this training specification. */
-    virtual Ptr clone() const = 0;
+    /** @brief
+     * Get the number of threads to use for training.
+     *
+     * If the number of threads is not specified, the number of hardware
+     * concurrency is returned.
+     *
+     * @return The number of threads to use for training.
+     */
+    int resolve_threads() const {
+      return threads > 0 ? threads : std::thread::hardware_concurrency();
+    }
   };
 }

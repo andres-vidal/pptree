@@ -12,13 +12,13 @@ static const std::string MINIMAL_SCENARIOS = R"({
   "name": "integration-test",
   "defaults": {
     "train_ratio": 0.7,
-    "seed": 42,
+    "seed": 0,
     "lambda": 0.5,
     "iterations": 1
   },
   "scenarios": [
-    { "name": "tiny-forest", "n": 50, "p": 3, "g": 2, "trees": 5, "vars": 0.5 },
-    { "name": "tiny-tree",   "n": 50, "p": 3, "g": 2, "trees": 0 }
+    { "name": "tiny-forest", "n": 50, "p": 3, "g": 2, "size": 5, "vars": 0.5 },
+    { "name": "tiny-tree",   "n": 50, "p": 3, "g": 2, "size": 0 }
   ]
 })";
 
@@ -76,7 +76,7 @@ TEST(CLIBenchmark, BenchmarkJsonOutput) {
     EXPECT_TRUE(r.contains("n"));
     EXPECT_TRUE(r.contains("p"));
     EXPECT_TRUE(r.contains("g"));
-    EXPECT_TRUE(r.contains("trees"));
+    EXPECT_TRUE(r.contains("size"));
     EXPECT_TRUE(r.contains("mean_time_ms"));
     EXPECT_TRUE(r.contains("mean_test_error"));
   }

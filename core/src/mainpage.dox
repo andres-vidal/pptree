@@ -33,16 +33,22 @@
  * @subsection train_tree Training a single tree
  *
  * @code
- *   #include "models/Tree.hpp"
- *   #include "models/TrainingSpecPDA.hpp"
- *   #include "io/IO.hpp"
+ *   #include "ppforest2.hpp"
  *
  *   // Load data — CSV last column is the response, labels encoded as integers.
  *   auto data = io::csv::read_sorted("iris.csv");
  *
- *   stats::RNG rng(42);
- *   TrainingSpecPDA spec(/*lambda=*/ 0.0);   // LDA (no penalty)
+ *   // Compose strategies into a training spec:
+ *   TrainingSpec spec(
+ *     pp::pda(0.0),           // LDA (no penalty)
+ *     dr::noop(),              // use all variables
+ *     sr::mean_of_means());   // midpoint split rule
  *
+ *   // Train via the unified entry point:
+ *   auto model = Model::train(spec, data.x, data.y);
+ *
+ *   // Or train directly:
+ *   stats::RNG rng(0);
  *   Tree tree = Tree::train(spec, data.x, data.y, rng);
  *
  *   types::Response label = tree.predict(data.x.row(0));
@@ -52,26 +58,27 @@
  * @subsection train_forest Training a random forest
  *
  * @code
- *   #include "models/Forest.hpp"
- *   #include "models/TrainingSpecUPDA.hpp"
- *   #include "models/VariableImportance.hpp"
+ *   #include "ppforest2.hpp"
  *
- *   // UPDA: uniform random variable selection + PDA optimisation.
- *   // n_vars = 3 means 3 variables sampled at each split.
- *   TrainingSpecUPDA spec(/*n_vars=*/ 3, /*lambda=*/ 0.0);
+ *   // PDA with uniform random variable selection:
+ *   TrainingSpec spec(
+ *     pp::pda(0.0),           // LDA
+ *     dr::uniform(3),          // sample 3 variables per split
+ *     sr::mean_of_means(),    // midpoint split rule
+ *     500, 0);                // size, seed
  *
- *   Forest forest = Forest::train(spec, x, y, /*size=*/ 500, /*seed=*/ 42);
+ *   Forest forest = Forest::train(spec, x, y);
  *
  *   types::ResponseVector preds = forest.predict(x_test);
  *
  *   // Out-of-bag error — uses only trees where each obs was not in the bootstrap sample.
  *   double oob = forest.oob_error(x, y);
  *
- *   // Vote proportions — (n × G) matrix, rows sum to 1.
+ *   // Vote proportions — (n x G) matrix, rows sum to 1.
  *   types::FeatureMatrix probs = forest.predict(x_test, Proportions{});
  *
  *   // Variable importance (three measures).
- *   auto vi_perm = variable_importance_permuted(forest, x, y, /*seed=*/ 0);
+ *   auto vi_perm = variable_importance_permuted(forest, x, y, 0);  // seed
  *   auto vi_proj = variable_importance_projections(forest, x.cols());
  *   auto vi_wt   = variable_importance_weighted_projections(forest, x, y);
  * @endcode
@@ -110,19 +117,24 @@
  * - **SRStrategy** — split threshold computation. \n
  *   Built-in: SRMeanOfMeansStrategy (midpoint of projected group means).
  *
- * These strategies are composed via TrainingSpec.  Two ready-made specs
- * cover the most common use cases:
- *
- * - **TrainingSpecPDA** — PDA + no-op DR + mean-of-means (single trees).
- * - **TrainingSpecUPDA** — PDA + uniform DR + mean-of-means (forests).
+ * TrainingSpec is a single concrete class that composes these strategies
+ * together with forest-level parameters (size, seed, threads, max retries):
  *
  * @code
- *   // Custom strategy composition:
- *   auto spec = std::make_unique<TrainingSpec>(
+ *   // Single tree with PDA:
+ *   TrainingSpec spec(pp::pda(0.5), dr::noop(), sr::mean_of_means());
+ *
+ *   // Random forest:
+ *   TrainingSpec spec(
  *     pp::pda(0.5),          // PDA with lambda = 0.5
  *     dr::uniform(4),         // sample 4 variables per split
- *     sr::mean_of_means());   // midpoint of group means
+ *     sr::mean_of_means(),   // midpoint of group means
+ *     100, 0);               // size, seed
  * @endcode
+ *
+ * Strategies are held via `shared_ptr` and are immutable after construction,
+ * so TrainingSpec can be freely copied and shared across trees without
+ * deep cloning.  Each strategy implements `to_json()` for serialisation.
  *
  * For a step-by-step guide to implementing new strategies, see
  * @ref extending_strategies.
@@ -156,8 +168,8 @@
  *   deviations.  See variable_importance_projections().
  *
  * - **VI3 (weighted projections)** — Each tree's contribution is
- *   weighted by (1 − OOB error), and each split contributes
- *   I_s × |a_j|.  See variable_importance_weighted_projections().
+ *   weighted by (1 - OOB error), and each split contributes
+ *   I_s x |a_j|.  See variable_importance_weighted_projections().
  *
  * @section precision Numeric precision
  *
@@ -170,7 +182,7 @@
  * | Namespace                   | Purpose |
  * |-----------------------------|---------|
  * | ppforest2                   | Core model types: Tree, Forest, TrainingSpec, VariableImportance |
- * | ppforest2::types            | Numeric type aliases (Feature, Response, FeatureMatrix, …) |
+ * | ppforest2::types            | Numeric type aliases (Feature, Response, FeatureMatrix, ...) |
  * | ppforest2::stats            | Statistical infrastructure: RNG, GroupPartition, Uniform, ConfusionMatrix |
  * | ppforest2::pp               | Projection pursuit strategies |
  * | ppforest2::dr               | Dimensionality reduction strategies |

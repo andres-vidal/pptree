@@ -48,7 +48,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
           TempFile model;                                                                                                          \
           model.clear();                                                                                                           \
           auto train = run_ppforest2(                                                                                              \
-            "-q train -d " + csv + " -t 0"                                                                                         \
+            "-q train -d " + csv + " -n 0"                                                                                         \
             " -l " + std::to_string(lambda) +                                                                                      \
             " -r " + std::to_string(seed) +                                                                                        \
             " -s " + model.path());                                                                                                \
@@ -79,7 +79,7 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
           model.clear();                                                                                                            \
           auto train = run_ppforest2(                                                                                               \
             "-q train -d " + csv +                                                                                                  \
-            " -t " + std::to_string(n_trees) +                                                                                      \
+            " -n " + std::to_string(n_trees) +                                                                                      \
             " -l " + std::to_string(lambda) +                                                                                       \
             " -r " + std::to_string(seed) +                                                                                         \
             " -v " + std::to_string(n_vars) +                                                                                       \
@@ -114,11 +114,11 @@ static void compare_confusion_matrix(const json& actual, const json& expected) {
 // Golden tests
 // ---------------------------------------------------------------------------
 
-CLI_GOLDEN_TREE_TEST(IrisTreePDA,   "iris", "tree-pda-s42",   IRIS_CSV, 0.0f, 42)
-CLI_GOLDEN_TREE_TEST(CrabTreePDA,   "crab", "tree-pda-s42",   CRAB_CSV, 0.0f, 42)
+CLI_GOLDEN_TREE_TEST(IrisTreePDA,   "iris", "tree-pda-s0",   IRIS_CSV, 0.0f, 0)
+CLI_GOLDEN_TREE_TEST(CrabTreePDA,   "crab", "tree-pda-s0",   CRAB_CSV, 0.0f, 0)
 
-CLI_GOLDEN_FOREST_TEST(IrisForestPDAL0,  "iris",  "forest-pda-t5-s42",      IRIS_CSV,  5,  0.0f, 2, 42)
-CLI_GOLDEN_FOREST_TEST(IrisForestPDAL05, "iris",  "forest-pda-l05-t5-s42",   IRIS_CSV,  5,  0.5f, 2, 42)
-CLI_GOLDEN_FOREST_TEST(CrabForestPDA,  "crab",  "forest-pda-t10-s42",     CRAB_CSV,  10, 0.0f, 3, 42)
-CLI_GOLDEN_FOREST_TEST(WineForestPDA,  "wine",  "forest-pda-t10-s42",     WINE_CSV,  10, 0.0f, 4, 42)
-CLI_GOLDEN_FOREST_TEST(GlassForestPDA, "glass", "forest-pda-t10-s42",     GLASS_CSV, 10, 0.0f, 3, 42)
+CLI_GOLDEN_FOREST_TEST(IrisForestPDAL0,  "iris",  "forest-pda-n5-s0",     IRIS_CSV,  5,  0.0f, 2, 0)
+CLI_GOLDEN_FOREST_TEST(IrisForestPDAL05, "iris",  "forest-pda-l05-n5-s0", IRIS_CSV,  5,  0.5f, 2, 0)
+CLI_GOLDEN_FOREST_TEST(CrabForestPDA,  "crab",  "forest-pda-n10-s0",      CRAB_CSV,  10, 0.0f, 3, 0)
+CLI_GOLDEN_FOREST_TEST(WineForestPDA,  "wine",  "forest-pda-n10-s0",      WINE_CSV,  10, 0.0f, 4, 0)
+CLI_GOLDEN_FOREST_TEST(GlassForestPDA, "glass", "forest-pda-n10-s0",      GLASS_CSV, 10, 0.0f, 3, 0)

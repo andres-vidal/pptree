@@ -88,7 +88,7 @@ using namespace ppforest2::stats;
 // ---------------------------------------------------------------------------
 
 TEST(Uniform, MeanConvergesToTheory) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(0, 9);
 
   constexpr int N = 100000;
@@ -105,7 +105,7 @@ TEST(Uniform, MeanConvergesToTheory) {
 }
 
 TEST(Uniform, VarianceConvergesToTheory) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(0, 9);
 
   constexpr int N = 100000;
@@ -146,7 +146,7 @@ TEST(Uniform, VarianceConvergesToTheory) {
 // ---------------------------------------------------------------------------
 
 TEST(Uniform, ChiSquaredGoodnessOfFit) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(0, 9);
 
   constexpr int N = 100000;
@@ -227,7 +227,7 @@ TEST(Uniform, AllValuesInRange) {
  * Lemire's method is called with s = 1, which must always yield 0.
  */
 TEST(Uniform, SingleValueRange) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(7, 7);
 
   for (int i = 0; i < 100; i++) {
@@ -243,7 +243,7 @@ TEST(Uniform, SingleValueRange) {
 // ---------------------------------------------------------------------------
 
 TEST(Uniform, BatchMeanConverges) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(0, 99);
 
   auto samples = uniform(100000, rng);
@@ -269,7 +269,7 @@ TEST(Uniform, BatchMeanConverges) {
 // ---------------------------------------------------------------------------
 
 TEST(UniformDistinct, NoDuplicates) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(0, 99);
 
   for (int trial = 0; trial < 100; trial++) {
@@ -280,7 +280,7 @@ TEST(UniformDistinct, NoDuplicates) {
 }
 
 TEST(UniformDistinct, AllInRange) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(10, 50);
 
   for (int trial = 0; trial < 100; trial++) {
@@ -294,7 +294,7 @@ TEST(UniformDistinct, AllInRange) {
 }
 
 TEST(UniformDistinct, CorrectCount) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(0, 19);
 
   ASSERT_EQ(uniform.distinct(10, rng).size(), 10u);
@@ -304,7 +304,7 @@ TEST(UniformDistinct, CorrectCount) {
 }
 
 TEST(UniformDistinct, FullRangeReturnsAllValues) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(0, 9);
 
   auto vals = uniform.distinct(10, rng);
@@ -338,7 +338,7 @@ TEST(UniformDistinct, FullRangeReturnsAllValues) {
 // ---------------------------------------------------------------------------
 
 TEST(UniformDistinct, PermutationUniformity) {
-  RNG rng(42);
+  RNG rng(0);
   Uniform uniform(0, 3);
 
   // 4! = 24 possible permutations

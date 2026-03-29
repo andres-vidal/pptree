@@ -63,14 +63,14 @@ namespace ppforest2::cli {
     int g = 3;
 
     // Model parameters
-    int trees    = 100;
+    int size     = 100;
     float vars   = 0.5f;
     float lambda = 0.5f;
     int threads  = -1;
 
     // Evaluation parameters
     float train_ratio = 0.7f;
-    int seed          = 42;
+    int seed          = 0;
     int warmup        = 0;
 
     // Iteration mode: if iterations > 0, fixed mode; otherwise convergence
@@ -89,7 +89,7 @@ namespace ppforest2::cli {
 
     // Data shape (copied from scenario for reporting; 0 for real-data scenarios)
     int n = 0, p = 0, g = 0;
-    int trees         = 0;
+    int size          = 0;
     float vars        = 0;
     float train_ratio = 0.7f;
 

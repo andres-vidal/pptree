@@ -1,9 +1,9 @@
-#include <Rcpp.h>
+#include "../inst/include/ppforest2.h"
 #include <RcppEigen.h>
-#include "ppforest2.hpp"
 #include "serialization/Json.hpp"
 
 #include <nlohmann/json.hpp>
+#include <fstream>
 #include <thread>
 
 // [[Rcpp::depends(RcppEigen)]]
@@ -13,7 +13,11 @@ using namespace RcppEigen;
 using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
+using namespace ppforest2::pp;
+using namespace ppforest2::dr;
+using namespace ppforest2::sr;
 using namespace ppforest2::viz;
+using namespace ppforest2::serialization;
 
 // [[Rcpp::export]]
 bool ppforest2_has_openmp() {
@@ -25,61 +29,17 @@ bool ppforest2_has_openmp() {
 }
 
 // [[Rcpp::export]]
-Tree ppforest2_train_tree_pda(
-  FeatureMatrix  x,
-  ResponseVector y,
-  const float    lambda,
-  const int      seed) {
+Model::Ptr ppforest2_train(
+  TrainingSpec::Ptr spec,
+  FeatureMatrix     x,
+  ResponseVector    y) {
   y.array() -= 1;  // R 1-based → C++ 0-based
 
   if (!GroupPartition::is_contiguous(y)) {
     sort(x, y);
   }
 
-  RNG rng(seed);
-
-  return Tree::train(
-    TrainingSpecPDA(lambda),
-    x,
-    y,
-    rng);
-}
-
-// [[Rcpp::export]]
-Forest ppforest2_train_forest_pda(
-  FeatureMatrix  x,
-  ResponseVector y,
-  const int      size,
-  const int      n_vars,
-  const float    lambda,
-  const int      seed,
-  SEXP           n_threads,
-  const int      max_retries = 3) {
-  y.array() -= 1;  // R 1-based → C++ 0-based
-
-  if (!GroupPartition::is_contiguous(y)) {
-    sort(x, y);
-  }
-
-  if (n_threads == R_NilValue) {
-    return Forest::train(
-      TrainingSpecUPDA(n_vars, lambda),
-      x,
-      y,
-      size,
-      seed,
-      std::thread::hardware_concurrency(),
-      max_retries);
-  }
-
-  return Forest::train(
-    TrainingSpecUPDA(n_vars, lambda),
-    x,
-    y,
-    size,
-    seed,
-    as<const int>(n_threads),
-    max_retries);
+  return Model::train(*spec, x, y);
 }
 
 // [[Rcpp::export]]
@@ -380,298 +340,42 @@ Rcpp::List ppforest2_tree_layout(const Tree& tree) {
 
 namespace {
   using json = nlohmann::json;
-
-  json meta_from_r(
-    Rcpp::CharacterVector groups,
-    int                   n_obs,
-    int                   n_features,
-    SEXP                  feature_names) {
-    json meta;
-
-    std::vector<std::string> cls(groups.begin(), groups.end());
-    meta["groups"] = cls;
-
-    if (n_obs > 0) {
-      meta["observations"] = n_obs;
-    }
-
-    if (n_features > 0) {
-      meta["features"] = n_features;
-    }
-
-    if (feature_names != R_NilValue) {
-      Rcpp::CharacterVector fnames_cv(feature_names);
-
-      if (fnames_cv.size() > 0) {
-        std::vector<std::string> fnames(fnames_cv.begin(), fnames_cv.end());
-        meta["feature_names"] = fnames;
-      }
-    }
-
-    return meta;
-  }
-
-  json config_from_r(
-    Rcpp::List training_spec,
-    int        seed) {
-    json config;
-
-    std::string strategy = Rcpp::as<std::string>(training_spec["strategy"]);
-    float lambda         = Rcpp::as<float>(training_spec["lambda"]);
-
-    config["lambda"] = lambda;
-    config["seed"]   = seed;
-
-    if (training_spec.containsElementNamed("n_vars")) {
-      config["vars"] = Rcpp::as<int>(training_spec["n_vars"]);
-    }
-
-    return config;
-  }
-
-  FeatureVector to_feature_vector(Rcpp::NumericVector v) {
-    int n = static_cast<int>(v.size());
-    FeatureVector result(n);
-
-    for (int i = 0; i < n; ++i) {
-      result(i) = static_cast<Feature>(v[i]);
-    }
-
-    return result;
-  }
-
-  json vi_from_r(Rcpp::List vi) {
-    VariableImportance cpp_vi;
-
-    cpp_vi.scale       = to_feature_vector(vi["scale"]);
-    cpp_vi.projections = to_feature_vector(vi["projections"]);
-
-    if (vi.containsElementNamed("weighted")) {
-      cpp_vi.weighted_projections = to_feature_vector(vi["weighted"]);
-    }
-
-    if (vi.containsElementNamed("permuted")) {
-      cpp_vi.permuted = to_feature_vector(vi["permuted"]);
-    }
-
-    return ppforest2::serialization::to_json(cpp_vi);
-  }
 }
 
 // [[Rcpp::export]]
-std::string ppforest2_save_tree_json(
-    const Tree&           tree,
-    Rcpp::CharacterVector groups,
-    Rcpp::List            vi,
-    Rcpp::List            training_spec,
-    int                   seed,
-    bool                  include_metrics,
-    int                   n_obs         = 0,
-    int                   n_features    = 0,
-    SEXP                  feature_names = R_NilValue) {
-  json output = ppforest2::serialization::to_json(tree);
+std::string ppforest2_save_model_json(
+    Model::Ptr                model,
+    std::vector<std::string>  groups,
+    bool                      include_metrics,
+    const FeatureMatrix&      x,
+    ResponseVector            y,
+    std::vector<std::string>  feature_names) {
+  y.array() -= 1;
 
-  json result;
-  result["model_type"] = "tree";
-  result["meta"]       = meta_from_r(groups, n_obs, n_features, feature_names);
-  result["config"]     = config_from_r(training_spec, seed);
-  result["model"]      = output;
+  Export<Model::Ptr> model_export{
+    std::move(model),
+    std::move(groups),
+    nullptr,
+    static_cast<int>(x.rows()),
+    static_cast<int>(x.cols()),
+    std::move(feature_names),
+  };
 
   if (include_metrics) {
-    result["variable_importance"] = vi_from_r(vi);
+    model_export.compute_metrics(x, y);
   }
 
-  return result.dump(2);
+  return model_export.to_json().dump(2);
 }
 
 // [[Rcpp::export]]
-std::string ppforest2_save_forest_json(
-    const Forest&         forest,
-    Rcpp::CharacterVector groups,
-    Rcpp::List            vi,
-    Rcpp::List            training_spec,
-    int                   seed,
-    double                oob_error,
-    bool                  include_metrics,
-    int                   n_obs         = 0,
-    int                   n_features    = 0,
-    SEXP                  feature_names = R_NilValue) {
-  json output = ppforest2::serialization::to_json(forest);
+ppforest2::serialization::Export<Model::Ptr> ppforest2_load_model_json(const std::string& path) {
+  std::ifstream in(path);
 
-  json result;
-  result["model_type"] = "forest";
-  result["meta"]       = meta_from_r(groups, n_obs, n_features, feature_names);
-  result["config"]     = config_from_r(training_spec, seed);
-  result["model"]      = output;
-
-  if (include_metrics) {
-    result["variable_importance"] = vi_from_r(vi);
-    result["oob_error"]           = oob_error;
+  if (!in.is_open()) { 
+    Rcpp::stop("Could not open file: " + path);
   }
 
-  return result.dump(2);
-}
-
-// [[Rcpp::export]]
-Rcpp::List ppforest2_load_json_meta(const std::string& json_str) {
-  json j = json::parse(json_str);
-
-  // Detect model type: explicit field, meta.trees > 0, or model.trees key
-  std::string model_type;
-
-  if (j.contains("model_type")) {
-    model_type = j["model_type"].get<std::string>();
-  } else if (j.contains("model") && j["model"].contains("trees")) {
-    model_type = "forest";
-  } else if (j.contains("meta") && j["meta"].value("trees", 0) > 0) {
-    model_type = "forest";
-  } else {
-    model_type = "tree";
-  }
-
-  // Restore group names from meta
-  Rcpp::CharacterVector groups;
-  int seed = 0;
-  Rcpp::List training_spec;
-
-  if (j.contains("meta")) {
-    const auto& meta = j["meta"];
-
-    if (meta.contains("groups")) {
-      auto cls = meta["groups"].get<std::vector<std::string>>();
-      groups = Rcpp::wrap(cls);
-    }
-  }
-
-  // Restore config from "config" block.
-  if (j.contains("config")) {
-    const auto& config = j["config"];
-
-    seed = config.value("seed", 0);
-
-    float lambda = config.value("lambda", 0.0f);
-    int n_vars   = config.value("vars", 0);
-
-    // Infer strategy: forest with vars → uniform_pda, otherwise pda.
-    std::string strategy = (n_vars > 0) ? "uniform_pda" : "pda";
-
-    if (n_vars > 0) {
-      training_spec = Rcpp::List::create(
-        Rcpp::Named("strategy") = strategy,
-        Rcpp::Named("lambda")   = lambda,
-        Rcpp::Named("n_vars")   = n_vars);
-    } else {
-      training_spec = Rcpp::List::create(
-        Rcpp::Named("strategy") = strategy,
-        Rcpp::Named("lambda")   = lambda);
-    }
-  }
-
-  // Restore variable importance
-  SEXP vi_sexp = R_NilValue;
-
-  if (j.contains("variable_importance")) {
-    const auto& vi_j = j["variable_importance"];
-
-    Rcpp::List vi_list;
-    if (vi_j.contains("scale")) {
-      vi_list["scale"] = Rcpp::wrap(vi_j["scale"].get<std::vector<double>>());
-    }
-
-    if (vi_j.contains("projections")) {
-      vi_list["projections"] = Rcpp::wrap(vi_j["projections"].get<std::vector<double>>());
-    }
-
-    if (vi_j.contains("weighted_projections")) {
-      vi_list["weighted"] = Rcpp::wrap(vi_j["weighted_projections"].get<std::vector<double>>());
-    }
-
-    if (vi_j.contains("permuted")) {
-      vi_list["permuted"] = Rcpp::wrap(vi_j["permuted"].get<std::vector<double>>());
-    }
-
-    vi_sexp = vi_list;
-  }
-
-  // OOB error (forest only)
-  double oob_error = NA_REAL;
-  if (j.contains("oob_error")) {
-    oob_error = j["oob_error"].get<double>();
-  }
-
-  return Rcpp::List::create(
-    Rcpp::Named("model_type")     = model_type,
-    Rcpp::Named("groups")        = groups,
-    Rcpp::Named("training_spec")  = training_spec,
-    Rcpp::Named("seed")           = seed,
-    Rcpp::Named("vi")             = vi_sexp,
-    Rcpp::Named("oob_error")      = oob_error);
-}
-
-namespace {
-  TrainingSpec::Ptr training_spec_from_meta(const json& j) {
-    if (!j.contains("meta")) {
-      return TrainingSpecPDA::make(0.0f);
-    }
-
-    const auto& meta    = j["meta"];
-    std::string strategy = meta.value("training_spec", "pda");
-    float lambda         = meta.value("lambda", 0.0f);
-
-    if (strategy == "upda" || strategy == "uniform_pda") {
-      int n_vars = meta.value("n_vars", 0);
-      return TrainingSpecUPDA::make(n_vars, lambda);
-    }
-
-    return TrainingSpecPDA::make(lambda);
-  }
-}
-
-namespace {
-  // Detect whether the model JSON uses string labels by checking the first leaf value.
-  bool has_string_labels(const json& model_json) {
-    const json* node = &model_json["root"];
-
-    while (node->contains("lower")) {
-      node = &(*node)["lower"];
-    }
-
-    return node->contains("value") && (*node)["value"].is_string();
-  }
-}
-
-// [[Rcpp::export]]
-Tree ppforest2_tree_from_json(const std::string& json_str) {
-  json j = json::parse(json_str);
-
-  bool labeled = has_string_labels(j["model"]);
-
-  Tree tree = labeled
-    ? ppforest2::serialization::tree_from_json(j["model"],
-        j["meta"]["groups"].get<ppforest2::serialization::GroupNames>())
-    : ppforest2::serialization::tree_from_json(j["model"]);
-
-  tree.training_spec = training_spec_from_meta(j);
-  return tree;
-}
-
-// [[Rcpp::export]]
-Forest ppforest2_forest_from_json(const std::string& json_str) {
-  json j = json::parse(json_str);
-
-  bool labeled = has_string_labels(j["model"]["trees"][0]);
-
-  Forest forest = labeled
-    ? ppforest2::serialization::forest_from_json(j["model"],
-        j["meta"]["groups"].get<ppforest2::serialization::GroupNames>())
-    : ppforest2::serialization::forest_from_json(j["model"]);
-
-  forest.training_spec = training_spec_from_meta(j);
-
-  // Propagate training_spec to each tree
-  for (auto& tree : forest.trees) {
-    tree->training_spec = training_spec_from_meta(j);
-  }
-
-  return forest;
+  auto j = json::parse(in);
+  return j.get<Export<Model::Ptr>>();
 }

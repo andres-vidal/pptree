@@ -1,9 +1,8 @@
 #pragma once
 
-#include "utils/Types.hpp"
 #include "models/Projector.hpp"
-
-#include <memory>
+#include "models/Strategy.hpp"
+#include "utils/Types.hpp"
 
 /**
  * @brief Split rule strategies for computing decision thresholds.
@@ -12,6 +11,9 @@
  * implementations that determine the split threshold in projected
  * space.  The built-in SRMeanOfMeansStrategy uses the midpoint
  * of the two group means.
+ *
+ * New strategies must implement the pure virtual methods including
+ * to_json() for serialization support.
  */
 namespace ppforest2::sr {
   /**
@@ -21,13 +23,10 @@ namespace ppforest2::sr {
    * the threshold value that separates the groups in the projected
    * space.  Concrete subclasses implement different splitting rules
    * (e.g. mean of group means, median-based rules).
+   *
+   * Implementations must also provide to_json() for serialization.
    */
-  struct SRStrategy {
-    using Ptr = std::unique_ptr<SRStrategy>;
-
-    virtual ~SRStrategy()     = default;
-    virtual Ptr clone() const = 0;
-
+  struct SRStrategy : public Strategy<SRStrategy> {
     /**
      * @brief Compute the split threshold for two groups.
      *

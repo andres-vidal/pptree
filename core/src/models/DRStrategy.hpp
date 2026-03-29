@@ -1,14 +1,14 @@
 #pragma once
-#include <algorithm>
 
+#include "models/Projector.hpp"
+#include "models/Strategy.hpp"
 #include "stats/GroupPartition.hpp"
-
 #include "stats/Stats.hpp"
 #include "utils/Invariant.hpp"
-#include "models/Projector.hpp"
 #include "utils/Types.hpp"
 
-
+#include <algorithm>
+#include <vector>
 
 /**
  * @brief Dimensionality reduction strategies for variable selection.
@@ -17,6 +17,9 @@
  * implementations that select a subset of variables before projection
  * pursuit optimisation.  DRNoopStrategy uses all variables (single
  * trees); DRUniformStrategy samples uniformly at random (forests).
+ *
+ * New strategies must implement the pure virtual methods including
+ * to_json() for serialization support.
  */
 namespace ppforest2::dr {
   /**
@@ -64,13 +67,10 @@ namespace ppforest2::dr {
    * Before projection pursuit optimization, a DR strategy selects a
    * subset of variables (columns) to work with.  This reduces the
    * cost of the PP step and introduces randomness in forests.
+   *
+   * Implementations must also provide to_json() for serialization.
    */
-  struct DRStrategy {
-    using Ptr = std::unique_ptr<DRStrategy>;
-
-    virtual ~DRStrategy()                 = default;
-    virtual DRStrategy::Ptr clone() const = 0;
-
+  struct DRStrategy : public Strategy<DRStrategy> {
     /**
      * @brief Select a subset of variables.
      *

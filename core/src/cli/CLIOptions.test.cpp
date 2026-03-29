@@ -111,7 +111,7 @@ TEST(ParseArgs, InvalidSubcommandExits) {
 /* Verify all default values when only -d is supplied. */
 TEST(ParseArgs, TrainDefaultValues) {
   auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str() });
-  EXPECT_EQ(opts.model.trees, 100);
+  EXPECT_EQ(opts.model.size, 100);
   EXPECT_FLOAT_EQ(opts.model.lambda, 0.5f);
   EXPECT_EQ(opts.model.threads, -1);
   EXPECT_EQ(opts.model.seed, -1);
@@ -122,10 +122,10 @@ TEST(ParseArgs, TrainDefaultValues) {
   EXPECT_FALSE(opts.no_save);
 }
 
-/* -t overrides the default tree count. */
-TEST(ParseArgs, TrainTreesOption) {
-  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "-t", "50" });
-  EXPECT_EQ(opts.model.trees, 50);
+/* -n overrides the default tree count. */
+TEST(ParseArgs, TrainSizeOption) {
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "-n", "50" });
+  EXPECT_EQ(opts.model.size, 50);
 }
 
 /* -l overrides the default lambda. */
@@ -142,8 +142,8 @@ TEST(ParseArgs, TrainThreadsOption) {
 
 /* -r sets the random seed. */
 TEST(ParseArgs, TrainSeedOption) {
-  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "-r", "42" });
-  EXPECT_EQ(opts.model.seed, 42);
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "-r", "0" });
+  EXPECT_EQ(opts.model.seed, 0);
 }
 
 // ---------------------------------------------------------------------------
@@ -233,8 +233,8 @@ TEST(ParseArgs, TrainSaveOption) {
 
 /* Zero trees is accepted (means a single projection-pursuit tree). */
 TEST(ParseArgs, TrainZeroTrees) {
-  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "-t", "0" });
-  EXPECT_EQ(opts.model.trees, 0);
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "-n", "0" });
+  EXPECT_EQ(opts.model.size, 0);
 }
 
 /* Train without -d must exit. */
@@ -631,7 +631,7 @@ TEST(InitParams, UsedDefaultSeedFlag) {
 /* An explicit seed clears used_default_seed. */
 TEST(InitParams, UsedDefaultSeedFlagFalse) {
   CLIOptions params;
-  params.model.seed = 42;
+  params.model.seed = 0;
   params.quiet      = true;
   init_params(params);
   EXPECT_FALSE(params.model.used_default_seed);
@@ -658,7 +658,7 @@ TEST(InitParams, UsedDefaultThreadsFlagFalse) {
 /* Sentinel vars (-1/-1) sets used_default_vars to true. */
 TEST(InitParams, UsedDefaultVarsFlag) {
   CLIOptions params;
-  params.model.trees  = 10;
+  params.model.size   = 10;
   params.model.p_vars = -1;
   params.model.n_vars = -1;
   params.quiet        = true;
@@ -669,7 +669,7 @@ TEST(InitParams, UsedDefaultVarsFlag) {
 /* An explicit p_vars clears used_default_vars. */
 TEST(InitParams, UsedDefaultVarsFlagFalse) {
   CLIOptions params;
-  params.model.trees  = 10;
+  params.model.size   = 10;
   params.model.p_vars = 0.8f;
   params.model.n_vars = -1;
   params.quiet        = true;
@@ -693,10 +693,10 @@ TEST(InitParams, AutoSeed) {
 /* An explicit seed value is preserved. */
 TEST(InitParams, SeedPreservedIfSet) {
   CLIOptions params;
-  params.model.seed = 42;
+  params.model.seed = 0;
   params.quiet      = true;
   init_params(params);
-  EXPECT_EQ(params.model.seed, 42);
+  EXPECT_EQ(params.model.seed, 0);
 }
 
 /* Sentinel threads (-1) auto-detects to >= 1 thread. */
@@ -720,7 +720,7 @@ TEST(InitParams, ThreadsPreservedIfSet) {
 /* n_vars is computed from p_vars * total_vars. */
 TEST(InitParams, NVarsFromPVars) {
   CLIOptions params;
-  params.model.trees  = 10;
+  params.model.size   = 10;
   params.model.p_vars = 0.5f;
   params.model.n_vars = -1;
   params.quiet        = true;
@@ -731,7 +731,7 @@ TEST(InitParams, NVarsFromPVars) {
 /* p_vars is back-computed from n_vars / total_vars. */
 TEST(InitParams, PVarsFromNVars) {
   CLIOptions params;
-  params.model.trees  = 10;
+  params.model.size   = 10;
   params.model.p_vars = -1;
   params.model.n_vars = 3;
   params.quiet        = true;
@@ -742,7 +742,7 @@ TEST(InitParams, PVarsFromNVars) {
 /* Default vars: p_vars = 0.5, n_vars = half of total. */
 TEST(InitParams, DefaultPVarsAndNVars) {
   CLIOptions params;
-  params.model.trees  = 10;
+  params.model.size   = 10;
   params.model.p_vars = -1;
   params.model.n_vars = -1;
   params.quiet        = true;
@@ -754,7 +754,7 @@ TEST(InitParams, DefaultPVarsAndNVars) {
 /* Vars computation is skipped for a single tree (trees = 0). */
 TEST(InitParams, NoVarsWhenSingleTree) {
   CLIOptions params;
-  params.model.trees  = 0;
+  params.model.size   = 0;
   params.model.p_vars = 0.8f;
   params.model.n_vars = -1;
   params.quiet        = true;
@@ -766,7 +766,7 @@ TEST(InitParams, NoVarsWhenSingleTree) {
 /* Vars computation is skipped when total_vars is 0 (unknown). */
 TEST(InitParams, NoVarsWhenZeroTotalVars) {
   CLIOptions params;
-  params.model.trees  = 10;
+  params.model.size   = 10;
   params.model.p_vars = -1;
   params.model.n_vars = -1;
   params.quiet        = true;
@@ -782,7 +782,7 @@ TEST(InitParams, NoVarsWhenZeroTotalVars) {
 /* Single tree with --threads warns that threads is ignored. */
 TEST(WarnUnusedParams, TreesZeroThreadsWarning) {
   CLIOptions params;
-  params.model.trees   = 0;
+  params.model.size    = 0;
   params.model.threads = 4;
   params.quiet         = false;
 
@@ -797,7 +797,7 @@ TEST(WarnUnusedParams, TreesZeroThreadsWarning) {
 /* Single tree with --vars warns that vars is ignored. */
 TEST(WarnUnusedParams, TreesZeroVarsWarning) {
   CLIOptions params;
-  params.model.trees  = 0;
+  params.model.size   = 0;
   params.model.p_vars = 0.8f;
   params.quiet        = false;
 
@@ -812,7 +812,7 @@ TEST(WarnUnusedParams, TreesZeroVarsWarning) {
 /* Single tree with both --threads and --vars emits both warnings. */
 TEST(WarnUnusedParams, TreesZeroBothWarnings) {
   CLIOptions params;
-  params.model.trees   = 0;
+  params.model.size    = 0;
   params.model.threads = 4;
   params.model.n_vars  = 3;
   params.quiet         = false;
@@ -830,7 +830,7 @@ TEST(WarnUnusedParams, TreesZeroBothWarnings) {
 /* Forest mode (trees > 0) emits no warnings. */
 TEST(WarnUnusedParams, TreesNonZeroNoWarning) {
   CLIOptions params;
-  params.model.trees   = 10;
+  params.model.size    = 10;
   params.model.threads = 4;
   params.model.p_vars  = 0.8f;
   params.quiet         = false;
@@ -846,7 +846,7 @@ TEST(WarnUnusedParams, TreesNonZeroNoWarning) {
 /* Quiet mode suppresses all parameter warnings. */
 TEST(WarnUnusedParams, QuietSuppresses) {
   CLIOptions params;
-  params.model.trees   = 0;
+  params.model.size    = 0;
   params.model.threads = 4;
   params.model.p_vars  = 0.8f;
   params.quiet         = true;
@@ -907,6 +907,167 @@ TEST(ParseArgs, VarsInvalidValueExits) {
     ExitedWithNonZero(),
     ""
     );
+}
+
+// ---------------------------------------------------------------------------
+// parse_args() — explicit strategy flags (--pp, --dr, --sr)
+// ---------------------------------------------------------------------------
+
+/* --pp pda without lambda must exit — explicit API requires all params. */
+TEST(ParseArgs, PPStrategyNameOnlyExits) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --pp pda:lambda=0.3 sets lambda to 0.3. */
+TEST(ParseArgs, PPStrategyWithLambda) {
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:lambda=0.3" });
+  EXPECT_EQ(opts.model.pp_input, "pda:lambda=0.3");
+  EXPECT_FLOAT_EQ(opts.model.pp_config["lambda"].get<float>(), 0.3f);
+}
+
+/* --pp and -l are mutually exclusive. */
+TEST(ParseArgs, PPExcludesLambda) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda", "-l", "0.5" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* -l and --pp are mutually exclusive (reverse order). */
+TEST(ParseArgs, LambdaExcludesPP) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "-l", "0.5", "--pp", "pda" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --pp with an unknown strategy name must exit. */
+TEST(ParseArgs, PPUnknownStrategyExits) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "unknown" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --pp pda:unknown=1 with an unknown parameter must exit. */
+TEST(ParseArgs, PPUnknownParamExits) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:unknown=1" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --pp pda:lambda=notanumber must exit. */
+TEST(ParseArgs, PPInvalidLambdaValueExits) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:lambda=abc" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --pp pda:noequalssign must exit (missing key=value). */
+TEST(ParseArgs, PPMissingEqualsExits) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:noequalssign" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --dr noop sets DR to noop (forces n_vars=0). */
+TEST(ParseArgs, DRStrategyNoop) {
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--dr", "noop" });
+  EXPECT_EQ(opts.model.dr_input, "noop");
+  EXPECT_EQ(opts.model.n_vars, 0);
+}
+
+/* --dr uniform:vars=2 sets vars_input for later resolution. */
+TEST(ParseArgs, DRStrategyUniformWithVars) {
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--dr", "uniform:vars=2" });
+  EXPECT_EQ(opts.model.n_vars, 2);
+}
+
+/* --dr and -v are mutually exclusive. */
+TEST(ParseArgs, DRExcludesVars) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--dr", "noop", "-v", "2" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* -v and --dr are mutually exclusive (reverse order). */
+TEST(ParseArgs, VarsExcludesDR) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "-v", "2", "--dr", "noop" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --dr with an unknown strategy name must exit. */
+TEST(ParseArgs, DRUnknownStrategyExits) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--dr", "unknown" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --dr uniform:unknown=1 with an unknown parameter must exit. */
+TEST(ParseArgs, DRUnknownParamExits) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--dr", "uniform:unknown=1" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --sr mean_of_means is accepted. */
+TEST(ParseArgs, SRStrategyMeanOfMeans) {
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--sr", "mean_of_means" });
+  EXPECT_EQ(opts.model.sr_input, "mean_of_means");
+}
+
+/* --sr with an unknown strategy name must exit. */
+TEST(ParseArgs, SRUnknownStrategyExits) {
+  EXPECT_EXIT(
+    parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--sr", "unknown" }),
+    ExitedWithNonZero(),
+    ""
+    );
+}
+
+/* --max-retries sets the max retries count. */
+TEST(ParseArgs, MaxRetriesOption) {
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(), "--max-retries", "5" });
+  EXPECT_EQ(opts.model.max_retries, 5);
+}
+
+/* --max-retries defaults to 3. */
+TEST(ParseArgs, MaxRetriesDefault) {
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str() });
+  EXPECT_EQ(opts.model.max_retries, 3);
+}
+
+/* All three explicit strategy flags can be used together. */
+TEST(ParseArgs, AllExplicitStrategies) {
+  auto opts = parse({ "ppforest2", "train", "-d", IRIS_PATH.c_str(),
+                      "--pp", "pda:lambda=0.3", "--dr", "uniform:vars=2", "--sr", "mean_of_means" });
+  EXPECT_EQ(opts.model.pp_input, "pda:lambda=0.3");
+  EXPECT_EQ(opts.model.dr_input, "uniform:vars=2");
+  EXPECT_EQ(opts.model.sr_input, "mean_of_means");
+  EXPECT_FLOAT_EQ(opts.model.pp_config["lambda"].get<float>(), 0.3f);
+  EXPECT_EQ(opts.model.dr_config["n_vars"].get<int>(), 2);
 }
 
 // ---------------------------------------------------------------------------

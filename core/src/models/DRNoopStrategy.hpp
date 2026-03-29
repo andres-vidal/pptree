@@ -1,8 +1,8 @@
 #pragma once
-#include <algorithm>
-#include <numeric>
 
 #include "models/DRStrategy.hpp"
+#include "models/Strategy.hpp"
+#include "utils/JsonValidation.hpp"
 
 namespace ppforest2::dr {
   /**
@@ -12,26 +12,21 @@ namespace ppforest2::dr {
    * are available to the projection pursuit step at every node.
    */
   struct DRNoopStrategy : public DRStrategy {
-    DRStrategy::Ptr clone() const override {
-      return std::make_unique<DRNoopStrategy>(*this);
+    void to_json(nlohmann::json& j) const override;
+    std::string display_name() const override {
+      return "All variables";
     }
 
     DRResult select(
-      types::FeatureMatrix const & x,
+      types::FeatureMatrix const&  x,
       stats::GroupPartition const& group_spec,
-      stats::RNG &                 rng) const override {
-      std::vector<int> all_indices(x.cols());
-      std::iota(all_indices.begin(), all_indices.end(), 0);
-      return DRResult(all_indices, x.cols());
-    }
+      stats::RNG&                  rng) const override;
+
+    static DRStrategy::Ptr from_json(const nlohmann::json& j);
+
+    PPFOREST2_REGISTER_STRATEGY(DRStrategy, "noop")
   };
 
-  /**
-   * @brief Factory function for a no-op DR strategy.
-   *
-   * @return  Owned pointer to a DRNoopStrategy.
-   */
-  inline DRStrategy::Ptr noop() {
-    return std::make_unique<DRNoopStrategy>();
-  }
+  /** @brief Factory function for a no-op DR strategy. */
+  DRStrategy::Ptr noop();
 }

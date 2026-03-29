@@ -26,14 +26,14 @@ TEST(CLIGlobal, VersionFlag) {
 
 /* -q with evaluate produces completely empty stdout. */
 TEST(CLIGlobal, QuietSuppressesOutput) {
-  auto quiet_result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
+  auto quiet_result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1");
   EXPECT_EQ(quiet_result.exit_code, 0);
   EXPECT_TRUE(quiet_result.stdout_output.empty());
 }
 
 /* -q suppresses "Evaluation results", "Train Error", "Test Error". */
 TEST(CLIGlobal, QuietSuppressesEvaluateResults) {
-  auto quiet_result = run_ppforest2("-q evaluate --simulate 50x3x2 -t 5 -r 42 -i 1");
+  auto quiet_result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1");
   EXPECT_EQ(quiet_result.exit_code, 0);
   EXPECT_EQ(quiet_result.stdout_output.find("Evaluation results"), std::string::npos);
   EXPECT_EQ(quiet_result.stdout_output.find("Train Error"), std::string::npos);
@@ -55,12 +55,12 @@ TEST(CLIGlobal, ConfigFileApplied) {
   TempFile config;
   {
     std::ofstream out(config.path());
-    out << R"({"trees": 3})";
+    out << R"({"size": 3})";
   }
 
   TempFile output;
   output.clear();
-  auto result = run_ppforest2("--config " + config.path() + " -q evaluate --simulate 50x3x2 -r 42 -i 1 -o " + output.path());
+  auto result = run_ppforest2("--config " + config.path() + " -q evaluate --simulate 50x3x2 -r 0 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -76,7 +76,7 @@ TEST(CLIGlobal, TrainThenPredict) {
   TempFile model;
   model.clear();
 
-  auto train_result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  auto train_result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -s " + model.path());
   ASSERT_EQ(train_result.exit_code, 0);
 
   TempFile output;

@@ -4,7 +4,6 @@
 
 #include "models/Model.hpp"
 #include "models/TreeNode.hpp"
-#include "models/TrainingSpec.hpp"
 
 
 namespace ppforest2 {
@@ -16,8 +15,8 @@ namespace ppforest2 {
    * group labels.
    *
    * @code
-   *   TrainingSpecPDA spec(lambda: 0.0);
-   *   stats::RNG rng(42);
+   *   TrainingSpec spec(pp::pda(0.0), dr::noop(), sr::mean_of_means());
+   *   stats::RNG rng(0);
    *
    *   Tree tree = Tree::train(spec, x, y, rng);
    *   types::Response label = tree.predict(x.row(0));
@@ -61,20 +60,9 @@ namespace ppforest2 {
       stats::GroupPartition const& group_spec,
       stats::RNG&                  rng);
 
-    /** @brief Train a tree and return it as a Model::Ptr. */
-    static Model::Ptr make(
-      TrainingSpec const&          training_spec,
-      const types::FeatureMatrix&  x,
-      const types::ResponseVector& y,
-      stats::RNG&                  rng);
-
-
     /** @brief Root node of the tree. */
     TreeNode::Ptr root;
-    /** @brief Training specification used to build this tree. */
-    TrainingSpec::Ptr training_spec;
 
-    explicit Tree(TreeNode::Ptr root);
     Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec);
 
     void accept(Model::Visitor& visitor) const override;

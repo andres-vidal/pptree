@@ -19,8 +19,8 @@ namespace ppforest2 {
    * supported.
    *
    * @code
-   *   TrainingSpecUPDA spec(n_vars: 3, lambda: 0.0);
-   *   Forest forest = Forest::train(spec, x, y, size: 500, seed: 42);
+   *   TrainingSpec spec(pp::pda(0.0), dr::uniform(3), sr::mean_of_means(), 500, 0);
+   *   Forest forest = Forest::train(spec, x, y);
    *
    *   types::ResponseVector preds = forest.predict(x_test);
    *   double oob = forest.oob_error(x, y);
@@ -33,40 +33,23 @@ namespace ppforest2 {
     /**
      * @brief Train a random forest.
      *
+     * Forest-level parameters (size, seed, threads, max_retries)
+     * are read from the training specification.
+     *
      * @param training_spec  Training specification.
      * @param x              Feature matrix (n × p).
      * @param y              Response vector (n).
-     * @param size           Number of trees.
-     * @param seed            RNG seed.
-     * @param n_threads      Number of threads (default: hardware concurrency).
-     * @param max_retries    Maximum retry attempts for degenerate trees (default: 3).
      * @return               Trained forest.
      */
     static Forest train(
       const TrainingSpec&          training_spec,
       const types::FeatureMatrix&  x,
-      const types::ResponseVector& y,
-      int                          size,
-      int                          seed,
-      int                          n_threads   = std::thread::hardware_concurrency(),
-      int                          max_retries = 3);
-
-    /** @brief Train a forest and return it as a Model::Ptr. */
-    static Model::Ptr make(
-      const TrainingSpec&          training_spec,
-      const types::FeatureMatrix&  x,
-      const types::ResponseVector& y,
-      int                          size,
-      int                          seed,
-      int                          n_threads   = std::thread::hardware_concurrency(),
-      int                          max_retries = 3);
+      const types::ResponseVector& y);
 
     std::vector<BootstrapTree::Ptr> trees;
-    TrainingSpec::Ptr training_spec;
-    const int seed = 0;
 
     Forest();
-    Forest(TrainingSpec::Ptr&& training_spec, int seed);
+    explicit Forest(TrainingSpec::Ptr training_spec);
 
     /**
      * @brief Predict a single observation.

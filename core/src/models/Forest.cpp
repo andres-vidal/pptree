@@ -4,7 +4,6 @@
 #include "utils/Invariant.hpp"
 
 #include <algorithm>
-#include <thread>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -17,18 +16,20 @@ namespace ppforest2 {
   Forest Forest::train(
     const TrainingSpec &  training_spec,
     const FeatureMatrix & x,
-    const ResponseVector& y,
-    const int             size,
-    const int             seed,
-    const int             n_threads,
-    const int             max_retries) {
+    const ResponseVector& y) {
+    const int size        = training_spec.size;
+    const int seed        = training_spec.seed;
+    const int max_retries = training_spec.max_retries;
+
     #ifdef _OPENMP
-    omp_set_num_threads(n_threads);
+    omp_set_num_threads(training_spec.resolve_threads());
     #endif
 
     GroupPartition group_spec(y);
 
     invariant(size > 0, "The forest size must be greater than 0.");
+
+    auto spec = TrainingSpec::make(training_spec);
 
     std::vector<BootstrapTree::Ptr> trees(size);
     std::vector<std::exception_ptr> errors(size);
@@ -39,7 +40,7 @@ namespace ppforest2 {
         try {
           uint64_t stream = static_cast<uint64_t>(i) + static_cast<uint64_t>(attempt) * static_cast<uint64_t>(size);
           RNG rng(static_cast<uint64_t>(seed), stream);
-          trees[i] = BootstrapTree::train(training_spec, x, group_spec, rng);
+          trees[i] = BootstrapTree::train(spec, x, group_spec, rng);
 
           if (!trees[i]->degenerate) {
             break;
@@ -51,7 +52,7 @@ namespace ppforest2 {
       }
     }
 
-    Forest forest(training_spec.clone(), seed);
+    Forest forest(spec);
 
     for (int i = 0; i < size; i++) {
       if (errors[i]) {
@@ -68,23 +69,11 @@ namespace ppforest2 {
     return forest;
   }
 
-  Model::Ptr Forest::make(
-    const TrainingSpec&   training_spec,
-    const FeatureMatrix&  x,
-    const ResponseVector& y,
-    int                   size,
-    int                   seed,
-    int                   n_threads,
-    int                   max_retries) {
-    return std::make_unique<Forest>(train(training_spec, x, y, size, seed, n_threads, max_retries));
-  }
-
   Forest::Forest() {
   }
 
-  Forest::Forest(TrainingSpec::Ptr&& training_spec, int seed)
-    : training_spec(std::move(training_spec)),
-    seed(seed) {
+  Forest::Forest(TrainingSpec::Ptr training_spec) {
+    this->training_spec = std::move(training_spec);
   }
 
   Response Forest::predict(const FeatureVector& data) const {

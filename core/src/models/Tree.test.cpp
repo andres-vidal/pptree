@@ -6,8 +6,6 @@
 #include "models/TreeResponse.hpp"
 
 #include "models/TrainingSpec.hpp"
-#include "models/TrainingSpecPDA.hpp"
-#include "models/TrainingSpecUPDA.hpp"
 
 #include "stats/Simulation.hpp"
 #include "stats/Stats.hpp"
@@ -167,7 +165,8 @@ TEST(Tree, EqualsEqualTrees) {
         as_projector({ 1.0, 2.0 }),
         3.0,
         TreeResponse::make(1),
-        TreeResponse::make(2))));
+        TreeResponse::make(2))),
+    nullptr);
 
   Tree t2(
     TreeCondition::make(
@@ -178,7 +177,8 @@ TEST(Tree, EqualsEqualTrees) {
         as_projector({ 1.0, 2.0 }),
         3.0,
         TreeResponse::make(1),
-        TreeResponse::make(2))));
+        TreeResponse::make(2))),
+    nullptr);
 
   ASSERT_TRUE(t1 == t2);
 }
@@ -189,14 +189,16 @@ TEST(Tree, EqualsDifferentTrees) {
       as_projector({ 1.0, 2.0 }),
       3.0,
       TreeResponse::make(1),
-      TreeResponse::make(2)));
+      TreeResponse::make(2)),
+    nullptr);
 
   Tree t2(
     TreeCondition::make(
       as_projector({ 1.0, 2.0 }),
       3.0,
       TreeResponse::make(1),
-      TreeResponse::make(3)));
+      TreeResponse::make(3)),
+    nullptr);
 
   ASSERT_FALSE(t1 == t2);
 }
@@ -212,7 +214,7 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecPDA(0.0), x, y, rng);
+  Tree result = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), x, y, rng);
 
   ResponseVector predictions = result.predict(x);
 
@@ -232,7 +234,7 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecPDA(0.0), x, y, rng);
+  Tree result = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), x, y, rng);
 
   ResponseVector predictions = result.predict(x);
 
@@ -266,7 +268,7 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecPDA(0.0), x, y, rng);
+  Tree result = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), x, y, rng);
 
   ResponseVector predictions = result.predict(x);
 
@@ -340,7 +342,7 @@ TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecPDA(0.0), x, y, rng);
+  Tree result = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), x, y, rng);
 
   // Property: tree should predict training data perfectly (well-separated groups)
   ResponseVector predictions = result.predict(x);
@@ -375,7 +377,7 @@ TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
 
   stats::RNG rng(0);
 
-  Tree result = Tree::train(TrainingSpecPDA(0.5), x, y, rng);
+  Tree result = Tree::train(TrainingSpec(pp::pda(0.5), dr::noop(), sr::mean_of_means()), x, y, rng);
 
   // Property: tree should predict training data perfectly
   ResponseVector predictions = result.predict(x);
@@ -384,30 +386,30 @@ TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
 }
 
 TEST(TreeSimulation, PerfectSeparationZeroError) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 200.0f;
   params.sd              = 1.0f;
 
   auto data = simulate(90, 4, 3, rng, params);
 
-  RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
+  RNG train_rng(0);
+  Tree tree = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   ASSERT_EQ(error_rate(predictions, data.y), 0.0) << "Tree should achieve 0% error on perfectly separated data";
 }
 
 TEST(TreeSimulation, HighOverlapBoundedError) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 5.0f;
   params.sd              = 50.0f;
 
   auto data = simulate(200, 4, 3, rng, params);
 
-  RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
+  RNG train_rng(0);
+  Tree tree = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -416,15 +418,15 @@ TEST(TreeSimulation, HighOverlapBoundedError) {
 }
 
 TEST(TreeSimulation, ManyClasses) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 50.0f;
   params.sd              = 10.0f;
 
   auto data = simulate(300, 4, 10, rng, params);
 
-  RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
+  RNG train_rng(0);
+  Tree tree = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -434,15 +436,15 @@ TEST(TreeSimulation, ManyClasses) {
 }
 
 TEST(TreeSimulation, HighDimensionality) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 50.0f;
   params.sd              = 10.0f;
 
   auto data = simulate(100, 50, 3, rng, params);
 
-  RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
+  RNG train_rng(0);
+  Tree tree = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -452,15 +454,15 @@ TEST(TreeSimulation, HighDimensionality) {
 }
 
 TEST(TreeSimulation, SingleFeature) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 50.0f;
   params.sd              = 10.0f;
 
   auto data = simulate(100, 1, 2, rng, params);
 
-  RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, train_rng);
+  RNG train_rng(0);
+  Tree tree = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -470,15 +472,15 @@ TEST(TreeSimulation, SingleFeature) {
 }
 
 TEST(TreeSimulation, PDAOnOverlappingData) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 10.0f;
   params.sd              = 20.0f;
 
   auto data = simulate(200, 4, 3, rng, params);
 
-  RNG train_rng(42);
-  Tree tree = Tree::train(TrainingSpecPDA(0.5), data.x, data.y, train_rng);
+  RNG train_rng(0);
+  Tree tree = Tree::train(TrainingSpec(pp::pda(0.5), dr::noop(), sr::mean_of_means()), data.x, data.y, train_rng);
 
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -488,14 +490,14 @@ TEST(TreeSimulation, PDAOnOverlappingData) {
 }
 
 TEST(TreeSimulation, Deterministic) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(90, 4, 3, rng);
 
-  RNG rng1(42);
-  Tree t1 = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, rng1);
+  RNG rng1(0);
+  Tree t1 = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), data.x, data.y, rng1);
 
-  RNG rng2(42);
-  Tree t2 = Tree::train(TrainingSpecPDA(0.0), data.x, data.y, rng2);
+  RNG rng2(0);
+  Tree t2 = Tree::train(TrainingSpec(pp::pda(0.0), dr::noop(), sr::mean_of_means()), data.x, data.y, rng2);
 
   ASSERT_EQ(t1, t2) << "Same seed should produce identical trees";
 }
@@ -506,7 +508,8 @@ TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
       as_projector({ 1.0 }),
       1.5,
       TreeResponse::make(0),
-      TreeResponse::make(1)));
+      TreeResponse::make(1)),
+    nullptr);
 
 
   FeatureVector input = VEC(Feature, 1.0);
@@ -526,7 +529,8 @@ TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
         as_projector({ 1.0 }),
         2.5,
         TreeResponse::make(1),
-        TreeResponse::make(2))));
+        TreeResponse::make(2))),
+    nullptr);
 
   FeatureVector input = VEC(Feature, 1.0);
   ASSERT_EQ(tree.predict(input), 0);
@@ -544,7 +548,8 @@ TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       TreeResponse::make(0),
-      TreeResponse::make(1)));
+      TreeResponse::make(1)),
+    nullptr);
 
   FeatureVector input = VEC(Feature, 1, 0, 1, 1);
   ASSERT_EQ(tree.predict(input), 0);
@@ -563,7 +568,8 @@ TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
         2.5,
         TreeResponse::make(0),
         TreeResponse::make(1)),
-      TreeResponse::make(2)));
+      TreeResponse::make(2)),
+    nullptr);
 
   FeatureVector input = VEC(Feature, 1, 0, 0, 1, 1);
   ASSERT_EQ(tree.predict(input), 0);
@@ -581,7 +587,8 @@ TEST(Tree, PredictDataUnivariateTwoGroups) {
       as_projector({ 1.0 }),
       1.5,
       TreeResponse::make(0),
-      TreeResponse::make(1)));
+      TreeResponse::make(1)),
+    nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(2), 1.0, 2.0);
 
@@ -602,7 +609,8 @@ TEST(Tree, PredictDataUnivariateThreeGroups) {
         as_projector({ 1.0 }),
         2.5,
         TreeResponse::make(1),
-        TreeResponse::make(2))));
+        TreeResponse::make(2))),
+    nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(3), 1.0, 2.0, 3.0);
 
@@ -619,7 +627,8 @@ TEST(Tree, PredictDataMultivariateTwoGroups) {
       as_projector({ 1.0, 0.0, 0.0, 0.0 }),
       2.5,
       TreeResponse::make(0),
-      TreeResponse::make(1)));
+      TreeResponse::make(1)),
+    nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(2),
       1, 0, 1, 1,
@@ -642,7 +651,8 @@ TEST(Tree, PredictDataMultivariateThreeGroups) {
         2.5,
         TreeResponse::make(0),
         TreeResponse::make(1)),
-      TreeResponse::make(2)));
+      TreeResponse::make(2)),
+    nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(3),
       1, 0, 0, 1, 1,
@@ -663,8 +673,8 @@ TEST(Tree, PredictProportionsTwoGroups) {
       1.5,
       TreeResponse::make(0),
       TreeResponse::make(1),
-      nullptr,
-      { 0, 1 }));
+      { 0, 1 }),
+    nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(2), 1.0, 2.0);
 
@@ -693,10 +703,9 @@ TEST(Tree, PredictProportionsThreeGroups) {
         2.5,
         TreeResponse::make(1),
         TreeResponse::make(2),
-        nullptr,
         { 1, 2 }),
-      nullptr,
-      { 0, 1, 2 }));
+      { 0, 1, 2 }),
+    nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(3), 1.0, 2.0, 3.0);
 
@@ -726,8 +735,8 @@ TEST(Tree, PredictProportionsRowsSumToOne) {
       2.5,
       TreeResponse::make(0),
       TreeResponse::make(1),
-      nullptr,
-      { 0, 1 }));
+      { 0, 1 }),
+    nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(4),
       1, 0, 1, 1,
@@ -756,11 +765,10 @@ TEST(Tree, PredictProportionsMatchesPredictions) {
         2.5,
         TreeResponse::make(0),
         TreeResponse::make(1),
-        nullptr,
         { 0, 1 }),
       TreeResponse::make(2),
-      nullptr,
-      { 0, 1, 2 }));
+      { 0, 1, 2 }),
+    nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(3),
       1, 0, 0, 1, 1,

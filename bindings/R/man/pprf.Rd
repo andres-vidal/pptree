@@ -15,7 +15,10 @@ pprf(
   p_vars = NULL,
   seed = NULL,
   max_retries = 3L,
-  n_threads = NULL
+  threads = NULL,
+  pp = NULL,
+  dr = NULL,
+  sr = NULL
 )
 }
 \arguments{
@@ -29,17 +32,23 @@ pprf(
 
 \item{size}{The number of trees in the forest.}
 
-\item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).}
+\item{lambda}{A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA). Cannot be used together with \code{pp}.}
 
-\item{n_vars}{The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with \code{p_vars}.}
+\item{n_vars}{The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with \code{p_vars} or \code{dr}.}
 
-\item{p_vars}{The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, \code{p_vars = 0.5} uses half the features. Cannot be used together with \code{n_vars}.}
+\item{p_vars}{The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, \code{p_vars = 0.5} uses half the features. Cannot be used together with \code{n_vars} or \code{dr}.}
 
 \item{seed}{An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.}
 
 \item{max_retries}{Maximum number of retries for degenerate trees (default: 3). When a bootstrap sample yields a singular covariance matrix, the tree is retrained with a different seed up to this many times.}
 
-\item{n_threads}{The number of threads to use. The default is the number of cores available.}
+\item{threads}{The number of threads to use. The default is the number of cores available.}
+
+\item{pp}{A projection pursuit strategy object created by \code{\link{pp_pda}}. Cannot be used together with \code{lambda}.}
+
+\item{dr}{A dimensionality reduction strategy object created by \code{\link{dr_uniform}} or \code{\link{dr_noop}}. Cannot be used together with \code{n_vars} or \code{p_vars}.}
+
+\item{sr}{A split rule strategy object created by \code{\link{sr_mean_of_means}} (default).}
 }
 \value{
 A pprf model trained on \code{x} and \code{y}.
@@ -72,5 +81,5 @@ pprf(Type ~ ., data = crabs, lambda = 0.5)
 
 }
 \seealso{
-\code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{vignette("introduction")} for a tutorial
+\code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{dr_uniform}}, \code{\link{dr_noop}}, \code{\link{sr_mean_of_means}}, \code{vignette("introduction")} for a tutorial
 }

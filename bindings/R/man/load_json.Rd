@@ -24,7 +24,7 @@ and will be \code{NULL} on the loaded model. This means formula-based
 instead.
 }
 \examples{
-model <- pptr(Type ~ ., data = iris, seed = 42)
+model <- pptr(Type ~ ., data = iris, seed = 0)
 path <- tempfile(fileext = ".json")
 save_json(model, path)
 loaded <- load_json(path)

@@ -1,10 +1,8 @@
 #pragma once
 
 #include "models/Projector.hpp"
+#include "models/Strategy.hpp"
 #include "stats/GroupPartition.hpp"
-#include <set>
-#include <vector>
-#include <memory>
 
 /**
  * @brief Projection pursuit strategies.
@@ -12,6 +10,9 @@
  * Contains the abstract PPStrategy interface and concrete
  * implementations (e.g. PPPDAStrategy) that define how to evaluate
  * and optimise a projection index for separating groups.
+ *
+ * New strategies must implement the pure virtual methods including
+ * to_json() for serialization support.
  */
 namespace ppforest2::pp {
   /**
@@ -30,13 +31,10 @@ namespace ppforest2::pp {
    * Defines how to evaluate a projection (via an index function) and
    * how to find the optimal projection for a given dataset and
    * group partition.
+   *
+   * Implementations must also provide to_json() for serialization.
    */
-  struct PPStrategy {
-    using Ptr = std::unique_ptr<PPStrategy>;
-
-    virtual ~PPStrategy()     = default;
-    virtual Ptr clone() const = 0;
-
+  struct PPStrategy : public Strategy<PPStrategy> {
     /**
      * @brief Evaluate the projection pursuit index for a given projector.
      *

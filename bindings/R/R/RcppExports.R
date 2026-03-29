@@ -5,12 +5,8 @@ ppforest2_has_openmp <- function() {
     .Call('_ppforest2_ppforest2_has_openmp', PACKAGE = 'ppforest2')
 }
 
-ppforest2_train_tree_pda <- function(x, y, lambda, seed) {
-    .Call('_ppforest2_ppforest2_train_tree_pda', PACKAGE = 'ppforest2', x, y, lambda, seed)
-}
-
-ppforest2_train_forest_pda <- function(x, y, size, n_vars, lambda, seed, n_threads, max_retries = 3L) {
-    .Call('_ppforest2_ppforest2_train_forest_pda', PACKAGE = 'ppforest2', x, y, size, n_vars, lambda, seed, n_threads, max_retries)
+ppforest2_train <- function(spec, x, y) {
+    .Call('_ppforest2_ppforest2_train', PACKAGE = 'ppforest2', spec, x, y)
 }
 
 ppforest2_predict_tree <- function(tree, data) {
@@ -69,23 +65,11 @@ ppforest2_tree_layout <- function(tree) {
     .Call('_ppforest2_ppforest2_tree_layout', PACKAGE = 'ppforest2', tree)
 }
 
-ppforest2_save_tree_json <- function(tree, groups, vi, training_spec, seed, include_metrics, n_obs = 0L, n_features = 0L, feature_names = NULL) {
-    .Call('_ppforest2_ppforest2_save_tree_json', PACKAGE = 'ppforest2', tree, groups, vi, training_spec, seed, include_metrics, n_obs, n_features, feature_names)
+ppforest2_save_model_json <- function(model, groups, include_metrics, x, y, feature_names) {
+    .Call('_ppforest2_ppforest2_save_model_json', PACKAGE = 'ppforest2', model, groups, include_metrics, x, y, feature_names)
 }
 
-ppforest2_save_forest_json <- function(forest, groups, vi, training_spec, seed, oob_error, include_metrics, n_obs = 0L, n_features = 0L, feature_names = NULL) {
-    .Call('_ppforest2_ppforest2_save_forest_json', PACKAGE = 'ppforest2', forest, groups, vi, training_spec, seed, oob_error, include_metrics, n_obs, n_features, feature_names)
-}
-
-ppforest2_load_json_meta <- function(json_str) {
-    .Call('_ppforest2_ppforest2_load_json_meta', PACKAGE = 'ppforest2', json_str)
-}
-
-ppforest2_tree_from_json <- function(json_str) {
-    .Call('_ppforest2_ppforest2_tree_from_json', PACKAGE = 'ppforest2', json_str)
-}
-
-ppforest2_forest_from_json <- function(json_str) {
-    .Call('_ppforest2_ppforest2_forest_from_json', PACKAGE = 'ppforest2', json_str)
+ppforest2_load_model_json <- function(path) {
+    .Call('_ppforest2_ppforest2_load_model_json', PACKAGE = 'ppforest2', path)
 }
 

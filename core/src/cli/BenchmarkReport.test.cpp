@@ -25,7 +25,7 @@ class BenchmarkReportTest : public ::testing::Test {
       sr1.n                = 100;
       sr1.p                = 5;
       sr1.g                = 2;
-      sr1.trees            = 50;
+      sr1.size             = 50;
       sr1.vars             = 0.5f;
       sr1.runs             = 10;
       sr1.mean_time_ms     = 12.3;
@@ -41,7 +41,7 @@ class BenchmarkReportTest : public ::testing::Test {
       sr2.n                = 5000;
       sr2.p                = 50;
       sr2.g                = 5;
-      sr2.trees            = 200;
+      sr2.size             = 200;
       sr2.vars             = 0.5f;
       sr2.runs             = 5;
       sr2.mean_time_ms     = 500.0;

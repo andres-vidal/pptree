@@ -134,7 +134,7 @@ namespace {
 
     if (scenario_json.contains("g")) s.g = scenario_json["g"].get<int>();
 
-    if (scenario_json.contains("trees")) s.trees = scenario_json["trees"].get<int>();
+    if (scenario_json.contains("size")) s.size = scenario_json["size"].get<int>();
 
     if (scenario_json.contains("vars")) {
       auto spec = ppforest2::cli::parse_vars(scenario_json["vars"]);
@@ -181,7 +181,7 @@ namespace {
       invariant(s.g > 1, fmt::format("Scenario '{}': g must be > 1", s.name));
     }
 
-    invariant(s.trees >= 0, fmt::format("Scenario '{}': trees must be >= 0", s.name));
+    invariant(s.size >= 0, fmt::format("Scenario '{}': size must be >= 0", s.name));
     invariant(s.vars > 0 && s.vars <= 1, fmt::format("Scenario '{}': vars must be in (0, 1]", s.name));
     invariant(s.lambda >= 0 && s.lambda <= 1, fmt::format("Scenario '{}': lambda must be in [0, 1]", s.name));
     invariant(s.train_ratio > 0 && s.train_ratio < 1, fmt::format("Scenario '{}': train_ratio must be in (0, 1)", s.name));
@@ -215,10 +215,10 @@ namespace {
         binary_path, s.data, s.seed, s.train_ratio, output_path);
     }
 
-    if (s.trees > 0) {
-      cmd += fmt::format(" -t {} -v {}", s.trees, s.vars);
+    if (s.size > 0) {
+      cmd += fmt::format(" -n {} -v {}", s.size, s.vars);
     } else {
-      cmd += " -t 0";
+      cmd += " -n 0";
     }
 
     cmd += fmt::format(" -l {}", s.lambda);
@@ -274,7 +274,7 @@ namespace {
       result.g = dims.g;
     }
 
-    result.trees       = s.trees;
+    result.size        = s.size;
     result.vars        = s.vars;
     result.train_ratio = s.train_ratio;
 
@@ -354,7 +354,7 @@ namespace {
         sr.n              = r.value("n", 0);
         sr.p              = r.value("p", 0);
         sr.g              = r.value("g", 0);
-        sr.trees          = r.value("trees", 0);
+        sr.size           = r.value("size", 0);
         sr.vars           = r.value("vars", 0.0f);
         sr.train_ratio    = r.value("train_ratio", 0.7f);
         sr.runs           = r.value("runs", 0);
@@ -391,7 +391,7 @@ namespace {
       rj["n"]                = r.n;
       rj["p"]                = r.p;
       rj["g"]                = r.g;
-      rj["trees"]            = r.trees;
+      rj["size"]             = r.size;
       rj["vars"]             = r.vars;
       rj["train_ratio"]      = r.train_ratio;
       rj["runs"]             = r.runs;

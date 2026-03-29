@@ -145,7 +145,7 @@ TEST_F(PredictTest, PredictNoProportionsFlag) {
 TEST(CLIPredict, PredictTreeModelIncludesProportions) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 0 -r 42 -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -r 0 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;
@@ -177,7 +177,7 @@ TEST(CLIPredict, PredictTreeModelIncludesProportions) {
 TEST(CLIPredict, PredictTreeNoProportionsFlag) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 0 -r 42 -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -r 0 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;
@@ -194,7 +194,7 @@ TEST(CLIPredict, PredictTreeNoProportionsFlag) {
 TEST(CLIPredict, PredictOutputNoErrorInConfusionMatrix) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;
@@ -228,7 +228,7 @@ TEST(CLIPredict, PredictNonexistentModelFails) {
 TEST(CLIPredict, PredictWithSingleTreeModel) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 0 -r 42 -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -r 0 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;

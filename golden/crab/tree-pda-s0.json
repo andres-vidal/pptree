@@ -1,10 +1,21 @@
 {
   "config": {
     "dataset": "crab",
-    "lambda": 0.0,
+    "dr": {
+      "name": "noop"
+    },
+    "max_retries": 3,
     "platform": "macos-clang",
-    "seed": 42,
-    "trees": 0
+    "pp": {
+      "lambda": 0.0,
+      "name": "pda"
+    },
+    "seed": 0,
+    "size": 0,
+    "sr": {
+      "name": "mean_of_means"
+    },
+    "threads": 1
   },
   "error_rate": 0.05500000715255737,
   "meta": {

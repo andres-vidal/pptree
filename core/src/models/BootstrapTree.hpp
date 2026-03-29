@@ -16,14 +16,14 @@ namespace ppforest2 {
      * Samples rows from @p x according to @p group_spec, trains a tree
      * on the sampled data, and stores the sample indices for OOB queries.
      *
-     * @param training_spec  Training specification.
+     * @param training_spec  Training specification (shared).
      * @param x             Feature matrix (n × p).
      * @param group_spec    Group partition for stratified sampling.
      * @param rng            Random number generator.
      * @return               Trained bootstrap tree.
      */
     static Ptr train(
-      TrainingSpec const&          training_spec,
+      TrainingSpec::Ptr const&     training_spec,
       types::FeatureMatrix const&  x,
       stats::GroupPartition const& group_spec,
       stats::RNG &                 rng);
