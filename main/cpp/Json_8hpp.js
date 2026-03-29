@@ -4,6 +4,8 @@ var Json_8hpp =
     [ "ppforest2::serialization::JsonNodeVisitor", "structppforest2_1_1serialization_1_1JsonNodeVisitor.html", "structppforest2_1_1serialization_1_1JsonNodeVisitor" ],
     [ "ppforest2::serialization::GroupNames", "namespaceppforest2_1_1serialization.html#a765380bc535afaefa14aa99a8ff8aae4", null ],
     [ "ppforest2::serialization::json", "namespaceppforest2_1_1serialization.html#afced42a0b2c517da2664a9a849d90899", null ],
+    [ "ppforest2::serialization::build_meta_json", "namespaceppforest2_1_1serialization.html#aac5f2192ec7d65aef60d10053acb95bd", null ],
+    [ "ppforest2::serialization::build_model_json", "namespaceppforest2_1_1serialization.html#ade82e471b7218aaf92c23e7e96797bdb", null ],
     [ "ppforest2::serialization::confusion_matrix_from_json", "namespaceppforest2_1_1serialization.html#a329ee6a9f01d92df065ba7c5d57d2df9", null ],
     [ "ppforest2::serialization::forest_from_json", "namespaceppforest2_1_1serialization.html#acb1f75bf0934a1093a5aec7e8731368b", null ],
     [ "ppforest2::serialization::forest_from_json", "namespaceppforest2_1_1serialization.html#a37103fb28223745c43876d65704a4c41", null ],
@@ -33,6 +35,7 @@ var Json_8hpp =
     [ "ppforest2::serialization::to_json", "namespaceppforest2_1_1serialization.html#aa7467076081068752ce4f866c13882a3", null ],
     [ "ppforest2::serialization::to_json", "namespaceppforest2_1_1serialization.html#a65407d260eef286ca5617c89507e4ee2", null ],
     [ "ppforest2::serialization::to_json", "namespaceppforest2_1_1serialization.html#a6c4ace5db0792efcaa22ddc44931a78b", null ],
+    [ "ppforest2::serialization::to_labels", "namespaceppforest2_1_1serialization.html#ace12bc9f6095a395d223e8bb0717c14a", null ],
     [ "ppforest2::serialization::tree_from_json", "namespaceppforest2_1_1serialization.html#a5c4d68089d7b011a19c406d5acf6aea7", null ],
     [ "ppforest2::serialization::tree_from_json", "namespaceppforest2_1_1serialization.html#a790106cccb9ca36bc23cd41985357430", null ],
     [ "ppforest2::serialization::variable_importance_from_json", "namespaceppforest2_1_1serialization.html#ab5abf264f6fb5592d803b009ab4ed817", null ]

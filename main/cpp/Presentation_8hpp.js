@@ -7,5 +7,5 @@ var Presentation_8hpp =
     [ "ppforest2::io::print_data_summary", "namespaceppforest2_1_1io.html#a19eaf80911f0791e0580745b98b0d9c1", null ],
     [ "ppforest2::io::print_results", "namespaceppforest2_1_1io.html#ad87ca824e129347e3b2b308fbea618b0", null ],
     [ "ppforest2::io::print_summary", "namespaceppforest2_1_1io.html#aa33ed0297f11b5cc3875f3efba7049bf", null ],
-    [ "ppforest2::io::print_variable_importance", "namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7", null ]
+    [ "ppforest2::io::print_variable_importance", "namespaceppforest2_1_1io.html#a7e4f70debb2e10cbc628376c1382d84f", null ]
 ];

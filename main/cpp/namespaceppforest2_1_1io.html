@@ -168,9 +168,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aa33ed0297f11b5cc3875f3efba7049bf" id="r_aa33ed0297f11b5cc3875f3efba7049bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa33ed0297f11b5cc3875f3efba7049bf">print_summary</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const nlohmann::json &amp;model_data, const <a class="el" href="structppforest2_1_1io_1_1ConfigDisplayHints.html">ConfigDisplayHints</a> &amp;hints={})</td></tr>
 <tr class="memdesc:aa33ed0297f11b5cc3875f3efba7049bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display a full model summary from its JSON representation.  <br /></td></tr>
 <tr class="separator:aa33ed0297f11b5cc3875f3efba7049bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97303fa9d7f05b30e90df8782f1155c7" id="r_a97303fa9d7f05b30e90df8782f1155c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97303fa9d7f05b30e90df8782f1155c7">print_variable_importance</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1VariableImportance.html">VariableImportance</a> &amp;vi, int max_rows=20)</td></tr>
-<tr class="memdesc:a97303fa9d7f05b30e90df8782f1155c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a ranked variable importance table to stdout.  <br /></td></tr>
-<tr class="separator:a97303fa9d7f05b30e90df8782f1155c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e4f70debb2e10cbc628376c1382d84f" id="r_a7e4f70debb2e10cbc628376c1382d84f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e4f70debb2e10cbc628376c1382d84f">print_variable_importance</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1VariableImportance.html">VariableImportance</a> &amp;vi, const std::vector&lt; std::string &gt; &amp;feature_names={}, int max_rows=20)</td></tr>
+<tr class="memdesc:a7e4f70debb2e10cbc628376c1382d84f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a ranked variable importance table to stdout.  <br /></td></tr>
+<tr class="separator:a7e4f70debb2e10cbc628376c1382d84f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ae8b077f59b53c46c1279dd269956ecf8" name="ae8b077f59b53c46c1279dd269956ecf8"></a>
@@ -450,8 +450,8 @@ template&lt;typename F&gt; </div>
 
 </div>
 </div>
-<a id="a97303fa9d7f05b30e90df8782f1155c7" name="a97303fa9d7f05b30e90df8782f1155c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97303fa9d7f05b30e90df8782f1155c7">&#9670;&#160;</a></span>print_variable_importance()</h2>
+<a id="a7e4f70debb2e10cbc628376c1382d84f" name="a7e4f70debb2e10cbc628376c1382d84f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e4f70debb2e10cbc628376c1382d84f">&#9670;&#160;</a></span>print_variable_importance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -465,6 +465,11 @@ template&lt;typename F&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="structppforest2_1_1VariableImportance.html">VariableImportance</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>vi</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>feature_names</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

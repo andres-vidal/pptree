@@ -106,12 +106,12 @@ $(function(){initNavTree('structppforest2_1_1Proportions.html',''); initResizabl
 <p>Tag type for requesting vote-proportion predictions.  
  <a href="#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="Forest_8hpp_source.html">Forest.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="Model_8hpp_source.html">Model.hpp</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Tag type for requesting vote-proportion predictions. </p>
-<p>Pass an instance of this type to <a class="el" href="structppforest2_1_1Forest.html#a4b767e43cb29fc1273b34d1077d54c5a" title="Predict a single observation.">Forest::predict</a> to get an (n × G) matrix of vote proportions instead of a single majority-vote response. </p>
+<p>For forests, returns an (n × G) matrix of per-tree vote proportions. For single trees, returns an (n × G) one-hot matrix (the tree's deterministic prediction encoded as proportions). </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>core/src/models/<a class="el" href="Forest_8hpp_source.html">Forest.hpp</a></li>
+<li>core/src/models/<a class="el" href="Model_8hpp_source.html">Model.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

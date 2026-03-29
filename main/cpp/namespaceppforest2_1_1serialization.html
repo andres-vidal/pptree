@@ -101,7 +101,8 @@ $(function(){initNavTree('namespaceppforest2_1_1serialization.html',''); initRes
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">ppforest2::serialization Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -128,6 +129,15 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:aac5f2192ec7d65aef60d10053acb95bd" id="r_aac5f2192ec7d65aef60d10053acb95bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac5f2192ec7d65aef60d10053acb95bd">build_meta_json</a> (int n_observations, int n_features, const std::vector&lt; std::string &gt; &amp;group_names, const std::vector&lt; std::string &gt; &amp;feature_names={})</td></tr>
+<tr class="memdesc:aac5f2192ec7d65aef60d10053acb95bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build the meta block shared by model JSON and golden files.  <br /></td></tr>
+<tr class="separator:aac5f2192ec7d65aef60d10053acb95bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade82e471b7218aaf92c23e7e96797bdb" id="r_ade82e471b7218aaf92c23e7e96797bdb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade82e471b7218aaf92c23e7e96797bdb">build_model_json</a> (const <a class="el" href="structppforest2_1_1Model.html">Model</a> &amp;model, const <a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> &amp;config, const std::vector&lt; std::string &gt; &amp;group_names, const std::vector&lt; std::string &gt; &amp;feature_names, int n_observations, int n_features)</td></tr>
+<tr class="memdesc:ade82e471b7218aaf92c23e7e96797bdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build a complete model JSON (model + config + meta).  <br /></td></tr>
+<tr class="separator:ade82e471b7218aaf92c23e7e96797bdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace12bc9f6095a395d223e8bb0717c14a" id="r_ace12bc9f6095a395d223e8bb0717c14a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace12bc9f6095a395d223e8bb0717c14a">to_labels</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;predictions, const std::vector&lt; std::string &gt; &amp;group_names)</td></tr>
+<tr class="memdesc:ace12bc9f6095a395d223e8bb0717c14a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map integer response codes to group name strings.  <br /></td></tr>
+<tr class="separator:ace12bc9f6095a395d223e8bb0717c14a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Serialization</div></td></tr>
 <tr class="memitem:a5f98c94cb33ab84c91b2fba714093277" id="r_a5f98c94cb33ab84c91b2fba714093277"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5f98c94cb33ab84c91b2fba714093277">to_json</a> (const <a class="el" href="structppforest2_1_1Model.html">Model</a> &amp;model)</td></tr>
 <tr class="separator:a5f98c94cb33ab84c91b2fba714093277"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -214,7 +224,7 @@ Functions</h2></td></tr>
 <div class="line"><a class="code hl_struct" href="structppforest2_1_1Forest.html">Forest</a> restored = <a class="code hl_function" href="#acb1f75bf0934a1093a5aec7e8731368b">serialization::forest_from_json</a>(j2);</div>
 <div class="ttc" id="anamespaceppforest2_1_1serialization_html_a5f98c94cb33ab84c91b2fba714093277"><div class="ttname"><a href="#a5f98c94cb33ab84c91b2fba714093277">ppforest2::serialization::to_json</a></div><div class="ttdeci">json to_json(const Model &amp;model)</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1serialization_html_acb1f75bf0934a1093a5aec7e8731368b"><div class="ttname"><a href="#acb1f75bf0934a1093a5aec7e8731368b">ppforest2::serialization::forest_from_json</a></div><div class="ttdeci">Forest forest_from_json(const json &amp;j)</div></div>
-<div class="ttc" id="astructppforest2_1_1Forest_html"><div class="ttname"><a href="structppforest2_1_1Forest.html">ppforest2::Forest</a></div><div class="ttdoc">A projection pursuit random forest.</div><div class="ttdef"><b>Definition</b> Forest.hpp:40</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html"><div class="ttname"><a href="structppforest2_1_1Forest.html">ppforest2::Forest</a></div><div class="ttdoc">A projection pursuit random forest.</div><div class="ttdef"><b>Definition</b> Forest.hpp:32</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a765380bc535afaefa14aa99a8ff8aae4" name="a765380bc535afaefa14aa99a8ff8aae4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a765380bc535afaefa14aa99a8ff8aae4">&#9670;&#160;</a></span>GroupNames</h2>
@@ -247,6 +257,83 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="aac5f2192ec7d65aef60d10053acb95bd" name="aac5f2192ec7d65aef60d10053acb95bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac5f2192ec7d65aef60d10053acb95bd">&#9670;&#160;</a></span>build_meta_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> ppforest2::serialization::build_meta_json </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_observations</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_features</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>group_names</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>feature_names</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Build the meta block shared by model JSON and golden files. </p>
+
+</div>
+</div>
+<a id="ade82e471b7218aaf92c23e7e96797bdb" name="ade82e471b7218aaf92c23e7e96797bdb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade82e471b7218aaf92c23e7e96797bdb">&#9670;&#160;</a></span>build_model_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> ppforest2::serialization::build_model_json </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structppforest2_1_1Model.html">Model</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#afced42a0b2c517da2664a9a849d90899">json</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>config</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>group_names</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>feature_names</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_observations</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_features</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Build a complete model JSON (model + config + meta). </p>
+<p>Shared by the <a class="el" href="namespaceCLI.html">CLI</a> train command and golden file generation. Callers build their own config JSON (from CLIOptions, GoldenConfig, etc.) and pass it here. </p>
+
+</div>
+</div>
 <a id="a329ee6a9f01d92df065ba7c5d57d2df9" name="a329ee6a9f01d92df065ba7c5d57d2df9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a329ee6a9f01d92df065ba7c5d57d2df9">&#9670;&#160;</a></span>confusion_matrix_from_json()</h2>
 
@@ -813,6 +900,29 @@ template&lt;typename V&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ace12bc9f6095a395d223e8bb0717c14a" name="ace12bc9f6095a395d223e8bb0717c14a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace12bc9f6095a395d223e8bb0717c14a">&#9670;&#160;</a></span>to_labels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::string &gt; ppforest2::serialization::to_labels </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>predictions</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>group_names</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Map integer response codes to group name strings. </p>
 
 </div>
 </div>

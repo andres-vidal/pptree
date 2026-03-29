@@ -135,6 +135,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a78ce1b83a0b085bd8126761ecae7d864" id="r_a78ce1b83a0b085bd8126761ecae7d864"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78ce1b83a0b085bd8126761ecae7d864">predict</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;data) const =0</td></tr>
 <tr class="memdesc:a78ce1b83a0b085bd8126761ecae7d864"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predict a matrix of observations.  <br /></td></tr>
 <tr class="separator:a78ce1b83a0b085bd8126761ecae7d864"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a363656cb26b491cd9dba98d63a005205" id="r_a363656cb26b491cd9dba98d63a005205"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a363656cb26b491cd9dba98d63a005205">predict</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;data, <a class="el" href="structppforest2_1_1Proportions.html">Proportions</a>) const =0</td></tr>
+<tr class="memdesc:a363656cb26b491cd9dba98d63a005205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predict proportions for a matrix of observations.  <br /></td></tr>
+<tr class="separator:a363656cb26b491cd9dba98d63a005205"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a357acb53e57a5e1f5e3ea422d5c241ba" id="r_a357acb53e57a5e1f5e3ea422d5c241ba"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a357acb53e57a5e1f5e3ea422d5c241ba">predict</a> (const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> &amp;data) const =0</td></tr>
 <tr class="memdesc:a357acb53e57a5e1f5e3ea422d5c241ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predict a single observation.  <br /></td></tr>
 <tr class="separator:a357acb53e57a5e1f5e3ea422d5c241ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -219,7 +222,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <a id="a78ce1b83a0b085bd8126761ecae7d864" name="a78ce1b83a0b085bd8126761ecae7d864"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78ce1b83a0b085bd8126761ecae7d864">&#9670;&#160;</a></span>predict() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a78ce1b83a0b085bd8126761ecae7d864">&#9670;&#160;</a></span>predict() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -254,8 +257,49 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a363656cb26b491cd9dba98d63a005205" name="a363656cb26b491cd9dba98d63a005205"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a363656cb26b491cd9dba98d63a005205">&#9670;&#160;</a></span>predict() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> ppforest2::Model::predict </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Proportions.html">Proportions</a></td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Predict proportions for a matrix of observations. </p>
+<p>Returns an (n × G) matrix. For forests, each row contains the fraction of trees that voted for each group. For single trees, each row is a one-hot encoding of the predicted group.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Feature matrix (n × p). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Proportion matrix (n × G), rows sum to 1.0. </dd></dl>
+
+<p>Implemented in <a class="el" href="structppforest2_1_1Forest.html#a269651b667a9c8dd590456cc10fcd2fe">ppforest2::Forest</a>, and <a class="el" href="structppforest2_1_1Tree.html#a0e2b65a1b1762edd630823bfd0929730">ppforest2::Tree</a>.</p>
+
+</div>
+</div>
 <a id="a357acb53e57a5e1f5e3ea422d5c241ba" name="a357acb53e57a5e1f5e3ea422d5c241ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a357acb53e57a5e1f5e3ea422d5c241ba">&#9670;&#160;</a></span>predict() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a357acb53e57a5e1f5e3ea422d5c241ba">&#9670;&#160;</a></span>predict() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

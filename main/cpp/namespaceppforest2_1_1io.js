@@ -2,7 +2,6 @@ var namespaceppforest2_1_1io =
 [
     [ "csv", "namespaceppforest2_1_1io_1_1csv.html", [
       [ "read", "namespaceppforest2_1_1io_1_1csv.html#a4090cd2d7d357ff9c4d8f5fa1313d87f", null ],
-      [ "read_labels", "namespaceppforest2_1_1io_1_1csv.html#aeb2d17fe7babc9799666d0d98ef911f7", null ],
       [ "read_sorted", "namespaceppforest2_1_1io_1_1csv.html#ae7c79b0baafb3cc83335e83c8bc28db3", null ],
       [ "write", "namespaceppforest2_1_1io_1_1csv.html#a72a239ef7b5aca7225fb5304c32c1218", null ]
     ] ],
@@ -37,5 +36,5 @@ var namespaceppforest2_1_1io =
     [ "print_data_summary", "namespaceppforest2_1_1io.html#a19eaf80911f0791e0580745b98b0d9c1", null ],
     [ "print_results", "namespaceppforest2_1_1io.html#ad87ca824e129347e3b2b308fbea618b0", null ],
     [ "print_summary", "namespaceppforest2_1_1io.html#aa33ed0297f11b5cc3875f3efba7049bf", null ],
-    [ "print_variable_importance", "namespaceppforest2_1_1io.html#a97303fa9d7f05b30e90df8782f1155c7", null ]
+    [ "print_variable_importance", "namespaceppforest2_1_1io.html#a7e4f70debb2e10cbc628376c1382d84f", null ]
 ];
