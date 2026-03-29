@@ -8,23 +8,65 @@
  *
  * | Interface   | Purpose                              | Override |
  * |-------------|--------------------------------------|----------|
- * | PPStrategy  | Projection pursuit index optimisation | index(), optimize(), clone() |
- * | DRStrategy  | Variable subset selection            | select(), clone() |
- * | SRStrategy  | Split threshold computation          | threshold(), clone() |
+ * | PPStrategy  | Projection pursuit index optimisation | index(), optimize(), to_json() |
+ * | DRStrategy  | Variable subset selection            | select(), to_json() |
+ * | SRStrategy  | Split threshold computation          | threshold(), to_json() |
+ *
+ * @section strat_architecture Architecture
+ *
+ * All three strategy families share the same infrastructure via the
+ * CRTP base class Strategy<Derived>.  This base provides:
+ *
+ * - `using Ptr = std::shared_ptr<Derived>` — the canonical pointer type.
+ * - `to_json()` — pure virtual, every strategy must serialize itself.
+ * - `from_json(json)` — static dispatcher that looks up the `"name"`
+ *   field in the JSON and delegates to the registered factory.
+ * - `register_strategy(name, factory)` — adds a factory to the registry.
+ *
+ * Each strategy family (PPStrategy, DRStrategy, SRStrategy) gets its
+ * own independent registry because Strategy<PPStrategy> and
+ * Strategy<DRStrategy> are different template instantiations.
  *
  * @section strat_conventions Conventions
  *
  * All strategies follow the same structural conventions:
  *
- * - **Immutable configuration** — store parameters as `const` members
- *   set in the constructor.
- * - **Ptr typedef** — each strategy defines `using Ptr = std::unique_ptr<Strategy>`.
- * - **clone()** — returns a deep copy as a `Ptr` (used by TrainingSpec's
- *   copy constructor).
+ * - **Immutable configuration** — store parameters as `const` private
+ *   members set in the constructor.
+ * - **to_json()** — serialises the strategy's name and parameters to JSON
+ *   for model persistence and display.
+ * - **from_json()** — static method that deserializes from JSON, validating
+ *   keys and returning a `Ptr`.
+ * - **PPFOREST2_REGISTER_STRATEGY** — macro that registers the strategy's
+ *   `from_json` at static initialization time.
  * - **Factory function** — a free function in the strategy's namespace
  *   that returns a `Ptr` (e.g. `pp::pda(lambda)`).
  * - **Convenience operator()** — calls the main virtual method so
  *   strategies can be used as functors.
+ *
+ * Strategies are held via `shared_ptr` and are immutable after construction,
+ * so they can be freely shared across trees without deep cloning.
+ *
+ * @section strat_registration Self-Registration
+ *
+ * New strategies are automatically available for JSON deserialization
+ * by adding two things to the concrete class:
+ *
+ * 1. A `static Ptr from_json(const nlohmann::json& j)` method.
+ * 2. The `PPFOREST2_REGISTER_STRATEGY(Base, "name")` macro.
+ *
+ * The macro uses inline static initialization to register the factory
+ * at program startup.  No central registry file needs to be modified.
+ *
+ * @code
+ *   struct MyStrategy : public PPStrategy {
+ *     static PPStrategy::Ptr from_json(const nlohmann::json& j);
+ *     PPFOREST2_REGISTER_STRATEGY(PPStrategy, "my_strategy")
+ *   };
+ * @endcode
+ *
+ * After this, `PPStrategy::from_json({"name": "my_strategy", ...})`
+ * will automatically dispatch to `MyStrategy::from_json`.
  *
  * @section strat_pp Adding a new PPStrategy
  *
@@ -34,9 +76,7 @@
  * @subsection strat_pp_interface Interface to implement
  *
  * @code
- *   struct PPStrategy {
- *     virtual PPStrategy::Ptr clone() const = 0;
- *
+ *   struct PPStrategy : public Strategy<PPStrategy> {
  *     // Evaluate the projection index for a given projector.
  *     virtual types::Feature index(
  *       const types::FeatureMatrix&  x,          // (n x p)
@@ -49,6 +89,10 @@
  *       const types::FeatureMatrix&  x,          // (n x p)
  *       const stats::GroupPartition& group_spec
  *     ) const = 0;
+ *
+ *     // Inherited from Strategy<PPStrategy>:
+ *     // virtual void to_json(nlohmann::json& j) const = 0;
+ *     // static Ptr from_json(const nlohmann::json& j);
  *   };
  * @endcode
  *
@@ -58,38 +102,43 @@
  *   // File: models/PPRandomStrategy.hpp
  *   #pragma once
  *   #include "models/PPStrategy.hpp"
- *   #include "stats/Normal.hpp"
+ *   #include "models/Strategy.hpp"
+ *   #include "utils/JsonValidation.hpp"
  *
  *   namespace ppforest2::pp {
  *
  *   // A toy strategy that returns a random unit projector.
- *   // Useful as a baseline or for testing.
  *   struct PPRandomStrategy : public PPStrategy {
- *     PPStrategy::Ptr clone() const override {
- *       return std::make_unique<PPRandomStrategy>(*this);
- *     }
- *
  *     types::Feature index(
  *       const types::FeatureMatrix&  x,
  *       const stats::GroupPartition& group_spec,
  *       const Projector&             projector) const override {
- *       // No meaningful index — return 0.
  *       return 0;
  *     }
  *
  *     PPResult optimize(
  *       const types::FeatureMatrix&  x,
  *       const stats::GroupPartition& group_spec) const override {
- *       // Generate a random unit vector of dimension p.
  *       Projector proj = Projector::Random(x.cols());
  *       proj.normalize();
  *       return PPResult{ proj, 0 };
  *     }
+ *
+ *     void to_json(nlohmann::json& j) const override {
+ *       j = {{"name", "random"}};
+ *     }
+ *
+ *     static PPStrategy::Ptr from_json(const nlohmann::json& j) {
+ *       validate_json_keys(j, "random PP", {"name"});
+ *       return random();
+ *     }
+ *
+ *     PPFOREST2_REGISTER_STRATEGY(PPStrategy, "random")
  *   };
  *
  *   // Factory function (convention).
  *   inline PPStrategy::Ptr random() {
- *     return std::make_unique<PPRandomStrategy>();
+ *     return std::make_shared<PPRandomStrategy>();
  *   }
  *
  *   }  // namespace ppforest2::pp
@@ -104,15 +153,17 @@
  * @subsection strat_dr_interface Interface to implement
  *
  * @code
- *   struct DRStrategy {
- *     virtual DRStrategy::Ptr clone() const = 0;
- *
+ *   struct DRStrategy : public Strategy<DRStrategy> {
  *     // Select a subset of columns.
  *     virtual DRResult select(
  *       const types::FeatureMatrix&  x,          // (n x p)
  *       const stats::GroupPartition& group_spec,
  *       stats::RNG&                  rng
  *     ) const = 0;
+ *
+ *     // Inherited from Strategy<DRStrategy>:
+ *     // virtual void to_json(nlohmann::json& j) const = 0;
+ *     // static Ptr from_json(const nlohmann::json& j);
  *   };
  * @endcode
  *
@@ -126,18 +177,14 @@
  *   // File: models/DRVarianceStrategy.hpp
  *   #pragma once
  *   #include "models/DRStrategy.hpp"
+ *   #include "models/Strategy.hpp"
+ *   #include "utils/JsonValidation.hpp"
  *
  *   namespace ppforest2::dr {
  *
  *   // Selects the n_vars columns with highest variance.
  *   struct DRVarianceStrategy : public DRStrategy {
- *     const int n_vars;
- *
- *     explicit DRVarianceStrategy(int n_vars) : n_vars(n_vars) {}
- *
- *     DRStrategy::Ptr clone() const override {
- *       return std::make_unique<DRVarianceStrategy>(*this);
- *     }
+ *     explicit DRVarianceStrategy(int n_vars) : n_vars_(n_vars) {}
  *
  *     DRResult select(
  *       const types::FeatureMatrix& x,
@@ -156,15 +203,29 @@
  *         [](auto& a, auto& b) { return a.first > b.first; });
  *
  *       std::vector<int> selected;
- *       for (int i = 0; i < n_vars && i < (int)var_idx.size(); ++i)
+ *       for (int i = 0; i < n_vars_ && i < (int)var_idx.size(); ++i)
  *         selected.push_back(var_idx[i].second);
  *
  *       return DRResult(selected, x.cols());
  *     }
+ *
+ *     void to_json(nlohmann::json& j) const override {
+ *       j = {{"name", "variance"}, {"n_vars", n_vars_}};
+ *     }
+ *
+ *     static DRStrategy::Ptr from_json(const nlohmann::json& j) {
+ *       validate_json_keys(j, "variance DR", {"name", "n_vars"});
+ *       return variance(j.at("n_vars").get<int>());
+ *     }
+ *
+ *     PPFOREST2_REGISTER_STRATEGY(DRStrategy, "variance")
+ *
+ *   private:
+ *     const int n_vars_;
  *   };
  *
  *   inline DRStrategy::Ptr variance(int n_vars) {
- *     return std::make_unique<DRVarianceStrategy>(n_vars);
+ *     return std::make_shared<DRVarianceStrategy>(n_vars);
  *   }
  *
  *   }  // namespace ppforest2::dr
@@ -178,15 +239,17 @@
  * @subsection strat_sr_interface Interface to implement
  *
  * @code
- *   struct SRStrategy {
- *     virtual SRStrategy::Ptr clone() const = 0;
- *
+ *   struct SRStrategy : public Strategy<SRStrategy> {
  *     // Compute the split threshold for two groups.
  *     virtual types::Feature threshold(
  *       const types::FeatureMatrix& group_1,   // (n1 x p)
  *       const types::FeatureMatrix& group_2,   // (n2 x p)
  *       const pp::Projector&        projector   // (p)
  *     ) const = 0;
+ *
+ *     // Inherited from Strategy<SRStrategy>:
+ *     // virtual void to_json(nlohmann::json& j) const = 0;
+ *     // static Ptr from_json(const nlohmann::json& j);
  *   };
  * @endcode
  *
@@ -196,16 +259,14 @@
  *   // File: models/SRMedianStrategy.hpp
  *   #pragma once
  *   #include "models/SRStrategy.hpp"
+ *   #include "models/Strategy.hpp"
+ *   #include "utils/JsonValidation.hpp"
  *   #include <algorithm>
  *
  *   namespace ppforest2::sr {
  *
  *   // Splits at the median of the combined projected values.
  *   struct SRMedianStrategy : public SRStrategy {
- *     SRStrategy::Ptr clone() const override {
- *       return std::make_unique<SRMedianStrategy>(*this);
- *     }
- *
  *     types::Feature threshold(
  *       const types::FeatureMatrix& group_1,
  *       const types::FeatureMatrix& group_2,
@@ -221,10 +282,21 @@
  *       std::nth_element(all.begin(), all.begin() + all.size() / 2, all.end());
  *       return all[all.size() / 2];
  *     }
+ *
+ *     void to_json(nlohmann::json& j) const override {
+ *       j = {{"name", "median"}};
+ *     }
+ *
+ *     static SRStrategy::Ptr from_json(const nlohmann::json& j) {
+ *       validate_json_keys(j, "median SR", {"name"});
+ *       return median();
+ *     }
+ *
+ *     PPFOREST2_REGISTER_STRATEGY(SRStrategy, "median")
  *   };
  *
  *   inline SRStrategy::Ptr median() {
- *     return std::make_unique<SRMedianStrategy>();
+ *     return std::make_shared<SRMedianStrategy>();
  *   }
  *
  *   }  // namespace ppforest2::sr
@@ -232,51 +304,43 @@
  *
  * @section strat_compose Composing strategies
  *
- * Once you have a new strategy, compose it into a training
- * configuration:
- *
- * @subsection strat_compose_direct Direct composition
+ * Once you have a new strategy, compose it into a TrainingSpec:
  *
  * @code
  *   // Mix and match any PP + DR + SR strategies:
- *   auto spec = std::make_unique<TrainingSpec>(
+ *   TrainingSpec spec(
  *     pp::pda(0.5),          // existing PDA strategy
  *     dr::variance(4),        // your new DR strategy
- *     sr::median());          // your new SR strategy
+ *     sr::median(),           // your new SR strategy
+ *     100, 0);               // size, seed
  *
- *   stats::RNG rng(42);
- *   Tree tree = Tree::train(*spec, x, y, rng);
+ *   // Train via the unified entry point:
+ *   auto model = Model::train(spec, x, y);
+ *
+ *   // Or train directly:
+ *   stats::RNG rng(0);
+ *   Tree tree = Tree::train(spec, x, y, rng);
  * @endcode
  *
- * @subsection strat_compose_subclass Creating a TrainingSpec subclass
+ * TrainingSpec is a concrete class — there is no need to subclass it.
+ * New strategies are plugged in via the constructor.  Strategies are
+ * held via `shared_ptr`, so TrainingSpec can be freely copied and
+ * shared across trees.
  *
- * Create a named subclass when you want a reusable, self-documenting
- * configuration with its own parameters:
+ * @section strat_checklist Checklist for adding a new strategy
  *
- * @code
- *   struct TrainingSpecCustom : public TrainingSpec {
- *     const int n_vars;
- *     const float lambda;
+ * 1. Create `models/MyStrategy.hpp` (and `.cpp` if needed).
+ * 2. Inherit from the appropriate base (PPStrategy, DRStrategy, or SRStrategy).
+ * 3. Implement the pure virtual methods (`index`/`optimize`, `select`, or `threshold`).
+ * 4. Implement `to_json()` — must include a `"name"` field.
+ * 5. Implement `display_name()` — a human-readable label for summaries.
+ * 6. Add a `static Ptr from_json(const nlohmann::json& j)` — validate keys, construct via factory.
+ * 7. Add `PPFOREST2_REGISTER_STRATEGY(Base, "name")` inside the struct.
+ * 8. Add a factory function (e.g. `inline Ptr my_strategy(...)`) in the namespace.
+ * 9. Add the `.cpp` to `src/models/CMakeLists.txt`.
+ * 10. Add tests in `MyStrategy.test.cpp` (JSON round-trip + functional).
  *
- *     TrainingSpecCustom(int n_vars, float lambda) :
- *       TrainingSpec(
- *         pp::pda(lambda),
- *         dr::variance(n_vars),
- *         sr::median()),
- *       n_vars(n_vars),
- *       lambda(lambda) {}
+ * That's it — no central registry file or TrainingSpec subclass needed.
  *
- *     void accept(TrainingSpec::Visitor& visitor) const override {
- *       // Add a visit() overload to TrainingSpec::Visitor if you need
- *       // type-safe dispatch (e.g. for serialisation).
- *     }
- *
- *     TrainingSpec::Ptr clone() const override {
- *       return std::make_unique<TrainingSpecCustom>(*this);
- *     }
- *   };
- * @endcode
- *
- * @see PPStrategy, DRStrategy, SRStrategy, TrainingSpec,
- *      TrainingSpecPDA, TrainingSpecUPDA
+ * @see Strategy, PPStrategy, DRStrategy, SRStrategy, TrainingSpec
  */

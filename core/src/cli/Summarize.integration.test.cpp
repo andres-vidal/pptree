@@ -69,7 +69,7 @@ TEST_F(SummarizeTest, NoEphemeralFields) {
 TEST(CLISummarize, SummarizeNoMetricsModel) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-metrics -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-metrics -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   auto result = run_ppforest2("--no-color summarize -M " + model.path());
@@ -89,7 +89,7 @@ TEST(CLISummarize, SummarizeNoMetricsModel) {
 TEST(CLISummarize, SummarizeWithDataRecomputesMetrics) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 --no-metrics -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-metrics -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   auto result = run_ppforest2("--no-color summarize -M " + model.path() + " -d " + IRIS_CSV);
@@ -122,4 +122,23 @@ TEST_F(SummarizeTest, HasSampleIndices) {
       << "Each tree must have sample_indices";
     EXPECT_GT(tree["sample_indices"].size(), 0u);
   }
+}
+
+// ---------------------------------------------------------------------------
+// Summarize with non-default strategies
+// ---------------------------------------------------------------------------
+
+/* Summarize shows strategy display names for non-default strategies. */
+TEST(CLISummarize, SummarizeNonDefaultStrategies) {
+  TempFile model;
+  model.clear();
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 "
+      "--pp pda:lambda=0.5 --dr noop -s " + model.path());
+  ASSERT_EQ(train.exit_code, 0);
+
+  auto result = run_ppforest2("--no-color summarize -M " + model.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  // Strategy display names should appear in summary output
+  EXPECT_NE(result.stdout_output.find("PDA"), std::string::npos) << "Expected PDA strategy display name in summary";
 }

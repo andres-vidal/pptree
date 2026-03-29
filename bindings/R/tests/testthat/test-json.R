@@ -8,7 +8,7 @@ library(ppforest2)
 describe("save_json / load_json round-trip", {
   describe("pptr (single tree)", {
     it("preserves predictions after round-trip", {
-      model <- pptr(Type ~ ., data = iris, seed = 42)
+      model <- pptr(Type ~ ., data = iris, seed = 0)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
@@ -20,7 +20,7 @@ describe("save_json / load_json round-trip", {
     })
 
     it("preserves variable importance after round-trip", {
-      model <- pptr(Type ~ ., data = iris, seed = 42)
+      model <- pptr(Type ~ ., data = iris, seed = 0)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
@@ -30,7 +30,7 @@ describe("save_json / load_json round-trip", {
     })
 
     it("preserves group labels after round-trip", {
-      model <- pptr(Type ~ ., data = iris, seed = 42)
+      model <- pptr(Type ~ ., data = iris, seed = 0)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
@@ -39,18 +39,18 @@ describe("save_json / load_json round-trip", {
     })
 
     it("preserves training spec after round-trip", {
-      model <- pptr(Type ~ ., data = iris, seed = 42, lambda = 0.5)
+      model <- pptr(Type ~ ., data = iris, seed = 0, lambda = 0.5)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
 
-      expect_equal(loaded$training_spec$strategy, "pda")
-      expect_equal(loaded$training_spec$lambda, 0.5, tolerance = 1e-5)
-      expect_equal(loaded$seed, 42L)
+      expect_equal(loaded$training_spec$pp$name, "pda")
+      expect_equal(loaded$training_spec$pp$lambda, 0.5, tolerance = 1e-5)
+      expect_equal(loaded$seed, 0)
     })
 
     it("sets formula, x, y to NULL on load", {
-      model <- pptr(Type ~ ., data = iris, seed = 42)
+      model <- pptr(Type ~ ., data = iris, seed = 0)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
@@ -63,7 +63,7 @@ describe("save_json / load_json round-trip", {
 
   describe("pprf (random forest)", {
     it("preserves predictions after round-trip", {
-      model <- pprf(Type ~ ., data = iris, size = 3, seed = 42)
+      model <- pprf(Type ~ ., data = iris, size = 3, seed = 0)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
@@ -75,7 +75,7 @@ describe("save_json / load_json round-trip", {
     })
 
     it("preserves variable importance after round-trip", {
-      model <- pprf(Type ~ ., data = iris, size = 3, seed = 42)
+      model <- pprf(Type ~ ., data = iris, size = 3, seed = 0)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
@@ -87,7 +87,7 @@ describe("save_json / load_json round-trip", {
     })
 
     it("preserves oob_error after round-trip", {
-      model <- pprf(Type ~ ., data = iris, size = 3, seed = 42)
+      model <- pprf(Type ~ ., data = iris, size = 3, seed = 0)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
@@ -96,7 +96,7 @@ describe("save_json / load_json round-trip", {
     })
 
     it("preserves group labels on individual trees", {
-      model <- pprf(Type ~ ., data = iris, size = 3, seed = 42)
+      model <- pprf(Type ~ ., data = iris, size = 3, seed = 0)
       path <- tempfile(fileext = ".json")
       save_json(model, path)
       loaded <- load_json(path)
@@ -111,7 +111,7 @@ describe("save_json / load_json round-trip", {
 
 describe("save_json includes data metadata", {
   it("includes observations, features, and feature_names for tree", {
-    model <- pptr(Type ~ ., data = iris, seed = 42)
+    model <- pptr(Type ~ ., data = iris, seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path)
 
@@ -122,7 +122,7 @@ describe("save_json includes data metadata", {
   })
 
   it("includes observations, features, and feature_names for forest", {
-    model <- pprf(Type ~ ., data = iris, size = 3, seed = 42)
+    model <- pprf(Type ~ ., data = iris, size = 3, seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path)
 
@@ -136,7 +136,7 @@ describe("save_json includes data metadata", {
 
 describe("save_json with include_metrics = FALSE", {
   it("saves model without VI", {
-    model <- pptr(Type ~ ., data = iris, seed = 42)
+    model <- pptr(Type ~ ., data = iris, seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path, include_metrics = FALSE)
     loaded <- load_json(path)
@@ -156,7 +156,7 @@ describe("load_json from golden files", {
   }
 
   it("loads a golden tree and produces correct predictions", {
-    path <- golden_path("iris", "tree-pda-s42.json")
+    path <- golden_path("iris", "tree-pda-s0.json")
     skip_if(path == "", "Golden file not bundled")
 
     loaded <- load_json(path)
@@ -169,7 +169,7 @@ describe("load_json from golden files", {
   })
 
   it("loads a golden forest", {
-    path <- golden_path("iris", "forest-pda-t5-s42.json")
+    path <- golden_path("iris", "forest-pda-n5-s0.json")
     skip_if(path == "", "Golden file not bundled")
 
     loaded <- load_json(path)
@@ -191,10 +191,10 @@ describe("R save_json meta matches golden file", {
   }
 
   it("tree meta matches golden file", {
-    expected <- golden_meta("iris", "tree-pda-s42")
+    expected <- golden_meta("iris", "tree-pda-s0")
     skip_if(is.null(expected), "Golden file not bundled")
 
-    model <- pptr(Type ~ ., data = iris, seed = 42)
+    model <- pptr(Type ~ ., data = iris, seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path)
     j <- jsonlite::fromJSON(readLines(path, warn = FALSE))
@@ -203,15 +203,73 @@ describe("R save_json meta matches golden file", {
   })
 
   it("forest meta matches golden file", {
-    expected <- golden_meta("iris", "forest-pda-t5-s42")
+    expected <- golden_meta("iris", "forest-pda-n5-s0")
     skip_if(is.null(expected), "Golden file not bundled")
 
-    model <- pprf(Type ~ ., data = iris, size = 5, seed = 42)
+    model <- pprf(Type ~ ., data = iris, size = 5, seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path)
     j <- jsonlite::fromJSON(readLines(path, warn = FALSE))
 
     expect_equal(j$meta, expected)
+  })
+})
+
+describe("save_json / load_json with non-default strategies", {
+  it("preserves tree training spec (pp, dr, sr) after round-trip", {
+    model <- pptr(Type ~ ., data = iris, pp = pp_pda(0.5), seed = 0)
+    path <- tempfile(fileext = ".json")
+    save_json(model, path)
+    loaded <- load_json(path)
+
+    expect_equal(loaded$training_spec$pp$name, "pda")
+    expect_equal(loaded$training_spec$pp$lambda, 0.5, tolerance = 1e-5)
+    expect_equal(loaded$training_spec$dr$name, "noop")
+    expect_equal(loaded$training_spec$sr$name, "mean_of_means")
+  })
+
+  it("preserves forest training spec with dr_uniform after round-trip", {
+    model <- pprf(Type ~ ., data = iris, size = 3, pp = pp_pda(0.3), dr = dr_uniform(n_vars = 2), seed = 0)
+    path <- tempfile(fileext = ".json")
+    save_json(model, path)
+    loaded <- load_json(path)
+
+    expect_equal(loaded$training_spec$pp$name, "pda")
+    expect_equal(loaded$training_spec$pp$lambda, 0.3, tolerance = 1e-5)
+    expect_equal(loaded$training_spec$dr$name, "uniform")
+    expect_equal(loaded$training_spec$dr$n_vars, 2)
+    expect_equal(loaded$training_spec$sr$name, "mean_of_means")
+  })
+
+  it("preserves forest training spec with dr_noop after round-trip", {
+    model <- pprf(Type ~ ., data = iris, size = 3, dr = dr_noop(), seed = 0)
+    path <- tempfile(fileext = ".json")
+    save_json(model, path)
+    loaded <- load_json(path)
+
+    expect_equal(loaded$training_spec$dr$name, "noop")
+  })
+
+  it("does not include display_name in saved JSON", {
+    model <- pptr(Type ~ ., data = iris, pp = pp_pda(0.5), seed = 0)
+    path <- tempfile(fileext = ".json")
+    save_json(model, path)
+
+    j <- jsonlite::fromJSON(readLines(path, warn = FALSE))
+    expect_null(j$config$pp$display_name)
+    expect_null(j$config$dr$display_name)
+    expect_null(j$config$sr$display_name)
+  })
+
+  it("predictions are correct after loading model with non-default strategies", {
+    model <- pprf(Type ~ ., data = iris, size = 3, pp = pp_pda(0.3), dr = dr_uniform(n_vars = 2), seed = 0)
+    path <- tempfile(fileext = ".json")
+    save_json(model, path)
+    loaded <- load_json(path)
+
+    original_preds <- predict(model, iris)
+    loaded_preds <- predict(loaded, model$x)
+    expect_equal(loaded_preds, original_preds)
   })
 })
 

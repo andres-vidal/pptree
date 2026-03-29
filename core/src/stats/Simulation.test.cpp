@@ -9,7 +9,7 @@ using namespace ppforest2::types;
 using namespace ppforest2::stats;
 
 TEST(Simulate, CorrectDimensions) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(100, 4, 3, rng);
 
   ASSERT_EQ(data.x.rows(), 100);
@@ -18,7 +18,7 @@ TEST(Simulate, CorrectDimensions) {
 }
 
 TEST(Simulate, CorrectNumberOfClasses) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(90, 4, 3, rng);
 
   ASSERT_EQ(data.groups.size(), 3);
@@ -28,7 +28,7 @@ TEST(Simulate, CorrectNumberOfClasses) {
 }
 
 TEST(Simulate, BalancedClasses) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(90, 4, 3, rng);
 
   GroupPartition spec(data.y);
@@ -38,7 +38,7 @@ TEST(Simulate, BalancedClasses) {
 }
 
 TEST(Simulate, SortedByClassLabel) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(90, 4, 3, rng);
 
   for (int i = 1; i < data.y.size(); ++i) {
@@ -47,7 +47,7 @@ TEST(Simulate, SortedByClassLabel) {
 }
 
 TEST(Simulate, TwoClasses) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(50, 2, 2, rng);
 
   ASSERT_EQ(data.x.rows(), 50);
@@ -55,7 +55,7 @@ TEST(Simulate, TwoClasses) {
 }
 
 TEST(Simulate, ManyClasses) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(100, 4, 10, rng);
 
   ASSERT_EQ(data.groups.size(), 10);
@@ -63,14 +63,14 @@ TEST(Simulate, ManyClasses) {
 }
 
 TEST(Simulate, SingleFeature) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(50, 1, 2, rng);
 
   ASSERT_EQ(data.x.cols(), 1);
 }
 
 TEST(Simulate, CustomParams) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean            = 0.0f;
   params.mean_separation = 100.0f;
@@ -83,10 +83,10 @@ TEST(Simulate, CustomParams) {
 }
 
 TEST(Simulate, Deterministic) {
-  RNG rng1(42);
+  RNG rng1(0);
   auto data1 = simulate(50, 4, 3, rng1);
 
-  RNG rng2(42);
+  RNG rng2(0);
   auto data2 = simulate(50, 4, 3, rng2);
 
   ASSERT_EQ(data1.x, data2.x);
@@ -94,7 +94,7 @@ TEST(Simulate, Deterministic) {
 }
 
 TEST(Simulate, DifferentSeedsDifferentData) {
-  RNG rng1(42);
+  RNG rng1(0);
   auto data1 = simulate(50, 4, 3, rng1);
 
   RNG rng2(99);
@@ -104,10 +104,10 @@ TEST(Simulate, DifferentSeedsDifferentData) {
 }
 
 TEST(Split, PreservesClassProportions) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(90, 4, 3, rng);
 
-  RNG split_rng(42);
+  RNG split_rng(99);
   auto s = split(data, 0.8f, split_rng);
 
   ASSERT_EQ(s.tr.size() + s.te.size(), 90);
@@ -119,10 +119,10 @@ TEST(Split, PreservesClassProportions) {
 }
 
 TEST(Split, IndicesAreValid) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(60, 4, 3, rng);
 
-  RNG split_rng(42);
+  RNG split_rng(0);
   auto s = split(data, 0.7f, split_rng);
 
   for (int idx : s.tr) {
@@ -137,10 +137,10 @@ TEST(Split, IndicesAreValid) {
 }
 
 TEST(Split, NoOverlapBetweenTrainAndTest) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(60, 4, 3, rng);
 
-  RNG split_rng(42);
+  RNG split_rng(0);
   auto s = split(data, 0.7f, split_rng);
 
   std::set<int> train_set(s.tr.begin(), s.tr.end());
@@ -150,13 +150,13 @@ TEST(Split, NoOverlapBetweenTrainAndTest) {
 }
 
 TEST(Split, Deterministic) {
-  RNG rng1(42);
+  RNG rng1(0);
   auto data = simulate(60, 4, 3, rng1);
 
-  RNG split_rng1(42);
+  RNG split_rng1(0);
   auto s1 = split(data, 0.7f, split_rng1);
 
-  RNG split_rng2(42);
+  RNG split_rng2(0);
   auto s2 = split(data, 0.7f, split_rng2);
 
   ASSERT_EQ(s1.tr, s2.tr);

@@ -39,64 +39,40 @@ static json load_golden(const std::string& path) {
 }
 
 TEST(JsonRoundTrip, Tree) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/tree-pda-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-  json model_json  = golden["model"];
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Tree>>();
 
-  Tree tree         = tree_from_json(model_json, group_names);
-  json roundtripped = to_json(tree, group_names);
+  json roundtripped = to_json(e.model, e.groups);
 
-  ASSERT_EQ(model_json, roundtripped) << "Tree JSON should be identical after round-trip";
+  ASSERT_EQ(golden["model"], roundtripped) << "Tree JSON should be identical after round-trip";
 }
 
 TEST(JsonRoundTrip, Forest) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-  json model_json  = golden["model"];
+  auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
+  auto e      = golden.get<Export<Forest>>();
 
-  Forest forest     = forest_from_json(model_json, group_names);
-  json roundtripped = to_json(forest, group_names);
+  json roundtripped = to_json(e.model, e.groups);
 
-  ASSERT_EQ(model_json, roundtripped) << "Forest JSON should be identical after round-trip";
+  ASSERT_EQ(golden["model"], roundtripped) << "Forest JSON should be identical after round-trip";
 }
 
 TEST(JsonRoundTrip, ModelDispatchTree) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/tree-pda-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-  json model_json  = golden["model"];
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
 
-  json wrapped;
-  wrapped["model_type"] = "tree";
-  wrapped["model"]      = model_json;
+  auto e = golden.get<Export<Model::Ptr>>();
+  ASSERT_NE(e.model, nullptr);
 
-  // model_from_json uses integer format — test with integer-format JSON
-  json int_model = to_json(tree_from_json(model_json, group_names));
-  json int_wrapped;
-  int_wrapped["model_type"] = "tree";
-  int_wrapped["model"]      = int_model;
-
-  auto restored = model_from_json(int_wrapped);
-  ASSERT_NE(restored, nullptr);
-
-  json roundtripped = to_json(*restored);
+  json roundtripped = to_json(*e.model);
   ASSERT_EQ(roundtripped["model_type"], "tree");
 }
 
 TEST(JsonRoundTrip, ModelDispatchForest) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-  json model_json  = golden["model"];
+  auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
 
-  // model_from_json uses integer format — test with integer-format JSON
-  json int_model = to_json(forest_from_json(model_json, group_names));
-  json int_wrapped;
-  int_wrapped["model_type"] = "forest";
-  int_wrapped["model"]      = int_model;
+  auto e = golden.get<Export<Model::Ptr>>();
+  ASSERT_NE(e.model, nullptr);
 
-  auto restored = model_from_json(int_wrapped);
-  ASSERT_NE(restored, nullptr);
-
-  json roundtripped = to_json(*restored);
+  json roundtripped = to_json(*e.model);
   ASSERT_EQ(roundtripped["model_type"], "forest");
 }
 
@@ -124,11 +100,9 @@ TEST(JsonRoundTrip, ConfusionMatrix) {
 // ---------------------------------------------------------------------------
 
 TEST(JsonLabeled, TreeLeafValuesAreStrings) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/tree-pda-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-
-  Tree tree = tree_from_json(golden["model"], group_names);
-  json j    = to_json(tree, group_names);
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Tree>>();
+  json j      = to_json(e.model, e.groups);
 
   // Walk to a leaf
   const json *node = &j["root"];
@@ -138,30 +112,26 @@ TEST(JsonLabeled, TreeLeafValuesAreStrings) {
 
   ASSERT_TRUE((*node)["value"].is_string());
   auto value = (*node)["value"].get<std::string>();
-  EXPECT_TRUE(std::find(group_names.begin(), group_names.end(), value) != group_names.end()) << "Leaf value '" << value << "' not in group_names";
+  EXPECT_TRUE(std::find(e.groups.begin(), e.groups.end(), value) != e.groups.end()) << "Leaf value '" << value << "' not in group_names";
 }
 
 TEST(JsonLabeled, TreeGroupsAreStrings) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/tree-pda-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-
-  Tree tree = tree_from_json(golden["model"], group_names);
-  json j    = to_json(tree, group_names);
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Tree>>();
+  json j      = to_json(e.model, e.groups);
 
   auto root_groups = j["root"]["groups"].get<std::vector<std::string>>();
-  EXPECT_EQ(root_groups.size(), group_names.size());
+  EXPECT_EQ(root_groups.size(), e.groups.size());
 
   for (const auto& g : root_groups) {
-    EXPECT_TRUE(std::find(group_names.begin(), group_names.end(), g) != group_names.end()) << "Group '" << g << "' not in group_names";
+    EXPECT_TRUE(std::find(e.groups.begin(), e.groups.end(), g) != e.groups.end()) << "Group '" << g << "' not in group_names";
   }
 }
 
 TEST(JsonLabeled, IntegerFormatOmitsGroupNames) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/tree-pda-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-
-  Tree tree = tree_from_json(golden["model"], group_names);
-  json j    = to_json(tree);
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Tree>>();
+  json j      = to_json(e.model);
 
   // Walk to a leaf
   const json *node = &j["root"];
@@ -188,28 +158,24 @@ TEST(JsonLabeled, ConfusionMatrixLabelsAreStrings) {
 }
 
 TEST(JsonLabeled, ForestRoundTrip) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-  json model_json  = golden["model"];
+  auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
+  auto e      = golden.get<Export<Forest>>();
 
-  Forest forest     = forest_from_json(model_json, group_names);
-  json roundtripped = to_json(forest, group_names);
+  json roundtripped = to_json(e.model, e.groups);
 
-  ASSERT_EQ(model_json, roundtripped) << "Forest labeled round-trip should be identical";
+  ASSERT_EQ(golden["model"], roundtripped) << "Forest labeled round-trip should be identical";
 }
 
 TEST(JsonLabeled, LabeledAndIntegerProduceSameModel) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/tree-pda-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-
-  Tree from_labeled = tree_from_json(golden["model"], group_names);
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Tree>>();
 
   // Convert to integer format and back
-  json int_json     = to_json(from_labeled);
-  Tree from_integer = tree_from_json(int_json);
+  json int_json     = to_json(e.model);
+  Tree from_integer = int_json.get<Tree>();
 
   // Both should produce the same integer-format JSON
-  EXPECT_EQ(to_json(from_labeled), to_json(from_integer));
+  EXPECT_EQ(to_json(e.model), to_json(from_integer));
 }
 
 TEST(JsonRoundTrip, ModelFromJsonFile) {
@@ -222,8 +188,8 @@ TEST(JsonRoundTrip, ModelFromJsonFile) {
   in.close();
 
   ASSERT_NO_THROW({
-    auto model = model_from_json(j);
-    ASSERT_NE(model, nullptr);
+    auto e = j.get<Export<Model::Ptr>>();
+    ASSERT_NE(e.model, nullptr);
   });
 }
 
@@ -232,22 +198,18 @@ TEST(JsonRoundTrip, ModelFromJsonFile) {
 // ---------------------------------------------------------------------------
 
 TEST(JsonStructure, TreeAlwaysHasDegenerate) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/tree-pda-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-
-  Tree tree = tree_from_json(golden["model"], group_names);
-  json j    = to_json(tree, group_names);
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Tree>>();
+  json j      = to_json(e.model, e.groups);
 
   EXPECT_TRUE(j.contains("degenerate"));
   EXPECT_FALSE(j["degenerate"].get<bool>());
 }
 
 TEST(JsonStructure, ForestAlwaysHasDegenerate) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-
-  Forest forest = forest_from_json(golden["model"], group_names);
-  json j        = to_json(forest, group_names);
+  auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
+  auto e      = golden.get<Export<Forest>>();
+  json j      = to_json(e.model, e.groups);
 
   EXPECT_TRUE(j.contains("degenerate"));
   EXPECT_FALSE(j["degenerate"].get<bool>());
@@ -263,7 +225,7 @@ TEST(JsonStructure, ConfusionMatrixRoundTrip) {
   ConfusionMatrix cm(predictions, actual);
   json j = to_json(cm);
 
-  auto restored = confusion_matrix_from_json(j);
+  auto restored = j.get<ConfusionMatrix>();
 
   EXPECT_EQ(restored.values.rows(), cm.values.rows());
   EXPECT_EQ(restored.values.cols(), cm.values.cols());
@@ -271,15 +233,13 @@ TEST(JsonStructure, ConfusionMatrixRoundTrip) {
 }
 
 TEST(JsonStructure, ForestSampleIndicesRoundTrip) {
-  auto golden      = load_golden(GOLDEN_DIR + "/iris/forest-pda-t5-s42.json");
-  auto group_names = golden["meta"]["groups"].get<GroupNames>();
-  json model_json  = golden["model"];
+  auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
+  auto e      = golden.get<Export<Forest>>();
 
-  Forest forest     = forest_from_json(model_json, group_names);
-  json roundtripped = to_json(forest, group_names);
+  json roundtripped = to_json(e.model, e.groups);
 
-  for (size_t i = 0; i < forest.trees.size(); ++i) {
-    auto *bt = dynamic_cast<const BootstrapTree *>(forest.trees[i].get());
+  for (size_t i = 0; i < e.model.trees.size(); ++i) {
+    auto *bt = dynamic_cast<const BootstrapTree *>(e.model.trees[i].get());
     ASSERT_NE(bt, nullptr) << "Tree " << i << " should be a BootstrapTree";
     EXPECT_FALSE(bt->sample_indices.empty()) << "Tree " << i << " should have sample_indices";
 
@@ -295,8 +255,110 @@ TEST(JsonStructure, VariableImportanceRoundTrip) {
 
   json j = to_json(vi);
 
-  auto restored = variable_importance_from_json(j);
+  auto restored = j.get<VariableImportance>();
 
   EXPECT_EQ(restored.projections.size(), vi.projections.size());
   EXPECT_EQ(restored.scale.size(), vi.scale.size());
+}
+
+// ---------------------------------------------------------------------------
+// Export round-trip tests — full JSON (model + config + meta + metrics)
+// ---------------------------------------------------------------------------
+
+TEST(ExportRoundTrip, TreePreservesModelAndMeta) {
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Model::Ptr>>();
+
+  json roundtripped = e.to_json();
+
+  EXPECT_TRUE(roundtripped.contains("model_type"));
+  EXPECT_EQ(roundtripped["model_type"], "tree");
+  EXPECT_TRUE(roundtripped.contains("config"));
+  EXPECT_TRUE(roundtripped.contains("meta"));
+  EXPECT_EQ(roundtripped["meta"]["groups"], golden["meta"]["groups"]);
+  EXPECT_EQ(roundtripped["meta"]["observations"], golden["meta"]["observations"]);
+  EXPECT_EQ(roundtripped["meta"]["features"], golden["meta"]["features"]);
+  EXPECT_EQ(roundtripped["meta"]["feature_names"], golden["meta"]["feature_names"]);
+  EXPECT_EQ(roundtripped["model"], golden["model"]);
+}
+
+TEST(ExportRoundTrip, ForestPreservesModelAndMeta) {
+  auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
+  auto e      = golden.get<Export<Model::Ptr>>();
+
+  json roundtripped = e.to_json();
+
+  EXPECT_TRUE(roundtripped.contains("model_type"));
+  EXPECT_EQ(roundtripped["model_type"], "forest");
+  EXPECT_TRUE(roundtripped.contains("config"));
+  EXPECT_TRUE(roundtripped.contains("meta"));
+  EXPECT_EQ(roundtripped["meta"]["groups"], golden["meta"]["groups"]);
+  EXPECT_EQ(roundtripped["model"], golden["model"]);
+}
+
+TEST(ExportRoundTrip, TreePreservesConfig) {
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Model::Ptr>>();
+
+  json roundtripped = e.to_json();
+
+  EXPECT_EQ(roundtripped["config"]["pp"]["method"], golden["config"]["pp"]["method"]);
+  EXPECT_EQ(roundtripped["config"]["pp"]["lambda"], golden["config"]["pp"]["lambda"]);
+}
+
+TEST(ExportRoundTrip, TreePreservesMetrics) {
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Model::Ptr>>();
+
+  json roundtripped = e.to_json();
+
+  EXPECT_TRUE(roundtripped.contains("training_confusion_matrix"));
+  EXPECT_EQ(roundtripped["training_confusion_matrix"], golden["training_confusion_matrix"]);
+  EXPECT_TRUE(roundtripped.contains("variable_importance"));
+  EXPECT_EQ(roundtripped["variable_importance"], golden["variable_importance"]);
+}
+
+TEST(ExportRoundTrip, ForestPreservesMetrics) {
+  auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
+  auto e      = golden.get<Export<Model::Ptr>>();
+
+  json roundtripped = e.to_json();
+
+  EXPECT_TRUE(roundtripped.contains("training_confusion_matrix"));
+  EXPECT_EQ(roundtripped["training_confusion_matrix"], golden["training_confusion_matrix"]);
+  EXPECT_TRUE(roundtripped.contains("variable_importance"));
+  EXPECT_EQ(roundtripped["variable_importance"], golden["variable_importance"]);
+  EXPECT_TRUE(roundtripped.contains("oob_error"));
+  EXPECT_DOUBLE_EQ(roundtripped["oob_error"].get<double>(), golden["oob_error"].get<double>());
+  EXPECT_TRUE(roundtripped.contains("oob_confusion_matrix"));
+  EXPECT_EQ(roundtripped["oob_confusion_matrix"], golden["oob_confusion_matrix"]);
+}
+
+TEST(ExportRoundTrip, FullRoundTripTreeIdentical) {
+  auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
+  auto e      = golden.get<Export<Model::Ptr>>();
+
+  json roundtripped = e.to_json();
+
+  // Re-deserialize and re-serialize — should be stable
+  auto e2    = roundtripped.get<Export<Model::Ptr>>();
+  json again = e2.to_json();
+
+  EXPECT_EQ(roundtripped["model"], again["model"]);
+  EXPECT_EQ(roundtripped["config"], again["config"]);
+  EXPECT_EQ(roundtripped["meta"], again["meta"]);
+}
+
+TEST(ExportRoundTrip, FullRoundTripForestIdentical) {
+  auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
+  auto e      = golden.get<Export<Model::Ptr>>();
+
+  json roundtripped = e.to_json();
+
+  auto e2    = roundtripped.get<Export<Model::Ptr>>();
+  json again = e2.to_json();
+
+  EXPECT_EQ(roundtripped["model"], again["model"]);
+  EXPECT_EQ(roundtripped["config"], again["config"]);
+  EXPECT_EQ(roundtripped["meta"], again["meta"]);
 }

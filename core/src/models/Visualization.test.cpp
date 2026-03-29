@@ -5,7 +5,7 @@
 #include "models/Tree.hpp"
 #include "models/TreeCondition.hpp"
 #include "models/TreeResponse.hpp"
-#include "models/TrainingSpecPDA.hpp"
+#include "models/TrainingSpec.hpp"
 #include "stats/Simulation.hpp"
 #include "stats/Stats.hpp"
 
@@ -36,7 +36,6 @@ static Tree make_test_tree() {
     2.0f,
     std::move(leaf1),
     std::move(leaf2),
-    nullptr,
     { 1, 2 });
 
   auto root = TreeCondition::make(
@@ -44,10 +43,9 @@ static Tree make_test_tree() {
     1.5f,
     std::move(leaf0),
     std::move(right_cond),
-    nullptr,
     { 0, 1, 2 });
 
-  return Tree(std::move(root), TrainingSpecPDA::make(0.5f));
+  return Tree(std::move(root), TrainingSpec::make(pp::pda(0.5f), dr::noop(), sr::mean_of_means()));
 }
 
 // Make a deeper tree (depth 4) to stress-test memory management
@@ -58,7 +56,6 @@ static Tree make_deep_tree() {
         make_proj(proj), thr,
         TreeResponse::make(lower_group),
         TreeResponse::make(upper_group),
-        nullptr,
         { lower_group, upper_group });
     };
 
@@ -69,24 +66,21 @@ static Tree make_deep_tree() {
     make_proj({ 0.5f, 0.5f }), 1.5f,
     std::move(left_subtree),
     TreeResponse::make(1),
-    nullptr,
     { 0, 1 });
 
   auto mid_right = TreeCondition::make(
     make_proj({ 0.8f, 0.2f }), 2.5f,
     TreeResponse::make(2),
     std::move(right_subtree),
-    nullptr,
     { 2, 3 });
 
   auto root = TreeCondition::make(
     make_proj({ 0.4f, 0.6f }), 1.8f,
     std::move(mid_left),
     std::move(mid_right),
-    nullptr,
     { 0, 1, 2, 3 });
 
-  return Tree(std::move(root), TrainingSpecPDA::make(0.5f));
+  return Tree(std::move(root), TrainingSpec::make(pp::pda(0.5f), dr::noop(), sr::mean_of_means()));
 }
 
 class VisualizationTest : public ::testing::Test {
@@ -100,7 +94,7 @@ class VisualizationTest : public ::testing::Test {
       x.resize(30, 4);
       y.resize(30);
 
-      RNG rng(42);
+      RNG rng(0);
 
       for (int i = 0; i < 30; ++i) {
         for (int j = 0; j < 4; ++j) {

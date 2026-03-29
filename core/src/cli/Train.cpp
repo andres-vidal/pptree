@@ -3,7 +3,6 @@
  * @brief Model training utilities and train subcommand handler.
  */
 #include "cli/Train.hpp"
-#include "cli/Metrics.hpp"
 #include "ppforest2.hpp"
 
 #include <CLI/CLI.hpp>
@@ -27,16 +26,26 @@ using json = nlohmann::json;
 
 namespace ppforest2::cli {
   void add_model_options(CLI::App *sub, ModelParams& model) {
-    sub->add_option("-t,--trees", model.trees, "Number of trees (default: 100, 0 for single tree)")
+    sub->add_option("-n,--size", model.size, "Number of trees (default: 100, 0 for single tree)")
     ->check(CLI::NonNegativeNumber);
-    sub->add_option("-l,--lambda", model.lambda, "Method selection (0=LDA, (0,1]=PDA)")
-    ->check(CLI::Range(0.0f, 1.0f));
+    auto lambda_opt = sub->add_option("-l,--lambda", model.lambda, "Method selection (0=LDA, (0,1]=PDA)")
+      ->check(CLI::Range(0.0f, 1.0f));
     sub->add_option("--threads", model.threads, "Number of threads (default: CPU cores)")
     ->check(CLI::PositiveNumber);
     sub->add_option("-r,--seed", model.seed, "Random seed (default: random)");
-    sub->add_option("-v,--vars", model.vars_input, "Features per split (integer=count, decimal or fraction=proportion, default: 0.5)");
+    auto vars_opt = sub->add_option("-v,--vars", model.vars_input, "Features per split (integer=count, decimal or fraction=proportion, default: 0.5)");
     sub->add_option("--max-retries", model.max_retries, "Max retries for degenerate trees (default: 3)")
     ->check(CLI::NonNegativeNumber);
+
+    // Explicit strategy flags (mutually exclusive with shortcut params)
+    auto pp_opt = sub->add_option("--pp", model.pp_input, "PP strategy (e.g. pda, pda:lambda=0.5)");
+    auto dr_opt = sub->add_option("--dr", model.dr_input, "DR strategy (e.g. noop, uniform:vars=3)");
+    sub->add_option("--sr", model.sr_input, "Split rule strategy (e.g. mean_of_means)");
+
+    pp_opt->excludes(lambda_opt);
+    lambda_opt->excludes(pp_opt);
+    dr_opt->excludes(vars_opt);
+    vars_opt->excludes(dr_opt);
   }
 
   CLI::App * setup_train(CLI::App& app, CLIOptions& params) {
@@ -55,26 +64,6 @@ namespace ppforest2::cli {
 }
 
 namespace ppforest2::cli {
-namespace {
-  json build_config_json(const CLIOptions& params) {
-    json config;
-    config["trees"]   = params.model.trees;
-    config["lambda"]  = params.model.lambda;
-    config["seed"]    = params.model.seed;
-    config["threads"] = params.model.threads;
-
-    if (params.model.trees > 0 && params.model.n_vars > 0) {
-      config["vars"] = params.model.n_vars;
-    }
-
-    if (!params.data_path.empty()) {
-      config["data"] = params.data_path;
-    }
-
-    return config;
-  }
-}
-
   DataPacket read_data(const CLIOptions& params, ppforest2::stats::RNG& rng) {
     if (!params.data_path.empty()) {
       try {
@@ -111,22 +100,20 @@ namespace {
     const ResponseVector&  y,
     const CLIOptions&      params,
     ppforest2::stats::RNG& rng) {
-    TrainingSpec::Ptr spec;
-    std::function<Model::Ptr()> fact;
+    auto& m   = params.model;
+    auto spec = TrainingSpec::from_json({
+      { "pp",          m.pp_config },
+      { "dr",          m.dr_config },
+      { "sr",          m.sr_config },
+      { "size",        m.size },
+      { "seed",        m.seed },
+      { "threads",     m.threads },
+      { "max_retries", m.max_retries },
+    });
 
-    if (params.model.trees > 0) {
-      spec = TrainingSpecUPDA::make(params.model.n_vars, params.model.lambda);
-      fact = [&] {
-        return Forest::make(*spec, x, y, params.model.trees, params.model.seed, params.model.threads, params.model.max_retries);
-      };
-    } else {
-      spec = TrainingSpecPDA::make(params.model.lambda);
-      fact = [&] {
-        return Tree::make(*spec, x, y, rng);
-      };
-    }
-
-    auto [model, ms] = io::measure_time_ms(fact);
+    auto [model, ms] = io::measure_time_ms([&] {
+          return Model::train(*spec, x, y);
+        });
 
     return { std::move(model), ms };
   }
@@ -147,21 +134,28 @@ namespace {
     FeatureMatrix x  = data.x;
     ResponseVector y = data.y;
 
-    const auto train_result = train_model(x, y, params, rng);
+    auto train_result = train_model(x, y, params, rng);
 
-    // Build the model JSON
-    json model_json = serialization::build_model_json(
-      *train_result.model, build_config_json(params),
-      data.group_names, data.feature_names,
-      static_cast<int>(x.rows()), static_cast<int>(x.cols()));
+    serialization::Export<Model::Ptr> model_export{
+      std::move(train_result.model),
+      data.group_names,
+      nullptr,
+      static_cast<int>(x.rows()),
+      static_cast<int>(x.cols()),
+      data.feature_names,
+    };
+
+    if (!params.no_metrics) {
+      model_export.compute_metrics(x, y);
+    }
+
+    json model_json = model_export.to_json();
+
+    if (!params.data_path.empty()) {
+      model_json["config"]["data"] = params.data_path;
+    }
 
     model_json["training_duration_ms"] = train_result.duration;
-
-    // Compute and add metrics to JSON
-    if (!params.no_metrics) {
-      compute_metrics(model_json, *train_result.model, x, y,
-      data.group_names, params.model.seed);
-    }
 
     // Save model
     if (!params.save_path.empty()) {
@@ -170,7 +164,7 @@ namespace {
     }
 
     io::ConfigDisplayHints hints;
-    hints.vars_percent    = params.model.trees > 0 ? static_cast<int>(params.model.p_vars * 100) : -1;
+    hints.vars_percent    = params.model.size > 0 ? static_cast<int>(params.model.p_vars * 100) : -1;
     hints.default_vars    = params.model.used_default_vars;
     hints.default_threads = params.model.used_default_threads;
     hints.default_seed    = params.model.used_default_seed;

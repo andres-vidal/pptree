@@ -29,7 +29,7 @@ with the C++ CLI. The JSON includes the model structure, group labels,
 training parameters, and optionally variable importance metrics.
 }
 \examples{
-model <- pptr(Type ~ ., data = iris, seed = 42)
+model <- pptr(Type ~ ., data = iris, seed = 0)
 path <- tempfile(fileext = ".json")
 save_json(model, path)
 

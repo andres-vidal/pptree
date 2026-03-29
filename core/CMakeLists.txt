@@ -168,7 +168,11 @@ if(NOT PPFOREST2_CORE_ONLY)
     src/test.cpp
     src/models/Tree.test.cpp
     src/models/Forest.test.cpp
-    src/models/PPStrategy.test.cpp
+    src/models/PPPDAStrategy.test.cpp
+    src/models/DRUniformStrategy.test.cpp
+    src/models/DRNoopStrategy.test.cpp
+    src/models/SRMeanOfMeansStrategy.test.cpp
+    src/models/TrainingSpec.test.cpp
     src/models/VariableImportance.test.cpp
     src/models/Visualization.test.cpp
     src/stats/Stats.test.cpp
@@ -230,7 +234,7 @@ if(NOT PPFOREST2_CORE_ONLY)
   # ---------------------------------------------------------------------------
   # Golden file generator
   # ---------------------------------------------------------------------------
-  add_executable(ppforest2-golden-gen src/golden/GoldenGen.cpp src/cli/Metrics.cpp)
+  add_executable(ppforest2-golden-gen src/golden/GoldenGen.cpp)
 
   target_link_libraries(ppforest2-golden-gen
     ppforest2-core

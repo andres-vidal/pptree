@@ -141,13 +141,13 @@ compare_vi <- function(model, golden, key, r_field) {
 }
 
 # ---------------------------------------------------------------------------
-# Tree: iris tree-pda-s42
+# Tree: iris tree-pda-s0
 # ---------------------------------------------------------------------------
 
-describe("Reproducibility: iris tree-pda-s42", {
-  golden <- load_golden("iris", "tree-pda-s42.json")
+describe("Reproducibility: iris tree-pda-s0", {
+  golden <- load_golden("iris", "tree-pda-s0.json")
   d <- prepare_data(iris, golden)
-  model <- pptr(Type ~ ., data = d, seed = 42L)
+  model <- pptr(Type ~ ., data = d, seed = 0)
 
   it("model structure matches golden file", {
     compare_tree(model$root, golden$model$root, as_vec(golden$meta$groups))
@@ -171,13 +171,13 @@ describe("Reproducibility: iris tree-pda-s42", {
 })
 
 # ---------------------------------------------------------------------------
-# Tree: crab tree-pda-s42
+# Tree: crab tree-pda-s0
 # ---------------------------------------------------------------------------
 
-describe("Reproducibility: crab tree-pda-s42", {
-  golden <- load_golden("crab", "tree-pda-s42.json")
+describe("Reproducibility: crab tree-pda-s0", {
+  golden <- load_golden("crab", "tree-pda-s0.json")
   d <- prepare_data(crab, golden)
-  model <- pptr(Type ~ ., data = d, seed = 42L)
+  model <- pptr(Type ~ ., data = d, seed = 0)
 
   it("model structure matches golden file", {
     compare_tree(model$root, golden$model$root, as_vec(golden$meta$groups))
@@ -201,13 +201,13 @@ describe("Reproducibility: crab tree-pda-s42", {
 })
 
 # ---------------------------------------------------------------------------
-# Forest: iris forest-pda-t5-s42
+# Forest: iris forest-pda-n5-s0
 # ---------------------------------------------------------------------------
 
-describe("Reproducibility: iris forest-pda-t5-s42", {
-  golden <- load_golden("iris", "forest-pda-t5-s42.json")
+describe("Reproducibility: iris forest-pda-n5-s0", {
+  golden <- load_golden("iris", "forest-pda-n5-s0.json")
   d <- prepare_data(iris, golden)
-  model <- pprf(Type ~ ., data = d, size = 5, n_vars = 2, seed = 42L, n_threads = 1)
+  model <- pprf(Type ~ ., data = d, size = 5, n_vars = 2, seed = 0, threads = 1)
 
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
@@ -250,13 +250,13 @@ describe("Reproducibility: iris forest-pda-t5-s42", {
 })
 
 # ---------------------------------------------------------------------------
-# Forest: iris forest-pda-l05-t5-s42
+# Forest: iris forest-pda-l05-n5-s0
 # ---------------------------------------------------------------------------
 
-describe("Reproducibility: iris forest-pda-l05-t5-s42", {
-  golden <- load_golden("iris", "forest-pda-l05-t5-s42.json")
+describe("Reproducibility: iris forest-pda-l05-n5-s0", {
+  golden <- load_golden("iris", "forest-pda-l05-n5-s0.json")
   d <- prepare_data(iris, golden)
-  model <- pprf(Type ~ ., data = d, size = 5, n_vars = 2, lambda = 0.5, seed = 42L, n_threads = 1)
+  model <- pprf(Type ~ ., data = d, size = 5, n_vars = 2, lambda = 0.5, seed = 0, threads = 1)
 
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
@@ -299,13 +299,13 @@ describe("Reproducibility: iris forest-pda-l05-t5-s42", {
 })
 
 # ---------------------------------------------------------------------------
-# Forest: crab forest-pda-t10-s42
+# Forest: crab forest-pda-n10-s0
 # ---------------------------------------------------------------------------
 
-describe("Reproducibility: crab forest-pda-t10-s42", {
-  golden <- load_golden("crab", "forest-pda-t10-s42.json")
+describe("Reproducibility: crab forest-pda-n10-s0", {
+  golden <- load_golden("crab", "forest-pda-n10-s0.json")
   d <- prepare_data(crab, golden)
-  model <- pprf(Type ~ ., data = d, size = 10, n_vars = 3, seed = 42L, n_threads = 1)
+  model <- pprf(Type ~ ., data = d, size = 10, n_vars = 3, seed = 0, threads = 1)
 
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
@@ -348,13 +348,13 @@ describe("Reproducibility: crab forest-pda-t10-s42", {
 })
 
 # ---------------------------------------------------------------------------
-# Forest: wine forest-pda-t10-s42
+# Forest: wine forest-pda-n10-s0
 # ---------------------------------------------------------------------------
 
-describe("Reproducibility: wine forest-pda-t10-s42", {
-  golden <- load_golden("wine", "forest-pda-t10-s42.json")
+describe("Reproducibility: wine forest-pda-n10-s0", {
+  golden <- load_golden("wine", "forest-pda-n10-s0.json")
   d <- prepare_data(wine, golden)
-  model <- pprf(Type ~ ., data = d, size = 10, n_vars = 4, seed = 42L, n_threads = 1)
+  model <- pprf(Type ~ ., data = d, size = 10, n_vars = 4, seed = 0, threads = 1)
 
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
@@ -397,13 +397,13 @@ describe("Reproducibility: wine forest-pda-t10-s42", {
 })
 
 # ---------------------------------------------------------------------------
-# Forest: glass forest-pda-t10-s42
+# Forest: glass forest-pda-n10-s0
 # ---------------------------------------------------------------------------
 
-describe("Reproducibility: glass forest-pda-t10-s42", {
-  golden <- load_golden("glass", "forest-pda-t10-s42.json")
+describe("Reproducibility: glass forest-pda-n10-s0", {
+  golden <- load_golden("glass", "forest-pda-n10-s0.json")
   d <- prepare_data(glass, golden)
-  model <- pprf(Type ~ ., data = d, size = 10, n_vars = 3, seed = 42L, n_threads = 1)
+  model <- pprf(Type ~ ., data = d, size = 10, n_vars = 3, seed = 0, threads = 1)
 
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {

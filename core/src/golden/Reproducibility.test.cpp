@@ -15,8 +15,7 @@
 #include "stats/ConfusionMatrix.hpp"
 #include "models/Tree.hpp"
 #include "models/Forest.hpp"
-#include "models/TrainingSpecPDA.hpp"
-#include "models/TrainingSpecUPDA.hpp"
+#include "models/TrainingSpec.hpp"
 #include "models/VariableImportance.hpp"
 #include "serialization/Json.hpp"
 #include "io/IO.hpp"
@@ -207,34 +206,34 @@ namespace {
 // Macro to reduce boilerplate for each golden test
 // ---------------------------------------------------------------------------
 
-#define GOLDEN_TREE_TEST(TestName, dataset_name, slug_name, csv_file, lambda_val, seed_val) \
-        TEST(Reproducibility, TestName) {                                                   \
-          auto path = resolve_golden_path(dataset_name, slug_name);                         \
-          invariant(std::filesystem::exists(path), "Golden file missing: " + path);         \
-                                                                                            \
-          auto golden      = load_golden(path);                                             \
-          auto group_names = golden["meta"]["groups"].get<std::vector<std::string>>();      \
-          auto data        = io::csv::read_sorted(DATA_DIR + "/" + csv_file);               \
-                                                                                            \
-          RNG rng(seed_val);                                                                \
-          Tree tree = Tree::train(TrainingSpecPDA(lambda_val), data.x, data.y, rng);        \
-                                                                                            \
-          compare_model_structure(golden["model"], tree, group_names);                      \
-                                                                                            \
-          auto predictions = tree.predict(data.x);                                          \
-          compare_predictions(golden["predictions"], predictions, group_names);             \
-                                                                                            \
-          ConfusionMatrix cm(predictions, data.y);                                          \
-          EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                \
-          compare_confusion_matrix(golden["training_confusion_matrix"], cm, group_names);   \
-                                                                                            \
-          if (golden.contains("variable_importance")) {                                     \
-            const int n_vars    = static_cast<int>(data.x.cols());                          \
-            FeatureVector scale = stats::sd(data.x);                                        \
-            scale = (scale.array() > Feature(0)).select(scale, Feature(1));                 \
-            FeatureVector vi2 = variable_importance_projections(tree, n_vars, &scale);      \
-            compare_vi(golden["variable_importance"], "projections", vi2, 1e-3f);           \
-          }                                                                                 \
+#define GOLDEN_TREE_TEST(TestName, dataset_name, slug_name, csv_file, lambda_val, seed_val)                                 \
+        TEST(Reproducibility, TestName) {                                                                                   \
+          auto path = resolve_golden_path(dataset_name, slug_name);                                                         \
+          invariant(std::filesystem::exists(path), "Golden file missing: " + path);                                         \
+                                                                                                                            \
+          auto golden      = load_golden(path);                                                                             \
+          auto group_names = golden["meta"]["groups"].get<std::vector<std::string>>();                                      \
+          auto data        = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                                               \
+                                                                                                                            \
+          RNG rng(seed_val);                                                                                                \
+          Tree tree = Tree::train(TrainingSpec(pp::pda(lambda_val), dr::noop(), sr::mean_of_means()), data.x, data.y, rng); \
+                                                                                                                            \
+          compare_model_structure(golden["model"], tree, group_names);                                                      \
+                                                                                                                            \
+          auto predictions = tree.predict(data.x);                                                                          \
+          compare_predictions(golden["predictions"], predictions, group_names);                                             \
+                                                                                                                            \
+          ConfusionMatrix cm(predictions, data.y);                                                                          \
+          EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                                                \
+          compare_confusion_matrix(golden["training_confusion_matrix"], cm, group_names);                                   \
+                                                                                                                            \
+          if (golden.contains("variable_importance")) {                                                                     \
+            const int n_vars    = static_cast<int>(data.x.cols());                                                          \
+            FeatureVector scale = stats::sd(data.x);                                                                        \
+            scale = (scale.array() > Feature(0)).select(scale, Feature(1));                                                 \
+            FeatureVector vi2 = variable_importance_projections(tree, n_vars, &scale);                                      \
+            compare_vi(golden["variable_importance"], "projections", vi2, 1e-3f);                                           \
+          }                                                                                                                 \
         }
 
 #define GOLDEN_FOREST_TEST(TestName, dataset_name, slug_name, csv_file,                         \
@@ -248,8 +247,9 @@ namespace {
           auto data        = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                   \
                                                                                                 \
           Forest forest = Forest::train(                                                        \
-            TrainingSpecUPDA(n_vars_val, lambda_val),                                           \
-            data.x, data.y, n_trees, seed_val, 1);                                              \
+            TrainingSpec(pp::pda(lambda_val), dr::uniform(n_vars_val), sr::mean_of_means(),     \
+            n_trees, seed_val, 1),                                                              \
+            data.x, data.y);                                                                    \
                                                                                                 \
           compare_model_structure(golden["model"], forest, group_names);                        \
                                                                                                 \
@@ -290,15 +290,15 @@ namespace {
 // Tree tests
 // ---------------------------------------------------------------------------
 
-GOLDEN_TREE_TEST(IrisTreePDA, "iris", "tree-pda-s42", "iris.csv", 0.0f, 42)
-GOLDEN_TREE_TEST(CrabTreePDA, "crab", "tree-pda-s42", "crab.csv", 0.0f, 42)
+GOLDEN_TREE_TEST(IrisTreePDA, "iris", "tree-pda-s0", "iris.csv", 0.0f, 0)
+GOLDEN_TREE_TEST(CrabTreePDA, "crab", "tree-pda-s0", "crab.csv", 0.0f, 0)
 
 // ---------------------------------------------------------------------------
 // Forest tests
 // ---------------------------------------------------------------------------
 
-GOLDEN_FOREST_TEST(IrisForestPDAL0, "iris", "forest-pda-t5-s42", "iris.csv", 5, 0.0f, 2, 42)
-GOLDEN_FOREST_TEST(IrisForestPDAL05, "iris", "forest-pda-l05-t5-s42", "iris.csv", 5, 0.5f, 2, 42)
-GOLDEN_FOREST_TEST(CrabForestPDA, "crab", "forest-pda-t10-s42", "crab.csv", 10, 0.0f, 3, 42)
-GOLDEN_FOREST_TEST(WineForestPDA, "wine", "forest-pda-t10-s42", "wine.csv", 10, 0.0f, 4, 42)
-GOLDEN_FOREST_TEST(GlassForestPDA, "glass", "forest-pda-t10-s42", "glass.csv", 10, 0.0f, 3, 42)
+GOLDEN_FOREST_TEST(IrisForestPDAL0,  "iris",  "forest-pda-n5-s0",     "iris.csv",  5,  0.0f, 2, 0)
+GOLDEN_FOREST_TEST(IrisForestPDAL05, "iris",  "forest-pda-l05-n5-s0", "iris.csv",  5,  0.5f, 2, 0)
+GOLDEN_FOREST_TEST(CrabForestPDA,    "crab",  "forest-pda-n10-s0",    "crab.csv",  10, 0.0f, 3, 0)
+GOLDEN_FOREST_TEST(WineForestPDA,    "wine",  "forest-pda-n10-s0",    "wine.csv",  10, 0.0f, 4, 0)
+GOLDEN_FOREST_TEST(GlassForestPDA,   "glass", "forest-pda-n10-s0",    "glass.csv", 10, 0.0f, 3, 0)

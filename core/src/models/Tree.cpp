@@ -5,7 +5,6 @@
 #include "models/BootstrapTree.hpp"
 #include "utils/Invariant.hpp"
 #include "utils/Map.hpp"
-#include "models/TrainingSpecPDA.hpp"
 
 #include <cmath>
 #include <map>
@@ -94,7 +93,7 @@ namespace {
     Response group_1 = *group_spec.groups.begin();
     Response group_2 = *std::next(group_spec.groups.begin());
 
-    const PPStrategy &pp_strategy = *(training_spec.pp_strategy);
+    const PPStrategy &pp_strategy = *training_spec.pp_strategy;
 
     auto reduced_x = x(Eigen::all, dr.selected_cols);
 
@@ -104,7 +103,7 @@ namespace {
     auto data_group_1 = group_spec.group(x, group_1);
     auto data_group_2 = group_spec.group(x, group_2);
 
-    const SRStrategy &sr_strategy = *(training_spec.sr_strategy);
+    const SRStrategy &sr_strategy = *training_spec.sr_strategy;
     Feature threshold             = sr_strategy.threshold(data_group_1, data_group_2, projector);
 
     Feature projected_mean_1 = data_group_1.colwise().mean().dot(projector);
@@ -128,7 +127,6 @@ namespace {
       threshold,
       std::move(lower_response),
       std::move(upper_response),
-      training_spec.clone(),
       group_spec.groups,
       pp_index_value);
 
@@ -141,7 +139,7 @@ namespace {
     const GroupPartition & group_spec,
     const DRResult&        dr
     ) {
-    const PPStrategy &pp_strategy = *(training_spec.pp_strategy);
+    const PPStrategy &pp_strategy = *training_spec.pp_strategy;
 
     FeatureMatrix reduced_x = x(Eigen::all, dr.selected_cols);
 
@@ -187,8 +185,8 @@ namespace {
     const GroupPartition & y,
     stats::RNG &           rng
     ) {
-    const PPStrategy &pp_strategy = *(training_spec.pp_strategy);
-    const DRStrategy &dr_strategy = *(training_spec.dr_strategy);
+    const PPStrategy &pp_strategy = *training_spec.pp_strategy;
+    const DRStrategy &dr_strategy = *training_spec.dr_strategy;
 
     std::stack<Step> stack;
 
@@ -205,7 +203,6 @@ namespace {
           step.threshold,
           std::move(step.lower),
           std::move(step.upper),
-          training_spec.clone(),
           step.y.groups,
           step.pp_index_value);
 
@@ -288,29 +285,15 @@ namespace {
 
     Tree tree(
       std::move(root_ptr),
-      training_spec.clone());
+      TrainingSpec::make(training_spec));
 
     return tree;
   }
 
-  Model::Ptr Tree::make(
-    TrainingSpec const&   training_spec,
-    const FeatureMatrix&  x,
-    const ResponseVector& y,
-    stats::RNG&           rng) {
-    return std::make_unique<Tree>(train(training_spec, x, y, rng));
-  }
-
-  Tree::Tree(TreeNode::Ptr root) :
-    root(std::move(root)),
-    training_spec(TrainingSpecPDA::make(0.5)) {
-    degenerate = this->root && this->root->degenerate;
-  }
-
   Tree::Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec) :
-    root(std::move(root)),
-    training_spec(std::move(training_spec)) {
-    degenerate = this->root && this->root->degenerate;
+    root(std::move(root)) {
+    this->training_spec = std::move(training_spec);
+    degenerate          = this->root && this->root->degenerate;
   }
 
   Response Tree::predict(const FeatureVector& data) const {

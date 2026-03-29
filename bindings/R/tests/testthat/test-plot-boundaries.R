@@ -12,7 +12,7 @@ describe("plot.pptr boundaries", {
     model <- pptr(
       x = iris[, c("Sepal.Length", "Sepal.Width")],
       y = iris$Type,
-      seed = 42L
+      seed = 0
     )
     p <- plot(model, type = "boundaries")
     expect_s3_class(p, "ggplot")
@@ -22,14 +22,14 @@ describe("plot.pptr boundaries", {
     model <- pptr(
       x = iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length")],
       y = iris$Type,
-      seed = 42L
+      seed = 0
     )
     p <- plot(model, type = "boundaries")
     expect_s3_class(p, "gtable")
   })
 
   it("returns a gtable for pairwise boundary plot with 4 features", {
-    model <- pptr(Type ~ ., data = iris, seed = 42L)
+    model <- pptr(Type ~ ., data = iris, seed = 0)
     p <- plot(model, type = "boundaries")
     expect_s3_class(p, "gtable")
   })
@@ -38,7 +38,7 @@ describe("plot.pptr boundaries", {
     model <- pptr(
       x = iris[, c("Sepal.Length", "Sepal.Width")],
       y = iris$Type,
-      seed = 42L
+      seed = 0
     )
     segs <- ppforest2:::ppforest2_boundary_segments(
       model, c(0L, 1L), numeric(0),
@@ -53,7 +53,7 @@ describe("plot.pptr boundaries", {
     model <- pptr(
       x = iris[, c("Sepal.Length", "Sepal.Width")],
       y = iris$Type,
-      seed = 42L
+      seed = 0
     )
     regions <- ppforest2:::ppforest2_decision_regions(
       model, c(0L, 1L), numeric(0),
@@ -73,7 +73,7 @@ describe("plot.pprf boundaries", {
     model <- pprf(
       x = iris[, c("Sepal.Length", "Sepal.Width")],
       y = iris$Type,
-      size = 5, seed = 42L, n_threads = 1
+      size = 5, seed = 0, threads = 1
     )
     p <- plot(model, type = "boundaries", tree_index = 1)
     expect_s3_class(p, "ggplot")

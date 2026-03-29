@@ -3,7 +3,6 @@
  * @brief Summarize subcommand handler: display saved model summary.
  */
 #include "cli/Summarize.hpp"
-#include "cli/Metrics.hpp"
 #include "io/Presentation.hpp"
 #include "io/Output.hpp"
 #include "io/IO.hpp"
@@ -39,14 +38,9 @@ namespace ppforest2::cli {
       try {
         auto data = io::csv::read_sorted(params.data_path);
 
-        std::vector<std::string> group_names;
-
-        if (model_data.contains("meta") && model_data["meta"].contains("groups")) {
-          group_names = model_data["meta"]["groups"].get<std::vector<std::string>>();
-        }
-
-        auto model = serialization::model_from_json(model_data);
-        compute_metrics(model_data, *model, data.x, data.y, group_names);
+        auto model_export = model_data.get<serialization::Export<Model::Ptr>>();
+        model_export.compute_metrics(data.x, data.y);
+        model_data = model_export.to_json();
       } catch (const ppforest2::UserError& e) {
         fmt::print(stderr, "Error: {}\n", e.what());
         fmt::print(stderr, "File: {}\n", params.data_path);

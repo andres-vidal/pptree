@@ -6,8 +6,6 @@
 #include "models/TreeResponse.hpp"
 
 #include "models/TrainingSpec.hpp"
-#include "models/TrainingSpecPDA.hpp"
-#include "models/TrainingSpecUPDA.hpp"
 
 #include "stats/Simulation.hpp"
 #include "stats/Stats.hpp"
@@ -67,11 +65,10 @@ TEST(Forest, TrainLDAAllVariablesProperties) {
   const int seed     = 0;
 
   Forest result = Forest::train(
-    TrainingSpecUPDA(n_vars, lambda),
-    x, y, 4, seed);
+    TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
 
   ASSERT_EQ(result.trees.size(), 4);
-  ASSERT_EQ(result.seed, seed);
+  ASSERT_EQ(result.training_spec->seed, seed);
 
   ResponseVector predictions = result.predict(x);
   double err                 = error_rate(predictions, y);
@@ -123,11 +120,10 @@ TEST(Forest, TrainLDASomeVariablesProperties) {
 
 
   Forest result = Forest::train(
-    TrainingSpecUPDA(n_vars, lambda),
-    x, y, 4, seed);
+    TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
 
   ASSERT_EQ(result.trees.size(), 4);
-  ASSERT_EQ(result.seed, seed);
+  ASSERT_EQ(result.training_spec->seed, seed);
 
   ResponseVector predictions = result.predict(x);
   double err                 = error_rate(predictions, y);
@@ -157,11 +153,10 @@ TEST(Forest, TrainPDAAllVariablesProperties) {
   const int seed     = 0;
 
   Forest result = Forest::train(
-    TrainingSpecUPDA(n_vars, lambda),
-    x, y, 4, seed);
+    TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
 
   ASSERT_EQ(result.trees.size(), 4);
-  ASSERT_EQ(result.seed, seed);
+  ASSERT_EQ(result.training_spec->seed, seed);
 
   ResponseVector predictions = result.predict(x);
   double err                 = error_rate(predictions, y);
@@ -170,14 +165,14 @@ TEST(Forest, TrainPDAAllVariablesProperties) {
 }
 
 TEST(ForestSimulation, PerfectSeparationLowOOBError) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 200.0f;
   params.sd              = 1.0f;
 
   auto data = simulate(90, 4, 3, rng, params);
 
-  Forest forest = Forest::train(TrainingSpecUPDA(4, 0.0f), data.x, data.y, 20, 42, 1);
+  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   double err = forest.oob_error(data.x, data.y);
 
@@ -186,14 +181,14 @@ TEST(ForestSimulation, PerfectSeparationLowOOBError) {
 }
 
 TEST(ForestSimulation, HighOverlapBoundedError) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 5.0f;
   params.sd              = 50.0f;
 
   auto data = simulate(200, 4, 3, rng, params);
 
-  Forest forest = Forest::train(TrainingSpecUPDA(4, 0.0f), data.x, data.y, 20, 42, 1);
+  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -202,14 +197,14 @@ TEST(ForestSimulation, HighOverlapBoundedError) {
 }
 
 TEST(ForestSimulation, ManyClasses) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 50.0f;
   params.sd              = 10.0f;
 
   auto data = simulate(300, 4, 10, rng, params);
 
-  Forest forest = Forest::train(TrainingSpecUPDA(4, 0.0f), data.x, data.y, 20, 42, 1);
+  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -218,14 +213,14 @@ TEST(ForestSimulation, ManyClasses) {
 }
 
 TEST(ForestSimulation, HighDimensionality) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 50.0f;
   params.sd              = 10.0f;
 
   auto data = simulate(100, 50, 3, rng, params);
 
-  Forest forest = Forest::train(TrainingSpecUPDA(7, 0.0f), data.x, data.y, 20, 42, 1);
+  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(7), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -234,24 +229,24 @@ TEST(ForestSimulation, HighDimensionality) {
 }
 
 TEST(ForestSimulation, Deterministic) {
-  RNG rng(42);
+  RNG rng(0);
   auto data = simulate(90, 4, 3, rng);
 
-  Forest f1 = Forest::train(TrainingSpecUPDA(4, 0.0f), data.x, data.y, 10, 42, 1);
-  Forest f2 = Forest::train(TrainingSpecUPDA(4, 0.0f), data.x, data.y, 10, 42, 1);
+  Forest f1 = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 10, 0, 1), data.x, data.y);
+  Forest f2 = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 10, 0, 1), data.x, data.y);
 
   ASSERT_EQ(f1, f2) << "Same seed should produce identical forests";
 }
 
 TEST(ForestSimulation, PDAOnOverlappingData) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 10.0f;
   params.sd              = 20.0f;
 
   auto data = simulate(200, 4, 3, rng, params);
 
-  Forest forest = Forest::train(TrainingSpecUPDA(4, 0.5f), data.x, data.y, 20, 42, 1);
+  Forest forest = Forest::train(TrainingSpec(pp::pda(0.5f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -260,14 +255,14 @@ TEST(ForestSimulation, PDAOnOverlappingData) {
 }
 
 TEST(ForestSimulation, LargeDataset) {
-  RNG rng(42);
+  RNG rng(0);
   SimulationParams params;
   params.mean_separation = 50.0f;
   params.sd              = 10.0f;
 
   auto data = simulate(2000, 10, 4, rng, params);
 
-  Forest forest = Forest::train(TrainingSpecUPDA(5, 0.0f), data.x, data.y, 10, 42, 1);
+  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(5), sr::mean_of_means(), 10, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -287,7 +282,8 @@ static Forest build_three_group_forest() {
           5.553,
           TreeResponse::make(1),
           TreeResponse::make(2)),
-        TreeResponse::make(0))));
+        TreeResponse::make(0)),
+      nullptr));
 
   forest.add_tree(std::make_unique<BootstrapTree>(
       TreeCondition::make(
@@ -298,7 +294,8 @@ static Forest build_three_group_forest() {
           1.609,
           TreeResponse::make(0),
           TreeResponse::make(1)),
-        TreeResponse::make(2))));
+        TreeResponse::make(2)),
+      nullptr));
 
   forest.add_tree(std::make_unique<BootstrapTree>(
       TreeCondition::make(
@@ -309,7 +306,8 @@ static Forest build_three_group_forest() {
           2.622,
           TreeResponse::make(0),
           TreeResponse::make(1)),
-        TreeResponse::make(2))));
+        TreeResponse::make(2)),
+      nullptr));
 
   forest.add_tree(std::make_unique<BootstrapTree>(
       TreeCondition::make(
@@ -320,7 +318,8 @@ static Forest build_three_group_forest() {
           -0.832,
           TreeResponse::make(1),
           TreeResponse::make(0)),
-        TreeResponse::make(2))));
+        TreeResponse::make(2)),
+      nullptr));
 
   return forest;
 }
@@ -381,7 +380,7 @@ TEST(OobError, PerfectSeparationGivesLowError) {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-  Forest forest = Forest::train(TrainingSpecPDA(0.0f), x, y, 50, 42);
+  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::noop(), sr::mean_of_means(), 50, 0), x, y);
 
   double err = forest.oob_error(x, y);
 
@@ -403,7 +402,6 @@ TEST(OobError, AllInBagReturnsNegative) {
     5.0f,
     TreeResponse::make(0),
     TreeResponse::make(1),
-    nullptr,
     { 0, 1 },
     0.9f);
 
@@ -411,7 +409,7 @@ TEST(OobError, AllInBagReturnsNegative) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(condition),
-      TrainingSpecPDA::make(0.0f),
+      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
       std::vector<int>{ 0, 1, 2, 3 }));
 
   double err = forest.oob_error(x, y);
@@ -435,7 +433,6 @@ TEST(OobError, HandBuiltTreeWithKnownOob) {
     5.0f,
     TreeResponse::make(0),
     TreeResponse::make(1),
-    nullptr,
     { 0, 1 },
     0.9f);
 
@@ -443,7 +440,7 @@ TEST(OobError, HandBuiltTreeWithKnownOob) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(condition),
-      TrainingSpecPDA::make(0.0f),
+      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
       std::vector<int>{ 0, 1, 4, 5 }));
 
   double err = forest.oob_error(x, y);
@@ -465,7 +462,6 @@ TEST(OobError, HandBuiltTreeWithOobMisclassification) {
     5.0f,
     TreeResponse::make(0),
     TreeResponse::make(1),
-    nullptr,
     { 0, 1 },
     0.9f);
 
@@ -473,7 +469,7 @@ TEST(OobError, HandBuiltTreeWithOobMisclassification) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(condition),
-      TrainingSpecPDA::make(0.0f),
+      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
       std::vector<int>{ 0, 2 }));
 
   double err = forest.oob_error(x, y);
@@ -499,7 +495,6 @@ TEST(OobPredict, HandBuiltTreeWithKnownOob) {
     5.0f,
     TreeResponse::make(0),
     TreeResponse::make(1),
-    nullptr,
     { 0, 1 },
     0.9f);
 
@@ -507,7 +502,7 @@ TEST(OobPredict, HandBuiltTreeWithKnownOob) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(condition),
-      TrainingSpecPDA::make(0.0f),
+      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
       std::vector<int>{ 0, 1, 4, 5 }));
 
   ResponseVector preds = forest.oob_predict(x);
@@ -533,7 +528,6 @@ TEST(OobPredict, AllInBagReturnsSentinel) {
     5.0f,
     TreeResponse::make(0),
     TreeResponse::make(1),
-    nullptr,
     { 0, 1 },
     0.9f);
 
@@ -541,7 +535,7 @@ TEST(OobPredict, AllInBagReturnsSentinel) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(condition),
-      TrainingSpecPDA::make(0.0f),
+      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
       std::vector<int>{ 0, 1, 2, 3 }));
 
   ResponseVector preds = forest.oob_predict(x);
@@ -565,7 +559,6 @@ TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
     5.0f,
     TreeResponse::make(0),
     TreeResponse::make(1),
-    nullptr,
     { 0, 1 },
     0.9f);
 
@@ -573,7 +566,7 @@ TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
   forest.add_tree(
     std::make_unique<BootstrapTree>(
       std::move(condition),
-      TrainingSpecPDA::make(0.0f),
+      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
       std::vector<int>{ 0, 2 }));
 
   ResponseVector preds = forest.oob_predict(x);
@@ -612,7 +605,7 @@ TEST(OobPredict, ConsistentWithOobError) {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-  Forest forest = Forest::train(TrainingSpecPDA(0.0f), x, y, 50, 42);
+  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::noop(), sr::mean_of_means(), 50, 0), x, y);
 
   ResponseVector preds = forest.oob_predict(x);
   double err           = forest.oob_error(x, y);

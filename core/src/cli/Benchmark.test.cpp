@@ -32,7 +32,7 @@ TEST_F(BenchmarkParsingTest, ParseMinimalScenario) {
   EXPECT_EQ(suite.scenarios[0].p, 5);
   EXPECT_EQ(suite.scenarios[0].g, 2);
   // Check defaults
-  EXPECT_EQ(suite.scenarios[0].trees, 100);
+  EXPECT_EQ(suite.scenarios[0].size, 100);
   EXPECT_FLOAT_EQ(suite.scenarios[0].vars, 0.5f);
   EXPECT_FLOAT_EQ(suite.scenarios[0].lambda, 0.5f);
 }
@@ -41,7 +41,7 @@ TEST_F(BenchmarkParsingTest, ParseWithDefaults) {
   json j = {
     {
       "defaults", {
-        { "trees", 50 },
+        { "size", 50 },
         { "lambda", 0.3 },
         { "seed", 123 },
         { "warmup", 3 }
@@ -50,7 +50,7 @@ TEST_F(BenchmarkParsingTest, ParseWithDefaults) {
     {
       "scenarios", {
         { { "name", "a" }, { "n", 200 }, { "p", 10 }, { "g", 3 } },
-        { { "name", "b" }, { "n", 500 }, { "p", 20 }, { "g", 4 }, { "trees", 200 } }
+        { { "name", "b" }, { "n", 500 }, { "p", 20 }, { "g", 4 }, { "size", 200 } }
       }
     }
   };
@@ -60,13 +60,13 @@ TEST_F(BenchmarkParsingTest, ParseWithDefaults) {
   ASSERT_EQ(suite.scenarios.size(), 2u);
 
   // Scenario a inherits all defaults
-  EXPECT_EQ(suite.scenarios[0].trees, 50);
+  EXPECT_EQ(suite.scenarios[0].size, 50);
   EXPECT_FLOAT_EQ(suite.scenarios[0].lambda, 0.3f);
   EXPECT_EQ(suite.scenarios[0].seed, 123);
   EXPECT_EQ(suite.scenarios[0].warmup, 3);
 
   // Scenario b overrides trees
-  EXPECT_EQ(suite.scenarios[1].trees, 200);
+  EXPECT_EQ(suite.scenarios[1].size, 200);
   EXPECT_FLOAT_EQ(suite.scenarios[1].lambda, 0.3f);
   EXPECT_EQ(suite.scenarios[1].seed, 123);
 }
@@ -215,7 +215,7 @@ TEST_F(SuiteResultTest, ToJsonRoundtrip) {
   sr.n              = 100;
   sr.p              = 5;
   sr.g              = 2;
-  sr.trees          = 50;
+  sr.size           = 50;
   sr.vars           = 0.5f;
   sr.runs           = 10;
   sr.mean_time_ms   = 12.3;
@@ -236,7 +236,7 @@ TEST_F(SuiteResultTest, ToJsonRoundtrip) {
   ASSERT_EQ(j["results"].size(), 1u);
   EXPECT_EQ(j["results"][0]["name"], "scenario1");
   EXPECT_EQ(j["results"][0]["n"], 100);
-  EXPECT_EQ(j["results"][0]["trees"], 50);
+  EXPECT_EQ(j["results"][0]["size"], 50);
   EXPECT_DOUBLE_EQ(j["results"][0]["mean_time_ms"], 12.3);
   EXPECT_EQ(j["results"][0]["peak_rss_bytes"], 1024 * 1024);
 }
@@ -262,7 +262,7 @@ TEST_F(BenchmarkParsingTest, ParseDataScenario) {
   json j = {
     {
       "scenarios", {
-        { { "name", "csv-test" }, { "data", "data/iris.csv" }, { "trees", 50 } }
+        { { "name", "csv-test" }, { "data", "data/iris.csv" }, { "size", 50 } }
       }
     }
   };
@@ -272,7 +272,7 @@ TEST_F(BenchmarkParsingTest, ParseDataScenario) {
   ASSERT_EQ(suite.scenarios.size(), 1u);
   EXPECT_EQ(suite.scenarios[0].name, "csv-test");
   EXPECT_EQ(suite.scenarios[0].data, "data/iris.csv");
-  EXPECT_EQ(suite.scenarios[0].trees, 50);
+  EXPECT_EQ(suite.scenarios[0].size, 50);
 }
 
 TEST_F(BenchmarkParsingTest, DataScenarioSkipsNPGValidation) {

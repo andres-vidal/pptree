@@ -12,7 +12,7 @@
 #' @param ... Additional arguments (currently unused).
 #' @seealso \code{\link{load_json}}, \code{\link{pptr}}, \code{\link{pprf}}
 #' @examples
-#' model <- pptr(Type ~ ., data = iris, seed = 42)
+#' model <- pptr(Type ~ ., data = iris, seed = 0)
 #' path <- tempfile(fileext = ".json")
 #' save_json(model, path)
 #'
@@ -24,25 +24,15 @@ save_json <- function(model, path, ...) {
 #' @rdname save_json
 #' @export
 save_json.pptr <- function(model, path, include_metrics = TRUE, ...) {
-  if (!is.null(model$x)) {
-    n_obs <- nrow(model$x)
-    n_features <- ncol(model$x)
-    feature_names <- colnames(model$x)
-  } else {
-    n_obs <- 0L
-    n_features <- 0L
-    feature_names <- character(0)
+  if (include_metrics && is.null(model$x)) {
+    warning("Training data not available; saving without metrics.", call. = FALSE)
+    include_metrics <- FALSE
   }
-  json_str <- ppforest2_save_tree_json(
-    model,
-    model$groups,
-    model$vi,
-    model$training_spec,
-    model$seed,
-    include_metrics,
-    n_obs,
-    n_features,
-    feature_names
+  x <- if (!is.null(model$x)) model$x else matrix(0, nrow = 0, ncol = 0)
+  y <- if (!is.null(model$y)) model$y else integer(0)
+  feature_names <- if (!is.null(model$x)) colnames(model$x) else character(0)
+  json_str <- ppforest2_save_model_json(
+    model, model$groups, include_metrics, x, y, feature_names
   )
   writeLines(json_str, path)
   invisible(path)
@@ -51,26 +41,15 @@ save_json.pptr <- function(model, path, include_metrics = TRUE, ...) {
 #' @rdname save_json
 #' @export
 save_json.pprf <- function(model, path, include_metrics = TRUE, ...) {
-  if (!is.null(model$x)) {
-    n_obs <- nrow(model$x)
-    n_features <- ncol(model$x)
-    feature_names <- colnames(model$x)
-  } else {
-    n_obs <- 0L
-    n_features <- 0L
-    feature_names <- character(0)
+  if (include_metrics && is.null(model$x)) {
+    warning("Training data not available; saving without metrics.", call. = FALSE)
+    include_metrics <- FALSE
   }
-  json_str <- ppforest2_save_forest_json(
-    model,
-    model$groups,
-    model$vi,
-    model$training_spec,
-    model$seed,
-    model$oob_error,
-    include_metrics,
-    n_obs,
-    n_features,
-    feature_names
+  x <- if (!is.null(model$x)) model$x else matrix(0, nrow = 0, ncol = 0)
+  y <- if (!is.null(model$y)) model$y else integer(0)
+  feature_names <- if (!is.null(model$x)) colnames(model$x) else character(0)
+  json_str <- ppforest2_save_model_json(
+    model, model$groups, include_metrics, x, y, feature_names
   )
   writeLines(json_str, path)
   invisible(path)
@@ -91,7 +70,7 @@ save_json.pprf <- function(model, path, include_metrics = TRUE, ...) {
 #' @return A \code{pptr} or \code{pprf} model.
 #' @seealso \code{\link{save_json}}, \code{\link{pptr}}, \code{\link{pprf}}
 #' @examples
-#' model <- pptr(Type ~ ., data = iris, seed = 42)
+#' model <- pptr(Type ~ ., data = iris, seed = 0)
 #' path <- tempfile(fileext = ".json")
 #' save_json(model, path)
 #' loaded <- load_json(path)
@@ -99,31 +78,14 @@ save_json.pprf <- function(model, path, include_metrics = TRUE, ...) {
 #'
 #' @export
 load_json <- function(path) {
-  json_str <- paste(readLines(path, warn = FALSE), collapse = "\n")
-  meta <- ppforest2_load_json_meta(json_str)
+  model <- ppforest2_load_model_json(path)
+  model$groups <- as.character(model$groups)
 
-  if (meta$model_type == "forest") {
-    model <- ppforest2_forest_from_json(json_str)
-    class(model) <- "pprf"
-    model$oob_error <- meta$oob_error
-
-    model$groups <- as.character(meta$groups)
+  if (!is.null(model$trees)) {
     for (i in seq_along(model$trees)) {
-      class(model$trees[[i]]) <- "pptr"
       model$trees[[i]]$groups <- model$groups
     }
-  } else {
-    model <- ppforest2_tree_from_json(json_str)
-    class(model) <- "pptr"
-    model$groups <- as.character(meta$groups)
   }
-
-  model$training_spec <- meta$training_spec
-  model$seed <- meta$seed
-  model$vi <- meta$vi
-  model$formula <- NULL
-  model$x <- NULL
-  model$y <- NULL
 
   model
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "utils/Types.hpp"
 #include "models/TreeNode.hpp"
-#include "models/TrainingSpec.hpp"
+#include "models/Projector.hpp"
+#include "utils/Types.hpp"
 #include "utils/Math.hpp"
 
 namespace ppforest2 {
@@ -28,8 +28,6 @@ namespace ppforest2 {
     /** @brief Child node for observations with projected value ≥ threshold. */
     TreeNode::Ptr upper;
 
-    /** @brief Training specification used at this split (may be null). */
-    TrainingSpec::Ptr training_spec = nullptr;
     /** @brief Set of group labels reachable from this node. */
     std::set<types::Response> groups;
     /** @brief Projection pursuit index value achieved at this split. */
@@ -39,7 +37,6 @@ namespace ppforest2 {
       Threshold                 threshold,
       TreeNode::Ptr             lower,
       TreeNode::Ptr             upper,
-      TrainingSpec::Ptr         training_spec  = nullptr,
       std::set<types::Response> groups         = {},
       types::Feature            pp_index_value = 0);
 
@@ -79,7 +76,6 @@ namespace ppforest2 {
       Threshold                   threshold,
       TreeNode::Ptr               lower,
       TreeNode::Ptr               upper,
-      TrainingSpec::Ptr           training_spec  = nullptr,
       std::set<types::Response>   groups         = {},
       types::Feature              pp_index_value = 0);
   };

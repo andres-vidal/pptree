@@ -143,7 +143,7 @@ namespace {
     }();
 
     json model_data  = io::json::read_file(params.model_path);
-    auto model       = serialization::model_from_json(model_data);
+    auto model       = model_data.get<serialization::Export<Model::Ptr>>().model;
     auto predictions = model->predict(data.x);
 
     bool has_labels   = data.y.size() > 0;

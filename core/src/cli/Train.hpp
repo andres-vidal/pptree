@@ -21,7 +21,7 @@ namespace ppforest2::cli {
   /** @brief Register train subcommand options on @p app. */
   CLI::App * setup_train(CLI::App& app, CLIOptions& params);
 
-  /** @brief Add shared model options (trees, lambda, threads, seed, vars) to @p sub. */
+  /** @brief Add shared model options (size, lambda, threads, seed, vars) to @p sub. */
   void add_model_options(CLI::App *sub, ModelParams& model);
 
   /** @brief Result of a train operation containing the model and training duration. */

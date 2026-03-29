@@ -1,6 +1,8 @@
 #pragma once
 
 #include "models/SRStrategy.hpp"
+#include "models/Strategy.hpp"
+#include "utils/JsonValidation.hpp"
 
 namespace ppforest2::sr {
   /**
@@ -11,24 +13,21 @@ namespace ppforest2::sr {
    * This is the default rule used by PPforest.
    */
   struct SRMeanOfMeansStrategy : public SRStrategy {
-    SRStrategy::Ptr clone() const override {
-      return std::make_unique<SRMeanOfMeansStrategy>(*this);
+    void to_json(nlohmann::json& j) const override;
+    std::string display_name() const override {
+      return "Mean of means";
     }
 
     types::Feature threshold(
       const types::FeatureMatrix& group_1,
       const types::FeatureMatrix& group_2,
-      const pp::Projector&        projector) const override {
-      return ((group_1 * projector).mean() + (group_2 * projector).mean()) / 2;
-    }
+      const pp::Projector&        projector) const override;
+
+    static SRStrategy::Ptr from_json(const nlohmann::json& j);
+
+    PPFOREST2_REGISTER_STRATEGY(SRStrategy, "mean_of_means")
   };
 
-  /**
-   * @brief Factory function for a mean-of-means split strategy.
-   *
-   * @return  Owned pointer to a SRMeanOfMeansStrategy.
-   */
-  inline SRStrategy::Ptr mean_of_means() {
-    return std::make_unique<SRMeanOfMeansStrategy>();
-  }
+  /** @brief Factory function for a mean-of-means split strategy. */
+  SRStrategy::Ptr mean_of_means();
 }

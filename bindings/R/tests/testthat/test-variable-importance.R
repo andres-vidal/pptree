@@ -7,7 +7,7 @@ library(ppforest2)
 
 describe("pprf variable importance", {
   it("has vi with scale, projections, weighted, permuted", {
-    model <- pprf(Type ~ ., data = iris, size = 5, n_threads = 1)
+    model <- pprf(Type ~ ., data = iris, size = 5, threads = 1)
     expect_true(!is.null(model$vi))
     expect_true("scale" %in% names(model$vi))
     expect_true("projections" %in% names(model$vi))
@@ -21,7 +21,7 @@ describe("pprf variable importance", {
   })
 
   it("has oob_error", {
-    model <- pprf(Type ~ ., data = iris, size = 5, n_threads = 1)
+    model <- pprf(Type ~ ., data = iris, size = 5, threads = 1)
     expect_true(!is.null(model$oob_error))
     if (model$oob_error >= 0) {
       expect_gte(model$oob_error, 0)
@@ -30,7 +30,7 @@ describe("pprf variable importance", {
   })
 
   it("summary output contains Variable Importance and OOB error", {
-    model <- pprf(Type ~ ., data = iris, size = 5, n_threads = 1)
+    model <- pprf(Type ~ ., data = iris, size = 5, threads = 1)
     out <- capture.output(summary(model))
     expect_true(any(grepl("Variable Importance", out)))
     if (model$oob_error >= 0) {

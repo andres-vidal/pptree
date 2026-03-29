@@ -1,16 +1,58 @@
 #include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
 
 #include "models/PPStrategy.hpp"
 #include "models/PPPDAStrategy.hpp"
 #include "utils/Types.hpp"
-
 #include "utils/Macros.hpp"
 
 using namespace ppforest2;
 using namespace ppforest2::pp;
 using namespace ppforest2::stats;
 using namespace ppforest2::types;
+using json = nlohmann::json;
 
+TEST(PPPDAStrategy, FromJsonValid) {
+  json j        = { { "name", "pda" }, { "lambda", 0.3f } };
+  auto strategy = PPPDAStrategy::from_json(j);
+  ASSERT_NE(strategy, nullptr);
+}
+
+TEST(PPPDAStrategy, FromJsonRoundTrip) {
+  json j        = { { "name", "pda" }, { "lambda", 0.3f } };
+  auto strategy = PPPDAStrategy::from_json(j);
+
+  json out;
+  strategy->to_json(out);
+
+  EXPECT_EQ(out["name"], "pda");
+  EXPECT_FLOAT_EQ(out["lambda"].get<float>(), 0.3f);
+}
+
+TEST(PPPDAStrategy, FromJsonMissingLambda) {
+  json j = { { "name", "pda" } };
+  EXPECT_THROW(PPPDAStrategy::from_json(j), std::exception);
+}
+
+TEST(PPPDAStrategy, FromJsonUnknownParam) {
+  json j = { { "name", "pda" }, { "lambda", 0.3f }, { "unknown", 1 } };
+  EXPECT_THROW(PPPDAStrategy::from_json(j), std::runtime_error);
+}
+
+TEST(PPPDAStrategy, RegistryLookup) {
+  json j        = { { "name", "pda" }, { "lambda", 0.5f } };
+  auto strategy = PPStrategy::from_json(j);
+  ASSERT_NE(strategy, nullptr);
+
+  json out;
+  strategy->to_json(out);
+  EXPECT_EQ(out["name"], "pda");
+}
+
+TEST(PPPDAStrategy, RegistryUnknownStrategy) {
+  json j = { { "name", "unknown_strategy" } };
+  EXPECT_THROW(PPStrategy::from_json(j), std::runtime_error);
+}
 TEST(Projector, LDAOptimumProjectorTwoGroups1) {
   FeatureMatrix x = MAT(Feature, rows(10),
       1, 0, 1, 1,

@@ -15,14 +15,17 @@ NULL
 #' @param x A matrix containing the features for each observation.
 #' @param y A matrix containing the labels for each observation.
 #' @param size The number of trees in the forest.
-#' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
-#' @param n_vars The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with \code{p_vars}.
-#' @param p_vars The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, \code{p_vars = 0.5} uses half the features. Cannot be used together with \code{n_vars}.
+#' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA). Cannot be used together with \code{pp}.
+#' @param n_vars The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with \code{p_vars} or \code{dr}.
+#' @param p_vars The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, \code{p_vars = 0.5} uses half the features. Cannot be used together with \code{n_vars} or \code{dr}.
 #' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly. The same seed is used for training and for computing permuted variable importance.
 #' @param max_retries Maximum number of retries for degenerate trees (default: 3). When a bootstrap sample yields a singular covariance matrix, the tree is retrained with a different seed up to this many times.
-#' @param n_threads The number of threads to use. The default is the number of cores available.
+#' @param threads The number of threads to use. The default is the number of cores available.
+#' @param pp A projection pursuit strategy object created by \code{\link{pp_pda}}. Cannot be used together with \code{lambda}.
+#' @param dr A dimensionality reduction strategy object created by \code{\link{dr_uniform}} or \code{\link{dr_noop}}. Cannot be used together with \code{n_vars} or \code{p_vars}.
+#' @param sr A split rule strategy object created by \code{\link{sr_mean_of_means}} (default).
 #' @return A pprf model trained on \code{x} and \code{y}.
-#' @seealso \code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{vignette("introduction")} for a tutorial
+#' @seealso \code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{dr_uniform}}, \code{\link{dr_noop}}, \code{\link{sr_mean_of_means}}, \code{vignette("introduction")} for a tutorial
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
@@ -55,68 +58,57 @@ pprf <- function(
     p_vars = NULL,
     seed = NULL,
     max_retries = 3L,
-    n_threads = NULL) {
-  if (!is.numeric(lambda) || length(lambda) != 1 || lambda < 0 || lambda > 1)
-    stop("`lambda` must be a single number between 0 and 1.")
-
+    threads = NULL,
+    pp = NULL,
+    dr = NULL,
+    sr = NULL) {
   if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1 || seed != as.integer(seed)))
     stop("`seed` must be a single integer or NULL.")
 
   if (!is.numeric(size) || length(size) != 1 || size < 1 || size != as.integer(size))
     stop("`size` must be a positive integer.")
 
-  if (!is.null(n_vars) && !is.null(p_vars))
-    stop("Only one of `n_vars` or `p_vars` may be specified, not both.")
-
-  if (!is.null(p_vars)) {
-    if (!is.numeric(p_vars) || length(p_vars) != 1 || p_vars <= 0 || p_vars >= 1)
-      stop("`p_vars` must be a single number between 0 and 1 (exclusive).")
-  }
-
   if (!is.numeric(max_retries) || length(max_retries) != 1 || max_retries < 0 || max_retries != as.integer(max_retries))
     stop("`max_retries` must be a non-negative integer.")
 
-  if (!is.null(n_threads)) {
-    if (!is.numeric(n_threads) || length(n_threads) != 1 || n_threads < 1 || n_threads != as.integer(n_threads))
-      stop("`n_threads` must be a positive integer or NULL.")
-  }
+  if (!is.null(threads) && (!is.numeric(threads) || length(threads) != 1 || threads < 1 || threads != as.integer(threads)))
+    stop("`threads` must be a positive integer or NULL.")
 
-  args <- process_model_arguments(formula, data, x, y)
+  args <- resolve_model_data(formula, data, x, y)
 
   x <- args$x
   y <- args$y
   groups <- args$groups
   formula <- args$formula
 
-  if (!is.null(p_vars)) {
-    n_vars <- max(1L, as.integer(round(p_vars * ncol(x))))
-  }
-
-  if (!is.null(n_vars)) {
-    if (!is.numeric(n_vars) || length(n_vars) != 1 || n_vars < 1 || n_vars > ncol(x) || n_vars != as.integer(n_vars))
-      stop("`n_vars` must be an integer between 1 and the number of features (", ncol(x), ").")
-  }
+  strategies <- resolve_strategies(
+    pp = pp, lambda = lambda, lambda_missing = missing(lambda),
+    dr = dr, n_vars = n_vars, n_vars_missing = missing(n_vars),
+    p_vars = p_vars, p_vars_missing = missing(p_vars),
+    sr = sr,
+    default_dr = dr_uniform(),
+    n_features = ncol(x))
 
   if (is.null(seed)) {
     seed <- sample.int(.Machine$integer.max, 1L)
   }
 
-  effective_threads <- if (is.null(n_threads)) parallel::detectCores() else n_threads
+  effective_threads <- if (is.null(threads)) parallel::detectCores() else threads
   if (effective_threads > 1 && !ppforest2_has_openmp()) {
     warning("OpenMP is not available. The forest will be trained using a single thread.\n",
             "On macOS, install libomp: brew install libomp", call. = FALSE)
   }
 
-  model <- ppforest2_train_forest_pda(
-    x,
-    y,
-    size,
-    ifelse(is.null(n_vars), ncol(x), n_vars),
-    lambda,
-    seed,
-    n_threads,
-    as.integer(max_retries)
-  )
+  training_spec <- list(
+    pp = strategies$pp,
+    dr = strategies$dr,
+    sr = strategies$sr,
+    size = as.integer(size),
+    seed = as.integer(seed),
+    threads = if (is.null(threads)) 0L else as.integer(threads),
+    max_retries = as.integer(max_retries))
+
+  model <- ppforest2_train(training_spec, x, y)
 
   if (isTRUE(model$degenerate)) {
     warning("Some splits could not separate groups (degenerate nodes). ",
@@ -128,10 +120,7 @@ pprf <- function(
             call. = FALSE)
   }
 
-  class(model) <- "pprf"
-
   for (i in 1:size) {
-    class(model$trees[[i]]) <- "pptr"
     model$trees[[i]]$groups <- groups
   }
 
@@ -243,7 +232,7 @@ summary.pprf <- function(object, ...) {
     cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
     cat("\n")
     cat("Size:", length(model$trees), "trees\n")
-    cat("Regularization parameter:", model$training_spec$lambda, "\n")
+    print_training_spec(model$training_spec)
     cat("\n")
     cat("Data Summary:\n")
     cat("  observations:", nrow(model$x), "\n")

@@ -1,11 +1,21 @@
 {
   "config": {
     "data": "data/iris.csv",
-    "lambda": 0.5,
+    "pp": {
+      "name": "pda",
+      "lambda": 0.5
+    },
+    "dr": {
+      "name": "uniform",
+      "n_vars": 2
+    },
+    "sr": {
+      "name": "mean_of_means"
+    },
+    "size": 100,
     "seed": -168103375,
     "threads": 1,
-    "trees": 100,
-    "vars": 2
+    "max_retries": 3
   },
   "model": {
     "trees": [
@@ -223,7 +233,7 @@
             0.7041258811950684,
             0.7100751996040344
           ],
-          "threshold": 2.9018020629882813,
+          "threshold": 2.9018020629882812,
           "upper": {
             "lower": {
               "value": 1
@@ -433,7 +443,7 @@
             }
           },
           "projector": [
-            -0.5435256958007813,
+            -0.5435256958007812,
             0.8393926024436951,
             0.0,
             0.0
@@ -2911,5 +2921,20 @@
       }
     ]
   },
-  "model_type": "forest"
+  "model_type": "forest",
+  "meta": {
+    "observations": 150,
+    "features": 4,
+    "feature_names": [
+      "Sepal.Length",
+      "Sepal.Width",
+      "Petal.Length",
+      "Petal.Width"
+    ],
+    "groups": [
+      "setosa",
+      "versicolor",
+      "virginica"
+    ]
+  }
 }

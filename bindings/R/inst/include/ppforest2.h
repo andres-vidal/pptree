@@ -6,6 +6,10 @@ using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
 using namespace ppforest2::pp;
+using namespace ppforest2::serialization;
+
+constexpr const char* CLASS_PPRF = "pprf";
+constexpr const char* CLASS_PPTR = "pptr";
 
 namespace Rcpp {
   SEXP wrap(const TreeNode &);
@@ -14,10 +18,11 @@ namespace Rcpp {
   SEXP wrap(const TreeResponse &);
   SEXP wrap(const TreeCondition &);
   SEXP wrap(const Forest &);
+  SEXP wrap(const Model::Ptr &);
 
   SEXP wrap(const TrainingSpec &);
-  SEXP wrap(const TrainingSpecPDA &);
-  SEXP wrap(const TrainingSpecUPDA &);
+  SEXP wrap(const VariableImportance &);
+  SEXP wrap(const Export<Model::Ptr> &);
 
   template<> std::unique_ptr<TreeNode> as(SEXP);
   template<> Tree as(SEXP);
@@ -26,6 +31,7 @@ namespace Rcpp {
   template<> TreeCondition as(SEXP);
   template<> Forest as(SEXP);
 
+  template<> Model::Ptr as(SEXP);
   template<> TrainingSpec::Ptr as(SEXP);
 }
 
@@ -33,7 +39,7 @@ namespace Rcpp {
 #include <Rcpp.h>
 
 namespace Rcpp {
-  SEXP wrap(const TreeNode& node) {
+  inline SEXP wrap(const TreeNode& node) {
     struct NodeWrapper : public TreeNode::Visitor {
       Rcpp::List result;
 
@@ -51,7 +57,7 @@ namespace Rcpp {
     return wrapper.result;
   }
 
-  SEXP wrap(const TreeResponse &node) {
+  inline SEXP wrap(const TreeResponse &node) {
     Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("value") = Rcpp::wrap(node.value + 1));  // C++ 0-based → R 1-based
 
@@ -62,7 +68,7 @@ namespace Rcpp {
     return result;
   }
 
-  SEXP wrap(const TreeCondition &node) {
+  inline SEXP wrap(const TreeCondition &node) {
     Rcpp::IntegerVector groups(node.groups.begin(), node.groups.end());
     groups = groups + 1;  // C++ 0-based → R 1-based
 
@@ -81,66 +87,167 @@ namespace Rcpp {
     return result;
   }
 
-  SEXP wrap(const Tree &tree) {
-    return Rcpp::List::create(
+  inline SEXP wrap(const Tree &tree) {
+    Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("root")          = Rcpp::wrap(*tree.root),
       Rcpp::Named("degenerate")    = tree.degenerate);
+    result.attr("class") = CLASS_PPTR;
+    return result;
   }
 
-  SEXP wrap(const BootstrapTree &tree) {
-    return Rcpp::List::create(
+  inline SEXP wrap(const BootstrapTree &tree) {
+    Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("training_spec")  = Rcpp::wrap(*tree.training_spec),
       Rcpp::Named("root")           = Rcpp::wrap(*tree.root),
       Rcpp::Named("sample_indices") = Rcpp::wrap(tree.sample_indices));
+    result.attr("class") = CLASS_PPTR;
+    return result;
   }
 
-  SEXP wrap(const Forest &forest) {
+  inline SEXP wrap(const Forest &forest) {
     Rcpp::List trees(forest.trees.size());
 
     for (size_t i = 0; i < forest.trees.size(); i++) {
       trees[i] = wrap(*forest.trees[i]);
     }
 
-    return Rcpp::List::create(
+    Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
-      Rcpp::Named("seed")          = Rcpp::wrap(forest.seed),
+      Rcpp::Named("seed")          = Rcpp::wrap(forest.training_spec->seed),
       Rcpp::Named("trees")         = trees,
       Rcpp::Named("degenerate")    = forest.degenerate);
+    result.attr("class") = CLASS_PPRF;
+    return result;
   }
 
-  SEXP wrap(const TrainingSpec &spec) {
-    struct TrainingSpecWrapper : public TrainingSpec::Visitor {
-      Rcpp::List result;
-
-      void visit(const TrainingSpecPDA &spec) {
-        result = Rcpp::wrap(spec);
-      }
-
-      void visit(const TrainingSpecUPDA &spec) {
-        result = Rcpp::wrap(spec);
-      }
+  inline SEXP wrap(const Model::Ptr& model) {
+    struct WrapVisitor : public Model::Visitor {
+      SEXP result;
+      void visit(const Tree& tree)     { result = Rcpp::wrap(tree); }
+      void visit(const Forest& forest) { result = Rcpp::wrap(forest); }
     };
 
-    TrainingSpecWrapper wrapper;
-    spec.accept(wrapper);
-    return wrapper.result;
+    WrapVisitor visitor;
+    model->accept(visitor);
+    return visitor.result;
   }
 
-  SEXP wrap(const TrainingSpecPDA &spec) {
+  inline SEXP wrap(const Export<Model::Ptr>& e) {
+    struct ClassVisitor : public Model::Visitor {
+      const char* cls;
+      void visit(const Tree&)   { cls = CLASS_PPTR; }
+      void visit(const Forest&) { cls = CLASS_PPRF; }
+    };
+
+    Rcpp::List result = Rcpp::wrap(e.model);
+
+    result["groups"] = Rcpp::wrap(e.groups);
+    if (e.model->training_spec)
+      result["seed"] = e.model->training_spec->seed;
+    if (e.variable_importance)
+      result["vi"] = Rcpp::wrap(*e.variable_importance);
+    if (e.oob_error)
+      result["oob_error"] = *e.oob_error;
+
+    ClassVisitor cv;
+    e.model->accept(cv);
+    result.attr("class") = cv.cls;
+
+    return result;
+  }
+
+  /**
+   * Convert a flat JSON object to an Rcpp named list.
+   *
+   * Supports string, number (int/float), and boolean values.
+   * Used to generically wrap strategy JSON so that adding a new
+   * strategy only requires implementing to_json() — no changes here.
+   */
+  inline Rcpp::List json_to_list(const nlohmann::json& j) {
+    Rcpp::List result;
+
+    for (auto& [key, val] : j.items()) {
+      if (val.is_string()) {
+        result[key] = val.get<std::string>();
+      } else if (val.is_number_integer()) {
+        result[key] = val.get<int>();
+      } else if (val.is_number_float()) {
+        result[key] = val.get<float>();
+      } else if (val.is_boolean()) {
+        result[key] = val.get<bool>();
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Convert an Rcpp named list to a flat JSON object.
+   *
+   * Inverse of json_to_list(). Supports string, integer, and real values.
+   * Used to generically unwrap strategy R lists so that adding a new
+   * strategy only requires implementing from_json() — no changes here.
+   */
+  inline nlohmann::json list_to_json(const Rcpp::List& list) {
+    nlohmann::json j;
+    Rcpp::CharacterVector names = list.names();
+
+    for (int i = 0; i < list.size(); i++) {
+      std::string key = Rcpp::as<std::string>(names[i]);
+
+      // display_name is a presentation-only field, not part of serialization.
+      if (key == "display_name") continue;
+
+      switch (TYPEOF(list[i])) {
+        case STRSXP:
+          j[key] = Rcpp::as<std::string>(list[i]);
+          break;
+        case INTSXP:
+          j[key] = Rcpp::as<int>(list[i]);
+          break;
+        case REALSXP:
+          j[key] = Rcpp::as<float>(list[i]);
+          break;
+        case LGLSXP:
+          j[key] = Rcpp::as<bool>(list[i]);
+          break;
+        default:
+          break;
+      }
+    }
+    return j;
+  }
+
+  inline SEXP wrap(const TrainingSpec &spec) {
+    nlohmann::json pp_json, dr_json, sr_json;
+    spec.pp_strategy->to_json(pp_json);
+    spec.dr_strategy->to_json(dr_json);
+    spec.sr_strategy->to_json(sr_json);
+
+    pp_json["display_name"] = spec.pp_strategy->display_name();
+    dr_json["display_name"] = spec.dr_strategy->display_name();
+    sr_json["display_name"] = spec.sr_strategy->display_name();
+
     return Rcpp::List::create(
-      Rcpp::Named("strategy") = "pda",
-      Rcpp::Named("lambda")   = Rcpp::wrap(spec.lambda));
+      Rcpp::Named("pp")          = json_to_list(pp_json),
+      Rcpp::Named("dr")          = json_to_list(dr_json),
+      Rcpp::Named("sr")          = json_to_list(sr_json),
+      Rcpp::Named("size")        = spec.size,
+      Rcpp::Named("seed")        = spec.seed,
+      Rcpp::Named("threads")   = spec.threads,
+      Rcpp::Named("max_retries") = spec.max_retries);
   }
 
-  SEXP wrap(const TrainingSpecUPDA &spec) {
-    return Rcpp::List::create(
-      Rcpp::Named("strategy") = "uniform_pda",
-      Rcpp::Named("n_vars")   = Rcpp::wrap(spec.n_vars),
-      Rcpp::Named("lambda")   = Rcpp::wrap(spec.lambda));
+  inline SEXP wrap(const VariableImportance &vi) {
+    Rcpp::List list;
+    if (vi.scale.size() > 0)                list["scale"]       = Rcpp::wrap(vi.scale);
+    if (vi.projections.size() > 0)          list["projections"] = Rcpp::wrap(vi.projections);
+    if (vi.weighted_projections.size() > 0) list["weighted"]    = Rcpp::wrap(vi.weighted_projections);
+    if (vi.permuted.size() > 0)             list["permuted"]    = Rcpp::wrap(vi.permuted);
+    return list;
   }
 
-  template<> std::unique_ptr<TreeNode> as(SEXP x) {
+  template<> inline std::unique_ptr<TreeNode> as(SEXP x) {
     Rcpp::List rnode(x);
 
     if (rnode.containsElementNamed("value")) {
@@ -167,17 +274,16 @@ namespace Rcpp {
       Rcpp::as<Feature>(rnode["threshold"]),
       std::move(lower),
       std::move(upper),
-      nullptr,
       std::move(groups),
       pp_index_value);
   }
 
-  template<> TreeResponse as(SEXP x) {
+  template<> inline TreeResponse as(SEXP x) {
     Rcpp::List rresp(x);
     return TreeResponse(Rcpp::as<Feature>(rresp["value"]) - 1);  // R 1-based → C++ 0-based
   }
 
-  template<> TreeCondition as(SEXP x) {
+  template<> inline TreeCondition as(SEXP x) {
     Rcpp::List rcond(x);
 
     auto lower = as<std::unique_ptr<TreeNode> >(rcond["lower"]);
@@ -199,12 +305,11 @@ namespace Rcpp {
       Rcpp::as<Feature>(rcond["threshold"]),
       std::move(lower),
       std::move(upper),
-      nullptr,
       std::move(groups),
       pp_index_value);
   }
 
-  template<> Tree as(SEXP x) {
+  template<> inline Tree as(SEXP x) {
     Rcpp::List rtree(x);
 
     return Tree(
@@ -212,7 +317,7 @@ namespace Rcpp {
       as<TrainingSpec::Ptr>(rtree["training_spec"]));
   }
 
-  template<> BootstrapTree as(SEXP x) {
+  template<> inline BootstrapTree as(SEXP x) {
     Rcpp::List rtree(x);
 
     return BootstrapTree(
@@ -221,14 +326,12 @@ namespace Rcpp {
       as<std::vector<int> >(rtree["sample_indices"]));
   }
 
-  template<> Forest as(SEXP x) {
+  template<> inline Forest as(SEXP x) {
     Rcpp::List rforest(x);
     Rcpp::List rtrees(rforest["trees"]);
     Rcpp::List rtraining_spec(rforest["training_spec"]);
 
-    Forest forest(
-      as<TrainingSpec::Ptr>(rtraining_spec),
-      Rcpp::as<Feature>(rforest["seed"]));
+    Forest forest(as<TrainingSpec::Ptr>(rtraining_spec));
 
     for (size_t i = 0; i < rtrees.size(); i++) {
       auto tree     = as<BootstrapTree>(rtrees[i]);
@@ -239,23 +342,23 @@ namespace Rcpp {
     return forest;
   }
 
-  template<> TrainingSpec::Ptr as(SEXP x) {
-    Rcpp::List rtraining_spec(x);
-
-    std::string strategy = Rcpp::as<std::string>(rtraining_spec["strategy"]);
-
-    if (strategy == "pda") {
-      float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
-      return TrainingSpecPDA::make(lambda);
+  template<> inline Model::Ptr as(SEXP x) {
+    if (Rcpp::RObject(x).inherits(CLASS_PPRF)) {
+      return std::make_shared<Forest>(as<Forest>(x));
     }
+    return std::make_shared<Tree>(as<Tree>(x));
+  }
 
-    if (strategy == "uniform_pda") {
-      int n_vars   = Rcpp::as<int>(rtraining_spec["n_vars"]);
-      float lambda = Rcpp::as<float>(rtraining_spec["lambda"]);
+  template<> inline TrainingSpec::Ptr as(SEXP x) {
+    Rcpp::List r_training_spec(x);
 
-      return TrainingSpecUPDA::make(n_vars, lambda);
-    }
-
-    Rcpp::stop("Unknown training strategy: %s", strategy);
+    return TrainingSpec::make(
+      pp::PPStrategy::from_json(list_to_json(Rcpp::List(r_training_spec["pp"]))),
+      dr::DRStrategy::from_json(list_to_json(Rcpp::List(r_training_spec["dr"]))),
+      sr::SRStrategy::from_json(list_to_json(Rcpp::List(r_training_spec["sr"]))),
+      Rcpp::as<int>(r_training_spec["size"]),
+      Rcpp::as<int>(r_training_spec["seed"]),
+      Rcpp::as<int>(r_training_spec["threads"]),
+      Rcpp::as<int>(r_training_spec["max_retries"]));
   }
 }

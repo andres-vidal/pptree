@@ -106,7 +106,7 @@ class SavedModelTest : public ::testing::Test {
     void SetUp() override {
       model_.reset(new TempFile());
       model_->clear();
-      auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -t 5 -r 42 -s " + model_->path());
+      auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -s " + model_->path());
       ASSERT_EQ(result.exit_code, 0);
       model_json_ = json::parse(model_->read());
     }

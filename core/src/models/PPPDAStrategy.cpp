@@ -8,6 +8,7 @@
 #include <numeric>
 #include <vector>
 #include <Eigen/Dense>
+#include <nlohmann/json.hpp>
 
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
@@ -27,8 +28,8 @@ namespace {
     lambda(lambda) {
   }
 
-  PPStrategy::Ptr PPPDAStrategy::clone() const {
-    return std::make_unique<PPPDAStrategy>(*this);
+  void PPPDAStrategy::to_json(nlohmann::json& j) const {
+    j = { { "name", "pda" }, { "lambda", lambda } };
   }
 
   Feature PPPDAStrategy::index(
@@ -81,11 +82,12 @@ namespace {
     return PPResult{ pp::normalize(max_eigen_vec), max_eigen_val };
   }
 
-  PPStrategy::Ptr PPPDAStrategy::make(float lambda) {
-    return std::make_unique<PPPDAStrategy>(lambda);
+  PPStrategy::Ptr pda(float lambda) {
+    return std::make_shared<PPPDAStrategy>(lambda);
   }
 
-  PPStrategy::Ptr pda(float lambda) {
-    return PPPDAStrategy::make(lambda);
+  PPStrategy::Ptr PPPDAStrategy::from_json(const nlohmann::json& j) {
+    validate_json_keys(j, "PDA", { "name", "lambda" });
+    return pda(j.at("lambda").get<float>());
   }
 }

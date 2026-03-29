@@ -1,4 +1,5 @@
 #include "models/BootstrapTree.hpp"
+#include "stats/Uniform.hpp"
 #include <algorithm>
 #include <numeric>
 #include <set>
@@ -9,10 +10,10 @@ using namespace ppforest2::types;
 
 namespace ppforest2 {
   BootstrapTree::Ptr BootstrapTree::train(
-    TrainingSpec const&   training_spec,
-    FeatureMatrix const&  x,
-    GroupPartition const& group_spec,
-    RNG &                 rng) {
+    TrainingSpec::Ptr const& training_spec,
+    FeatureMatrix const&     x,
+    GroupPartition const&    group_spec,
+    RNG &                    rng) {
     std::vector<int> sample_indices;
     sample_indices.reserve(x.rows());
 
@@ -32,11 +33,11 @@ namespace ppforest2 {
 
     FeatureMatrix sampled_x = x(sample_indices, Eigen::all);
 
-    Tree tree = Tree::train(training_spec, sampled_x, group_spec, rng);
+    Tree tree = Tree::train(*training_spec, sampled_x, group_spec, rng);
 
     return std::make_unique<BootstrapTree>(
       std::move(tree.root),
-      training_spec.clone(),
+      training_spec,
       std::move(sample_indices));
   }
 

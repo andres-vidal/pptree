@@ -1,5 +1,6 @@
 #pragma once
 
+#include "models/TrainingSpec.hpp"
 #include "utils/Types.hpp"
 
 #include <memory>
@@ -22,7 +23,7 @@ namespace ppforest2 {
    * @brief Abstract base class for predictive models (trees and forests).
    */
   struct Model {
-    using Ptr = std::unique_ptr<Model>;
+    using Ptr = std::shared_ptr<Model>;
 
     /**
      * @brief Visitor interface for model dispatch.
@@ -39,6 +40,9 @@ namespace ppforest2 {
 
     /** @brief Whether the model contains degenerate nodes/splits. */
     bool degenerate = false;
+
+    /** @brief Training specification used to build this model. */
+    TrainingSpec::Ptr training_spec;
 
     /** @brief Accept a model visitor (double dispatch). */
     virtual void accept(Visitor& visitor) const = 0;
@@ -70,5 +74,21 @@ namespace ppforest2 {
      * @return      Proportion matrix (n × G), rows sum to 1.0.
      */
     virtual types::FeatureMatrix predict(const types::FeatureMatrix& data, Proportions) const = 0;
+
+    /**
+     * @brief Train a model from a training specification.
+     *
+     * Dispatches to Tree::train or Forest::train based on
+     * spec.is_forest().
+     *
+     * @param spec  Training specification.
+     * @param x     Feature matrix (n × p).
+     * @param y     Response vector (n).
+     * @return      Trained model (Tree or Forest).
+     */
+    static Ptr train(
+      const TrainingSpec&          spec,
+      const types::FeatureMatrix&  x,
+      const types::ResponseVector& y);
   };
 }

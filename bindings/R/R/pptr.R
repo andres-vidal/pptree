@@ -12,10 +12,12 @@ NULL
 #' @param data A data frame containing the variables in the formula.
 #' @param x A matrix containing the features for each observation.
 #' @param y A matrix containing the labels for each observation.
-#' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
+#' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA). Cannot be used together with \code{pp}.
 #' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly.
+#' @param pp A projection pursuit strategy object created by \code{\link{pp_pda}}. Cannot be used together with \code{lambda}.
+#' @param sr A split rule strategy object created by \code{\link{sr_mean_of_means}} (default).
 #' @return A pptr model trained on \code{x} and \code{y}.
-#' @seealso \code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{vignette("introduction")} for a tutorial
+#' @seealso \code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{sr_mean_of_means}}, \code{vignette("introduction")} for a tutorial
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
@@ -43,14 +45,17 @@ pptr <- function(
     x = NULL,
     y = NULL,
     lambda = 0,
-    seed = NULL) {
-  if (!is.numeric(lambda) || length(lambda) != 1 || lambda < 0 || lambda > 1)
-    stop("`lambda` must be a single number between 0 and 1.")
+    seed = NULL,
+    pp = NULL,
+    sr = NULL) {
+  strategies <- resolve_strategies(
+    pp = pp, lambda = lambda, lambda_missing = missing(lambda),
+    sr = sr)
 
   if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1 || seed != as.integer(seed)))
     stop("`seed` must be a single integer or NULL.")
 
-  args <- process_model_arguments(formula, data, x, y)
+  args <- resolve_model_data(formula, data, x, y)
 
   x <- args$x
   y <- args$y
@@ -61,7 +66,16 @@ pptr <- function(
     seed <- sample.int(.Machine$integer.max, 1L)
   }
 
-  model <- ppforest2_train_tree_pda(args$x, args$y, lambda, seed)
+  training_spec <- list(
+    pp = strategies$pp,
+    dr = strategies$dr,
+    sr = strategies$sr,
+    size = 0L,
+    seed = as.integer(seed),
+    threads = 0L,
+    max_retries = 0L)
+
+  model <- ppforest2_train(training_spec, args$x, args$y)
 
   if (isTRUE(model$degenerate)) {
     warning("Some splits could not separate groups (degenerate nodes). ",
@@ -70,7 +84,6 @@ pptr <- function(
             call. = FALSE)
   }
 
-  class(model) <- "pptr"
   model$seed <- seed
   model$groups <- groups
   model$formula <- formula
@@ -202,7 +215,7 @@ summary.pptr <- function(object, ...) {
     cat("\n")
     cat("Project-Pursuit Oblique Decision Tree\n")
     cat("\n")
-    cat("Regularization parameter:", model$training_spec$lambda, "\n")
+    print_training_spec(model$training_spec)
     cat("\n")
     cat("Data Summary:\n")
     cat("  observations:", nrow(model$x), "\n")
