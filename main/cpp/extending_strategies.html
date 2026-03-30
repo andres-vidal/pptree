@@ -392,6 +392,7 @@ Checklist for adding a new strategy</h1>
 <li>Inherit from the appropriate base (PPStrategy, DRStrategy, or SRStrategy).</li>
 <li>Implement the pure virtual methods (<code>index</code>/<code>optimize</code>, <code>select</code>, or <code>threshold</code>).</li>
 <li>Implement <code>to_json()</code> — must include a <code>"name"</code> field.</li>
+<li>Implement <code>display_name()</code> — a human-readable label for summaries.</li>
 <li>Add a <code>static Ptr from_json(const nlohmann::json&amp; j)</code> — validate keys, construct via factory.</li>
 <li>Add <code>PPFOREST2_REGISTER_STRATEGY(Base, "name")</code> inside the struct.</li>
 <li>Add a factory function (e.g. <code>inline Ptr my_strategy(...)</code>) in the namespace.</li>
