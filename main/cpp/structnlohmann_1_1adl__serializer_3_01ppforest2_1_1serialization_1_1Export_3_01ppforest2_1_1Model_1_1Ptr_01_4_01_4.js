@@ -1,0 +1,4 @@
+var structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Model_1_1Ptr_01_4_01_4 =
+[
+    [ "from_json", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Model_1_1Ptr_01_4_01_4.html#aafc08361a18bde4ffb84ddfd7769b42a", null ]
+];

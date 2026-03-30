@@ -60,7 +60,7 @@ predict(model, iris)
 #>  [49] setosa     setosa     versicolor versicolor versicolor versicolor
 #>  [55] versicolor versicolor versicolor versicolor versicolor versicolor
 #>  [61] versicolor versicolor versicolor versicolor versicolor versicolor
-#>  [67] versicolor versicolor versicolor versicolor versicolor versicolor
+#>  [67] versicolor versicolor versicolor versicolor virginica  versicolor
 #>  [73] versicolor versicolor versicolor versicolor versicolor versicolor
 #>  [79] versicolor versicolor versicolor versicolor versicolor virginica 
 #>  [85] versicolor versicolor versicolor versicolor versicolor versicolor
@@ -79,12 +79,12 @@ predict(model, iris)
 # Example 2: with the `crabs` dataset
 model <- pprf(Type ~ ., data = crabs)
 predict(model, crabs)
-#>   [1] O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
-#>  [38] O O O O O O O O O O O O O B B B B B B B B B B B B B B B B B B B B B B B B
-#>  [75] B B B B B B B B B B B B B B B B B B B B B B B B B B O O O O O O O O O O O
-#> [112] O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
-#> [149] O O B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
-#> [186] B B B B B B B B B B B B B B B
+#>   [1] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
+#>  [38] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
+#>  [75] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
+#> [112] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B
+#> [149] B B O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
+#> [186] O O O O O O O O O O O O O O O
 #> Levels: B O
 
 # Example 3: vote proportions
@@ -161,9 +161,9 @@ predict(model, iris, type = "prob")
 #> 68       0        1.0       0.0
 #> 69       0        1.0       0.0
 #> 70       0        1.0       0.0
-#> 71       0        0.0       1.0
+#> 71       0        0.5       0.5
 #> 72       0        1.0       0.0
-#> 73       0        1.0       0.0
+#> 73       0        0.5       0.5
 #> 74       0        1.0       0.0
 #> 75       0        1.0       0.0
 #> 76       0        1.0       0.0
@@ -220,11 +220,11 @@ predict(model, iris, type = "prob")
 #> 127      0        0.0       1.0
 #> 128      0        0.0       1.0
 #> 129      0        0.0       1.0
-#> 130      0        0.5       0.5
+#> 130      0        0.0       1.0
 #> 131      0        0.0       1.0
 #> 132      0        0.0       1.0
 #> 133      0        0.0       1.0
-#> 134      0        1.0       0.0
+#> 134      0        0.5       0.5
 #> 135      0        0.0       1.0
 #> 136      0        0.0       1.0
 #> 137      0        0.0       1.0

@@ -8,6 +8,10 @@
   : Australian Crabs Dataset
 - [`crabs`](https://andres-vidal.github.io/ppforest2/main/r/reference/crabs.md)
   : Crabs Dataset
+- [`dr_noop()`](https://andres-vidal.github.io/ppforest2/main/r/reference/dr_noop.md)
+  : No-op dimensionality reduction strategy.
+- [`dr_uniform()`](https://andres-vidal.github.io/ppforest2/main/r/reference/dr_uniform.md)
+  : Uniform random variable selection strategy.
 - [`fishcatch`](https://andres-vidal.github.io/ppforest2/main/r/reference/fishcatch.md)
   : Fish Catch Dataset
 - [`formula(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pprf.md)
@@ -34,6 +38,8 @@
   : Plot a pprf model.
 - [`plot(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/plot.pptr.md)
   : Plot a pptr model.
+- [`pp_pda()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_pda.md)
+  : PDA projection pursuit strategy.
 - [`pp_rand_forest()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_rand_forest.md)
   : Parsnip model specification for pprf.
 - [`pp_tree()`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_tree.md)
@@ -54,6 +60,8 @@
   : Prints a pptr model.
 - [`save_json()`](https://andres-vidal.github.io/ppforest2/main/r/reference/save_json.md)
   : Save a model to a JSON file.
+- [`sr_mean_of_means()`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md)
+  : Mean-of-means split rule strategy.
 - [`summary(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md)
   : Summarizes a pprf model.
 - [`summary(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md)

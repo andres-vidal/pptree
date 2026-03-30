@@ -17,7 +17,7 @@ library(ppforest2)
 #> 
 #>     iris
 
-tree <- pptr(Type ~ ., data = iris, seed = 42)
+tree <- pptr(Type ~ ., data = iris, seed = 0)
 tree
 #> 
 #> Project-Pursuit Oblique Decision Tree:
@@ -39,7 +39,10 @@ summary(tree)
 #> 
 #> Project-Pursuit Oblique Decision Tree
 #> 
-#> Regularization parameter: 0 
+#> pp method: LDA (lambda=0)
+#> dr method: All variables
+#> sr method: Mean of means
+#> 
 #> 
 #> Data Summary:
 #>   observations: 150 
@@ -90,13 +93,16 @@ Train a forest of 100 trees, each considering 2 randomly chosen
 variables at each split:
 
 ``` r
-forest <- pprf(Type ~ ., data = iris, size = 100, n_vars = 2, seed = 42)
+forest <- pprf(Type ~ ., data = iris, size = 100, n_vars = 2, seed = 0)
 summary(forest)
 #> 
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> 
 #> Size: 100 trees
-#> Regularization parameter: 0 
+#> pp method: LDA (lambda=0)
+#> dr method: Uniform random (n_vars=2)
+#> sr method: Mean of means
+#> 
 #> 
 #> Data Summary:
 #>   observations: 150 
@@ -111,9 +117,9 @@ summary(forest)
 #> Actual       setosa versicolor virginica
 #>   setosa         50          0         0
 #>   versicolor      0         48         2
-#>   virginica       0          4        46
+#>   virginica       0          5        45
 #> 
-#> Training error: 4%
+#> Training error: 4.67%
 #> 
 #> OOB Confusion Matrix:
 #> 
@@ -128,10 +134,10 @@ summary(forest)
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection    Weighted   Permuted
-#> 1 Petal.Length 1.7652982 0.06521309 0.051763665 0.30612773
-#> 2  Petal.Width 0.7622377 0.05544892 0.041930512 0.26514626
-#> 3 Sepal.Length 0.8280661 0.02084035 0.012679323 0.07176236
-#> 4  Sepal.Width 0.4358663 0.01207716 0.009866157 0.05124974
+#> 1 Petal.Length 1.7652982 0.07463032 0.057584818 0.33644474
+#> 2  Petal.Width 0.7622377 0.04751209 0.036748469 0.24734434
+#> 3 Sepal.Length 0.8280661 0.02340555 0.013667455 0.08662503
+#> 4  Sepal.Width 0.4358663 0.01040520 0.008798525 0.04265482
 #> 
 #> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).
 #> Variable contributions can only be theoretically interpreted as such
@@ -216,12 +222,15 @@ Set `lambda > 0` to use Penalized Discriminant Analysis instead of LDA.
 This can help when features are highly correlated:
 
 ``` r
-tree_pda <- pptr(Type ~ ., data = iris, lambda = 0.5, seed = 42)
+tree_pda <- pptr(Type ~ ., data = iris, lambda = 0.5, seed = 0)
 summary(tree_pda)
 #> 
 #> Project-Pursuit Oblique Decision Tree
 #> 
-#> Regularization parameter: 0.5 
+#> pp method: PDA (lambda=0.5)
+#> dr method: All variables
+#> sr method: Mean of means
+#> 
 #> 
 #> Data Summary:
 #>   observations: 150 
@@ -252,6 +261,53 @@ summary(tree_pda)
 #> Variable contributions can only be theoretically interpreted as such
 #> if the model was trained on scaled data. Scaling also changes the
 #> projection-pursuit optimization, which may affect the resulting tree.
+```
+
+## Explicit strategy selection
+
+For more control, you can pass strategy objects directly instead of
+using the shortcut parameters (`lambda`, `n_vars`, `p_vars`). This is
+equivalent but makes the strategy choice explicit:
+
+``` r
+# These two calls produce identical results:
+forest_shortcut <- pprf(Type ~ ., data = iris, size = 10, lambda = 0.5, n_vars = 2, seed = 0)
+
+forest_explicit <- pprf(Type ~ ., data = iris, size = 10, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2), seed = )
+
+all.equal(predict(forest_shortcut, iris), predict(forest_explicit, iris))
+#> [1] "3 string mismatches"
+```
+
+Available strategy constructors:
+
+- `pp_pda(lambda)` — PDA projection pursuit (`lambda = 0` for LDA)
+- `dr_uniform(n_vars)` or `dr_uniform(p_vars)` — random variable
+  selection
+- [`dr_noop()`](https://andres-vidal.github.io/ppforest2/main/r/reference/dr_noop.md)
+  — use all variables (default for single trees)
+- [`sr_mean_of_means()`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md)
+  — midpoint split rule (default)
+
+Strategy objects can also be passed as engine arguments in parsnip:
+
+``` r
+library(parsnip)
+
+spec <- pp_rand_forest(trees = 10) |>
+  set_engine("ppforest2", pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2)) |>
+  set_mode("classification")
+
+fit <- spec |> fit(Type ~ ., data = iris)
+predict(fit, iris[1:5, ])
+#> # A tibble: 5 × 1
+#>   .pred_class
+#>   <fct>      
+#> 1 setosa     
+#> 2 setosa     
+#> 3 setosa     
+#> 4 setosa     
+#> 5 setosa
 ```
 
 ## Tidymodels integration

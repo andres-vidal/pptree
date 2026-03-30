@@ -103,16 +103,14 @@ $(function(){initNavTree('extending_visitors.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="el" href="namespaceppforest2.html">ppforest2</a> uses the Visitor pattern (double dispatch) to traverse trees and models without <code>dynamic_cast</code>. You can add new traversal logic — statistics, export formats, analysis — by implementing a visitor, without modifying the model types.</p>
-<p>Three visitor interfaces are available:</p>
+<p>Two visitor interfaces are available:</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Interface   </th><th class="markdownTableHeadNone">Dispatches over   </th><th class="markdownTableHeadNone">Use when    </th></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">TreeNode::Visitor   </td><td class="markdownTableBodyNone">TreeCondition (split), TreeResponse (leaf)   </td><td class="markdownTableBodyNone">You need to walk the tree structure    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Model::Visitor   </td><td class="markdownTableBodyNone">Tree, Forest   </td><td class="markdownTableBodyNone">You need to handle trees and forests differently    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">TrainingSpec::Visitor   </td><td class="markdownTableBodyNone">TrainingSpecPDA, TrainingSpecUPDA   </td><td class="markdownTableBodyNone">You need type-safe access to spec parameters   </td></tr>
+<td class="markdownTableBodyNone">Model::Visitor   </td><td class="markdownTableBodyNone">Tree, Forest   </td><td class="markdownTableBodyNone">You need to handle trees and forests differently   </td></tr>
 </table>
 <h1><a class="anchor" id="vis_dispatch"></a>
 How double dispatch works</h1>
@@ -254,15 +252,7 @@ Example: collecting all leaf labels</h2>
 </div><!-- fragment --><p>Usage: </p><div class="fragment"><div class="line">AllLabelsVisitor visitor;</div>
 <div class="line">model.accept(visitor);</div>
 <div class="line"><span class="comment">// visitor.labels contains all group labels in the model</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="vis_specvisitor"></a>
-Implementing a TrainingSpec::Visitor</h1>
-<p>TrainingSpec::Visitor dispatches over concrete TrainingSpec subclasses, giving type-safe access to their parameters (e.g. <code>lambda</code>, <code>n_vars</code>).</p>
-<div class="fragment"><div class="line"><span class="keyword">struct </span>TrainingSpec::Visitor {</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> visit(<span class="keyword">const</span> TrainingSpecPDA&amp; spec) = 0;</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> visit(<span class="keyword">const</span> TrainingSpecUPDA&amp; spec) = 0;</div>
-<div class="line">};</div>
-</div><!-- fragment --><p>If you add a new TrainingSpec subclass, add a corresponding <code>visit()</code> overload to TrainingSpec::Visitor.</p>
-<h1><a class="anchor" id="vis_existing"></a>
+</div><!-- fragment --><h1><a class="anchor" id="vis_existing"></a>
 Existing visitors as reference</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -288,7 +278,7 @@ Conventions</h1>
 <li><b>Not thread-safe</b> — visitors carry mutable state and should not be shared across threads. Use one visitor per thread if needed.</li>
 <li><b>Recursive traversal</b> — call <code>cond.lower-&gt;accept(*this)</code> and <code>cond.upper-&gt;accept(*this)</code> inside <code>visit(TreeCondition&amp;)</code> to walk the full tree. Omit these calls if you only need to inspect the root.</li>
 </ul>
-<dl class="section see"><dt>See also</dt><dd>TreeNode::Visitor, Model::Visitor, TrainingSpec::Visitor, VIVisitor, TreeCondition, TreeResponse </dd></dl>
+<dl class="section see"><dt>See also</dt><dd>TreeNode::Visitor, Model::Visitor, VIVisitor, TreeCondition, TreeResponse </dd></dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

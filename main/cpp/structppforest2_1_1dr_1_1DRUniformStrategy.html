@@ -101,7 +101,7 @@ $(function(){initNavTree('structppforest2_1_1dr_1_1DRUniformStrategy.html',''); 
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="structppforest2_1_1dr_1_1DRUniformStrategy-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ppforest2::dr::DRUniformStrategy Struct Reference</div></div>
 </div><!--header-->
@@ -114,38 +114,52 @@ $(function(){initNavTree('structppforest2_1_1dr_1_1DRUniformStrategy.html',''); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9fab78fecdb784a7f7fa87234d8f2414" id="r_a9fab78fecdb784a7f7fa87234d8f2414"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9fab78fecdb784a7f7fa87234d8f2414">DRUniformStrategy</a> (const int <a class="el" href="#a52e6ddb877c0db344d4242db485aacff">n_vars</a>)</td></tr>
-<tr class="separator:a9fab78fecdb784a7f7fa87234d8f2414"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7cee5de959dd73b49eb103a0600fcfe" id="r_af7cee5de959dd73b49eb103a0600fcfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html#ab247927463126f9fc013010e7a917474">DRStrategy::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af7cee5de959dd73b49eb103a0600fcfe">clone</a> () const override</td></tr>
-<tr class="separator:af7cee5de959dd73b49eb103a0600fcfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22b355d701e03cbfa9614b2ff3d15002" id="r_a22b355d701e03cbfa9614b2ff3d15002"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22b355d701e03cbfa9614b2ff3d15002">DRUniformStrategy</a> (int n_vars)</td></tr>
+<tr class="separator:a22b355d701e03cbfa9614b2ff3d15002"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09748600bf517010726dd00ed75e4b21" id="r_a09748600bf517010726dd00ed75e4b21"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09748600bf517010726dd00ed75e4b21">display_name</a> () const override</td></tr>
+<tr class="memdesc:a09748600bf517010726dd00ed75e4b21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Human-readable name for display in summaries.  <br /></td></tr>
+<tr class="separator:a09748600bf517010726dd00ed75e4b21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2b9c0f62c44438ed31fff5e0a6cd45b" id="r_ae2b9c0f62c44438ed31fff5e0a6cd45b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1dr_1_1DRResult.html">DRResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2b9c0f62c44438ed31fff5e0a6cd45b">select</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x, <a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">stats::GroupPartition</a> const &amp;group_spec, <a class="el" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">stats::RNG</a> &amp;rng) const override</td></tr>
 <tr class="memdesc:ae2b9c0f62c44438ed31fff5e0a6cd45b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select a subset of variables.  <br /></td></tr>
 <tr class="separator:ae2b9c0f62c44438ed31fff5e0a6cd45b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdfc39a17dd084c34e0342d246636362" id="r_afdfc39a17dd084c34e0342d246636362"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdfc39a17dd084c34e0342d246636362">to_json</a> (nlohmann::json &amp;j) const override</td></tr>
+<tr class="memdesc:afdfc39a17dd084c34e0342d246636362"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize this strategy's configuration to JSON.  <br /></td></tr>
+<tr class="separator:afdfc39a17dd084c34e0342d246636362"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_structppforest2_1_1dr_1_1DRStrategy"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_structppforest2_1_1dr_1_1DRStrategy')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html">ppforest2::dr::DRStrategy</a></td></tr>
-<tr class="memitem:a17a94edec1b375d4d2e3d1f16968e99e inherit pub_methods_structppforest2_1_1dr_1_1DRStrategy" id="r_a17a94edec1b375d4d2e3d1f16968e99e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html#a17a94edec1b375d4d2e3d1f16968e99e">~DRStrategy</a> ()=default</td></tr>
-<tr class="separator:a17a94edec1b375d4d2e3d1f16968e99e inherit pub_methods_structppforest2_1_1dr_1_1DRStrategy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc8afdc6f9d27e6751649dd20580543a inherit pub_methods_structppforest2_1_1dr_1_1DRStrategy" id="r_acc8afdc6f9d27e6751649dd20580543a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1dr_1_1DRResult.html">DRResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html#acc8afdc6f9d27e6751649dd20580543a">operator()</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x, <a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">stats::GroupPartition</a> const &amp;group_spec, <a class="el" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">stats::RNG</a> &amp;rng) const</td></tr>
 <tr class="memdesc:acc8afdc6f9d27e6751649dd20580543a inherit pub_methods_structppforest2_1_1dr_1_1DRStrategy"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience operator: equivalent to <a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html#a219d448dc300ce33eba2d3bb2a6a5136" title="Select a subset of variables.">select()</a>.  <br /></td></tr>
 <tr class="separator:acc8afdc6f9d27e6751649dd20580543a inherit pub_methods_structppforest2_1_1dr_1_1DRStrategy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_structStrategy"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_structStrategy')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structStrategy.html">Strategy&lt; DRStrategy &gt;</a></td></tr>
+<tr class="memitem:ae907514e63d4662491af488f4e80480f inherit pub_methods_structStrategy" id="r_ae907514e63d4662491af488f4e80480f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrategy.html#ae907514e63d4662491af488f4e80480f">~Strategy</a> ()=default</td></tr>
+<tr class="separator:ae907514e63d4662491af488f4e80480f inherit pub_methods_structStrategy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a52e6ddb877c0db344d4242db485aacff" id="r_a52e6ddb877c0db344d4242db485aacff"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a52e6ddb877c0db344d4242db485aacff">n_vars</a></td></tr>
-<tr class="memdesc:a52e6ddb877c0db344d4242db485aacff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of variables to select at each split.  <br /></td></tr>
-<tr class="separator:a52e6ddb877c0db344d4242db485aacff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a9e25eddc8b4709a7e2ca33fac0cdd4e3" id="r_a9e25eddc8b4709a7e2ca33fac0cdd4e3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">DRStrategy::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e25eddc8b4709a7e2ca33fac0cdd4e3">from_json</a> (const nlohmann::json &amp;j)</td></tr>
+<tr class="separator:a9e25eddc8b4709a7e2ca33fac0cdd4e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_structStrategy"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_static_methods_structStrategy')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="structStrategy.html">Strategy&lt; DRStrategy &gt;</a></td></tr>
+<tr class="memitem:a5ba6c556c2130fd4ac55d5a22ccd7d81 inherit pub_static_methods_structStrategy" id="r_a5ba6c556c2130fd4ac55d5a22ccd7d81"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrategy.html#a5ba6c556c2130fd4ac55d5a22ccd7d81">from_json</a> (const nlohmann::json &amp;j)</td></tr>
+<tr class="memdesc:a5ba6c556c2130fd4ac55d5a22ccd7d81 inherit pub_static_methods_structStrategy"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a strategy from its JSON representation.  <br /></td></tr>
+<tr class="separator:a5ba6c556c2130fd4ac55d5a22ccd7d81 inherit pub_static_methods_structStrategy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2d84cebbfb10d12513ef3d0fd889659 inherit pub_static_methods_structStrategy" id="r_ae2d84cebbfb10d12513ef3d0fd889659"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrategy.html#ae2d84cebbfb10d12513ef3d0fd889659">register_strategy</a> (const std::string &amp;name, <a class="el" href="structStrategy.html#a77651e0f63c2215963a6aa5628b0529b">Factory</a> factory)</td></tr>
+<tr class="memdesc:ae2d84cebbfb10d12513ef3d0fd889659 inherit pub_static_methods_structStrategy"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a concrete strategy for JSON deserialization.  <br /></td></tr>
+<tr class="separator:ae2d84cebbfb10d12513ef3d0fd889659 inherit pub_static_methods_structStrategy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_types_structppforest2_1_1dr_1_1DRStrategy"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_types_structppforest2_1_1dr_1_1DRStrategy')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html">ppforest2::dr::DRStrategy</a></td></tr>
-<tr class="memitem:ab247927463126f9fc013010e7a917474 inherit pub_types_structppforest2_1_1dr_1_1DRStrategy" id="r_ab247927463126f9fc013010e7a917474"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html#ab247927463126f9fc013010e7a917474">Ptr</a> = std::unique_ptr&lt;<a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html">DRStrategy</a>&gt;</td></tr>
-<tr class="separator:ab247927463126f9fc013010e7a917474 inherit pub_types_structppforest2_1_1dr_1_1DRStrategy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_structStrategy"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_types_structStrategy')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="structStrategy.html">Strategy&lt; DRStrategy &gt;</a></td></tr>
+<tr class="memitem:a77651e0f63c2215963a6aa5628b0529b inherit pub_types_structStrategy" id="r_a77651e0f63c2215963a6aa5628b0529b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrategy.html#a77651e0f63c2215963a6aa5628b0529b">Factory</a></td></tr>
+<tr class="memdesc:a77651e0f63c2215963a6aa5628b0529b inherit pub_types_structStrategy"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structStrategy.html#a77651e0f63c2215963a6aa5628b0529b">Factory</a> function type for deserializing a strategy from JSON.  <br /></td></tr>
+<tr class="separator:a77651e0f63c2215963a6aa5628b0529b inherit pub_types_structStrategy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30c651b4431c97d3504039607df398c9 inherit pub_types_structStrategy" id="r_a30c651b4431c97d3504039607df398c9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Ptr</a></td></tr>
+<tr class="separator:a30c651b4431c97d3504039607df398c9 inherit pub_types_structStrategy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Uniform random dimensionality reduction. </p>
 <p>Selects <code>n_vars</code> variables uniformly at random (without replacement) from the full set of features. Used in random forests to introduce diversity between trees. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a9fab78fecdb784a7f7fa87234d8f2414" name="a9fab78fecdb784a7f7fa87234d8f2414"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9fab78fecdb784a7f7fa87234d8f2414">&#9670;&#160;</a></span>DRUniformStrategy()</h2>
+<a id="a22b355d701e03cbfa9614b2ff3d15002" name="a22b355d701e03cbfa9614b2ff3d15002"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22b355d701e03cbfa9614b2ff3d15002">&#9670;&#160;</a></span>DRUniformStrategy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -156,13 +170,13 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">ppforest2::dr::DRUniformStrategy::DRUniformStrategy </td>
           <td>(</td>
-          <td class="paramtype">const int</td>          <td class="paramname"><span class="paramname"><em>n_vars</em></span></td><td>)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_vars</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel explicit">explicit</span></span>  </td>
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -170,8 +184,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="af7cee5de959dd73b49eb103a0600fcfe" name="af7cee5de959dd73b49eb103a0600fcfe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7cee5de959dd73b49eb103a0600fcfe">&#9670;&#160;</a></span>clone()</h2>
+<a id="a09748600bf517010726dd00ed75e4b21" name="a09748600bf517010726dd00ed75e4b21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09748600bf517010726dd00ed75e4b21">&#9670;&#160;</a></span>display_name()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -180,7 +194,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html#ab247927463126f9fc013010e7a917474">DRStrategy::Ptr</a> ppforest2::dr::DRUniformStrategy::clone </td>
+          <td class="memname">std::string ppforest2::dr::DRUniformStrategy::display_name </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -193,7 +207,34 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html#a2fd911403a37f7a27a6999210c4a1414">ppforest2::dr::DRStrategy</a>.</p>
+<p>Human-readable name for display in summaries. </p>
+
+<p>Implements <a class="el" href="structStrategy.html#af1ce78657a37580a4b15dc5747f76519">Strategy&lt; DRStrategy &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a9e25eddc8b4709a7e2ca33fac0cdd4e3" name="a9e25eddc8b4709a7e2ca33fac0cdd4e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e25eddc8b4709a7e2ca33fac0cdd4e3">&#9670;&#160;</a></span>from_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">DRStrategy::Ptr</a> ppforest2::dr::DRUniformStrategy::from_json </td>
+          <td>(</td>
+          <td class="paramtype">const nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -224,7 +265,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -244,20 +285,39 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a52e6ddb877c0db344d4242db485aacff" name="a52e6ddb877c0db344d4242db485aacff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52e6ddb877c0db344d4242db485aacff">&#9670;&#160;</a></span>n_vars</h2>
+<a id="afdfc39a17dd084c34e0342d246636362" name="afdfc39a17dd084c34e0342d246636362"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdfc39a17dd084c34e0342d246636362">&#9670;&#160;</a></span>to_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int ppforest2::dr::DRUniformStrategy::n_vars</td>
+          <td class="memname">void ppforest2::dr::DRUniformStrategy::to_json </td>
+          <td>(</td>
+          <td class="paramtype">nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Number of variables to select at each split. </p>
+<p>Serialize this strategy's configuration to JSON. </p>
+<p>Must include a "name" field identifying the strategy type, plus any strategy-specific parameters.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">j</td><td>JSON object to populate. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="structStrategy.html#a60b638e6088f71a745df00a0de7eeab2">Strategy&lt; DRStrategy &gt;</a>.</p>
 
 </div>
 </div>

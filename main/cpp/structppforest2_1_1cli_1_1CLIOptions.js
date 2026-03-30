@@ -1,6 +1,7 @@
 var structppforest2_1_1cli_1_1CLIOptions =
 [
     [ "benchmark", "structppforest2_1_1cli_1_1CLIOptions.html#a55211f7da9e210608fbeff6d776cdaa8", null ],
+    [ "config_path", "structppforest2_1_1cli_1_1CLIOptions.html#af0f0ea0c508df523cac59b6461b5fcb9", null ],
     [ "convergence", "structppforest2_1_1cli_1_1CLIOptions.html#ae28daad809735be79cf8f5e5f58058e6", null ],
     [ "data_path", "structppforest2_1_1cli_1_1CLIOptions.html#adb34ced694d2733f05f2f3ecf137d6f7", null ],
     [ "evaluate", "structppforest2_1_1cli_1_1CLIOptions.html#a45ae0eea0393e54cebf25fc563341a13", null ],

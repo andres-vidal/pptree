@@ -159,13 +159,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tag type for requesting vote-proportion predictions.  <a href="structppforest2_1_1Proportions.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract training configuration for projection pursuit trees.  <a href="structppforest2_1_1TrainingSpec.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1TrainingSpecPDA.html">TrainingSpecPDA</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">PDA training specification using all variables.  <a href="structppforest2_1_1TrainingSpecPDA.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1TrainingSpecUPDA.html">TrainingSpecUPDA</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">UPDA training specification with uniform variable selection.  <a href="structppforest2_1_1TrainingSpecUPDA.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training configuration for projection pursuit trees and forests.  <a href="structppforest2_1_1TrainingSpec.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Tree.html">Tree</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A single projection pursuit decision tree.  <a href="structppforest2_1_1Tree.html#details">More...</a><br /></td></tr>
@@ -203,6 +197,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ae914e6913ccad1ac91801fcf89f308bc" id="r_ae914e6913ccad1ac91801fcf89f308bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae914e6913ccad1ac91801fcf89f308bc">user_error</a> (bool condition, const std::string &amp;message)</td></tr>
 <tr class="memdesc:ae914e6913ccad1ac91801fcf89f308bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw a <a class="el" href="classppforest2_1_1UserError.html" title="Exception for user-facing input validation errors.">UserError</a> if the condition is false.  <br /></td></tr>
 <tr class="separator:ae914e6913ccad1ac91801fcf89f308bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7fc566697e66bde48d3ae08b54c04d3" id="r_af7fc566697e66bde48d3ae08b54c04d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af7fc566697e66bde48d3ae08b54c04d3">validate_json_keys</a> (const nlohmann::json &amp;j, const std::string &amp;context, std::initializer_list&lt; std::string &gt; allowed)</td></tr>
+<tr class="memdesc:af7fc566697e66bde48d3ae08b54c04d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that a JSON object contains only expected keys.  <br /></td></tr>
+<tr class="separator:af7fc566697e66bde48d3ae08b54c04d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0a515d25db5e1b1f0b171426f5e7ef4" id="r_ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0a515d25db5e1b1f0b171426f5e7ef4">variable_importance_permuted</a> (const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;forest, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, int seed=0)</td></tr>
 <tr class="memdesc:ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI1 — Permuted importance.  <br /></td></tr>
 <tr class="separator:ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -288,6 +285,56 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">condition</td><td>Condition that must hold for valid input. </td></tr>
     <tr><td class="paramname">message</td><td>Actionable error message for the user. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af7fc566697e66bde48d3ae08b54c04d3" name="af7fc566697e66bde48d3ae08b54c04d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7fc566697e66bde48d3ae08b54c04d3">&#9670;&#160;</a></span>validate_json_keys()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ppforest2::validate_json_keys </td>
+          <td>(</td>
+          <td class="paramtype">const nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::initializer_list&lt; std::string &gt;</td>          <td class="paramname"><span class="paramname"><em>allowed</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Validate that a JSON object contains only expected keys. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">j</td><td>The JSON object to check. </td></tr>
+    <tr><td class="paramname">context</td><td>Human-readable strategy description (e.g. "PDA"). </td></tr>
+    <tr><td class="paramname">allowed</td><td>Set of allowed key names. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if an unknown key is found. </td></tr>
   </table>
   </dd>
 </dl>

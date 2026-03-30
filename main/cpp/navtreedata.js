@@ -27,7 +27,9 @@ var NAVTREE =
   [ "ppforest2", "index.html", [
     [ "ppforest2 — C++ API Reference", "index.html", "index" ],
     [ "Extending: Custom Strategies", "extending_strategies.html", [
+      [ "Architecture", "extending_strategies.html#strat_architecture", null ],
       [ "Conventions", "extending_strategies.html#strat_conventions", null ],
+      [ "Self-Registration", "extending_strategies.html#strat_registration", null ],
       [ "Adding a new PPStrategy", "extending_strategies.html#strat_pp", [
         [ "Interface to implement", "extending_strategies.html#strat_pp_interface", null ],
         [ "Example: a random projection strategy", "extending_strategies.html#strat_pp_example", null ]
@@ -40,10 +42,8 @@ var NAVTREE =
         [ "Interface to implement", "extending_strategies.html#strat_sr_interface", null ],
         [ "Example: median-based split", "extending_strategies.html#strat_sr_example", null ]
       ] ],
-      [ "Composing strategies", "extending_strategies.html#strat_compose", [
-        [ "Direct composition", "extending_strategies.html#strat_compose_direct", null ],
-        [ "Creating a TrainingSpec subclass", "extending_strategies.html#strat_compose_subclass", null ]
-      ] ]
+      [ "Composing strategies", "extending_strategies.html#strat_compose", null ],
+      [ "Checklist for adding a new strategy", "extending_strategies.html#strat_checklist", null ]
     ] ],
     [ "Extending: Custom Visitors", "extending_visitors.html", [
       [ "How double dispatch works", "extending_visitors.html#vis_dispatch", null ],
@@ -57,7 +57,6 @@ var NAVTREE =
         [ "Interface to implement", "extending_visitors.html#vis_model_interface", null ],
         [ "Example: collecting all leaf labels", "extending_visitors.html#vis_model_example", null ]
       ] ],
-      [ "Implementing a TrainingSpec::Visitor", "extending_visitors.html#vis_specvisitor", null ],
       [ "Existing visitors as reference", "extending_visitors.html#vis_existing", null ],
       [ "Conventions", "extending_visitors.html#vis_conventions", null ]
     ] ],
@@ -97,11 +96,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BenchmarkParams_8hpp.html",
-"extending_strategies.html#strat_compose",
-"namespaceppforest2_1_1serialization.html#ad32e04d8934483d6275325d55437e2a8",
-"structppforest2_1_1TreeNode.html#a42f498ebc918e98f30dc91e90a755356",
-"structppforest2_1_1cli_1_1SimulateParams.html#a21ef9b43dfba26ad5390f869689ed571",
-"structppforest2_1_1stats_1_1DataPacket.html#ad9daf975555d4e76b2f9e6214cae930b"
+"extending_strategies.html#strat_checklist",
+"namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045",
+"structppforest2_1_1TreeNode.html#a494aabdfba0d9c497c051771b1fe5e9a",
+"structppforest2_1_1cli_1_1ScenarioResult.html#aa196c76adf908bb442964bbb1253e53b",
+"structppforest2_1_1sr_1_1SRStrategy.html#a5058ff4110674f43688cb9e7f9dcb3eb"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

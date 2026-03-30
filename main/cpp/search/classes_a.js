@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['nodedata_0',['NodeData',['../structppforest2_1_1viz_1_1NodeData.html',1,'ppforest2::viz']]],
-  ['nodedatavisitor_1',['NodeDataVisitor',['../structppforest2_1_1viz_1_1NodeDataVisitor.html',1,'ppforest2::viz']]],
-  ['normal_2',['Normal',['../classppforest2_1_1stats_1_1Normal.html',1,'ppforest2::stats']]]
+  ['model_0',['Model',['../structppforest2_1_1Model.html',1,'ppforest2']]],
+  ['modelparams_1',['ModelParams',['../structppforest2_1_1cli_1_1ModelParams.html',1,'ppforest2::cli']]],
+  ['modelstats_2',['ModelStats',['../structppforest2_1_1io_1_1ModelStats.html',1,'ppforest2::io']]]
 ];

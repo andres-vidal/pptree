@@ -23,7 +23,6 @@ var namespaceppforest2_1_1cli =
       [ "summarize", "namespaceppforest2_1_1cli.html#ac19eadb7b9d37e6b1fd42c6e52920e51a2d49c6f48afd8395a1a25c58e45acb65", null ]
     ] ],
     [ "add_model_options", "namespaceppforest2_1_1cli.html#a4233edc87e69b2325c6cfcbdf5138afd", null ],
-    [ "compute_metrics", "namespaceppforest2_1_1cli.html#adfe76ac9b201ce33d21783a1d77148e9", null ],
     [ "init_params", "namespaceppforest2_1_1cli.html#a9bd63acbab0aa4b7ce674bb37015de00", null ],
     [ "parse_args", "namespaceppforest2_1_1cli.html#a21d8bb54163dfd42eab3e54447362d72", null ],
     [ "parse_results", "namespaceppforest2_1_1cli.html#a4028b2a5fb09e7b529169ce37ce9e390", null ],

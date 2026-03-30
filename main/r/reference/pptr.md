@@ -12,7 +12,16 @@ model is trained using Linear Discriminant Analysis (LDA). If
 ## Usage
 
 ``` r
-pptr(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0, seed = NULL)
+pptr(
+  formula = NULL,
+  data = NULL,
+  x = NULL,
+  y = NULL,
+  lambda = 0,
+  seed = NULL,
+  pp = NULL,
+  sr = NULL
+)
 ```
 
 ## Arguments
@@ -38,7 +47,8 @@ pptr(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0, seed = NULL)
 
   A regularization parameter. If `lambda = 0`, the model is trained
   using Linear Discriminant Analysis (LDA). If `lambda > 0`, the model
-  is trained using Penalized Discriminant Analysis (PDA).
+  is trained using Penalized Discriminant Analysis (PDA). Cannot be used
+  together with `pp`.
 
 - seed:
 
@@ -47,6 +57,18 @@ pptr(formula = NULL, data = NULL, x = NULL, y = NULL, lambda = 0, seed = NULL)
   [`set.seed()`](https://rdrr.io/r/base/Random.html) controls
   reproducibility. If an integer is provided, that value is used
   directly.
+
+- pp:
+
+  A projection pursuit strategy object created by
+  [`pp_pda`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_pda.md).
+  Cannot be used together with `lambda`.
+
+- sr:
+
+  A split rule strategy object created by
+  [`sr_mean_of_means`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md)
+  (default).
 
 ## Value
 
@@ -62,6 +84,8 @@ A pptr model trained on `x` and `y`.
 [`load_json`](https://andres-vidal.github.io/ppforest2/main/r/reference/load_json.md),
 [`pp_tree`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_tree.md)
 for parsnip integration,
+[`pp_pda`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_pda.md),
+[`sr_mean_of_means`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md),
 [`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/main/r/articles/introduction.md)
 for a tutorial
 

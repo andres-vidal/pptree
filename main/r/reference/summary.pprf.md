@@ -34,7 +34,10 @@ summary(model)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> 
 #> Size: 2 trees
-#> Regularization parameter: 0 
+#> pp method: LDA (lambda=0)
+#> dr method: Uniform random (n_vars=4)
+#> sr method: Mean of means
+#> 
 #> 
 #> Data Summary:
 #>   observations: 150 
@@ -57,19 +60,19 @@ summary(model)
 #> 
 #>             Predicted
 #> Actual       setosa versicolor virginica
-#>   setosa         33          0         0
-#>   versicolor      0         27         1
+#>   setosa         30          0         0
+#>   versicolor      0         29         0
 #>   virginica       0          0        31
 #> 
-#> OOB error: 1.09%
+#> OOB error: 0%
 #> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection   Weighted   Permuted
-#> 1 Petal.Length 1.7652982 0.09914511 0.09107455 0.47878787
-#> 2  Petal.Width 0.7622377 0.06957345 0.05445680 0.29393938
-#> 3 Sepal.Length 0.8280661 0.02843781 0.02532409 0.03333333
-#> 4  Sepal.Width 0.4358663 0.02132891 0.01973198 0.04545456
+#> 1 Petal.Length 1.7652982 0.11812986 0.10914339 0.66332722
+#> 2  Petal.Width 0.7622377 0.04823423 0.03898794 0.22586522
+#> 3 Sepal.Length 0.8280661 0.02621456 0.02295329 0.05950212
+#> 4  Sepal.Width 0.4358663 0.01906149 0.01900462 0.06375226
 #> 
 #> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).
 #> Variable contributions can only be theoretically interpreted as such

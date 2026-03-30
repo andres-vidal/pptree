@@ -100,85 +100,102 @@ $(function(){initNavTree('structppforest2_1_1TrainingSpec.html',''); initResizab
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structppforest2_1_1TrainingSpec-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">ppforest2::TrainingSpec Struct Reference<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+  <div class="headertitle"><div class="title">ppforest2::TrainingSpec Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Abstract training configuration for projection pursuit trees.  
+<p>Training configuration for projection pursuit trees and forests.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="TrainingSpec_8hpp_source.html">TrainingSpec.hpp</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html">Visitor</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html" title="Visitor interface for training specification dispatch.">Visitor</a> interface for training specification dispatch.  <a href="structppforest2_1_1TrainingSpec_1_1Visitor.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ae2ac65f2c2e549df1dbea70d046a775b" id="r_ae2ac65f2c2e549df1dbea70d046a775b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2ac65f2c2e549df1dbea70d046a775b">Ptr</a> = std::unique_ptr&lt;<a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a>&gt;</td></tr>
-<tr class="separator:ae2ac65f2c2e549df1dbea70d046a775b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb6d052890681eadac675d251a342d27" id="r_afb6d052890681eadac675d251a342d27"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb6d052890681eadac675d251a342d27">Ptr</a> = std::shared_ptr&lt;<a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a>&gt;</td></tr>
+<tr class="separator:afb6d052890681eadac675d251a342d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2ee9e73f949709862b1bbfd1e5cd40c1" id="r_a2ee9e73f949709862b1bbfd1e5cd40c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2ee9e73f949709862b1bbfd1e5cd40c1">TrainingSpec</a> (const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;other)</td></tr>
-<tr class="separator:a2ee9e73f949709862b1bbfd1e5cd40c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0ab95e52ed701efa4c393973b29cbac" id="r_ae0ab95e52ed701efa4c393973b29cbac"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0ab95e52ed701efa4c393973b29cbac">TrainingSpec</a> (std::unique_ptr&lt; <a class="el" href="structppforest2_1_1pp_1_1PPStrategy.html">pp::PPStrategy</a> &gt; <a class="el" href="#ae61c0a0d784ff4b2bfe5a0c16d4dfc79">pp_strategy</a>, std::unique_ptr&lt; <a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html">dr::DRStrategy</a> &gt; <a class="el" href="#a76104e3b759c88cbc7d7603889ae58ca">dr_strategy</a>, std::unique_ptr&lt; <a class="el" href="structppforest2_1_1sr_1_1SRStrategy.html">sr::SRStrategy</a> &gt; <a class="el" href="#ae947cb682df4d848c80d143f58fd9fed">sr_strategy</a>)</td></tr>
-<tr class="separator:ae0ab95e52ed701efa4c393973b29cbac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1057aa15c10508137c5f13a33df7ad2" id="r_ab1057aa15c10508137c5f13a33df7ad2"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1057aa15c10508137c5f13a33df7ad2">~TrainingSpec</a> ()=default</td></tr>
-<tr class="separator:ab1057aa15c10508137c5f13a33df7ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74035ae5291f69581411b1a778b42f22" id="r_a74035ae5291f69581411b1a778b42f22"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74035ae5291f69581411b1a778b42f22">accept</a> (<a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html">Visitor</a> &amp;visitor) const =0</td></tr>
-<tr class="memdesc:a74035ae5291f69581411b1a778b42f22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a training spec visitor (double dispatch).  <br /></td></tr>
-<tr class="separator:a74035ae5291f69581411b1a778b42f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0636f3f7e3b319034fa0af4ed716016" id="r_ae0636f3f7e3b319034fa0af4ed716016"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="#ae2ac65f2c2e549df1dbea70d046a775b">Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0636f3f7e3b319034fa0af4ed716016">clone</a> () const =0</td></tr>
-<tr class="memdesc:ae0636f3f7e3b319034fa0af4ed716016"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deep copy of this training specification.  <br /></td></tr>
-<tr class="separator:ae0636f3f7e3b319034fa0af4ed716016"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad840211929cde369686be0b50fb961f4" id="r_ad840211929cde369686be0b50fb961f4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad840211929cde369686be0b50fb961f4">TrainingSpec</a> (<a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">pp::PPStrategy::Ptr</a> pp, <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">dr::DRStrategy::Ptr</a> dr, <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">sr::SRStrategy::Ptr</a> sr, int <a class="el" href="#a23e5c9c822fe03351857eaedb881295e">size</a>=0, int <a class="el" href="#a123b84ba38840eeccbba3cce5f6b87b9">seed</a>=0, int <a class="el" href="#a2319fb5890b40fc944e8d22f41ec3713">threads</a>=0, int <a class="el" href="#a5985052d3272d436fac765aaf0709a82">max_retries</a>=3)</td></tr>
+<tr class="memdesc:ad840211929cde369686be0b50fb961f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a training specification.  <br /></td></tr>
+<tr class="separator:ad840211929cde369686be0b50fb961f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b13c28d4494a8eb8f29f79d4e60699a" id="r_a6b13c28d4494a8eb8f29f79d4e60699a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6b13c28d4494a8eb8f29f79d4e60699a">is_forest</a> () const</td></tr>
+<tr class="memdesc:a6b13c28d4494a8eb8f29f79d4e60699a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether this specification describes a forest (size &gt; 0).  <br /></td></tr>
+<tr class="separator:a6b13c28d4494a8eb8f29f79d4e60699a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ac0655308fe6c450d1a58abd4457f44" id="r_a3ac0655308fe6c450d1a58abd4457f44"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3ac0655308fe6c450d1a58abd4457f44">resolve_threads</a> () const</td></tr>
+<tr class="memdesc:a3ac0655308fe6c450d1a58abd4457f44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of threads to use for training.  <br /></td></tr>
+<tr class="separator:a3ac0655308fe6c450d1a58abd4457f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5eb35043f4eebec572af913329b5dc3b" id="r_a5eb35043f4eebec572af913329b5dc3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5eb35043f4eebec572af913329b5dc3b">to_json</a> (nlohmann::json &amp;j) const</td></tr>
+<tr class="memdesc:a5eb35043f4eebec572af913329b5dc3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the training spec to JSON.  <br /></td></tr>
+<tr class="separator:a5eb35043f4eebec572af913329b5dc3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ae1cabed353f07510786505f33fe2f1a6" id="r_ae1cabed353f07510786505f33fe2f1a6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="#afb6d052890681eadac675d251a342d27">Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1cabed353f07510786505f33fe2f1a6">from_json</a> (const nlohmann::json &amp;j)</td></tr>
+<tr class="memdesc:ae1cabed353f07510786505f33fe2f1a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a training spec from JSON.  <br /></td></tr>
+<tr class="separator:ae1cabed353f07510786505f33fe2f1a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cfee8a69adbf97a0fe6c051de57d060" id="r_a1cfee8a69adbf97a0fe6c051de57d060"><td class="memTemplParams" colspan="2">template&lt;typename ... Args&gt; </td></tr>
+<tr class="memitem:a1cfee8a69adbf97a0fe6c051de57d060"><td class="memTemplItemLeft" align="right" valign="top">static <a class="el" href="#afb6d052890681eadac675d251a342d27">Ptr</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a1cfee8a69adbf97a0fe6c051de57d060">make</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a1cfee8a69adbf97a0fe6c051de57d060"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a shared pointer to a <a class="el" href="structppforest2_1_1TrainingSpec.html" title="Training configuration for projection pursuit trees and forests.">TrainingSpec</a>.  <br /></td></tr>
+<tr class="separator:a1cfee8a69adbf97a0fe6c051de57d060"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a76104e3b759c88cbc7d7603889ae58ca" id="r_a76104e3b759c88cbc7d7603889ae58ca"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html">dr::DRStrategy</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76104e3b759c88cbc7d7603889ae58ca">dr_strategy</a></td></tr>
-<tr class="memdesc:a76104e3b759c88cbc7d7603889ae58ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dimensionality reduction strategy.  <br /></td></tr>
-<tr class="separator:a76104e3b759c88cbc7d7603889ae58ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae61c0a0d784ff4b2bfe5a0c16d4dfc79" id="r_ae61c0a0d784ff4b2bfe5a0c16d4dfc79"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="structppforest2_1_1pp_1_1PPStrategy.html">pp::PPStrategy</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae61c0a0d784ff4b2bfe5a0c16d4dfc79">pp_strategy</a></td></tr>
-<tr class="memdesc:ae61c0a0d784ff4b2bfe5a0c16d4dfc79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Projection pursuit optimization strategy.  <br /></td></tr>
-<tr class="separator:ae61c0a0d784ff4b2bfe5a0c16d4dfc79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae947cb682df4d848c80d143f58fd9fed" id="r_ae947cb682df4d848c80d143f58fd9fed"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="structppforest2_1_1sr_1_1SRStrategy.html">sr::SRStrategy</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae947cb682df4d848c80d143f58fd9fed">sr_strategy</a></td></tr>
-<tr class="memdesc:ae947cb682df4d848c80d143f58fd9fed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group splitting rule strategy.  <br /></td></tr>
-<tr class="separator:ae947cb682df4d848c80d143f58fd9fed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8aa2a6073e56c53e91ad9dfa3c37cc6c" id="r_a8aa2a6073e56c53e91ad9dfa3c37cc6c"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">dr::DRStrategy::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8aa2a6073e56c53e91ad9dfa3c37cc6c">dr_strategy</a></td></tr>
+<tr class="memdesc:a8aa2a6073e56c53e91ad9dfa3c37cc6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dimensionality reduction strategy.  <br /></td></tr>
+<tr class="separator:a8aa2a6073e56c53e91ad9dfa3c37cc6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5985052d3272d436fac765aaf0709a82" id="r_a5985052d3272d436fac765aaf0709a82"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5985052d3272d436fac765aaf0709a82">max_retries</a></td></tr>
+<tr class="memdesc:a5985052d3272d436fac765aaf0709a82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum retry attempts for degenerate trees.  <br /></td></tr>
+<tr class="separator:a5985052d3272d436fac765aaf0709a82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a258c913999409ee9c4fe065b0be902" id="r_a6a258c913999409ee9c4fe065b0be902"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">pp::PPStrategy::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a258c913999409ee9c4fe065b0be902">pp_strategy</a></td></tr>
+<tr class="memdesc:a6a258c913999409ee9c4fe065b0be902"><td class="mdescLeft">&#160;</td><td class="mdescRight">Projection pursuit optimization strategy.  <br /></td></tr>
+<tr class="separator:a6a258c913999409ee9c4fe065b0be902"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a123b84ba38840eeccbba3cce5f6b87b9" id="r_a123b84ba38840eeccbba3cce5f6b87b9"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a123b84ba38840eeccbba3cce5f6b87b9">seed</a></td></tr>
+<tr class="memdesc:a123b84ba38840eeccbba3cce5f6b87b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">RNG seed.  <br /></td></tr>
+<tr class="separator:a123b84ba38840eeccbba3cce5f6b87b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23e5c9c822fe03351857eaedb881295e" id="r_a23e5c9c822fe03351857eaedb881295e"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23e5c9c822fe03351857eaedb881295e">size</a></td></tr>
+<tr class="memdesc:a23e5c9c822fe03351857eaedb881295e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of trees (0 = single tree).  <br /></td></tr>
+<tr class="separator:a23e5c9c822fe03351857eaedb881295e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa7d15a66d91f6585881db563d9cd9e6" id="r_aaa7d15a66d91f6585881db563d9cd9e6"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">sr::SRStrategy::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaa7d15a66d91f6585881db563d9cd9e6">sr_strategy</a></td></tr>
+<tr class="memdesc:aaa7d15a66d91f6585881db563d9cd9e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group splitting rule strategy.  <br /></td></tr>
+<tr class="separator:aaa7d15a66d91f6585881db563d9cd9e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2319fb5890b40fc944e8d22f41ec3713" id="r_a2319fb5890b40fc944e8d22f41ec3713"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2319fb5890b40fc944e8d22f41ec3713">threads</a></td></tr>
+<tr class="memdesc:a2319fb5890b40fc944e8d22f41ec3713"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of threads for parallel forest training.  <br /></td></tr>
+<tr class="separator:a2319fb5890b40fc944e8d22f41ec3713"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Abstract training configuration for projection pursuit trees. </p>
-<p>Composes a projection pursuit strategy (PPStrategy), a dimensionality reduction strategy (DRStrategy), and a split strategy (SRStrategy). Concrete subclasses (<a class="el" href="structppforest2_1_1TrainingSpecPDA.html" title="PDA training specification using all variables.">TrainingSpecPDA</a>, <a class="el" href="structppforest2_1_1TrainingSpecUPDA.html" title="UPDA training specification with uniform variable selection.">TrainingSpecUPDA</a>) provide specific parameter combinations.</p>
-<p>For most use cases, use the ready-made subclasses: </p><div class="fragment"><div class="line"><span class="comment">// Single tree — PDA with all variables:</span></div>
-<div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecPDA.html">TrainingSpecPDA</a> spec(lambda: 0.0);</div>
+<div class="textblock"><p>Training configuration for projection pursuit trees and forests. </p>
+<p>Composes a projection pursuit strategy (PPStrategy), a dimensionality reduction strategy (DRStrategy), and a split strategy (SRStrategy), together with forest-level parameters (size, seed, threads, max retries).</p>
+<p><a class="el" href="structppforest2_1_1TrainingSpec.html" title="Training configuration for projection pursuit trees and forests.">TrainingSpec</a> is a concrete class — new strategies are plugged in via the constructor, not by subclassing: </p><div class="fragment"><div class="line"><span class="comment">// Single tree with PDA:</span></div>
+<div class="line"><a class="code hl_function" href="#ad840211929cde369686be0b50fb961f4">TrainingSpec</a> spec(<a class="code hl_function" href="namespaceppforest2_1_1pp.html#ad41c76a23274685fdb7fc21116b1d0bb">pp::pda</a>(0.5), <a class="code hl_function" href="namespaceppforest2_1_1dr.html#afb04463fe18947613b27e0b8a367923a">dr::noop</a>(), <a class="code hl_function" href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">sr::mean_of_means</a>());</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Random forest — PDA with uniform variable selection:</span></div>
-<div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUPDA.html">TrainingSpecUPDA</a> spec(n_vars: 3, lambda: 0.5);</div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpecPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecPDA.html">ppforest2::TrainingSpecPDA</a></div><div class="ttdoc">PDA training specification using all variables.</div><div class="ttdef"><b>Definition</b> TrainingSpecPDA.hpp:13</div></div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpecUPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUPDA.html">ppforest2::TrainingSpecUPDA</a></div><div class="ttdoc">UPDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUPDA.hpp:14</div></div>
-</div><!-- fragment --><p>For custom strategy composition: </p><div class="fragment"><div class="line"><span class="keyword">auto</span> spec = std::make_unique&lt;TrainingSpec&gt;(</div>
-<div class="line">  <a class="code hl_function" href="namespaceppforest2_1_1pp.html#ad41c76a23274685fdb7fc21116b1d0bb">pp::pda</a>(0.5),          <span class="comment">// PDA with lambda = 0.5</span></div>
-<div class="line">  <a class="code hl_function" href="namespaceppforest2_1_1dr.html#a3f9e147489a1f708dd66dcc88f87e845">dr::uniform</a>(4),         <span class="comment">// sample 4 variables per split</span></div>
-<div class="line">  <a class="code hl_function" href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">sr::mean_of_means</a>());   <span class="comment">// midpoint of group means</span></div>
-<div class="ttc" id="anamespaceppforest2_1_1dr_html_a3f9e147489a1f708dd66dcc88f87e845"><div class="ttname"><a href="namespaceppforest2_1_1dr.html#a3f9e147489a1f708dd66dcc88f87e845">ppforest2::dr::uniform</a></div><div class="ttdeci">DRStrategy::Ptr uniform(const int n_vars)</div><div class="ttdoc">Factory function for a uniform DR strategy.</div><div class="ttdef"><b>Definition</b> DRUniformStrategy.hpp:55</div></div>
+<div class="line"><span class="comment">// Random forest with uniform variable selection:</span></div>
+<div class="line"><a class="code hl_function" href="#ad840211929cde369686be0b50fb961f4">TrainingSpec</a> spec(<a class="code hl_function" href="namespaceppforest2_1_1pp.html#ad41c76a23274685fdb7fc21116b1d0bb">pp::pda</a>(0.0), <a class="code hl_function" href="namespaceppforest2_1_1dr.html#a8ae6f8e21a10e7d955b2db6da2ad3aea">dr::uniform</a>(3), <a class="code hl_function" href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">sr::mean_of_means</a>(),</div>
+<div class="line">                  100, 0);  <span class="comment">// size, seed</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Custom strategy:</span></div>
+<div class="line"><a class="code hl_function" href="#ad840211929cde369686be0b50fb961f4">TrainingSpec</a> spec(my_custom_pp(), <a class="code hl_function" href="namespaceppforest2_1_1dr.html#a8ae6f8e21a10e7d955b2db6da2ad3aea">dr::uniform</a>(5), <a class="code hl_function" href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">sr::mean_of_means</a>(),</div>
+<div class="line">                  200, 7);  <span class="comment">// size, seed</span></div>
+<div class="ttc" id="anamespaceppforest2_1_1dr_html_a8ae6f8e21a10e7d955b2db6da2ad3aea"><div class="ttname"><a href="namespaceppforest2_1_1dr.html#a8ae6f8e21a10e7d955b2db6da2ad3aea">ppforest2::dr::uniform</a></div><div class="ttdeci">DRStrategy::Ptr uniform(int n_vars)</div><div class="ttdoc">Factory function for a uniform DR strategy.</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1dr_html_afb04463fe18947613b27e0b8a367923a"><div class="ttname"><a href="namespaceppforest2_1_1dr.html#afb04463fe18947613b27e0b8a367923a">ppforest2::dr::noop</a></div><div class="ttdeci">DRStrategy::Ptr noop()</div><div class="ttdoc">Factory function for a no-op DR strategy.</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1pp_html_ad41c76a23274685fdb7fc21116b1d0bb"><div class="ttname"><a href="namespaceppforest2_1_1pp.html#ad41c76a23274685fdb7fc21116b1d0bb">ppforest2::pp::pda</a></div><div class="ttdeci">PPStrategy::Ptr pda(float lambda)</div><div class="ttdoc">Factory function for a PDA projection pursuit strategy.</div></div>
-<div class="ttc" id="anamespaceppforest2_1_1sr_html_a5984b53061082b99be1d9c764a4b7045"><div class="ttname"><a href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">ppforest2::sr::mean_of_means</a></div><div class="ttdeci">SRStrategy::Ptr mean_of_means()</div><div class="ttdoc">Factory function for a mean-of-means split strategy.</div><div class="ttdef"><b>Definition</b> SRMeanOfMeansStrategy.hpp:31</div></div>
-</div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="structppforest2_1_1TrainingSpecPDA.html" title="PDA training specification using all variables.">TrainingSpecPDA</a>, <a class="el" href="structppforest2_1_1TrainingSpecUPDA.html" title="UPDA training specification with uniform variable selection.">TrainingSpecUPDA</a> </dd></dl>
+<div class="ttc" id="anamespaceppforest2_1_1sr_html_a5984b53061082b99be1d9c764a4b7045"><div class="ttname"><a href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">ppforest2::sr::mean_of_means</a></div><div class="ttdeci">SRStrategy::Ptr mean_of_means()</div><div class="ttdoc">Factory function for a mean-of-means split strategy.</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpec_html_ad840211929cde369686be0b50fb961f4"><div class="ttname"><a href="#ad840211929cde369686be0b50fb961f4">ppforest2::TrainingSpec::TrainingSpec</a></div><div class="ttdeci">TrainingSpec(pp::PPStrategy::Ptr pp, dr::DRStrategy::Ptr dr, sr::SRStrategy::Ptr sr, int size=0, int seed=0, int threads=0, int max_retries=3)</div><div class="ttdoc">Construct a training specification.</div></div>
+</div><!-- fragment --><p>Strategies are held via shared_ptr and are immutable after construction, so <a class="el" href="structppforest2_1_1TrainingSpec.html" title="Training configuration for projection pursuit trees and forests.">TrainingSpec</a> can be freely copied and shared across trees without deep cloning. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="ae2ac65f2c2e549df1dbea70d046a775b" name="ae2ac65f2c2e549df1dbea70d046a775b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2ac65f2c2e549df1dbea70d046a775b">&#9670;&#160;</a></span>Ptr</h2>
+<a id="afb6d052890681eadac675d251a342d27" name="afb6d052890681eadac675d251a342d27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb6d052890681eadac675d251a342d27">&#9670;&#160;</a></span>Ptr</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#ae2ac65f2c2e549df1dbea70d046a775b">ppforest2::TrainingSpec::Ptr</a> = std::unique_ptr&lt;<a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a>&gt;</td>
+          <td class="memname">using <a class="el" href="#afb6d052890681eadac675d251a342d27">ppforest2::TrainingSpec::Ptr</a> = std::shared_ptr&lt;<a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a>&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -186,93 +203,69 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ae0ab95e52ed701efa4c393973b29cbac" name="ae0ab95e52ed701efa4c393973b29cbac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0ab95e52ed701efa4c393973b29cbac">&#9670;&#160;</a></span>TrainingSpec() <span class="overload">[1/2]</span></h2>
+<a id="ad840211929cde369686be0b50fb961f4" name="ad840211929cde369686be0b50fb961f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad840211929cde369686be0b50fb961f4">&#9670;&#160;</a></span>TrainingSpec()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">ppforest2::TrainingSpec::TrainingSpec </td>
           <td>(</td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structppforest2_1_1pp_1_1PPStrategy.html">pp::PPStrategy</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>pp_strategy</em></span>, </td>
+          <td class="paramtype"><a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">pp::PPStrategy::Ptr</a></td>          <td class="paramname"><span class="paramname"><em>pp</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html">dr::DRStrategy</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>dr_strategy</em></span>, </td>
+          <td class="paramtype"><a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">dr::DRStrategy::Ptr</a></td>          <td class="paramname"><span class="paramname"><em>dr</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structppforest2_1_1sr_1_1SRStrategy.html">sr::SRStrategy</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>sr_strategy</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">sr::SRStrategy::Ptr</a></td>          <td class="paramname"><span class="paramname"><em>sr</em></span>, </td>
         </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2ee9e73f949709862b1bbfd1e5cd40c1" name="a2ee9e73f949709862b1bbfd1e5cd40c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ee9e73f949709862b1bbfd1e5cd40c1">&#9670;&#160;</a></span>TrainingSpec() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
         <tr>
-          <td class="memname">ppforest2::TrainingSpec::TrainingSpec </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>size</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </td>
         </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab1057aa15c10508137c5f13a33df7ad2" name="ab1057aa15c10508137c5f13a33df7ad2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1057aa15c10508137c5f13a33df7ad2">&#9670;&#160;</a></span>~TrainingSpec()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
         <tr>
-          <td class="memname">virtual ppforest2::TrainingSpec::~TrainingSpec </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>seed</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>threads</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>max_retries</em></span><span class="paramdefsep"> = </span><span class="paramdefval">3</span>&#160;)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
+
+<p>Construct a training specification. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pp</td><td>Projection pursuit strategy. </td></tr>
+    <tr><td class="paramname">dr</td><td>Dimensionality reduction strategy. </td></tr>
+    <tr><td class="paramname">sr</td><td>Split rule strategy. </td></tr>
+    <tr><td class="paramname">size</td><td>Number of trees (0 = single tree). </td></tr>
+    <tr><td class="paramname">seed</td><td>RNG seed. </td></tr>
+    <tr><td class="paramname">threads</td><td>Number of threads (0 = hardware concurrency). </td></tr>
+    <tr><td class="paramname">max_retries</td><td>Maximum retry attempts for degenerate trees. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a74035ae5291f69581411b1a778b42f22" name="a74035ae5291f69581411b1a778b42f22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74035ae5291f69581411b1a778b42f22">&#9670;&#160;</a></span>accept()</h2>
+<a id="ae1cabed353f07510786505f33fe2f1a6" name="ae1cabed353f07510786505f33fe2f1a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1cabed353f07510786505f33fe2f1a6">&#9670;&#160;</a></span>from_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -281,27 +274,25 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void ppforest2::TrainingSpec::accept </td>
+          <td class="memname">static <a class="el" href="#afb6d052890681eadac675d251a342d27">Ptr</a> ppforest2::TrainingSpec::from_json </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1TrainingSpec_1_1Visitor.html">Visitor</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>visitor</em></span></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype">const nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Accept a training spec visitor (double dispatch). </p>
-
-<p>Implemented in <a class="el" href="structppforest2_1_1TrainingSpecPDA.html#aad9788439f3be72fa89be503e3f7384e">ppforest2::TrainingSpecPDA</a>, and <a class="el" href="structppforest2_1_1TrainingSpecUPDA.html#ae13ea9fc9880b846df087844243c4e0f">ppforest2::TrainingSpecUPDA</a>.</p>
+<p>Deserialize a training spec from JSON. </p>
 
 </div>
 </div>
-<a id="ae0636f3f7e3b319034fa0af4ed716016" name="ae0636f3f7e3b319034fa0af4ed716016"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0636f3f7e3b319034fa0af4ed716016">&#9670;&#160;</a></span>clone()</h2>
+<a id="a6b13c28d4494a8eb8f29f79d4e60699a" name="a6b13c28d4494a8eb8f29f79d4e60699a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b13c28d4494a8eb8f29f79d4e60699a">&#9670;&#160;</a></span>is_forest()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -310,7 +301,7 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="#ae2ac65f2c2e549df1dbea70d046a775b">Ptr</a> ppforest2::TrainingSpec::clone </td>
+          <td class="memname">bool ppforest2::TrainingSpec::is_forest </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -318,26 +309,103 @@ Public Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Deep copy of this training specification. </p>
-
-<p>Implemented in <a class="el" href="structppforest2_1_1TrainingSpecPDA.html#a759161f586d2788ad79f5589e835de2d">ppforest2::TrainingSpecPDA</a>, and <a class="el" href="structppforest2_1_1TrainingSpecUPDA.html#a2fc70ee5af1b235938dc3070bf696e9a">ppforest2::TrainingSpecUPDA</a>.</p>
+<p>Whether this specification describes a forest (size &gt; 0). </p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a76104e3b759c88cbc7d7603889ae58ca" name="a76104e3b759c88cbc7d7603889ae58ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76104e3b759c88cbc7d7603889ae58ca">&#9670;&#160;</a></span>dr_strategy</h2>
+<a id="a1cfee8a69adbf97a0fe6c051de57d060" name="a1cfee8a69adbf97a0fe6c051de57d060"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cfee8a69adbf97a0fe6c051de57d060">&#9670;&#160;</a></span>make()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="#afb6d052890681eadac675d251a342d27">Ptr</a> ppforest2::TrainingSpec::make </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...</td>          <td class="paramname"><span class="paramname"><em>args</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Create a shared pointer to a <a class="el" href="structppforest2_1_1TrainingSpec.html" title="Training configuration for projection pursuit trees and forests.">TrainingSpec</a>. </p>
+<p>Convenience factory that forwards all arguments to the constructor.</p>
+<dl class="section return"><dt>Returns</dt><dd>Shared pointer to a new <a class="el" href="structppforest2_1_1TrainingSpec.html" title="Training configuration for projection pursuit trees and forests.">TrainingSpec</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a3ac0655308fe6c450d1a58abd4457f44" name="a3ac0655308fe6c450d1a58abd4457f44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ac0655308fe6c450d1a58abd4457f44">&#9670;&#160;</a></span>resolve_threads()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ppforest2::TrainingSpec::resolve_threads </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the number of threads to use for training. </p>
+<p>If the number of threads is not specified, the number of hardware concurrency is returned.</p>
+<dl class="section return"><dt>Returns</dt><dd>The number of threads to use for training. </dd></dl>
+
+</div>
+</div>
+<a id="a5eb35043f4eebec572af913329b5dc3b" name="a5eb35043f4eebec572af913329b5dc3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5eb35043f4eebec572af913329b5dc3b">&#9670;&#160;</a></span>to_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const std::unique_ptr&lt;<a class="el" href="structppforest2_1_1dr_1_1DRStrategy.html">dr::DRStrategy</a>&gt; ppforest2::TrainingSpec::dr_strategy</td>
+          <td class="memname">void ppforest2::TrainingSpec::to_json </td>
+          <td>(</td>
+          <td class="paramtype">nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Serialize the training spec to JSON. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a8aa2a6073e56c53e91ad9dfa3c37cc6c" name="a8aa2a6073e56c53e91ad9dfa3c37cc6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8aa2a6073e56c53e91ad9dfa3c37cc6c">&#9670;&#160;</a></span>dr_strategy</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">dr::DRStrategy::Ptr</a> ppforest2::TrainingSpec::dr_strategy</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -346,14 +414,30 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae61c0a0d784ff4b2bfe5a0c16d4dfc79" name="ae61c0a0d784ff4b2bfe5a0c16d4dfc79"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae61c0a0d784ff4b2bfe5a0c16d4dfc79">&#9670;&#160;</a></span>pp_strategy</h2>
+<a id="a5985052d3272d436fac765aaf0709a82" name="a5985052d3272d436fac765aaf0709a82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5985052d3272d436fac765aaf0709a82">&#9670;&#160;</a></span>max_retries</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const std::unique_ptr&lt;<a class="el" href="structppforest2_1_1pp_1_1PPStrategy.html">pp::PPStrategy</a>&gt; ppforest2::TrainingSpec::pp_strategy</td>
+          <td class="memname">const int ppforest2::TrainingSpec::max_retries</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maximum retry attempts for degenerate trees. </p>
+
+</div>
+</div>
+<a id="a6a258c913999409ee9c4fe065b0be902" name="a6a258c913999409ee9c4fe065b0be902"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a258c913999409ee9c4fe065b0be902">&#9670;&#160;</a></span>pp_strategy</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">pp::PPStrategy::Ptr</a> ppforest2::TrainingSpec::pp_strategy</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -362,19 +446,67 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae947cb682df4d848c80d143f58fd9fed" name="ae947cb682df4d848c80d143f58fd9fed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae947cb682df4d848c80d143f58fd9fed">&#9670;&#160;</a></span>sr_strategy</h2>
+<a id="a123b84ba38840eeccbba3cce5f6b87b9" name="a123b84ba38840eeccbba3cce5f6b87b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a123b84ba38840eeccbba3cce5f6b87b9">&#9670;&#160;</a></span>seed</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const std::unique_ptr&lt;<a class="el" href="structppforest2_1_1sr_1_1SRStrategy.html">sr::SRStrategy</a>&gt; ppforest2::TrainingSpec::sr_strategy</td>
+          <td class="memname">const int ppforest2::TrainingSpec::seed</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RNG seed. </p>
+
+</div>
+</div>
+<a id="a23e5c9c822fe03351857eaedb881295e" name="a23e5c9c822fe03351857eaedb881295e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23e5c9c822fe03351857eaedb881295e">&#9670;&#160;</a></span>size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int ppforest2::TrainingSpec::size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of trees (0 = single tree). </p>
+
+</div>
+</div>
+<a id="aaa7d15a66d91f6585881db563d9cd9e6" name="aaa7d15a66d91f6585881db563d9cd9e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa7d15a66d91f6585881db563d9cd9e6">&#9670;&#160;</a></span>sr_strategy</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">sr::SRStrategy::Ptr</a> ppforest2::TrainingSpec::sr_strategy</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Group splitting rule strategy. </p>
+
+</div>
+</div>
+<a id="a2319fb5890b40fc944e8d22f41ec3713" name="a2319fb5890b40fc944e8d22f41ec3713"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2319fb5890b40fc944e8d22f41ec3713">&#9670;&#160;</a></span>threads</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int ppforest2::TrainingSpec::threads</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of threads for parallel forest training. </p>
 
 </div>
 </div>

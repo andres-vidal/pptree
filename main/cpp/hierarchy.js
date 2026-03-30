@@ -1,5 +1,12 @@
 var hierarchy =
 [
+    [ "nlohmann::adl_serializer< ppforest2::Forest >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1Forest_01_4.html", null ],
+    [ "nlohmann::adl_serializer< ppforest2::serialization::Export< ppforest2::Forest > >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Forest_01_4_01_4.html", null ],
+    [ "nlohmann::adl_serializer< ppforest2::serialization::Export< ppforest2::Model::Ptr > >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Model_1_1Ptr_01_4_01_4.html", null ],
+    [ "nlohmann::adl_serializer< ppforest2::serialization::Export< ppforest2::Tree > >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Tree_01_4_01_4.html", null ],
+    [ "nlohmann::adl_serializer< ppforest2::stats::ConfusionMatrix >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1stats_1_1ConfusionMatrix_01_4.html", null ],
+    [ "nlohmann::adl_serializer< ppforest2::Tree >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1Tree_01_4.html", null ],
+    [ "nlohmann::adl_serializer< ppforest2::VariableImportance >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1VariableImportance_01_4.html", null ],
     [ "ppforest2::cli::BenchmarkParams", "structppforest2_1_1cli_1_1BenchmarkParams.html", null ],
     [ "ppforest2::cli::BenchmarkSuite", "structppforest2_1_1cli_1_1BenchmarkSuite.html", null ],
     [ "ppforest2::viz::BoundarySegment", "structppforest2_1_1viz_1_1BoundarySegment.html", null ],
@@ -11,11 +18,8 @@ var hierarchy =
     [ "ppforest2::cli::ConvergenceParams", "structppforest2_1_1cli_1_1ConvergenceParams.html", null ],
     [ "ppforest2::stats::DataPacket", "structppforest2_1_1stats_1_1DataPacket.html", null ],
     [ "ppforest2::dr::DRResult", "structppforest2_1_1dr_1_1DRResult.html", null ],
-    [ "ppforest2::dr::DRStrategy", "structppforest2_1_1dr_1_1DRStrategy.html", [
-      [ "ppforest2::dr::DRNoopStrategy", "structppforest2_1_1dr_1_1DRNoopStrategy.html", null ],
-      [ "ppforest2::dr::DRUniformStrategy", "structppforest2_1_1dr_1_1DRUniformStrategy.html", null ]
-    ] ],
     [ "ppforest2::cli::EvaluateParams", "structppforest2_1_1cli_1_1EvaluateParams.html", null ],
+    [ "ppforest2::serialization::Export< T >", "structppforest2_1_1serialization_1_1Export.html", null ],
     [ "ppforest2::stats::GroupPartition", "classppforest2_1_1stats_1_1GroupPartition.html", null ],
     [ "ppforest2::viz::HalfSpace", "structppforest2_1_1viz_1_1HalfSpace.html", null ],
     [ "ppforest2::viz::LayoutEdge", "structppforest2_1_1viz_1_1LayoutEdge.html", null ],
@@ -33,9 +37,6 @@ var hierarchy =
     [ "ppforest2::stats::Normal", "classppforest2_1_1stats_1_1Normal.html", null ],
     [ "ppforest2::io::Output", "structppforest2_1_1io_1_1Output.html", null ],
     [ "ppforest2::pp::PPResult", "structppforest2_1_1pp_1_1PPResult.html", null ],
-    [ "ppforest2::pp::PPStrategy", "structppforest2_1_1pp_1_1PPStrategy.html", [
-      [ "ppforest2::pp::PPPDAStrategy", "structppforest2_1_1pp_1_1PPPDAStrategy.html", null ]
-    ] ],
     [ "ProcessResult", "structProcessResult.html", null ],
     [ "ppforest2::Proportions", "structppforest2_1_1Proportions.html", null ],
     [ "ppforest2::viz::RegionPolygon", "structppforest2_1_1viz_1_1RegionPolygon.html", null ],
@@ -47,8 +48,22 @@ var hierarchy =
     [ "ppforest2::cli::SimulateParams", "structppforest2_1_1cli_1_1SimulateParams.html", null ],
     [ "ppforest2::stats::SimulationParams", "structppforest2_1_1stats_1_1SimulationParams.html", null ],
     [ "ppforest2::stats::Split", "structppforest2_1_1stats_1_1Split.html", null ],
-    [ "ppforest2::sr::SRStrategy", "structppforest2_1_1sr_1_1SRStrategy.html", [
-      [ "ppforest2::sr::SRMeanOfMeansStrategy", "structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html", null ]
+    [ "Strategy< Derived >", "structStrategy.html", null ],
+    [ "Strategy< DRStrategy >", "structStrategy.html", [
+      [ "ppforest2::dr::DRStrategy", "structppforest2_1_1dr_1_1DRStrategy.html", [
+        [ "ppforest2::dr::DRNoopStrategy", "structppforest2_1_1dr_1_1DRNoopStrategy.html", null ],
+        [ "ppforest2::dr::DRUniformStrategy", "structppforest2_1_1dr_1_1DRUniformStrategy.html", null ]
+      ] ]
+    ] ],
+    [ "Strategy< PPStrategy >", "structStrategy.html", [
+      [ "ppforest2::pp::PPStrategy", "structppforest2_1_1pp_1_1PPStrategy.html", [
+        [ "ppforest2::pp::PPPDAStrategy", "structppforest2_1_1pp_1_1PPPDAStrategy.html", null ]
+      ] ]
+    ] ],
+    [ "Strategy< SRStrategy >", "structStrategy.html", [
+      [ "ppforest2::sr::SRStrategy", "structppforest2_1_1sr_1_1SRStrategy.html", [
+        [ "ppforest2::sr::SRMeanOfMeansStrategy", "structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html", null ]
+      ] ]
     ] ],
     [ "ppforest2::cli::SuiteResult", "structppforest2_1_1cli_1_1SuiteResult.html", null ],
     [ "ppforest2::io::TempDir", "classppforest2_1_1io_1_1TempDir.html", null ],
@@ -58,10 +73,7 @@ var hierarchy =
     [ "testing::Test", null, [
       [ "SavedModelTest", "classSavedModelTest.html", null ]
     ] ],
-    [ "ppforest2::TrainingSpec", "structppforest2_1_1TrainingSpec.html", [
-      [ "ppforest2::TrainingSpecPDA", "structppforest2_1_1TrainingSpecPDA.html", null ],
-      [ "ppforest2::TrainingSpecUPDA", "structppforest2_1_1TrainingSpecUPDA.html", null ]
-    ] ],
+    [ "ppforest2::TrainingSpec", "structppforest2_1_1TrainingSpec.html", null ],
     [ "ppforest2::cli::TrainResult", "structppforest2_1_1cli_1_1TrainResult.html", null ],
     [ "ppforest2::viz::TreeLayout", "structppforest2_1_1viz_1_1TreeLayout.html", null ],
     [ "ppforest2::TreeNode", "structppforest2_1_1TreeNode.html", [
@@ -74,7 +86,6 @@ var hierarchy =
     [ "ppforest2::Model::Visitor", "structppforest2_1_1Model_1_1Visitor.html", [
       [ "ppforest2::serialization::JsonModelVisitor", "structppforest2_1_1serialization_1_1JsonModelVisitor.html", null ]
     ] ],
-    [ "ppforest2::TrainingSpec::Visitor", "structppforest2_1_1TrainingSpec_1_1Visitor.html", null ],
     [ "ppforest2::TreeNode::Visitor", "structppforest2_1_1TreeNode_1_1Visitor.html", [
       [ "ppforest2::VIVisitor", "structppforest2_1_1VIVisitor.html", null ],
       [ "ppforest2::serialization::JsonNodeVisitor", "structppforest2_1_1serialization_1_1JsonNodeVisitor.html", null ],

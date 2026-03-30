@@ -129,14 +129,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a9ec76089f3e792f7c28013e34e9471fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6a689e6d327ec9dbe7c5af2fd04d60b" id="r_ad6a689e6d327ec9dbe7c5af2fd04d60b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad6a689e6d327ec9dbe7c5af2fd04d60b">p</a> = 10</td></tr>
 <tr class="separator:ad6a689e6d327ec9dbe7c5af2fd04d60b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae90e7e71a4448284723a569d4479c03b" id="r_ae90e7e71a4448284723a569d4479c03b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae90e7e71a4448284723a569d4479c03b">seed</a> = 42</td></tr>
+<tr class="memitem:ae90e7e71a4448284723a569d4479c03b" id="r_ae90e7e71a4448284723a569d4479c03b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae90e7e71a4448284723a569d4479c03b">seed</a> = 0</td></tr>
 <tr class="separator:ae90e7e71a4448284723a569d4479c03b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa406e3c46ef9dae220b7489fca5d7f87" id="r_aa406e3c46ef9dae220b7489fca5d7f87"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa406e3c46ef9dae220b7489fca5d7f87">size</a> = 100</td></tr>
+<tr class="separator:aa406e3c46ef9dae220b7489fca5d7f87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64071f429c766c4c24155ac3426d5cc5" id="r_a64071f429c766c4c24155ac3426d5cc5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a64071f429c766c4c24155ac3426d5cc5">threads</a> = -1</td></tr>
 <tr class="separator:a64071f429c766c4c24155ac3426d5cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8d486272701b244122d1d2a6cd8bb5f" id="r_ad8d486272701b244122d1d2a6cd8bb5f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8d486272701b244122d1d2a6cd8bb5f">train_ratio</a> = 0.7f</td></tr>
 <tr class="separator:ad8d486272701b244122d1d2a6cd8bb5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07c8a7c37a7f5939d9376dd53e97274a" id="r_a07c8a7c37a7f5939d9376dd53e97274a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07c8a7c37a7f5939d9376dd53e97274a">trees</a> = 100</td></tr>
-<tr class="separator:a07c8a7c37a7f5939d9376dd53e97274a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcb93bd1ba2ced538d73ff0761f67a95" id="r_adcb93bd1ba2ced538d73ff0761f67a95"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adcb93bd1ba2ced538d73ff0761f67a95">vars</a> = 0.5f</td></tr>
 <tr class="separator:adcb93bd1ba2ced538d73ff0761f67a95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30510e3daea9fe0671cae74e4af6be53" id="r_a30510e3daea9fe0671cae74e4af6be53"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a30510e3daea9fe0671cae74e4af6be53">warmup</a> = 0</td></tr>
@@ -264,7 +264,21 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int ppforest2::cli::Scenario::seed = 42</td>
+          <td class="memname">int ppforest2::cli::Scenario::seed = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa406e3c46ef9dae220b7489fca5d7f87" name="aa406e3c46ef9dae220b7489fca5d7f87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa406e3c46ef9dae220b7489fca5d7f87">&#9670;&#160;</a></span>size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ppforest2::cli::Scenario::size = 100</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -293,20 +307,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float ppforest2::cli::Scenario::train_ratio = 0.7f</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a07c8a7c37a7f5939d9376dd53e97274a" name="a07c8a7c37a7f5939d9376dd53e97274a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07c8a7c37a7f5939d9376dd53e97274a">&#9670;&#160;</a></span>trees</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int ppforest2::cli::Scenario::trees = 100</td>
         </tr>
       </table>
 </div><div class="memdoc">

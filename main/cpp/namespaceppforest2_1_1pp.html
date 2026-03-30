@@ -133,13 +133,14 @@ Functions</h2></td></tr>
 <tr class="memitem:ae34b22f8acd82e65295ea70a730445d9" id="r_ae34b22f8acd82e65295ea70a730445d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a686ed3b4f49bb2ed6b7e842f5557539f">Projector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae34b22f8acd82e65295ea70a730445d9">normalize</a> (const <a class="el" href="#a686ed3b4f49bb2ed6b7e842f5557539f">Projector</a> &amp;projector)</td></tr>
 <tr class="memdesc:ae34b22f8acd82e65295ea70a730445d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalize a projector to unit length.  <br /></td></tr>
 <tr class="separator:ae34b22f8acd82e65295ea70a730445d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad41c76a23274685fdb7fc21116b1d0bb" id="r_ad41c76a23274685fdb7fc21116b1d0bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1pp_1_1PPStrategy.html#ac7ce60a264f1728e5032524fe9bcc7c7">PPStrategy::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad41c76a23274685fdb7fc21116b1d0bb">pda</a> (float lambda)</td></tr>
+<tr class="memitem:ad41c76a23274685fdb7fc21116b1d0bb" id="r_ad41c76a23274685fdb7fc21116b1d0bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">PPStrategy::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad41c76a23274685fdb7fc21116b1d0bb">pda</a> (float lambda)</td></tr>
 <tr class="memdesc:ad41c76a23274685fdb7fc21116b1d0bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory function for a PDA projection pursuit strategy.  <br /></td></tr>
 <tr class="separator:ad41c76a23274685fdb7fc21116b1d0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Projection pursuit strategies. </p>
-<p>Contains the abstract <a class="el" href="structppforest2_1_1pp_1_1PPStrategy.html" title="Abstract strategy for projection pursuit optimization.">PPStrategy</a> interface and concrete implementations (e.g. <a class="el" href="structppforest2_1_1pp_1_1PPPDAStrategy.html" title="Penalized Discriminant Analysis projection pursuit strategy.">PPPDAStrategy</a>) that define how to evaluate and optimise a projection index for separating groups. </p>
+<p>Contains the abstract <a class="el" href="structppforest2_1_1pp_1_1PPStrategy.html" title="Abstract strategy for projection pursuit optimization.">PPStrategy</a> interface and concrete implementations (e.g. <a class="el" href="structppforest2_1_1pp_1_1PPPDAStrategy.html" title="Penalized Discriminant Analysis projection pursuit strategy.">PPPDAStrategy</a>) that define how to evaluate and optimise a projection index for separating groups.</p>
+<p>New strategies must implement the pure virtual methods including to_json() for serialization support. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a686ed3b4f49bb2ed6b7e842f5557539f" name="a686ed3b4f49bb2ed6b7e842f5557539f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a686ed3b4f49bb2ed6b7e842f5557539f">&#9670;&#160;</a></span>Projector</h2>
@@ -191,7 +192,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structppforest2_1_1pp_1_1PPStrategy.html#ac7ce60a264f1728e5032524fe9bcc7c7">PPStrategy::Ptr</a> ppforest2::pp::pda </td>
+          <td class="memname"><a class="el" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">PPStrategy::Ptr</a> ppforest2::pp::pda </td>
           <td>(</td>
           <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>lambda</em></span></td><td>)</td>
           <td></td>
@@ -200,13 +201,6 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Factory function for a PDA projection pursuit strategy. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">lambda</td><td>Penalty parameter. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Owned pointer to a <a class="el" href="structppforest2_1_1pp_1_1PPPDAStrategy.html" title="Penalized Discriminant Analysis projection pursuit strategy.">PPPDAStrategy</a>. </dd></dl>
 
 </div>
 </div>

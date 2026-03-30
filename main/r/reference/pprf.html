@@ -60,7 +60,10 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span>  p_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_retries <span class="op">=</span> <span class="fl">3L</span>,</span>
-<span>  n_threads <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  threads <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dr <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sr <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -89,15 +92,15 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>A regularization parameter. If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analysis (LDA). If <code>lambda &gt; 0</code>, the model is trained using Penalized Discriminant Analysis (PDA).</p></dd>
+<dd><p>A regularization parameter. If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analysis (LDA). If <code>lambda &gt; 0</code>, the model is trained using Penalized Discriminant Analysis (PDA). Cannot be used together with <code>pp</code>.</p></dd>
 
 
 <dt id="arg-n-vars">n_vars<a class="anchor" aria-label="anchor" href="#arg-n-vars"></a></dt>
-<dd><p>The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with <code>p_vars</code>.</p></dd>
+<dd><p>The number of variables to consider at each split (integer). These are chosen uniformly in each split. The default is all variables. Cannot be used together with <code>p_vars</code> or <code>dr</code>.</p></dd>
 
 
 <dt id="arg-p-vars">p_vars<a class="anchor" aria-label="anchor" href="#arg-p-vars"></a></dt>
-<dd><p>The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, <code>p_vars = 0.5</code> uses half the features. Cannot be used together with <code>n_vars</code>.</p></dd>
+<dd><p>The proportion of variables to consider at each split (number between 0 and 1, exclusive). For example, <code>p_vars = 0.5</code> uses half the features. Cannot be used together with <code>n_vars</code> or <code>dr</code>.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -108,8 +111,20 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <dd><p>Maximum number of retries for degenerate trees (default: 3). When a bootstrap sample yields a singular covariance matrix, the tree is retrained with a different seed up to this many times.</p></dd>
 
 
-<dt id="arg-n-threads">n_threads<a class="anchor" aria-label="anchor" href="#arg-n-threads"></a></dt>
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>The number of threads to use. The default is the number of cores available.</p></dd>
+
+
+<dt id="arg-pp">pp<a class="anchor" aria-label="anchor" href="#arg-pp"></a></dt>
+<dd><p>A projection pursuit strategy object created by <code><a href="pp_pda.html">pp_pda</a></code>. Cannot be used together with <code>lambda</code>.</p></dd>
+
+
+<dt id="arg-dr">dr<a class="anchor" aria-label="anchor" href="#arg-dr"></a></dt>
+<dd><p>A dimensionality reduction strategy object created by <code><a href="dr_uniform.html">dr_uniform</a></code> or <code><a href="dr_noop.html">dr_noop</a></code>. Cannot be used together with <code>n_vars</code> or <code>p_vars</code>.</p></dd>
+
+
+<dt id="arg-sr">sr<a class="anchor" aria-label="anchor" href="#arg-sr"></a></dt>
+<dd><p>A split rule strategy object created by <code><a href="sr_mean_of_means.html">sr_mean_of_means</a></code> (default).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -118,7 +133,7 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="predict.pprf.html">predict.pprf</a></code>, <code><a href="formula.pprf.html">formula.pprf</a></code>, <code><a href="summary.pprf.html">summary.pprf</a></code>, <code><a href="print.pprf.html">print.pprf</a></code>, <code><a href="save_json.html">save_json</a></code>, <code><a href="load_json.html">load_json</a></code>, <code><a href="pp_rand_forest.html">pp_rand_forest</a></code> for parsnip integration, <code><a href="../articles/introduction.html">vignette("introduction")</a></code> for a tutorial</p></div>
+    <div class="dont-index"><p><code><a href="predict.pprf.html">predict.pprf</a></code>, <code><a href="formula.pprf.html">formula.pprf</a></code>, <code><a href="summary.pprf.html">summary.pprf</a></code>, <code><a href="print.pprf.html">print.pprf</a></code>, <code><a href="save_json.html">save_json</a></code>, <code><a href="load_json.html">load_json</a></code>, <code><a href="pp_rand_forest.html">pp_rand_forest</a></code> for parsnip integration, <code><a href="pp_pda.html">pp_pda</a></code>, <code><a href="dr_uniform.html">dr_uniform</a></code>, <code><a href="dr_noop.html">dr_noop</a></code>, <code><a href="sr_mean_of_means.html">sr_mean_of_means</a></code>, <code><a href="../articles/introduction.html">vignette("introduction")</a></code> for a tutorial</p></div>
     </div>
 
     <div class="section level2">
@@ -130,8 +145,8 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.02 0.04 -0.04 -0.01 ] * x) &lt; 0.06435043:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.06 0.01 -0.09 -0.15 ] * x) &lt; -0.2921683:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 0.05 -0.03 -0.02 ] * x) &lt; 0.06262772:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.04 0.09 -0.1 -0.13 ] * x) &lt; -0.2146854:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
@@ -139,8 +154,8 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.02 0.05 -0.04 0 ] * x) &lt; 0.09979815:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.04 0.09 -0.1 -0.12 ] * x) &lt; -0.189255:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 0.05 -0.04 -0.01 ] * x) &lt; 0.06345474:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.06 0.05 -0.1 -0.12 ] * x) &lt; -0.1598488:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
@@ -155,22 +170,22 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 -0.04 0.02 0.03 ] * x) &lt; 0.01589731:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 -0.04 0.02 0.03 ] * x) &lt; 0.02115907:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0.01 -0.04 -0.17 ] * x) &lt; -0.4614292:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0.04 -0.06 -0.16 ] * x) &lt; -0.4436958:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 -0.04 0.03 0.03 ] * x) &lt; 0.02173987:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 -0.03 0.03 0.04 ] * x) &lt; 0.03752498:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 -0.03 0.06 0.16 ] * x) &lt; 0.4868189:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0.02 -0.06 -0.16 ] * x) &lt; -0.5112084:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
@@ -180,8 +195,8 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 0.05 -0.04 -0.02 ] * x) &lt; 0.08010742:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.04 0.07 -0.07 -0.19 ] * x) &lt; -0.1760359:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.02 0.04 -0.04 -0.02 ] * x) &lt; 0.08615907:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.1 0 -0.12 -0.12 ] * x) &lt; -0.1784111:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
@@ -189,13 +204,13 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 -0.05 0.04 0.01 ] * x) &lt; -0.01472723:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.03 0.1 -0.06 -0.2 ] * x) &lt; -0.1889343:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.02 0.03 -0.05 0 ] * x) &lt; 0.03522417:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.05 0.04 -0.09 -0.16 ] * x) &lt; -0.2597719:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
@@ -205,19 +220,19 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 -0.04 0.03 0.03 ] * x) &lt; 0.01002465:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 -0.05 0.02 0.04 ] * x) &lt; -0.04241288:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0.04 -0.07 -0.13 ] * x) &lt; -0.4705565:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0.04 -0.05 -0.16 ] * x) &lt; -0.3842216:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 -0.04 0.03 0.03 ] * x) &lt; 0.01345929:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 -0.04 0.02 0.04 ] * x) &lt; 0.009132806:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.01 0.03 -0.06 -0.15 ] * x) &lt; -0.3937009:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0.03 -0.06 -0.14 ] * x) &lt; -0.4294196:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
@@ -230,16 +245,16 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.1 0 0 0 0 0 0 ] * x) &lt; 0.04637025:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.13 0 0 0 0 0 0 ] * x) &lt; 0.06243492:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.14 0 0 0 0 0 0 ] * x) &lt; 0.07229224:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.14 0 0 0 0 0 0 ] * x) &lt; 0.0746413:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
@@ -249,16 +264,16 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 -0.01 0.01 0 0 0 0.01 ] * x) &lt; 0.3337918:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 -0.01 0.01 0.01 0 0 0.01 ] * x) &lt; 0.3329027:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 0 0.01 0 0 0 0.01 ] * x) &lt; 0.3286325:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.01 -0.01 -0.01 0 0 0 -0.01 ] * x) &lt; -0.3170045:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: O </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: B </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>

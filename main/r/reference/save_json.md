@@ -45,7 +45,7 @@ save_json(model, path, include_metrics = TRUE, ...)
 ## Examples
 
 ``` r
-model <- pptr(Type ~ ., data = iris, seed = 42)
+model <- pptr(Type ~ ., data = iris, seed = 0)
 path <- tempfile(fileext = ".json")
 save_json(model, path)
 ```

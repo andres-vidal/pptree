@@ -117,8 +117,8 @@ $(function(){initNavTree('structppforest2_1_1Forest.html',''); initResizable(tru
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aebf6bbdeb3ff9672fc037cc5f48a5e8c" id="r_aebf6bbdeb3ff9672fc037cc5f48a5e8c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">Forest</a> ()</td></tr>
 <tr class="separator:aebf6bbdeb3ff9672fc037cc5f48a5e8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cb214a2162ed9f7cef5c59779ae0209" id="r_a8cb214a2162ed9f7cef5c59779ae0209"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8cb214a2162ed9f7cef5c59779ae0209">Forest</a> (<a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a> &amp;&amp;<a class="el" href="#a94eaa10b52e2787be14d3a60f6f68514">training_spec</a>, int <a class="el" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>)</td></tr>
-<tr class="separator:a8cb214a2162ed9f7cef5c59779ae0209"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9654ca989c78e65a9d1da2f5d3e2d02" id="r_aa9654ca989c78e65a9d1da2f5d3e2d02"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9654ca989c78e65a9d1da2f5d3e2d02">Forest</a> (<a class="el" href="structppforest2_1_1TrainingSpec.html#afb6d052890681eadac675d251a342d27">TrainingSpec::Ptr</a> <a class="el" href="structppforest2_1_1Model.html#ab2d255ac78e507a784afa9de04d8d57c">training_spec</a>)</td></tr>
+<tr class="separator:aa9654ca989c78e65a9d1da2f5d3e2d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad88835a72b166e172fc4cfe4d284b377" id="r_ad88835a72b166e172fc4cfe4d284b377"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad88835a72b166e172fc4cfe4d284b377">accept</a> (<a class="el" href="structppforest2_1_1Model_1_1Visitor.html">Model::Visitor</a> &amp;visitor) const override</td></tr>
 <tr class="memdesc:ad88835a72b166e172fc4cfe4d284b377"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a model visitor (double dispatch).  <br /></td></tr>
 <tr class="separator:ad88835a72b166e172fc4cfe4d284b377"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,52 +150,54 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae98b2f3251a6f4943099ec20bab58a53" id="r_ae98b2f3251a6f4943099ec20bab58a53"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structppforest2_1_1Model.html#a7472b8c050914c7f7b8faa363e414080">Model::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae98b2f3251a6f4943099ec20bab58a53">make</a> (const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;<a class="el" href="#a94eaa10b52e2787be14d3a60f6f68514">training_spec</a>, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, int size, int <a class="el" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>, int n_threads=std::thread::hardware_concurrency(), int max_retries=3)</td></tr>
-<tr class="memdesc:ae98b2f3251a6f4943099ec20bab58a53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Train a forest and return it as a <a class="el" href="structppforest2_1_1Model.html#a7472b8c050914c7f7b8faa363e414080">Model::Ptr</a>.  <br /></td></tr>
-<tr class="separator:ae98b2f3251a6f4943099ec20bab58a53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae448c9c9777b0e0d449504a033a2a7a" id="r_aae448c9c9777b0e0d449504a033a2a7a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structppforest2_1_1Forest.html">Forest</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae448c9c9777b0e0d449504a033a2a7a">train</a> (const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;<a class="el" href="#a94eaa10b52e2787be14d3a60f6f68514">training_spec</a>, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, int size, int <a class="el" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>, int n_threads=std::thread::hardware_concurrency(), int max_retries=3)</td></tr>
-<tr class="memdesc:aae448c9c9777b0e0d449504a033a2a7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Train a random forest.  <br /></td></tr>
-<tr class="separator:aae448c9c9777b0e0d449504a033a2a7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3359a43108be81b94c4c03acb09127d5" id="r_a3359a43108be81b94c4c03acb09127d5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structppforest2_1_1Forest.html">Forest</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3359a43108be81b94c4c03acb09127d5">train</a> (const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;<a class="el" href="structppforest2_1_1Model.html#ab2d255ac78e507a784afa9de04d8d57c">training_spec</a>, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y)</td></tr>
+<tr class="memdesc:a3359a43108be81b94c4c03acb09127d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Train a random forest.  <br /></td></tr>
+<tr class="separator:a3359a43108be81b94c4c03acb09127d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_structppforest2_1_1Model"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_static_methods_structppforest2_1_1Model')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="structppforest2_1_1Model.html">ppforest2::Model</a></td></tr>
+<tr class="memitem:a84b59d8c538f52be9041ab2d39d3a272 inherit pub_static_methods_structppforest2_1_1Model" id="r_a84b59d8c538f52be9041ab2d39d3a272"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structppforest2_1_1Model.html#a3ffbdce63220339317c38d465b7d4ca9">Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Model.html#a84b59d8c538f52be9041ab2d39d3a272">train</a> (const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;spec, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y)</td></tr>
+<tr class="memdesc:a84b59d8c538f52be9041ab2d39d3a272 inherit pub_static_methods_structppforest2_1_1Model"><td class="mdescLeft">&#160;</td><td class="mdescRight">Train a model from a training specification.  <br /></td></tr>
+<tr class="separator:a84b59d8c538f52be9041ab2d39d3a272 inherit pub_static_methods_structppforest2_1_1Model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a2bb8cefb0eb540d08e8e26b99883e7cc" id="r_a2bb8cefb0eb540d08e8e26b99883e7cc"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a> = 0</td></tr>
-<tr class="separator:a2bb8cefb0eb540d08e8e26b99883e7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94eaa10b52e2787be14d3a60f6f68514" id="r_a94eaa10b52e2787be14d3a60f6f68514"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94eaa10b52e2787be14d3a60f6f68514">training_spec</a></td></tr>
-<tr class="separator:a94eaa10b52e2787be14d3a60f6f68514"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5d1affa0b4c09155a5ce0e630bcafac" id="r_ad5d1affa0b4c09155a5ce0e630bcafac"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structppforest2_1_1BootstrapTree.html#a7c7a2d6e9b72c8cc4bc5737d90f868bd">BootstrapTree::Ptr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5d1affa0b4c09155a5ce0e630bcafac">trees</a></td></tr>
 <tr class="separator:ad5d1affa0b4c09155a5ce0e630bcafac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_structppforest2_1_1Model"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_attribs_structppforest2_1_1Model')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="structppforest2_1_1Model.html">ppforest2::Model</a></td></tr>
 <tr class="memitem:a5fbf7fb1e8e977ab594121f3f0dc988c inherit pub_attribs_structppforest2_1_1Model" id="r_a5fbf7fb1e8e977ab594121f3f0dc988c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Model.html#a5fbf7fb1e8e977ab594121f3f0dc988c">degenerate</a> = false</td></tr>
 <tr class="memdesc:a5fbf7fb1e8e977ab594121f3f0dc988c inherit pub_attribs_structppforest2_1_1Model"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the model contains degenerate nodes/splits.  <br /></td></tr>
 <tr class="separator:a5fbf7fb1e8e977ab594121f3f0dc988c inherit pub_attribs_structppforest2_1_1Model"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2d255ac78e507a784afa9de04d8d57c inherit pub_attribs_structppforest2_1_1Model" id="r_ab2d255ac78e507a784afa9de04d8d57c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1TrainingSpec.html#afb6d052890681eadac675d251a342d27">TrainingSpec::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Model.html#ab2d255ac78e507a784afa9de04d8d57c">training_spec</a></td></tr>
+<tr class="memdesc:ab2d255ac78e507a784afa9de04d8d57c inherit pub_attribs_structppforest2_1_1Model"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training specification used to build this model.  <br /></td></tr>
+<tr class="separator:ab2d255ac78e507a784afa9de04d8d57c inherit pub_attribs_structppforest2_1_1Model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_types_structppforest2_1_1Model"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_types_structppforest2_1_1Model')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="structppforest2_1_1Model.html">ppforest2::Model</a></td></tr>
-<tr class="memitem:a7472b8c050914c7f7b8faa363e414080 inherit pub_types_structppforest2_1_1Model" id="r_a7472b8c050914c7f7b8faa363e414080"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Model.html#a7472b8c050914c7f7b8faa363e414080">Ptr</a> = std::unique_ptr&lt;<a class="el" href="structppforest2_1_1Model.html">Model</a>&gt;</td></tr>
-<tr class="separator:a7472b8c050914c7f7b8faa363e414080 inherit pub_types_structppforest2_1_1Model"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ffbdce63220339317c38d465b7d4ca9 inherit pub_types_structppforest2_1_1Model" id="r_a3ffbdce63220339317c38d465b7d4ca9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1Model.html#a3ffbdce63220339317c38d465b7d4ca9">Ptr</a> = std::shared_ptr&lt;<a class="el" href="structppforest2_1_1Model.html">Model</a>&gt;</td></tr>
+<tr class="separator:a3ffbdce63220339317c38d465b7d4ca9 inherit pub_types_structppforest2_1_1Model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A projection pursuit random forest. </p>
 <p>An ensemble of <a class="el" href="structppforest2_1_1BootstrapTree.html">BootstrapTree</a> instances, each trained on a bootstrap sample. Predictions are made by majority vote. Out-of-bag estimation and vote-proportion predictions are supported.</p>
-<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpecUPDA.html">TrainingSpecUPDA</a> spec(n_vars: 3, lambda: 0.0);</div>
-<div class="line"><a class="code hl_function" href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">Forest</a> forest = <a class="code hl_function" href="#aae448c9c9777b0e0d449504a033a2a7a">Forest::train</a>(spec, x, y, size: 500, <a class="code hl_variable" href="#a2bb8cefb0eb540d08e8e26b99883e7cc">seed</a>: 42);</div>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> spec(<a class="code hl_function" href="namespaceppforest2_1_1pp.html#ad41c76a23274685fdb7fc21116b1d0bb">pp::pda</a>(0.0), <a class="code hl_function" href="namespaceppforest2_1_1dr.html#a8ae6f8e21a10e7d955b2db6da2ad3aea">dr::uniform</a>(3), <a class="code hl_function" href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">sr::mean_of_means</a>(), 500, 0);</div>
+<div class="line"><a class="code hl_function" href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">Forest</a> forest = <a class="code hl_function" href="#a3359a43108be81b94c4c03acb09127d5">Forest::train</a>(spec, x, y);</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> preds = forest.<a class="code hl_function" href="#a4b767e43cb29fc1273b34d1077d54c5a">predict</a>(x_test);</div>
 <div class="line"><span class="keywordtype">double</span> oob = forest.<a class="code hl_function" href="#ab9dd051d9e30e864682c01bfa252cc74">oob_error</a>(x, y);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Vote proportions — (n × G) matrix, rows sum to 1.</span></div>
 <div class="line"><a class="code hl_typedef" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> probs = forest.<a class="code hl_function" href="#a4b767e43cb29fc1273b34d1077d54c5a">predict</a>(x_test, <a class="code hl_struct" href="structppforest2_1_1Proportions.html">Proportions</a>{});</div>
+<div class="ttc" id="anamespaceppforest2_1_1dr_html_a8ae6f8e21a10e7d955b2db6da2ad3aea"><div class="ttname"><a href="namespaceppforest2_1_1dr.html#a8ae6f8e21a10e7d955b2db6da2ad3aea">ppforest2::dr::uniform</a></div><div class="ttdeci">DRStrategy::Ptr uniform(int n_vars)</div><div class="ttdoc">Factory function for a uniform DR strategy.</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1pp_html_ad41c76a23274685fdb7fc21116b1d0bb"><div class="ttname"><a href="namespaceppforest2_1_1pp.html#ad41c76a23274685fdb7fc21116b1d0bb">ppforest2::pp::pda</a></div><div class="ttdeci">PPStrategy::Ptr pda(float lambda)</div><div class="ttdoc">Factory function for a PDA projection pursuit strategy.</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1sr_html_a5984b53061082b99be1d9c764a4b7045"><div class="ttname"><a href="namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045">ppforest2::sr::mean_of_means</a></div><div class="ttdeci">SRStrategy::Ptr mean_of_means()</div><div class="ttdoc">Factory function for a mean-of-means split strategy.</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1types_html_a20733a55a09432e8f9f924eb11fb5b0d"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">ppforest2::types::FeatureMatrix</a></div><div class="ttdeci">Eigen::Matrix&lt; Feature, Eigen::Dynamic, Eigen::Dynamic &gt; FeatureMatrix</div><div class="ttdoc">Dynamic-size matrix of feature values.</div><div class="ttdef"><b>Definition</b> Types.hpp:24</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1types_html_a4cc32c7bf71b27689fd027a8814821da"><div class="ttname"><a href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">ppforest2::types::ResponseVector</a></div><div class="ttdeci">Eigen::Matrix&lt; Response, Eigen::Dynamic, 1 &gt; ResponseVector</div><div class="ttdoc">Dynamic-size column vector of group labels.</div><div class="ttdef"><b>Definition</b> Types.hpp:29</div></div>
-<div class="ttc" id="astructppforest2_1_1Forest_html_a2bb8cefb0eb540d08e8e26b99883e7cc"><div class="ttname"><a href="#a2bb8cefb0eb540d08e8e26b99883e7cc">ppforest2::Forest::seed</a></div><div class="ttdeci">const int seed</div><div class="ttdef"><b>Definition</b> Forest.hpp:66</div></div>
+<div class="ttc" id="astructppforest2_1_1Forest_html_a3359a43108be81b94c4c03acb09127d5"><div class="ttname"><a href="#a3359a43108be81b94c4c03acb09127d5">ppforest2::Forest::train</a></div><div class="ttdeci">static Forest train(const TrainingSpec &amp;training_spec, const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y)</div><div class="ttdoc">Train a random forest.</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html_a4b767e43cb29fc1273b34d1077d54c5a"><div class="ttname"><a href="#a4b767e43cb29fc1273b34d1077d54c5a">ppforest2::Forest::predict</a></div><div class="ttdeci">types::Response predict(const types::FeatureVector &amp;data) const override</div><div class="ttdoc">Predict a single observation.</div></div>
-<div class="ttc" id="astructppforest2_1_1Forest_html_aae448c9c9777b0e0d449504a033a2a7a"><div class="ttname"><a href="#aae448c9c9777b0e0d449504a033a2a7a">ppforest2::Forest::train</a></div><div class="ttdeci">static Forest train(const TrainingSpec &amp;training_spec, const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y, int size, int seed, int n_threads=std::thread::hardware_concurrency(), int max_retries=3)</div><div class="ttdoc">Train a random forest.</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html_ab9dd051d9e30e864682c01bfa252cc74"><div class="ttname"><a href="#ab9dd051d9e30e864682c01bfa252cc74">ppforest2::Forest::oob_error</a></div><div class="ttdeci">double oob_error(const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y) const</div><div class="ttdoc">Out-of-bag error rate.</div></div>
 <div class="ttc" id="astructppforest2_1_1Forest_html_aebf6bbdeb3ff9672fc037cc5f48a5e8c"><div class="ttname"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">ppforest2::Forest::Forest</a></div><div class="ttdeci">Forest()</div></div>
-<div class="ttc" id="astructppforest2_1_1Proportions_html"><div class="ttname"><a href="structppforest2_1_1Proportions.html">ppforest2::Proportions</a></div><div class="ttdoc">Tag type for requesting vote-proportion predictions.</div><div class="ttdef"><b>Definition</b> Model.hpp:18</div></div>
-<div class="ttc" id="astructppforest2_1_1TrainingSpecUPDA_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpecUPDA.html">ppforest2::TrainingSpecUPDA</a></div><div class="ttdoc">UPDA training specification with uniform variable selection.</div><div class="ttdef"><b>Definition</b> TrainingSpecUPDA.hpp:14</div></div>
+<div class="ttc" id="astructppforest2_1_1Proportions_html"><div class="ttname"><a href="structppforest2_1_1Proportions.html">ppforest2::Proportions</a></div><div class="ttdoc">Tag type for requesting vote-proportion predictions.</div><div class="ttdef"><b>Definition</b> Model.hpp:19</div></div>
+<div class="ttc" id="astructppforest2_1_1TrainingSpec_html"><div class="ttname"><a href="structppforest2_1_1TrainingSpec.html">ppforest2::TrainingSpec</a></div><div class="ttdoc">Training configuration for projection pursuit trees and forests.</div><div class="ttdef"><b>Definition</b> TrainingSpec.hpp:40</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aebf6bbdeb3ff9672fc037cc5f48a5e8c" name="aebf6bbdeb3ff9672fc037cc5f48a5e8c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aebf6bbdeb3ff9672fc037cc5f48a5e8c">&#9670;&#160;</a></span>Forest() <span class="overload">[1/2]</span></h2>
@@ -214,23 +216,27 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a8cb214a2162ed9f7cef5c59779ae0209" name="a8cb214a2162ed9f7cef5c59779ae0209"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8cb214a2162ed9f7cef5c59779ae0209">&#9670;&#160;</a></span>Forest() <span class="overload">[2/2]</span></h2>
+<a id="aa9654ca989c78e65a9d1da2f5d3e2d02" name="aa9654ca989c78e65a9d1da2f5d3e2d02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9654ca989c78e65a9d1da2f5d3e2d02">&#9670;&#160;</a></span>Forest() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">ppforest2::Forest::Forest </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a> &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>training_spec</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TrainingSpec.html#afb6d052890681eadac675d251a342d27">TrainingSpec::Ptr</a></td>          <td class="paramname"><span class="paramname"><em>training_spec</em></span></td><td>)</td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>seed</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -287,62 +293,6 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="ae98b2f3251a6f4943099ec20bab58a53" name="ae98b2f3251a6f4943099ec20bab58a53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae98b2f3251a6f4943099ec20bab58a53">&#9670;&#160;</a></span>make()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structppforest2_1_1Model.html#a7472b8c050914c7f7b8faa363e414080">Model::Ptr</a> ppforest2::Forest::make </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1TrainingSpec.html">TrainingSpec</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>training_spec</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>seed</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_threads</em></span><span class="paramdefsep"> = </span><span class="paramdefval">std::thread::hardware_concurrency()</span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>max_retries</em></span><span class="paramdefsep"> = </span><span class="paramdefval">3</span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Train a forest and return it as a <a class="el" href="structppforest2_1_1Model.html#a7472b8c050914c7f7b8faa363e414080">Model::Ptr</a>. </p>
 
 </div>
 </div>
@@ -552,8 +502,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="aae448c9c9777b0e0d449504a033a2a7a" name="aae448c9c9777b0e0d449504a033a2a7a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae448c9c9777b0e0d449504a033a2a7a">&#9670;&#160;</a></span>train()</h2>
+<a id="a3359a43108be81b94c4c03acb09127d5" name="a3359a43108be81b94c4c03acb09127d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3359a43108be81b94c4c03acb09127d5">&#9670;&#160;</a></span>train()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -574,27 +524,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>seed</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>n_threads</em></span><span class="paramdefsep"> = </span><span class="paramdefval">std::thread::hardware_concurrency()</span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>max_retries</em></span><span class="paramdefsep"> = </span><span class="paramdefval">3</span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -605,15 +535,12 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Train a random forest. </p>
+<p>Forest-level parameters (size, seed, threads, max_retries) are read from the training specification.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">training_spec</td><td>Training specification. </td></tr>
     <tr><td class="paramname">x</td><td>Feature matrix (n × p). </td></tr>
     <tr><td class="paramname">y</td><td>Response vector (n). </td></tr>
-    <tr><td class="paramname">size</td><td>Number of trees. </td></tr>
-    <tr><td class="paramname">seed</td><td>RNG seed. </td></tr>
-    <tr><td class="paramname">n_threads</td><td>Number of threads (default: hardware concurrency). </td></tr>
-    <tr><td class="paramname">max_retries</td><td>Maximum retry attempts for degenerate trees (default: 3). </td></tr>
   </table>
   </dd>
 </dl>
@@ -622,34 +549,6 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a2bb8cefb0eb540d08e8e26b99883e7cc" name="a2bb8cefb0eb540d08e8e26b99883e7cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2bb8cefb0eb540d08e8e26b99883e7cc">&#9670;&#160;</a></span>seed</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int ppforest2::Forest::seed = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a94eaa10b52e2787be14d3a60f6f68514" name="a94eaa10b52e2787be14d3a60f6f68514"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94eaa10b52e2787be14d3a60f6f68514">&#9670;&#160;</a></span>training_spec</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structppforest2_1_1TrainingSpec.html#ae2ac65f2c2e549df1dbea70d046a775b">TrainingSpec::Ptr</a> ppforest2::Forest::training_spec</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ad5d1affa0b4c09155a5ce0e630bcafac" name="ad5d1affa0b4c09155a5ce0e630bcafac"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad5d1affa0b4c09155a5ce0e630bcafac">&#9670;&#160;</a></span>trees</h2>
 
