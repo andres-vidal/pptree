@@ -177,11 +177,8 @@ Enumerations</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a4233edc87e69b2325c6cfcbdf5138afd" id="r_a4233edc87e69b2325c6cfcbdf5138afd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4233edc87e69b2325c6cfcbdf5138afd">add_model_options</a> (CLI::App *sub, <a class="el" href="structppforest2_1_1cli_1_1ModelParams.html">ModelParams</a> &amp;model)</td></tr>
-<tr class="memdesc:a4233edc87e69b2325c6cfcbdf5138afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add shared model options (trees, lambda, threads, seed, vars) to <code class="param">sub</code>.  <br /></td></tr>
+<tr class="memdesc:a4233edc87e69b2325c6cfcbdf5138afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add shared model options (size, lambda, threads, seed, vars) to <code class="param">sub</code>.  <br /></td></tr>
 <tr class="separator:a4233edc87e69b2325c6cfcbdf5138afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfe76ac9b201ce33d21783a1d77148e9" id="r_adfe76ac9b201ce33d21783a1d77148e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfe76ac9b201ce33d21783a1d77148e9">compute_metrics</a> (nlohmann::json &amp;model_data, const <a class="el" href="structppforest2_1_1Model.html">Model</a> &amp;model, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, const std::vector&lt; std::string &gt; &amp;group_names, int seed=42)</td></tr>
-<tr class="memdesc:adfe76ac9b201ce33d21783a1d77148e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and add metrics to a model JSON object.  <br /></td></tr>
-<tr class="separator:adfe76ac9b201ce33d21783a1d77148e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bd63acbab0aa4b7ce674bb37015de00" id="r_a9bd63acbab0aa4b7ce674bb37015de00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bd63acbab0aa4b7ce674bb37015de00">init_params</a> (<a class="el" href="structppforest2_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params, int total_vars=0)</td></tr>
 <tr class="memdesc:a9bd63acbab0aa4b7ce674bb37015de00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve sentinel values in <a class="el" href="structppforest2_1_1cli_1_1CLIOptions.html" title="All CLI options and runtime parameters.">CLIOptions</a> to concrete defaults.  <br /></td></tr>
 <tr class="separator:a9bd63acbab0aa4b7ce674bb37015de00"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -341,62 +338,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Add shared model options (trees, lambda, threads, seed, vars) to <code class="param">sub</code>. </p>
-
-</div>
-</div>
-<a id="adfe76ac9b201ce33d21783a1d77148e9" name="adfe76ac9b201ce33d21783a1d77148e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adfe76ac9b201ce33d21783a1d77148e9">&#9670;&#160;</a></span>compute_metrics()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ppforest2::cli::compute_metrics </td>
-          <td>(</td>
-          <td class="paramtype">nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>model_data</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1Model.html">Model</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>group_names</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>seed</em></span><span class="paramdefsep"> = </span><span class="paramdefval">42</span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Compute and add metrics to a model JSON object. </p>
-<p>Computes training confusion matrix, OOB error/confusion matrix (for forests), and variable importance, then adds them to <code class="param">model_data</code>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">model_data</td><td>JSON object to augment with metrics. </td></tr>
-    <tr><td class="paramname">model</td><td>The trained model. </td></tr>
-    <tr><td class="paramname">x</td><td>Training feature matrix. </td></tr>
-    <tr><td class="paramname">y</td><td>Training response vector. </td></tr>
-    <tr><td class="paramname">group_names</td><td>Group label names (empty for integer labels). </td></tr>
-    <tr><td class="paramname">seed</td><td>Seed for permutation importance (default: 42). </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Add shared model options (size, lambda, threads, seed, vars) to <code class="param">sub</code>. </p>
 
 </div>
 </div>

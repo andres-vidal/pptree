@@ -26,7 +26,10 @@ pprf(
   p_vars = NULL,
   seed = NULL,
   max_retries = 3L,
-  n_threads = NULL
+  threads = NULL,
+  pp = NULL,
+  dr = NULL,
+  sr = NULL
 )
 ```
 
@@ -57,19 +60,20 @@ pprf(
 
   A regularization parameter. If `lambda = 0`, the model is trained
   using Linear Discriminant Analysis (LDA). If `lambda > 0`, the model
-  is trained using Penalized Discriminant Analysis (PDA).
+  is trained using Penalized Discriminant Analysis (PDA). Cannot be used
+  together with `pp`.
 
 - n_vars:
 
   The number of variables to consider at each split (integer). These are
   chosen uniformly in each split. The default is all variables. Cannot
-  be used together with `p_vars`.
+  be used together with `p_vars` or `dr`.
 
 - p_vars:
 
   The proportion of variables to consider at each split (number between
   0 and 1, exclusive). For example, `p_vars = 0.5` uses half the
-  features. Cannot be used together with `n_vars`.
+  features. Cannot be used together with `n_vars` or `dr`.
 
 - seed:
 
@@ -86,10 +90,30 @@ pprf(
   bootstrap sample yields a singular covariance matrix, the tree is
   retrained with a different seed up to this many times.
 
-- n_threads:
+- threads:
 
   The number of threads to use. The default is the number of cores
   available.
+
+- pp:
+
+  A projection pursuit strategy object created by
+  [`pp_pda`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pp_pda.md).
+  Cannot be used together with `lambda`.
+
+- dr:
+
+  A dimensionality reduction strategy object created by
+  [`dr_uniform`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/dr_uniform.md)
+  or
+  [`dr_noop`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/dr_noop.md).
+  Cannot be used together with `n_vars` or `p_vars`.
+
+- sr:
+
+  A split rule strategy object created by
+  [`sr_mean_of_means`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/sr_mean_of_means.md)
+  (default).
 
 ## Value
 
@@ -105,6 +129,10 @@ A pprf model trained on `x` and `y`.
 [`load_json`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/load_json.md),
 [`pp_rand_forest`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pp_rand_forest.md)
 for parsnip integration,
+[`pp_pda`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/pp_pda.md),
+[`dr_uniform`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/dr_uniform.md),
+[`dr_noop`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/dr_noop.md),
+[`sr_mean_of_means`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/reference/sr_mean_of_means.md),
 [`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/v0.1.0/r/articles/introduction.md)
 for a tutorial
 
@@ -117,8 +145,8 @@ pprf(Type ~ ., data = iris)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.02 0.04 -0.04 -0.01 ] * x) < 0.06435043:
-#>  If ([ 0.06 0.01 -0.09 -0.15 ] * x) < -0.2921683:
+#> If ([ 0.01 0.05 -0.03 -0.02 ] * x) < 0.06262772:
+#>  If ([ 0.04 0.09 -0.1 -0.13 ] * x) < -0.2146854:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -126,8 +154,8 @@ pprf(Type ~ ., data = iris)
 #>   Predict: setosa 
 #> 
 #> Tree 2:
-#> If ([ 0.02 0.05 -0.04 0 ] * x) < 0.09979815:
-#>  If ([ 0.04 0.09 -0.1 -0.12 ] * x) < -0.189255:
+#> If ([ 0 0.05 -0.04 -0.01 ] * x) < 0.06345474:
+#>  If ([ 0.06 0.05 -0.1 -0.12 ] * x) < -0.1598488:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -142,22 +170,22 @@ pprf(Type ~ ., data = iris, lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0 -0.04 0.02 0.03 ] * x) < 0.01589731:
+#> If ([ 0 -0.04 0.02 0.03 ] * x) < 0.02115907:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0 0.01 -0.04 -0.17 ] * x) < -0.4614292:
+#>  If ([ 0 0.04 -0.06 -0.16 ] * x) < -0.4436958:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
 #> 
 #> Tree 2:
-#> If ([ 0.01 -0.04 0.03 0.03 ] * x) < 0.02173987:
+#> If ([ 0 -0.03 0.03 0.04 ] * x) < 0.03752498:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0 -0.03 0.06 0.16 ] * x) < 0.4868189:
-#>    Predict: versicolor 
-#>  Else:
+#>  If ([ 0 0.02 -0.06 -0.16 ] * x) < -0.5112084:
 #>    Predict: virginica 
+#>  Else:
+#>    Predict: versicolor 
 #> 
 #> 
 
@@ -167,8 +195,8 @@ pprf(x = iris[, 1:4], y = iris[, 5])
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.01 0.05 -0.04 -0.02 ] * x) < 0.08010742:
-#>  If ([ 0.04 0.07 -0.07 -0.19 ] * x) < -0.1760359:
+#> If ([ 0.02 0.04 -0.04 -0.02 ] * x) < 0.08615907:
+#>  If ([ 0.1 0 -0.12 -0.12 ] * x) < -0.1784111:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -176,13 +204,13 @@ pprf(x = iris[, 1:4], y = iris[, 5])
 #>   Predict: setosa 
 #> 
 #> Tree 2:
-#> If ([ 0 -0.05 0.04 0.01 ] * x) < -0.01472723:
-#>   Predict: setosa 
-#> Else:
-#>  If ([ 0.03 0.1 -0.06 -0.2 ] * x) < -0.1889343:
+#> If ([ 0.02 0.03 -0.05 0 ] * x) < 0.03522417:
+#>  If ([ 0.05 0.04 -0.09 -0.16 ] * x) < -0.2597719:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
+#> Else:
+#>   Predict: setosa 
 #> 
 #> 
 
@@ -192,19 +220,19 @@ pprf(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0 -0.04 0.03 0.03 ] * x) < 0.01002465:
+#> If ([ 0 -0.05 0.02 0.04 ] * x) < -0.04241288:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0 0.04 -0.07 -0.13 ] * x) < -0.4705565:
+#>  If ([ 0 0.04 -0.05 -0.16 ] * x) < -0.3842216:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
 #> 
 #> Tree 2:
-#> If ([ 0.01 -0.04 0.03 0.03 ] * x) < 0.01345929:
+#> If ([ 0 -0.04 0.02 0.04 ] * x) < 0.009132806:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.01 0.03 -0.06 -0.15 ] * x) < -0.3937009:
+#>  If ([ 0 0.03 -0.06 -0.14 ] * x) < -0.4294196:
 #>    Predict: virginica 
 #>  Else:
 #>    Predict: versicolor 
@@ -217,16 +245,16 @@ pprf(Type ~ ., data = crabs)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.1 0 0 0 0 0 0 ] * x) < 0.04637025:
+#> If ([ 0.13 0 0 0 0 0 0 ] * x) < 0.06243492:
 #>   Predict: O 
 #> Else:
 #>   Predict: B 
 #> 
 #> Tree 2:
-#> If ([ 0.14 0 0 0 0 0 0 ] * x) < 0.07229224:
-#>   Predict: B 
-#> Else:
+#> If ([ 0.14 0 0 0 0 0 0 ] * x) < 0.0746413:
 #>   Predict: O 
+#> Else:
+#>   Predict: B 
 #> 
 #> 
 
@@ -236,16 +264,16 @@ pprf(Type ~ ., data = crabs, lambda = 0.5)
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0.01 -0.01 0.01 0 0 0 0.01 ] * x) < 0.3337918:
+#> If ([ 0.01 -0.01 0.01 0.01 0 0 0.01 ] * x) < 0.3329027:
 #>   Predict: B 
 #> Else:
 #>   Predict: O 
 #> 
 #> Tree 2:
-#> If ([ 0 0 0.01 0 0 0 0.01 ] * x) < 0.3286325:
-#>   Predict: B 
-#> Else:
+#> If ([ 0.01 -0.01 -0.01 0 0 0 -0.01 ] * x) < -0.3170045:
 #>   Predict: O 
+#> Else:
+#>   Predict: B 
 #> 
 #> 
 ```

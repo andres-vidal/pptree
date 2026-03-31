@@ -18,7 +18,8 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/introduction.html">Introduction to ppforest2</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/custom-strategies.html">Custom strategies</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to ppforest2</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/andres-vidal/ppforest2" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
@@ -69,7 +70,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Size: 2 trees</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Regularization parameter: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pp method: LDA (lambda=0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dr method: Uniform random (n_vars=4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sr method: Mean of means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data Summary:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   observations: 150 </span>
@@ -92,19 +96,19 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             Predicted</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Actual       setosa versicolor virginica</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   setosa         33          0         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   versicolor      0         27         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   setosa         30          0         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   versicolor      0         29         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   virginica       0          0        31</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> OOB error: 1.09%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> OOB error: 0%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variable Importance:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Variable         σ Projection   Weighted   Permuted</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Petal.Length 1.7652982 0.09914511 0.09107455 0.47878787</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Petal.Width 0.7622377 0.06957345 0.05445680 0.29393938</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Sepal.Length 0.8280661 0.02843781 0.02532409 0.03333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Sepal.Width 0.4358663 0.02132891 0.01973198 0.04545456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Petal.Length 1.7652982 0.11812986 0.10914339 0.66332722</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Petal.Width 0.7622377 0.04823423 0.03898794 0.22586522</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Sepal.Length 0.8280661 0.02621456 0.02295329 0.05950212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Sepal.Width 0.4358663 0.01906149 0.01900462 0.06375226</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variable contributions can only be theoretically interpreted as such</span>

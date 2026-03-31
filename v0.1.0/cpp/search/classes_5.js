@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['grouppartition_0',['GroupPartition',['../classppforest2_1_1stats_1_1GroupPartition.html',1,'ppforest2::stats']]]
+  ['forest_0',['Forest',['../structppforest2_1_1Forest.html',1,'ppforest2']]]
 ];

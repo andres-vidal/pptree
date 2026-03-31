@@ -159,15 +159,18 @@ Functions</h2></td></tr>
 <tr class="memitem:aa58e461778488be973d454c41b704dd9" id="r_aa58e461778488be973d454c41b704dd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa58e461778488be973d454c41b704dd9">print_confusion_matrix</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1stats_1_1ConfusionMatrix.html">stats::ConfusionMatrix</a> &amp;cm, const std::string &amp;title=&quot;Confusion Matrix&quot;, const std::vector&lt; std::string &gt; &amp;group_names={})</td></tr>
 <tr class="memdesc:aa58e461778488be973d454c41b704dd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted confusion matrix to stdout.  <br /></td></tr>
 <tr class="separator:aa58e461778488be973d454c41b704dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19eaf80911f0791e0580745b98b0d9c1" id="r_a19eaf80911f0791e0580745b98b0d9c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19eaf80911f0791e0580745b98b0d9c1">print_data_summary</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const nlohmann::json &amp;meta)</td></tr>
+<tr class="memdesc:a19eaf80911f0791e0580745b98b0d9c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a data summary table from a JSON meta object.  <br /></td></tr>
+<tr class="separator:a19eaf80911f0791e0580745b98b0d9c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad87ca824e129347e3b2b308fbea618b0" id="r_ad87ca824e129347e3b2b308fbea618b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad87ca824e129347e3b2b308fbea618b0">print_results</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1io_1_1ModelStats.html">ModelStats</a> &amp;stats)</td></tr>
 <tr class="memdesc:ad87ca824e129347e3b2b308fbea618b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print evaluation results (timing, errors, memory) to stdout.  <br /></td></tr>
 <tr class="separator:ad87ca824e129347e3b2b308fbea618b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa33ed0297f11b5cc3875f3efba7049bf" id="r_aa33ed0297f11b5cc3875f3efba7049bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa33ed0297f11b5cc3875f3efba7049bf">print_summary</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const nlohmann::json &amp;model_data, const <a class="el" href="structppforest2_1_1io_1_1ConfigDisplayHints.html">ConfigDisplayHints</a> &amp;hints={})</td></tr>
 <tr class="memdesc:aa33ed0297f11b5cc3875f3efba7049bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display a full model summary from its JSON representation.  <br /></td></tr>
 <tr class="separator:aa33ed0297f11b5cc3875f3efba7049bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97303fa9d7f05b30e90df8782f1155c7" id="r_a97303fa9d7f05b30e90df8782f1155c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97303fa9d7f05b30e90df8782f1155c7">print_variable_importance</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1VariableImportance.html">VariableImportance</a> &amp;vi, int max_rows=20)</td></tr>
-<tr class="memdesc:a97303fa9d7f05b30e90df8782f1155c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a ranked variable importance table to stdout.  <br /></td></tr>
-<tr class="separator:a97303fa9d7f05b30e90df8782f1155c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e4f70debb2e10cbc628376c1382d84f" id="r_a7e4f70debb2e10cbc628376c1382d84f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e4f70debb2e10cbc628376c1382d84f">print_variable_importance</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;out, const <a class="el" href="structppforest2_1_1VariableImportance.html">VariableImportance</a> &amp;vi, const std::vector&lt; std::string &gt; &amp;feature_names={}, int max_rows=20)</td></tr>
+<tr class="memdesc:a7e4f70debb2e10cbc628376c1382d84f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a ranked variable importance table to stdout.  <br /></td></tr>
+<tr class="separator:a7e4f70debb2e10cbc628376c1382d84f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ae8b077f59b53c46c1279dd269956ecf8" name="ae8b077f59b53c46c1279dd269956ecf8"></a>
@@ -358,6 +361,37 @@ template&lt;typename F&gt; </div>
 
 </div>
 </div>
+<a id="a19eaf80911f0791e0580745b98b0d9c1" name="a19eaf80911f0791e0580745b98b0d9c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19eaf80911f0791e0580745b98b0d9c1">&#9670;&#160;</a></span>print_data_summary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ppforest2::io::print_data_summary </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>meta</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Print a data summary table from a JSON meta object. </p>
+<p>Shows observations, features, groups, and group names.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">out</td><td><a class="el" href="structppforest2_1_1io_1_1Output.html" title="Quiet-aware, indentation-aware output context.">Output</a> context. </td></tr>
+    <tr><td class="paramname">meta</td><td>The meta JSON (observations, features, groups). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ad87ca824e129347e3b2b308fbea618b0" name="ad87ca824e129347e3b2b308fbea618b0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad87ca824e129347e3b2b308fbea618b0">&#9670;&#160;</a></span>print_results()</h2>
 
@@ -416,8 +450,8 @@ template&lt;typename F&gt; </div>
 
 </div>
 </div>
-<a id="a97303fa9d7f05b30e90df8782f1155c7" name="a97303fa9d7f05b30e90df8782f1155c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97303fa9d7f05b30e90df8782f1155c7">&#9670;&#160;</a></span>print_variable_importance()</h2>
+<a id="a7e4f70debb2e10cbc628376c1382d84f" name="a7e4f70debb2e10cbc628376c1382d84f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e4f70debb2e10cbc628376c1382d84f">&#9670;&#160;</a></span>print_variable_importance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -431,6 +465,11 @@ template&lt;typename F&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="structppforest2_1_1VariableImportance.html">VariableImportance</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>vi</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>feature_names</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

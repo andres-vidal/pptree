@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['layoutedge_0',['LayoutEdge',['../structppforest2_1_1viz_1_1LayoutEdge.html',1,'ppforest2::viz']]],
-  ['layoutnode_1',['LayoutNode',['../structppforest2_1_1viz_1_1LayoutNode.html',1,'ppforest2::viz']]],
-  ['layoutparams_2',['LayoutParams',['../structppforest2_1_1viz_1_1LayoutParams.html',1,'ppforest2::viz']]]
+  ['jsonmodelvisitor_0',['JsonModelVisitor',['../structppforest2_1_1serialization_1_1JsonModelVisitor.html',1,'ppforest2::serialization']]],
+  ['jsonnodevisitor_1',['JsonNodeVisitor',['../structppforest2_1_1serialization_1_1JsonNodeVisitor.html',1,'ppforest2::serialization']]]
 ];

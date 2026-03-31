@@ -110,9 +110,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a4090cd2d7d357ff9c4d8f5fa1313d87f" id="r_a4090cd2d7d357ff9c4d8f5fa1313d87f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1stats_1_1DataPacket.html">stats::DataPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4090cd2d7d357ff9c4d8f5fa1313d87f">read</a> (const std::string &amp;filename)</td></tr>
 <tr class="memdesc:a4090cd2d7d357ff9c4d8f5fa1313d87f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a CSV file into a DataPacket.  <br /></td></tr>
 <tr class="separator:a4090cd2d7d357ff9c4d8f5fa1313d87f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb2d17fe7babc9799666d0d98ef911f7" id="r_aeb2d17fe7babc9799666d0d98ef911f7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb2d17fe7babc9799666d0d98ef911f7">read_labels</a> (const std::string &amp;filename)</td></tr>
-<tr class="memdesc:aeb2d17fe7babc9799666d0d98ef911f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read group label names from a CSV file in the order they first appear.  <br /></td></tr>
-<tr class="separator:aeb2d17fe7babc9799666d0d98ef911f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7c79b0baafb3cc83335e83c8bc28db3" id="r_ae7c79b0baafb3cc83335e83c8bc28db3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1stats_1_1DataPacket.html">stats::DataPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae7c79b0baafb3cc83335e83c8bc28db3">read_sorted</a> (const std::string &amp;filename)</td></tr>
 <tr class="memdesc:ae7c79b0baafb3cc83335e83c8bc28db3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a CSV file and sort rows so that response groups are contiguous.  <br /></td></tr>
 <tr class="separator:ae7c79b0baafb3cc83335e83c8bc28db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,33 +148,6 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="aeb2d17fe7babc9799666d0d98ef911f7" name="aeb2d17fe7babc9799666d0d98ef911f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb2d17fe7babc9799666d0d98ef911f7">&#9670;&#160;</a></span>read_labels()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; std::string &gt; ppforest2::io::csv::read_labels </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>filename</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Read group label names from a CSV file in the order they first appear. </p>
-<p>Returns a vector where index i is the string label that maps to integer code i, matching the encoding produced by <a class="el" href="#a4090cd2d7d357ff9c4d8f5fa1313d87f" title="Read a CSV file into a DataPacket.">read()</a>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">filename</td><td>Path to the CSV file. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A vector of group label strings, ordered by their integer code. </dd></dl>
 
 </div>
 </div>

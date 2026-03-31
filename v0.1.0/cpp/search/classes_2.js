@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['datapacket_0',['DataPacket',['../structppforest2_1_1stats_1_1DataPacket.html',1,'ppforest2::stats']]],
-  ['drnoopstrategy_1',['DRNoopStrategy',['../structppforest2_1_1dr_1_1DRNoopStrategy.html',1,'ppforest2::dr']]],
-  ['drresult_2',['DRResult',['../structppforest2_1_1dr_1_1DRResult.html',1,'ppforest2::dr']]],
-  ['drstrategy_3',['DRStrategy',['../structppforest2_1_1dr_1_1DRStrategy.html',1,'ppforest2::dr']]],
-  ['druniformstrategy_4',['DRUniformStrategy',['../structppforest2_1_1dr_1_1DRUniformStrategy.html',1,'ppforest2::dr']]]
+  ['clioptions_0',['CLIOptions',['../structppforest2_1_1cli_1_1CLIOptions.html',1,'ppforest2::cli']]],
+  ['column_1',['Column',['../structppforest2_1_1io_1_1layout_1_1Column.html',1,'ppforest2::io::layout']]],
+  ['configdisplayhints_2',['ConfigDisplayHints',['../structppforest2_1_1io_1_1ConfigDisplayHints.html',1,'ppforest2::io']]],
+  ['confusionmatrix_3',['ConfusionMatrix',['../structppforest2_1_1stats_1_1ConfusionMatrix.html',1,'ppforest2::stats']]],
+  ['convergencecriteria_4',['ConvergenceCriteria',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html',1,'ppforest2::cli']]],
+  ['convergenceparams_5',['ConvergenceParams',['../structppforest2_1_1cli_1_1ConvergenceParams.html',1,'ppforest2::cli']]]
 ];

@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['regionpolygon_0',['RegionPolygon',['../structppforest2_1_1viz_1_1RegionPolygon.html',1,'ppforest2::viz']]],
-  ['regionvisitor_1',['RegionVisitor',['../structppforest2_1_1viz_1_1RegionVisitor.html',1,'ppforest2::viz']]]
+  ['pppdastrategy_0',['PPPDAStrategy',['../structppforest2_1_1pp_1_1PPPDAStrategy.html',1,'ppforest2::pp']]],
+  ['ppresult_1',['PPResult',['../structppforest2_1_1pp_1_1PPResult.html',1,'ppforest2::pp']]],
+  ['ppstrategy_2',['PPStrategy',['../structppforest2_1_1pp_1_1PPStrategy.html',1,'ppforest2::pp']]],
+  ['processresult_3',['ProcessResult',['../structProcessResult.html',1,'']]],
+  ['proportions_4',['Proportions',['../structppforest2_1_1Proportions.html',1,'ppforest2']]]
 ];

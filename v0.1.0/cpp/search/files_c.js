@@ -4,6 +4,7 @@ var searchData=
   ['srmeanofmeansstrategy_2ehpp_1',['SRMeanOfMeansStrategy.hpp',['../SRMeanOfMeansStrategy_8hpp.html',1,'']]],
   ['srstrategy_2ehpp_2',['SRStrategy.hpp',['../SRStrategy_8hpp.html',1,'']]],
   ['stats_2ehpp_3',['Stats.hpp',['../Stats_8hpp.html',1,'']]],
-  ['summarize_2ehpp_4',['Summarize.hpp',['../Summarize_8hpp.html',1,'']]],
-  ['system_2ehpp_5',['System.hpp',['../System_8hpp.html',1,'']]]
+  ['strategy_2ehpp_4',['Strategy.hpp',['../Strategy_8hpp.html',1,'']]],
+  ['summarize_2ehpp_5',['Summarize.hpp',['../Summarize_8hpp.html',1,'']]],
+  ['system_2ehpp_6',['System.hpp',['../System_8hpp.html',1,'']]]
 ];

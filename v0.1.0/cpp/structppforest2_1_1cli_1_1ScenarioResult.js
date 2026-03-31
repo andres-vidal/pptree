@@ -12,8 +12,8 @@ var structppforest2_1_1cli_1_1ScenarioResult =
     [ "peak_rss_mb", "structppforest2_1_1cli_1_1ScenarioResult.html#ad86ee2a25a8a2cb1e28aec866300028b", null ],
     [ "runs", "structppforest2_1_1cli_1_1ScenarioResult.html#a212b9b0d7890c264c7cab41696747c65", null ],
     [ "scenario_time_ms", "structppforest2_1_1cli_1_1ScenarioResult.html#a0c55bd0a3cc116bac43e9edfeea0320f", null ],
+    [ "size", "structppforest2_1_1cli_1_1ScenarioResult.html#a7f6581ea97f5957e42819a360fe2d23c", null ],
     [ "std_time_ms", "structppforest2_1_1cli_1_1ScenarioResult.html#a121f0fb566c59ffc9427e59597cf1d94", null ],
     [ "train_ratio", "structppforest2_1_1cli_1_1ScenarioResult.html#a7c1d65c279757fc17501fcfcf238da3a", null ],
-    [ "trees", "structppforest2_1_1cli_1_1ScenarioResult.html#a5926c2b9bd4e5cb8e3cc83045168e244", null ],
     [ "vars", "structppforest2_1_1cli_1_1ScenarioResult.html#a7fc4bdcadf56e1c89f27fc3696c2ef19", null ]
 ];

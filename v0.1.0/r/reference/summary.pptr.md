@@ -33,7 +33,10 @@ summary(model)
 #> 
 #> Project-Pursuit Oblique Decision Tree
 #> 
-#> Regularization parameter: 0 
+#> pp method: LDA (lambda=0)
+#> dr method: All variables
+#> sr method: Mean of means
+#> 
 #> 
 #> Data Summary:
 #>   observations: 150 

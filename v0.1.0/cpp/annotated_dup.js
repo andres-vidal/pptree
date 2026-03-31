@@ -1,5 +1,14 @@
 var annotated_dup =
 [
+    [ "nlohmann", "namespacenlohmann.html", [
+      [ "adl_serializer< ppforest2::Forest >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1Forest_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1Forest_01_4" ],
+      [ "adl_serializer< ppforest2::serialization::Export< ppforest2::Forest > >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Forest_01_4_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Forest_01_4_01_4" ],
+      [ "adl_serializer< ppforest2::serialization::Export< ppforest2::Model::Ptr > >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Model_1_1Ptr_01_4_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Model_1_1Ptr_01_4_01_4" ],
+      [ "adl_serializer< ppforest2::serialization::Export< ppforest2::Tree > >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Tree_01_4_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Tree_01_4_01_4" ],
+      [ "adl_serializer< ppforest2::stats::ConfusionMatrix >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1stats_1_1ConfusionMatrix_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1stats_1_1ConfusionMatrix_01_4" ],
+      [ "adl_serializer< ppforest2::Tree >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1Tree_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1Tree_01_4" ],
+      [ "adl_serializer< ppforest2::VariableImportance >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1VariableImportance_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1VariableImportance_01_4" ]
+    ] ],
     [ "ppforest2", "namespaceppforest2.html", [
       [ "cli", "namespaceppforest2_1_1cli.html", [
         [ "BenchmarkParams", "structppforest2_1_1cli_1_1BenchmarkParams.html", "structppforest2_1_1cli_1_1BenchmarkParams" ],
@@ -38,6 +47,7 @@ var annotated_dup =
         [ "PPStrategy", "structppforest2_1_1pp_1_1PPStrategy.html", "structppforest2_1_1pp_1_1PPStrategy" ]
       ] ],
       [ "serialization", "namespaceppforest2_1_1serialization.html", [
+        [ "Export", "structppforest2_1_1serialization_1_1Export.html", "structppforest2_1_1serialization_1_1Export" ],
         [ "JsonModelVisitor", "structppforest2_1_1serialization_1_1JsonModelVisitor.html", "structppforest2_1_1serialization_1_1JsonModelVisitor" ],
         [ "JsonNodeVisitor", "structppforest2_1_1serialization_1_1JsonNodeVisitor.html", "structppforest2_1_1serialization_1_1JsonNodeVisitor" ]
       ] ],
@@ -72,8 +82,6 @@ var annotated_dup =
       [ "Model", "structppforest2_1_1Model.html", "structppforest2_1_1Model" ],
       [ "Proportions", "structppforest2_1_1Proportions.html", null ],
       [ "TrainingSpec", "structppforest2_1_1TrainingSpec.html", "structppforest2_1_1TrainingSpec" ],
-      [ "TrainingSpecPDA", "structppforest2_1_1TrainingSpecPDA.html", "structppforest2_1_1TrainingSpecPDA" ],
-      [ "TrainingSpecUPDA", "structppforest2_1_1TrainingSpecUPDA.html", "structppforest2_1_1TrainingSpecUPDA" ],
       [ "Tree", "structppforest2_1_1Tree.html", "structppforest2_1_1Tree" ],
       [ "TreeCondition", "structppforest2_1_1TreeCondition.html", "structppforest2_1_1TreeCondition" ],
       [ "TreeNode", "structppforest2_1_1TreeNode.html", "structppforest2_1_1TreeNode" ],
@@ -84,6 +92,7 @@ var annotated_dup =
     ] ],
     [ "ProcessResult", "structProcessResult.html", "structProcessResult" ],
     [ "SavedModelTest", "classSavedModelTest.html", "classSavedModelTest" ],
+    [ "Strategy", "structStrategy.html", "structStrategy" ],
     [ "TempDir", "classTempDir.html", "classTempDir" ],
     [ "TempFile", "classTempFile.html", "classTempFile" ]
 ];

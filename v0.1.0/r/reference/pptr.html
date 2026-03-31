@@ -20,7 +20,8 @@ If lambda = 0, the model is trained using Linear Discriminant Analysis (LDA). If
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/introduction.html">Introduction to ppforest2</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/custom-strategies.html">Custom strategies</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to ppforest2</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/andres-vidal/ppforest2" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
@@ -43,7 +44,16 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pptr</span><span class="op">(</span>formula <span class="op">=</span> <span class="cn">NULL</span>, data <span class="op">=</span> <span class="cn">NULL</span>, x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span>, lambda <span class="op">=</span> <span class="fl">0</span>, seed <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pptr</span><span class="op">(</span></span>
+<span>  formula <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sr <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,11 +77,19 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>A regularization parameter. If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analysis (LDA). If <code>lambda &gt; 0</code>, the model is trained using Penalized Discriminant Analysis (PDA).</p></dd>
+<dd><p>A regularization parameter. If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analysis (LDA). If <code>lambda &gt; 0</code>, the model is trained using Penalized Discriminant Analysis (PDA). Cannot be used together with <code>pp</code>.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>An optional integer seed for reproducibility. If <code>NULL</code> (default), a seed is drawn from R's RNG, so <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> controls reproducibility. If an integer is provided, that value is used directly.</p></dd>
+
+
+<dt id="arg-pp">pp<a class="anchor" aria-label="anchor" href="#arg-pp"></a></dt>
+<dd><p>A projection pursuit strategy object created by <code><a href="pp_pda.html">pp_pda</a></code>. Cannot be used together with <code>lambda</code>.</p></dd>
+
+
+<dt id="arg-sr">sr<a class="anchor" aria-label="anchor" href="#arg-sr"></a></dt>
+<dd><p>A split rule strategy object created by <code><a href="sr_mean_of_means.html">sr_mean_of_means</a></code> (default).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -80,7 +98,7 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="predict.pptr.html">predict.pptr</a></code>, <code><a href="formula.pptr.html">formula.pptr</a></code>, <code><a href="summary.pptr.html">summary.pptr</a></code>, <code><a href="print.pptr.html">print.pptr</a></code>, <code><a href="save_json.html">save_json</a></code>, <code><a href="load_json.html">load_json</a></code>, <code><a href="pp_tree.html">pp_tree</a></code> for parsnip integration, <code><a href="../articles/introduction.html">vignette("introduction")</a></code> for a tutorial</p></div>
+    <div class="dont-index"><p><code><a href="predict.pptr.html">predict.pptr</a></code>, <code><a href="formula.pptr.html">formula.pptr</a></code>, <code><a href="summary.pptr.html">summary.pptr</a></code>, <code><a href="print.pptr.html">print.pptr</a></code>, <code><a href="save_json.html">save_json</a></code>, <code><a href="load_json.html">load_json</a></code>, <code><a href="pp_tree.html">pp_tree</a></code> for parsnip integration, <code><a href="pp_pda.html">pp_pda</a></code>, <code><a href="sr_mean_of_means.html">sr_mean_of_means</a></code>, <code><a href="../articles/introduction.html">vignette("introduction")</a></code> for a tutorial</p></div>
     </div>
 
     <div class="section level2">
