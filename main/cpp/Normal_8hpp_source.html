@@ -112,22 +112,22 @@ $(function(){initNavTree('Normal_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceppforest2_1_1stats.html">ppforest2::stats</a> {</div>
 <div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classppforest2_1_1stats_1_1Normal.html">   22</a></span>  <span class="keyword">class </span><a class="code hl_function" href="classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647">Normal</a> {</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>      <span class="keywordtype">float</span> mean;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>      <span class="keywordtype">float</span> std_dev;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">float</span> mean;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keywordtype">float</span> std_dev;</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>      std::optional&lt;float&gt; cached_z;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    std::optional&lt;float&gt; cached_z;</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>      <span class="keywordtype">double</span> gen_unif01(<a class="code hl_typedef" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">RNG</a> &amp;rng);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordtype">double</span> gen_unif01(<a class="code hl_typedef" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">RNG</a>&amp; rng);</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span></div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>      <span class="keywordtype">float</span> denormalize(<span class="keywordtype">float</span> z);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordtype">float</span> denormalize(<span class="keywordtype">float</span> z);</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647">   56</a></span>      <a class="code hl_function" href="classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647">Normal</a>(<span class="keywordtype">float</span> mean, <span class="keywordtype">float</span> std_dev);</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>  <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647">   56</a></span>    <a class="code hl_function" href="classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647">Normal</a>(<span class="keywordtype">float</span> mean, <span class="keywordtype">float</span> std_dev);</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classppforest2_1_1stats_1_1Normal.html#acc2b13a75c9a2c7850977753102f5375">   74</a></span>      <span class="keywordtype">float</span> <a class="code hl_function" href="classppforest2_1_1stats_1_1Normal.html#acc2b13a75c9a2c7850977753102f5375">operator()</a>(<a class="code hl_typedef" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">RNG</a> &amp;rng);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classppforest2_1_1stats_1_1Normal.html#acc2b13a75c9a2c7850977753102f5375">   74</a></span>    <span class="keywordtype">float</span> <a class="code hl_function" href="classppforest2_1_1stats_1_1Normal.html#acc2b13a75c9a2c7850977753102f5375">operator()</a>(<a class="code hl_typedef" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">RNG</a>&amp; rng);</div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classppforest2_1_1stats_1_1Normal.html#abd0d0034cf3c3d5fa237423cabd71e08">   83</a></span>      std::vector&lt;float&gt; <a class="code hl_function" href="classppforest2_1_1stats_1_1Normal.html#abd0d0034cf3c3d5fa237423cabd71e08">operator()</a>(<span class="keywordtype">int</span> count, <a class="code hl_typedef" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">RNG</a> &amp;rng);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classppforest2_1_1stats_1_1Normal.html#abd0d0034cf3c3d5fa237423cabd71e08">   83</a></span>    std::vector&lt;float&gt; <a class="code hl_function" href="classppforest2_1_1stats_1_1Normal.html#abd0d0034cf3c3d5fa237423cabd71e08">operator()</a>(<span class="keywordtype">int</span> count, <a class="code hl_typedef" href="namespaceppforest2_1_1stats.html#a8e3a1f81a376373936a72c8ba6061567">RNG</a>&amp; rng);</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>  };</div>
 </div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>}</div>

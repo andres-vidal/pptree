@@ -147,7 +147,7 @@ Self-Registration</h1>
 <div class="line">  <span class="keyword">static</span> PPStrategy::Ptr from_json(<span class="keyword">const</span> nlohmann::json&amp; j);</div>
 <div class="line">  <a class="code hl_define" href="Strategy_8hpp.html#a17147e1a4c1343aabff5cce99c045f2d">PPFOREST2_REGISTER_STRATEGY</a>(PPStrategy, <span class="stringliteral">&quot;my_strategy&quot;</span>)</div>
 <div class="line">};</div>
-<div class="ttc" id="aStrategy_8hpp_html_a17147e1a4c1343aabff5cce99c045f2d"><div class="ttname"><a href="Strategy_8hpp.html#a17147e1a4c1343aabff5cce99c045f2d">PPFOREST2_REGISTER_STRATEGY</a></div><div class="ttdeci">#define PPFOREST2_REGISTER_STRATEGY(StrategyBase, name)</div><div class="ttdoc">Auto-registration macro for strategy factories.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:100</div></div>
+<div class="ttc" id="aStrategy_8hpp_html_a17147e1a4c1343aabff5cce99c045f2d"><div class="ttname"><a href="Strategy_8hpp.html#a17147e1a4c1343aabff5cce99c045f2d">PPFOREST2_REGISTER_STRATEGY</a></div><div class="ttdeci">#define PPFOREST2_REGISTER_STRATEGY(StrategyBase, name)</div><div class="ttdoc">Auto-registration macro for strategy factories.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:106</div></div>
 </div><!-- fragment --><p>After this, <code>PPStrategy::from_json({"name": "my_strategy", ...})</code> will automatically dispatch to <code>MyStrategy::from_json</code>.</p>
 <h1><a class="anchor" id="strat_pp"></a>
 Adding a new PPStrategy</h1>
@@ -172,7 +172,7 @@ Interface to implement</h2>
 <div class="line">  <span class="comment">// virtual void to_json(nlohmann::json&amp; j) const = 0;</span></div>
 <div class="line">  <span class="comment">// static Ptr from_json(const nlohmann::json&amp; j);</span></div>
 <div class="line">};</div>
-<div class="ttc" id="astructStrategy_html"><div class="ttname"><a href="structStrategy.html">Strategy</a></div><div class="ttdoc">CRTP base class providing self-registration for strategy types.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:24</div></div>
+<div class="ttc" id="astructStrategy_html"><div class="ttname"><a href="structStrategy.html">Strategy</a></div><div class="ttdoc">CRTP base class providing self-registration for strategy types.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:23</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="strat_pp_example"></a>
 Example: a random projection strategy</h2>
 <div class="fragment"><div class="line"><span class="comment">// File: models/PPRandomStrategy.hpp</span></div>
@@ -224,8 +224,8 @@ Example: a random projection strategy</h2>
 <div class="ttc" id="anamespaceppforest2_1_1pp_html"><div class="ttname"><a href="namespaceppforest2_1_1pp.html">ppforest2::pp</a></div><div class="ttdoc">Projection pursuit strategies.</div><div class="ttdef"><b>Definition</b> PPPDAStrategy.hpp:8</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1serialization_html_a5f98c94cb33ab84c91b2fba714093277"><div class="ttname"><a href="namespaceppforest2_1_1serialization.html#a5f98c94cb33ab84c91b2fba714093277">ppforest2::serialization::to_json</a></div><div class="ttdeci">json to_json(const Model &amp;model)</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1serialization_html_a6e9ecc595510845a6a0b93f9797b5147"><div class="ttname"><a href="namespaceppforest2_1_1serialization.html#a6e9ecc595510845a6a0b93f9797b5147">ppforest2::serialization::from_json</a></div><div class="ttdeci">T from_json(const json &amp;j)</div><div class="ttdoc">Deserialize from a model block (integer labels only).</div></div>
-<div class="ttc" id="anamespaceppforest2_html_af7fc566697e66bde48d3ae08b54c04d3"><div class="ttname"><a href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">ppforest2::validate_json_keys</a></div><div class="ttdeci">void validate_json_keys(const nlohmann::json &amp;j, const std::string &amp;context, std::initializer_list&lt; std::string &gt; allowed)</div><div class="ttdoc">Validate that a JSON object contains only expected keys.</div><div class="ttdef"><b>Definition</b> JsonValidation.hpp:19</div></div>
-<div class="ttc" id="astructStrategy_html_a30c651b4431c97d3504039607df398c9"><div class="ttname"><a href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Strategy&lt; PPStrategy &gt;::Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; PPStrategy &gt; Ptr</div><div class="ttdef"><b>Definition</b> Strategy.hpp:25</div></div>
+<div class="ttc" id="anamespaceppforest2_html_af7fc566697e66bde48d3ae08b54c04d3"><div class="ttname"><a href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">ppforest2::validate_json_keys</a></div><div class="ttdeci">void validate_json_keys(const nlohmann::json &amp;j, const std::string &amp;context, std::initializer_list&lt; std::string &gt; allowed)</div><div class="ttdoc">Validate that a JSON object contains only expected keys.</div><div class="ttdef"><b>Definition</b> JsonValidation.hpp:20</div></div>
+<div class="ttc" id="astructStrategy_html_a30c651b4431c97d3504039607df398c9"><div class="ttname"><a href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Strategy&lt; PPStrategy &gt;::Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; PPStrategy &gt; Ptr</div><div class="ttdef"><b>Definition</b> Strategy.hpp:28</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="strat_dr"></a>
 Adding a new DRStrategy</h1>
 <p>A DRStrategy selects a subset of variables (columns) before projection pursuit runs. This reduces cost and introduces diversity in forests.</p>

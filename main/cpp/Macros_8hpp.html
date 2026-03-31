@@ -151,7 +151,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">ASSERT_TRUE(a.isApprox(b, <a class="code hl_define" href="Math_8hpp.html#adc749a0041f86b9a04fa05a27d8de53b">APPROX_THRESHOLD</a>)) &lt;&lt; <span class="stringliteral">&quot;Expected &quot;</span> &lt;&lt; std::endl &lt;&lt; a &lt;&lt; std::endl &lt;&lt; <span class="stringliteral">&quot; to be approximate to &quot;</span> &lt;&lt; std::endl &lt;&lt; b</div>
+<b>Value:</b><div class="fragment"><div class="line">  ASSERT_TRUE((a).isApprox(b, <a class="code hl_define" href="Math_8hpp.html#adc749a0041f86b9a04fa05a27d8de53b">APPROX_THRESHOLD</a>)) &lt;&lt; <span class="stringliteral">&quot;Expected &quot;</span> &lt;&lt; std::endl              \</div>
+<div class="line">                                                 &lt;&lt; (a) &lt;&lt; std::endl                      \</div>
+<div class="line">                                                 &lt;&lt; <span class="stringliteral">&quot; to be approximate to &quot;</span> &lt;&lt; std::endl \</div>
+<div class="line">                                                 &lt;&lt; b</div>
 <div class="ttc" id="aMath_8hpp_html_adc749a0041f86b9a04fa05a27d8de53b"><div class="ttname"><a href="Math_8hpp.html#adc749a0041f86b9a04fa05a27d8de53b">APPROX_THRESHOLD</a></div><div class="ttdeci">#define APPROX_THRESHOLD</div><div class="ttdef"><b>Definition</b> Math.hpp:8</div></div>
 </div><!-- fragment -->
 <p>Test helper macros for Eigen comparisons and literal construction. </p>
@@ -178,8 +181,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">ASSERT_TRUE(<a class="code hl_function" href="namespaceppforest2_1_1math.html#adb2c5eb329ea583be675af520bfc4b4b">ppforest2::math::collinear</a>(a, b)) &lt;&lt; <span class="stringliteral">&quot;Expected columns of &quot;</span> &lt;&lt; std::endl &lt;&lt; a &lt;&lt; std::endl &lt;&lt; <span class="stringliteral">&quot; to be collinear with its respective column of &quot;</span> &lt;&lt; std::endl &lt;&lt; b</div>
-<div class="ttc" id="anamespaceppforest2_1_1math_html_adb2c5eb329ea583be675af520bfc4b4b"><div class="ttname"><a href="namespaceppforest2_1_1math.html#adb2c5eb329ea583be675af520bfc4b4b">ppforest2::math::collinear</a></div><div class="ttdeci">bool collinear(const types::Vector&lt; T &gt; &amp;a, const types::Vector&lt; T &gt; &amp;b)</div><div class="ttdoc">Check whether two vectors are collinear (parallel or anti-parallel).</div><div class="ttdef"><b>Definition</b> Math.hpp:47</div></div>
+<b>Value:</b><div class="fragment"><div class="line">  ASSERT_TRUE(<a class="code hl_function" href="namespaceppforest2_1_1math.html#adb2c5eb329ea583be675af520bfc4b4b">ppforest2::math::collinear</a>(a, b)) &lt;&lt; <span class="stringliteral">&quot;Expected columns of &quot;</span> &lt;&lt; std::endl                            \</div>
+<div class="line">                                                &lt;&lt; (a) &lt;&lt; std::endl                                               \</div>
+<div class="line">                                                &lt;&lt; <span class="stringliteral">&quot; to be collinear with its respective column of &quot;</span> &lt;&lt; std::endl \</div>
+<div class="line">                                                &lt;&lt; b</div>
+<div class="ttc" id="anamespaceppforest2_1_1math_html_adb2c5eb329ea583be675af520bfc4b4b"><div class="ttname"><a href="namespaceppforest2_1_1math.html#adb2c5eb329ea583be675af520bfc4b4b">ppforest2::math::collinear</a></div><div class="ttdeci">bool collinear(const types::Vector&lt; T &gt; &amp;a, const types::Vector&lt; T &gt; &amp;b)</div><div class="ttdoc">Check whether two vectors are collinear (parallel or anti-parallel).</div><div class="ttdef"><b>Definition</b> Math.hpp:43</div></div>
 </div><!-- fragment -->
 <p>Assert that two Eigen vectors are collinear (parallel or anti-parallel). </p>
 
@@ -203,10 +209,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        ASSERT_EQ(a.size(), b.size()); \</div>
-<div class="line">        ASSERT_EQ(a.rows(), b.rows()); \</div>
-<div class="line">        ASSERT_EQ(a.cols(), b.cols()); \</div>
-<div class="line">        ASSERT_EQ(a, b);</div>
+<b>Value:</b><div class="fragment"><div class="line">  ASSERT_EQ((a).size(), (b).size()); \</div>
+<div class="line">  ASSERT_EQ((a).<a class="code hl_function" href="#a71bf0955969d93eefeb1568ce5e8c0d2">rows</a>(), (b).<a class="code hl_function" href="#a71bf0955969d93eefeb1568ce5e8c0d2">rows</a>()); \</div>
+<div class="line">  ASSERT_EQ((a).cols(), (b).cols()); \</div>
+<div class="line">  ASSERT_EQ(a, b);</div>
+<div class="ttc" id="aMacros_8hpp_html_a71bf0955969d93eefeb1568ce5e8c0d2"><div class="ttname"><a href="#a71bf0955969d93eefeb1568ce5e8c0d2">rows</a></div><div class="ttdeci">constexpr int rows(int n)</div><div class="ttdef"><b>Definition</b> Macros.hpp:40</div></div>
 </div><!-- fragment -->
 <p>Assert that two Eigen objects have identical size and values. </p>
 
@@ -235,14 +242,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        ([&amp;]() -&gt; Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic&gt; {                                                              \</div>
-<div class="line">          <span class="keyword">const</span> <span class="keywordtype">int</span> _rows = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(ROWS);                                                                               \</div>
-<div class="line">          std::vector&lt;T&gt; _vals = { __VA_ARGS__ };                                                                                 \</div>
-<div class="line">          invariant(_rows &gt; 0, <span class="stringliteral">&quot;ROWS must be &gt; 0&quot;</span>);                                                                               \</div>
-<div class="line">          invariant(_vals.size() % _rows == 0, <span class="stringliteral">&quot;Element count not divisible by ROWS&quot;</span>);                                            \</div>
-<div class="line">          <span class="keyword">const</span> <span class="keywordtype">int</span> _cols = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(_vals.size()) / _rows;                                                               \</div>
-<div class="line">          <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor&gt;&gt;(_vals.data(), _rows, _cols); \</div>
-<div class="line">        })()</div>
+<b>Value:</b><div class="fragment"><div class="line">  ([&amp;]() -&gt; Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic&gt; {                                  \</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">int</span> _rows      = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(ROWS);                                              \</div>
+<div class="line">    std::vector&lt;T&gt; _vals = {__VA_ARGS__};                                                       \</div>
+<div class="line">    invariant(_rows &gt; 0, <span class="stringliteral">&quot;ROWS must be &gt; 0&quot;</span>);                                                   \</div>
+<div class="line">    invariant(_vals.size() % _rows == 0, <span class="stringliteral">&quot;Element count not divisible by ROWS&quot;</span>);                \</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">int</span> _cols = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(_vals.size()) / _rows;                                   \</div>
+<div class="line">    <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor&gt;&gt;( \</div>
+<div class="line">        _vals.data(), _rows, _cols);                                                            \</div>
+<div class="line">  })()</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -264,11 +272,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        ([&amp;]() -&gt; Eigen::Matrix&lt;T, Eigen::Dynamic, 1&gt; {                 \</div>
-<div class="line">          std::vector&lt;T&gt; _vals = { __VA_ARGS__ };                       \</div>
-<div class="line">          <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, 1&gt;&gt;( \</div>
-<div class="line">            _vals.data(), _vals.size());                                \</div>
-<div class="line">        })()</div>
+<b>Value:</b><div class="fragment"><div class="line">  ([&amp;]() -&gt; Eigen::Matrix&lt;T, Eigen::Dynamic, 1&gt; {                                             \</div>
+<div class="line">    std::vector&lt;T&gt; _vals = {__VA_ARGS__};                                                     \</div>
+<div class="line">    <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, 1&gt;&gt;(_vals.data(), _vals.size()); \</div>
+<div class="line">  })()</div>
 </div><!-- fragment -->
 </div>
 </div>

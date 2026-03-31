@@ -112,23 +112,21 @@ $(function(){initNavTree('JsonValidation_8hpp_source.html',''); initResizable(tr
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;nlohmann/json.hpp&gt;</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceppforest2.html">ppforest2</a> {</div>
-<div class="foldopen" id="foldopen00019" data-start="{" data-end="}">
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">   19</a></span>  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">validate_json_keys</a>(</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keyword">const</span> nlohmann::json&amp;              j,</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keyword">const</span> std::string&amp;                 context,</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    std::initializer_list&lt;std::string&gt; allowed) {</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    std::set&lt;std::string&gt; allowed_set(allowed);</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = j.begin(); it != j.end(); ++it) {</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>      <span class="keywordflow">if</span> (allowed_set.find(it.key()) == allowed_set.end()) {</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Unknown &quot;</span> + context + <span class="stringliteral">&quot; parameter: &quot;</span> + it.key());</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>      }</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    }</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>  }</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>  <span class="keyword">inline</span> <span class="keywordtype">void</span></div>
+<div class="foldopen" id="foldopen00020" data-start="{" data-end="}">
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">   20</a></span>  <a class="code hl_function" href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">validate_json_keys</a>(<span class="keyword">const</span> nlohmann::json&amp; j, <span class="keyword">const</span> std::string&amp; context, std::initializer_list&lt;std::string&gt; allowed) {</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    std::set&lt;std::string&gt; allowed_set(allowed);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = j.begin(); it != j.end(); ++it) {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>      <span class="keywordflow">if</span> (allowed_set.find(it.key()) == allowed_set.end()) {</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Unknown &quot;</span> + context + <span class="stringliteral">&quot; parameter: &quot;</span> + it.key());</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>      }</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    }</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>  }</div>
 </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>}</div>
-<div class="ttc" id="anamespaceppforest2_html"><div class="ttname"><a href="namespaceppforest2.html">ppforest2</a></div><div class="ttdef"><b>Definition</b> Benchmark.hpp:20</div></div>
-<div class="ttc" id="anamespaceppforest2_html_af7fc566697e66bde48d3ae08b54c04d3"><div class="ttname"><a href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">ppforest2::validate_json_keys</a></div><div class="ttdeci">void validate_json_keys(const nlohmann::json &amp;j, const std::string &amp;context, std::initializer_list&lt; std::string &gt; allowed)</div><div class="ttdoc">Validate that a JSON object contains only expected keys.</div><div class="ttdef"><b>Definition</b> JsonValidation.hpp:19</div></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>}</div>
+<div class="ttc" id="anamespaceppforest2_html"><div class="ttname"><a href="namespaceppforest2.html">ppforest2</a></div><div class="ttdef"><b>Definition</b> Benchmark.hpp:22</div></div>
+<div class="ttc" id="anamespaceppforest2_html_af7fc566697e66bde48d3ae08b54c04d3"><div class="ttname"><a href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">ppforest2::validate_json_keys</a></div><div class="ttdeci">void validate_json_keys(const nlohmann::json &amp;j, const std::string &amp;context, std::initializer_list&lt; std::string &gt; allowed)</div><div class="ttdoc">Validate that a JSON object contains only expected keys.</div><div class="ttdef"><b>Definition</b> JsonValidation.hpp:20</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

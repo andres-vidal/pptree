@@ -155,9 +155,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ab60fae501eccee5220fb3c5a3033c130" id="r_ab60fae501eccee5220fb3c5a3033c130"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab60fae501eccee5220fb3c5a3033c130">ProgressCallback</a> = std::function&lt;void (int scenario_index, int total, const std::string&amp; name)&gt;</td></tr>
-<tr class="memdesc:ab60fae501eccee5220fb3c5a3033c130"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for progress reporting during benchmark execution.  <br /></td></tr>
-<tr class="separator:ab60fae501eccee5220fb3c5a3033c130"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa079ab7bd1141788702e6dc7e02f2a77" id="r_aa079ab7bd1141788702e6dc7e02f2a77"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa079ab7bd1141788702e6dc7e02f2a77">ProgressCallback</a> = std::function&lt;void(int scenario_index, int total, const std::string&amp; name)&gt;</td></tr>
+<tr class="memdesc:aa079ab7bd1141788702e6dc7e02f2a77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for progress reporting during benchmark execution.  <br /></td></tr>
+<tr class="separator:aa079ab7bd1141788702e6dc7e02f2a77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -221,7 +221,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a91124ec5682f6ee3e52c71731e8717ca" id="r_a91124ec5682f6ee3e52c71731e8717ca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1ScenarioResult.html">ScenarioResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91124ec5682f6ee3e52c71731e8717ca">run_scenario</a> (const <a class="el" href="structppforest2_1_1cli_1_1Scenario.html">Scenario</a> &amp;scenario, const std::string &amp;binary_path, bool quiet=false)</td></tr>
 <tr class="memdesc:a91124ec5682f6ee3e52c71731e8717ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a single scenario as a subprocess.  <br /></td></tr>
 <tr class="separator:a91124ec5682f6ee3e52c71731e8717ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a927afd38346bebbf3da4900795381846" id="r_a927afd38346bebbf3da4900795381846"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a927afd38346bebbf3da4900795381846">run_suite</a> (const <a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a> &amp;suite, const std::string &amp;binary_path, bool quiet=false, <a class="el" href="#ab60fae501eccee5220fb3c5a3033c130">ProgressCallback</a> progress=nullptr)</td></tr>
+<tr class="memitem:a927afd38346bebbf3da4900795381846" id="r_a927afd38346bebbf3da4900795381846"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a927afd38346bebbf3da4900795381846">run_suite</a> (const <a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a> &amp;suite, const std::string &amp;binary_path, bool quiet=false, <a class="el" href="#aa079ab7bd1141788702e6dc7e02f2a77">ProgressCallback</a> progress=nullptr)</td></tr>
 <tr class="memdesc:a927afd38346bebbf3da4900795381846"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run all scenarios in a suite via subprocess invocations.  <br /></td></tr>
 <tr class="separator:a927afd38346bebbf3da4900795381846"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f6eae81f9abe8d62d6cc5a47e5eff41" id="r_a9f6eae81f9abe8d62d6cc5a47e5eff41"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f6eae81f9abe8d62d6cc5a47e5eff41">run_summarize</a> (<a class="el" href="structppforest2_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params)</td></tr>
@@ -261,14 +261,14 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Command-line interface: argument parsing, subcommands, and benchmark/evaluation orchestration. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="ab60fae501eccee5220fb3c5a3033c130" name="ab60fae501eccee5220fb3c5a3033c130"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab60fae501eccee5220fb3c5a3033c130">&#9670;&#160;</a></span>ProgressCallback</h2>
+<a id="aa079ab7bd1141788702e6dc7e02f2a77" name="aa079ab7bd1141788702e6dc7e02f2a77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa079ab7bd1141788702e6dc7e02f2a77">&#9670;&#160;</a></span>ProgressCallback</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#ab60fae501eccee5220fb3c5a3033c130">ppforest2::cli::ProgressCallback</a> = std::function&lt;void (int scenario_index, int total, const std::string&amp; name)&gt;</td>
+          <td class="memname">using <a class="el" href="#aa079ab7bd1141788702e6dc7e02f2a77">ppforest2::cli::ProgressCallback</a> = std::function&lt;void(int scenario_index, int total, const std::string&amp; name)&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -753,7 +753,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="#ab60fae501eccee5220fb3c5a3033c130">ProgressCallback</a></td>          <td class="paramname"><span class="paramname"><em>progress</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="#aa079ab7bd1141788702e6dc7e02f2a77">ProgressCallback</a></td>          <td class="paramname"><span class="paramname"><em>progress</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

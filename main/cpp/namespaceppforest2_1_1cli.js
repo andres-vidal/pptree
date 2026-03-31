@@ -13,7 +13,7 @@ var namespaceppforest2_1_1cli =
     [ "SuiteResult", "structppforest2_1_1cli_1_1SuiteResult.html", "structppforest2_1_1cli_1_1SuiteResult" ],
     [ "TrainResult", "structppforest2_1_1cli_1_1TrainResult.html", "structppforest2_1_1cli_1_1TrainResult" ],
     [ "VarsSpec", "structppforest2_1_1cli_1_1VarsSpec.html", "structppforest2_1_1cli_1_1VarsSpec" ],
-    [ "ProgressCallback", "namespaceppforest2_1_1cli.html#ab60fae501eccee5220fb3c5a3033c130", null ],
+    [ "ProgressCallback", "namespaceppforest2_1_1cli.html#aa079ab7bd1141788702e6dc7e02f2a77", null ],
     [ "Subcommand", "namespaceppforest2_1_1cli.html#ac19eadb7b9d37e6b1fd42c6e52920e51", [
       [ "none", "namespaceppforest2_1_1cli.html#ac19eadb7b9d37e6b1fd42c6e52920e51a334c4a4c42fdb79d7ebc3e73b517e6f8", null ],
       [ "train", "namespaceppforest2_1_1cli.html#ac19eadb7b9d37e6b1fd42c6e52920e51a61b3a8faa9c1091806675c230a9abe64", null ],
