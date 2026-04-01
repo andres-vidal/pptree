@@ -141,12 +141,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4c6405f8250f801e4f0f1121c641296e" id="r_a4c6405f8250f801e4f0f1121c641296e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c6405f8250f801e4f0f1121c641296e">progress</a> (int current, int total, int bar_width=50) const</td></tr>
 <tr class="memdesc:a4c6405f8250f801e4f0f1121c641296e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display a carriage-return progress bar.  <br /></td></tr>
 <tr class="separator:a4c6405f8250f801e4f0f1121c641296e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f6bbe82aa88bccf52be45a4465f29c7" id="r_a2f6bbe82aa88bccf52be45a4465f29c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f6bbe82aa88bccf52be45a4465f29c7">saved</a> (const std::string &amp;label, const std::string &amp;path) const</td></tr>
-<tr class="memdesc:a2f6bbe82aa88bccf52be45a4465f29c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a file-save confirmation: "label saved to path".  <br /></td></tr>
-<tr class="separator:a2f6bbe82aa88bccf52be45a4465f29c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab96ded590091ba314fb23a5794dc33a0" id="r_ab96ded590091ba314fb23a5794dc33a0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab96ded590091ba314fb23a5794dc33a0">try_or_fail</a> (const std::function&lt; void()&gt; &amp;f, const std::string &amp;context=&quot;&quot;) const</td></tr>
-<tr class="memdesc:ab96ded590091ba314fb23a5794dc33a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a callable, catch std::exception, print error, return 1.  <br /></td></tr>
-<tr class="separator:ab96ded590091ba314fb23a5794dc33a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a2ad90daf73d2b35baa3406f338210f" id="r_a7a2ad90daf73d2b35baa3406f338210f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a2ad90daf73d2b35baa3406f338210f">saved</a> (std::string const &amp;label, std::string const &amp;path) const</td></tr>
+<tr class="memdesc:a7a2ad90daf73d2b35baa3406f338210f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a file-save confirmation: "label saved to path".  <br /></td></tr>
+<tr class="separator:a7a2ad90daf73d2b35baa3406f338210f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0aeb57cfa722b014ebb376bfa8d356a" id="r_ac0aeb57cfa722b014ebb376bfa8d356a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0aeb57cfa722b014ebb376bfa8d356a">try_or_fail</a> (std::function&lt; void()&gt; const &amp;f, std::string const &amp;context=&quot;&quot;) const</td></tr>
+<tr class="memdesc:ac0aeb57cfa722b014ebb376bfa8d356a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a callable, catch std::exception, print error, return 1.  <br /></td></tr>
+<tr class="separator:ac0aeb57cfa722b014ebb376bfa8d356a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -426,8 +426,8 @@ template&lt;typename... Args&gt; </div>
 
 </div>
 </div>
-<a id="a2f6bbe82aa88bccf52be45a4465f29c7" name="a2f6bbe82aa88bccf52be45a4465f29c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f6bbe82aa88bccf52be45a4465f29c7">&#9670;&#160;</a></span>saved()</h2>
+<a id="a7a2ad90daf73d2b35baa3406f338210f" name="a7a2ad90daf73d2b35baa3406f338210f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a2ad90daf73d2b35baa3406f338210f">&#9670;&#160;</a></span>saved()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -438,12 +438,12 @@ template&lt;typename... Args&gt; </div>
         <tr>
           <td class="memname">void ppforest2::io::Output::saved </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>label</em></span>, </td>
+          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>label</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>&#160;) const</td>
+          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>&#160;) const</td>
         </tr>
       </table>
   </td>
@@ -457,8 +457,8 @@ template&lt;typename... Args&gt; </div>
 
 </div>
 </div>
-<a id="ab96ded590091ba314fb23a5794dc33a0" name="ab96ded590091ba314fb23a5794dc33a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab96ded590091ba314fb23a5794dc33a0">&#9670;&#160;</a></span>try_or_fail()</h2>
+<a id="ac0aeb57cfa722b014ebb376bfa8d356a" name="ac0aeb57cfa722b014ebb376bfa8d356a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0aeb57cfa722b014ebb376bfa8d356a">&#9670;&#160;</a></span>try_or_fail()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -469,12 +469,12 @@ template&lt;typename... Args&gt; </div>
         <tr>
           <td class="memname">int ppforest2::io::Output::try_or_fail </td>
           <td>(</td>
-          <td class="paramtype">const std::function&lt; void()&gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+          <td class="paramtype">std::function&lt; void()&gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>&#160;) const</td>
+          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>&#160;) const</td>
         </tr>
       </table>
   </td>

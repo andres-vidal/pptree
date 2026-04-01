@@ -8,10 +8,10 @@ var searchData=
   ['benchmarkparams_2ehpp_5',['BenchmarkParams.hpp',['../BenchmarkParams_8hpp.html',1,'']]],
   ['benchmarkreport_2ehpp_6',['BenchmarkReport.hpp',['../BenchmarkReport_8hpp.html',1,'']]],
   ['benchmarksuite_7',['BenchmarkSuite',['../structppforest2_1_1cli_1_1BenchmarkSuite.html',1,'ppforest2::cli']]],
-  ['bgss_8',['bgss',['../classppforest2_1_1stats_1_1GroupPartition.html#ad333402a7077876e72f7e8439cc8dd20',1,'ppforest2::stats::GroupPartition']]],
+  ['bgss_8',['bgss',['../classppforest2_1_1stats_1_1GroupPartition.html#a8c26c6a76b3c37fc0db844351acabd90',1,'ppforest2::stats::GroupPartition']]],
   ['binary_9',['BINARY',['../CLI_8integration_8hpp.html#aba7ad5baf60863ad89ebafe5ebca1da2',1,'CLI.integration.hpp']]],
   ['bootstraptree_10',['BootstrapTree',['../structppforest2_1_1BootstrapTree.html',1,'ppforest2::BootstrapTree'],['../structppforest2_1_1BootstrapTree.html#a0948eda6cfeb64e5b6138214d899a0e9',1,'ppforest2::BootstrapTree::BootstrapTree()']]],
   ['bootstraptree_2ehpp_11',['BootstrapTree.hpp',['../BootstrapTree_8hpp.html',1,'']]],
   ['boundarysegment_12',['BoundarySegment',['../structppforest2_1_1viz_1_1BoundarySegment.html',1,'ppforest2::viz']]],
-  ['boundaryvisitor_13',['BoundaryVisitor',['../structppforest2_1_1viz_1_1BoundaryVisitor.html',1,'ppforest2::viz::BoundaryVisitor'],['../structppforest2_1_1viz_1_1BoundaryVisitor.html#ac55ac3baf041ebe9f5d7c511f6eb85b3',1,'ppforest2::viz::BoundaryVisitor::BoundaryVisitor()']]]
+  ['boundaryvisitor_13',['BoundaryVisitor',['../structppforest2_1_1viz_1_1BoundaryVisitor.html',1,'ppforest2::viz::BoundaryVisitor'],['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a1658b984dcce8865f834a58ad9c5d694',1,'ppforest2::viz::BoundaryVisitor::BoundaryVisitor()']]]
 ];

@@ -191,27 +191,27 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a11f9adf22a02da64ea2ef7138c737a45" id="r_a11f9adf22a02da64ea2ef7138c737a45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11f9adf22a02da64ea2ef7138c737a45">user_error</a> (bool condition, const char *message)</td></tr>
-<tr class="memdesc:a11f9adf22a02da64ea2ef7138c737a45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw a <a class="el" href="classppforest2_1_1UserError.html" title="Exception for user-facing input validation errors.">UserError</a> if the condition is false.     <br /></td></tr>
-<tr class="separator:a11f9adf22a02da64ea2ef7138c737a45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae914e6913ccad1ac91801fcf89f308bc" id="r_ae914e6913ccad1ac91801fcf89f308bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae914e6913ccad1ac91801fcf89f308bc">user_error</a> (bool condition, const std::string &amp;message)</td></tr>
-<tr class="memdesc:ae914e6913ccad1ac91801fcf89f308bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw a <a class="el" href="classppforest2_1_1UserError.html" title="Exception for user-facing input validation errors.">UserError</a> if the condition is false.  <br /></td></tr>
-<tr class="separator:ae914e6913ccad1ac91801fcf89f308bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7fc566697e66bde48d3ae08b54c04d3" id="r_af7fc566697e66bde48d3ae08b54c04d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af7fc566697e66bde48d3ae08b54c04d3">validate_json_keys</a> (const nlohmann::json &amp;j, const std::string &amp;context, std::initializer_list&lt; std::string &gt; allowed)</td></tr>
-<tr class="memdesc:af7fc566697e66bde48d3ae08b54c04d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that a JSON object contains only expected keys.  <br /></td></tr>
-<tr class="separator:af7fc566697e66bde48d3ae08b54c04d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0a515d25db5e1b1f0b171426f5e7ef4" id="r_ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0a515d25db5e1b1f0b171426f5e7ef4">variable_importance_permuted</a> (const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;forest, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, int seed=0)</td></tr>
-<tr class="memdesc:ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI1 — Permuted importance.  <br /></td></tr>
-<tr class="separator:ae0a515d25db5e1b1f0b171426f5e7ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa294cff97b443565ec4e005fba2829c6" id="r_aa294cff97b443565ec4e005fba2829c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa294cff97b443565ec4e005fba2829c6">variable_importance_projections</a> (const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;forest, int n_vars, const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *scale=nullptr)</td></tr>
-<tr class="memdesc:aa294cff97b443565ec4e005fba2829c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI2 — Projections importance (forest).  <br /></td></tr>
-<tr class="separator:aa294cff97b443565ec4e005fba2829c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7c6e1845ee1ad52809da10a17da6a14" id="r_ad7c6e1845ee1ad52809da10a17da6a14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7c6e1845ee1ad52809da10a17da6a14">variable_importance_projections</a> (const <a class="el" href="structppforest2_1_1Tree.html">Tree</a> &amp;tree, int n_vars, const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *scale=nullptr)</td></tr>
-<tr class="memdesc:ad7c6e1845ee1ad52809da10a17da6a14"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI2 — Projections importance (single tree).  <br /></td></tr>
-<tr class="separator:ad7c6e1845ee1ad52809da10a17da6a14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fc51558fbdb031113953cb666fc4028" id="r_a3fc51558fbdb031113953cb666fc4028"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3fc51558fbdb031113953cb666fc4028">variable_importance_weighted_projections</a> (const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;forest, const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;x, const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;y, const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *scale=nullptr)</td></tr>
-<tr class="memdesc:a3fc51558fbdb031113953cb666fc4028"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI3 — Weighted projections importance.  <br /></td></tr>
-<tr class="separator:a3fc51558fbdb031113953cb666fc4028"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab81ede42a0111bc4742e1700128b349" id="r_aab81ede42a0111bc4742e1700128b349"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab81ede42a0111bc4742e1700128b349">user_error</a> (bool condition, char const *message)</td></tr>
+<tr class="memdesc:aab81ede42a0111bc4742e1700128b349"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw a <a class="el" href="classppforest2_1_1UserError.html" title="Exception for user-facing input validation errors.">UserError</a> if the condition is false.     <br /></td></tr>
+<tr class="separator:aab81ede42a0111bc4742e1700128b349"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10b764ed7ff55617e5db1c2624f90c9d" id="r_a10b764ed7ff55617e5db1c2624f90c9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a10b764ed7ff55617e5db1c2624f90c9d">user_error</a> (bool condition, std::string const &amp;message)</td></tr>
+<tr class="memdesc:a10b764ed7ff55617e5db1c2624f90c9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw a <a class="el" href="classppforest2_1_1UserError.html" title="Exception for user-facing input validation errors.">UserError</a> if the condition is false.  <br /></td></tr>
+<tr class="separator:a10b764ed7ff55617e5db1c2624f90c9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa0260747112d818a2bf694a7246b192" id="r_aaa0260747112d818a2bf694a7246b192"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaa0260747112d818a2bf694a7246b192">validate_json_keys</a> (nlohmann::json const &amp;j, std::string const &amp;context, std::initializer_list&lt; std::string &gt; allowed)</td></tr>
+<tr class="memdesc:aaa0260747112d818a2bf694a7246b192"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that a JSON object contains only expected keys.  <br /></td></tr>
+<tr class="separator:aaa0260747112d818a2bf694a7246b192"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad363550471bb2a9a90113de4d91dccd7" id="r_ad363550471bb2a9a90113de4d91dccd7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad363550471bb2a9a90113de4d91dccd7">variable_importance_permuted</a> (<a class="el" href="structppforest2_1_1Forest.html">Forest</a> const &amp;forest, <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x, <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;y, int seed=0)</td></tr>
+<tr class="memdesc:ad363550471bb2a9a90113de4d91dccd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI1 — Permuted importance.  <br /></td></tr>
+<tr class="separator:ad363550471bb2a9a90113de4d91dccd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e134521a981f57fbae3875cebfa4ef0" id="r_a8e134521a981f57fbae3875cebfa4ef0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e134521a981f57fbae3875cebfa4ef0">variable_importance_projections</a> (<a class="el" href="structppforest2_1_1Forest.html">Forest</a> const &amp;forest, int n_vars, <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const *scale=nullptr)</td></tr>
+<tr class="memdesc:a8e134521a981f57fbae3875cebfa4ef0"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI2 — Projections importance (forest).  <br /></td></tr>
+<tr class="separator:a8e134521a981f57fbae3875cebfa4ef0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac668e1724c45fc210df3a7f354abdb3e" id="r_ac668e1724c45fc210df3a7f354abdb3e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac668e1724c45fc210df3a7f354abdb3e">variable_importance_projections</a> (<a class="el" href="structppforest2_1_1Tree.html">Tree</a> const &amp;tree, int n_vars, <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const *scale=nullptr)</td></tr>
+<tr class="memdesc:ac668e1724c45fc210df3a7f354abdb3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI2 — Projections importance (single tree).  <br /></td></tr>
+<tr class="separator:ac668e1724c45fc210df3a7f354abdb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2d1f58331254fac0ef217809aabe2f4" id="r_ad2d1f58331254fac0ef217809aabe2f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad2d1f58331254fac0ef217809aabe2f4">variable_importance_weighted_projections</a> (<a class="el" href="structppforest2_1_1Forest.html">Forest</a> const &amp;forest, <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x, <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;y, <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const *scale=nullptr)</td></tr>
+<tr class="memdesc:ad2d1f58331254fac0ef217809aabe2f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">VI3 — Weighted projections importance.  <br /></td></tr>
+<tr class="separator:ad2d1f58331254fac0ef217809aabe2f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="ad86c43fe58242b878d5590d1d130772a" name="ad86c43fe58242b878d5590d1d130772a"></a>
@@ -231,8 +231,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a11f9adf22a02da64ea2ef7138c737a45" name="a11f9adf22a02da64ea2ef7138c737a45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11f9adf22a02da64ea2ef7138c737a45">&#9670;&#160;</a></span>user_error() <span class="overload">[1/2]</span></h2>
+<a id="aab81ede42a0111bc4742e1700128b349" name="aab81ede42a0111bc4742e1700128b349"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab81ede42a0111bc4742e1700128b349">&#9670;&#160;</a></span>user_error() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -245,7 +245,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>message</em></span>&#160;)</td>
+          <td class="paramtype">char const *</td>          <td class="paramname"><span class="paramname"><em>message</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -261,8 +261,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae914e6913ccad1ac91801fcf89f308bc" name="ae914e6913ccad1ac91801fcf89f308bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae914e6913ccad1ac91801fcf89f308bc">&#9670;&#160;</a></span>user_error() <span class="overload">[2/2]</span></h2>
+<a id="a10b764ed7ff55617e5db1c2624f90c9d" name="a10b764ed7ff55617e5db1c2624f90c9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10b764ed7ff55617e5db1c2624f90c9d">&#9670;&#160;</a></span>user_error() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -275,7 +275,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>message</em></span>&#160;)</td>
+          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>message</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -291,8 +291,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af7fc566697e66bde48d3ae08b54c04d3" name="af7fc566697e66bde48d3ae08b54c04d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7fc566697e66bde48d3ae08b54c04d3">&#9670;&#160;</a></span>validate_json_keys()</h2>
+<a id="aaa0260747112d818a2bf694a7246b192" name="aaa0260747112d818a2bf694a7246b192"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa0260747112d818a2bf694a7246b192">&#9670;&#160;</a></span>validate_json_keys()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -303,12 +303,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void ppforest2::validate_json_keys </td>
           <td>(</td>
-          <td class="paramtype">const nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span>, </td>
+          <td class="paramtype">nlohmann::json const &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span>, </td>
+          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -341,8 +341,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae0a515d25db5e1b1f0b171426f5e7ef4" name="ae0a515d25db5e1b1f0b171426f5e7ef4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0a515d25db5e1b1f0b171426f5e7ef4">&#9670;&#160;</a></span>variable_importance_permuted()</h2>
+<a id="ad363550471bb2a9a90113de4d91dccd7" name="ad363550471bb2a9a90113de4d91dccd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad363550471bb2a9a90113de4d91dccd7">&#9670;&#160;</a></span>variable_importance_permuted()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -350,17 +350,17 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> ppforest2::variable_importance_permuted </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>forest</em></span>, </td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Forest.html">Forest</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>forest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -385,8 +385,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa294cff97b443565ec4e005fba2829c6" name="aa294cff97b443565ec4e005fba2829c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa294cff97b443565ec4e005fba2829c6">&#9670;&#160;</a></span>variable_importance_projections() <span class="overload">[1/2]</span></h2>
+<a id="a8e134521a981f57fbae3875cebfa4ef0" name="a8e134521a981f57fbae3875cebfa4ef0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e134521a981f57fbae3875cebfa4ef0">&#9670;&#160;</a></span>variable_importance_projections() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -394,7 +394,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> ppforest2::variable_importance_projections </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>forest</em></span>, </td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Forest.html">Forest</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>forest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -404,7 +404,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *</td>          <td class="paramname"><span class="paramname"><em>scale</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const *</td>          <td class="paramname"><span class="paramname"><em>scale</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -423,8 +423,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ad7c6e1845ee1ad52809da10a17da6a14" name="ad7c6e1845ee1ad52809da10a17da6a14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7c6e1845ee1ad52809da10a17da6a14">&#9670;&#160;</a></span>variable_importance_projections() <span class="overload">[2/2]</span></h2>
+<a id="ac668e1724c45fc210df3a7f354abdb3e" name="ac668e1724c45fc210df3a7f354abdb3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac668e1724c45fc210df3a7f354abdb3e">&#9670;&#160;</a></span>variable_importance_projections() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -432,7 +432,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> ppforest2::variable_importance_projections </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1Tree.html">Tree</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>tree</em></span>, </td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Tree.html">Tree</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>tree</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -442,7 +442,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *</td>          <td class="paramname"><span class="paramname"><em>scale</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const *</td>          <td class="paramname"><span class="paramname"><em>scale</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -461,8 +461,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3fc51558fbdb031113953cb666fc4028" name="a3fc51558fbdb031113953cb666fc4028"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3fc51558fbdb031113953cb666fc4028">&#9670;&#160;</a></span>variable_importance_weighted_projections()</h2>
+<a id="ad2d1f58331254fac0ef217809aabe2f4" name="ad2d1f58331254fac0ef217809aabe2f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2d1f58331254fac0ef217809aabe2f4">&#9670;&#160;</a></span>variable_importance_weighted_projections()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -470,22 +470,22 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> ppforest2::variable_importance_weighted_projections </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>forest</em></span>, </td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Forest.html">Forest</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>forest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> *</td>          <td class="paramname"><span class="paramname"><em>scale</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const *</td>          <td class="paramname"><span class="paramname"><em>scale</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

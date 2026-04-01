@@ -200,12 +200,12 @@ Example: a random projection strategy</h2>
 <div class="line">    <span class="keywordflow">return</span> PPResult{ proj, 0 };</div>
 <div class="line">  }</div>
 <div class="line"> </div>
-<div class="line">  <span class="keywordtype">void</span> <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#a5f98c94cb33ab84c91b2fba714093277">to_json</a>(nlohmann::json&amp; j)<span class="keyword"> const override </span>{</div>
+<div class="line">  <span class="keywordtype">void</span> <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#af24192eaa3c80420571a995b8b6148c2">to_json</a>(nlohmann::json&amp; j)<span class="keyword"> const override </span>{</div>
 <div class="line">    j = {{<span class="stringliteral">&quot;name&quot;</span>, <span class="stringliteral">&quot;random&quot;</span>}};</div>
 <div class="line">  }</div>
 <div class="line"> </div>
-<div class="line">  <span class="keyword">static</span> PPStrategy::Ptr <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#a6e9ecc595510845a6a0b93f9797b5147">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
-<div class="line">    <a class="code hl_function" href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">validate_json_keys</a>(j, <span class="stringliteral">&quot;random PP&quot;</span>, {<span class="stringliteral">&quot;name&quot;</span>});</div>
+<div class="line">  <span class="keyword">static</span> PPStrategy::Ptr <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#a21d88670ecb8e48528bbbe76612c2636">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
+<div class="line">    <a class="code hl_function" href="namespaceppforest2.html#aaa0260747112d818a2bf694a7246b192">validate_json_keys</a>(j, <span class="stringliteral">&quot;random PP&quot;</span>, {<span class="stringliteral">&quot;name&quot;</span>});</div>
 <div class="line">    <span class="keywordflow">return</span> random();</div>
 <div class="line">  }</div>
 <div class="line"> </div>
@@ -222,9 +222,9 @@ Example: a random projection strategy</h2>
 <div class="ttc" id="aPPStrategy_8hpp_html"><div class="ttname"><a href="PPStrategy_8hpp.html">PPStrategy.hpp</a></div></div>
 <div class="ttc" id="aStrategy_8hpp_html"><div class="ttname"><a href="Strategy_8hpp.html">Strategy.hpp</a></div></div>
 <div class="ttc" id="anamespaceppforest2_1_1pp_html"><div class="ttname"><a href="namespaceppforest2_1_1pp.html">ppforest2::pp</a></div><div class="ttdoc">Projection pursuit strategies.</div><div class="ttdef"><b>Definition</b> PPPDAStrategy.hpp:8</div></div>
-<div class="ttc" id="anamespaceppforest2_1_1serialization_html_a5f98c94cb33ab84c91b2fba714093277"><div class="ttname"><a href="namespaceppforest2_1_1serialization.html#a5f98c94cb33ab84c91b2fba714093277">ppforest2::serialization::to_json</a></div><div class="ttdeci">json to_json(const Model &amp;model)</div></div>
-<div class="ttc" id="anamespaceppforest2_1_1serialization_html_a6e9ecc595510845a6a0b93f9797b5147"><div class="ttname"><a href="namespaceppforest2_1_1serialization.html#a6e9ecc595510845a6a0b93f9797b5147">ppforest2::serialization::from_json</a></div><div class="ttdeci">T from_json(const json &amp;j)</div><div class="ttdoc">Deserialize from a model block (integer labels only).</div></div>
-<div class="ttc" id="anamespaceppforest2_html_af7fc566697e66bde48d3ae08b54c04d3"><div class="ttname"><a href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">ppforest2::validate_json_keys</a></div><div class="ttdeci">void validate_json_keys(const nlohmann::json &amp;j, const std::string &amp;context, std::initializer_list&lt; std::string &gt; allowed)</div><div class="ttdoc">Validate that a JSON object contains only expected keys.</div><div class="ttdef"><b>Definition</b> JsonValidation.hpp:20</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1serialization_html_a21d88670ecb8e48528bbbe76612c2636"><div class="ttname"><a href="namespaceppforest2_1_1serialization.html#a21d88670ecb8e48528bbbe76612c2636">ppforest2::serialization::from_json</a></div><div class="ttdeci">T from_json(json const &amp;j)</div><div class="ttdoc">Deserialize from a model block (integer labels only).</div></div>
+<div class="ttc" id="anamespaceppforest2_1_1serialization_html_af24192eaa3c80420571a995b8b6148c2"><div class="ttname"><a href="namespaceppforest2_1_1serialization.html#af24192eaa3c80420571a995b8b6148c2">ppforest2::serialization::to_json</a></div><div class="ttdeci">json to_json(Model const &amp;model)</div></div>
+<div class="ttc" id="anamespaceppforest2_html_aaa0260747112d818a2bf694a7246b192"><div class="ttname"><a href="namespaceppforest2.html#aaa0260747112d818a2bf694a7246b192">ppforest2::validate_json_keys</a></div><div class="ttdeci">void validate_json_keys(nlohmann::json const &amp;j, std::string const &amp;context, std::initializer_list&lt; std::string &gt; allowed)</div><div class="ttdoc">Validate that a JSON object contains only expected keys.</div><div class="ttdef"><b>Definition</b> JsonValidation.hpp:20</div></div>
 <div class="ttc" id="astructStrategy_html_a30c651b4431c97d3504039607df398c9"><div class="ttname"><a href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Strategy&lt; PPStrategy &gt;::Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; PPStrategy &gt; Ptr</div><div class="ttdef"><b>Definition</b> Strategy.hpp:28</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="strat_dr"></a>
 Adding a new DRStrategy</h1>
@@ -281,12 +281,12 @@ Example: top-variance variable selection</h2>
 <div class="line">    <span class="keywordflow">return</span> DRResult(selected, x.cols());</div>
 <div class="line">  }</div>
 <div class="line"> </div>
-<div class="line">  <span class="keywordtype">void</span> <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#a5f98c94cb33ab84c91b2fba714093277">to_json</a>(nlohmann::json&amp; j)<span class="keyword"> const override </span>{</div>
+<div class="line">  <span class="keywordtype">void</span> <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#af24192eaa3c80420571a995b8b6148c2">to_json</a>(nlohmann::json&amp; j)<span class="keyword"> const override </span>{</div>
 <div class="line">    j = {{<span class="stringliteral">&quot;name&quot;</span>, <span class="stringliteral">&quot;variance&quot;</span>}, {<span class="stringliteral">&quot;n_vars&quot;</span>, n_vars_}};</div>
 <div class="line">  }</div>
 <div class="line"> </div>
-<div class="line">  <span class="keyword">static</span> DRStrategy::Ptr <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#a6e9ecc595510845a6a0b93f9797b5147">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
-<div class="line">    <a class="code hl_function" href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">validate_json_keys</a>(j, <span class="stringliteral">&quot;variance DR&quot;</span>, {<span class="stringliteral">&quot;name&quot;</span>, <span class="stringliteral">&quot;n_vars&quot;</span>});</div>
+<div class="line">  <span class="keyword">static</span> DRStrategy::Ptr <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#a21d88670ecb8e48528bbbe76612c2636">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
+<div class="line">    <a class="code hl_function" href="namespaceppforest2.html#aaa0260747112d818a2bf694a7246b192">validate_json_keys</a>(j, <span class="stringliteral">&quot;variance DR&quot;</span>, {<span class="stringliteral">&quot;name&quot;</span>, <span class="stringliteral">&quot;n_vars&quot;</span>});</div>
 <div class="line">    <span class="keywordflow">return</span> variance(j.at(<span class="stringliteral">&quot;n_vars&quot;</span>).get&lt;<span class="keywordtype">int</span>&gt;());</div>
 <div class="line">  }</div>
 <div class="line"> </div>
@@ -353,8 +353,8 @@ Example: median-based split</h2>
 <div class="line">    j = {{<span class="stringliteral">&quot;name&quot;</span>, <span class="stringliteral">&quot;median&quot;</span>}};</div>
 <div class="line">  }</div>
 <div class="line"> </div>
-<div class="line">  <span class="keyword">static</span> SRStrategy::Ptr <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#a6e9ecc595510845a6a0b93f9797b5147">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
-<div class="line">    <a class="code hl_function" href="namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3">validate_json_keys</a>(j, <span class="stringliteral">&quot;median SR&quot;</span>, {<span class="stringliteral">&quot;name&quot;</span>});</div>
+<div class="line">  <span class="keyword">static</span> SRStrategy::Ptr <a class="code hl_function" href="namespaceppforest2_1_1serialization.html#a21d88670ecb8e48528bbbe76612c2636">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
+<div class="line">    <a class="code hl_function" href="namespaceppforest2.html#aaa0260747112d818a2bf694a7246b192">validate_json_keys</a>(j, <span class="stringliteral">&quot;median SR&quot;</span>, {<span class="stringliteral">&quot;name&quot;</span>});</div>
 <div class="line">    <span class="keywordflow">return</span> median();</div>
 <div class="line">  }</div>
 <div class="line"> </div>

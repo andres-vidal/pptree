@@ -98,9 +98,9 @@ var NAVTREEINDEX =
 "BenchmarkParams_8hpp.html",
 "extending_strategies.html#strat_checklist",
 "namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045",
-"structppforest2_1_1TreeNode.html#a494aabdfba0d9c497c051771b1fe5e9a",
+"structppforest2_1_1TreeNode.html#a5ec62c510e282beae85c9e9a59e11efc",
 "structppforest2_1_1cli_1_1ScenarioResult.html#aa196c76adf908bb442964bbb1253e53b",
-"structppforest2_1_1sr_1_1SRStrategy.html#a5058ff4110674f43688cb9e7f9dcb3eb"
+"structppforest2_1_1sr_1_1SRStrategy.html#a365d3745431cd197be128639fc635b22"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

@@ -9,8 +9,8 @@ var structppforest2_1_1io_1_1Output =
     [ "print", "structppforest2_1_1io_1_1Output.html#a683d89281a4a39fbb209b3b1c845c619", null ],
     [ "println", "structppforest2_1_1io_1_1Output.html#aad1af2cabeaae871adb58a19d4d6bb20", null ],
     [ "progress", "structppforest2_1_1io_1_1Output.html#a4c6405f8250f801e4f0f1121c641296e", null ],
-    [ "saved", "structppforest2_1_1io_1_1Output.html#a2f6bbe82aa88bccf52be45a4465f29c7", null ],
-    [ "try_or_fail", "structppforest2_1_1io_1_1Output.html#ab96ded590091ba314fb23a5794dc33a0", null ],
+    [ "saved", "structppforest2_1_1io_1_1Output.html#a7a2ad90daf73d2b35baa3406f338210f", null ],
+    [ "try_or_fail", "structppforest2_1_1io_1_1Output.html#ac0aeb57cfa722b014ebb376bfa8d356a", null ],
     [ "indent_level", "structppforest2_1_1io_1_1Output.html#a7a57a8d780a4a020d6b40e804bbb835b", null ],
     [ "quiet", "structppforest2_1_1io_1_1Output.html#a8f0efe2699b4508e39a4ec7d570490f3", null ]
 ];

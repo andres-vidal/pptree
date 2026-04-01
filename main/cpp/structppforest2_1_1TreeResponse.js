@@ -4,12 +4,12 @@ var structppforest2_1_1TreeResponse =
     [ "TreeResponse", "structppforest2_1_1TreeResponse.html#afc6e1d2578e63d0654417be0f651898a", null ],
     [ "accept", "structppforest2_1_1TreeResponse.html#a4dd4c2b0834ca7523a6a24327b953d80", null ],
     [ "clone", "structppforest2_1_1TreeResponse.html#a98d85931fdf139a8706f5d9be99c2af0", null ],
-    [ "equals", "structppforest2_1_1TreeResponse.html#ad21e9e3a0043c750247183169cb9b16b", null ],
+    [ "equals", "structppforest2_1_1TreeResponse.html#a7331f80e49bf41bfc436d9c284a0c272", null ],
     [ "group_count", "structppforest2_1_1TreeResponse.html#a4899f6b5bd6bd7e80878b9fe7a4a36dc", null ],
     [ "is_leaf", "structppforest2_1_1TreeResponse.html#afec18b1e2545f347bfc2dd7dca0d0e9c", null ],
     [ "make", "structppforest2_1_1TreeResponse.html#a6b894aeb5b1d1159bc4c51999603a516", null ],
     [ "node_groups", "structppforest2_1_1TreeResponse.html#a3d73100e9764c2a9481c2e167f7eb5e7", null ],
-    [ "predict", "structppforest2_1_1TreeResponse.html#ad1152e6aabd3dbbfce1c69881f33bb64", null ],
+    [ "predict", "structppforest2_1_1TreeResponse.html#a5785dc8c97e4c16cf486d830178f6624", null ],
     [ "response", "structppforest2_1_1TreeResponse.html#a7a4e650892f7799dc073e5debf5b3765", null ],
     [ "value", "structppforest2_1_1TreeResponse.html#aa94fac6f7ec3fa85e83e4bc68d90b187", null ]
 ];

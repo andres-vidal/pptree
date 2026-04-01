@@ -22,13 +22,13 @@ var searchData=
   ['node_5fidx_19',['node_idx',['../structppforest2_1_1viz_1_1LayoutNode.html#a81004889e210e33b89301d19248bb044',1,'ppforest2::viz::LayoutNode']]],
   ['node_5fw_20',['node_w',['../structppforest2_1_1viz_1_1LayoutParams.html#adb0cfabc0860200a836f984c7fa7bf7e',1,'ppforest2::viz::LayoutParams']]],
   ['nodedata_21',['NodeData',['../structppforest2_1_1viz_1_1NodeData.html',1,'ppforest2::viz']]],
-  ['nodedatavisitor_22',['NodeDataVisitor',['../structppforest2_1_1viz_1_1NodeDataVisitor.html',1,'ppforest2::viz::NodeDataVisitor'],['../structppforest2_1_1viz_1_1NodeDataVisitor.html#a89edf55beacb824f09a6d9a983177fa8',1,'ppforest2::viz::NodeDataVisitor::NodeDataVisitor(const types::FeatureMatrix &amp;x, const types::ResponseVector &amp;y)']]],
+  ['nodedatavisitor_22',['NodeDataVisitor',['../structppforest2_1_1viz_1_1NodeDataVisitor.html',1,'ppforest2::viz::NodeDataVisitor'],['../structppforest2_1_1viz_1_1NodeDataVisitor.html#a68f24ce8494663e0dd948b8570bd8c08',1,'ppforest2::viz::NodeDataVisitor::NodeDataVisitor(types::FeatureMatrix const &amp;x, types::ResponseVector const &amp;y)']]],
   ['nodes_23',['nodes',['../structppforest2_1_1viz_1_1NodeDataVisitor.html#a0203d79417bd4deac383069ff7b838df',1,'ppforest2::viz::NodeDataVisitor::nodes'],['../structppforest2_1_1viz_1_1TreeLayout.html#a38ef965745dd6abb92377e1b79d8c2d7',1,'ppforest2::viz::TreeLayout::nodes']]],
   ['none_24',['none',['../namespaceppforest2_1_1cli.html#ac19eadb7b9d37e6b1fd42c6e52920e51a334c4a4c42fdb79d7ebc3e73b517e6f8',1,'ppforest2::cli']]],
   ['noop_25',['noop',['../namespaceppforest2_1_1dr.html#afb04463fe18947613b27e0b8a367923a',1,'ppforest2::dr']]],
   ['normal_26',['Normal',['../classppforest2_1_1stats_1_1Normal.html',1,'ppforest2::stats::Normal'],['../classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647',1,'ppforest2::stats::Normal::Normal()']]],
   ['normal_2ehpp_27',['Normal.hpp',['../Normal_8hpp.html',1,'']]],
-  ['normalize_28',['normalize',['../namespaceppforest2_1_1pp.html#ae34b22f8acd82e65295ea70a730445d9',1,'ppforest2::pp']]],
+  ['normalize_28',['normalize',['../namespaceppforest2_1_1pp.html#af1c9cd0f355ffcb4b45747b150ac7142',1,'ppforest2::pp']]],
   ['now_5fiso8601_29',['now_iso8601',['../namespaceppforest2_1_1io.html#af3bea8d81a602627c7d483ac468c0870',1,'ppforest2::io']]],
   ['numeric_20precision_30',['Numeric precision',['../index.html#precision',1,'']]]
 ];

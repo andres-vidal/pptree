@@ -8,7 +8,7 @@ var searchData=
   ['pp_5fconfig_5',['pp_config',['../structppforest2_1_1cli_1_1ModelParams.html#ad23c8e70afa4e9741c3088459fffc342',1,'ppforest2::cli::ModelParams']]],
   ['pp_5findex_5fvalue_6',['pp_index_value',['../structppforest2_1_1TreeCondition.html#a9fef8c69a770e7f914754a06280c5d49',1,'ppforest2::TreeCondition']]],
   ['pp_5finput_7',['pp_input',['../structppforest2_1_1cli_1_1ModelParams.html#a4b392c21acee031188a6a80fac5bad40',1,'ppforest2::cli::ModelParams']]],
-  ['pp_5fstrategy_8',['pp_strategy',['../structppforest2_1_1TrainingSpec.html#a6a258c913999409ee9c4fe065b0be902',1,'ppforest2::TrainingSpec']]],
+  ['pp_5fstrategy_8',['pp_strategy',['../structppforest2_1_1TrainingSpec.html#adda44d26ec930efb0ffdd76dc5fee726',1,'ppforest2::TrainingSpec']]],
   ['predicted_5fgroup_9',['predicted_group',['../structppforest2_1_1viz_1_1RegionPolygon.html#afccee5e571135058b266e94b29920bd1',1,'ppforest2::viz::RegionPolygon']]],
   ['projected_5fvalues_10',['projected_values',['../structppforest2_1_1viz_1_1NodeData.html#ace58e17809ab9eaddad15054fda49529',1,'ppforest2::viz::NodeData']]],
   ['projections_11',['projections',['../structppforest2_1_1VariableImportance.html#a9d993434c9ada143fd61ad34d87eadc7',1,'ppforest2::VariableImportance']]],

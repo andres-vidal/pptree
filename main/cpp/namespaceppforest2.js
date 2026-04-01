@@ -4,7 +4,7 @@ var namespaceppforest2 =
     [ "dr", "namespaceppforest2_1_1dr.html", "namespaceppforest2_1_1dr" ],
     [ "io", "namespaceppforest2_1_1io.html", "namespaceppforest2_1_1io" ],
     [ "math", "namespaceppforest2_1_1math.html", [
-      [ "collinear", "namespaceppforest2_1_1math.html#adb2c5eb329ea583be675af520bfc4b4b", null ],
+      [ "collinear", "namespaceppforest2_1_1math.html#a75105aa89f414a6c4593318ef6b5541d", null ],
       [ "is_approx", "namespaceppforest2_1_1math.html#a486fc087538c291f21b8e796c04fa70c", null ],
       [ "is_approx", "namespaceppforest2_1_1math.html#aef9bfff79515449a7894e70e661a3daf", null ],
       [ "is_module_approx", "namespaceppforest2_1_1math.html#ace8888ca553032158504ff15745c2fbf", null ]
@@ -26,9 +26,9 @@ var namespaceppforest2 =
       [ "Vector", "namespaceppforest2_1_1types.html#a6b0f2fc1c6c2d1f5fac68202619e33f8", null ]
     ] ],
     [ "utils", "namespaceppforest2_1_1utils.html", [
-      [ "invert", "namespaceppforest2_1_1utils.html#ada415ecaf9b653fec6a3236256e52f21", null ],
-      [ "keys", "namespaceppforest2_1_1utils.html#aeb655a3f13d114f54bc1d97cba1d8abe", null ],
-      [ "values", "namespaceppforest2_1_1utils.html#a9ed3e5ccf285997edb19045d4cf62b16", null ]
+      [ "invert", "namespaceppforest2_1_1utils.html#a3c439470b504a25c3367fc4f635c2032", null ],
+      [ "keys", "namespaceppforest2_1_1utils.html#a7b1e8343a3ad21aa3afe10c7f5705fe1", null ],
+      [ "values", "namespaceppforest2_1_1utils.html#a80f6e2d651187dda1b6565ebb75c8158", null ]
     ] ],
     [ "viz", "namespaceppforest2_1_1viz.html", "namespaceppforest2_1_1viz" ],
     [ "BootstrapTree", "structppforest2_1_1BootstrapTree.html", "structppforest2_1_1BootstrapTree" ],
@@ -44,11 +44,11 @@ var namespaceppforest2 =
     [ "VariableImportance", "structppforest2_1_1VariableImportance.html", "structppforest2_1_1VariableImportance" ],
     [ "VIVisitor", "structppforest2_1_1VIVisitor.html", "structppforest2_1_1VIVisitor" ],
     [ "Threshold", "namespaceppforest2.html#ad86c43fe58242b878d5590d1d130772a", null ],
-    [ "user_error", "namespaceppforest2.html#a11f9adf22a02da64ea2ef7138c737a45", null ],
-    [ "user_error", "namespaceppforest2.html#ae914e6913ccad1ac91801fcf89f308bc", null ],
-    [ "validate_json_keys", "namespaceppforest2.html#af7fc566697e66bde48d3ae08b54c04d3", null ],
-    [ "variable_importance_permuted", "namespaceppforest2.html#ae0a515d25db5e1b1f0b171426f5e7ef4", null ],
-    [ "variable_importance_projections", "namespaceppforest2.html#aa294cff97b443565ec4e005fba2829c6", null ],
-    [ "variable_importance_projections", "namespaceppforest2.html#ad7c6e1845ee1ad52809da10a17da6a14", null ],
-    [ "variable_importance_weighted_projections", "namespaceppforest2.html#a3fc51558fbdb031113953cb666fc4028", null ]
+    [ "user_error", "namespaceppforest2.html#aab81ede42a0111bc4742e1700128b349", null ],
+    [ "user_error", "namespaceppforest2.html#a10b764ed7ff55617e5db1c2624f90c9d", null ],
+    [ "validate_json_keys", "namespaceppforest2.html#aaa0260747112d818a2bf694a7246b192", null ],
+    [ "variable_importance_permuted", "namespaceppforest2.html#ad363550471bb2a9a90113de4d91dccd7", null ],
+    [ "variable_importance_projections", "namespaceppforest2.html#a8e134521a981f57fbae3875cebfa4ef0", null ],
+    [ "variable_importance_projections", "namespaceppforest2.html#ac668e1724c45fc210df3a7f354abdb3e", null ],
+    [ "variable_importance_weighted_projections", "namespaceppforest2.html#ad2d1f58331254fac0ef217809aabe2f4", null ]
 ];

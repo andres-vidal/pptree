@@ -1,8 +1,8 @@
 var structppforest2_1_1viz_1_1BoundaryVisitor =
 [
-    [ "BoundaryVisitor", "structppforest2_1_1viz_1_1BoundaryVisitor.html#ac55ac3baf041ebe9f5d7c511f6eb85b3", null ],
-    [ "visit", "structppforest2_1_1viz_1_1BoundaryVisitor.html#a4bbf36892ae0d8ea72492afbd0ed48de", null ],
-    [ "visit", "structppforest2_1_1viz_1_1BoundaryVisitor.html#ad4b763e725821635a07964c45a189961", null ],
+    [ "BoundaryVisitor", "structppforest2_1_1viz_1_1BoundaryVisitor.html#a1658b984dcce8865f834a58ad9c5d694", null ],
+    [ "visit", "structppforest2_1_1viz_1_1BoundaryVisitor.html#a79a00f94ea1be2ae2e781bab04042d8d", null ],
+    [ "visit", "structppforest2_1_1viz_1_1BoundaryVisitor.html#afd08306b6b796ed91acc1ce4decf70cd", null ],
     [ "constraints", "structppforest2_1_1viz_1_1BoundaryVisitor.html#a0d233281d9f3867707bd8604e4350f74", null ],
     [ "depth", "structppforest2_1_1viz_1_1BoundaryVisitor.html#afbc70f9371d61ec53e2aefcf4b72451c", null ],
     [ "fixed_vars", "structppforest2_1_1viz_1_1BoundaryVisitor.html#a11092d4739350d7e2288232c276c726a", null ],

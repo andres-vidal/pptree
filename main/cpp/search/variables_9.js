@@ -1,7 +1,7 @@
 var searchData=
 [
   ['max_0',['max',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html#a4c3166b2e7713604fa42ab36e6cfae55',1,'ppforest2::cli::ConvergenceCriteria::max'],['../structppforest2_1_1cli_1_1ConvergenceParams.html#adf13c110fe9b4f9d0418eadefd45eddd',1,'ppforest2::cli::ConvergenceParams::max']]],
-  ['max_5fretries_1',['max_retries',['../structppforest2_1_1cli_1_1ModelParams.html#a8de1b7d764b9c1be2028c68980bd398e',1,'ppforest2::cli::ModelParams::max_retries'],['../structppforest2_1_1TrainingSpec.html#a5985052d3272d436fac765aaf0709a82',1,'ppforest2::TrainingSpec::max_retries']]],
+  ['max_5fretries_1',['max_retries',['../structppforest2_1_1cli_1_1ModelParams.html#a8de1b7d764b9c1be2028c68980bd398e',1,'ppforest2::cli::ModelParams::max_retries'],['../structppforest2_1_1TrainingSpec.html#ab6fb11ecdf0a78bc9616be495dc7cde2',1,'ppforest2::TrainingSpec::max_retries']]],
   ['mean_2',['mean',['../structppforest2_1_1cli_1_1SimulateParams.html#a9454fca9aec87a57eb1dd530b5d5520c',1,'ppforest2::cli::SimulateParams::mean'],['../structppforest2_1_1stats_1_1SimulationParams.html#a69694a803715d64e63683b780476ff5b',1,'ppforest2::stats::SimulationParams::mean']]],
   ['mean_5fseparation_3',['mean_separation',['../structppforest2_1_1cli_1_1SimulateParams.html#ac75c78a938a3f6f887f843da646f8a0b',1,'ppforest2::cli::SimulateParams::mean_separation'],['../structppforest2_1_1stats_1_1SimulationParams.html#a27279b3a38409e61edd7ccf522a5cabd',1,'ppforest2::stats::SimulationParams::mean_separation']]],
   ['mean_5fte_5ferror_4',['mean_te_error',['../structppforest2_1_1cli_1_1ScenarioResult.html#a52c0b0a65b0ade361819a442e225a925',1,'ppforest2::cli::ScenarioResult']]],

@@ -1,7 +1,7 @@
 var structppforest2_1_1serialization_1_1Export =
 [
-    [ "compute_metrics", "structppforest2_1_1serialization_1_1Export.html#a3ffbb5982cf067317c013865d3cd0d41", null ],
-    [ "compute_metrics", "structppforest2_1_1serialization_1_1Export.html#a378a0d27b6786012e07c4c0e643b6fd3", null ],
+    [ "compute_metrics", "structppforest2_1_1serialization_1_1Export.html#a6716a3b8d123b7abf62b53bbd5107f09", null ],
+    [ "compute_metrics", "structppforest2_1_1serialization_1_1Export.html#ae07fa3df4f3e450c1d931f148c5cf829", null ],
     [ "to_json", "structppforest2_1_1serialization_1_1Export.html#a53a47907040a2535990379a8ce86b26a", null ],
     [ "to_json", "structppforest2_1_1serialization_1_1Export.html#a2351f3f91dea9b6e58caeb9472f487a8", null ],
     [ "feature_names", "structppforest2_1_1serialization_1_1Export.html#a11f07e3016f42098f380c8b06158cded", null ],

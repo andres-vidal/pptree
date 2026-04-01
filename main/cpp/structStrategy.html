@@ -115,9 +115,9 @@ $(function(){initNavTree('structStrategy.html',''); initResizable(true); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a77651e0f63c2215963a6aa5628b0529b" id="r_a77651e0f63c2215963a6aa5628b0529b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77651e0f63c2215963a6aa5628b0529b">Factory</a> = <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> (*)(const nlohmann::json&amp;)</td></tr>
-<tr class="memdesc:a77651e0f63c2215963a6aa5628b0529b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#a77651e0f63c2215963a6aa5628b0529b" title="Factory function type for deserializing a strategy from JSON.">Factory</a> function type for deserializing a strategy from JSON.  <br /></td></tr>
-<tr class="separator:a77651e0f63c2215963a6aa5628b0529b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c6fd534c2289652b63961a15400f681" id="r_a1c6fd534c2289652b63961a15400f681"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c6fd534c2289652b63961a15400f681">Factory</a> = <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> (*)(nlohmann::json const&amp;)</td></tr>
+<tr class="memdesc:a1c6fd534c2289652b63961a15400f681"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#a1c6fd534c2289652b63961a15400f681" title="Factory function type for deserializing a strategy from JSON.">Factory</a> function type for deserializing a strategy from JSON.  <br /></td></tr>
+<tr class="separator:a1c6fd534c2289652b63961a15400f681"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30c651b4431c97d3504039607df398c9" id="r_a30c651b4431c97d3504039607df398c9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> = std::shared_ptr&lt;Derived&gt;</td></tr>
 <tr class="separator:a30c651b4431c97d3504039607df398c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -134,17 +134,17 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a5ba6c556c2130fd4ac55d5a22ccd7d81" id="r_a5ba6c556c2130fd4ac55d5a22ccd7d81"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ba6c556c2130fd4ac55d5a22ccd7d81">from_json</a> (const nlohmann::json &amp;j)</td></tr>
-<tr class="memdesc:a5ba6c556c2130fd4ac55d5a22ccd7d81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a strategy from its JSON representation.  <br /></td></tr>
-<tr class="separator:a5ba6c556c2130fd4ac55d5a22ccd7d81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2d84cebbfb10d12513ef3d0fd889659" id="r_ae2d84cebbfb10d12513ef3d0fd889659"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2d84cebbfb10d12513ef3d0fd889659">register_strategy</a> (const std::string &amp;name, <a class="el" href="#a77651e0f63c2215963a6aa5628b0529b">Factory</a> factory)</td></tr>
-<tr class="memdesc:ae2d84cebbfb10d12513ef3d0fd889659"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a concrete strategy for JSON deserialization.  <br /></td></tr>
-<tr class="separator:ae2d84cebbfb10d12513ef3d0fd889659"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e314b0628debdf68c17e25f10f339c8" id="r_a9e314b0628debdf68c17e25f10f339c8"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e314b0628debdf68c17e25f10f339c8">from_json</a> (nlohmann::json const &amp;j)</td></tr>
+<tr class="memdesc:a9e314b0628debdf68c17e25f10f339c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a strategy from its JSON representation.  <br /></td></tr>
+<tr class="separator:a9e314b0628debdf68c17e25f10f339c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac90fa8b155a9853c1523aa35ea8ae8cf" id="r_ac90fa8b155a9853c1523aa35ea8ae8cf"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac90fa8b155a9853c1523aa35ea8ae8cf">register_strategy</a> (std::string const &amp;name, <a class="el" href="#a1c6fd534c2289652b63961a15400f681">Factory</a> factory)</td></tr>
+<tr class="memdesc:ac90fa8b155a9853c1523aa35ea8ae8cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a concrete strategy for JSON deserialization.  <br /></td></tr>
+<tr class="separator:ac90fa8b155a9853c1523aa35ea8ae8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Derived&gt;<br />
 struct Strategy&lt; Derived &gt;</div><p>CRTP base class providing self-registration for strategy types. </p>
-<p>Each strategy family (PP, DR, SR) inherits from <a class="el" href="structStrategy.html" title="CRTP base class providing self-registration for strategy types.">Strategy&lt;Derived&gt;</a> to get a shared_ptr <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> typedef, a static registry of named factory functions, and a <a class="el" href="#a5ba6c556c2130fd4ac55d5a22ccd7d81" title="Construct a strategy from its JSON representation.">from_json()</a> dispatcher that looks up the "name" field and delegates to the registered factory.</p>
+<p>Each strategy family (PP, DR, SR) inherits from <a class="el" href="structStrategy.html" title="CRTP base class providing self-registration for strategy types.">Strategy&lt;Derived&gt;</a> to get a shared_ptr <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> typedef, a static registry of named factory functions, and a <a class="el" href="#a9e314b0628debdf68c17e25f10f339c8" title="Construct a strategy from its JSON representation.">from_json()</a> dispatcher that looks up the "name" field and delegates to the registered factory.</p>
 <p>Concrete strategies register themselves at static-init time via the PPFOREST2_REGISTER_STRATEGY macro.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -153,8 +153,8 @@ struct Strategy&lt; Derived &gt;</div><p>CRTP base class providing self-registra
   </dd>
 </dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a77651e0f63c2215963a6aa5628b0529b" name="a77651e0f63c2215963a6aa5628b0529b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77651e0f63c2215963a6aa5628b0529b">&#9670;&#160;</a></span>Factory</h2>
+<a id="a1c6fd534c2289652b63961a15400f681" name="a1c6fd534c2289652b63961a15400f681"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c6fd534c2289652b63961a15400f681">&#9670;&#160;</a></span>Factory</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -162,12 +162,12 @@ struct Strategy&lt; Derived &gt;</div><p>CRTP base class providing self-registra
 template&lt;typename Derived&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="structStrategy.html">Strategy</a>&lt; Derived &gt;::Factory = <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> (*)(const nlohmann::json&amp;)</td>
+          <td class="memname">using <a class="el" href="structStrategy.html">Strategy</a>&lt; Derived &gt;::Factory = <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> (*)(nlohmann::json const&amp;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#a77651e0f63c2215963a6aa5628b0529b" title="Factory function type for deserializing a strategy from JSON.">Factory</a> function type for deserializing a strategy from JSON. </p>
+<p><a class="el" href="#a1c6fd534c2289652b63961a15400f681" title="Factory function type for deserializing a strategy from JSON.">Factory</a> function type for deserializing a strategy from JSON. </p>
 
 </div>
 </div>
@@ -247,8 +247,8 @@ template&lt;typename Derived&gt; </div>
 
 </div>
 </div>
-<a id="a5ba6c556c2130fd4ac55d5a22ccd7d81" name="a5ba6c556c2130fd4ac55d5a22ccd7d81"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ba6c556c2130fd4ac55d5a22ccd7d81">&#9670;&#160;</a></span>from_json()</h2>
+<a id="a9e314b0628debdf68c17e25f10f339c8" name="a9e314b0628debdf68c17e25f10f339c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e314b0628debdf68c17e25f10f339c8">&#9670;&#160;</a></span>from_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -261,7 +261,7 @@ template&lt;typename Derived&gt; </div>
         <tr>
           <td class="memname">static <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> <a class="el" href="structStrategy.html">Strategy</a>&lt; Derived &gt;::from_json </td>
           <td>(</td>
-          <td class="paramtype">const nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td class="paramtype">nlohmann::json const &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -284,8 +284,8 @@ template&lt;typename Derived&gt; </div>
 
 </div>
 </div>
-<a id="ae2d84cebbfb10d12513ef3d0fd889659" name="ae2d84cebbfb10d12513ef3d0fd889659"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2d84cebbfb10d12513ef3d0fd889659">&#9670;&#160;</a></span>register_strategy()</h2>
+<a id="ac90fa8b155a9853c1523aa35ea8ae8cf" name="ac90fa8b155a9853c1523aa35ea8ae8cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac90fa8b155a9853c1523aa35ea8ae8cf">&#9670;&#160;</a></span>register_strategy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -298,12 +298,12 @@ template&lt;typename Derived&gt; </div>
         <tr>
           <td class="memname">static bool <a class="el" href="structStrategy.html">Strategy</a>&lt; Derived &gt;::register_strategy </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
+          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="#a77651e0f63c2215963a6aa5628b0529b">Factory</a></td>          <td class="paramname"><span class="paramname"><em>factory</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="#a1c6fd534c2289652b63961a15400f681">Factory</a></td>          <td class="paramname"><span class="paramname"><em>factory</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -318,7 +318,7 @@ template&lt;typename Derived&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td><a class="el" href="structStrategy.html" title="CRTP base class providing self-registration for strategy types.">Strategy</a> name (must match the "name" field in JSON). </td></tr>
-    <tr><td class="paramname">factory</td><td><a class="el" href="#a77651e0f63c2215963a6aa5628b0529b" title="Factory function type for deserializing a strategy from JSON.">Factory</a> function that constructs the strategy. </td></tr>
+    <tr><td class="paramname">factory</td><td><a class="el" href="#a1c6fd534c2289652b63961a15400f681" title="Factory function type for deserializing a strategy from JSON.">Factory</a> function that constructs the strategy. </td></tr>
   </table>
   </dd>
 </dl>

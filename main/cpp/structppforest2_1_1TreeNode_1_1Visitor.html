@@ -113,17 +113,17 @@ $(function(){initNavTree('structppforest2_1_1TreeNode_1_1Visitor.html',''); init
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7f2b2b2ea1a2803d83dfd4249ac97cd5" id="r_a7f2b2b2ea1a2803d83dfd4249ac97cd5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f2b2b2ea1a2803d83dfd4249ac97cd5">visit</a> (const <a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> &amp;condition)=0</td></tr>
-<tr class="separator:a7f2b2b2ea1a2803d83dfd4249ac97cd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0806c19fd84d904e2ebf134433a48ce" id="r_aa0806c19fd84d904e2ebf134433a48ce"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa0806c19fd84d904e2ebf134433a48ce">visit</a> (const <a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> &amp;<a class="el" href="structppforest2_1_1TreeNode.html#a3ff08d96717ede9a4812bac0ca787276">response</a>)=0</td></tr>
-<tr class="separator:aa0806c19fd84d904e2ebf134433a48ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0012f890f7222f07c4a4d1c919b5e1b" id="r_ae0012f890f7222f07c4a4d1c919b5e1b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0012f890f7222f07c4a4d1c919b5e1b">visit</a> (<a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> const &amp;condition)=0</td></tr>
+<tr class="separator:ae0012f890f7222f07c4a4d1c919b5e1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a108bd70b895abb667aed72e0f1bcfa73" id="r_a108bd70b895abb667aed72e0f1bcfa73"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a108bd70b895abb667aed72e0f1bcfa73">visit</a> (<a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> const &amp;<a class="el" href="structppforest2_1_1TreeNode.html#a3ff08d96717ede9a4812bac0ca787276">response</a>)=0</td></tr>
+<tr class="separator:a108bd70b895abb667aed72e0f1bcfa73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html" title="Visitor interface for tree node dispatch.">Visitor</a> interface for tree node dispatch. </p>
 <p>Implements the visitor pattern to distinguish between internal split nodes (<a class="el" href="structppforest2_1_1TreeCondition.html" title="Internal split node in a projection pursuit tree.">TreeCondition</a>) and leaf nodes (<a class="el" href="structppforest2_1_1TreeResponse.html" title="Leaf node in a projection pursuit tree.">TreeResponse</a>). </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7f2b2b2ea1a2803d83dfd4249ac97cd5" name="a7f2b2b2ea1a2803d83dfd4249ac97cd5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f2b2b2ea1a2803d83dfd4249ac97cd5">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
+<a id="ae0012f890f7222f07c4a4d1c919b5e1b" name="ae0012f890f7222f07c4a4d1c919b5e1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0012f890f7222f07c4a4d1c919b5e1b">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -134,7 +134,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void ppforest2::TreeNode::Visitor::visit </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>condition</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>condition</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -145,12 +145,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="structppforest2_1_1serialization_1_1JsonNodeVisitor.html#ad6462cc1eb4c781c9e666fa78c03d995">ppforest2::serialization::JsonNodeVisitor</a>, <a class="el" href="structppforest2_1_1VIVisitor.html#a2206a49dd935abcfadbf2ea8ffda7251">ppforest2::VIVisitor</a>, <a class="el" href="structppforest2_1_1viz_1_1BoundaryVisitor.html#a4bbf36892ae0d8ea72492afbd0ed48de">ppforest2::viz::BoundaryVisitor</a>, <a class="el" href="structppforest2_1_1viz_1_1NodeDataVisitor.html#ac9e6ec7ecfa8b4a92687837ff2ff824d">ppforest2::viz::NodeDataVisitor</a>, and <a class="el" href="structppforest2_1_1viz_1_1RegionVisitor.html#ac43e36726c5dd6f42a6e1625f977cb2e">ppforest2::viz::RegionVisitor</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1serialization_1_1JsonNodeVisitor.html#a8bab5339900935a61bdc973957f382db">ppforest2::serialization::JsonNodeVisitor</a>, <a class="el" href="structppforest2_1_1VIVisitor.html#a761aad1d69f1b1cf31b1d7dcedf67b10">ppforest2::VIVisitor</a>, <a class="el" href="structppforest2_1_1viz_1_1BoundaryVisitor.html#a79a00f94ea1be2ae2e781bab04042d8d">ppforest2::viz::BoundaryVisitor</a>, <a class="el" href="structppforest2_1_1viz_1_1NodeDataVisitor.html#a54efbb351f918bf6e0e40fab034082df">ppforest2::viz::NodeDataVisitor</a>, and <a class="el" href="structppforest2_1_1viz_1_1RegionVisitor.html#a03f3546e06cf87daefe0f64dbab171b3">ppforest2::viz::RegionVisitor</a>.</p>
 
 </div>
 </div>
-<a id="aa0806c19fd84d904e2ebf134433a48ce" name="aa0806c19fd84d904e2ebf134433a48ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0806c19fd84d904e2ebf134433a48ce">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
+<a id="a108bd70b895abb667aed72e0f1bcfa73" name="a108bd70b895abb667aed72e0f1bcfa73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a108bd70b895abb667aed72e0f1bcfa73">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -161,7 +161,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void ppforest2::TreeNode::Visitor::visit </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>response</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>response</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -172,7 +172,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="structppforest2_1_1serialization_1_1JsonNodeVisitor.html#a99d712c8c0a95a4deaa037ee740c77d0">ppforest2::serialization::JsonNodeVisitor</a>, <a class="el" href="structppforest2_1_1VIVisitor.html#aa7735290655cba9576c7098780cf9585">ppforest2::VIVisitor</a>, <a class="el" href="structppforest2_1_1viz_1_1BoundaryVisitor.html#ad4b763e725821635a07964c45a189961">ppforest2::viz::BoundaryVisitor</a>, <a class="el" href="structppforest2_1_1viz_1_1NodeDataVisitor.html#af7a84d9f252798130fcd82631472cd17">ppforest2::viz::NodeDataVisitor</a>, and <a class="el" href="structppforest2_1_1viz_1_1RegionVisitor.html#a5faa7d8f433ce99a567961e0b5517165">ppforest2::viz::RegionVisitor</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1serialization_1_1JsonNodeVisitor.html#a55ce0382d1b70a37cd334ee748a7ed46">ppforest2::serialization::JsonNodeVisitor</a>, <a class="el" href="structppforest2_1_1VIVisitor.html#aa848ee384d82afa6f06965ab10381606">ppforest2::VIVisitor</a>, <a class="el" href="structppforest2_1_1viz_1_1BoundaryVisitor.html#afd08306b6b796ed91acc1ce4decf70cd">ppforest2::viz::BoundaryVisitor</a>, <a class="el" href="structppforest2_1_1viz_1_1NodeDataVisitor.html#a13d3ae1a04870f23eee0e20b3367af39">ppforest2::viz::NodeDataVisitor</a>, and <a class="el" href="structppforest2_1_1viz_1_1RegionVisitor.html#acd2e7241b570adbbf277031d2d0a03d0">ppforest2::viz::RegionVisitor</a>.</p>
 
 </div>
 </div>

@@ -113,17 +113,17 @@ $(function(){initNavTree('structppforest2_1_1Model_1_1Visitor.html',''); initRes
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0bacb0c11343e3983f661520c900a379" id="r_a0bacb0c11343e3983f661520c900a379"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bacb0c11343e3983f661520c900a379">visit</a> (const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;forest)=0</td></tr>
-<tr class="separator:a0bacb0c11343e3983f661520c900a379"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad26bfe78b7b31cc8f741e755cbe1f8f8" id="r_ad26bfe78b7b31cc8f741e755cbe1f8f8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad26bfe78b7b31cc8f741e755cbe1f8f8">visit</a> (const <a class="el" href="structppforest2_1_1Tree.html">Tree</a> &amp;tree)=0</td></tr>
-<tr class="separator:ad26bfe78b7b31cc8f741e755cbe1f8f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37527da67fb2b3f618c0c9b998b5f529" id="r_a37527da67fb2b3f618c0c9b998b5f529"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37527da67fb2b3f618c0c9b998b5f529">visit</a> (<a class="el" href="structppforest2_1_1Forest.html">Forest</a> const &amp;forest)=0</td></tr>
+<tr class="separator:a37527da67fb2b3f618c0c9b998b5f529"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1601e447a90ea463b3a0cdaa7202107e" id="r_a1601e447a90ea463b3a0cdaa7202107e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1601e447a90ea463b3a0cdaa7202107e">visit</a> (<a class="el" href="structppforest2_1_1Tree.html">Tree</a> const &amp;tree)=0</td></tr>
+<tr class="separator:a1601e447a90ea463b3a0cdaa7202107e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="structppforest2_1_1Model_1_1Visitor.html" title="Visitor interface for model dispatch.">Visitor</a> interface for model dispatch. </p>
 <p>Implements the visitor pattern to distinguish between <a class="el" href="structppforest2_1_1Tree.html" title="A single projection pursuit decision tree.">Tree</a> and <a class="el" href="structppforest2_1_1Forest.html" title="A projection pursuit random forest.">Forest</a> models without dynamic_cast. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a0bacb0c11343e3983f661520c900a379" name="a0bacb0c11343e3983f661520c900a379"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0bacb0c11343e3983f661520c900a379">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
+<a id="a37527da67fb2b3f618c0c9b998b5f529" name="a37527da67fb2b3f618c0c9b998b5f529"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37527da67fb2b3f618c0c9b998b5f529">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -134,7 +134,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void ppforest2::Model::Visitor::visit </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1Forest.html">Forest</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>forest</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Forest.html">Forest</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>forest</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -145,12 +145,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="structppforest2_1_1serialization_1_1JsonModelVisitor.html#a73499d5d5d56fbb89a21b221841609e6">ppforest2::serialization::JsonModelVisitor</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1serialization_1_1JsonModelVisitor.html#acd17e6ff35d8007ece8719aafb6e5f24">ppforest2::serialization::JsonModelVisitor</a>.</p>
 
 </div>
 </div>
-<a id="ad26bfe78b7b31cc8f741e755cbe1f8f8" name="ad26bfe78b7b31cc8f741e755cbe1f8f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad26bfe78b7b31cc8f741e755cbe1f8f8">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
+<a id="a1601e447a90ea463b3a0cdaa7202107e" name="a1601e447a90ea463b3a0cdaa7202107e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1601e447a90ea463b3a0cdaa7202107e">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -161,7 +161,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void ppforest2::Model::Visitor::visit </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structppforest2_1_1Tree.html">Tree</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>tree</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1Tree.html">Tree</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>tree</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -172,7 +172,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="structppforest2_1_1serialization_1_1JsonModelVisitor.html#ae5377a3e83feaecac9044378529b4bc6">ppforest2::serialization::JsonModelVisitor</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1serialization_1_1JsonModelVisitor.html#a24d7ab018e75d536eff40bb66ef1a146">ppforest2::serialization::JsonModelVisitor</a>.</p>
 
 </div>
 </div>
