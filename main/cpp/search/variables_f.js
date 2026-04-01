@@ -17,9 +17,10 @@ var searchData=
   ['sr_5finput_14',['sr_input',['../structppforest2_1_1cli_1_1ModelParams.html#a186b16a9e0f07b99b1ffa53e83d16f40',1,'ppforest2::cli::ModelParams']]],
   ['sr_5fstrategy_15',['sr_strategy',['../structppforest2_1_1TrainingSpec.html#ab4eef78ab1329bcf11346512c1334bd6',1,'ppforest2::TrainingSpec']]],
   ['std_5ftime_5fms_16',['std_time_ms',['../structppforest2_1_1cli_1_1ScenarioResult.html#a121f0fb566c59ffc9427e59597cf1d94',1,'ppforest2::cli::ScenarioResult']]],
-  ['stdout_5foutput_17',['stdout_output',['../structProcessResult.html#a803bfd5b6f6cab73600604ecb422bfe9',1,'ProcessResult']]],
-  ['subcommand_18',['subcommand',['../structppforest2_1_1cli_1_1CLIOptions.html#a9769737ca09cab6d5bafa2a16033bee9',1,'ppforest2::cli::CLIOptions']]],
-  ['subgroups_19',['subgroups',['../classppforest2_1_1stats_1_1GroupPartition.html#afbb149d3071b0fb6fefda324d2246b5d',1,'ppforest2::stats::GroupPartition']]],
-  ['suite_5fname_20',['suite_name',['../structppforest2_1_1cli_1_1SuiteResult.html#aff3948eb59c1ad0d697d411595df766c',1,'ppforest2::cli::SuiteResult']]],
-  ['supergroups_21',['supergroups',['../classppforest2_1_1stats_1_1GroupPartition.html#a185ee653b821d8f7a4631a49fce29b9a',1,'ppforest2::stats::GroupPartition']]]
+  ['stderr_5foutput_17',['stderr_output',['../structProcessResult.html#a94838c39be14fe56ee9ff00b5d7de4b6',1,'ProcessResult']]],
+  ['stdout_5foutput_18',['stdout_output',['../structProcessResult.html#a803bfd5b6f6cab73600604ecb422bfe9',1,'ProcessResult']]],
+  ['subcommand_19',['subcommand',['../structppforest2_1_1cli_1_1CLIOptions.html#a9769737ca09cab6d5bafa2a16033bee9',1,'ppforest2::cli::CLIOptions']]],
+  ['subgroups_20',['subgroups',['../classppforest2_1_1stats_1_1GroupPartition.html#afbb149d3071b0fb6fefda324d2246b5d',1,'ppforest2::stats::GroupPartition']]],
+  ['suite_5fname_21',['suite_name',['../structppforest2_1_1cli_1_1SuiteResult.html#aff3948eb59c1ad0d697d411595df766c',1,'ppforest2::cli::SuiteResult']]],
+  ['supergroups_22',['supergroups',['../classppforest2_1_1stats_1_1GroupPartition.html#a185ee653b821d8f7a4631a49fce29b9a',1,'ppforest2::stats::GroupPartition']]]
 ];

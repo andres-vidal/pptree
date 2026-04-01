@@ -38,7 +38,8 @@ var NAVTREEINDEX2 =
 "pages.html":[],
 "structProcessResult.html":[4,0,2],
 "structProcessResult.html#a6bea2cfcdb5447b1455065b122d67f96":[4,0,2,0],
-"structProcessResult.html#a803bfd5b6f6cab73600604ecb422bfe9":[4,0,2,1],
+"structProcessResult.html#a803bfd5b6f6cab73600604ecb422bfe9":[4,0,2,2],
+"structProcessResult.html#a94838c39be14fe56ee9ff00b5d7de4b6":[4,0,2,1],
 "structStrategy.html":[4,0,4],
 "structStrategy.html#a1c6fd534c2289652b63961a15400f681":[4,0,4,0],
 "structStrategy.html#a30c651b4431c97d3504039607df398c9":[4,0,4,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "structppforest2_1_1TreeNode.html#a40efb82eb8614b560735f861f803b610":[3,0,2,19,13],
 "structppforest2_1_1TreeNode.html#a40efb82eb8614b560735f861f803b610":[4,0,1,15,13],
 "structppforest2_1_1TreeNode.html#a46fbb9d6b6583f973571f17e5ebd4a9d":[3,0,2,19,3],
-"structppforest2_1_1TreeNode.html#a46fbb9d6b6583f973571f17e5ebd4a9d":[4,0,1,15,3],
-"structppforest2_1_1TreeNode.html#a5ec62c510e282beae85c9e9a59e11efc":[3,0,2,19,5]
+"structppforest2_1_1TreeNode.html#a46fbb9d6b6583f973571f17e5ebd4a9d":[4,0,1,15,3]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"structppforest2_1_1cli_1_1ScenarioResult.html#aa196c76adf908bb442964bbb1253e53b":[3,0,2,0,8,7],
 "structppforest2_1_1cli_1_1ScenarioResult.html#aa196c76adf908bb442964bbb1253e53b":[4,0,1,0,8,7],
 "structppforest2_1_1cli_1_1ScenarioResult.html#aa94a7fa50631b86fcefb39f3a32542b8":[3,0,2,0,8,4],
 "structppforest2_1_1cli_1_1ScenarioResult.html#aa94a7fa50631b86fcefb39f3a32542b8":[4,0,1,0,8,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html#ab48a7bf757a25899d943739b3692a1d7":[3,0,2,6,0,1],
 "structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html#ab48a7bf757a25899d943739b3692a1d7":[4,0,1,5,0,1],
 "structppforest2_1_1sr_1_1SRStrategy.html":[3,0,2,6,1],
-"structppforest2_1_1sr_1_1SRStrategy.html":[4,0,1,5,1],
-"structppforest2_1_1sr_1_1SRStrategy.html#a365d3745431cd197be128639fc635b22":[3,0,2,6,1,0]
+"structppforest2_1_1sr_1_1SRStrategy.html":[4,0,1,5,1]
 };
