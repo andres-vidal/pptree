@@ -138,7 +138,7 @@ $(function(){initNavTree('TempFile_8hpp_source.html',''); initResizable(true); }
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>      std::vector&lt;char&gt; tmpl_buf(tmpl.begin(), tmpl.end());</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>      tmpl_buf.push_back(<span class="charliteral">&#39;\0&#39;</span>);</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>      <span class="keywordtype">int</span> <span class="keyword">const</span> fd = mkstemps(tmpl_buf.data(), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(suffix.size()));</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>      <span class="keywordtype">int</span> fd = mkstemps(tmpl_buf.data(), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(suffix.size()));</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>      <span class="keywordflow">if</span> (fd != -1) {</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        path_ = tmpl_buf.data();</div>
@@ -170,97 +170,96 @@ $(function(){initNavTree('TempFile_8hpp_source.html',''); initResizable(true); }
 <div class="foldopen" id="foldopen00069" data-start="{" data-end="}">
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempFile.html#a6f50d1f09b5c97438f1d96ff5df8a6e5">   69</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#a699e4f44bb6caeb7375d2faf01ffd921">TempFile</a>&amp; <a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#a6f50d1f09b5c97438f1d96ff5df8a6e5">operator=</a>(<a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#a699e4f44bb6caeb7375d2faf01ffd921">TempFile</a>&amp;&amp; other) <span class="keyword">noexcept</span> {</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>      <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="keywordflow">if</span> (!path_.empty()) {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="keywordflow">if</span> (!path_.empty())</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>          std::remove(path_.c_str());</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        }</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        path_ = std::move(other.path_);</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        other.path_.clear();</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>      }</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>      <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    }</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        path_ = std::move(other.path_);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        other.path_.clear();</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>      }</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>      <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    }</div>
 </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempFile.html#ab42214144e35879e5581b7b8fe406ead">   82</a></span>    std::string <span class="keyword">const</span>&amp; <a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#ab42214144e35879e5581b7b8fe406ead">path</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> path_; }</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span></div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempFile.html#ab3623127b5930e7102358cb515b09737">   85</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#ab3623127b5930e7102358cb515b09737">clear</a>()<span class="keyword"> const </span>{ std::remove(path_.c_str()); }</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span></div>
-<div class="foldopen" id="foldopen00088" data-start="{" data-end="}">
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempFile.html#a71ffc222ef84f37605f2a88e636f9710">   88</a></span>    std::string <a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#a71ffc222ef84f37605f2a88e636f9710">read</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>      std::ifstream <span class="keyword">const</span> in(path_);</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>      std::stringstream ss;</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>      ss &lt;&lt; in.rdbuf();</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>      <span class="keywordflow">return</span> ss.str();</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    }</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempFile.html#ab42214144e35879e5581b7b8fe406ead">   81</a></span>    std::string <span class="keyword">const</span>&amp; <a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#ab42214144e35879e5581b7b8fe406ead">path</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> path_; }</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempFile.html#ab3623127b5930e7102358cb515b09737">   84</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#ab3623127b5930e7102358cb515b09737">clear</a>()<span class="keyword"> const </span>{ std::remove(path_.c_str()); }</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span></div>
+<div class="foldopen" id="foldopen00087" data-start="{" data-end="}">
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempFile.html#a71ffc222ef84f37605f2a88e636f9710">   87</a></span>    std::string <a class="code hl_function" href="classppforest2_1_1io_1_1TempFile.html#a71ffc222ef84f37605f2a88e636f9710">read</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>      std::ifstream in(path_);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>      std::stringstream ss;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>      ss &lt;&lt; in.rdbuf();</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>      <span class="keywordflow">return</span> ss.str();</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    }</div>
 </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    std::string path_;</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  };</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    std::string path_;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  };</div>
 </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span></div>
-<div class="foldopen" id="foldopen00105" data-start="{" data-end="};">
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html">  105</a></span>  <span class="keyword">class </span><a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a> {</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>  <span class="keyword">public</span>:</div>
-<div class="foldopen" id="foldopen00107" data-start="{" data-end="}">
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">  107</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a>() {</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>      <span class="keywordtype">char</span> tmp_dir[MAX_PATH];</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>      GetTempPathA(MAX_PATH, tmp_dir);</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>      <span class="keywordtype">char</span> tmp_file[MAX_PATH];</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>      GetTempFileNameA(tmp_dir, <span class="stringliteral">&quot;ppd&quot;</span>, 0, tmp_file);</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>      <span class="comment">// GetTempFileNameA creates a file; replace it with a directory</span></div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>      std::remove(tmp_file);</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>      path_ = tmp_file;</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>      std::filesystem::create_directories(path_);</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>      path_ = <span class="stringliteral">&quot;/tmp/ppforest2_dir_XXXXXX&quot;</span>;</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>      std::vector&lt;char&gt; buf(path_.begin(), path_.end());</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>      buf.push_back(<span class="charliteral">&#39;\0&#39;</span>);</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>      <span class="keywordtype">char</span>* result = mkdtemp(buf.data());</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>      <span class="keywordflow">if</span> (result) {</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        path_ = result;</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>      }</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    }</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span></div>
+<div class="foldopen" id="foldopen00104" data-start="{" data-end="};">
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html">  104</a></span>  <span class="keyword">class </span><a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a> {</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>  <span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00106" data-start="{" data-end="}">
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">  106</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a>() {</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>      <span class="keywordtype">char</span> tmp_dir[MAX_PATH];</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>      GetTempPathA(MAX_PATH, tmp_dir);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>      <span class="keywordtype">char</span> tmp_file[MAX_PATH];</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>      GetTempFileNameA(tmp_dir, <span class="stringliteral">&quot;ppd&quot;</span>, 0, tmp_file);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>      <span class="comment">// GetTempFileNameA creates a file; replace it with a directory</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>      std::remove(tmp_file);</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>      path_ = tmp_file;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>      std::filesystem::create_directories(path_);</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>      path_ = <span class="stringliteral">&quot;/tmp/ppforest2_dir_XXXXXX&quot;</span>;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>      std::vector&lt;char&gt; buf(path_.begin(), path_.end());</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>      buf.push_back(<span class="charliteral">&#39;\0&#39;</span>);</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>      <span class="keywordtype">char</span>* result = mkdtemp(buf.data());</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>      <span class="keywordflow">if</span> (result) {</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        path_ = result;</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>      }</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    }</div>
 </div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="foldopen" id="foldopen00130" data-start="{" data-end="}">
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#a4c117b58887fedbdceff3a5b72e1f588">  130</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#a4c117b58887fedbdceff3a5b72e1f588">~TempDir</a>() {</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>      <span class="keywordflow">if</span> (!path_.empty()) {</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        std::filesystem::remove_all(path_);</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>      }</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    }</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span> </div>
+<div class="foldopen" id="foldopen00129" data-start="{" data-end="}">
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#a4c117b58887fedbdceff3a5b72e1f588">  129</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#a4c117b58887fedbdceff3a5b72e1f588">~TempDir</a>() {</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>      <span class="keywordflow">if</span> (!path_.empty()) {</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        std::filesystem::remove_all(path_);</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>      }</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    }</div>
 </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#a68c48a9abda43ef3cd1c4d1ead33ce1b">  136</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#a68c48a9abda43ef3cd1c4d1ead33ce1b">TempDir</a>(<a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a> <span class="keyword">const</span>&amp;)            = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#a3f5b9b8dad44df9070cbd3d49e78358f">  137</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a>&amp; <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#a3f5b9b8dad44df9070cbd3d49e78358f">operator=</a>(<a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#ab3343d269ebcc071d84bd3ea3575239b">  139</a></span>    std::string <span class="keyword">const</span>&amp; <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ab3343d269ebcc071d84bd3ea3575239b">path</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> path_; }</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span></div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#a3e1aa76260e003b9a61d0b4e0bd56f6c">  142</a></span>    std::string <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#a3e1aa76260e003b9a61d0b4e0bd56f6c">file</a>(std::string <span class="keyword">const</span>&amp; name)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> (std::filesystem::path(path_) / name).string(); }</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    std::string path_;</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>  };</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#a68c48a9abda43ef3cd1c4d1ead33ce1b">  135</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#a68c48a9abda43ef3cd1c4d1ead33ce1b">TempDir</a>(<a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a> <span class="keyword">const</span>&amp;)            = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#a3f5b9b8dad44df9070cbd3d49e78358f">  136</a></span>    <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a>&amp; <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#a3f5b9b8dad44df9070cbd3d49e78358f">operator=</a>(<a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">TempDir</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#ab3343d269ebcc071d84bd3ea3575239b">  138</a></span>    std::string <span class="keyword">const</span>&amp; <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#ab3343d269ebcc071d84bd3ea3575239b">path</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> path_; }</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span></div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno"><a class="line" href="classppforest2_1_1io_1_1TempDir.html#a3e1aa76260e003b9a61d0b4e0bd56f6c">  141</a></span>    std::string <a class="code hl_function" href="classppforest2_1_1io_1_1TempDir.html#a3e1aa76260e003b9a61d0b4e0bd56f6c">file</a>(std::string <span class="keyword">const</span>&amp; name)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> (std::filesystem::path(path_) / name).string(); }</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    std::string path_;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>  };</div>
 </div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>}</div>
-<div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_a3e1aa76260e003b9a61d0b4e0bd56f6c"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#a3e1aa76260e003b9a61d0b4e0bd56f6c">ppforest2::io::TempDir::file</a></div><div class="ttdeci">std::string file(std::string const &amp;name) const</div><div class="ttdoc">Return a path inside this directory (file need not exist yet).</div><div class="ttdef"><b>Definition</b> TempFile.hpp:142</div></div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>}</div>
+<div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_a3e1aa76260e003b9a61d0b4e0bd56f6c"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#a3e1aa76260e003b9a61d0b4e0bd56f6c">ppforest2::io::TempDir::file</a></div><div class="ttdeci">std::string file(std::string const &amp;name) const</div><div class="ttdoc">Return a path inside this directory (file need not exist yet).</div><div class="ttdef"><b>Definition</b> TempFile.hpp:141</div></div>
 <div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_a3f5b9b8dad44df9070cbd3d49e78358f"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#a3f5b9b8dad44df9070cbd3d49e78358f">ppforest2::io::TempDir::operator=</a></div><div class="ttdeci">TempDir &amp; operator=(TempDir const &amp;)=delete</div></div>
-<div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_a4c117b58887fedbdceff3a5b72e1f588"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#a4c117b58887fedbdceff3a5b72e1f588">ppforest2::io::TempDir::~TempDir</a></div><div class="ttdeci">~TempDir()</div><div class="ttdef"><b>Definition</b> TempFile.hpp:130</div></div>
+<div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_a4c117b58887fedbdceff3a5b72e1f588"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#a4c117b58887fedbdceff3a5b72e1f588">ppforest2::io::TempDir::~TempDir</a></div><div class="ttdeci">~TempDir()</div><div class="ttdef"><b>Definition</b> TempFile.hpp:129</div></div>
 <div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_a68c48a9abda43ef3cd1c4d1ead33ce1b"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#a68c48a9abda43ef3cd1c4d1ead33ce1b">ppforest2::io::TempDir::TempDir</a></div><div class="ttdeci">TempDir(TempDir const &amp;)=delete</div></div>
-<div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_ab3343d269ebcc071d84bd3ea3575239b"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#ab3343d269ebcc071d84bd3ea3575239b">ppforest2::io::TempDir::path</a></div><div class="ttdeci">std::string const &amp; path() const</div><div class="ttdef"><b>Definition</b> TempFile.hpp:139</div></div>
-<div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_ae45ef76a48f0ed5db63ab9d8e6cbe648"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">ppforest2::io::TempDir::TempDir</a></div><div class="ttdeci">TempDir()</div><div class="ttdef"><b>Definition</b> TempFile.hpp:107</div></div>
+<div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_ab3343d269ebcc071d84bd3ea3575239b"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#ab3343d269ebcc071d84bd3ea3575239b">ppforest2::io::TempDir::path</a></div><div class="ttdeci">std::string const &amp; path() const</div><div class="ttdef"><b>Definition</b> TempFile.hpp:138</div></div>
+<div class="ttc" id="aclassppforest2_1_1io_1_1TempDir_html_ae45ef76a48f0ed5db63ab9d8e6cbe648"><div class="ttname"><a href="classppforest2_1_1io_1_1TempDir.html#ae45ef76a48f0ed5db63ab9d8e6cbe648">ppforest2::io::TempDir::TempDir</a></div><div class="ttdeci">TempDir()</div><div class="ttdef"><b>Definition</b> TempFile.hpp:106</div></div>
 <div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_a3515e8ed1dc51daf33e648339eafead7"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#a3515e8ed1dc51daf33e648339eafead7">ppforest2::io::TempFile::operator=</a></div><div class="ttdeci">TempFile &amp; operator=(TempFile const &amp;)=delete</div></div>
 <div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_a699e4f44bb6caeb7375d2faf01ffd921"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#a699e4f44bb6caeb7375d2faf01ffd921">ppforest2::io::TempFile::TempFile</a></div><div class="ttdeci">TempFile(std::string const &amp;suffix=&quot;.json&quot;)</div><div class="ttdef"><b>Definition</b> TempFile.hpp:30</div></div>
 <div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_a6f50d1f09b5c97438f1d96ff5df8a6e5"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#a6f50d1f09b5c97438f1d96ff5df8a6e5">ppforest2::io::TempFile::operator=</a></div><div class="ttdeci">TempFile &amp; operator=(TempFile &amp;&amp;other) noexcept</div><div class="ttdef"><b>Definition</b> TempFile.hpp:69</div></div>
-<div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_a71ffc222ef84f37605f2a88e636f9710"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#a71ffc222ef84f37605f2a88e636f9710">ppforest2::io::TempFile::read</a></div><div class="ttdeci">std::string read() const</div><div class="ttdoc">Read the entire file contents as a string.</div><div class="ttdef"><b>Definition</b> TempFile.hpp:88</div></div>
+<div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_a71ffc222ef84f37605f2a88e636f9710"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#a71ffc222ef84f37605f2a88e636f9710">ppforest2::io::TempFile::read</a></div><div class="ttdeci">std::string read() const</div><div class="ttdoc">Read the entire file contents as a string.</div><div class="ttdef"><b>Definition</b> TempFile.hpp:87</div></div>
 <div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_a95430d1df598eb3f3314c2207ece0f33"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#a95430d1df598eb3f3314c2207ece0f33">ppforest2::io::TempFile::TempFile</a></div><div class="ttdeci">TempFile(TempFile &amp;&amp;other) noexcept</div><div class="ttdef"><b>Definition</b> TempFile.hpp:64</div></div>
-<div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_ab3623127b5930e7102358cb515b09737"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#ab3623127b5930e7102358cb515b09737">ppforest2::io::TempFile::clear</a></div><div class="ttdeci">void clear() const</div><div class="ttdoc">Remove the file so the path can be used as a fresh output target.</div><div class="ttdef"><b>Definition</b> TempFile.hpp:85</div></div>
-<div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_ab42214144e35879e5581b7b8fe406ead"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#ab42214144e35879e5581b7b8fe406ead">ppforest2::io::TempFile::path</a></div><div class="ttdeci">std::string const &amp; path() const</div><div class="ttdef"><b>Definition</b> TempFile.hpp:82</div></div>
+<div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_ab3623127b5930e7102358cb515b09737"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#ab3623127b5930e7102358cb515b09737">ppforest2::io::TempFile::clear</a></div><div class="ttdeci">void clear() const</div><div class="ttdoc">Remove the file so the path can be used as a fresh output target.</div><div class="ttdef"><b>Definition</b> TempFile.hpp:84</div></div>
+<div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_ab42214144e35879e5581b7b8fe406ead"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#ab42214144e35879e5581b7b8fe406ead">ppforest2::io::TempFile::path</a></div><div class="ttdeci">std::string const &amp; path() const</div><div class="ttdef"><b>Definition</b> TempFile.hpp:81</div></div>
 <div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_ac954f33900b574f17076d8b628c92f42"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#ac954f33900b574f17076d8b628c92f42">ppforest2::io::TempFile::~TempFile</a></div><div class="ttdeci">~TempFile()</div><div class="ttdef"><b>Definition</b> TempFile.hpp:55</div></div>
 <div class="ttc" id="aclassppforest2_1_1io_1_1TempFile_html_ad229992c1eb428185f0612b64320aad1"><div class="ttname"><a href="classppforest2_1_1io_1_1TempFile.html#ad229992c1eb428185f0612b64320aad1">ppforest2::io::TempFile::TempFile</a></div><div class="ttdeci">TempFile(TempFile const &amp;)=delete</div></div>
 <div class="ttc" id="anamespaceppforest2_1_1io_html"><div class="ttname"><a href="namespaceppforest2_1_1io.html">ppforest2::io</a></div><div class="ttdef"><b>Definition</b> Color.hpp:31</div></div>
