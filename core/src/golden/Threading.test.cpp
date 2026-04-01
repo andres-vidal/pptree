@@ -22,9 +22,9 @@ using namespace ppforest2::stats;
 static const std::string DATA_DIR = PPFOREST2_DATA_DIR;
 
 TEST(Threading, ForestSameResultsSingleVsMulti) {
-  #ifndef _OPENMP
+#ifndef _OPENMP
   GTEST_SKIP() << "OpenMP not available";
-  #endif
+#endif
 
   auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
 
@@ -35,9 +35,9 @@ TEST(Threading, ForestSameResultsSingleVsMulti) {
 }
 
 TEST(Threading, ForestSameResultsAcrossRuns) {
-  #ifndef _OPENMP
+#ifndef _OPENMP
   GTEST_SKIP() << "OpenMP not available";
-  #endif
+#endif
 
   auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
 

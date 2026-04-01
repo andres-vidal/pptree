@@ -26,8 +26,8 @@ namespace ppforest2 {
      * split nodes (TreeCondition) and leaf nodes (TreeResponse).
      */
     struct Visitor {
-      virtual void visit(const TreeCondition &condition) = 0;
-      virtual void visit(const TreeResponse &response)   = 0;
+      virtual void visit(TreeCondition const& condition) = 0;
+      virtual void visit(TreeResponse const& response)   = 0;
     };
 
     /** @brief Whether this node (or any descendant) had a degenerate split. */
@@ -36,7 +36,7 @@ namespace ppforest2 {
     virtual ~TreeNode() = default;
 
     /** @brief Accept a tree node visitor (double dispatch). */
-    virtual void accept(Visitor &visitor) const = 0;
+    virtual void accept(Visitor& visitor) const = 0;
 
     /**
      * @brief Predict the group label for a single observation.
@@ -44,7 +44,7 @@ namespace ppforest2 {
      * @param data  Feature vector (p).
      * @return      Predicted group label.
      */
-    virtual types::Response predict(const types::FeatureVector &data) const = 0;
+    virtual types::Response predict(types::FeatureVector const& data) const = 0;
 
     /** @brief The group label at this node (leaf value or majority group). */
     virtual types::Response response() const = 0;
@@ -63,12 +63,12 @@ namespace ppforest2 {
     virtual bool is_leaf() const = 0;
 
     /** @brief Structural equality comparison (value-based). */
-    virtual bool equals(const TreeNode &other) const = 0;
+    virtual bool equals(TreeNode const& other) const = 0;
 
     /** @brief Deep copy of this node and its subtree. */
     virtual Ptr clone() const = 0;
 
-    bool operator==(const TreeNode &other) const;
-    bool operator!=(const TreeNode &other) const;
+    bool operator==(TreeNode const& other) const;
+    bool operator!=(TreeNode const& other) const;
   };
 }

@@ -141,7 +141,7 @@ TEST(Normal, VarianceConvergesToTheory) {
   Normal normal(0.0f, 3.0f);
 
   constexpr int N           = 100000;
-  constexpr double SIGMA_SQ = 9.0;  // σ² = 3² = 9
+  constexpr double SIGMA_SQ = 9.0; // σ² = 3² = 9
 
   std::vector<double> samples(N);
 
@@ -292,7 +292,7 @@ TEST(Normal, KolmogorovSmirnovStandardNormal) {
     double F  = phi(samples[i]);
     double d1 = std::abs(F - static_cast<double>(i) / N);
     double d2 = std::abs(F - static_cast<double>(i + 1) / N);
-    d_max = std::max(d_max, std::max(d1, d2));
+    d_max     = std::max(d_max, std::max(d1, d2));
   }
 
   // α = 0.001,  D_crit = 1.9495 / √N ≈ 0.00616
@@ -326,7 +326,7 @@ TEST(Normal, KolmogorovSmirnovShiftedNormal) {
     double F  = phi((samples[i] - 10.0) / 5.0);
     double d1 = std::abs(F - static_cast<double>(i) / N);
     double d2 = std::abs(F - static_cast<double>(i + 1) / N);
-    d_max = std::max(d_max, std::max(d1, d2));
+    d_max     = std::max(d_max, std::max(d1, d2));
   }
 
   double d_crit = 1.9495 / std::sqrt(static_cast<double>(N));

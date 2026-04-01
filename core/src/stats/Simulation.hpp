@@ -15,9 +15,9 @@ namespace ppforest2::stats {
    * relative to the previous group.
    */
   struct SimulationParams {
-    float mean            = 100.0f;   ///< Base mean for the first group.
-    float mean_separation = 50.0f;    ///< Mean shift between successive groups.
-    float sd              = 10.0f;    ///< Standard deviation within each group.
+    float mean            = 100.0f; ///< Base mean for the first group.
+    float mean_separation = 50.0f;  ///< Mean shift between successive groups.
+    float sd              = 10.0f;  ///< Standard deviation within each group.
   };
 
   /**
@@ -33,19 +33,14 @@ namespace ppforest2::stats {
    * @param params Simulation parameters (mean, separation, sd).
    * @return A DataPacket with the simulated feature matrix and response vector.
    */
-  DataPacket simulate(
-    int                     n,
-    int                     p,
-    int                     G,
-    RNG&                    rng,
-    const SimulationParams& params = SimulationParams{});
+  DataPacket simulate(int n, int p, int G, RNG& rng, SimulationParams const& params = SimulationParams{});
 
   /**
    * @brief Indices for a train/test split.
    */
   struct Split {
-    std::vector<int> tr;   ///< Training set indices.
-    std::vector<int> te;   ///< Test set indices.
+    std::vector<int> tr; ///< Training set indices.
+    std::vector<int> te; ///< Test set indices.
   };
 
   /**
@@ -59,5 +54,5 @@ namespace ppforest2::stats {
    * @param rng         Random number generator.
    * @return A Split containing train and test index vectors.
    */
-  Split split(const DataPacket& data, float train_ratio, RNG& rng);
+  Split split(DataPacket const& data, float train_ratio, RNG& rng);
 }

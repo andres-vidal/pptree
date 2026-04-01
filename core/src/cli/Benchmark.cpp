@@ -29,166 +29,186 @@
 #endif
 
 namespace ppforest2::cli {
-  CLI::App * setup_benchmark(CLI::App& app, CLIOptions& params) {
+  CLI::App* setup_benchmark(CLI::App& app, CLIOptions& params) {
     auto sub = app.add_subcommand("benchmark", "Run performance benchmarks across scenarios");
-    sub->add_option("-s,--scenarios", params.benchmark.scenarios_path, "JSON scenarios file")
-    ->check(CLI::ExistingFile);
+    sub->add_option("-s,--scenarios", params.benchmark.scenarios_path, "JSON scenarios file")->check(CLI::ExistingFile);
     sub->add_option("-b,--baseline", params.benchmark.baseline_path, "Baseline results JSON for comparison")
-    ->check(CLI::ExistingFile);
+        ->check(CLI::ExistingFile);
     sub->add_option("-o,--output", params.benchmark.output, "Save results to JSON file");
     sub->add_option("--csv", params.benchmark.csv, "Save results to CSV file");
     sub->add_option("-i,--iterations", params.benchmark.iterations, "Override iteration count (forces fixed mode)")
-    ->check(CLI::PositiveNumber);
+        ->check(CLI::PositiveNumber);
     sub->add_option("-p,--train-ratio", params.benchmark.train_ratio, "Override train set ratio for all scenarios")
-    ->check(CLI::Range(0.01f, 0.99f));
+        ->check(CLI::Range(0.01f, 0.99f));
     sub->add_option("--format", params.benchmark.format, "Output format (table, markdown)")
-    ->check(CLI::IsMember({ "table", "markdown" }));
+        ->check(CLI::IsMember({"table", "markdown"}));
     return sub;
   }
 
-namespace {
-  /**
+  namespace {
+    /**
    * @brief Read CSV dimensions (rows, columns, unique values in last column).
    *
    * Lightweight: reads the file line by line without loading it into memory.
    * Assumes the last column is the response variable.
    */
-  struct CsvDimensions { int n = 0; int p = 0; int g = 0; };
+    struct CsvDimensions {
+      int n = 0;
+      int p = 0;
+      int g = 0;
+    };
 
-  CsvDimensions read_csv_dimensions(const std::string& path) {
-    std::ifstream file(path);
+    CsvDimensions read_csv_dimensions(std::string const& path) {
+      std::ifstream file(path);
 
-    invariant(file.is_open(), fmt::format("Cannot open data file: {}", path));
+      invariant(file.is_open(), fmt::format("Cannot open data file: {}", path));
 
-    CsvDimensions dims;
-    std::string line;
-    int total_cols = 0;
-    std::set<std::string> group_labels;
+      CsvDimensions dims;
+      std::string line;
+      int total_cols = 0;
+      std::set<std::string> group_labels;
 
-    while (std::getline(file, line)) {
-      if (line.empty()) continue;
+      while (std::getline(file, line)) {
+        if (line.empty())
+          continue;
 
-      int cols = 1;
+        int cols = 1;
 
-      for (char c : line) {
-        if (c == ',') ++cols;
+        for (char c : line) {
+          if (c == ',')
+            ++cols;
+        }
+
+        if (total_cols == 0) {
+          total_cols = cols;
+        }
+
+        // Extract last column value (response)
+        auto last_comma   = line.rfind(',');
+        std::string label = (last_comma != std::string::npos) ? line.substr(last_comma + 1) : line;
+
+        group_labels.insert(label);
+        ++dims.n;
       }
 
-      if (total_cols == 0) {
-        total_cols = cols;
-      }
+      dims.p = total_cols - 1; // Last column is response
+      dims.g = static_cast<int>(group_labels.size());
 
-      // Extract last column value (response)
-      auto last_comma   = line.rfind(',');
-      std::string label = (last_comma != std::string::npos)
-        ? line.substr(last_comma + 1)
-        : line;
-
-      group_labels.insert(label);
-      ++dims.n;
+      return dims;
     }
 
-    dims.p = total_cols - 1;  // Last column is response
-    dims.g = static_cast<int>(group_labels.size());
-
-    return dims;
-  }
-
-  /**
+    /**
    * @brief Parse a ConvergenceCriteria from a JSON object.
    *
    * Missing fields retain their struct defaults. See ConvergenceCriteria
    * in Benchmark.hpp for the full algorithm description.
    */
-  ConvergenceCriteria parse_convergence(const nlohmann::json& j) {
-    ConvergenceCriteria c;
+    ConvergenceCriteria parse_convergence(nlohmann::json const& j) {
+      ConvergenceCriteria c;
 
-    if (j.contains("cv")) c.cv = j["cv"].get<float>();
+      if (j.contains("cv"))
+        c.cv = j["cv"].get<float>();
 
-    if (j.contains("window")) c.window = j["window"].get<int>();
+      if (j.contains("window"))
+        c.window = j["window"].get<int>();
 
-    if (j.contains("min")) c.min = j["min"].get<int>();
+      if (j.contains("min"))
+        c.min = j["min"].get<int>();
 
-    if (j.contains("max")) c.max = j["max"].get<int>();
+      if (j.contains("max"))
+        c.max = j["max"].get<int>();
 
-    return c;
-  }
+      return c;
+    }
 
-  /**
+    /**
    * @brief Merge a scenario JSON object onto a base Scenario.
    *
    * Starts from @p defaults and overwrites only the fields present in
    * @p scenario_json. Integer vars counts are converted to proportions
    * using the scenario's @c p value (must already be set).
    */
-  Scenario apply_defaults(const nlohmann::json& scenario_json, const Scenario& defaults) {
-    Scenario s = defaults;
+    Scenario apply_defaults(nlohmann::json const& scenario_json, Scenario const& defaults) {
+      Scenario s = defaults;
 
-    if (scenario_json.contains("name")) s.name = scenario_json["name"].get<std::string>();
+      if (scenario_json.contains("name"))
+        s.name = scenario_json["name"].get<std::string>();
 
-    if (scenario_json.contains("data")) s.data = scenario_json["data"].get<std::string>();
+      if (scenario_json.contains("data"))
+        s.data = scenario_json["data"].get<std::string>();
 
-    if (scenario_json.contains("n")) s.n = scenario_json["n"].get<int>();
+      if (scenario_json.contains("n"))
+        s.n = scenario_json["n"].get<int>();
 
-    if (scenario_json.contains("p")) s.p = scenario_json["p"].get<int>();
+      if (scenario_json.contains("p"))
+        s.p = scenario_json["p"].get<int>();
 
-    if (scenario_json.contains("g")) s.g = scenario_json["g"].get<int>();
+      if (scenario_json.contains("g"))
+        s.g = scenario_json["g"].get<int>();
 
-    if (scenario_json.contains("size")) s.size = scenario_json["size"].get<int>();
+      if (scenario_json.contains("size"))
+        s.size = scenario_json["size"].get<int>();
 
-    if (scenario_json.contains("vars")) {
-      auto spec = ppforest2::cli::parse_vars(scenario_json["vars"]);
+      if (scenario_json.contains("vars")) {
+        auto spec = ppforest2::cli::parse_vars(scenario_json["vars"]);
 
-      if (spec.is_proportion) {
-        s.vars = spec.value;
-      } else {
-        invariant(s.p > 0, "p must be set before using integer vars count");
-        s.vars = spec.value / s.p;
+        if (spec.is_proportion) {
+          s.vars = spec.value;
+        } else {
+          invariant(s.p > 0, "p must be set before using integer vars count");
+          s.vars = spec.value / s.p;
+        }
       }
+
+      if (scenario_json.contains("lambda"))
+        s.lambda = scenario_json["lambda"].get<float>();
+
+      if (scenario_json.contains("threads"))
+        s.threads = scenario_json["threads"].get<int>();
+
+      if (scenario_json.contains("train_ratio"))
+        s.train_ratio = scenario_json["train_ratio"].get<float>();
+
+      if (scenario_json.contains("seed"))
+        s.seed = scenario_json["seed"].get<int>();
+
+      if (scenario_json.contains("warmup"))
+        s.warmup = scenario_json["warmup"].get<int>();
+
+      if (scenario_json.contains("iterations"))
+        s.iterations = scenario_json["iterations"].get<int>();
+
+      if (scenario_json.contains("convergence")) {
+        s.convergence = parse_convergence(scenario_json["convergence"]);
+      }
+
+      return s;
     }
 
-    if (scenario_json.contains("lambda")) s.lambda = scenario_json["lambda"].get<float>();
-
-    if (scenario_json.contains("threads")) s.threads = scenario_json["threads"].get<int>();
-
-    if (scenario_json.contains("train_ratio")) s.train_ratio = scenario_json["train_ratio"].get<float>();
-
-    if (scenario_json.contains("seed")) s.seed = scenario_json["seed"].get<int>();
-
-    if (scenario_json.contains("warmup")) s.warmup = scenario_json["warmup"].get<int>();
-
-    if (scenario_json.contains("iterations")) s.iterations = scenario_json["iterations"].get<int>();
-
-    if (scenario_json.contains("convergence")) {
-      s.convergence = parse_convergence(scenario_json["convergence"]);
-    }
-
-    return s;
-  }
-
-  /**
+    /**
    * @brief Validate that all scenario fields are within legal ranges.
    * @throws std::runtime_error (via invariant) with a descriptive message
    *         naming the offending scenario and field.
    */
-  void validate_scenario(const Scenario& s) {
-    invariant(!s.name.empty(), "Scenario name is required");
+    void validate_scenario(Scenario const& s) {
+      invariant(!s.name.empty(), "Scenario name is required");
 
-    if (s.data.empty()) {
-      // Simulation mode: n, p, g are required
-      invariant(s.n > 0, fmt::format("Scenario '{}': n must be positive", s.name));
-      invariant(s.p > 0, fmt::format("Scenario '{}': p must be positive", s.name));
-      invariant(s.g > 1, fmt::format("Scenario '{}': g must be > 1", s.name));
+      if (s.data.empty()) {
+        // Simulation mode: n, p, g are required
+        invariant(s.n > 0, fmt::format("Scenario '{}': n must be positive", s.name));
+        invariant(s.p > 0, fmt::format("Scenario '{}': p must be positive", s.name));
+        invariant(s.g > 1, fmt::format("Scenario '{}': g must be > 1", s.name));
+      }
+
+      invariant(s.size >= 0, fmt::format("Scenario '{}': size must be >= 0", s.name));
+      invariant(s.vars > 0 && s.vars <= 1, fmt::format("Scenario '{}': vars must be in (0, 1]", s.name));
+      invariant(s.lambda >= 0 && s.lambda <= 1, fmt::format("Scenario '{}': lambda must be in [0, 1]", s.name));
+      invariant(s.train_ratio > 0 && s.train_ratio < 1,
+                fmt::format("Scenario '{}': train_ratio must be in (0, 1)", s.name));
+      invariant(s.warmup >= 0, fmt::format("Scenario '{}': warmup must be >= 0", s.name));
     }
 
-    invariant(s.size >= 0, fmt::format("Scenario '{}': size must be >= 0", s.name));
-    invariant(s.vars > 0 && s.vars <= 1, fmt::format("Scenario '{}': vars must be in (0, 1]", s.name));
-    invariant(s.lambda >= 0 && s.lambda <= 1, fmt::format("Scenario '{}': lambda must be in [0, 1]", s.name));
-    invariant(s.train_ratio > 0 && s.train_ratio < 1, fmt::format("Scenario '{}': train_ratio must be in (0, 1)", s.name));
-    invariant(s.warmup >= 0, fmt::format("Scenario '{}': warmup must be >= 0", s.name));
-  }
-
-  /**
+    /**
    * @brief Build the `ppforest2 evaluate` shell command for a scenario.
    *
    * Constructs the full command string including simulated data shape,
@@ -199,50 +219,56 @@ namespace {
    * @param binary_path  Path to the ppforest2 binary.
    * @param output_path  Where the subprocess writes its JSON results.
    */
-  std::string build_evaluate_command(
-    const Scenario&    s,
-    const std::string& binary_path,
-    const std::string& output_path) {
-    std::string cmd;
+    std::string
+    build_evaluate_command(Scenario const& s, std::string const& binary_path, std::string const& output_path) {
+      std::string cmd;
 
-    if (s.data.empty()) {
-      cmd = fmt::format(
-        "\"{}\" -q --no-color evaluate --simulate {}x{}x{} -r {} -p {} -o \"{}\"",
-        binary_path, s.n, s.p, s.g, s.seed, s.train_ratio, output_path);
-    } else {
-      cmd = fmt::format(
-        "\"{}\" -q --no-color evaluate --data \"{}\" -r {} -p {} -o \"{}\"",
-        binary_path, s.data, s.seed, s.train_ratio, output_path);
+      if (s.data.empty()) {
+        cmd = fmt::format("\"{}\" -q --no-color evaluate --simulate {}x{}x{} -r {} -p {} -o \"{}\"",
+                          binary_path,
+                          s.n,
+                          s.p,
+                          s.g,
+                          s.seed,
+                          s.train_ratio,
+                          output_path);
+      } else {
+        cmd = fmt::format("\"{}\" -q --no-color evaluate --data \"{}\" -r {} -p {} -o \"{}\"",
+                          binary_path,
+                          s.data,
+                          s.seed,
+                          s.train_ratio,
+                          output_path);
+      }
+
+      if (s.size > 0) {
+        cmd += fmt::format(" -n {} -v {}", s.size, s.vars);
+      } else {
+        cmd += " -n 0";
+      }
+
+      cmd += fmt::format(" -l {}", s.lambda);
+
+      if (s.threads > 0) {
+        cmd += fmt::format(" --threads {}", s.threads);
+      }
+
+      if (s.warmup > 0) {
+        cmd += fmt::format(" --warmup {}", s.warmup);
+      }
+
+      if (s.iterations > 0) {
+        // Fixed iteration mode (-i disables convergence)
+        cmd += fmt::format(" -i {}", s.iterations);
+      } else {
+        // Convergence mode (default)
+        cmd += fmt::format(" --convergence-cv {} --convergence-max {}", s.convergence.cv, s.convergence.max);
+      }
+
+      return cmd;
     }
 
-    if (s.size > 0) {
-      cmd += fmt::format(" -n {} -v {}", s.size, s.vars);
-    } else {
-      cmd += " -n 0";
-    }
-
-    cmd += fmt::format(" -l {}", s.lambda);
-
-    if (s.threads > 0) {
-      cmd += fmt::format(" --threads {}", s.threads);
-    }
-
-    if (s.warmup > 0) {
-      cmd += fmt::format(" --warmup {}", s.warmup);
-    }
-
-    if (s.iterations > 0) {
-      // Fixed iteration mode (-i disables convergence)
-      cmd += fmt::format(" -i {}", s.iterations);
-    } else {
-      // Convergence mode (default)
-      cmd += fmt::format(" --convergence-cv {} --convergence-max {}", s.convergence.cv, s.convergence.max);
-    }
-
-    return cmd;
-  }
-
-  /**
+    /**
    * @brief Read and parse the JSON output written by `ppforest2 evaluate`.
    *
    * Copies the scenario's data-shape fields (n, p, g, trees, vars) into
@@ -252,45 +278,45 @@ namespace {
    * @param s     The originating scenario (for metadata).
    * @throws std::runtime_error if the file cannot be opened.
    */
-  ScenarioResult parse_evaluate_output(const std::string& path, const Scenario& s) {
-    std::ifstream file(path);
+    ScenarioResult parse_evaluate_output(std::string const& path, Scenario const& s) {
+      std::ifstream file(path);
 
-    invariant(file.is_open(), fmt::format("Failed to read results for scenario '{}'", s.name));
+      invariant(file.is_open(), fmt::format("Failed to read results for scenario '{}'", s.name));
 
-    auto j = nlohmann::json::parse(file);
+      auto j = nlohmann::json::parse(file);
 
-    ScenarioResult result;
-    result.name = s.name;
-    result.data = s.data;
+      ScenarioResult result;
+      result.name = s.name;
+      result.data = s.data;
 
-    if (s.data.empty()) {
-      result.n = s.n;
-      result.p = s.p;
-      result.g = s.g;
-    } else {
-      auto dims = read_csv_dimensions(s.data);
-      result.n = dims.n;
-      result.p = dims.p;
-      result.g = dims.g;
+      if (s.data.empty()) {
+        result.n = s.n;
+        result.p = s.p;
+        result.g = s.g;
+      } else {
+        auto dims = read_csv_dimensions(s.data);
+        result.n  = dims.n;
+        result.p  = dims.p;
+        result.g  = dims.g;
+      }
+
+      result.size        = s.size;
+      result.vars        = s.vars;
+      result.train_ratio = s.train_ratio;
+
+      result.runs           = j.value("runs", 0);
+      result.mean_time_ms   = j.value("mean_time_ms", 0.0);
+      result.std_time_ms    = j.value("std_time_ms", 0.0);
+      result.mean_tr_error  = j.value("mean_train_error", 0.0);
+      result.mean_te_error  = j.value("mean_test_error", 0.0);
+      result.peak_rss_bytes = j.value("peak_rss_bytes", (long)-1);
+      result.peak_rss_mb    = j.value("peak_rss_mb", -1.0);
+
+      return result;
     }
-
-    result.size        = s.size;
-    result.vars        = s.vars;
-    result.train_ratio = s.train_ratio;
-
-    result.runs           = j.value("runs", 0);
-    result.mean_time_ms   = j.value("mean_time_ms", 0.0);
-    result.std_time_ms    = j.value("std_time_ms", 0.0);
-    result.mean_tr_error  = j.value("mean_train_error", 0.0);
-    result.mean_te_error  = j.value("mean_test_error", 0.0);
-    result.peak_rss_bytes = j.value("peak_rss_bytes", (long)-1);
-    result.peak_rss_mb    = j.value("peak_rss_mb", -1.0);
-
-    return result;
   }
-}
 
-  BenchmarkSuite parse_suite(const std::string& path) {
+  BenchmarkSuite parse_suite(std::string const& path) {
     std::ifstream file(path);
 
     invariant(file.is_open(), fmt::format("Failed to open scenarios file: {}", path));
@@ -299,14 +325,14 @@ namespace {
 
     try {
       j = nlohmann::json::parse(file);
-    } catch (const nlohmann::json::parse_error& e) {
+    } catch (nlohmann::json::parse_error const& e) {
       invariant(false, fmt::format("Invalid JSON in scenarios file: {}", e.what()));
     }
 
     return parse_suite(j);
   }
 
-  BenchmarkSuite parse_suite(const nlohmann::json& j) {
+  BenchmarkSuite parse_suite(nlohmann::json const& j) {
     BenchmarkSuite suite;
 
     if (j.contains("name")) {
@@ -323,7 +349,7 @@ namespace {
     // Parse scenarios
     invariant(j.contains("scenarios") && j["scenarios"].is_array(), "Scenarios file must contain a 'scenarios' array");
 
-    for (const auto& scenario_json : j["scenarios"]) {
+    for (auto const& scenario_json : j["scenarios"]) {
       Scenario s = apply_defaults(scenario_json, defaults);
       validate_scenario(s);
       suite.scenarios.push_back(std::move(s));
@@ -334,7 +360,7 @@ namespace {
     return suite;
   }
 
-  SuiteResult parse_results(const std::string& path) {
+  SuiteResult parse_results(std::string const& path) {
     std::ifstream file(path);
 
     invariant(file.is_open(), fmt::format("Failed to open baseline results file: {}", path));
@@ -347,7 +373,7 @@ namespace {
     result.total_time_ms = j.value("total_time_ms", 0.0);
 
     if (j.contains("results") && j["results"].is_array()) {
-      for (const auto& r : j["results"]) {
+      for (auto const& r : j["results"]) {
         ScenarioResult sr;
         sr.name           = r.value("name", "");
         sr.data           = r.value("data", "");
@@ -380,7 +406,7 @@ namespace {
 
     nlohmann::json results_array = nlohmann::json::array();
 
-    for (const auto& r : results) {
+    for (auto const& r : results) {
       nlohmann::json rj;
       rj["name"] = r.name;
 
@@ -421,57 +447,49 @@ namespace {
    * exit codes on all platforms.  On Windows, std::system() wraps
    * via cmd.exe which can return unexpected exit codes.
    */
-  int run_command(const std::string& cmd) {
-    #ifdef _WIN32
+  int run_command(std::string const& cmd) {
+#ifdef _WIN32
     std::string full = "\"" + cmd + "\" 2>NUL";
-    FILE *pipe       = _popen(full.c_str(), "r");
-    #else
+    FILE* pipe       = _popen(full.c_str(), "r");
+#else
     std::string full = cmd + " 2>/dev/null";
-    FILE *pipe       = popen(full.c_str(), "r");
-    #endif
+    FILE* pipe       = popen(full.c_str(), "r");
+#endif
 
-    if (!pipe) return -1;
+    if (!pipe)
+      return -1;
 
     // Drain the pipe (stdout is empty due to -q, but must be consumed)
     char buffer[4096];
 
-    while (fgets(buffer, sizeof(buffer), pipe)) {
-    }
+    while (fgets(buffer, sizeof(buffer), pipe)) {}
 
-    #ifdef _WIN32
+#ifdef _WIN32
     return _pclose(pipe);
 
-    #else
+#else
     int status = pclose(pipe);
     return WIFEXITED(status) ? WEXITSTATUS(status) : -1;
 
-    #endif
+#endif
   }
 
-  ScenarioResult run_scenario(
-    const Scenario&    scenario,
-    const std::string& binary_path,
-    bool               quiet) {
+  ScenarioResult run_scenario(Scenario const& scenario, std::string const& binary_path, bool quiet) {
     ppforest2::io::TempFile output;
     output.clear();
     std::string cmd = build_evaluate_command(scenario, binary_path, output.path());
 
-    auto [ret, wall_ms] = ppforest2::io::measure_time_ms([&] {
-      return run_command(cmd);
-    });
+    auto [ret, wall_ms] = ppforest2::io::measure_time_ms([&] { return run_command(cmd); });
 
     invariant(ret == 0, fmt::format("Scenario '{}' failed (exit code {})", scenario.name, ret));
 
-    ScenarioResult result = parse_evaluate_output(output.path(), scenario);
+    ScenarioResult result   = parse_evaluate_output(output.path(), scenario);
     result.scenario_time_ms = wall_ms;
     return result;
   }
 
-  SuiteResult run_suite(
-    const BenchmarkSuite& suite,
-    const std::string&    binary_path,
-    bool                  quiet,
-    ProgressCallback      progress) {
+  SuiteResult
+  run_suite(BenchmarkSuite const& suite, std::string const& binary_path, bool quiet, ProgressCallback progress) {
     SuiteResult result;
     result.suite_name = suite.name;
     result.timestamp  = ppforest2::io::now_iso8601();
@@ -480,7 +498,7 @@ namespace {
 
     auto [_, total_ms] = ppforest2::io::measure_time_ms([&] {
       for (int i = 0; i < total; ++i) {
-        const auto& scenario = suite.scenarios[i];
+        auto const& scenario = suite.scenarios[i];
 
         if (progress) {
           progress(i, total, scenario.name);
@@ -502,7 +520,7 @@ namespace {
     return result;
   }
 
-  int run_benchmark(CLIOptions& params, const std::string& binary_path) {
+  int run_benchmark(CLIOptions& params, std::string const& binary_path) {
     using namespace ppforest2::io::style;
 
     io::Output out(params.quiet);
@@ -515,9 +533,7 @@ namespace {
 
     BenchmarkSuite suite;
 
-    if (int rc = out.try_or_fail([&] {
-      suite = parse_suite(params.benchmark.scenarios_path);
-    })) {
+    if (int rc = out.try_or_fail([&] { suite = parse_suite(params.benchmark.scenarios_path); })) {
       return rc;
     }
 
@@ -534,22 +550,22 @@ namespace {
       }
     }
 
-    out.println("{} {} scenarios from {}", emphasis("Benchmarking"), suite.scenarios.size(), params.benchmark.scenarios_path);
+    out.println(
+        "{} {} scenarios from {}", emphasis("Benchmarking"), suite.scenarios.size(), params.benchmark.scenarios_path);
     out.newline();
 
     // Run scenarios
     SuiteResult result;
 
     if (int rc = out.try_or_fail([&] {
-      result = run_suite(suite, binary_path, params.quiet,
-      [&](int idx, int total, const std::string& name) {
-        if (idx < total) {
-          out.indent();
-          out.println("[{}/{}] Running {}...", idx + 1, total, emphasis(name));
-          out.dedent();
-        }
-      });
-    })) {
+          result = run_suite(suite, binary_path, params.quiet, [&](int idx, int total, std::string const& name) {
+            if (idx < total) {
+              out.indent();
+              out.println("[{}/{}] Running {}...", idx + 1, total, emphasis(name));
+              out.dedent();
+            }
+          });
+        })) {
       return rc;
     }
 
@@ -557,10 +573,9 @@ namespace {
     std::optional<SuiteResult> baseline;
 
     if (!params.benchmark.baseline_path.empty()) {
-      if (int rc = out.try_or_fail([&] {
-        baseline = parse_results(params.benchmark.baseline_path);
-      },
-      "Failed to load baseline")) return rc;
+      if (int rc = out.try_or_fail([&] { baseline = parse_results(params.benchmark.baseline_path); },
+                                   "Failed to load baseline"))
+        return rc;
     }
 
     // Print results
@@ -573,17 +588,15 @@ namespace {
 
     // Export results
     if (!params.benchmark.output.empty()) {
-      if (int rc = out.try_or_fail([&] {
-        write_results_json(result, params.benchmark.output);
-      })) return rc;
+      if (int rc = out.try_or_fail([&] { write_results_json(result, params.benchmark.output); }))
+        return rc;
 
       out.saved("Results", params.benchmark.output);
     }
 
     if (!params.benchmark.csv.empty()) {
-      if (int rc = out.try_or_fail([&] {
-        write_results_csv(result, params.benchmark.csv);
-      })) return rc;
+      if (int rc = out.try_or_fail([&] { write_results_csv(result, params.benchmark.csv); }))
+        return rc;
 
       out.saved("CSV", params.benchmark.csv);
     }

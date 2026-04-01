@@ -4,15 +4,16 @@
 using namespace ppforest2::types;
 
 namespace ppforest2::pp {
-  Projector normalize(const Projector &projector) {
+  Projector normalize(Projector const& projector) {
     Projector truncated = (projector.array().abs() < 1e-15).select(0, projector.array());
 
-    const int size      = truncated.size();
-    const Feature *data = truncated.data();
+    int const size      = truncated.size();
+    Feature const* data = truncated.data();
 
     int i = 0;
 
-    while (i < size && math::is_approx(data[i], Feature(0), Feature(0.001))) ++i;
+    while (i < size && math::is_approx(data[i], Feature(0), Feature(0.001)))
+      ++i;
 
     if (i == size) {
       return truncated;

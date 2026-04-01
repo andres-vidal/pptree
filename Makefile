@@ -43,25 +43,37 @@ test-debug: build-debug
 golden-regen: build
 	@cd ./$(BUILD_DIR) && ./ppforest2-golden-gen
 
-# Targets for the Dev tools
+# Dev tools (clang-format, clang-tidy, cppcheck via pip; doxygen via cmake)
 
 TOOLS_DIR = .tools
+
+install-tools:
+	@pip install -r requirements-dev.txt
+	@command -v asdf >/dev/null 2>&1 && asdf reshim python || true
+	@mkdir -p ${TOOLS_DIR}
+	@cd ${TOOLS_DIR} && cmake ../tools && make
+
+install-doxygen:
+	@mkdir -p ${TOOLS_DIR}
+	@cd ${TOOLS_DIR} && cmake ../tools && make
 
 clean-tools:
 	@rm -rf ${TOOLS_DIR}
 
-install-tools:
-	@mkdir -p ${TOOLS_DIR}
-	@cd ${TOOLS_DIR} && cmake ../tools && make
+FORMAT_SOURCES = $(shell find core/src core/include -name '*.cpp' -o -name '*.hpp' -o -name '*.h') bindings/R/src/main.cpp bindings/R/inst/include/ppforest2.h
+TIDY_SOURCES = $(shell find core/src -name '*.cpp' ! -name '*.test.cpp')
 
 format:
-	@cd ${TOOLS_DIR} && make format
+	@clang-format -i ${FORMAT_SOURCES}
 
 format-dry:
-	@cd ${TOOLS_DIR} && make format-dry
+	@clang-format --dry-run --Werror ${FORMAT_SOURCES}
+
+tidy: build
+	@echo ${TIDY_SOURCES} | tr ' ' '\n' | xargs -P $$(nproc 2>/dev/null || sysctl -n hw.ncpu) -n 1 clang-tidy -p ${BUILD_DIR}
 
 analyze:
-	@cd ${TOOLS_DIR} && make analyze
+	@cppcheck --enable=all --check-level=exhaustive --suppress=missingIncludeSystem --suppress=duplInheritedMember --quiet core -Icore/src -Icore/include
 
 CPPCLEAN = $(shell python3 -c "import sysconfig; print(sysconfig.get_path('scripts'))")/cppclean
 

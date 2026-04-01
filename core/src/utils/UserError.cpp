@@ -5,13 +5,13 @@
 #include "utils/UserError.hpp"
 
 namespace ppforest2 {
-  void user_error(bool condition, const std::string& message) {
+  void user_error(bool condition, std::string const& message) {
     if (!condition) {
       throw UserError(message);
     }
   }
 
-  void user_error(bool condition, const char *message) {
+  void user_error(bool condition, char const* message) {
     if (!condition) {
       throw UserError(message);
     }

@@ -343,11 +343,14 @@ make r-clean            # Remove R compilation byproducts
 
 ### Development tools
 
+Dev tools (clang-format, clang-tidy, cppcheck) are installed via pip with pinned versions in `requirements-dev.txt`. Doxygen is built from source separately (only needed for documentation).
+
 ```bash
-make install-tools      # Download uncrustify, cppcheck, doxygen into .tools/
-make format             # Format C++ code (uncrustify)
+make install-tools      # Install dev tools (pip + doxygen)
+make format             # Format C++ code (clang-format)
 make format-dry         # Check formatting without applying changes
 make analyze            # Run static analysis (cppcheck)
+make tidy               # Run static analysis (clang-tidy)
 ```
 
 ### Golden tests

@@ -14,7 +14,7 @@
 using namespace ppforest2::types;
 
 namespace ppforest2::stats {
-  std::map<int, int> get_labels_map(const ResponseVector& groups) {
+  std::map<int, int> get_labels_map(ResponseVector const& groups) {
     std::set<int> labels_set = unique(groups);
 
     std::map<int, int> labels_map;
@@ -27,21 +27,18 @@ namespace ppforest2::stats {
     return labels_map;
   }
 
-  ConfusionMatrix::ConfusionMatrix(
-    const ResponseVector& predictions,
-    const ResponseVector& actual)
-    : label_index(get_labels_map(actual)) {
+  ConfusionMatrix::ConfusionMatrix(ResponseVector const& predictions, ResponseVector const& actual)
+      : label_index(get_labels_map(actual)) {
     if (predictions.rows() != actual.rows()) {
-      throw std::invalid_argument("cannot compute confusion matrix if predictions and observations have different sizes");
+      throw std::invalid_argument(
+          "cannot compute confusion matrix if predictions and observations have different sizes");
     }
 
-    values = Matrix<int>::Zero(
-      static_cast<int>(label_index.size()),
-      static_cast<int>(label_index.size()));
+    values = Matrix<int>::Zero(static_cast<int>(label_index.size()), static_cast<int>(label_index.size()));
 
     for (int i = 0; i < predictions.rows(); i++) {
-      const int actual_index     = label_index.at(actual(i));
-      const int prediction_index = label_index.at(predictions(i));
+      int const actual_index     = label_index.at(actual(i));
+      int const prediction_index = label_index.at(predictions(i));
 
       values(actual_index, prediction_index)++;
     }

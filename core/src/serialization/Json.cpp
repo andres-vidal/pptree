@@ -11,9 +11,8 @@
 using namespace ppforest2::types;
 
 namespace ppforest2::serialization {
-  std::vector<std::string> to_labels(
-    const types::ResponseVector&    predictions,
-    const std::vector<std::string>& group_names) {
+  std::vector<std::string> to_labels(types::ResponseVector const& predictions,
+                                     std::vector<std::string> const& group_names) {
     std::vector<std::string> labels;
     labels.reserve(static_cast<std::size_t>(predictions.size()));
 
@@ -24,8 +23,7 @@ namespace ppforest2::serialization {
     return labels;
   }
 
-  template<>
-  json Export<Model::Ptr>::to_json() const {
+  template<> json Export<Model::Ptr>::to_json() const {
     json result = serialization::to_json(*model, groups);
 
     json config;
@@ -39,18 +37,22 @@ namespace ppforest2::serialization {
     meta["feature_names"] = feature_names;
     result["meta"]        = meta;
 
-    if (training_confusion_matrix) result["training_confusion_matrix"] = serialization::to_json(*training_confusion_matrix, groups);
+    if (training_confusion_matrix)
+      result["training_confusion_matrix"] = serialization::to_json(*training_confusion_matrix, groups);
 
-    if (oob_error) result["oob_error"] = *oob_error;
+    if (oob_error)
+      result["oob_error"] = *oob_error;
 
-    if (oob_confusion_matrix) result["oob_confusion_matrix"] = serialization::to_json(*oob_confusion_matrix, groups);
+    if (oob_confusion_matrix)
+      result["oob_confusion_matrix"] = serialization::to_json(*oob_confusion_matrix, groups);
 
-    if (variable_importance) result["variable_importance"] = serialization::to_json(*variable_importance);
+    if (variable_importance)
+      result["variable_importance"] = serialization::to_json(*variable_importance);
 
     return result;
   }
 
-  void JsonNodeVisitor::visit(const TreeCondition& node) {
+  void JsonNodeVisitor::visit(TreeCondition const& node) {
     JsonNodeVisitor lower_visitor;
     lower_visitor.group_names = group_names;
     node.lower->accept(lower_visitor);
@@ -60,12 +62,12 @@ namespace ppforest2::serialization {
     node.upper->accept(upper_visitor);
 
     result = json{
-      { "projector",      node.projector },
-      { "threshold",      node.threshold },
-      { "pp_index_value", node.pp_index_value },
-      { "lower",          lower_visitor.result },
-      { "upper",          upper_visitor.result },
-      { "degenerate",     node.degenerate },
+        {"projector", node.projector},
+        {"threshold", node.threshold},
+        {"pp_index_value", node.pp_index_value},
+        {"lower", lower_visitor.result},
+        {"upper", upper_visitor.result},
+        {"degenerate", node.degenerate},
     };
 
     if (group_names) {
@@ -80,79 +82,77 @@ namespace ppforest2::serialization {
     }
   }
 
-  void JsonNodeVisitor::visit(const TreeResponse& node) {
+  void JsonNodeVisitor::visit(TreeResponse const& node) {
     if (group_names) {
       result = json{
-        { "value",      (*group_names)[static_cast<std::size_t>(node.value)] },
-        { "degenerate", node.degenerate },
+          {"value", (*group_names)[static_cast<std::size_t>(node.value)]},
+          {"degenerate", node.degenerate},
       };
     } else {
       result = json{
-        { "value",      node.value },
-        { "degenerate", node.degenerate },
+          {"value", node.value},
+          {"degenerate", node.degenerate},
       };
     }
   }
 
-  void JsonModelVisitor::visit(const Tree& tree) {
-    result = group_names
-      ? json{ { "model_type", "tree" }, { "model", to_json(tree, *group_names) } }
-      : json{ { "model_type", "tree" }, { "model", to_json(tree) } };
+  void JsonModelVisitor::visit(Tree const& tree) {
+    result = group_names ? json{{"model_type", "tree"}, {"model", to_json(tree, *group_names)}}
+                         : json{{"model_type", "tree"}, {"model", to_json(tree)}};
   }
 
-  void JsonModelVisitor::visit(const Forest& forest) {
-    result = group_names
-      ? json{ { "model_type", "forest" }, { "model", to_json(forest, *group_names) } }
-      : json{ { "model_type", "forest" }, { "model", to_json(forest) } };
+  void JsonModelVisitor::visit(Forest const& forest) {
+    result = group_names ? json{{"model_type", "forest"}, {"model", to_json(forest, *group_names)}}
+                         : json{{"model_type", "forest"}, {"model", to_json(forest)}};
   }
 
-  json to_json(const Model& model) {
+  json to_json(Model const& model) {
     JsonModelVisitor visitor;
     model.accept(visitor);
     return visitor.result;
   }
 
-  json to_json(const Model& model, const GroupNames& group_names) {
+  json to_json(Model const& model, GroupNames const& group_names) {
     JsonModelVisitor visitor;
     visitor.group_names = &group_names;
     model.accept(visitor);
     return visitor.result;
   }
 
-  json to_json(const TreeNode& node) {
+  json to_json(TreeNode const& node) {
     JsonNodeVisitor visitor;
     node.accept(visitor);
     return visitor.result;
   }
 
-  json to_json(const Tree& tree) {
+  json to_json(Tree const& tree) {
     return json{
-      { "root",       to_json(*tree.root) },
-      { "degenerate", tree.degenerate },
+        {"root", to_json(*tree.root)},
+        {"degenerate", tree.degenerate},
     };
   }
 
-  json to_json(const BootstrapTree& tree) {
-    json result = to_json(static_cast<const Tree&>(tree));
+  json to_json(BootstrapTree const& tree) {
+    json result              = to_json(static_cast<Tree const&>(tree));
     result["sample_indices"] = tree.sample_indices;
     return result;
   }
 
-  json to_json(const Forest& forest) {
+  json to_json(Forest const& forest) {
     std::vector<json> trees_json;
     trees_json.reserve(forest.trees.size());
 
-    for (const auto& tree : forest.trees) {
+    for (auto const& tree : forest.trees) {
       trees_json.push_back(to_json(*tree));
     }
 
     return json{
-      { "trees",      trees_json },
-      { "degenerate", forest.degenerate },
+        {"trees", trees_json},
+        {"degenerate", forest.degenerate},
     };
   }
 
-  json to_json(const stats::ConfusionMatrix& cm) {
+  json to_json(stats::ConfusionMatrix const& cm) {
     json j;
 
     std::vector<std::vector<int>> matrix_data;
@@ -168,7 +168,7 @@ namespace ppforest2::serialization {
     j["matrix"] = matrix_data;
 
     std::vector<int> labels;
-    for (const auto& [label, idx] : cm.label_index) {
+    for (auto const& [label, idx] : cm.label_index) {
       labels.push_back(label);
     }
 
@@ -181,8 +181,8 @@ namespace ppforest2::serialization {
     return j;
   }
 
-  json to_json(const VariableImportance& vi) {
-    const int p = static_cast<int>(vi.projections.size());
+  json to_json(VariableImportance const& vi) {
+    int const p = static_cast<int>(vi.projections.size());
 
     std::vector<float> scale_vec(vi.scale.data(), vi.scale.data() + p);
     std::vector<float> proj_vec(vi.projections.data(), vi.projections.data() + p);
@@ -204,41 +204,41 @@ namespace ppforest2::serialization {
     return j;
   }
 
-  json to_json(const TreeNode& node, const GroupNames& group_names) {
+  json to_json(TreeNode const& node, GroupNames const& group_names) {
     JsonNodeVisitor visitor;
     visitor.group_names = &group_names;
     node.accept(visitor);
     return visitor.result;
   }
 
-  json to_json(const Tree& tree, const GroupNames& group_names) {
+  json to_json(Tree const& tree, GroupNames const& group_names) {
     return json{
-      { "root",       to_json(*tree.root, group_names) },
-      { "degenerate", tree.degenerate },
+        {"root", to_json(*tree.root, group_names)},
+        {"degenerate", tree.degenerate},
     };
   }
 
-  json to_json(const BootstrapTree& tree, const GroupNames& group_names) {
-    json result = to_json(static_cast<const Tree&>(tree), group_names);
+  json to_json(BootstrapTree const& tree, GroupNames const& group_names) {
+    json result              = to_json(static_cast<Tree const&>(tree), group_names);
     result["sample_indices"] = tree.sample_indices;
     return result;
   }
 
-  json to_json(const Forest& forest, const GroupNames& group_names) {
+  json to_json(Forest const& forest, GroupNames const& group_names) {
     std::vector<json> trees_json;
     trees_json.reserve(forest.trees.size());
 
-    for (const auto& tree : forest.trees) {
+    for (auto const& tree : forest.trees) {
       trees_json.push_back(to_json(*tree, group_names));
     }
 
     return json{
-      { "trees",      trees_json },
-      { "degenerate", forest.degenerate },
+        {"trees", trees_json},
+        {"degenerate", forest.degenerate},
     };
   }
 
-  json to_json(const stats::ConfusionMatrix& cm, const GroupNames& group_names) {
+  json to_json(stats::ConfusionMatrix const& cm, GroupNames const& group_names) {
     json j;
 
     std::vector<std::vector<int>> matrix_data;
@@ -254,7 +254,7 @@ namespace ppforest2::serialization {
     j["matrix"] = matrix_data;
 
     std::vector<std::string> labels;
-    for (const auto& [label, idx] : cm.label_index) {
+    for (auto const& [label, idx] : cm.label_index) {
       labels.push_back(group_names[static_cast<std::size_t>(label)]);
     }
 
@@ -267,7 +267,7 @@ namespace ppforest2::serialization {
     return j;
   }
 
-  json to_json(const FeatureMatrix& matrix) {
+  json to_json(FeatureMatrix const& matrix) {
     std::vector<std::vector<Feature>> rows;
     rows.reserve(static_cast<std::size_t>(matrix.rows()));
 
@@ -288,34 +288,30 @@ namespace ppforest2::serialization {
   // Internal: node deserialization (integer labels only)
   // -----------------------------------------------------------------------
 
-  static TreeNode::Ptr node_from_json(const json& j) {
+  static TreeNode::Ptr node_from_json(json const& j) {
     if (j.contains("value")) {
-      auto leaf = TreeResponse::make(j["value"].get<Response>());
+      auto leaf        = TreeResponse::make(j["value"].get<Response>());
       leaf->degenerate = j.value("degenerate", false);
       return leaf;
     }
 
-    const auto proj_vec = j["projector"].get<std::vector<Feature>>();
+    auto const proj_vec = j["projector"].get<std::vector<Feature>>();
 
-    pp::Projector projector = Eigen::Map<const pp::Projector>(
-      proj_vec.data(),
-      static_cast<int>(proj_vec.size()));
+    pp::Projector projector = Eigen::Map<pp::Projector const>(proj_vec.data(), static_cast<int>(proj_vec.size()));
 
-    const Feature threshold      = j["threshold"].get<Feature>();
-    const Feature pp_index_value = j.value("pp_index_value", Feature(0));
+    Feature const threshold      = j["threshold"].get<Feature>();
+    Feature const pp_index_value = j.value("pp_index_value", Feature(0));
 
     std::set<Response> groups;
 
     if (j.contains("groups")) {
-      for (const auto& g : j["groups"]) {
+      for (auto const& g : j["groups"]) {
         groups.insert(g.get<Response>());
       }
     }
 
     auto node = TreeCondition::make(
-      projector, threshold,
-      node_from_json(j["lower"]), node_from_json(j["upper"]),
-      groups, pp_index_value);
+        projector, threshold, node_from_json(j["lower"]), node_from_json(j["upper"]), groups, pp_index_value);
 
     node->degenerate = node->degenerate || j.value("degenerate", false);
     return node;
@@ -325,7 +321,7 @@ namespace ppforest2::serialization {
   // Internal: node deserialization (labeled — resolves string → int)
   // -----------------------------------------------------------------------
 
-  static Response resolve_label(const json& value, const GroupNames& group_names) {
+  static Response resolve_label(json const& value, GroupNames const& group_names) {
     if (value.is_string()) {
       auto it = std::find(group_names.begin(), group_names.end(), value.get<std::string>());
       return static_cast<Response>(std::distance(group_names.begin(), it));
@@ -334,35 +330,34 @@ namespace ppforest2::serialization {
     return value.get<Response>();
   }
 
-  static TreeNode::Ptr node_from_json(const json& j, const GroupNames& group_names) {
+  static TreeNode::Ptr node_from_json(json const& j, GroupNames const& group_names) {
     if (j.contains("value")) {
-      auto leaf = TreeResponse::make(resolve_label(j["value"], group_names));
+      auto leaf        = TreeResponse::make(resolve_label(j["value"], group_names));
       leaf->degenerate = j.value("degenerate", false);
       return leaf;
     }
 
-    const auto proj_vec = j["projector"].get<std::vector<Feature>>();
+    auto const proj_vec = j["projector"].get<std::vector<Feature>>();
 
-    pp::Projector projector = Eigen::Map<const pp::Projector>(
-      proj_vec.data(),
-      static_cast<int>(proj_vec.size()));
+    pp::Projector projector = Eigen::Map<pp::Projector const>(proj_vec.data(), static_cast<int>(proj_vec.size()));
 
-    const Feature threshold      = j["threshold"].get<Feature>();
-    const Feature pp_index_value = j.value("pp_index_value", Feature(0));
+    Feature const threshold      = j["threshold"].get<Feature>();
+    Feature const pp_index_value = j.value("pp_index_value", Feature(0));
 
     std::set<Response> groups;
 
     if (j.contains("groups")) {
-      for (const auto& g : j["groups"]) {
+      for (auto const& g : j["groups"]) {
         groups.insert(resolve_label(g, group_names));
       }
     }
 
-    auto node = TreeCondition::make(
-      projector, threshold,
-      node_from_json(j["lower"], group_names),
-      node_from_json(j["upper"], group_names),
-      groups, pp_index_value);
+    auto node = TreeCondition::make(projector,
+                                    threshold,
+                                    node_from_json(j["lower"], group_names),
+                                    node_from_json(j["upper"], group_names),
+                                    groups,
+                                    pp_index_value);
 
     node->degenerate = node->degenerate || j.value("degenerate", false);
     return node;
@@ -372,33 +367,30 @@ namespace ppforest2::serialization {
   // Deserialization — bare model block (integer labels, no spec)
   // -----------------------------------------------------------------------
 
-  template<> Tree from_json<Tree>(const json& j) {
+  template<> Tree from_json<Tree>(json const& j) {
     return Tree(node_from_json(j["root"]), nullptr);
   }
 
-  template<> Forest from_json<Forest>(const json& j) {
+  template<> Forest from_json<Forest>(json const& j) {
     Forest forest(nullptr);
     forest.degenerate = j.value("degenerate", false);
 
-    for (const auto& tree_json : j.at("trees")) {
-      auto sample_indices = tree_json.contains("sample_indices")
-        ? tree_json["sample_indices"].get<std::vector<int>>()
-        : std::vector<int>{};
+    for (auto const& tree_json : j.at("trees")) {
+      auto sample_indices = tree_json.contains("sample_indices") ? tree_json["sample_indices"].get<std::vector<int>>()
+                                                                 : std::vector<int>{};
 
-      forest.add_tree(std::make_unique<BootstrapTree>(
-          node_from_json(tree_json.at("root")),
-          nullptr,
-          std::move(sample_indices)));
+      forest.add_tree(
+          std::make_unique<BootstrapTree>(node_from_json(tree_json.at("root")), nullptr, std::move(sample_indices)));
     }
 
     return forest;
   }
 
-  template<> stats::ConfusionMatrix from_json<stats::ConfusionMatrix>(const json& j) {
+  template<> stats::ConfusionMatrix from_json<stats::ConfusionMatrix>(json const& j) {
     stats::ConfusionMatrix cm;
     auto matrix_data = j["matrix"];
     int n            = static_cast<int>(matrix_data.size());
-    cm.values = types::Matrix<int>::Zero(n, n);
+    cm.values        = types::Matrix<int>::Zero(n, n);
 
     for (int i = 0; i < n; ++i) {
       for (int col = 0; col < n; ++col) {
@@ -406,7 +398,7 @@ namespace ppforest2::serialization {
       }
     }
 
-    const auto& labels = j["labels"];
+    auto const& labels = j["labels"];
 
     for (int i = 0; i < n; ++i) {
       if (labels[static_cast<std::size_t>(i)].is_number_integer()) {
@@ -419,34 +411,31 @@ namespace ppforest2::serialization {
     return cm;
   }
 
-  template<> VariableImportance from_json<VariableImportance>(const json& j) {
+  template<> VariableImportance from_json<VariableImportance>(json const& j) {
     VariableImportance vi;
     auto scale_vec = j["scale"].get<std::vector<float>>();
     auto proj_vec  = j["projections"].get<std::vector<float>>();
     int p          = static_cast<int>(proj_vec.size());
 
-    vi.scale       = Eigen::Map<const types::FeatureVector>(scale_vec.data(), p);
-    vi.projections = Eigen::Map<const types::FeatureVector>(proj_vec.data(), p);
+    vi.scale       = Eigen::Map<types::FeatureVector const>(scale_vec.data(), p);
+    vi.projections = Eigen::Map<types::FeatureVector const>(proj_vec.data(), p);
 
     if (j.contains("weighted_projections") && !j["weighted_projections"].empty()) {
-      auto wp_vec = j["weighted_projections"].get<std::vector<float>>();
-      vi.weighted_projections = Eigen::Map<const types::FeatureVector>(wp_vec.data(), p);
+      auto wp_vec             = j["weighted_projections"].get<std::vector<float>>();
+      vi.weighted_projections = Eigen::Map<types::FeatureVector const>(wp_vec.data(), p);
     }
 
     if (j.contains("permuted") && !j["permuted"].empty()) {
       auto perm_vec = j["permuted"].get<std::vector<float>>();
-      vi.permuted = Eigen::Map<const types::FeatureVector>(perm_vec.data(), p);
+      vi.permuted   = Eigen::Map<types::FeatureVector const>(perm_vec.data(), p);
     }
 
     return vi;
   }
 
-  template<>
-  void Export<Model::Ptr>::compute_metrics(
-    const types::FeatureMatrix&  x,
-    const types::ResponseVector& y) {
-    const int n_vars = static_cast<int>(x.cols());
-    const int seed   = model->training_spec->seed;
+  template<> void Export<Model::Ptr>::compute_metrics(types::FeatureMatrix const& x, types::ResponseVector const& y) {
+    int const n_vars = static_cast<int>(x.cols());
+    int const seed   = model->training_spec->seed;
 
     VariableImportance vi;
     vi.scale = stats::sd(x);
@@ -454,33 +443,41 @@ namespace ppforest2::serialization {
 
     // Training confusion matrix
     ResponseVector train_preds = model->predict(x);
-    training_confusion_matrix = stats::ConfusionMatrix(train_preds, y);
+    training_confusion_matrix  = stats::ConfusionMatrix(train_preds, y);
 
     // Model-specific metrics (OOB for forests)
     struct MetricsVisitor : Model::Visitor {
-      const FeatureMatrix& x;
-      const ResponseVector& y;
+      FeatureMatrix const& x;
+      ResponseVector const& y;
       int n_vars, seed;
       VariableImportance& vi;
       Export<Model::Ptr>& self;
 
-      MetricsVisitor(const FeatureMatrix& x, const ResponseVector& y,
-        int n_vars, int seed, VariableImportance& vi,
-        Export<Model::Ptr>& self) :
-        x(x), y(y), n_vars(n_vars), seed(seed), vi(vi), self(self) {
-      }
+      MetricsVisitor(FeatureMatrix const& x,
+                     ResponseVector const& y,
+                     int n_vars,
+                     int seed,
+                     VariableImportance& vi,
+                     Export<Model::Ptr>& self)
+          : x(x)
+          , y(y)
+          , n_vars(n_vars)
+          , seed(seed)
+          , vi(vi)
+          , self(self) {}
 
-      void visit(const Forest& forest) override {
+      void visit(Forest const& forest) override {
         ResponseVector oob_preds = forest.oob_predict(x);
 
         std::vector<int> oob_rows;
         for (int i = 0; i < oob_preds.size(); ++i) {
-          if (oob_preds(i) >= 0) oob_rows.push_back(i);
+          if (oob_preds(i) >= 0)
+            oob_rows.push_back(i);
         }
 
         if (!oob_rows.empty()) {
-          ResponseVector preds_oob = oob_preds(oob_rows, Eigen::all).eval();
-          ResponseVector y_oob     = y(oob_rows, Eigen::all).eval();
+          ResponseVector preds_oob  = oob_preds(oob_rows, Eigen::all).eval();
+          ResponseVector y_oob      = y(oob_rows, Eigen::all).eval();
           self.oob_error            = stats::error_rate(preds_oob, y_oob);
           self.oob_confusion_matrix = stats::ConfusionMatrix(preds_oob, y_oob);
         }
@@ -490,7 +487,7 @@ namespace ppforest2::serialization {
         vi.weighted_projections = variable_importance_weighted_projections(forest, x, y, &vi.scale);
       }
 
-      void visit(const Tree& tree) override {
+      void visit(Tree const& tree) override {
         vi.projections = variable_importance_projections(tree, n_vars, &vi.scale);
       }
     };
@@ -511,26 +508,23 @@ namespace nlohmann {
   using json = nlohmann::json;
 
   // Full export (labeled JSON + config + meta)
-  Export<Tree>
-  adl_serializer<Export<Tree>>::from_json(const json& j) {
+  Export<Tree> adl_serializer<Export<Tree>>::from_json(json const& j) {
     auto spec   = TrainingSpec::from_json(j.at("config"));
     auto& meta  = j.at("meta");
     auto groups = meta.at("groups").get<GroupNames>();
 
     return {
-      Tree(node_from_json(j.at("model")["root"], groups), spec),
-      std::move(groups),
-      std::move(spec),
-      meta.value("observations", 0),
-      meta.value("features", 0),
-      meta.contains("feature_names")
-        ? meta["feature_names"].get<std::vector<std::string>>()
-        : std::vector<std::string>{},
+        Tree(node_from_json(j.at("model")["root"], groups), spec),
+        std::move(groups),
+        std::move(spec),
+        meta.value("observations", 0),
+        meta.value("features", 0),
+        meta.contains("feature_names") ? meta["feature_names"].get<std::vector<std::string>>()
+                                       : std::vector<std::string>{},
     };
   }
 
-  Export<Forest>
-  adl_serializer<Export<Forest>>::from_json(const json& j) {
+  Export<Forest> adl_serializer<Export<Forest>>::from_json(json const& j) {
     auto spec   = TrainingSpec::from_json(j.at("config"));
     auto& meta  = j.at("meta");
     auto groups = meta.at("groups").get<GroupNames>();
@@ -539,89 +533,89 @@ namespace nlohmann {
     Forest forest(spec);
     forest.degenerate = mj.value("degenerate", false);
 
-    for (const auto& tree_json : mj.at("trees")) {
-      auto sample_indices = tree_json.contains("sample_indices")
-        ? tree_json["sample_indices"].get<std::vector<int>>()
-        : std::vector<int>{};
+    for (auto const& tree_json : mj.at("trees")) {
+      auto sample_indices = tree_json.contains("sample_indices") ? tree_json["sample_indices"].get<std::vector<int>>()
+                                                                 : std::vector<int>{};
 
       forest.add_tree(std::make_unique<BootstrapTree>(
-          node_from_json(tree_json.at("root"), groups),
-          spec,
-          std::move(sample_indices)));
+          node_from_json(tree_json.at("root"), groups), spec, std::move(sample_indices)));
     }
 
     return {
-      std::move(forest),
-      std::move(groups),
-      std::move(spec),
-      meta.value("observations", 0),
-      meta.value("features", 0),
-      meta.contains("feature_names")
-        ? meta["feature_names"].get<std::vector<std::string>>()
-        : std::vector<std::string>{},
+        std::move(forest),
+        std::move(groups),
+        std::move(spec),
+        meta.value("observations", 0),
+        meta.value("features", 0),
+        meta.contains("feature_names") ? meta["feature_names"].get<std::vector<std::string>>()
+                                       : std::vector<std::string>{},
     };
   }
 
-  Export<Model::Ptr>
-  adl_serializer<Export<Model::Ptr>>::from_json(const json& j) {
+  Export<Model::Ptr> adl_serializer<Export<Model::Ptr>>::from_json(json const& j) {
     std::string model_type = j.value("model_type", "tree");
 
     Export<Model::Ptr> result = [&]() -> Export<Model::Ptr> {
-        if (model_type == "forest") {
-          auto fe = j.get<Export<Forest>>();
-          return {
-          std::make_shared<Forest>(std::move(fe.model)),
-          std::move(fe.groups),
-          std::move(fe.spec),
-          fe.n_observations,
-          fe.n_features,
-          std::move(fe.feature_names),
-          };
-        } else if (model_type == "tree") {
-          auto te = j.get<Export<Tree>>();
-          return {
-          std::make_shared<Tree>(std::move(te.model)),
-          std::move(te.groups),
-          std::move(te.spec),
-          te.n_observations,
-          te.n_features,
-          std::move(te.feature_names),
-          };
-        } else {
-          throw std::invalid_argument("Invalid model type: " + model_type);
-        }
-      }();
+      if (model_type == "forest") {
+        auto fe = j.get<Export<Forest>>();
+        return {
+            std::make_shared<Forest>(std::move(fe.model)),
+            std::move(fe.groups),
+            std::move(fe.spec),
+            fe.n_observations,
+            fe.n_features,
+            std::move(fe.feature_names),
+        };
+      } else if (model_type == "tree") {
+        auto te = j.get<Export<Tree>>();
+        return {
+            std::make_shared<Tree>(std::move(te.model)),
+            std::move(te.groups),
+            std::move(te.spec),
+            te.n_observations,
+            te.n_features,
+            std::move(te.feature_names),
+        };
+      } else {
+        throw std::invalid_argument("Invalid model type: " + model_type);
+      }
+    }();
 
-    if (j.contains("variable_importance")) result.variable_importance = serialization::from_json<VariableImportance>(j["variable_importance"]);
+    if (j.contains("variable_importance"))
+      result.variable_importance = serialization::from_json<VariableImportance>(j["variable_importance"]);
 
-    if (j.contains("training_confusion_matrix")) result.training_confusion_matrix = serialization::from_json<stats::ConfusionMatrix>(j["training_confusion_matrix"]);
+    if (j.contains("training_confusion_matrix"))
+      result.training_confusion_matrix =
+          serialization::from_json<stats::ConfusionMatrix>(j["training_confusion_matrix"]);
 
-    if (j.contains("oob_confusion_matrix")) result.oob_confusion_matrix = serialization::from_json<stats::ConfusionMatrix>(j["oob_confusion_matrix"]);
+    if (j.contains("oob_confusion_matrix"))
+      result.oob_confusion_matrix = serialization::from_json<stats::ConfusionMatrix>(j["oob_confusion_matrix"]);
 
-    if (j.contains("oob_error")) result.oob_error = j["oob_error"].get<double>();
+    if (j.contains("oob_error"))
+      result.oob_error = j["oob_error"].get<double>();
 
     return result;
   }
 } // namespace nlohmann
 
 namespace ppforest2::serialization {
-  std::ostream& operator<<(std::ostream& os, const TreeNode& node) {
+  std::ostream& operator<<(std::ostream& os, TreeNode const& node) {
     return os << to_json(node).dump(2, ' ', false);
   }
 
-  std::ostream& operator<<(std::ostream& os, const TreeCondition& condition) {
-    return os << to_json(static_cast<const TreeNode&>(condition)).dump(2, ' ', false);
+  std::ostream& operator<<(std::ostream& os, TreeCondition const& condition) {
+    return os << to_json(static_cast<TreeNode const&>(condition)).dump(2, ' ', false);
   }
 
-  std::ostream& operator<<(std::ostream& os, const TreeResponse& response) {
-    return os << to_json(static_cast<const TreeNode&>(response)).dump(2, ' ', false);
+  std::ostream& operator<<(std::ostream& os, TreeResponse const& response) {
+    return os << to_json(static_cast<TreeNode const&>(response)).dump(2, ' ', false);
   }
 
-  std::ostream& operator<<(std::ostream& os, const Tree& tree) {
+  std::ostream& operator<<(std::ostream& os, Tree const& tree) {
     return os << to_json(tree).dump(2, ' ', false);
   }
 
-  std::ostream& operator<<(std::ostream& os, const Forest& forest) {
+  std::ostream& operator<<(std::ostream& os, Forest const& forest) {
     return os << to_json(forest).dump(2, ' ', false);
   }
 }

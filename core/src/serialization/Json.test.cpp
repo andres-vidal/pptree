@@ -30,9 +30,9 @@ using json = nlohmann::json;
 #endif
 
 static const std::string GOLDEN_DIR   = PPFOREST2_GOLDEN_DIR;
-static const std::string FIXTURES_DIR = PPFOREST2_FIXTURES_DIR;
+static std::string const FIXTURES_DIR = PPFOREST2_FIXTURES_DIR;
 
-static json load_golden(const std::string& path) {
+static json load_golden(std::string const& path) {
   std::ifstream in(path);
   invariant(in.is_open(), "Required golden file missing: " + path);
   return json::parse(in);
@@ -105,14 +105,15 @@ TEST(JsonLabeled, TreeLeafValuesAreStrings) {
   json j      = to_json(e.model, e.groups);
 
   // Walk to a leaf
-  const json *node = &j["root"];
+  json const* node = &j["root"];
 
   while (node->contains("lower"))
     node = &(*node)["lower"];
 
   ASSERT_TRUE((*node)["value"].is_string());
   auto value = (*node)["value"].get<std::string>();
-  EXPECT_TRUE(std::find(e.groups.begin(), e.groups.end(), value) != e.groups.end()) << "Leaf value '" << value << "' not in group_names";
+  EXPECT_TRUE(std::find(e.groups.begin(), e.groups.end(), value) != e.groups.end())
+      << "Leaf value '" << value << "' not in group_names";
 }
 
 TEST(JsonLabeled, TreeGroupsAreStrings) {
@@ -123,8 +124,9 @@ TEST(JsonLabeled, TreeGroupsAreStrings) {
   auto root_groups = j["root"]["groups"].get<std::vector<std::string>>();
   EXPECT_EQ(root_groups.size(), e.groups.size());
 
-  for (const auto& g : root_groups) {
-    EXPECT_TRUE(std::find(e.groups.begin(), e.groups.end(), g) != e.groups.end()) << "Group '" << g << "' not in group_names";
+  for (auto const& g : root_groups) {
+    EXPECT_TRUE(std::find(e.groups.begin(), e.groups.end(), g) != e.groups.end())
+        << "Group '" << g << "' not in group_names";
   }
 }
 
@@ -134,7 +136,7 @@ TEST(JsonLabeled, IntegerFormatOmitsGroupNames) {
   json j      = to_json(e.model);
 
   // Walk to a leaf
-  const json *node = &j["root"];
+  json const* node = &j["root"];
 
   while (node->contains("lower"))
     node = &(*node)["lower"];
@@ -149,7 +151,7 @@ TEST(JsonLabeled, ConfusionMatrixLabelsAreStrings) {
   ResponseVector actual(6);
   actual << 0, 1, 1, 1, 2, 0;
 
-  GroupNames names = { "setosa", "versicolor", "virginica" };
+  GroupNames names = {"setosa", "versicolor", "virginica"};
   ConfusionMatrix cm(predictions, actual);
   json j = to_json(cm, names);
 
@@ -239,7 +241,7 @@ TEST(JsonStructure, ForestSampleIndicesRoundTrip) {
   json roundtripped = to_json(e.model, e.groups);
 
   for (size_t i = 0; i < e.model.trees.size(); ++i) {
-    auto *bt = dynamic_cast<const BootstrapTree *>(e.model.trees[i].get());
+    auto* bt = dynamic_cast<BootstrapTree const*>(e.model.trees[i].get());
     ASSERT_NE(bt, nullptr) << "Tree " << i << " should be a BootstrapTree";
     EXPECT_FALSE(bt->sample_indices.empty()) << "Tree " << i << " should have sample_indices";
 

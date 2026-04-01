@@ -117,9 +117,8 @@ TEST_F(SummarizeTest, HasSampleIndices) {
   auto trees = model_json_["model"]["trees"];
   ASSERT_GT(trees.size(), 0u);
 
-  for (const auto& tree : trees) {
-    ASSERT_TRUE(tree.contains("sample_indices"))
-      << "Each tree must have sample_indices";
+  for (auto const& tree : trees) {
+    ASSERT_TRUE(tree.contains("sample_indices")) << "Each tree must have sample_indices";
     EXPECT_GT(tree["sample_indices"].size(), 0u);
   }
 }
@@ -132,8 +131,10 @@ TEST_F(SummarizeTest, HasSampleIndices) {
 TEST(CLISummarize, SummarizeNonDefaultStrategies) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 "
-      "--pp pda:lambda=0.5 --dr noop -s " + model.path());
+  auto train = run_ppforest2("-q train -d " + IRIS_CSV +
+                             " -n 5 -r 0 "
+                             "--pp pda:lambda=0.5 --dr noop -s " +
+                             model.path());
   ASSERT_EQ(train.exit_code, 0);
 
   auto result = run_ppforest2("--no-color summarize -M " + model.path());

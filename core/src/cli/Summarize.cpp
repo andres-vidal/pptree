@@ -16,13 +16,11 @@
 using json = nlohmann::json;
 
 namespace ppforest2::cli {
-  CLI::App * setup_summarize(CLI::App& app, CLIOptions& params) {
+  CLI::App* setup_summarize(CLI::App& app, CLIOptions& params) {
     auto sub = app.add_subcommand("summarize", "Display a saved model summary");
-    sub->add_option("-M,--model", params.model_path, "Saved model JSON file")
-    ->required()
-    ->check(CLI::ExistingFile);
+    sub->add_option("-M,--model", params.model_path, "Saved model JSON file")->required()->check(CLI::ExistingFile);
     sub->add_option("-d,--data", params.data_path, "CSV training data (recomputes metrics if provided)")
-    ->check(CLI::ExistingFile);
+        ->check(CLI::ExistingFile);
     return sub;
   }
 
@@ -41,11 +39,11 @@ namespace ppforest2::cli {
         auto model_export = model_data.get<serialization::Export<Model::Ptr>>();
         model_export.compute_metrics(data.x, data.y);
         model_data = model_export.to_json();
-      } catch (const ppforest2::UserError& e) {
+      } catch (ppforest2::UserError const& e) {
         fmt::print(stderr, "Error: {}\n", e.what());
         fmt::print(stderr, "File: {}\n", params.data_path);
         return 1;
-      } catch (const std::exception& e) {
+      } catch (std::exception const& e) {
         fmt::print(stderr, "Error reading data: {}\n", e.what());
         return 1;
       }

@@ -13,17 +13,14 @@ using namespace ppforest2::stats;
 using namespace ppforest2::types;
 
 namespace ppforest2 {
-  Forest Forest::train(
-    const TrainingSpec &  training_spec,
-    const FeatureMatrix & x,
-    const ResponseVector& y) {
-    const int size        = training_spec.size;
-    const int seed        = training_spec.seed;
-    const int max_retries = training_spec.max_retries;
+  Forest Forest::train(TrainingSpec const& training_spec, FeatureMatrix const& x, ResponseVector const& y) {
+    int const size        = training_spec.size;
+    int const seed        = training_spec.seed;
+    int const max_retries = training_spec.max_retries;
 
-    #ifdef _OPENMP
+#ifdef _OPENMP
     omp_set_num_threads(training_spec.resolve_threads());
-    #endif
+#endif
 
     GroupPartition group_spec(y);
 
@@ -34,7 +31,7 @@ namespace ppforest2 {
     std::vector<BootstrapTree::Ptr> trees(size);
     std::vector<std::exception_ptr> errors(size);
 
-    #pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(static)
     for (int i = 0; i < size; i++) {
       for (int attempt = 0; attempt <= max_retries; ++attempt) {
         try {
@@ -69,17 +66,16 @@ namespace ppforest2 {
     return forest;
   }
 
-  Forest::Forest() {
-  }
+  Forest::Forest() {}
 
   Forest::Forest(TrainingSpec::Ptr training_spec) {
     this->training_spec = std::move(training_spec);
   }
 
-  Response Forest::predict(const FeatureVector& data) const {
+  Response Forest::predict(FeatureVector const& data) const {
     std::map<Response, int> votes_per_group;
 
-    for (const auto& tree : trees) {
+    for (auto const& tree : trees) {
       Response prediction = tree->predict(data);
       votes_per_group[prediction] += 1;
     }
@@ -87,7 +83,7 @@ namespace ppforest2 {
     Response best  = 0;
     int best_count = 0;
 
-    for (const auto& [key, votes] : votes_per_group) {
+    for (auto const& [key, votes] : votes_per_group) {
       if (votes > best_count) {
         best       = key;
         best_count = votes;
@@ -97,7 +93,7 @@ namespace ppforest2 {
     return best;
   }
 
-  ResponseVector Forest::predict(const FeatureMatrix& data) const {
+  ResponseVector Forest::predict(FeatureMatrix const& data) const {
     ResponseVector predictions(data.rows());
 
     for (int i = 0; i < data.rows(); i++) {
@@ -107,7 +103,7 @@ namespace ppforest2 {
     return predictions;
   }
 
-  FeatureMatrix Forest::predict(const FeatureMatrix& data, Proportions) const {
+  FeatureMatrix Forest::predict(FeatureMatrix const& data, Proportions) const {
     invariant(!trees.empty(), "Forest has no trees.");
 
     std::set<Response> group_set = trees[0]->root->node_groups();
@@ -123,7 +119,7 @@ namespace ppforest2 {
     FeatureMatrix proportions = FeatureMatrix::Zero(n, G);
 
     for (int i = 0; i < n; ++i) {
-      for (const auto& tree : trees) {
+      for (auto const& tree : trees) {
         Response pred = tree->predict((FeatureVector)data.row(i));
         auto it       = group_to_col.find(pred);
 
@@ -146,7 +142,7 @@ namespace ppforest2 {
     trees.push_back(std::move(tree));
   }
 
-  bool Forest::operator==(const Forest& other) const {
+  bool Forest::operator==(Forest const& other) const {
     if (trees.size() != other.trees.size()) {
       return false;
     }
@@ -160,7 +156,7 @@ namespace ppforest2 {
     return true;
   }
 
-  bool Forest::operator!=(const Forest& other) const {
+  bool Forest::operator!=(Forest const& other) const {
     return !(*this == other);
   }
 
@@ -168,16 +164,16 @@ namespace ppforest2 {
     visitor.visit(*this);
   }
 
-  ResponseVector Forest::oob_predict(const FeatureMatrix& x) const {
-    const int n_total = static_cast<int>(x.rows());
-    const int B       = static_cast<int>(trees.size());
+  ResponseVector Forest::oob_predict(FeatureMatrix const& x) const {
+    int const n_total = static_cast<int>(x.rows());
+    int const B       = static_cast<int>(trees.size());
 
     std::vector<std::map<Response, int>> votes(static_cast<std::size_t>(n_total));
 
     for (int k = 0; k < B; ++k) {
-      const BootstrapTree& tree    = *trees[k];
-      std::vector<int>     oob_idx = tree.oob_indices(n_total);
-      ResponseVector preds         = tree.predict_oob(x, oob_idx);
+      BootstrapTree const& tree = *trees[k];
+      std::vector<int> oob_idx  = tree.oob_indices(n_total);
+      ResponseVector preds      = tree.predict_oob(x, oob_idx);
 
       for (int j = 0; j < static_cast<int>(oob_idx.size()); ++j) {
         int i = oob_idx[static_cast<std::size_t>(j)];
@@ -189,7 +185,7 @@ namespace ppforest2 {
     out.fill(-1);
 
     for (int i = 0; i < n_total; ++i) {
-      const auto& obs_votes = votes[static_cast<std::size_t>(i)];
+      auto const& obs_votes = votes[static_cast<std::size_t>(i)];
 
       if (obs_votes.empty()) {
         continue;
@@ -198,7 +194,7 @@ namespace ppforest2 {
       Response best  = 0;
       int best_count = 0;
 
-      for (const auto& [cls, cnt] : obs_votes) {
+      for (auto const& [cls, cnt] : obs_votes) {
         if (cnt > best_count) {
           best       = cls;
           best_count = cnt;
@@ -211,9 +207,7 @@ namespace ppforest2 {
     return out;
   }
 
-  double Forest::oob_error(
-    const FeatureMatrix&  x,
-    const ResponseVector& y) const {
+  double Forest::oob_error(FeatureMatrix const& x, ResponseVector const& y) const {
     ResponseVector preds = oob_predict(x);
 
     std::vector<int> oob_rows;

@@ -51,8 +51,7 @@ namespace ppforest2::serialization {
    * For `Export<Model::Ptr>`, construct with training data to compute
    * metrics automatically, or use `compute_metrics()` after construction.
    */
-  template<typename T>
-  struct Export {
+  template<typename T> struct Export {
     T model;
     GroupNames groups;
     TrainingSpec::Ptr spec;
@@ -62,10 +61,10 @@ namespace ppforest2::serialization {
 
     /** @name Optional metrics — serialized by to_json() when present. */
     ///@{
-    std::optional<VariableImportance>       variable_importance;
-    std::optional<stats::ConfusionMatrix>   training_confusion_matrix;
-    std::optional<stats::ConfusionMatrix>   oob_confusion_matrix;
-    std::optional<double>                   oob_error;
+    std::optional<VariableImportance> variable_importance;
+    std::optional<stats::ConfusionMatrix> training_confusion_matrix;
+    std::optional<stats::ConfusionMatrix> oob_confusion_matrix;
+    std::optional<double> oob_error;
     ///@}
 
     /** @brief Serialize to JSON. Only defined for Export<Model::Ptr>. */
@@ -76,57 +75,53 @@ namespace ppforest2::serialization {
      *
      * Only defined for Export<Model::Ptr>.
      */
-    void compute_metrics(
-      const types::FeatureMatrix&  x,
-      const types::ResponseVector& y);
+    void compute_metrics(types::FeatureMatrix const& x, types::ResponseVector const& y);
   };
 
   // Explicit specialization declarations for Export<Model::Ptr>.
   template<> json Export<Model::Ptr>::to_json() const;
-  template<> void Export<Model::Ptr>::compute_metrics(
-    const types::FeatureMatrix&, const types::ResponseVector&);
+  template<> void Export<Model::Ptr>::compute_metrics(types::FeatureMatrix const&, types::ResponseVector const&);
 
   /** @brief Visitor that serializes a tree node to JSON. */
   struct JsonNodeVisitor : public TreeNode::Visitor {
     json result;
-    const GroupNames *group_names = nullptr;
-    void visit(const TreeCondition& node) override;
-    void visit(const TreeResponse& node) override;
+    GroupNames const* group_names = nullptr;
+    void visit(TreeCondition const& node) override;
+    void visit(TreeResponse const& node) override;
   };
 
   /** @brief Visitor that serializes a model (Tree or Forest) to JSON. */
   struct JsonModelVisitor : public Model::Visitor {
     json result;
-    const GroupNames *group_names = nullptr;
-    void visit(const Tree& tree) override;
-    void visit(const Forest& forest) override;
+    GroupNames const* group_names = nullptr;
+    void visit(Tree const& tree) override;
+    void visit(Forest const& forest) override;
   };
 
   /** @brief Map integer response codes to group name strings. */
-  std::vector<std::string> to_labels(
-    const types::ResponseVector&    predictions,
-    const std::vector<std::string>& group_names);
+  std::vector<std::string> to_labels(types::ResponseVector const& predictions,
+                                     std::vector<std::string> const& group_names);
 
   /** @name Serialization */
   ///@{
-  json to_json(const Model& model);
-  json to_json(const TreeNode& node);
-  json to_json(const Tree& tree);
-  json to_json(const BootstrapTree& tree);
-  json to_json(const Forest& forest);
-  json to_json(const stats::ConfusionMatrix& cm);
-  json to_json(const VariableImportance& vi);
-  json to_json(const types::FeatureMatrix& matrix);
+  json to_json(Model const& model);
+  json to_json(TreeNode const& node);
+  json to_json(Tree const& tree);
+  json to_json(BootstrapTree const& tree);
+  json to_json(Forest const& forest);
+  json to_json(stats::ConfusionMatrix const& cm);
+  json to_json(VariableImportance const& vi);
+  json to_json(types::FeatureMatrix const& matrix);
   ///@}
 
   /** @name Labeled serialization (uses group names instead of integer codes) */
   ///@{
-  json to_json(const Model& model, const GroupNames& group_names);
-  json to_json(const TreeNode& node, const GroupNames& group_names);
-  json to_json(const Tree& tree, const GroupNames& group_names);
-  json to_json(const BootstrapTree& tree, const GroupNames& group_names);
-  json to_json(const Forest& forest, const GroupNames& group_names);
-  json to_json(const stats::ConfusionMatrix& cm, const GroupNames& group_names);
+  json to_json(Model const& model, GroupNames const& group_names);
+  json to_json(TreeNode const& node, GroupNames const& group_names);
+  json to_json(Tree const& tree, GroupNames const& group_names);
+  json to_json(BootstrapTree const& tree, GroupNames const& group_names);
+  json to_json(Forest const& forest, GroupNames const& group_names);
+  json to_json(stats::ConfusionMatrix const& cm, GroupNames const& group_names);
   ///@}
 
   /** @name Deserialization */
@@ -138,45 +133,42 @@ namespace ppforest2::serialization {
    * For labeled JSON (string values/groups), use `j.get<Export<T>>()` instead.
    * Call via `serialization::from_json<T>(j)` or `j.get<T>()`.
    */
-  template<typename T> T from_json(const json& j);
+  template<typename T> T from_json(json const& j);
 
-  template<> Tree from_json<Tree>(const json& j);
-  template<> Forest from_json<Forest>(const json& j);
-  template<> stats::ConfusionMatrix from_json<stats::ConfusionMatrix>(const json& j);
-  template<> VariableImportance from_json<VariableImportance>(const json& j);
+  template<> Tree from_json<Tree>(json const& j);
+  template<> Forest from_json<Forest>(json const& j);
+  template<> stats::ConfusionMatrix from_json<stats::ConfusionMatrix>(json const& j);
+  template<> VariableImportance from_json<VariableImportance>(json const& j);
   ///@}
 
   /** @name Stream operators */
   ///@{
-  std::ostream& operator<<(std::ostream& os, const TreeNode& node);
-  std::ostream& operator<<(std::ostream& os, const TreeCondition& condition);
-  std::ostream& operator<<(std::ostream& os, const TreeResponse& response);
-  std::ostream& operator<<(std::ostream& os, const Tree& tree);
-  std::ostream& operator<<(std::ostream& os, const Forest& forest);
+  std::ostream& operator<<(std::ostream& os, TreeNode const& node);
+  std::ostream& operator<<(std::ostream& os, TreeCondition const& condition);
+  std::ostream& operator<<(std::ostream& os, TreeResponse const& response);
+  std::ostream& operator<<(std::ostream& os, Tree const& tree);
+  std::ostream& operator<<(std::ostream& os, Forest const& forest);
 
-  template<typename V>
-  std::ostream& operator<<(std::ostream& ostream, const std::vector<V> &vec) {
+  template<typename V> std::ostream& operator<<(std::ostream& ostream, std::vector<V> const& vec) {
     json json_vector(vec);
     return ostream << json_vector.dump();
   }
 
   template<typename V, typename C1, typename C2>
-  std::ostream& operator<<(std::ostream& ostream, const std::set<V, C1, C2> &set) {
+  std::ostream& operator<<(std::ostream& ostream, std::set<V, C1, C2> const& set) {
     json json_set(set);
     return ostream << json_set.dump();
   }
 
-  template<typename K, typename V>
-  std::ostream& operator<<(std::ostream& ostream, const std::map<K, V> &map) {
+  template<typename K, typename V> std::ostream& operator<<(std::ostream& ostream, std::map<K, V> const& map) {
     json json_map(map);
     return ostream << json_map.dump();
   }
 
-  template<typename V>
-  std::ostream& operator<<(std::ostream& ostream, const std::map<int, V> &map) {
+  template<typename V> std::ostream& operator<<(std::ostream& ostream, std::map<int, V> const& map) {
     std::map<std::string, V> string_map;
 
-    for (const auto& [key, val] : map) {
+    for (auto const& [key, val] : map) {
       string_map[std::to_string(key)] = val;
     }
 
@@ -190,38 +182,36 @@ namespace ppforest2::serialization {
 // ADL serializer specializations — enables j.get<T>() for all types.
 namespace nlohmann {
   template<> struct adl_serializer<ppforest2::Tree> {
-    static ppforest2::Tree from_json(const json& j) {
-      return ppforest2::serialization::from_json<ppforest2::Tree>(j);
-    }
+    static ppforest2::Tree from_json(json const& j) { return ppforest2::serialization::from_json<ppforest2::Tree>(j); }
   };
 
   template<> struct adl_serializer<ppforest2::Forest> {
-    static ppforest2::Forest from_json(const json& j) {
+    static ppforest2::Forest from_json(json const& j) {
       return ppforest2::serialization::from_json<ppforest2::Forest>(j);
     }
   };
 
   template<> struct adl_serializer<ppforest2::stats::ConfusionMatrix> {
-    static ppforest2::stats::ConfusionMatrix from_json(const json& j) {
+    static ppforest2::stats::ConfusionMatrix from_json(json const& j) {
       return ppforest2::serialization::from_json<ppforest2::stats::ConfusionMatrix>(j);
     }
   };
 
   template<> struct adl_serializer<ppforest2::VariableImportance> {
-    static ppforest2::VariableImportance from_json(const json& j) {
+    static ppforest2::VariableImportance from_json(json const& j) {
       return ppforest2::serialization::from_json<ppforest2::VariableImportance>(j);
     }
   };
 
   template<> struct adl_serializer<ppforest2::serialization::Export<ppforest2::Tree>> {
-    static ppforest2::serialization::Export<ppforest2::Tree> from_json(const json& j);
+    static ppforest2::serialization::Export<ppforest2::Tree> from_json(json const& j);
   };
 
   template<> struct adl_serializer<ppforest2::serialization::Export<ppforest2::Forest>> {
-    static ppforest2::serialization::Export<ppforest2::Forest> from_json(const json& j);
+    static ppforest2::serialization::Export<ppforest2::Forest> from_json(json const& j);
   };
 
   template<> struct adl_serializer<ppforest2::serialization::Export<ppforest2::Model::Ptr>> {
-    static ppforest2::serialization::Export<ppforest2::Model::Ptr> from_json(const json& j);
+    static ppforest2::serialization::Export<ppforest2::Model::Ptr> from_json(json const& j);
   };
 }

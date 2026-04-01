@@ -7,20 +7,20 @@
 #include <numeric>
 
 namespace ppforest2::dr {
-  DRUniformStrategy::DRUniformStrategy(int n_vars) : n_vars(n_vars) {
+  DRUniformStrategy::DRUniformStrategy(int n_vars)
+      : n_vars(n_vars) {
     invariant(n_vars > 0, "The number of variables must be greater than 0.");
   }
 
   void DRUniformStrategy::to_json(nlohmann::json& j) const {
-    j = { { "name", "uniform" }, { "n_vars", n_vars } };
+    j = {{"name", "uniform"}, {"n_vars", n_vars}};
   }
 
-  DRResult DRUniformStrategy::select(
-    types::FeatureMatrix const&  x,
-    stats::GroupPartition const& group_spec,
-    stats::RNG&                  rng) const {
+  DRResult DRUniformStrategy::select(types::FeatureMatrix const& x,
+                                     stats::GroupPartition const& group_spec,
+                                     stats::RNG& rng) const {
     invariant(n_vars <= x.cols(),
-      "The number of variables must be less than or equal to the number of columns in the data.");
+              "The number of variables must be less than or equal to the number of columns in the data.");
 
     if (n_vars == x.cols()) {
       std::vector<int> all_indices(x.cols());
@@ -37,8 +37,8 @@ namespace ppforest2::dr {
     return std::make_shared<DRUniformStrategy>(n_vars);
   }
 
-  DRStrategy::Ptr DRUniformStrategy::from_json(const nlohmann::json& j) {
-    validate_json_keys(j, "uniform DR", { "name", "n_vars" });
+  DRStrategy::Ptr DRUniformStrategy::from_json(nlohmann::json const& j) {
+    validate_json_keys(j, "uniform DR", {"name", "n_vars"});
     return uniform(j.at("n_vars").get<int>());
   }
 }

@@ -1,14 +1,14 @@
 name: Run Format
 on: push
 jobs:
-  Uncrustify:
+  Clang-Format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Cache dev tools
-        uses: actions/cache@v4
+      - uses: actions/setup-python@v5
         with:
-          path: .tools
-          key: ${{ runner.os }}-tools-${{ hashFiles('tools/CMakeLists.txt') }}
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
       - run: make install-tools
       - run: make format-dry

@@ -15,11 +15,13 @@
 #include <optional>
 #include <functional>
 
-namespace CLI { class App; }
+namespace CLI {
+  class App;
+}
 
 namespace ppforest2::cli {
   /** @brief Register benchmark subcommand options on @p app. */
-  CLI::App * setup_benchmark(CLI::App& app, CLIOptions& params);
+  CLI::App* setup_benchmark(CLI::App& app, CLIOptions& params);
 
   /**
    * @brief Convergence criteria for adaptive stopping in benchmarks.
@@ -130,18 +132,18 @@ namespace ppforest2::cli {
    * @brief Parse a BenchmarkSuite from a JSON file path.
    * @throws std::runtime_error on parse or validation errors.
    */
-  BenchmarkSuite parse_suite(const std::string& path);
+  BenchmarkSuite parse_suite(std::string const& path);
 
   /**
    * @brief Parse a BenchmarkSuite from a JSON object.
    * @throws std::runtime_error on validation errors.
    */
-  BenchmarkSuite parse_suite(const nlohmann::json& j);
+  BenchmarkSuite parse_suite(nlohmann::json const& j);
 
   /**
    * @brief Parse a SuiteResult from a JSON file (for baseline comparison).
    */
-  SuiteResult parse_results(const std::string& path);
+  SuiteResult parse_results(std::string const& path);
 
   /**
    * @brief Callback for progress reporting during benchmark execution.
@@ -149,7 +151,7 @@ namespace ppforest2::cli {
    * @param total           Total number of scenarios.
    * @param name            Name of the current scenario.
    */
-  using ProgressCallback = std::function<void (int scenario_index, int total, const std::string& name)>;
+  using ProgressCallback = std::function<void(int scenario_index, int total, std::string const& name)>;
 
   /**
    * @brief Run all scenarios in a suite via subprocess invocations.
@@ -163,19 +165,15 @@ namespace ppforest2::cli {
    * @param progress    Optional progress callback.
    * @return Aggregated suite results.
    */
-  SuiteResult run_suite(
-    const BenchmarkSuite& suite,
-    const std::string&    binary_path,
-    bool                  quiet    = false,
-    ProgressCallback      progress = nullptr);
+  SuiteResult run_suite(BenchmarkSuite const& suite,
+                        std::string const& binary_path,
+                        bool quiet                = false,
+                        ProgressCallback progress = nullptr);
 
   /**
    * @brief Run a single scenario as a subprocess.
    */
-  ScenarioResult run_scenario(
-    const Scenario&    scenario,
-    const std::string& binary_path,
-    bool               quiet = false);
+  ScenarioResult run_scenario(Scenario const& scenario, std::string const& binary_path, bool quiet = false);
 
   /**
    * @brief Run the benchmark subcommand.
@@ -183,5 +181,5 @@ namespace ppforest2::cli {
    * @param binary_path Path to the ppforest2 binary (typically argv[0]).
    * @return Exit code.
    */
-  int run_benchmark(CLIOptions& params, const std::string& binary_path);
+  int run_benchmark(CLIOptions& params, std::string const& binary_path);
 }

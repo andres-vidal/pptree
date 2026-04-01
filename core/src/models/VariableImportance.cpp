@@ -18,9 +18,7 @@ namespace ppforest2 {
   // Helpers
   // -------------------------------------------------------------------------
 
-  static ResponseVector gather_labels(
-    const ResponseVector&   y,
-    const std::vector<int>& idx) {
+  static ResponseVector gather_labels(ResponseVector const& y, std::vector<int> const& idx) {
     ResponseVector labels(static_cast<int>(idx.size()));
 
     for (int i = 0; i < static_cast<int>(idx.size()); ++i) {
@@ -33,20 +31,17 @@ namespace ppforest2 {
   // -------------------------------------------------------------------------
   // VI1 — Permuted importance
   // -------------------------------------------------------------------------
-  FeatureVector variable_importance_permuted(
-    const Forest&         forest,
-    const FeatureMatrix&  x,
-    const ResponseVector& y,
-    int                   seed) {
-    const int n_vars  = static_cast<int>(x.cols());
-    const int n_total = static_cast<int>(x.rows());
-    const int B       = static_cast<int>(forest.trees.size());
+  FeatureVector
+  variable_importance_permuted(Forest const& forest, FeatureMatrix const& x, ResponseVector const& y, int seed) {
+    int const n_vars  = static_cast<int>(x.cols());
+    int const n_total = static_cast<int>(x.rows());
+    int const B       = static_cast<int>(forest.trees.size());
 
     FeatureVector importance = FeatureVector::Zero(n_vars);
     int valid_trees          = 0;
 
     for (int k = 0; k < B; ++k) {
-      const BootstrapTree& tree = *forest.trees[k];
+      BootstrapTree const& tree = *forest.trees[k];
 
       if (tree.degenerate) {
         continue;
@@ -62,10 +57,10 @@ namespace ppforest2 {
       ResponseVector oob_labels    = gather_labels(y, oob_idx);
       ResponseVector baseline_pred = tree.predict_oob(x, oob_idx);
 
-      const float baseline_acc = stats::accuracy(baseline_pred, oob_labels);
+      float const baseline_acc = stats::accuracy(baseline_pred, oob_labels);
 
       stats::RNG rng(static_cast<unsigned>(seed) ^ static_cast<unsigned>(k));
-      const int n_oob = static_cast<int>(oob_idx.size());
+      int const n_oob = static_cast<int>(oob_idx.size());
       stats::Uniform uniform(0, n_oob - 1);
 
       // Copy OOB rows once — only column j changes per iteration.
@@ -91,7 +86,7 @@ namespace ppforest2 {
           perm_pred(i) = tree.predict(static_cast<FeatureVector>(perm_x.row(i)));
         }
 
-        const float perm_acc = stats::accuracy(perm_pred, oob_labels);
+        float const perm_acc = stats::accuracy(perm_pred, oob_labels);
         importance(j) += baseline_acc - perm_acc;
 
         // Restore column j for next iteration.
@@ -112,10 +107,7 @@ namespace ppforest2 {
   // -------------------------------------------------------------------------
   // VI2 — Projections importance (single tree)
   // -------------------------------------------------------------------------
-  FeatureVector variable_importance_projections(
-    const Tree&         tree,
-    int                 n_vars,
-    const FeatureVector *scale) {
+  FeatureVector variable_importance_projections(Tree const& tree, int n_vars, FeatureVector const* scale) {
     FeatureVector importance = FeatureVector::Zero(n_vars);
 
     VIVisitor visitor(n_vars, scale);
@@ -131,17 +123,14 @@ namespace ppforest2 {
   // -------------------------------------------------------------------------
   // VI2 — Projections importance (forest, averaged over trees)
   // -------------------------------------------------------------------------
-  FeatureVector variable_importance_projections(
-    const Forest&       forest,
-    int                 n_vars,
-    const FeatureVector *scale) {
-    const int B = static_cast<int>(forest.trees.size());
+  FeatureVector variable_importance_projections(Forest const& forest, int n_vars, FeatureVector const* scale) {
+    int const B = static_cast<int>(forest.trees.size());
 
     FeatureVector importance = FeatureVector::Zero(n_vars);
     int valid_trees          = 0;
 
     for (int k = 0; k < B; ++k) {
-      const BootstrapTree& tree = *forest.trees[k];
+      BootstrapTree const& tree = *forest.trees[k];
 
       if (tree.degenerate) {
         continue;
@@ -167,14 +156,13 @@ namespace ppforest2 {
   // -------------------------------------------------------------------------
   // VI3 — Weighted projections importance
   // -------------------------------------------------------------------------
-  FeatureVector variable_importance_weighted_projections(
-    const Forest&         forest,
-    const FeatureMatrix&  x,
-    const ResponseVector& y,
-    const FeatureVector   *scale) {
-    const int n_vars  = static_cast<int>(x.cols());
-    const int n_total = static_cast<int>(x.rows());
-    const int B       = static_cast<int>(forest.trees.size());
+  FeatureVector variable_importance_weighted_projections(Forest const& forest,
+                                                         FeatureMatrix const& x,
+                                                         ResponseVector const& y,
+                                                         FeatureVector const* scale) {
+    int const n_vars  = static_cast<int>(x.cols());
+    int const n_total = static_cast<int>(x.rows());
+    int const B       = static_cast<int>(forest.trees.size());
 
     // Count G = number of unique groups.
     std::set<Response> group_set;
@@ -183,13 +171,13 @@ namespace ppforest2 {
       group_set.insert(y(i));
     }
 
-    const int G = static_cast<int>(group_set.size());
+    int const G = static_cast<int>(group_set.size());
 
     FeatureVector importance = FeatureVector::Zero(n_vars);
     int valid_trees          = 0;
 
     for (int k = 0; k < B; ++k) {
-      const BootstrapTree& tree = *forest.trees[k];
+      BootstrapTree const& tree = *forest.trees[k];
 
       if (tree.degenerate) {
         continue;
@@ -202,13 +190,13 @@ namespace ppforest2 {
       if (!oob_idx.empty()) {
         ResponseVector oob_labels = gather_labels(y, oob_idx);
         ResponseVector oob_preds  = tree.predict_oob(x, oob_idx);
-        e_k = static_cast<Feature>(stats::error_rate(oob_preds, oob_labels));
+        e_k                       = static_cast<Feature>(stats::error_rate(oob_preds, oob_labels));
       }
 
       VIVisitor visitor(n_vars, scale);
       tree.root->accept(visitor);
 
-      const Feature weight = Feature(1) - e_k;
+      Feature const weight = Feature(1) - e_k;
 
       for (int j = 0; j < n_vars; ++j) {
         importance(j) += weight * static_cast<Feature>(visitor.vi3_contributions[static_cast<std::size_t>(j)]);
@@ -217,7 +205,7 @@ namespace ppforest2 {
       valid_trees++;
     }
 
-    const Feature denom = static_cast<Feature>(valid_trees) * static_cast<Feature>(G - 1);
+    Feature const denom = static_cast<Feature>(valid_trees) * static_cast<Feature>(G - 1);
 
     if (denom > Feature(0)) {
       importance /= denom;

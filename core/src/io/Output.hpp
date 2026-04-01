@@ -27,16 +27,15 @@ namespace ppforest2::io {
     bool quiet;
     int indent_level = 0;
 
-    explicit Output(bool quiet) : quiet(quiet) {
-    }
+    explicit Output(bool quiet)
+        : quiet(quiet) {}
 
     // -- stdout (quiet-aware, indented) ----------------------------------
 
     /**
      * @brief Print indent + formatted content + newline. The workhorse.
      */
-    template<typename ... Args>
-    void println(fmt::format_string<Args...> fmt_str, Args&&... args) const {
+    template<typename... Args> void println(fmt::format_string<Args...> fmt_str, Args&&... args) const {
       if (!quiet) {
         print_indent();
         fmt::print(fmt_str, std::forward<Args>(args)...);
@@ -49,8 +48,7 @@ namespace ppforest2::io {
      *
      * Use for starting a partial line that will be continued.
      */
-    template<typename ... Args>
-    void print(fmt::format_string<Args...> fmt_str, Args&&... args) const {
+    template<typename... Args> void print(fmt::format_string<Args...> fmt_str, Args&&... args) const {
       if (!quiet) {
         print_indent();
         fmt::print(fmt_str, std::forward<Args>(args)...);
@@ -69,29 +67,25 @@ namespace ppforest2::io {
     /**
      * @brief Flush stdout. For interactive output like progress bars.
      */
-    void flush() const {
-      std::fflush(stdout);
-    }
+    void flush() const { std::fflush(stdout); }
 
     // -- stderr (always prints, no indent) -------------------------------
 
     /**
      * @brief Print formatted content + newline to stderr. Always prints.
      */
-    template<typename ... Args>
-    void errorln(fmt::format_string<Args...> fmt_str, Args&&... args) const {
+    template<typename... Args> void errorln(fmt::format_string<Args...> fmt_str, Args&&... args) const {
       fmt::print(stderr, fmt_str, std::forward<Args>(args)...);
       fmt::print(stderr, "\n");
     }
 
     // -- indentation -----------------------------------------------------
 
-    void indent() {
-      ++indent_level;
-    }
+    void indent() { ++indent_level; }
 
     void dedent() {
-      if (indent_level > 0) --indent_level;
+      if (indent_level > 0)
+        --indent_level;
     }
 
     // -- high-level patterns ---------------------------------------------
@@ -99,9 +93,7 @@ namespace ppforest2::io {
     /**
      * @brief Print a file-save confirmation: "label saved to path".
      */
-    void saved(const std::string& label, const std::string& path) const {
-      println("{} saved to {}", label, path);
-    }
+    void saved(std::string const& label, std::string const& path) const { println("{} saved to {}", label, path); }
 
     /**
      * @brief Display a carriage-return progress bar.
@@ -110,7 +102,8 @@ namespace ppforest2::io {
      * Prints a final newline when current == total.
      */
     void progress(int current, int total, int bar_width = 50) const {
-      if (quiet) return;
+      if (quiet)
+        return;
 
       float pct = static_cast<float>(current) / total;
       int pos   = static_cast<int>(bar_width * pct);
@@ -125,7 +118,12 @@ namespace ppforest2::io {
       }
 
       fmt::print("\r{:{}}" + bar_tpl + " {}/{} ({}%)     ",
-        "", indent_level * 2, bar, current, total, static_cast<int>(pct * 100.0));
+                 "",
+                 indent_level * 2,
+                 bar,
+                 current,
+                 total,
+                 static_cast<int>(pct * 100.0));
       std::fflush(stdout);
 
       if (current == total) {
@@ -139,13 +137,11 @@ namespace ppforest2::io {
      * If the callable succeeds, returns 0. If it throws, prints the
      * error message to stderr with red "Error:" prefix and returns 1.
      */
-    int try_or_fail(
-      const std::function<void()>& f,
-      const std::string&           context = "") const {
+    int try_or_fail(std::function<void()> const& f, std::string const& context = "") const {
       try {
         f();
         return 0;
-      } catch (const std::exception& e) {
+      } catch (std::exception const& e) {
         if (context.empty()) {
           errorln("{} {}", style::error("Error:"), e.what());
         } else {
@@ -156,11 +152,11 @@ namespace ppforest2::io {
       }
     }
 
-    private:
-      void print_indent() const {
-        if (indent_level > 0) {
-          fmt::print("{:{}}", "", indent_level * 2);
-        }
+  private:
+    void print_indent() const {
+      if (indent_level > 0) {
+        fmt::print("{:{}}", "", indent_level * 2);
       }
+    }
   };
 }

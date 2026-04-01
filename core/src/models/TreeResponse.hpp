@@ -26,21 +26,15 @@ namespace ppforest2 {
      * @param data  Feature vector (unused).
      * @return      The class label stored at this leaf.
      */
-    types::Response predict(const types::FeatureVector& data) const override;
+    types::Response predict(types::FeatureVector const& data) const override;
 
-    bool is_leaf() const override {
-      return true;
-    }
+    bool is_leaf() const override { return true; }
 
-    int group_count() const override {
-      return 1;
-    }
+    int group_count() const override { return 1; }
 
-    std::set<types::Response> node_groups() const override {
-      return { value };
-    }
+    std::set<types::Response> node_groups() const override { return {value}; }
 
-    bool equals(const TreeNode& other) const override;
+    bool equals(TreeNode const& other) const override;
     TreeNode::Ptr clone() const override;
 
     /** @brief Factory method that returns a unique_ptr to a new TreeResponse. */

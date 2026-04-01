@@ -116,7 +116,7 @@ TEST(CLIEvaluate, EvaluateMultipleIterationsArray) {
   EXPECT_EQ(j["iterations"].size(), 3u);
   EXPECT_EQ(j["runs"], 3);
 
-  for (const auto& iter : j["iterations"]) {
+  for (auto const& iter : j["iterations"]) {
     EXPECT_TRUE(iter.contains("train_time_ms"));
     EXPECT_TRUE(iter.contains("train_error"));
     EXPECT_TRUE(iter.contains("test_error"));
@@ -152,8 +152,9 @@ TEST(CLIEvaluate, EvaluateWithStrategyFlags) {
   std::string export_path = dir.path() + "/exp_strategies";
 
   auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 "
-      "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means "
-      "-e " + export_path);
+                              "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means "
+                              "-e " +
+                              export_path);
   EXPECT_EQ(result.exit_code, 0);
 
   std::ifstream config_in(export_path + "/config.json");

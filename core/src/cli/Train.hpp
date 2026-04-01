@@ -15,14 +15,16 @@
 #include "utils/Types.hpp"
 #include "models/Model.hpp"
 
-namespace CLI { class App; }
+namespace CLI {
+  class App;
+}
 
 namespace ppforest2::cli {
   /** @brief Register train subcommand options on @p app. */
-  CLI::App * setup_train(CLI::App& app, CLIOptions& params);
+  CLI::App* setup_train(CLI::App& app, CLIOptions& params);
 
   /** @brief Add shared model options (size, lambda, threads, seed, vars) to @p sub. */
-  void add_model_options(CLI::App *sub, ModelParams& model);
+  void add_model_options(CLI::App* sub, ModelParams& model);
 
   /** @brief Result of a train operation containing the model and training duration. */
   struct TrainResult {
@@ -36,18 +38,15 @@ namespace ppforest2::cli {
    * If data_path is set, reads a CSV file; otherwise generates simulated data.
    * Ensures the response vector is contiguous (sorted by group).
    */
-  ppforest2::stats::DataPacket read_data(
-    const CLIOptions&      params,
-    ppforest2::stats::RNG& rng);
+  ppforest2::stats::DataPacket read_data(CLIOptions const& params, ppforest2::stats::RNG& rng);
 
   /**
    * @brief Train a single model (Forest or Tree) on the given dataset.
    */
-  TrainResult train_model(
-    const ppforest2::types::FeatureMatrix&  x,
-    const ppforest2::types::ResponseVector& y,
-    const CLIOptions&                       params,
-    ppforest2::stats::RNG&                  rng);
+  TrainResult train_model(ppforest2::types::FeatureMatrix const& x,
+                          ppforest2::types::ResponseVector const& y,
+                          CLIOptions const& params,
+                          ppforest2::stats::RNG& rng);
 
   /**
    * @brief Run the train subcommand.

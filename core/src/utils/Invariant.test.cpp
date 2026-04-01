@@ -7,12 +7,14 @@ TEST(Invariant, DoesNotThrowWhenConditionIsTrue) {
 }
 
 TEST(Invariant, ThrowsWhenConditionIsFalse) {
-  ASSERT_THROW({
-    try {
-      invariant(false, "This should throw");
-    } catch (const std::runtime_error &e) {
-      EXPECT_STREQ("This should throw", e.what());
-      throw;
-    }
-  }, std::runtime_error);
+  ASSERT_THROW(
+      {
+        try {
+          invariant(false, "This should throw");
+        } catch (std::runtime_error const& e) {
+          EXPECT_STREQ("This should throw", e.what());
+          throw;
+        }
+      },
+      std::runtime_error);
 }

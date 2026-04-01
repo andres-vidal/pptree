@@ -18,14 +18,14 @@
 #include <filesystem>
 
 namespace ppforest2::io {
-  void check_file_not_exists(const std::string& path) {
+  void check_file_not_exists(std::string const& path) {
     if (std::filesystem::exists(path)) {
       fmt::print(stderr, "Error: File already exists: {}\n", path);
       std::exit(1);
     }
   }
 
-  void check_dir_not_exists(const std::string& path) {
+  void check_dir_not_exists(std::string const& path) {
     if (std::filesystem::exists(path)) {
       fmt::print(stderr, "Error: Directory already exists: {}\n", path);
       std::exit(1);
@@ -34,7 +34,7 @@ namespace ppforest2::io {
 }
 
 namespace ppforest2::io::json {
-  std::string ensure_extension(const std::string& path) {
+  std::string ensure_extension(std::string const& path) {
     if (path.size() >= 5 && path.substr(path.size() - 5) == ".json") {
       return path;
     }
@@ -42,7 +42,7 @@ namespace ppforest2::io::json {
     return path + ".json";
   }
 
-  nlohmann::json read_file(const std::string& path) {
+  nlohmann::json read_file(std::string const& path) {
     std::ifstream in(path);
 
     if (!in.is_open()) {
@@ -52,13 +52,13 @@ namespace ppforest2::io::json {
 
     try {
       return nlohmann::json::parse(in);
-    } catch (const nlohmann::json::parse_error& e) {
+    } catch (nlohmann::json::parse_error const& e) {
       fmt::print(stderr, "Error: Invalid JSON in file: {}\n", e.what());
       std::exit(1);
     }
   }
 
-  void write_file(const nlohmann::json& data, const std::string& path) {
+  void write_file(nlohmann::json const& data, std::string const& path) {
     std::ofstream out(path);
 
     if (!out.is_open()) {
@@ -72,33 +72,34 @@ namespace ppforest2::io::json {
 }
 
 namespace ppforest2::io::csv {
-namespace {
-  bool is_numeric(const std::string& s) {
-    if (s.empty()) return false;
+  namespace {
+    bool is_numeric(std::string const& s) {
+      if (s.empty())
+        return false;
 
-    char *end = nullptr;
-    std::strtod(s.c_str(), &end);
-    return end != s.c_str() && *end == '\0';
+      char* end = nullptr;
+      std::strtod(s.c_str(), &end);
+      return end != s.c_str() && *end == '\0';
+    }
+
+    struct CategoricalEncoder {
+      std::unordered_map<std::string, int> mapping;
+
+      types::Feature encode(std::string const& value) {
+        auto it = mapping.find(value);
+
+        if (it == mapping.end()) {
+          int code       = static_cast<int>(mapping.size());
+          mapping[value] = code;
+          return static_cast<types::Feature>(code);
+        }
+
+        return static_cast<types::Feature>(it->second);
+      }
+    };
   }
 
-  struct CategoricalEncoder {
-    std::unordered_map<std::string, int> mapping;
-
-    types::Feature encode(const std::string& value) {
-      auto it = mapping.find(value);
-
-      if (it == mapping.end()) {
-        int code = static_cast<int>(mapping.size());
-        mapping[value] = code;
-        return static_cast<types::Feature>(code);
-      }
-
-      return static_cast<types::Feature>(it->second);
-    }
-  };
-}
-
-  stats::DataPacket read(const std::string& filename) {
+  stats::DataPacket read(std::string const& filename) {
     ::csv::CSVReader reader(filename);
 
     // Extract feature column names from header (all columns except the last).
@@ -115,7 +116,9 @@ namespace {
 
     for (::csv::CSVRow& row : reader) {
       int row_num = static_cast<int>(raw_rows.size()) + 1;
-      ppforest2::user_error(row.size() >= 2, fmt::format("Row {} has only {} column(s) — expected at least 2 (features + label)", row_num, row.size()));
+      ppforest2::user_error(
+          row.size() >= 2,
+          fmt::format("Row {} has only {} column(s) — expected at least 2 (features + label)", row_num, row.size()));
 
       std::vector<std::string> values;
 
@@ -132,13 +135,13 @@ namespace {
 
     ppforest2::user_error(!raw_rows.empty(), "CSV file is empty or has no data rows");
 
-    const int n_features = n_cols - 1;
+    int const n_features = n_cols - 1;
 
     // Detect which feature columns are categorical (non-numeric).
     std::vector<bool> is_categorical(static_cast<std::size_t>(n_features), false);
 
     for (int j = 0; j < n_features; ++j) {
-      for (const auto& row : raw_rows) {
+      for (auto const& row : raw_rows) {
         if (!is_numeric(row[static_cast<std::size_t>(j)])) {
           is_categorical[static_cast<std::size_t>(j)] = true;
           break;
@@ -149,7 +152,7 @@ namespace {
     // Encode features (numeric or categorical) and response labels.
     std::vector<CategoricalEncoder> encoders(static_cast<std::size_t>(n_features));
 
-    const int n = static_cast<int>(raw_rows.size());
+    int const n = static_cast<int>(raw_rows.size());
 
     types::FeatureMatrix x(n, n_features);
     types::ResponseVector y(n);
@@ -158,11 +161,13 @@ namespace {
     std::vector<std::string> label_names;
 
     for (int i = 0; i < n; ++i) {
-      const auto& row = raw_rows[static_cast<std::size_t>(i)];
-      ppforest2::user_error(static_cast<int>(row.size()) == n_cols, fmt::format("Row {} has {} column(s), expected {} (same as row 1)", i + 1, row.size(), n_cols));
+      auto const& row = raw_rows[static_cast<std::size_t>(i)];
+      ppforest2::user_error(
+          static_cast<int>(row.size()) == n_cols,
+          fmt::format("Row {} has {} column(s), expected {} (same as row 1)", i + 1, row.size(), n_cols));
 
       for (int j = 0; j < n_features; ++j) {
-        const auto& val = row[static_cast<std::size_t>(j)];
+        auto const& val = row[static_cast<std::size_t>(j)];
 
         if (is_categorical[static_cast<std::size_t>(j)]) {
           x(i, j) = encoders[static_cast<std::size_t>(j)].encode(val);
@@ -172,7 +177,7 @@ namespace {
       }
 
       // Response label (last column).
-      const std::string& label_str = row[static_cast<std::size_t>(n_cols - 1)];
+      std::string const& label_str = row[static_cast<std::size_t>(n_cols - 1)];
 
       if (label_mapping.find(label_str) == label_mapping.end()) {
         label_mapping[label_str] = static_cast<int>(label_names.size());
@@ -185,7 +190,7 @@ namespace {
     return stats::DataPacket(x, y, label_names, feature_names);
   }
 
-  stats::DataPacket read_sorted(const std::string& filename) {
+  stats::DataPacket read_sorted(std::string const& filename) {
     stats::DataPacket data = read(filename);
 
     types::FeatureMatrix x  = data.x;
@@ -198,7 +203,7 @@ namespace {
     return stats::DataPacket(x, y, data.group_names, data.feature_names);
   }
 
-  void write(const stats::DataPacket& data, const std::string& filename) {
+  void write(stats::DataPacket const& data, std::string const& filename) {
     std::ofstream out(filename);
 
     if (!out.is_open()) {

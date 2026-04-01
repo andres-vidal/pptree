@@ -33,7 +33,7 @@ namespace ppforest2::stats {
    * @param column  Response vector.
    * @return        Set of unique response values.
    */
-  std::set<types::Response> unique(const types::ResponseVector& column);
+  std::set<types::Response> unique(types::ResponseVector const& column);
 
   /**
    * @brief Accuracy of a prediction.
@@ -42,7 +42,7 @@ namespace ppforest2::stats {
    * @param actual       Actual response vector.
    * @return             Accuracy (0 to 1).
    */
-  float accuracy(const types::ResponseVector& predictions, const types::ResponseVector& actual);
+  float accuracy(types::ResponseVector const& predictions, types::ResponseVector const& actual);
 
   /**
    * @brief Error rate of a prediction.
@@ -51,7 +51,7 @@ namespace ppforest2::stats {
    * @param actual       Actual response vector.
    * @return             Error rate (0 to 1).
    */
-  double error_rate(const types::ResponseVector& predictions, const types::ResponseVector& actual);
+  double error_rate(types::ResponseVector const& predictions, types::ResponseVector const& actual);
 
   /**
    * @brief Sample standard deviation of a vector.
@@ -59,7 +59,7 @@ namespace ppforest2::stats {
    * @param data  Feature vector with at least one row.
    * @return      Sample standard deviation.
    */
-  double sd(const types::FeatureVector& data);
+  double sd(types::FeatureVector const& data);
 
   /**
    * @brief Column-wise sample standard deviation of a matrix.
@@ -67,5 +67,5 @@ namespace ppforest2::stats {
    * @param data  Feature matrix with at least 2 rows.
    * @return      FeatureVector of size p (one σ per column).
    */
-  types::FeatureVector sd(const types::FeatureMatrix& data);
+  types::FeatureVector sd(types::FeatureMatrix const& data);
 }

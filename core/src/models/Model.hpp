@@ -32,8 +32,8 @@ namespace ppforest2 {
      * Forest models without dynamic_cast.
      */
     struct Visitor {
-      virtual void visit(const Tree& tree)     = 0;
-      virtual void visit(const Forest& forest) = 0;
+      virtual void visit(Tree const& tree)     = 0;
+      virtual void visit(Forest const& forest) = 0;
     };
 
     virtual ~Model() = default;
@@ -53,7 +53,7 @@ namespace ppforest2 {
      * @param data  Feature vector (p).
      * @return      Predicted group label.
      */
-    virtual types::Response predict(const types::FeatureVector& data) const = 0;
+    virtual types::Response predict(types::FeatureVector const& data) const = 0;
 
     /**
      * @brief Predict a matrix of observations.
@@ -61,7 +61,7 @@ namespace ppforest2 {
      * @param data  Feature matrix (n × p).
      * @return      Predicted group labels (n).
      */
-    virtual types::ResponseVector predict(const types::FeatureMatrix& data) const = 0;
+    virtual types::ResponseVector predict(types::FeatureMatrix const& data) const = 0;
 
     /**
      * @brief Predict proportions for a matrix of observations.
@@ -73,7 +73,7 @@ namespace ppforest2 {
      * @param data  Feature matrix (n × p).
      * @return      Proportion matrix (n × G), rows sum to 1.0.
      */
-    virtual types::FeatureMatrix predict(const types::FeatureMatrix& data, Proportions) const = 0;
+    virtual types::FeatureMatrix predict(types::FeatureMatrix const& data, Proportions) const = 0;
 
     /**
      * @brief Train a model from a training specification.
@@ -86,9 +86,6 @@ namespace ppforest2 {
      * @param y     Response vector (n).
      * @return      Trained model (Tree or Forest).
      */
-    static Ptr train(
-      const TrainingSpec&          spec,
-      const types::FeatureMatrix&  x,
-      const types::ResponseVector& y);
+    static Ptr train(TrainingSpec const& spec, types::FeatureMatrix const& x, types::ResponseVector const& y);
   };
 }

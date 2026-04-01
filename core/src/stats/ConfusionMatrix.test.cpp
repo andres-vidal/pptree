@@ -24,18 +24,13 @@ using namespace ppforest2::stats;
 using namespace ppforest2::types;
 
 
-
-
 TEST(ConfusionMatrix, Identity) {
   ResponseVector actual   = VEC(Response, 0, 1, 2);
   ResponseVector expected = VEC(Response, 0, 1, 2);
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = MAT(Response, rows(3),
-      1, 0, 0,
-      0, 1, 0,
-      0, 0, 1);
+  Matrix<int> expected_result_values = MAT(Response, rows(3), 1, 0, 0, 0, 1, 0, 0, 0, 1);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
@@ -50,17 +45,14 @@ TEST(ConfusionMatrix, Diagonal) {
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = MAT(Response, rows(3),
-      1, 0, 0,
-      0, 2, 0,
-      0, 0, 3);
+  Matrix<int> expected_result_values = MAT(Response, rows(3), 1, 0, 0, 0, 2, 0, 0, 0, 3);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
   ASSERT_EQ(expected_result_values.cols(), result.values.cols());
   ASSERT_EQ(expected_result_values, result.values);
 
-  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
+  ASSERT_EQ((std::map<int, int>({{0, 0}, {1, 1}, {2, 2}})), result.label_index);
 }
 
 
@@ -70,17 +62,14 @@ TEST(ConfusionMatrix, InverseDiagonal) {
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = MAT(Response, rows(3),
-      0, 0, 1,
-      0, 1, 0,
-      1, 0, 0);
+  Matrix<int> expected_result_values = MAT(Response, rows(3), 0, 0, 1, 0, 1, 0, 1, 0, 0);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
   ASSERT_EQ(expected_result_values.cols(), result.values.cols());
   ASSERT_EQ(expected_result_values, result.values);
 
-  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
+  ASSERT_EQ((std::map<int, int>({{0, 0}, {1, 1}, {2, 2}})), result.label_index);
 }
 
 /* Every prediction is shifted by one group — zero diagonal. */
@@ -90,17 +79,14 @@ TEST(ConfusionMatrix, ZeroDiagonal) {
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = MAT(Response, rows(3),
-      0, 0, 1,
-      1, 0, 0,
-      0, 1, 0);
+  Matrix<int> expected_result_values = MAT(Response, rows(3), 0, 0, 1, 1, 0, 0, 0, 1, 0);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
   ASSERT_EQ(expected_result_values.cols(), result.values.cols());
   ASSERT_EQ(expected_result_values, result.values);
 
-  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
+  ASSERT_EQ((std::map<int, int>({{0, 0}, {1, 1}, {2, 2}})), result.label_index);
 }
 
 /* Mixed predictions with one misclassification in group 2. */
@@ -110,17 +96,14 @@ TEST(ConfusionMatrix, Generic) {
 
   ConfusionMatrix result = ConfusionMatrix(actual, expected);
 
-  Matrix<int> expected_result_values = MAT(Response, rows(3),
-      1, 0, 1,
-      0, 2, 0,
-      0, 0, 2);
+  Matrix<int> expected_result_values = MAT(Response, rows(3), 1, 0, 1, 0, 2, 0, 0, 0, 2);
 
   ASSERT_EQ(expected_result_values.size(), result.values.size());
   ASSERT_EQ(expected_result_values.rows(), result.values.rows());
   ASSERT_EQ(expected_result_values.cols(), result.values.cols());
   ASSERT_EQ(expected_result_values, result.values);
 
-  ASSERT_EQ((std::map<int, int>({ { 0, 0 }, { 1, 1 }, { 2, 2 } })), result.label_index);
+  ASSERT_EQ((std::map<int, int>({{0, 0}, {1, 1}, {2, 2}})), result.label_index);
 }
 
 
@@ -147,7 +130,7 @@ TEST(ConfusionMatrix, NonConsecutiveLabels) {
   ASSERT_EQ(3, result.values.rows());
   ASSERT_EQ(3, result.values.cols());
 
-  ASSERT_EQ((std::map<int, int>({ { 1, 0 }, { 3, 1 }, { 5, 2 } })), result.label_index);
+  ASSERT_EQ((std::map<int, int>({{1, 0}, {3, 1}, {5, 2}})), result.label_index);
 
 
   ASSERT_EQ(1, result.values(0, 0));
@@ -368,9 +351,9 @@ TEST(ConfusionMatrix, PrintIncludesPerRowError) {
 
   // Each row should have a percentage error marker
   EXPECT_NE(output.find("%"), std::string::npos);
-  EXPECT_NE(output.find("0.0%"), std::string::npos);   // Class 0: 0% error
-  EXPECT_NE(output.find("50.0%"), std::string::npos);   // Class 1: 50% error
-  EXPECT_NE(output.find("66.7%"), std::string::npos);   // Class 2: 66.7% error
+  EXPECT_NE(output.find("0.0%"), std::string::npos);  // Class 0: 0% error
+  EXPECT_NE(output.find("50.0%"), std::string::npos); // Class 1: 50% error
+  EXPECT_NE(output.find("66.7%"), std::string::npos); // Class 2: 66.7% error
 }
 
 /* Perfect predictions: every row shows "0.0%" (three occurrences total). */

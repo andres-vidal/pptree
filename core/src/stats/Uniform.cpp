@@ -5,7 +5,7 @@
 #include "utils/Invariant.hpp"
 
 namespace ppforest2::stats {
-  uint32_t Uniform::gen_lemire(uint32_t s, RNG &rng) const {
+  uint32_t Uniform::gen_lemire(uint32_t s, RNG& rng) const {
     uint32_t x = rng();
     uint64_t m = static_cast<uint64_t>(x) * s;
     uint32_t l = static_cast<uint32_t>(m);
@@ -27,17 +27,19 @@ namespace ppforest2::stats {
     return result;
   }
 
-  Uniform::Uniform(int min, int max) : min(min), max(max) {
+  Uniform::Uniform(int min, int max)
+      : min(min)
+      , max(max) {
     invariant(min >= 0, "Uniform: min must be greater than or equal to 0");
     invariant(min <= max, "Uniform: min must be less than or equal to max");
     invariant(max < std::numeric_limits<int>::max(), "Uniform: max must be less than the maximum value of an int");
   }
 
-  int Uniform::operator()(RNG &rng) const {
+  int Uniform::operator()(RNG& rng) const {
     return min + gen_lemire(max + 1 - min, rng);
   }
 
-  std::vector<int> Uniform::operator()(int count, RNG &rng) const {
+  std::vector<int> Uniform::operator()(int count, RNG& rng) const {
     std::vector<int> result(count);
 
     for (int i = 0; i < count; i++) {
@@ -47,10 +49,11 @@ namespace ppforest2::stats {
     return result;
   }
 
-  std::vector<int> Uniform::distinct(int count, RNG &rng) {
+  std::vector<int> Uniform::distinct(int count, RNG& rng) {
     int range_size = max - min + 1;
 
-    invariant(count <= range_size, "Uniform::distinct: count must be less than or equal to the number of unique values in the range");
+    invariant(count <= range_size,
+              "Uniform::distinct: count must be less than or equal to the number of unique values in the range");
     invariant(count >= 0, "Uniform::distinct: count must be greater than or equal to 0");
 
     std::vector<int> values(range_size);

@@ -14,13 +14,13 @@ using namespace ppforest2::types;
 using json = nlohmann::json;
 
 TEST(DRNoopStrategy, FromJsonValid) {
-  json j        = { { "name", "noop" } };
+  json j        = {{"name", "noop"}};
   auto strategy = DRNoopStrategy::from_json(j);
   ASSERT_NE(strategy, nullptr);
 }
 
 TEST(DRNoopStrategy, FromJsonRoundTrip) {
-  json j        = { { "name", "noop" } };
+  json j        = {{"name", "noop"}};
   auto strategy = DRNoopStrategy::from_json(j);
 
   json out;
@@ -31,12 +31,12 @@ TEST(DRNoopStrategy, FromJsonRoundTrip) {
 }
 
 TEST(DRNoopStrategy, FromJsonUnknownParam) {
-  json j = { { "name", "noop" }, { "unexpected", 0 } };
+  json j = {{"name", "noop"}, {"unexpected", 0}};
   EXPECT_THROW(DRNoopStrategy::from_json(j), std::runtime_error);
 }
 
 TEST(DRNoopStrategy, RegistryLookup) {
-  json j        = { { "name", "noop" } };
+  json j        = {{"name", "noop"}};
   auto strategy = DRStrategy::from_json(j);
   ASSERT_NE(strategy, nullptr);
 
@@ -46,10 +46,7 @@ TEST(DRNoopStrategy, RegistryLookup) {
 }
 
 TEST(DRNoopStrategy, SelectsAllColumns) {
-  FeatureMatrix x = MAT(Feature, rows(3),
-      1, 2, 3, 4,
-      5, 6, 7, 8,
-      9, 10, 11, 12);
+  FeatureMatrix x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
   ResponseVector y = VEC(Response, 0, 1, 1);
   GroupPartition gp(y);
@@ -60,5 +57,5 @@ TEST(DRNoopStrategy, SelectsAllColumns) {
 
   ASSERT_EQ(result.selected_cols.size(), 4u);
   EXPECT_EQ(result.original_size, 4);
-  EXPECT_EQ(result.selected_cols, (std::vector<int>{ 0, 1, 2, 3 }));
+  EXPECT_EQ(result.selected_cols, (std::vector<int>{0, 1, 2, 3}));
 }

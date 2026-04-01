@@ -4,13 +4,12 @@
 
 namespace ppforest2::sr {
   void SRMeanOfMeansStrategy::to_json(nlohmann::json& j) const {
-    j = { { "name", "mean_of_means" } };
+    j = {{"name", "mean_of_means"}};
   }
 
-  types::Feature SRMeanOfMeansStrategy::threshold(
-    const types::FeatureMatrix& group_1,
-    const types::FeatureMatrix& group_2,
-    const pp::Projector&        projector) const {
+  types::Feature SRMeanOfMeansStrategy::threshold(types::FeatureMatrix const& group_1,
+                                                  types::FeatureMatrix const& group_2,
+                                                  pp::Projector const& projector) const {
     return ((group_1 * projector).mean() + (group_2 * projector).mean()) / 2;
   }
 
@@ -18,8 +17,8 @@ namespace ppforest2::sr {
     return std::make_shared<SRMeanOfMeansStrategy>();
   }
 
-  SRStrategy::Ptr SRMeanOfMeansStrategy::from_json(const nlohmann::json& j) {
-    validate_json_keys(j, "mean_of_means SR", { "name" });
+  SRStrategy::Ptr SRMeanOfMeansStrategy::from_json(nlohmann::json const& j) {
+    validate_json_keys(j, "mean_of_means SR", {"name"});
     return mean_of_means();
   }
 }

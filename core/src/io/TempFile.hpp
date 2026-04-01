@@ -26,75 +26,73 @@ namespace ppforest2::io {
    * the file so the path can be used as a fresh output target.
    */
   class TempFile {
-    public:
-      TempFile(const std::string& suffix = ".json") {
-        #ifdef _WIN32
-        char tmp_dir[MAX_PATH];
-        GetTempPathA(MAX_PATH, tmp_dir);
-        char tmp_file[MAX_PATH];
-        GetTempFileNameA(tmp_dir, "ppt", 0, tmp_file);
-        std::string base = tmp_file;
-        std::remove(base.c_str());
-        path_ = base + suffix;
-        std::ofstream touch(path_);
-        #else
-        std::string tmpl = "/tmp/ppforest2_XXXXXX" + suffix;
-        std::vector<char> tmpl_buf(tmpl.begin(), tmpl.end());
-        tmpl_buf.push_back('\0');
+  public:
+    TempFile(std::string const& suffix = ".json") {
+#ifdef _WIN32
+      char tmp_dir[MAX_PATH];
+      GetTempPathA(MAX_PATH, tmp_dir);
+      char tmp_file[MAX_PATH];
+      GetTempFileNameA(tmp_dir, "ppt", 0, tmp_file);
+      std::string base = tmp_file;
+      std::remove(base.c_str());
+      path_ = base + suffix;
+      std::ofstream touch(path_);
+#else
+      std::string tmpl = "/tmp/ppforest2_XXXXXX" + suffix;
+      std::vector<char> tmpl_buf(tmpl.begin(), tmpl.end());
+      tmpl_buf.push_back('\0');
 
-        int fd = mkstemps(tmpl_buf.data(), static_cast<int>(suffix.size()));
+      int fd = mkstemps(tmpl_buf.data(), static_cast<int>(suffix.size()));
 
-        if (fd != -1) {
-          path_ = tmpl_buf.data();
-          close(fd);
-        }
-
-        #endif
+      if (fd != -1) {
+        path_ = tmpl_buf.data();
+        close(fd);
       }
 
-      ~TempFile() {
-        if (!path_.empty()) {
+#endif
+    }
+
+    ~TempFile() {
+      if (!path_.empty()) {
+        std::remove(path_.c_str());
+      }
+    }
+
+    TempFile(TempFile const&)            = delete;
+    TempFile& operator=(TempFile const&) = delete;
+
+    TempFile(TempFile&& other) noexcept
+        : path_(std::move(other.path_)) {
+      other.path_.clear();
+    }
+
+    TempFile& operator=(TempFile&& other) noexcept {
+      if (this != &other) {
+        if (!path_.empty())
           std::remove(path_.c_str());
-        }
-      }
 
-      TempFile(const TempFile&)            = delete;
-      TempFile& operator=(const TempFile&) = delete;
-
-      TempFile(TempFile&& other) noexcept : path_(std::move(other.path_)) {
+        path_ = std::move(other.path_);
         other.path_.clear();
       }
 
-      TempFile& operator=(TempFile&& other) noexcept {
-        if (this != &other) {
-          if (!path_.empty()) std::remove(path_.c_str());
+      return *this;
+    }
 
-          path_ = std::move(other.path_);
-          other.path_.clear();
-        }
+    std::string const& path() const { return path_; }
 
-        return *this;
-      }
+    /** @brief Remove the file so the path can be used as a fresh output target. */
+    void clear() const { std::remove(path_.c_str()); }
 
-      const std::string& path() const {
-        return path_;
-      }
+    /** @brief Read the entire file contents as a string. */
+    std::string read() const {
+      std::ifstream in(path_);
+      std::stringstream ss;
+      ss << in.rdbuf();
+      return ss.str();
+    }
 
-      /** @brief Remove the file so the path can be used as a fresh output target. */
-      void clear() const {
-        std::remove(path_.c_str());
-      }
-
-      /** @brief Read the entire file contents as a string. */
-      std::string read() const {
-        std::ifstream in(path_);
-        std::stringstream ss;
-        ss << in.rdbuf();
-        return ss.str();
-      }
-
-    private:
-      std::string path_;
+  private:
+    std::string path_;
   };
 
   /**
@@ -104,49 +102,45 @@ namespace ppforest2::io {
    * in the destructor.
    */
   class TempDir {
-    public:
-      TempDir() {
-        #ifdef _WIN32
-        char tmp_dir[MAX_PATH];
-        GetTempPathA(MAX_PATH, tmp_dir);
-        char tmp_file[MAX_PATH];
-        GetTempFileNameA(tmp_dir, "ppd", 0, tmp_file);
-        // GetTempFileNameA creates a file; replace it with a directory
-        std::remove(tmp_file);
-        path_ = tmp_file;
-        std::filesystem::create_directories(path_);
-        #else
-        path_ = "/tmp/ppforest2_dir_XXXXXX";
-        std::vector<char> buf(path_.begin(), path_.end());
-        buf.push_back('\0');
-        char *result = mkdtemp(buf.data());
+  public:
+    TempDir() {
+#ifdef _WIN32
+      char tmp_dir[MAX_PATH];
+      GetTempPathA(MAX_PATH, tmp_dir);
+      char tmp_file[MAX_PATH];
+      GetTempFileNameA(tmp_dir, "ppd", 0, tmp_file);
+      // GetTempFileNameA creates a file; replace it with a directory
+      std::remove(tmp_file);
+      path_ = tmp_file;
+      std::filesystem::create_directories(path_);
+#else
+      path_ = "/tmp/ppforest2_dir_XXXXXX";
+      std::vector<char> buf(path_.begin(), path_.end());
+      buf.push_back('\0');
+      char* result = mkdtemp(buf.data());
 
-        if (result) {
-          path_ = result;
-        }
-
-        #endif
+      if (result) {
+        path_ = result;
       }
 
-      ~TempDir() {
-        if (!path_.empty()) {
-          std::filesystem::remove_all(path_);
-        }
+#endif
+    }
+
+    ~TempDir() {
+      if (!path_.empty()) {
+        std::filesystem::remove_all(path_);
       }
+    }
 
-      TempDir(const TempDir&)            = delete;
-      TempDir& operator=(const TempDir&) = delete;
+    TempDir(TempDir const&)            = delete;
+    TempDir& operator=(TempDir const&) = delete;
 
-      const std::string& path() const {
-        return path_;
-      }
+    std::string const& path() const { return path_; }
 
-      /** @brief Return a path inside this directory (file need not exist yet). */
-      std::string file(const std::string& name) const {
-        return (std::filesystem::path(path_) / name).string();
-      }
+    /** @brief Return a path inside this directory (file need not exist yet). */
+    std::string file(std::string const& name) const { return (std::filesystem::path(path_) / name).string(); }
 
-    private:
-      std::string path_;
+  private:
+    std::string path_;
   };
 }

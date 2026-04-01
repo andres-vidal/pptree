@@ -20,12 +20,11 @@
  *
  * @tparam Derived  The strategy base class (e.g. PPStrategy).
  */
-template<typename Derived>
-struct Strategy {
+template<typename Derived> struct Strategy {
   using Ptr = std::shared_ptr<Derived>;
 
   /** @brief Factory function type for deserializing a strategy from JSON. */
-  using Factory = Ptr (*)(const nlohmann::json&);
+  using Factory = Ptr (*)(nlohmann::json const&);
 
   virtual ~Strategy() = default;
 
@@ -53,7 +52,7 @@ struct Strategy {
    * @param factory  Factory function that constructs the strategy.
    * @return         Always true (return value used for static init).
    */
-  static bool register_strategy(const std::string& name, Factory factory) {
+  static bool register_strategy(std::string const& name, Factory factory) {
     registry()[name] = factory;
     return true;
   }
@@ -66,21 +65,22 @@ struct Strategy {
    * @param j  JSON object (must contain "name").
    * @return   Shared pointer to the constructed strategy.
    */
-  static Ptr from_json(const nlohmann::json& j) {
+  static Ptr from_json(nlohmann::json const& j) {
     auto name = j.at("name").get<std::string>();
     auto& reg = registry();
     auto it   = reg.find(name);
 
-    if (it == reg.end()) throw std::runtime_error("Unknown strategy: " + name);
+    if (it == reg.end())
+      throw std::runtime_error("Unknown strategy: " + name);
 
     return it->second(j);
   }
 
-  private:
-    static std::map<std::string, Factory>& registry() {
-      static std::map<std::string, Factory> r;
-      return r;
-    }
+private:
+  static std::map<std::string, Factory>& registry() {
+    static std::map<std::string, Factory> r;
+    return r;
+  }
 };
 
 /**
@@ -98,4 +98,4 @@ struct Strategy {
  * @endcode
  */
 #define PPFOREST2_REGISTER_STRATEGY(StrategyBase, name) \
-        inline static const bool registered_ = StrategyBase::register_strategy(name, from_json);
+  inline static const bool registered_ = StrategyBase::register_strategy(name, from_json);

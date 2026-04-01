@@ -19,7 +19,7 @@
 
 using namespace ppforest2::cli;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   CLIOptions params = parse_args(argc, argv);
 
   ppforest2::io::style::init_color(params.no_color);
@@ -33,23 +33,21 @@ int main(int argc, char *argv[]) {
     params.output_path = ppforest2::io::json::ensure_extension(params.output_path);
   }
 
-  #ifdef _OPENMP
+#ifdef _OPENMP
   omp_set_num_threads(params.model.threads);
-  #endif
+#endif
 
   switch (params.subcommand) {
-    case Subcommand::train:     return run_train(params);
+    case Subcommand::train: return run_train(params);
 
-    case Subcommand::predict:   return run_predict(params);
+    case Subcommand::predict: return run_predict(params);
 
-    case Subcommand::evaluate:  return run_evaluate(params);
+    case Subcommand::evaluate: return run_evaluate(params);
 
     case Subcommand::benchmark: return run_benchmark(params, argv[0]);
 
     case Subcommand::summarize: return run_summarize(params);
 
-    default:
-      fmt::print(stderr, "Error: No subcommand specified\n");
-      return 1;
+    default: fmt::print(stderr, "Error: No subcommand specified\n"); return 1;
   }
 }

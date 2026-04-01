@@ -18,54 +18,172 @@ using namespace ppforest2::pp;
 using namespace ppforest2::math;
 
 static Projector as_projector(std::vector<Feature> vector) {
-  Eigen::Map<Projector > projector(vector.data(), vector.size());
+  Eigen::Map<Projector> projector(vector.data(), vector.size());
   return projector;
 }
 
 TEST(Forest, TrainLDAAllVariablesProperties) {
-  FeatureMatrix x = MAT(Feature, rows(30),
-      1, 0, 1, 1, 1,
-      1, 0, 1, 0, 0,
-      1, 0, 0, 0, 1,
-      1, 0, 1, 2, 1,
-      1, 0, 0, 1, 1,
-      1, 1, 1, 1, 0,
-      1, 0, 0, 2, 1,
-      1, 0, 1, 1, 2,
-      1, 0, 0, 2, 0,
-      1, 0, 2, 1, 0,
-      2, 5, 0, 0, 1,
-      2, 5, 0, 0, 2,
-      3, 5, 1, 0, 2,
-      2, 5, 1, 0, 1,
-      2, 5, 0, 1, 1,
-      2, 5, 0, 1, 2,
-      2, 5, 2, 1, 1,
-      2, 5, 1, 1, 1,
-      2, 5, 1, 1, 2,
-      2, 5, 2, 1, 2,
-      2, 5, 1, 2, 1,
-      2, 5, 2, 1, 1,
-      9, 8, 0, 0, 1,
-      9, 8, 0, 0, 2,
-      9, 8, 1, 0, 2,
-      9, 8, 1, 0, 1,
-      9, 8, 0, 1, 1,
-      9, 8, 0, 1, 2,
-      9, 8, 2, 1, 1,
-      9, 8, 1, 1, 1);
+  FeatureMatrix x = MAT(Feature,
+                        rows(30),
+                        1,
+                        0,
+                        1,
+                        1,
+                        1,
+                        1,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        0,
+                        1,
+                        2,
+                        1,
+                        1,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        0,
+                        1,
+                        0,
+                        0,
+                        2,
+                        1,
+                        1,
+                        0,
+                        1,
+                        1,
+                        2,
+                        1,
+                        0,
+                        0,
+                        2,
+                        0,
+                        1,
+                        0,
+                        2,
+                        1,
+                        0,
+                        2,
+                        5,
+                        0,
+                        0,
+                        1,
+                        2,
+                        5,
+                        0,
+                        0,
+                        2,
+                        3,
+                        5,
+                        1,
+                        0,
+                        2,
+                        2,
+                        5,
+                        1,
+                        0,
+                        1,
+                        2,
+                        5,
+                        0,
+                        1,
+                        1,
+                        2,
+                        5,
+                        0,
+                        1,
+                        2,
+                        2,
+                        5,
+                        2,
+                        1,
+                        1,
+                        2,
+                        5,
+                        1,
+                        1,
+                        1,
+                        2,
+                        5,
+                        1,
+                        1,
+                        2,
+                        2,
+                        5,
+                        2,
+                        1,
+                        2,
+                        2,
+                        5,
+                        1,
+                        2,
+                        1,
+                        2,
+                        5,
+                        2,
+                        1,
+                        1,
+                        9,
+                        8,
+                        0,
+                        0,
+                        1,
+                        9,
+                        8,
+                        0,
+                        0,
+                        2,
+                        9,
+                        8,
+                        1,
+                        0,
+                        2,
+                        9,
+                        8,
+                        1,
+                        0,
+                        1,
+                        9,
+                        8,
+                        0,
+                        1,
+                        1,
+                        9,
+                        8,
+                        0,
+                        1,
+                        2,
+                        9,
+                        8,
+                        2,
+                        1,
+                        1,
+                        9,
+                        8,
+                        1,
+                        1,
+                        1);
 
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      2, 2, 2, 2, 2, 2, 2, 2);
+  ResponseVector y =
+      VEC(Response, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2);
 
-  const int n_vars   = x.cols();
-  const float lambda = 0;
-  const int seed     = 0;
+  int const n_vars   = x.cols();
+  float const lambda = 0;
+  int const seed     = 0;
 
-  Forest result = Forest::train(
-    TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
+  Forest result = Forest::train(TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
 
   ASSERT_EQ(result.trees.size(), 4);
   ASSERT_EQ(result.training_spec->seed, seed);
@@ -77,50 +195,168 @@ TEST(Forest, TrainLDAAllVariablesProperties) {
 }
 
 TEST(Forest, TrainLDASomeVariablesProperties) {
-  FeatureMatrix x = MAT(Feature, rows(30),
-      1, 0, 1, 1, 1,
-      1, 0, 1, 0, 0,
-      1, 0, 0, 0, 1,
-      1, 0, 1, 2, 1,
-      1, 0, 0, 1, 1,
-      1, 1, 1, 1, 0,
-      1, 0, 0, 2, 1,
-      1, 0, 1, 1, 2,
-      1, 0, 0, 2, 0,
-      1, 0, 2, 1, 0,
-      2, 5, 0, 0, 1,
-      2, 5, 0, 0, 2,
-      3, 5, 1, 0, 2,
-      2, 5, 1, 0, 1,
-      2, 5, 0, 1, 1,
-      2, 5, 0, 1, 2,
-      2, 5, 2, 1, 1,
-      2, 5, 1, 1, 1,
-      2, 5, 1, 1, 2,
-      2, 5, 2, 1, 2,
-      2, 5, 1, 2, 1,
-      2, 5, 2, 1, 1,
-      9, 8, 0, 0, 1,
-      9, 8, 0, 0, 2,
-      9, 8, 1, 0, 2,
-      9, 8, 1, 0, 1,
-      9, 8, 0, 1, 1,
-      9, 8, 0, 1, 2,
-      9, 8, 2, 1, 1,
-      9, 8, 1, 1, 1);
+  FeatureMatrix x = MAT(Feature,
+                        rows(30),
+                        1,
+                        0,
+                        1,
+                        1,
+                        1,
+                        1,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        0,
+                        1,
+                        2,
+                        1,
+                        1,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        0,
+                        1,
+                        0,
+                        0,
+                        2,
+                        1,
+                        1,
+                        0,
+                        1,
+                        1,
+                        2,
+                        1,
+                        0,
+                        0,
+                        2,
+                        0,
+                        1,
+                        0,
+                        2,
+                        1,
+                        0,
+                        2,
+                        5,
+                        0,
+                        0,
+                        1,
+                        2,
+                        5,
+                        0,
+                        0,
+                        2,
+                        3,
+                        5,
+                        1,
+                        0,
+                        2,
+                        2,
+                        5,
+                        1,
+                        0,
+                        1,
+                        2,
+                        5,
+                        0,
+                        1,
+                        1,
+                        2,
+                        5,
+                        0,
+                        1,
+                        2,
+                        2,
+                        5,
+                        2,
+                        1,
+                        1,
+                        2,
+                        5,
+                        1,
+                        1,
+                        1,
+                        2,
+                        5,
+                        1,
+                        1,
+                        2,
+                        2,
+                        5,
+                        2,
+                        1,
+                        2,
+                        2,
+                        5,
+                        1,
+                        2,
+                        1,
+                        2,
+                        5,
+                        2,
+                        1,
+                        1,
+                        9,
+                        8,
+                        0,
+                        0,
+                        1,
+                        9,
+                        8,
+                        0,
+                        0,
+                        2,
+                        9,
+                        8,
+                        1,
+                        0,
+                        2,
+                        9,
+                        8,
+                        1,
+                        0,
+                        1,
+                        9,
+                        8,
+                        0,
+                        1,
+                        1,
+                        9,
+                        8,
+                        0,
+                        1,
+                        2,
+                        9,
+                        8,
+                        2,
+                        1,
+                        1,
+                        9,
+                        8,
+                        1,
+                        1,
+                        1);
 
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      2, 2, 2, 2, 2, 2, 2, 2);
+  ResponseVector y =
+      VEC(Response, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2);
 
-  const int n_vars   = 2;
-  const float lambda = 0;
-  const int seed     = 1;
+  int const n_vars   = 2;
+  float const lambda = 0;
+  int const seed     = 1;
 
 
-  Forest result = Forest::train(
-    TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
+  Forest result = Forest::train(TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
 
   ASSERT_EQ(result.trees.size(), 4);
   ASSERT_EQ(result.training_spec->seed, seed);
@@ -132,28 +368,136 @@ TEST(Forest, TrainLDASomeVariablesProperties) {
 }
 
 TEST(Forest, TrainPDAAllVariablesProperties) {
-  FeatureMatrix x = MAT(Feature, rows(10),
-      1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-      5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-      4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
-      4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-      4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-      4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+  FeatureMatrix x = MAT(Feature,
+                        rows(10),
+                        1,
+                        0,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        4,
+                        0,
+                        0,
+                        1,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        5,
+                        0,
+                        0,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        4,
+                        0,
+                        0,
+                        3,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        4,
+                        1,
+                        0,
+                        1,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        4,
+                        0,
+                        1,
+                        1,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        4,
+                        0,
+                        1,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2);
 
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0,
-      1, 1, 1, 1, 1, 1);
+  ResponseVector y = VEC(Response, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
-  const int n_vars   = x.cols();
-  const float lambda = 0.1;
-  const int seed     = 0;
+  int const n_vars   = x.cols();
+  float const lambda = 0.1;
+  int const seed     = 0;
 
-  Forest result = Forest::train(
-    TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
+  Forest result = Forest::train(TrainingSpec(pp::pda(lambda), dr::uniform(n_vars), sr::mean_of_means(), 4, seed), x, y);
 
   ASSERT_EQ(result.trees.size(), 4);
   ASSERT_EQ(result.training_spec->seed, seed);
@@ -172,7 +516,8 @@ TEST(ForestSimulation, PerfectSeparationLowOOBError) {
 
   auto data = simulate(90, 4, 3, rng, params);
 
-  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
+  Forest forest =
+      Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   double err = forest.oob_error(data.x, data.y);
 
@@ -188,7 +533,8 @@ TEST(ForestSimulation, HighOverlapBoundedError) {
 
   auto data = simulate(200, 4, 3, rng, params);
 
-  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
+  Forest forest =
+      Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -204,7 +550,8 @@ TEST(ForestSimulation, ManyClasses) {
 
   auto data = simulate(300, 4, 10, rng, params);
 
-  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
+  Forest forest =
+      Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -220,7 +567,8 @@ TEST(ForestSimulation, HighDimensionality) {
 
   auto data = simulate(100, 50, 3, rng, params);
 
-  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(7), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
+  Forest forest =
+      Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(7), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -246,7 +594,8 @@ TEST(ForestSimulation, PDAOnOverlappingData) {
 
   auto data = simulate(200, 4, 3, rng, params);
 
-  Forest forest = Forest::train(TrainingSpec(pp::pda(0.5f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
+  Forest forest =
+      Forest::train(TrainingSpec(pp::pda(0.5f), dr::uniform(4), sr::mean_of_means(), 20, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -262,7 +611,8 @@ TEST(ForestSimulation, LargeDataset) {
 
   auto data = simulate(2000, 10, 4, rng, params);
 
-  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(5), sr::mean_of_means(), 10, 0, 1), data.x, data.y);
+  Forest forest =
+      Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(5), sr::mean_of_means(), 10, 0, 1), data.x, data.y);
 
   ResponseVector predictions = forest.predict(data.x);
   double err                 = error_rate(predictions, data.y);
@@ -275,50 +625,38 @@ static Forest build_three_group_forest() {
 
   forest.add_tree(std::make_unique<BootstrapTree>(
       TreeCondition::make(
-        as_projector({ 0.0, 0.0, 0.0, 0.598, -0.801 }),
-        -0.348,
-        TreeCondition::make(
-          as_projector({ 0.9995, 0.0, -0.031, 0.0, 0.0 }),
-          5.553,
-          TreeResponse::make(1),
-          TreeResponse::make(2)),
-        TreeResponse::make(0)),
-      nullptr));
-
-  forest.add_tree(std::make_unique<BootstrapTree>(
-      TreeCondition::make(
-        as_projector({ 0.9998, 0.0, -0.019, 0.0, 0.0 }),
-        5.300,
-        TreeCondition::make(
-          as_projector({ 0.999, 0.0, 0.0, 0.046, 0.0 }),
-          1.609,
-          TreeResponse::make(0),
-          TreeResponse::make(1)),
-        TreeResponse::make(2)),
-      nullptr));
-
-  forest.add_tree(std::make_unique<BootstrapTree>(
-      TreeCondition::make(
-        as_projector({ 0.974, -0.226, 0.0, 0.0, 0.0 }),
-        3.955,
-        TreeCondition::make(
-          as_projector({ 0.0, 0.9996, -0.030, 0.0, 0.0 }),
-          2.622,
-          TreeResponse::make(0),
-          TreeResponse::make(1)),
-        TreeResponse::make(2)),
-      nullptr));
-
-  forest.add_tree(std::make_unique<BootstrapTree>(
-      TreeCondition::make(
-        as_projector({ 0.962, 0.0, 0.0, 0.0, -0.275 }),
-        4.735,
-        TreeCondition::make(
-          as_projector({ 0.0, 0.0, 0.377, 0.0, -0.926 }),
-          -0.832,
-          TreeResponse::make(1),
+          as_projector({0.0, 0.0, 0.0, 0.598, -0.801}),
+          -0.348,
+          TreeCondition::make(
+              as_projector({0.9995, 0.0, -0.031, 0.0, 0.0}), 5.553, TreeResponse::make(1), TreeResponse::make(2)),
           TreeResponse::make(0)),
-        TreeResponse::make(2)),
+      nullptr));
+
+  forest.add_tree(std::make_unique<BootstrapTree>(
+      TreeCondition::make(
+          as_projector({0.9998, 0.0, -0.019, 0.0, 0.0}),
+          5.300,
+          TreeCondition::make(
+              as_projector({0.999, 0.0, 0.0, 0.046, 0.0}), 1.609, TreeResponse::make(0), TreeResponse::make(1)),
+          TreeResponse::make(2)),
+      nullptr));
+
+  forest.add_tree(std::make_unique<BootstrapTree>(
+      TreeCondition::make(
+          as_projector({0.974, -0.226, 0.0, 0.0, 0.0}),
+          3.955,
+          TreeCondition::make(
+              as_projector({0.0, 0.9996, -0.030, 0.0, 0.0}), 2.622, TreeResponse::make(0), TreeResponse::make(1)),
+          TreeResponse::make(2)),
+      nullptr));
+
+  forest.add_tree(std::make_unique<BootstrapTree>(
+      TreeCondition::make(
+          as_projector({0.962, 0.0, 0.0, 0.0, -0.275}),
+          4.735,
+          TreeCondition::make(
+              as_projector({0.0, 0.0, 0.377, 0.0, -0.926}), -0.832, TreeResponse::make(1), TreeResponse::make(0)),
+          TreeResponse::make(2)),
       nullptr));
 
   return forest;
@@ -335,13 +673,8 @@ TEST(Forest, PredictSingleObservation) {
 TEST(Forest, PredictBatch) {
   Forest forest = build_three_group_forest();
 
-  FeatureMatrix x = MAT(Feature, rows(6),
-      1, 0, 1, 1, 1,
-      1, 0, 0, 0, 1,
-      2, 5, 0, 0, 1,
-      2, 5, 1, 0, 1,
-      9, 8, 0, 0, 1,
-      9, 8, 1, 0, 2);
+  FeatureMatrix x =
+      MAT(Feature, rows(6), 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 2, 5, 0, 0, 1, 2, 5, 1, 0, 1, 9, 8, 0, 0, 1, 9, 8, 1, 0, 2);
 
   ResponseVector result   = forest.predict(x);
   ResponseVector expected = VEC(Response, 0, 0, 1, 1, 2, 2);
@@ -354,31 +687,50 @@ TEST(Forest, PredictBatch) {
 // ---------------------------------------------------------------------------
 
 TEST(OobError, PerfectSeparationGivesLowError) {
-  FeatureMatrix x = MAT(Feature, rows(20),
-      0.0f, 1.0f,
-      0.1f, 2.0f,
-      0.2f, 0.5f,
-      0.3f, 1.5f,
-      0.4f, 0.8f,
-      0.5f, 1.2f,
-      0.6f, 0.9f,
-      0.7f, 1.8f,
-      0.8f, 0.6f,
-      0.9f, 1.1f,
-      9.0f, 1.0f,
-      9.1f, 2.0f,
-      9.2f, 0.5f,
-      9.3f, 1.5f,
-      9.4f, 0.8f,
-      9.5f, 1.2f,
-      9.6f, 0.9f,
-      9.7f, 1.8f,
-      9.8f, 0.6f,
-      9.9f, 1.1f);
+  FeatureMatrix x = MAT(Feature,
+                        rows(20),
+                        0.0f,
+                        1.0f,
+                        0.1f,
+                        2.0f,
+                        0.2f,
+                        0.5f,
+                        0.3f,
+                        1.5f,
+                        0.4f,
+                        0.8f,
+                        0.5f,
+                        1.2f,
+                        0.6f,
+                        0.9f,
+                        0.7f,
+                        1.8f,
+                        0.8f,
+                        0.6f,
+                        0.9f,
+                        1.1f,
+                        9.0f,
+                        1.0f,
+                        9.1f,
+                        2.0f,
+                        9.2f,
+                        0.5f,
+                        9.3f,
+                        1.5f,
+                        9.4f,
+                        0.8f,
+                        9.5f,
+                        1.2f,
+                        9.6f,
+                        0.9f,
+                        9.7f,
+                        1.8f,
+                        9.8f,
+                        0.6f,
+                        9.9f,
+                        1.1f);
 
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+  ResponseVector y = VEC(Response, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
   Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::noop(), sr::mean_of_means(), 50, 0), x, y);
 
@@ -389,28 +741,17 @@ TEST(OobError, PerfectSeparationGivesLowError) {
 }
 
 TEST(OobError, AllInBagReturnsNegative) {
-  FeatureMatrix x = MAT(Feature, rows(4),
-      0.0f, 0.0f,
-      0.1f, 0.1f,
-      9.9f, 0.0f,
-      9.8f, 0.1f);
+  FeatureMatrix x = MAT(Feature, rows(4), 0.0f, 0.0f, 0.1f, 0.1f, 9.9f, 0.0f, 9.8f, 0.1f);
 
   ResponseVector y = VEC(Response, 0, 0, 1, 1);
 
-  auto condition = TreeCondition::make(
-    as_projector({ 1.0f, 0.0f }),
-    5.0f,
-    TreeResponse::make(0),
-    TreeResponse::make(1),
-    { 0, 1 },
-    0.9f);
+  auto condition =
+      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
 
   Forest forest;
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{ 0, 1, 2, 3 }));
+  forest.add_tree(std::make_unique<BootstrapTree>(std::move(condition),
+                                                  TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+                                                  std::vector<int>{0, 1, 2, 3}));
 
   double err = forest.oob_error(x, y);
 
@@ -418,30 +759,17 @@ TEST(OobError, AllInBagReturnsNegative) {
 }
 
 TEST(OobError, HandBuiltTreeWithKnownOob) {
-  FeatureMatrix x = MAT(Feature, rows(6),
-      0.0f, 0.5f,
-      0.1f, 0.3f,
-      0.2f, 0.7f,
-      9.8f, 0.4f,
-      9.9f, 0.6f,
-      9.7f, 0.2f);
+  FeatureMatrix x = MAT(Feature, rows(6), 0.0f, 0.5f, 0.1f, 0.3f, 0.2f, 0.7f, 9.8f, 0.4f, 9.9f, 0.6f, 9.7f, 0.2f);
 
   ResponseVector y = VEC(Response, 0, 0, 0, 1, 1, 1);
 
-  auto condition = TreeCondition::make(
-    as_projector({ 1.0f, 0.0f }),
-    5.0f,
-    TreeResponse::make(0),
-    TreeResponse::make(1),
-    { 0, 1 },
-    0.9f);
+  auto condition =
+      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
 
   Forest forest;
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{ 0, 1, 4, 5 }));
+  forest.add_tree(std::make_unique<BootstrapTree>(std::move(condition),
+                                                  TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+                                                  std::vector<int>{0, 1, 4, 5}));
 
   double err = forest.oob_error(x, y);
 
@@ -449,28 +777,17 @@ TEST(OobError, HandBuiltTreeWithKnownOob) {
 }
 
 TEST(OobError, HandBuiltTreeWithOobMisclassification) {
-  FeatureMatrix x = MAT(Feature, rows(4),
-      0.0f, 0.0f,
-      0.1f, 0.1f,
-      9.9f, 0.0f,
-      9.8f, 0.1f);
+  FeatureMatrix x = MAT(Feature, rows(4), 0.0f, 0.0f, 0.1f, 0.1f, 9.9f, 0.0f, 9.8f, 0.1f);
 
   ResponseVector y = VEC(Response, 0, 1, 1, 1);
 
-  auto condition = TreeCondition::make(
-    as_projector({ 1.0f, 0.0f }),
-    5.0f,
-    TreeResponse::make(0),
-    TreeResponse::make(1),
-    { 0, 1 },
-    0.9f);
+  auto condition =
+      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
 
   Forest forest;
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{ 0, 2 }));
+  forest.add_tree(std::make_unique<BootstrapTree>(std::move(condition),
+                                                  TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+                                                  std::vector<int>{0, 2}));
 
   double err = forest.oob_error(x, y);
 
@@ -482,28 +799,15 @@ TEST(OobError, HandBuiltTreeWithOobMisclassification) {
 // ---------------------------------------------------------------------------
 
 TEST(OobPredict, HandBuiltTreeWithKnownOob) {
-  FeatureMatrix x = MAT(Feature, rows(6),
-      0.0f, 0.5f,
-      0.1f, 0.3f,
-      0.2f, 0.7f,
-      9.8f, 0.4f,
-      9.9f, 0.6f,
-      9.7f, 0.2f);
+  FeatureMatrix x = MAT(Feature, rows(6), 0.0f, 0.5f, 0.1f, 0.3f, 0.2f, 0.7f, 9.8f, 0.4f, 9.9f, 0.6f, 9.7f, 0.2f);
 
-  auto condition = TreeCondition::make(
-    as_projector({ 1.0f, 0.0f }),
-    5.0f,
-    TreeResponse::make(0),
-    TreeResponse::make(1),
-    { 0, 1 },
-    0.9f);
+  auto condition =
+      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
 
   Forest forest;
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{ 0, 1, 4, 5 }));
+  forest.add_tree(std::make_unique<BootstrapTree>(std::move(condition),
+                                                  TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+                                                  std::vector<int>{0, 1, 4, 5}));
 
   ResponseVector preds = forest.oob_predict(x);
 
@@ -517,26 +821,15 @@ TEST(OobPredict, HandBuiltTreeWithKnownOob) {
 }
 
 TEST(OobPredict, AllInBagReturnsSentinel) {
-  FeatureMatrix x = MAT(Feature, rows(4),
-      0.0f, 0.0f,
-      0.1f, 0.1f,
-      9.9f, 0.0f,
-      9.8f, 0.1f);
+  FeatureMatrix x = MAT(Feature, rows(4), 0.0f, 0.0f, 0.1f, 0.1f, 9.9f, 0.0f, 9.8f, 0.1f);
 
-  auto condition = TreeCondition::make(
-    as_projector({ 1.0f, 0.0f }),
-    5.0f,
-    TreeResponse::make(0),
-    TreeResponse::make(1),
-    { 0, 1 },
-    0.9f);
+  auto condition =
+      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
 
   Forest forest;
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{ 0, 1, 2, 3 }));
+  forest.add_tree(std::make_unique<BootstrapTree>(std::move(condition),
+                                                  TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+                                                  std::vector<int>{0, 1, 2, 3}));
 
   ResponseVector preds = forest.oob_predict(x);
 
@@ -548,26 +841,15 @@ TEST(OobPredict, AllInBagReturnsSentinel) {
 }
 
 TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
-  FeatureMatrix x = MAT(Feature, rows(4),
-      0.0f, 0.0f,
-      0.1f, 0.1f,
-      9.9f, 0.0f,
-      9.8f, 0.1f);
+  FeatureMatrix x = MAT(Feature, rows(4), 0.0f, 0.0f, 0.1f, 0.1f, 9.9f, 0.0f, 9.8f, 0.1f);
 
-  auto condition = TreeCondition::make(
-    as_projector({ 1.0f, 0.0f }),
-    5.0f,
-    TreeResponse::make(0),
-    TreeResponse::make(1),
-    { 0, 1 },
-    0.9f);
+  auto condition =
+      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
 
   Forest forest;
-  forest.add_tree(
-    std::make_unique<BootstrapTree>(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{ 0, 2 }));
+  forest.add_tree(std::make_unique<BootstrapTree>(std::move(condition),
+                                                  TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+                                                  std::vector<int>{0, 2}));
 
   ResponseVector preds = forest.oob_predict(x);
 
@@ -579,31 +861,50 @@ TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
 }
 
 TEST(OobPredict, ConsistentWithOobError) {
-  FeatureMatrix x = MAT(Feature, rows(20),
-      0.0f, 1.0f,
-      0.1f, 2.0f,
-      0.2f, 0.5f,
-      0.3f, 1.5f,
-      0.4f, 0.8f,
-      0.5f, 1.2f,
-      0.6f, 0.9f,
-      0.7f, 1.8f,
-      0.8f, 0.6f,
-      0.9f, 1.1f,
-      9.0f, 1.0f,
-      9.1f, 2.0f,
-      9.2f, 0.5f,
-      9.3f, 1.5f,
-      9.4f, 0.8f,
-      9.5f, 1.2f,
-      9.6f, 0.9f,
-      9.7f, 1.8f,
-      9.8f, 0.6f,
-      9.9f, 1.1f);
+  FeatureMatrix x = MAT(Feature,
+                        rows(20),
+                        0.0f,
+                        1.0f,
+                        0.1f,
+                        2.0f,
+                        0.2f,
+                        0.5f,
+                        0.3f,
+                        1.5f,
+                        0.4f,
+                        0.8f,
+                        0.5f,
+                        1.2f,
+                        0.6f,
+                        0.9f,
+                        0.7f,
+                        1.8f,
+                        0.8f,
+                        0.6f,
+                        0.9f,
+                        1.1f,
+                        9.0f,
+                        1.0f,
+                        9.1f,
+                        2.0f,
+                        9.2f,
+                        0.5f,
+                        9.3f,
+                        1.5f,
+                        9.4f,
+                        0.8f,
+                        9.5f,
+                        1.2f,
+                        9.6f,
+                        0.9f,
+                        9.7f,
+                        1.8f,
+                        9.8f,
+                        0.6f,
+                        9.9f,
+                        1.1f);
 
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+  ResponseVector y = VEC(Response, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
   Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::noop(), sr::mean_of_means(), 50, 0), x, y);
 

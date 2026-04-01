@@ -28,13 +28,14 @@ namespace ppforest2::io::layout {
    *
    * Skips any ESC [ ... m (SGR) sequences when counting characters.
    */
-  inline int visual_width(const std::string& s) {
+  inline int visual_width(std::string const& s) {
     int width      = 0;
     bool in_escape = false;
 
     for (char c : s) {
       if (in_escape) {
-        if (c == 'm') in_escape = false;
+        if (c == 'm')
+          in_escape = false;
       } else if (c == '\033') {
         in_escape = true;
       } else {
@@ -51,10 +52,11 @@ namespace ppforest2::io::layout {
    * Unlike fmt::format width specifiers, this correctly handles strings
    * containing ANSI escape codes by computing visual width separately.
    */
-  inline std::string pad(const std::string& s, int width, Align align = Align::right) {
+  inline std::string pad(std::string const& s, int width, Align align = Align::right) {
     int gap = width - visual_width(s);
 
-    if (gap <= 0) return s;
+    if (gap <= 0)
+      return s;
 
     std::string spaces(static_cast<std::size_t>(gap), ' ');
 
@@ -78,14 +80,12 @@ namespace ppforest2::io::layout {
    *
    * Each cell is padded to its column's width using ANSI-safe padding.
    */
-  inline std::string format_row(
-    const std::vector<Column>& columns,
-    const Row&                 cells,
-    const std::string&         sep = "  ") {
+  inline std::string format_row(std::vector<Column> const& columns, Row const& cells, std::string const& sep = "  ") {
     std::string line;
 
     for (std::size_t i = 0; i < columns.size() && i < cells.size(); ++i) {
-      if (i > 0) line += sep;
+      if (i > 0)
+        line += sep;
 
       line += pad(cells[i], columns[i].width, columns[i].align);
     }
@@ -96,13 +96,12 @@ namespace ppforest2::io::layout {
   /**
    * @brief Generate a separator line spanning the full table width.
    */
-  inline std::string format_separator(
-    const std::vector<Column>& columns,
-    const std::string&         sep = "  ") {
+  inline std::string format_separator(std::vector<Column> const& columns, std::string const& sep = "  ") {
     int total = 0;
 
     for (std::size_t i = 0; i < columns.size(); ++i) {
-      if (i > 0) total += static_cast<int>(sep.size());
+      if (i > 0)
+        total += static_cast<int>(sep.size());
 
       total += columns[i].width;
     }
@@ -113,11 +112,11 @@ namespace ppforest2::io::layout {
   /**
    * @brief Extract header labels from column definitions as a Row.
    */
-  inline Row header_labels(const std::vector<Column>& columns) {
+  inline Row header_labels(std::vector<Column> const& columns) {
     Row labels;
     labels.reserve(columns.size());
 
-    for (const auto& col : columns) {
+    for (auto const& col : columns) {
       labels.push_back(col.label);
     }
 
@@ -127,10 +126,10 @@ namespace ppforest2::io::layout {
   /**
    * @brief Format a row as a markdown table row.
    */
-  inline std::string format_md_row(const Row& cells) {
+  inline std::string format_md_row(Row const& cells) {
     std::string line = "|";
 
-    for (const auto& cell : cells) {
+    for (auto const& cell : cells) {
       line += " " + cell + " |";
     }
 
@@ -140,10 +139,10 @@ namespace ppforest2::io::layout {
   /**
    * @brief Generate a markdown alignment row.
    */
-  inline std::string format_md_separator(const std::vector<Column>& columns) {
+  inline std::string format_md_separator(std::vector<Column> const& columns) {
     std::string line = "|";
 
-    for (const auto& col : columns) {
+    for (auto const& col : columns) {
       line += (col.align == Align::right) ? "---:|" : ":---|";
     }
 

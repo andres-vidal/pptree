@@ -99,7 +99,7 @@ TEST(Uniform, MeanConvergesToTheory) {
   }
 
   double sample_mean   = sum / N;
-  double expected_mean = 4.5; // (0 + 9) / 2
+  double expected_mean = 4.5;                 // (0 + 9) / 2
   double se            = std::sqrt(8.25 / N); // σ² = (10² − 1)/12 = 8.25,  SE(mean) = √(σ²/N)
   ASSERT_NEAR(sample_mean, expected_mean, 5 * se);
 }
@@ -123,7 +123,7 @@ TEST(Uniform, VarianceConvergesToTheory) {
   }
 
   double sample_var   = sum_sq / (N - 1);
-  double expected_var = 8.25; // ((b−a+1)² − 1) / 12  =  (100 − 1) / 12
+  double expected_var = 8.25;                                    // ((b−a+1)² − 1) / 12  =  (100 − 1) / 12
   double se           = expected_var * std::sqrt(2.0 / (N - 1)); // SE(s²) ≈ σ² √(2/(N−1))
   ASSERT_NEAR(sample_var, expected_var, 5 * se);
 }

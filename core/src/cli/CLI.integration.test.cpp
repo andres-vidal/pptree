@@ -60,7 +60,8 @@ TEST(CLIGlobal, ConfigFileApplied) {
 
   TempFile output;
   output.clear();
-  auto result = run_ppforest2("--config " + config.path() + " -q evaluate --simulate 50x3x2 -r 0 -i 1 -o " + output.path());
+  auto result =
+      run_ppforest2("--config " + config.path() + " -q evaluate --simulate 50x3x2 -r 0 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -90,7 +91,7 @@ TEST(CLIGlobal, TrainThenPredict) {
   EXPECT_TRUE(j.contains("error_rate"));
   EXPECT_TRUE(j.contains("confusion_matrix"));
 
-  for (const auto& pred : j["predictions"]) {
+  for (auto const& pred : j["predictions"]) {
     EXPECT_TRUE(pred.is_string()) << "predictions should use group name strings";
   }
 }

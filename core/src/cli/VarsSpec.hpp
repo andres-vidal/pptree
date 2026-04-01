@@ -37,7 +37,7 @@ namespace ppforest2::cli {
    *
    * @throws std::runtime_error on invalid input.
    */
-  VarsSpec parse_vars(const std::string& input);
+  VarsSpec parse_vars(std::string const& input);
 
   /**
    * @brief Parse vars from a JSON value (benchmark scenarios).
@@ -49,5 +49,5 @@ namespace ppforest2::cli {
    *
    * @throws std::runtime_error on invalid input.
    */
-  VarsSpec parse_vars(const nlohmann::json& j);
+  VarsSpec parse_vars(nlohmann::json const& j);
 }

@@ -30,14 +30,13 @@ namespace ppforest2::dr {
    */
   struct DRResult {
     /** @brief Indices of the selected columns in the original matrix. */
-    const std::vector<int> selected_cols;
+    std::vector<int> const selected_cols;
     /** @brief Number of columns in the original (unreduced) matrix. */
-    const size_t original_size;
+    size_t const original_size;
 
-    DRResult(const std::vector<int>& selected_cols, const size_t original_size) :
-      selected_cols(selected_cols),
-      original_size(original_size) {
-    }
+    DRResult(std::vector<int> const& selected_cols, size_t const original_size)
+        : selected_cols(selected_cols)
+        , original_size(original_size) {}
 
     /**
      * @brief Expand a reduced-dimension projector to the original space.
@@ -48,8 +47,9 @@ namespace ppforest2::dr {
      * @param reduced_vector  Projector in the reduced space (q).
      * @return                Projector in the original space (p), zero-padded.
      */
-    pp::Projector expand(const pp::Projector& reduced_vector) const {
-      invariant(reduced_vector.size() == selected_cols.size(), "Reduced vector size must match number of selected variables");
+    pp::Projector expand(pp::Projector const& reduced_vector) const {
+      invariant(reduced_vector.size() == selected_cols.size(),
+                "Reduced vector size must match number of selected variables");
 
       pp::Projector full_vector = pp::Projector::Zero(original_size);
 
@@ -79,18 +79,13 @@ namespace ppforest2::dr {
      * @param rng         Random number generator.
      * @return            DRResult recording which columns were selected.
      */
-    virtual DRResult select(
-      types::FeatureMatrix const &  x,
-      stats::GroupPartition const & group_spec,
-      stats::RNG &                  rng) const = 0;
+    virtual DRResult
+    select(types::FeatureMatrix const& x, stats::GroupPartition const& group_spec, stats::RNG& rng) const = 0;
 
     /**
      * @brief Convenience operator: equivalent to select().
      */
-    DRResult operator()(
-      types::FeatureMatrix const &  x,
-      stats::GroupPartition const & group_spec,
-      stats::RNG &                  rng) const {
+    DRResult operator()(types::FeatureMatrix const& x, stats::GroupPartition const& group_spec, stats::RNG& rng) const {
       return select(x, group_spec, rng);
     }
   };

@@ -14,13 +14,13 @@ using namespace ppforest2::types;
 using json = nlohmann::json;
 
 TEST(DRUniformStrategy, FromJsonValid) {
-  json j        = { { "name", "uniform" }, { "n_vars", 3 } };
+  json j        = {{"name", "uniform"}, {"n_vars", 3}};
   auto strategy = DRUniformStrategy::from_json(j);
   ASSERT_NE(strategy, nullptr);
 }
 
 TEST(DRUniformStrategy, FromJsonRoundTrip) {
-  json j        = { { "name", "uniform" }, { "n_vars", 3 } };
+  json j        = {{"name", "uniform"}, {"n_vars", 3}};
   auto strategy = DRUniformStrategy::from_json(j);
 
   json out;
@@ -31,17 +31,17 @@ TEST(DRUniformStrategy, FromJsonRoundTrip) {
 }
 
 TEST(DRUniformStrategy, FromJsonMissingNVars) {
-  json j = { { "name", "uniform" } };
+  json j = {{"name", "uniform"}};
   EXPECT_THROW(DRUniformStrategy::from_json(j), std::exception);
 }
 
 TEST(DRUniformStrategy, FromJsonUnknownParam) {
-  json j = { { "name", "uniform" }, { "n_vars", 3 }, { "extra", true } };
+  json j = {{"name", "uniform"}, {"n_vars", 3}, {"extra", true}};
   EXPECT_THROW(DRUniformStrategy::from_json(j), std::runtime_error);
 }
 
 TEST(DRUniformStrategy, RegistryLookup) {
-  json j        = { { "name", "uniform" }, { "n_vars", 2 } };
+  json j        = {{"name", "uniform"}, {"n_vars", 2}};
   auto strategy = DRStrategy::from_json(j);
   ASSERT_NE(strategy, nullptr);
 
@@ -52,11 +52,7 @@ TEST(DRUniformStrategy, RegistryLookup) {
 }
 
 TEST(DRUniformStrategy, SelectsCorrectNumberOfVars) {
-  FeatureMatrix x = MAT(Feature, rows(4),
-      1, 2, 3, 4, 5,
-      6, 7, 8, 9, 10,
-      11, 12, 13, 14, 15,
-      16, 17, 18, 19, 20);
+  FeatureMatrix x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
 
   ResponseVector y = VEC(Response, 0, 0, 1, 1);
   GroupPartition gp(y);
@@ -70,11 +66,7 @@ TEST(DRUniformStrategy, SelectsCorrectNumberOfVars) {
 }
 
 TEST(DRUniformStrategy, AllVarsReturnsAllIndices) {
-  FeatureMatrix x = MAT(Feature, rows(4),
-      1, 2, 3,
-      4, 5, 6,
-      7, 8, 9,
-      10, 11, 12);
+  FeatureMatrix x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
   ResponseVector y = VEC(Response, 0, 0, 1, 1);
   GroupPartition gp(y);
@@ -87,7 +79,7 @@ TEST(DRUniformStrategy, AllVarsReturnsAllIndices) {
 
   std::vector<int> sorted = result.selected_cols;
   std::sort(sorted.begin(), sorted.end());
-  EXPECT_EQ(sorted, (std::vector<int>{ 0, 1, 2 }));
+  EXPECT_EQ(sorted, (std::vector<int>{0, 1, 2}));
 }
 
 TEST(DRUniformStrategy, RejectsZeroVars) {
@@ -95,11 +87,7 @@ TEST(DRUniformStrategy, RejectsZeroVars) {
 }
 
 TEST(DRUniformStrategy, DeterministicWithSameSeed) {
-  FeatureMatrix x = MAT(Feature, rows(4),
-      1, 2, 3, 4, 5,
-      6, 7, 8, 9, 10,
-      11, 12, 13, 14, 15,
-      16, 17, 18, 19, 20);
+  FeatureMatrix x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
 
   ResponseVector y = VEC(Response, 0, 0, 1, 1);
   GroupPartition gp(y);

@@ -16,10 +16,10 @@ using namespace ppforest2;
 #endif
 
 static const std::string DATA_DIR  = PPFOREST2_DATA_DIR;
-static const std::string IRIS_PATH = DATA_DIR + "/iris.csv";
+static std::string const IRIS_PATH = DATA_DIR + "/iris.csv";
 
 namespace {
-  void write_csv(const std::string& path, const std::string& content) {
+  void write_csv(std::string const& path, std::string const& content) {
     std::ofstream out(path);
     out << content;
     out.close();
@@ -51,10 +51,10 @@ TEST(CSVReadTest, CategoricalFeatureColumn) {
   EXPECT_EQ(data.x.cols(), 2);
 
   // "color" column: red=0, blue=1, green=2 (order of first appearance)
-  EXPECT_FLOAT_EQ(data.x(0, 0), 0.0f);  // red
-  EXPECT_FLOAT_EQ(data.x(1, 0), 1.0f);  // blue
-  EXPECT_FLOAT_EQ(data.x(2, 0), 0.0f);  // red
-  EXPECT_FLOAT_EQ(data.x(3, 0), 2.0f);  // green
+  EXPECT_FLOAT_EQ(data.x(0, 0), 0.0f); // red
+  EXPECT_FLOAT_EQ(data.x(1, 0), 1.0f); // blue
+  EXPECT_FLOAT_EQ(data.x(2, 0), 0.0f); // red
+  EXPECT_FLOAT_EQ(data.x(3, 0), 2.0f); // green
 
   // "size" column: numeric, unchanged
   EXPECT_FLOAT_EQ(data.x(0, 1), 1.0f);
@@ -109,7 +109,7 @@ TEST(CSVReadTest, GroupNamesPreservedAfterSort) {
 TEST(CSVReadTest, CrabsDatasetWithCategoricalSex) {
   auto data = io::csv::read(PPFOREST2_DATA_DIR "/crabs.csv");
 
-  EXPECT_EQ(data.x.cols(), 7);  // sex + index + 5 morphometrics
+  EXPECT_EQ(data.x.cols(), 7); // sex + index + 5 morphometrics
   EXPECT_EQ(data.x.rows(), 200);
 
   // "sex" is the first column and is categorical (M/F)
@@ -128,16 +128,16 @@ TEST(CSVReadTest, CrabsDatasetWithCategoricalSex) {
  * @brief Death-test predicate: matches any non-zero exit code.
  */
 class ExitedWithNonZero {
-  public:
-    bool operator()(int exit_status) const {
-      #ifdef _WIN32
-      return exit_status != 0;
+public:
+  bool operator()(int exit_status) const {
+#ifdef _WIN32
+    return exit_status != 0;
 
-      #else
-      return testing::ExitedWithCode(0)(exit_status) == false && WIFEXITED(exit_status);
+#else
+    return testing::ExitedWithCode(0)(exit_status) == false && WIFEXITED(exit_status);
 
-      #endif
-    }
+#endif
+  }
 };
 
 /* Path already ending in .json is returned unchanged. */

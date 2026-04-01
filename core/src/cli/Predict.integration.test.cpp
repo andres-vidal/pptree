@@ -42,7 +42,8 @@ TEST_F(PredictTest, PredictNoMetricsOutputFile) {
   // --no-metrics should omit error_rate and confusion_matrix from output file
   TempFile output;
   output.clear();
-  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-metrics -o " + output.path());
+  auto result =
+      run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-metrics -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -115,9 +116,9 @@ TEST_F(PredictTest, PredictForestIncludesProportions) {
   EXPECT_EQ(props[0].size(), 3u);
 
   // Each row sums to 1.0
-  for (const auto& row : props) {
+  for (auto const& row : props) {
     double sum = 0;
-    for (const auto& val : row) {
+    for (auto const& val : row) {
       sum += val.get<double>();
     }
 
@@ -129,7 +130,8 @@ TEST_F(PredictTest, PredictForestIncludesProportions) {
 TEST_F(PredictTest, PredictNoProportionsFlag) {
   TempFile output;
   output.clear();
-  auto result = run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-proportions -o " + output.path());
+  auto result =
+      run_ppforest2("-q predict -M " + model_->path() + " -d " + IRIS_CSV + " --no-proportions -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
@@ -163,9 +165,9 @@ TEST(CLIPredict, PredictTreeModelIncludesProportions) {
   EXPECT_EQ(props[0].size(), 3u);
 
   // Each row sums to 1.0 (one-hot for trees)
-  for (const auto& row : props) {
+  for (auto const& row : props) {
     double sum = 0;
-    for (const auto& val : row) {
+    for (auto const& val : row) {
       sum += val.get<double>();
     }
 
@@ -182,7 +184,8 @@ TEST(CLIPredict, PredictTreeNoProportionsFlag) {
 
   TempFile output;
   output.clear();
-  auto result = run_ppforest2("-q predict -M " + model.path() + " -d " + IRIS_CSV + " --no-proportions -o " + output.path());
+  auto result =
+      run_ppforest2("-q predict -M " + model.path() + " -d " + IRIS_CSV + " --no-proportions -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());

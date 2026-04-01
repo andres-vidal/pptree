@@ -19,11 +19,11 @@ namespace ppforest2::io {
     auto time_t = std::chrono::system_clock::to_time_t(now);
     std::tm tm  = {};
 
-    #ifdef _WIN32
+#ifdef _WIN32
     localtime_s(&tm, &time_t);
-    #else
+#else
     localtime_r(&time_t, &tm);
-    #endif
+#endif
 
     std::ostringstream ss;
     ss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S");
@@ -38,8 +38,7 @@ namespace ppforest2::io {
    * @return A pair of (result, duration_ms) where result is the return value
    *         of f() and duration_ms is the elapsed time in milliseconds.
    */
-  template<typename F>
-  auto measure_time_ms(F&& f) {
+  template<typename F> auto measure_time_ms(F&& f) {
     auto str = std::chrono::high_resolution_clock::now();
     auto res = f();
     auto end = std::chrono::high_resolution_clock::now();

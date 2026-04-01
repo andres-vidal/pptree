@@ -35,18 +35,16 @@ namespace ppforest2::sr {
      * @param projector  Projection vector (p).
      * @return           Scalar threshold in the projected space.
      */
-    virtual types::Feature threshold(
-      const types::FeatureMatrix& group_1,
-      const types::FeatureMatrix& group_2,
-      const pp::Projector&        projector) const = 0;
+    virtual types::Feature threshold(types::FeatureMatrix const& group_1,
+                                     types::FeatureMatrix const& group_2,
+                                     pp::Projector const& projector) const = 0;
 
     /**
      * @brief Convenience operator: equivalent to threshold().
      */
-    types::Feature operator()(
-      const types::FeatureMatrix& group_1,
-      const types::FeatureMatrix& group_2,
-      const pp::Projector&        projector) const {
+    types::Feature operator()(types::FeatureMatrix const& group_1,
+                              types::FeatureMatrix const& group_2,
+                              pp::Projector const& projector) const {
       return threshold(group_1, group_2, projector);
     }
   };
