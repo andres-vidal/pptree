@@ -19,13 +19,13 @@
 namespace ppforest2::io {
   nlohmann::json ModelStats::to_json() const {
     nlohmann::json j = {
-      { "runs",             tr_times.size() },
-      { "mean_time_ms",     mean_time() },
-      { "std_time_ms",      std_time() },
-      { "mean_train_error", mean_tr_error() },
-      { "std_train_error",  std_tr_error() },
-      { "mean_test_error",  mean_te_error() },
-      { "std_test_error",   std_te_error() }
+        {"runs", tr_times.size()},
+        {"mean_time_ms", mean_time()},
+        {"std_time_ms", std_time()},
+        {"mean_train_error", mean_tr_error()},
+        {"std_train_error", std_tr_error()},
+        {"mean_test_error", mean_te_error()},
+        {"std_test_error", std_te_error()}
     };
 
     if (peak_rss_bytes >= 0) {
@@ -36,11 +36,7 @@ namespace ppforest2::io {
     // Per-iteration data
     nlohmann::json iterations = nlohmann::json::array();
     for (int i = 0; i < tr_times.size(); ++i) {
-      iterations.push_back({
-        { "train_time_ms", tr_times[i] },
-        { "train_error",   tr_error[i] },
-        { "test_error",    te_error[i] }
-      });
+      iterations.push_back({{"train_time_ms", tr_times[i]}, {"train_error", tr_error[i]}, {"test_error", te_error[i]}});
     }
 
     j["iterations"] = iterations;
@@ -48,7 +44,7 @@ namespace ppforest2::io {
     return j;
   }
 
-  void print_results(Output& out, const ModelStats& stats) {
+  void print_results(Output& out, ModelStats const& stats) {
     using namespace style;
     using namespace layout;
 
@@ -56,14 +52,14 @@ namespace ppforest2::io {
     out.newline();
 
     std::vector<Column> columns = {
-      { "Runs",       5,  Align::left },
-      { "Time (ms)", 18,  Align::right },
-      { "Train Err", 10,  Align::right },
-      { "Test Err",  10,  Align::right },
+        {"Runs", 5, Align::left},
+        {"Time (ms)", 18, Align::right},
+        {"Train Err", 10, Align::right},
+        {"Test Err", 10, Align::right},
     };
 
     if (stats.peak_rss_bytes >= 0) {
-      columns.push_back({ "Peak RSS", 10, Align::right });
+      columns.push_back({"Peak RSS", 10, Align::right});
     }
 
     Row header = header_labels(columns);
@@ -76,10 +72,10 @@ namespace ppforest2::io {
     std::string te_err   = fmt::format("{:.2f}%", stats.mean_te_error() * 100);
 
     Row cells = {
-      fmt::format("{}", stats.tr_times.size()),
-      time_str,
-      tr_err,
-      te_err,
+        fmt::format("{}", stats.tr_times.size()),
+        time_str,
+        tr_err,
+        te_err,
     };
 
     if (stats.peak_rss_bytes >= 0) {
@@ -92,31 +88,27 @@ namespace ppforest2::io {
   }
 
   void print_variable_importance(
-    Output&                         out,
-    const VariableImportance&       vi,
-    const std::vector<std::string>& feature_names,
-    int                             max_rows) {
+      Output& out, VariableImportance const& vi, std::vector<std::string> const& feature_names, int max_rows
+  ) {
     using namespace style;
     using namespace layout;
 
-    const auto& vi1   = vi.permuted;
-    const auto& vi2   = vi.projections;
-    const auto& vi3   = vi.weighted_projections;
-    const auto& scale = vi.scale;
+    auto const& vi1   = vi.permuted;
+    auto const& vi2   = vi.projections;
+    auto const& vi3   = vi.weighted_projections;
+    auto const& scale = vi.scale;
 
-    const int p = static_cast<int>(vi2.size());
+    int const p = static_cast<int>(vi2.size());
 
     bool has_names = static_cast<int>(feature_names.size()) == p;
 
     std::vector<int> order(static_cast<std::size_t>(p));
     std::iota(order.begin(), order.end(), 0);
-    std::stable_sort(order.begin(), order.end(), [&vi2](int a, int b) {
-        return std::isgreater(vi2(a), vi2(b));
-      });
+    std::stable_sort(order.begin(), order.end(), [&vi2](int a, int b) { return std::isgreater(vi2(a), vi2(b)); });
 
-    const bool show_vi1 = vi1.size() == vi2.size();
-    const bool show_vi3 = vi3.size() == vi2.size();
-    const int rows      = (max_rows > 0 && p > max_rows) ? max_rows : p;
+    bool const show_vi1 = vi1.size() == vi2.size();
+    bool const show_vi3 = vi3.size() == vi2.size();
+    int const rows      = (max_rows > 0 && p > max_rows) ? max_rows : p;
 
     // Compute variable column width based on longest name.
     int var_width = 10;
@@ -126,7 +118,8 @@ namespace ppforest2::io {
         int j   = order[static_cast<std::size_t>(rank)];
         int len = static_cast<int>(feature_names[static_cast<std::size_t>(j)].size());
 
-        if (len + 1 > var_width) var_width = len + 1;
+        if (len + 1 > var_width)
+          var_width = len + 1;
       }
     }
 
@@ -135,24 +128,28 @@ namespace ppforest2::io {
 
     // Build columns conditionally
     std::vector<Column> columns = {
-      { "Variable",   var_width, Align::left },
-      { "",           10,        Align::right },
-      { "Projection", 12,        Align::right },
+        {"Variable", var_width, Align::left},
+        {"", 10, Align::right},
+        {"Projection", 12, Align::right},
     };
 
-    if (show_vi3) columns.push_back({ "Weighted", 12, Align::right });
+    if (show_vi3)
+      columns.push_back({"Weighted", 12, Align::right});
 
-    if (show_vi1) columns.push_back({ "Permuted", 12, Align::right });
+    if (show_vi1)
+      columns.push_back({"Permuted", 12, Align::right});
 
     // Header
     Row header = header_labels(columns);
-    header[0] = emphasis(header[0]);
-    header[1] = muted(fmt::format("{}", "\xcf\x83"));
-    header[2] = emphasis(header[2]);
+    header[0]  = emphasis(header[0]);
+    header[1]  = muted(fmt::format("{}", "\xcf\x83"));
+    header[2]  = emphasis(header[2]);
 
-    if (show_vi3) header[3] = emphasis(header[3]);
+    if (show_vi3)
+      header[3] = emphasis(header[3]);
 
-    if (show_vi1) header[show_vi3 ? 4 : 3] = emphasis(header[show_vi3 ? 4 : 3]);
+    if (show_vi1)
+      header[show_vi3 ? 4 : 3] = emphasis(header[show_vi3 ? 4 : 3]);
 
     out.println("{}", format_row(columns, header));
     out.println("{}", muted(format_separator(columns)));
@@ -160,19 +157,19 @@ namespace ppforest2::io {
     // Data rows
     for (int rank = 0; rank < rows; ++rank) {
       int j         = order[static_cast<std::size_t>(rank)];
-      std::string v = has_names
-        ? feature_names[static_cast<std::size_t>(j)]
-        : fmt::format("x{}", j + 1);
+      std::string v = has_names ? feature_names[static_cast<std::size_t>(j)] : fmt::format("x{}", j + 1);
 
       Row cells = {
-        v,
-        fmt::format("{:.4f}", scale(j)),
-        fmt::format("{:.6f}", vi2(j)),
+          v,
+          fmt::format("{:.4f}", scale(j)),
+          fmt::format("{:.6f}", vi2(j)),
       };
 
-      if (show_vi3) cells.push_back(fmt::format("{:.6f}", vi3(j)));
+      if (show_vi3)
+        cells.push_back(fmt::format("{:.6f}", vi3(j)));
 
-      if (show_vi1) cells.push_back(fmt::format("{:.6f}", vi1(j)));
+      if (show_vi1)
+        cells.push_back(fmt::format("{:.6f}", vi1(j)));
 
       out.println("{}", format_row(columns, cells));
     }
@@ -186,7 +183,10 @@ namespace ppforest2::io {
     if (!all_ones) {
       out.newline();
       out.newline();
-      out.println("{} Variable importance was calculated using scaled coefficients (|a_j| * \u03c3_j).", emphasis(warning("Note:")));
+      out.println(
+          "{} Variable importance was calculated using scaled coefficients (|a_j| * \u03c3_j).",
+          emphasis(warning("Note:"))
+      );
       out.println("Variable contributions can only be theoretically interpreted as such");
       out.println("if the model was trained on scaled data. Scaling also changes the");
       out.println("projection-pursuit optimization, which may affect the resulting tree.");
@@ -196,10 +196,11 @@ namespace ppforest2::io {
   }
 
   void print_confusion_matrix(
-    Output&                         out,
-    const stats::ConfusionMatrix&   cm,
-    const std::string&              title,
-    const std::vector<std::string>& group_names) {
+      Output& out,
+      stats::ConfusionMatrix const& cm,
+      std::string const& title,
+      std::vector<std::string> const& group_names
+  ) {
     using namespace style;
 
     auto group_err = cm.group_errors();
@@ -210,7 +211,7 @@ namespace ppforest2::io {
     int col_width = 5;
 
     if (has_names) {
-      for (const auto& [label, idx] : cm.label_index) {
+      for (auto const& [label, idx] : cm.label_index) {
         int name_len = static_cast<int>(group_names[static_cast<std::size_t>(label)].size());
 
         if (name_len + 1 > col_width) {
@@ -223,7 +224,7 @@ namespace ppforest2::io {
     int row_label_width = 4;
 
     if (has_names) {
-      for (const auto& [label, idx] : cm.label_index) {
+      for (auto const& [label, idx] : cm.label_index) {
         int name_len = static_cast<int>(group_names[static_cast<std::size_t>(label)].size());
 
         if (name_len > row_label_width) {
@@ -238,7 +239,7 @@ namespace ppforest2::io {
     // Header row: group labels
     std::string header(static_cast<std::size_t>(row_label_width), ' ');
 
-    for (const auto& [label, idx] : cm.label_index) {
+    for (auto const& [label, idx] : cm.label_index) {
       std::string name = has_names ? group_names[static_cast<std::size_t>(label)] : std::to_string(label);
       header += fmt::format("{:>{}}", name, col_width);
     }
@@ -247,11 +248,11 @@ namespace ppforest2::io {
     out.println("{}", header);
 
     // Data rows
-    for (const auto& [label, row_idx] : cm.label_index) {
+    for (auto const& [label, row_idx] : cm.label_index) {
       std::string row_label = has_names ? group_names[static_cast<std::size_t>(label)] : std::to_string(label);
       std::string row       = fmt::format("{:>{}}", row_label, row_label_width);
 
-      for (const auto& [col_label, col_idx] : cm.label_index) {
+      for (auto const& [col_label, col_idx] : cm.label_index) {
         int val          = cm.values(row_idx, col_idx);
         std::string cell = fmt::format("{:>{}}", val, col_width - 1);
 
@@ -271,24 +272,25 @@ namespace ppforest2::io {
     out.newline();
   }
 
-namespace {
-  std::string json_value_to_string(const nlohmann::json& v) {
-    if (v.is_string()) return v.get<std::string>();
+  namespace {
+    std::string json_value_to_string(nlohmann::json const& v) {
+      if (v.is_string())
+        return v.get<std::string>();
 
-    if (v.is_number_integer()) return std::to_string(v.get<int>());
+      if (v.is_number_integer())
+        return std::to_string(v.get<int>());
 
-    if (v.is_number_float()) return fmt::format("{}", v.get<double>());
+      if (v.is_number_float())
+        return fmt::format("{}", v.get<double>());
 
-    if (v.is_boolean()) return v.get<bool>() ? "true" : "false";
+      if (v.is_boolean())
+        return v.get<bool>() ? "true" : "false";
 
-    return v.dump();
+      return v.dump();
+    }
   }
-}
 
-  void print_configuration(
-    Output&                   out,
-    const nlohmann::json&     config,
-    const ConfigDisplayHints& hints) {
+  void print_configuration(Output& out, nlohmann::json const& config, ConfigDisplayHints const& hints) {
     using namespace style;
     using namespace layout;
 
@@ -298,16 +300,15 @@ namespace {
 
     int size = config.value("size", 0);
 
-    std::string model_type = size > 0
-      ? "Random Forest of Projection-Pursuit Oblique Decision Trees"
-      : "Projection-Pursuit Oblique Decision Tree";
+    std::string model_type = size > 0 ? "Random Forest of Projection-Pursuit Oblique Decision Trees"
+                                      : "Projection-Pursuit Oblique Decision Tree";
 
     out.println("{}", emphasis(model_type));
     out.newline();
 
     std::vector<Column> columns = {
-      { "Parameter", 18, Align::left },
-      { "Value",     30, Align::left },
+        {"Parameter", 18, Align::left},
+        {"Value", 30, Align::left},
     };
 
     Row header = header_labels(columns);
@@ -316,67 +317,76 @@ namespace {
 
     // Strategy sections: pp, dr, sr
     // Resolve display names by instantiating strategies from JSON via the registry.
-    auto strategy_display_name = [](const std::string& key, const nlohmann::json& section) -> std::string {
+    auto strategy_display_name = [](std::string const& key, nlohmann::json const& section) -> std::string {
       try {
-        if (key == "pp") return pp::PPStrategy::from_json(section)->display_name();
+        if (key == "pp")
+          return pp::PPStrategy::from_json(section)->display_name();
 
-        if (key == "dr") return dr::DRStrategy::from_json(section)->display_name();
+        if (key == "dr")
+          return dr::DRStrategy::from_json(section)->display_name();
 
-        if (key == "sr") return sr::SRStrategy::from_json(section)->display_name();
-      } catch (...) {
-      }
+        if (key == "sr")
+          return sr::SRStrategy::from_json(section)->display_name();
+      } catch (...) {}
       return section.value("name", key);
     };
 
-    for (const auto& key : { "pp", "dr", "sr" }) {
-      if (!config.contains(key)) continue;
+    for (auto const& key : {"pp", "dr", "sr"}) {
+      if (!config.contains(key))
+        continue;
 
-      const auto& section = config[key];
+      auto const& section = config[key];
       std::string display = strategy_display_name(key, section);
-      out.println("{}", format_row(columns, { std::string(key) + " method", display }));
+      out.println("{}", format_row(columns, {std::string(key) + " method", display}));
 
-      for (const auto& [k, v] : section.items()) {
-        if (k == "name") continue;
+      for (auto const& [k, v] : section.items()) {
+        if (k == "name")
+          continue;
 
         std::string value = json_value_to_string(v);
 
-        if (k == "n_vars" && hints.vars_percent >= 0) value += fmt::format(" ({}%)", hints.vars_percent);
+        if (k == "n_vars" && hints.vars_percent >= 0)
+          value += fmt::format(" ({}%)", hints.vars_percent);
 
-        if (k == "n_vars" && hints.default_vars) value += dtag(true);
+        if (k == "n_vars" && hints.default_vars)
+          value += dtag(true);
 
-        out.println("{}", format_row(columns, { k, value }));
+        out.println("{}", format_row(columns, {k, value}));
       }
     }
 
     // Top-level parameters
     if (size > 0) {
-      out.println("{}", format_row(columns, { "trees", std::to_string(size) }));
-      out.println("{}", format_row(columns, { "threads", fmt::format("{}{}", config.value("threads", 1), dtag(hints.default_threads)) }));
+      out.println("{}", format_row(columns, {"trees", std::to_string(size)}));
+      out.println(
+          "{}",
+          format_row(columns, {"threads", fmt::format("{}{}", config.value("threads", 1), dtag(hints.default_threads))})
+      );
     }
 
-    out.println("{}", format_row(columns, { "seed", fmt::format("{}{}", config.value("seed", 0), dtag(hints.default_seed)) }));
+    out.println(
+        "{}", format_row(columns, {"seed", fmt::format("{}{}", config.value("seed", 0), dtag(hints.default_seed))})
+    );
 
     if (!hints.training_samples.empty()) {
-      out.println("{}", format_row(columns, { "training samples", hints.training_samples }));
-      out.println("{}", format_row(columns, { "test samples", hints.test_samples }));
+      out.println("{}", format_row(columns, {"training samples", hints.training_samples}));
+      out.println("{}", format_row(columns, {"test samples", hints.test_samples}));
     }
 
     if (config.contains("data")) {
-      out.println("{}", format_row(columns, { "training data", config["data"].get<std::string>() }));
+      out.println("{}", format_row(columns, {"training data", config["data"].get<std::string>()}));
     }
 
     out.newline();
   }
 
-  void print_data_summary(
-    Output &              out,
-    const nlohmann::json& meta) {
+  void print_data_summary(Output& out, nlohmann::json const& meta) {
     using namespace style;
     using namespace layout;
 
     std::vector<Column> columns = {
-      { "Property", 18, Align::left },
-      { "Value",    30, Align::left },
+        {"Property", 18, Align::left},
+        {"Value", 30, Align::left},
     };
 
     out.println("{}", emphasis("Data Summary"));
@@ -387,42 +397,40 @@ namespace {
     out.println("{}", muted(format_separator(columns)));
 
     if (meta.contains("observations")) {
-      out.println("{}", format_row(columns, { "observations", std::to_string(meta["observations"].get<int>()) }));
+      out.println("{}", format_row(columns, {"observations", std::to_string(meta["observations"].get<int>())}));
     }
 
     if (meta.contains("features")) {
-      out.println("{}", format_row(columns, { "features", std::to_string(meta["features"].get<int>()) }));
+      out.println("{}", format_row(columns, {"features", std::to_string(meta["features"].get<int>())}));
     }
 
     if (meta.contains("groups")) {
       auto group_names = meta["groups"].get<std::vector<std::string>>();
-      out.println("{}", format_row(columns, { "groups", std::to_string(group_names.size()) }));
+      out.println("{}", format_row(columns, {"groups", std::to_string(group_names.size())}));
 
       std::string names;
 
       for (std::size_t i = 0; i < group_names.size(); ++i) {
-        if (i > 0) names += ", ";
+        if (i > 0)
+          names += ", ";
 
         names += group_names[i];
       }
 
-      out.println("{}", format_row(columns, { "group names", names }));
+      out.println("{}", format_row(columns, {"group names", names}));
     }
 
     out.newline();
   }
 
-  void print_summary(
-    Output&                   out,
-    const nlohmann::json&     model_data,
-    const ConfigDisplayHints& hints) {
+  void print_summary(Output& out, nlohmann::json const& model_data, ConfigDisplayHints const& hints) {
     using namespace style;
 
     std::vector<std::string> group_names;
     std::vector<std::string> feature_names;
 
     if (model_data.contains("meta")) {
-      const auto& meta = model_data["meta"];
+      auto const& meta = model_data["meta"];
 
       if (meta.contains("groups")) {
         group_names = meta["groups"].get<std::vector<std::string>>();
@@ -454,8 +462,7 @@ namespace {
       out.newline();
     }
 
-    bool is_degenerate = model_data.contains("model")
-    && model_data["model"].value("degenerate", false);
+    bool is_degenerate = model_data.contains("model") && model_data["model"].value("degenerate", false);
 
     if (is_degenerate) {
       out.println("{} Some splits could not separate groups (degenerate nodes).", emphasis(warning("Warning:")));

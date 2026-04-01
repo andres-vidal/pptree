@@ -43,10 +43,8 @@ namespace ppforest2::pp {
      * @param projector   Projection vector (p).
      * @return            Index value (higher is better separation).
      */
-    virtual types::Feature index(
-      const types::FeatureMatrix&  x,
-      const stats::GroupPartition& group_spec,
-      const Projector&             projector) const = 0;
+    virtual types::Feature
+    index(types::FeatureMatrix const& x, stats::GroupPartition const& group_spec, Projector const& projector) const = 0;
 
     /**
      * @brief Find the optimal projection for the data.
@@ -55,14 +53,12 @@ namespace ppforest2::pp {
      * @param group_spec  Group partition.
      * @return            Optimized projector and its index value.
      */
-    virtual PPResult optimize(
-      const types::FeatureMatrix&  x,
-      const stats::GroupPartition& group_spec) const = 0;
+    virtual PPResult optimize(types::FeatureMatrix const& x, stats::GroupPartition const& group_spec) const = 0;
 
     /**
      * @brief Convenience operator: optimize and return the projector only.
      */
-    Projector operator()(const types::FeatureMatrix &x, const stats::GroupPartition& group_spec) const {
+    Projector operator()(types::FeatureMatrix const& x, stats::GroupPartition const& group_spec) const {
       return optimize(x, group_spec).projector;
     }
   };

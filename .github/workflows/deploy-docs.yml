@@ -21,14 +21,14 @@ jobs:
           working-directory: bindings/R
           extra-packages: any::devtools, any::pkgdown
 
-      - name: Cache dev tools
+      - name: Cache doxygen
         uses: actions/cache@v4
         with:
           path: .tools
           key: ${{ runner.os }}-tools-${{ hashFiles('tools/CMakeLists.txt') }}
 
-      - name: Install dev tools
-        run: make install-tools
+      - name: Install doxygen
+        run: make install-doxygen
 
       - name: Cache CMake deps
         uses: actions/cache@v4

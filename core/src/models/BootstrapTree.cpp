@@ -10,19 +10,17 @@ using namespace ppforest2::types;
 
 namespace ppforest2 {
   BootstrapTree::Ptr BootstrapTree::train(
-    TrainingSpec::Ptr const& training_spec,
-    FeatureMatrix const&     x,
-    GroupPartition const&    group_spec,
-    RNG &                    rng) {
+      TrainingSpec::Ptr const& training_spec, FeatureMatrix const& x, GroupPartition const& group_spec, RNG& rng
+  ) {
     std::vector<int> sample_indices;
     sample_indices.reserve(x.rows());
 
-    for (const auto& group : group_spec.groups) {
-      const int group_size = group_spec.group_size(group);
-      const int min_index  = group_spec.group_start(group);
-      const int max_index  = group_spec.group_end(group);
+    for (auto const& group : group_spec.groups) {
+      int const group_size = group_spec.group_size(group);
+      int const min_index  = group_spec.group_start(group);
+      int const max_index  = group_spec.group_end(group);
 
-      const Uniform unif(min_index, max_index);
+      Uniform const unif(min_index, max_index);
 
       for (int j = 0; j < group_size; j++) {
         sample_indices.push_back(unif(rng));
@@ -35,10 +33,7 @@ namespace ppforest2 {
 
     Tree tree = Tree::train(*training_spec, sampled_x, group_spec, rng);
 
-    return std::make_unique<BootstrapTree>(
-      std::move(tree.root),
-      training_spec,
-      std::move(sample_indices));
+    return std::make_unique<BootstrapTree>(std::move(tree.root), training_spec, std::move(sample_indices));
   }
 
   std::vector<int> BootstrapTree::oob_indices(int n_total) const {
@@ -55,9 +50,7 @@ namespace ppforest2 {
     return oob;
   }
 
-  ResponseVector BootstrapTree::predict_oob(
-    const FeatureMatrix&    x,
-    const std::vector<int>& row_idx) const {
+  ResponseVector BootstrapTree::predict_oob(FeatureMatrix const& x, std::vector<int> const& row_idx) const {
     if (row_idx.empty()) {
       return ResponseVector(0);
     }
@@ -65,11 +58,7 @@ namespace ppforest2 {
     return predict(static_cast<FeatureMatrix>(x(row_idx, Eigen::all)));
   }
 
-  BootstrapTree::BootstrapTree(
-    TreeNode::Ptr     root,
-    TrainingSpec::Ptr spec,
-    std::vector<int>  samp)  :
-    Tree(std::move(root), std::move(spec)),
-    sample_indices(std::move(samp)) {
-  }
+  BootstrapTree::BootstrapTree(TreeNode::Ptr root, TrainingSpec::Ptr spec, std::vector<int> samp)
+      : Tree(std::move(root), std::move(spec))
+      , sample_indices(std::move(samp)) {}
 }

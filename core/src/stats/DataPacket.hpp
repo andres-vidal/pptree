@@ -17,11 +17,11 @@ namespace ppforest2::stats {
    */
   struct DataPacket {
     /** @brief Feature matrix (n × p). */
-    const types::FeatureMatrix x;
+    types::FeatureMatrix const x;
     /** @brief Response vector (n). */
-    const types::Vector<types::Response>  y;
+    types::Vector<types::Response> const y;
     /** @brief Set of distinct group labels. */
-    const std::set<types::Response>  groups;
+    std::set<types::Response> const groups;
     /**
      * @brief Original group label names, indexed by integer code.
      *
@@ -29,44 +29,43 @@ namespace ppforest2::stats {
      * that maps to integer code i.  Empty when data is not read
      * from CSV (e.g., simulated data).
      */
-    const std::vector<std::string> group_names;
+    std::vector<std::string> const group_names;
     /**
      * @brief Original feature column names from the CSV header.
      *
      * When populated, feature_names[j] is the header label for
      * column j of x.  Empty when data is simulated.
      */
-    const std::vector<std::string> feature_names;
+    std::vector<std::string> const feature_names;
 
     DataPacket(
-      const types::FeatureMatrix &           x,
-      const types::Vector<types::Response> & y,
-      const std::set<types::Response> &      groups,
-      const std::vector<std::string> &       group_names   = {},
-      const std::vector<std::string> &       feature_names = {}) :
-      x(x),
-      y(y),
-      groups(groups),
-      group_names(group_names),
-      feature_names(feature_names) {
-    }
+        types::FeatureMatrix const& x,
+        types::Vector<types::Response> const& y,
+        std::set<types::Response> const& groups,
+        std::vector<std::string> const& group_names   = {},
+        std::vector<std::string> const& feature_names = {}
+    )
+        : x(x)
+        , y(y)
+        , groups(groups)
+        , group_names(group_names)
+        , feature_names(feature_names) {}
 
     DataPacket(
-      const types::FeatureMatrix &           x,
-      const types::Vector<types::Response> & y,
-      const std::vector<std::string> &       group_names   = {},
-      const std::vector<std::string> &       feature_names = {}) :
-      x(x),
-      y(y),
-      groups(unique(y)),
-      group_names(group_names),
-      feature_names(feature_names) {
-    }
+        types::FeatureMatrix const& x,
+        types::Vector<types::Response> const& y,
+        std::vector<std::string> const& group_names   = {},
+        std::vector<std::string> const& feature_names = {}
+    )
+        : x(x)
+        , y(y)
+        , groups(unique(y))
+        , group_names(group_names)
+        , feature_names(feature_names) {}
 
-    DataPacket() :
-      x(types::FeatureMatrix()),
-      y(types::Vector<types::Response>()),
-      groups(std::set<types::Response>()) {
-    }
+    DataPacket()
+        : x(types::FeatureMatrix())
+        , y(types::Vector<types::Response>())
+        , groups(std::set<types::Response>()) {}
   };
 }

@@ -6,11 +6,13 @@
 
 #include "cli/CLIOptions.hpp"
 
-namespace CLI { class App; }
+namespace CLI {
+  class App;
+}
 
 namespace ppforest2::cli {
   /** @brief Register summarize subcommand options on @p app. */
-  CLI::App * setup_summarize(CLI::App& app, CLIOptions& params);
+  CLI::App* setup_summarize(CLI::App& app, CLIOptions& params);
 
   /**
    * @brief Run the summarize subcommand.

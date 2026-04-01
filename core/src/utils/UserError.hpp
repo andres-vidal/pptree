@@ -23,8 +23,8 @@ namespace ppforest2 {
    * "CSV file has inconsistent columns — expected 5, got 3").
    */
   class UserError : public std::runtime_error {
-    public:
-      using std::runtime_error::runtime_error;
+  public:
+    using std::runtime_error::runtime_error;
   };
 
   /**
@@ -33,8 +33,8 @@ namespace ppforest2 {
    * @param condition Condition that must hold for valid input.
    * @param message   Actionable error message for the user.
    */
-  void user_error(bool condition, const std::string& message);
+  void user_error(bool condition, std::string const& message);
 
   /** @copydoc user_error(bool, const std::string&) */
-  void user_error(bool condition, const char *message);
+  void user_error(bool condition, char const* message);
 }

@@ -6,7 +6,7 @@
 #include "utils/Invariant.hpp"
 
 namespace ppforest2::cli {
-  VarsSpec parse_vars(const std::string& input) {
+  VarsSpec parse_vars(std::string const& input) {
     auto slash_pos = input.find('/');
 
     if (slash_pos != std::string::npos) {
@@ -20,7 +20,7 @@ namespace ppforest2::cli {
 
       invariant(val <= 1, "vars fraction must evaluate to a proportion in (0, 1]");
 
-      return { true, val };
+      return {true, val};
     }
 
     if (input.find('.') != std::string::npos) {
@@ -28,17 +28,17 @@ namespace ppforest2::cli {
 
       invariant(val > 0 && val <= 1, "vars proportion must be in (0, 1]");
 
-      return { true, val };
+      return {true, val};
     }
 
     int val = std::stoi(input);
 
     invariant(val > 0, "vars count must be positive");
 
-    return { false, static_cast<float>(val) };
+    return {false, static_cast<float>(val)};
   }
 
-  VarsSpec parse_vars(const nlohmann::json& j) {
+  VarsSpec parse_vars(nlohmann::json const& j) {
     if (j.is_string()) {
       return parse_vars(j.get<std::string>());
     }
@@ -48,13 +48,13 @@ namespace ppforest2::cli {
 
       invariant(val > 0, "vars count must be positive");
 
-      return { false, static_cast<float>(val) };
+      return {false, static_cast<float>(val)};
     }
 
     float val = j.get<float>();
 
     invariant(val > 0 && val <= 1, "vars proportion must be in (0, 1]");
 
-    return { true, val };
+    return {true, val};
   }
 }

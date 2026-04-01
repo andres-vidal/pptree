@@ -16,22 +16,18 @@ namespace ppforest2::dr {
     explicit DRUniformStrategy(int n_vars);
 
     void to_json(nlohmann::json& j) const override;
-    std::string display_name() const override {
-      return "Uniform random";
-    }
+    std::string display_name() const override { return "Uniform random"; }
 
-    DRResult select(
-      types::FeatureMatrix const&  x,
-      stats::GroupPartition const& group_spec,
-      stats::RNG&                  rng) const override;
+    DRResult
+    select(types::FeatureMatrix const& x, stats::GroupPartition const& group_spec, stats::RNG& rng) const override;
 
-    static DRStrategy::Ptr from_json(const nlohmann::json& j);
+    static DRStrategy::Ptr from_json(nlohmann::json const& j);
 
     PPFOREST2_REGISTER_STRATEGY(DRStrategy, "uniform")
 
-    private:
-      /** @brief Number of variables to select at each split. */
-      const int n_vars;
+  private:
+    /** @brief Number of variables to select at each split. */
+    int const n_vars;
   };
 
   /** @brief Factory function for a uniform DR strategy. */

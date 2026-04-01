@@ -46,129 +46,121 @@ namespace ppforest2::stats {
     using GroupInvMap = std::map<types::Response, GroupSet>;
     using GroupVector = types::Vector<types::Response>;
 
-    public:
-      /** @brief Check whether all equal values in @p y form a single contiguous block. */
-      static bool is_contiguous(const GroupVector& y);
+  public:
+    /** @brief Check whether all equal values in @p y form a single contiguous block. */
+    static bool is_contiguous(GroupVector const& y);
 
-      /**
+    /**
        * @brief Construct from a sorted response vector.
        *
        * @param y  Response vector (n) with contiguous group blocks.
        */
-      GroupPartition(const types::ResponseVector& y);
+    GroupPartition(types::ResponseVector const& y);
 
-      /** @brief First row index of the block for @p group. */
-      int group_start(const Group& group) const;
-      /** @brief Last row index (inclusive) of the block for @p group. */
-      int group_end(const Group& group) const;
-      /** @brief Number of observations in @p group. */
-      int group_size(const Group& group) const;
+    /** @brief First row index of the block for @p group. */
+    int group_start(Group const& group) const;
+    /** @brief Last row index (inclusive) of the block for @p group. */
+    int group_end(Group const& group) const;
+    /** @brief Number of observations in @p group. */
+    int group_size(Group const& group) const;
 
-      /**
+    /**
        * @brief Extract rows belonging to a group (or supergroup).
        *
        * @param x      Feature matrix (n × p).
        * @param group  Group label.
        * @return       Sub-matrix of rows belonging to @p group.
        */
-      auto group(const types::FeatureMatrix& x, const Group& group) const {
-        std::vector<int> indices;
+    auto group(types::FeatureMatrix const& x, Group const& group) const {
+      std::vector<int> indices;
 
-        const auto& subs = this->subgroups.at(group);
+      auto const& subs = this->subgroups.at(group);
 
-        for (const auto& g : subs) {
-          for (int i = group_start(g); i <= group_end(g); ++i) {
-            invariant(i >= 0 && i < x.rows(),
-              "GroupPartition::group: index out of bounds");
-            indices.push_back(i);
-          }
+      for (auto const& g : subs) {
+        for (int i = group_start(g); i <= group_end(g); ++i) {
+          invariant(i >= 0 && i < x.rows(), "GroupPartition::group: index out of bounds");
+          indices.push_back(i);
         }
-
-        return x(indices, Eigen::all);
       }
 
-      /**
+      return x(indices, Eigen::all);
+    }
+
+    /**
        * @brief Extract all rows across all groups.
        *
        * @param x  Feature matrix (n × p).
        * @return   Sub-matrix with all grouped rows.
        */
-      auto data(const types::FeatureMatrix& x) const {
-        std::vector<int> indices;
+    auto data(types::FeatureMatrix const& x) const {
+      std::vector<int> indices;
 
-        for (const auto& kv : Blocks) {
-          const auto& g = kv.first;
-          for (int i = group_start(g); i <= group_end(g); ++i) {
-            indices.push_back(i);
-          }
+      for (auto const& kv : Blocks) {
+        auto const& g = kv.first;
+        for (int i = group_start(g); i <= group_end(g); ++i) {
+          indices.push_back(i);
         }
-
-        return x(indices, Eigen::all);
       }
 
-      /** @brief Overall mean of all grouped rows (p). */
-      types::FeatureVector mean(const types::FeatureMatrix& x) const;
-      /** @brief Between-group sum of squares matrix (p × p). */
-      types::FeatureMatrix bgss(const types::FeatureMatrix& x) const;
-      /** @brief Within-group sum of squares matrix (p × p). */
-      types::FeatureMatrix wgss(const types::FeatureMatrix& x) const;
+      return x(indices, Eigen::all);
+    }
 
-      /**
+    /** @brief Overall mean of all grouped rows (p). */
+    types::FeatureVector mean(types::FeatureMatrix const& x) const;
+    /** @brief Between-group sum of squares matrix (p × p). */
+    types::FeatureMatrix bgss(types::FeatureMatrix const& x) const;
+    /** @brief Within-group sum of squares matrix (p × p). */
+    types::FeatureMatrix wgss(types::FeatureMatrix const& x) const;
+
+    /**
        * @brief Create a partition containing only the given groups.
        *
        * @param groups  Set of group labels to keep.
        * @return        New GroupPartition restricted to @p groups.
        */
-      GroupPartition subset(GroupSet groups) const;
+    GroupPartition subset(GroupSet groups) const;
 
-      /**
+    /**
        * @brief Merge groups according to a mapping.
        *
        * @param mapping  Maps original group labels to supergroup labels.
        * @return         New GroupPartition with merged groups.
        */
-      GroupPartition remap(const GroupMap& mapping) const;
+    GroupPartition remap(GroupMap const& mapping) const;
 
-      /**
+    /**
        * @brief Collapse all groups into a single supergroup.
        *
        * @return  New GroupPartition with one supergroup containing all groups.
        */
-      GroupPartition collapse() const;
+    GroupPartition collapse() const;
 
-      /** @brief Set of all group labels in this partition. */
-      const GroupSet groups;
-      /** @brief Maps each group to its supergroup (identity if no merge). */
-      const GroupMap supergroups;
-      /** @brief Maps each group to its set of subgroups. */
-      const GroupInvMap subgroups;
+    /** @brief Set of all group labels in this partition. */
+    GroupSet const groups;
+    /** @brief Maps each group to its supergroup (identity if no merge). */
+    GroupMap const supergroups;
+    /** @brief Maps each group to its set of subgroups. */
+    GroupInvMap const subgroups;
 
-    private:
-      struct Block {
-        int start;
-        int end;
-        int size;
-        std::optional<types::Response> next;
-        std::optional<types::Response> prev;
-      };
+  private:
+    struct Block {
+      int start;
+      int end;
+      int size;
+      std::optional<types::Response> next;
+      std::optional<types::Response> prev;
+    };
 
-      using BlockMap = std::map<types::Response, Block>;
-      const BlockMap Blocks;
+    using BlockMap = std::map<types::Response, Block>;
+    BlockMap const Blocks;
 
-      BlockMap init_Blocks(const GroupVector& y);
-      GroupMap init_supergroups();
+    BlockMap init_Blocks(GroupVector const& y);
+    GroupMap init_supergroups();
 
-      GroupPartition(
-        const BlockMap& Blocks,
-        const GroupSet& groups);
+    GroupPartition(BlockMap const& Blocks, GroupSet const& groups);
 
-      GroupPartition(
-        const BlockMap& Blocks,
-        const GroupMap& supergroups);
+    GroupPartition(BlockMap const& Blocks, GroupMap const& supergroups);
 
-      GroupPartition(
-        const BlockMap& Blocks,
-        const GroupSet& groups,
-        const GroupMap& supergroups);
+    GroupPartition(BlockMap const& Blocks, GroupSet const& groups, GroupMap const& supergroups);
   };
 }

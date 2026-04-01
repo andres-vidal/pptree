@@ -10,12 +10,12 @@
  * flag PPFOREST2_DOUBLE_PRECISION (float by default).
  */
 namespace ppforest2::types {
-  /** @brief Scalar type for feature values (float or double). */
-  #ifdef PPFOREST2_DOUBLE_PRECISION
+/** @brief Scalar type for feature values (float or double). */
+#ifdef PPFOREST2_DOUBLE_PRECISION
   using Feature = double;
-  #else
+#else
   using Feature = float;
-  #endif
+#endif
 
   /** @brief Scalar type for group labels (integer). */
   using Response = int;
@@ -29,10 +29,8 @@ namespace ppforest2::types {
   using ResponseVector = Eigen::Matrix<Response, Eigen::Dynamic, 1>;
 
   /** @brief Generic dynamic-size matrix. */
-  template<typename T>
-  using Matrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
+  template<typename T> using Matrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 
   /** @brief Generic dynamic-size column vector. */
-  template<typename T>
-  using Vector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+  template<typename T> using Vector = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 }

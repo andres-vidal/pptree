@@ -12,11 +12,10 @@ namespace ppforest2::utils {
    * @param map  Input map {K → V}.
    * @return     Inverted map {V → set<K>}.
    */
-  template<typename K, typename V>
-  std::map<V, std::set<K>> invert(const std::map<K, V> &map) {
+  template<typename K, typename V> std::map<V, std::set<K>> invert(std::map<K, V> const& map) {
     std::map<V, std::set<K>> result;
 
-    for (const auto&[key, value] : map) {
+    for (auto const& [key, value] : map) {
       result[value].insert(key);
     }
 
@@ -29,11 +28,10 @@ namespace ppforest2::utils {
    * @param map  Input map.
    * @return     Set of all keys.
    */
-  template<typename K, typename V>
-  std::set<K> keys(const std::map<K, V> &map) {
+  template<typename K, typename V> std::set<K> keys(std::map<K, V> const& map) {
     std::set<K> result;
 
-    for (const auto&[key, value] : map) {
+    for (auto const& [key, value] : map) {
       result.insert(key);
     }
 
@@ -46,11 +44,10 @@ namespace ppforest2::utils {
    * @param map  Input map.
    * @return     Set of all values (duplicates collapsed).
    */
-  template<typename K, typename V>
-  std::set<V> values(const std::map<K, V> &map) {
+  template<typename K, typename V> std::set<V> values(std::map<K, V> const& map) {
     std::set<V> result;
 
-    for (const auto&[key, value] : map) {
+    for (auto const& [key, value] : map) {
       result.insert(value);
     }
 

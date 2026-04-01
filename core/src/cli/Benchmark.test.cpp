@@ -11,18 +11,7 @@ using json = nlohmann::json;
 class BenchmarkParsingTest : public ::testing::Test {};
 
 TEST_F(BenchmarkParsingTest, ParseMinimalScenario) {
-  json j = {
-    {
-      "scenarios", {
-        {
-          { "name", "test" },
-          { "n", 100 },
-          { "p", 5 },
-          { "g", 2 }
-        }
-      }
-    }
-  };
+  json j = {{"scenarios", {{{"name", "test"}, {"n", 100}, {"p", 5}, {"g", 2}}}}};
 
   auto suite = parse_suite(j);
 
@@ -39,20 +28,10 @@ TEST_F(BenchmarkParsingTest, ParseMinimalScenario) {
 
 TEST_F(BenchmarkParsingTest, ParseWithDefaults) {
   json j = {
-    {
-      "defaults", {
-        { "size", 50 },
-        { "lambda", 0.3 },
-        { "seed", 123 },
-        { "warmup", 3 }
-      }
-    },
-    {
-      "scenarios", {
-        { { "name", "a" }, { "n", 200 }, { "p", 10 }, { "g", 3 } },
-        { { "name", "b" }, { "n", 500 }, { "p", 20 }, { "g", 4 }, { "size", 200 } }
-      }
-    }
+      {"defaults", {{"size", 50}, {"lambda", 0.3}, {"seed", 123}, {"warmup", 3}}},
+      {"scenarios",
+       {{{"name", "a"}, {"n", 200}, {"p", 10}, {"g", 3}},
+        {{"name", "b"}, {"n", 500}, {"p", 20}, {"g", 4}, {"size", 200}}}}
   };
 
   auto suite = parse_suite(j);
@@ -73,21 +52,8 @@ TEST_F(BenchmarkParsingTest, ParseWithDefaults) {
 
 TEST_F(BenchmarkParsingTest, ParseWithConvergence) {
   json j = {
-    {
-      "defaults", {
-        {
-          "convergence", {
-            { "cv", 0.03 },
-            { "max", 100 }
-          }
-        }
-      }
-    },
-    {
-      "scenarios", {
-        { { "name", "a" }, { "n", 100 }, { "p", 5 }, { "g", 2 } }
-      }
-    }
+      {"defaults", {{"convergence", {{"cv", 0.03}, {"max", 100}}}}},
+      {"scenarios", {{{"name", "a"}, {"n", 100}, {"p", 5}, {"g", 2}}}}
   };
 
   auto suite = parse_suite(j);
@@ -100,16 +66,8 @@ TEST_F(BenchmarkParsingTest, ParseWithConvergence) {
 
 TEST_F(BenchmarkParsingTest, FixedIterationsOverrideConvergence) {
   json j = {
-    {
-      "defaults", {
-        { "convergence", { { "max", 100 } } }
-      }
-    },
-    {
-      "scenarios", {
-        { { "name", "fixed" }, { "n", 100 }, { "p", 5 }, { "g", 2 }, { "iterations", 5 } }
-      }
-    }
+      {"defaults", {{"convergence", {{"max", 100}}}}},
+      {"scenarios", {{{"name", "fixed"}, {"n", 100}, {"p", 5}, {"g", 2}, {"iterations", 5}}}}
   };
 
   auto suite = parse_suite(j);
@@ -118,15 +76,7 @@ TEST_F(BenchmarkParsingTest, FixedIterationsOverrideConvergence) {
 }
 
 TEST_F(BenchmarkParsingTest, ParseSuiteName) {
-  json j = {
-    {
-      "name", "my benchmarks" },
-    {
-      "scenarios", {
-        { { "name", "a" }, { "n", 100 }, { "p", 5 }, { "g", 2 } }
-      }
-    }
-  };
+  json j = {{"name", "my benchmarks"}, {"scenarios", {{{"name", "a"}, {"n", 100}, {"p", 5}, {"g", 2}}}}};
 
   auto suite = parse_suite(j);
 
@@ -134,50 +84,32 @@ TEST_F(BenchmarkParsingTest, ParseSuiteName) {
 }
 
 TEST_F(BenchmarkParsingTest, MissingScenariosArrayThrows) {
-  json j = { { "defaults", {} } };
+  json j = {{"defaults", {}}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
 
 TEST_F(BenchmarkParsingTest, EmptyScenariosArrayThrows) {
-  json j = { { "scenarios", json::array() } };
+  json j = {{"scenarios", json::array()}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
 
 TEST_F(BenchmarkParsingTest, InvalidScenarioThrows) {
   // g must be > 1
-  json j = {
-    {
-      "scenarios", {
-        { { "name", "bad" }, { "n", 100 }, { "p", 5 }, { "g", 1 } }
-      }
-    }
-  };
+  json j = {{"scenarios", {{{"name", "bad"}, {"n", 100}, {"p", 5}, {"g", 1}}}}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
 
 TEST_F(BenchmarkParsingTest, MissingNameThrows) {
-  json j = {
-    {
-      "scenarios", {
-        { { "n", 100 }, { "p", 5 }, { "g", 2 } }
-      }
-    }
-  };
+  json j = {{"scenarios", {{{"n", 100}, {"p", 5}, {"g", 2}}}}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
 
 TEST_F(BenchmarkParsingTest, NegativeNThrows) {
-  json j = {
-    {
-      "scenarios", {
-        { { "name", "bad" }, { "n", -1 }, { "p", 5 }, { "g", 2 } }
-      }
-    }
-  };
+  json j = {{"scenarios", {{{"name", "bad"}, {"n", -1}, {"p", 5}, {"g", 2}}}}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
@@ -187,7 +119,7 @@ TEST_F(BenchmarkParsingTest, ParseDefaultScenariosFile) {
 
   EXPECT_GT(suite.scenarios.size(), 0u);
 
-  for (const auto& s : suite.scenarios) {
+  for (auto const& s : suite.scenarios) {
     EXPECT_FALSE(s.name.empty());
 
     if (s.data.empty()) {
@@ -259,13 +191,7 @@ TEST_F(SuiteResultTest, ToJsonOmitsPeakRSSWhenNegative) {
 }
 
 TEST_F(BenchmarkParsingTest, ParseDataScenario) {
-  json j = {
-    {
-      "scenarios", {
-        { { "name", "csv-test" }, { "data", "data/iris.csv" }, { "size", 50 } }
-      }
-    }
-  };
+  json j = {{"scenarios", {{{"name", "csv-test"}, {"data", "data/iris.csv"}, {"size", 50}}}}};
 
   auto suite = parse_suite(j);
 
@@ -278,13 +204,7 @@ TEST_F(BenchmarkParsingTest, ParseDataScenario) {
 TEST_F(BenchmarkParsingTest, DataScenarioSkipsNPGValidation) {
   // A data scenario with default n/p/g (which would be fine anyway)
   // but the point is that validation doesn't require explicit n/p/g
-  json j = {
-    {
-      "scenarios", {
-        { { "name", "csv-test" }, { "data", "some/file.csv" } }
-      }
-    }
-  };
+  json j = {{"scenarios", {{{"name", "csv-test"}, {"data", "some/file.csv"}}}}};
 
   EXPECT_NO_THROW(parse_suite(j));
 }
@@ -326,13 +246,7 @@ TEST_F(BenchmarkParsingTest, SimulationScenarioToJsonOmitsDataField) {
 }
 
 TEST_F(BenchmarkParsingTest, ScenarioVarsAsIntegerCount) {
-  json j = {
-    {
-      "scenarios", {
-        { { "name", "int-vars" }, { "n", 100 }, { "p", 10 }, { "g", 2 }, { "vars", 3 } }
-      }
-    }
-  };
+  json j = {{"scenarios", {{{"name", "int-vars"}, {"n", 100}, {"p", 10}, {"g", 2}, {"vars", 3}}}}};
 
   auto suite = parse_suite(j);
 
@@ -340,13 +254,7 @@ TEST_F(BenchmarkParsingTest, ScenarioVarsAsIntegerCount) {
 }
 
 TEST_F(BenchmarkParsingTest, ScenarioVarsAsFraction) {
-  json j = {
-    {
-      "scenarios", {
-        { { "name", "frac-vars" }, { "n", 100 }, { "p", 10 }, { "g", 2 }, { "vars", "1/3" } }
-      }
-    }
-  };
+  json j = {{"scenarios", {{{"name", "frac-vars"}, {"n", 100}, {"p", 10}, {"g", 2}, {"vars", "1/3"}}}}};
 
   auto suite = parse_suite(j);
 

@@ -48,19 +48,17 @@ using json = nlohmann::json;
 #endif
 
 static const std::string DATA_DIR   = PPFOREST2_DATA_DIR;
-static const std::string GOLDEN_DIR = PPFOREST2_GOLDEN_DIR;
-static const std::string PLATFORM   = PPFOREST2_PLATFORM;
+static std::string const GOLDEN_DIR = PPFOREST2_GOLDEN_DIR;
+static std::string const PLATFORM   = PPFOREST2_PLATFORM;
 
 struct GoldenConfig {
   std::string csv_path;
-  int size;                 // 0 = single tree
+  int size; // 0 = single tree
   float lambda;
-  int n_vars;               // ignored for single tree
+  int n_vars; // ignored for single tree
   int seed;
 
-  std::string dataset() const {
-    return std::filesystem::path(csv_path).stem().string();
-  }
+  std::string dataset() const { return std::filesystem::path(csv_path).stem().string(); }
 
   std::string slug() const {
     std::string s;
@@ -92,7 +90,7 @@ struct GoldenConfig {
  *
  * @param config The configuration to generate a golden file for.
  */
-static void generate_golden(const GoldenConfig& config) {
+static void generate_golden(GoldenConfig const& config) {
   std::string dir  = GOLDEN_DIR + "/" + config.dataset();
   std::string path = dir + "/" + config.slug() + ".json";
 
@@ -101,29 +99,25 @@ static void generate_golden(const GoldenConfig& config) {
   DataPacket data = io::csv::read_sorted(config.csv_path);
 
   // Train
-  auto dr = (config.size > 0)
-    ? dr::uniform(config.n_vars)
-    : dr::noop();
+  auto dr = (config.size > 0) ? dr::uniform(config.n_vars) : dr::noop();
 
-  TrainingSpec spec(
-    pp::pda(config.lambda), std::move(dr), sr::mean_of_means(),
-    config.size, config.seed, 1);
+  TrainingSpec spec(pp::pda(config.lambda), std::move(dr), sr::mean_of_means(), config.size, config.seed, 1);
 
   auto model = Model::train(spec, data.x, data.y);
 
   // Serialize model + meta + config + metrics
   serialization::Export<Model::Ptr> model_export{
-    std::move(model),
-    data.group_names,
-    nullptr,
-    static_cast<int>(data.x.rows()),
-    static_cast<int>(data.x.cols()),
-    data.feature_names,
+      std::move(model),
+      data.group_names,
+      nullptr,
+      static_cast<int>(data.x.rows()),
+      static_cast<int>(data.x.cols()),
+      data.feature_names,
   };
 
   model_export.compute_metrics(data.x, data.y);
 
-  json result = model_export.to_json();
+  json result                  = model_export.to_json();
   result["config"]["platform"] = PLATFORM;
   result["config"]["dataset"]  = config.dataset();
 
@@ -139,23 +133,23 @@ static void generate_golden(const GoldenConfig& config) {
   fmt::print("  {} -> {}\n", config.slug(), path);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   std::string output_dir = (argc > 1) ? argv[1] : GOLDEN_DIR;
 
   fmt::print("Generating golden files in: {}\n", output_dir);
   fmt::print("Platform: {}\n\n", PLATFORM);
 
   std::vector<GoldenConfig> configs = {
-    { DATA_DIR + "/iris.csv",  0,  0.0f, 0, 0 },
-    { DATA_DIR + "/iris.csv",  5,  0.0f, 2, 0 },
-    { DATA_DIR + "/iris.csv",  5,  0.5f, 2, 0 },
-    { DATA_DIR + "/crab.csv",  0,  0.0f, 0, 0 },
-    { DATA_DIR + "/crab.csv",  10, 0.0f, 3, 0 },
-    { DATA_DIR + "/wine.csv",  10, 0.0f, 4, 0 },
-    { DATA_DIR + "/glass.csv", 10, 0.0f, 3, 0 },
+      {DATA_DIR + "/iris.csv", 0, 0.0f, 0, 0},
+      {DATA_DIR + "/iris.csv", 5, 0.0f, 2, 0},
+      {DATA_DIR + "/iris.csv", 5, 0.5f, 2, 0},
+      {DATA_DIR + "/crab.csv", 0, 0.0f, 0, 0},
+      {DATA_DIR + "/crab.csv", 10, 0.0f, 3, 0},
+      {DATA_DIR + "/wine.csv", 10, 0.0f, 4, 0},
+      {DATA_DIR + "/glass.csv", 10, 0.0f, 3, 0},
   };
 
-  for (const auto& config : configs) {
+  for (auto const& config : configs) {
     generate_golden(config);
   }
 

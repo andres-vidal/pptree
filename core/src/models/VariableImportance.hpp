@@ -45,10 +45,8 @@ namespace ppforest2 {
    * @return        FeatureVector of size p with per-variable importance.
    */
   types::FeatureVector variable_importance_permuted(
-    const Forest&                forest,
-    const types::FeatureMatrix&  x,
-    const types::ResponseVector& y,
-    int                          seed = 0);
+      Forest const& forest, types::FeatureMatrix const& x, types::ResponseVector const& y, int seed = 0
+  );
 
   /**
    * @brief VI2 — Projections importance (forest).
@@ -63,10 +61,8 @@ namespace ppforest2 {
    * @param scale   Optional per-variable σ vector (size p).
    * @return        FeatureVector of size p with per-variable importance.
    */
-  types::FeatureVector variable_importance_projections(
-    const Forest&              forest,
-    int                        n_vars,
-    const types::FeatureVector *scale = nullptr);
+  types::FeatureVector
+  variable_importance_projections(Forest const& forest, int n_vars, types::FeatureVector const* scale = nullptr);
 
   /**
    * @brief VI2 — Projections importance (single tree).
@@ -78,10 +74,8 @@ namespace ppforest2 {
    * @param scale   Optional per-variable σ vector (size p).
    * @return        FeatureVector of size p with per-variable importance.
    */
-  types::FeatureVector variable_importance_projections(
-    const Tree&                tree,
-    int                        n_vars,
-    const types::FeatureVector *scale = nullptr);
+  types::FeatureVector
+  variable_importance_projections(Tree const& tree, int n_vars, types::FeatureVector const* scale = nullptr);
 
   /**
    * @brief VI3 — Weighted projections importance.
@@ -97,8 +91,9 @@ namespace ppforest2 {
    * @return        FeatureVector of size p with per-variable importance.
    */
   types::FeatureVector variable_importance_weighted_projections(
-    const Forest&                forest,
-    const types::FeatureMatrix&  x,
-    const types::ResponseVector& y,
-    const types::FeatureVector   *scale = nullptr);
+      Forest const& forest,
+      types::FeatureMatrix const& x,
+      types::ResponseVector const& y,
+      types::FeatureVector const* scale = nullptr
+  );
 }

@@ -16,10 +16,8 @@ namespace ppforest2 {
    * @param allowed  Set of allowed key names.
    * @throws std::runtime_error if an unknown key is found.
    */
-  inline void validate_json_keys(
-    const nlohmann::json&              j,
-    const std::string&                 context,
-    std::initializer_list<std::string> allowed) {
+  inline void
+  validate_json_keys(nlohmann::json const& j, std::string const& context, std::initializer_list<std::string> allowed) {
     std::set<std::string> allowed_set(allowed);
 
     for (auto it = j.begin(); it != j.end(); ++it) {

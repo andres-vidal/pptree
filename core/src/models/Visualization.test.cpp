@@ -31,79 +31,64 @@ static Tree make_test_tree() {
   auto leaf1 = TreeResponse::make(1);
   auto leaf2 = TreeResponse::make(2);
 
-  auto right_cond = TreeCondition::make(
-    make_proj({ 0.2f, 0.8f, 0.1f, 0.4f }),
-    2.0f,
-    std::move(leaf1),
-    std::move(leaf2),
-    { 1, 2 });
+  auto right_cond =
+      TreeCondition::make(make_proj({0.2f, 0.8f, 0.1f, 0.4f}), 2.0f, std::move(leaf1), std::move(leaf2), {1, 2});
 
   auto root = TreeCondition::make(
-    make_proj({ 0.7f, 0.3f, 0.5f, 0.1f }),
-    1.5f,
-    std::move(leaf0),
-    std::move(right_cond),
-    { 0, 1, 2 });
+      make_proj({0.7f, 0.3f, 0.5f, 0.1f}), 1.5f, std::move(leaf0), std::move(right_cond), {0, 1, 2}
+  );
 
   return Tree(std::move(root), TrainingSpec::make(pp::pda(0.5f), dr::noop(), sr::mean_of_means()));
 }
 
 // Make a deeper tree (depth 4) to stress-test memory management
 static Tree make_deep_tree() {
-  auto make_subtree = [](int lower_group, int upper_group,
-    std::vector<Feature> proj, Feature thr) {
-      return TreeCondition::make(
-        make_proj(proj), thr,
+  auto make_subtree = [](int lower_group, int upper_group, std::vector<Feature> proj, Feature thr) {
+    return TreeCondition::make(
+        make_proj(proj),
+        thr,
         TreeResponse::make(lower_group),
         TreeResponse::make(upper_group),
-        { lower_group, upper_group });
-    };
+        {lower_group, upper_group}
+    );
+  };
 
-  auto left_subtree  = make_subtree(0, 1, { 0.6f, 0.4f }, 1.0f);
-  auto right_subtree = make_subtree(2, 3, { 0.3f, 0.7f }, 2.0f);
+  auto left_subtree  = make_subtree(0, 1, {0.6f, 0.4f}, 1.0f);
+  auto right_subtree = make_subtree(2, 3, {0.3f, 0.7f}, 2.0f);
 
-  auto mid_left = TreeCondition::make(
-    make_proj({ 0.5f, 0.5f }), 1.5f,
-    std::move(left_subtree),
-    TreeResponse::make(1),
-    { 0, 1 });
+  auto mid_left =
+      TreeCondition::make(make_proj({0.5f, 0.5f}), 1.5f, std::move(left_subtree), TreeResponse::make(1), {0, 1});
 
-  auto mid_right = TreeCondition::make(
-    make_proj({ 0.8f, 0.2f }), 2.5f,
-    TreeResponse::make(2),
-    std::move(right_subtree),
-    { 2, 3 });
+  auto mid_right =
+      TreeCondition::make(make_proj({0.8f, 0.2f}), 2.5f, TreeResponse::make(2), std::move(right_subtree), {2, 3});
 
-  auto root = TreeCondition::make(
-    make_proj({ 0.4f, 0.6f }), 1.8f,
-    std::move(mid_left),
-    std::move(mid_right),
-    { 0, 1, 2, 3 });
+  auto root =
+      TreeCondition::make(make_proj({0.4f, 0.6f}), 1.8f, std::move(mid_left), std::move(mid_right), {0, 1, 2, 3});
 
   return Tree(std::move(root), TrainingSpec::make(pp::pda(0.5f), dr::noop(), sr::mean_of_means()));
 }
 
 class VisualizationTest : public ::testing::Test {
-  protected:
-    FeatureMatrix x;
-    ResponseVector y;
-    Tree tree = make_test_tree();
+protected:
+  FeatureMatrix x;
+  ResponseVector y;
+  Tree tree = make_test_tree();
 
-    void SetUp() override {
-      // 30 observations, 4 features
-      x.resize(30, 4);
-      y.resize(30);
+  void SetUp() override {
+    // 30 observations, 4 features
+    x.resize(30, 4);
+    y.resize(30);
 
-      RNG rng(0);
+    RNG rng(0);
 
-      for (int i = 0; i < 30; ++i) {
-        for (int j = 0; j < 4; ++j) {
-          x(i, j) = static_cast<Feature>(i * 0.1f + j * 0.5f + (rng() % 100) * 0.01f);
-        }
-
-        y(i) = i % 3;
+    for (int i = 0; i < 30; ++i) {
+      for (int j = 0; j < 4; ++j) {
+        x(i, j) = static_cast<Feature>(i * 0.1f + j * 0.5f + (rng() % 100) * 0.01f);
       }
+
+      y(i) = i % 3;
     }
+  }
 };
 
 TEST_F(VisualizationTest, NodeDataVisitorCollectsAllNodes) {
@@ -122,7 +107,7 @@ TEST_F(VisualizationTest, NodeDataVisitorCollectsAllNodes) {
   // Check that at least one leaf exists
   bool found_leaf = false;
 
-  for (const auto& nd : visitor.nodes) {
+  for (auto const& nd : visitor.nodes) {
     if (nd.is_leaf) {
       found_leaf = true;
       EXPECT_TRUE(nd.projected_values.empty());
@@ -133,25 +118,21 @@ TEST_F(VisualizationTest, NodeDataVisitorCollectsAllNodes) {
 }
 
 TEST_F(VisualizationTest, BoundaryVisitorCollectsSegments) {
-  BoundaryVisitor visitor(
-    0, 1, {},
-    -1.0f, 5.0f, -1.0f, 5.0f);
+  BoundaryVisitor visitor(0, 1, {}, -1.0f, 5.0f, -1.0f, 5.0f);
 
   tree.root->accept(visitor);
 
   // Should have at least 1 boundary segment (one per internal node that clips)
   EXPECT_GT(visitor.segments.size(), 0u);
 
-  for (const auto& seg : visitor.segments) {
+  for (auto const& seg : visitor.segments) {
     EXPECT_GE(seg.depth, 0);
   }
 }
 
 TEST_F(VisualizationTest, BoundaryVisitorWithFixedVars) {
-  std::vector<std::pair<int, Feature>> fixed = { { 2, 1.5f }, { 3, 0.5f } };
-  BoundaryVisitor visitor(
-    0, 1, fixed,
-    -1.0f, 5.0f, -1.0f, 5.0f);
+  std::vector<std::pair<int, Feature>> fixed = {{2, 1.5f}, {3, 0.5f}};
+  BoundaryVisitor visitor(0, 1, fixed, -1.0f, 5.0f, -1.0f, 5.0f);
 
   tree.root->accept(visitor);
 
@@ -160,16 +141,14 @@ TEST_F(VisualizationTest, BoundaryVisitorWithFixedVars) {
 }
 
 TEST_F(VisualizationTest, RegionVisitorCollectsPolygons) {
-  RegionVisitor visitor(
-    0, 1, {},
-    -1.0f, 5.0f, -1.0f, 5.0f);
+  RegionVisitor visitor(0, 1, {}, -1.0f, 5.0f, -1.0f, 5.0f);
 
   tree.root->accept(visitor);
 
   // Should have one region per leaf (3 leaves)
   EXPECT_EQ(visitor.regions.size(), 3u);
 
-  for (const auto& region : visitor.regions) {
+  for (auto const& region : visitor.regions) {
     // Each region should be a polygon with at least 3 vertices
     EXPECT_GE(region.vertices.size(), 3u);
     // Predicted group should be valid
@@ -179,10 +158,8 @@ TEST_F(VisualizationTest, RegionVisitorCollectsPolygons) {
 }
 
 TEST_F(VisualizationTest, RegionVisitorWithFixedVars) {
-  std::vector<std::pair<int, Feature>> fixed = { { 2, 1.5f }, { 3, 0.5f } };
-  RegionVisitor visitor(
-    0, 1, fixed,
-    -1.0f, 5.0f, -1.0f, 5.0f);
+  std::vector<std::pair<int, Feature>> fixed = {{2, 1.5f}, {3, 0.5f}};
+  RegionVisitor visitor(0, 1, fixed, -1.0f, 5.0f, -1.0f, 5.0f);
 
   tree.root->accept(visitor);
 
@@ -191,7 +168,7 @@ TEST_F(VisualizationTest, RegionVisitorWithFixedVars) {
 
 TEST_F(VisualizationTest, ClipPolygonHalfspaceBasic) {
   // Unit square
-  Polygon square = { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } };
+  Polygon square = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
 
   // Clip with x < 0.5
   FeatureVector normal(2);
@@ -200,13 +177,13 @@ TEST_F(VisualizationTest, ClipPolygonHalfspaceBasic) {
 
   EXPECT_EQ(clipped.size(), 4u);
 
-  for (const auto& v : clipped) {
+  for (auto const& v : clipped) {
     EXPECT_LT(v.first, 0.5f + 1e-6f);
   }
 }
 
 TEST_F(VisualizationTest, ClipPolygonHalfspaceEmpty) {
-  Polygon square = { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } };
+  Polygon square = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
 
   // Clip with x < -1 (nothing inside)
   FeatureVector normal(2);
@@ -226,8 +203,7 @@ TEST_F(VisualizationTest, ComputeTreeLayoutProducesCorrectCounts) {
   // Check that nodes have unique positions
   for (size_t i = 0; i < layout.nodes.size(); ++i) {
     for (size_t j = i + 1; j < layout.nodes.size(); ++j) {
-      bool same_pos = (layout.nodes[i].x == layout.nodes[j].x &&
-        layout.nodes[i].y == layout.nodes[j].y);
+      bool same_pos = (layout.nodes[i].x == layout.nodes[j].x && layout.nodes[i].y == layout.nodes[j].y);
       EXPECT_FALSE(same_pos) << "Nodes " << i << " and " << j << " overlap";
     }
   }
@@ -239,9 +215,11 @@ TEST_F(VisualizationTest, ComputeTreeLayoutLeafAndInternalFlags) {
   int n_internal = 0;
   int n_leaf     = 0;
 
-  for (const auto& node : layout.nodes) {
-    if (node.is_leaf) n_leaf++;
-    else n_internal++;
+  for (auto const& node : layout.nodes) {
+    if (node.is_leaf)
+      n_leaf++;
+    else
+      n_internal++;
   }
 
   EXPECT_EQ(n_internal, 2);
@@ -251,7 +229,7 @@ TEST_F(VisualizationTest, ComputeTreeLayoutLeafAndInternalFlags) {
 TEST_F(VisualizationTest, ComputeTreeLayoutEdgesHaveLabels) {
   TreeLayout layout = compute_tree_layout(*tree.root);
 
-  for (const auto& edge : layout.edges) {
+  for (auto const& edge : layout.edges) {
     EXPECT_FALSE(edge.label.empty());
   }
 }
@@ -339,19 +317,17 @@ TEST_F(VisualizationTest, PairwiseBoundaryAndRegions) {
 
       for (int k = 0; k < p; ++k) {
         if (k != i && k != j) {
-          fixed.push_back({ k, 1.0f });
+          fixed.push_back({k, 1.0f});
         }
       }
 
       BoundaryVisitor bv(i, j, fixed, -1.0f, 5.0f, -1.0f, 5.0f);
       tree.root->accept(bv);
-      EXPECT_GT(bv.segments.size(), 0u)
-        << "No segments for pair (" << i << ", " << j << ")";
+      EXPECT_GT(bv.segments.size(), 0u) << "No segments for pair (" << i << ", " << j << ")";
 
       RegionVisitor rv(i, j, fixed, -1.0f, 5.0f, -1.0f, 5.0f);
       tree.root->accept(rv);
-      EXPECT_EQ(rv.regions.size(), 3u)
-        << "Wrong region count for pair (" << i << ", " << j << ")";
+      EXPECT_EQ(rv.regions.size(), 3u) << "Wrong region count for pair (" << i << ", " << j << ")";
     }
   }
 }

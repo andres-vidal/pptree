@@ -12,7 +12,7 @@
  * @param condition  Condition that must hold.
  * @param message    Error message if the condition fails.
  */
-void invariant(bool condition, const char *message);
+void invariant(bool condition, char const* message);
 
 /** @copydoc invariant(bool, const char*) */
-void invariant(bool condition, const std::string &message);
+void invariant(bool condition, std::string const& message);

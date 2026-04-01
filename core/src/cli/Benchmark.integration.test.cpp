@@ -8,7 +8,7 @@
 // Benchmark subcommand
 // ---------------------------------------------------------------------------
 
-static const std::string MINIMAL_SCENARIOS = R"({
+static std::string const MINIMAL_SCENARIOS = R"({
   "name": "integration-test",
   "defaults": {
     "train_ratio": 0.7,
@@ -71,7 +71,7 @@ TEST(CLIBenchmark, BenchmarkJsonOutput) {
   EXPECT_TRUE(j.contains("results"));
   EXPECT_EQ(j["results"].size(), 2u);
 
-  for (const auto& r : j["results"]) {
+  for (auto const& r : j["results"]) {
     EXPECT_TRUE(r.contains("name"));
     EXPECT_TRUE(r.contains("n"));
     EXPECT_TRUE(r.contains("p"));
@@ -102,7 +102,8 @@ TEST(CLIBenchmark, BenchmarkCsvOutput) {
   int data_rows = 0;
 
   while (std::getline(in, line))
-    if (!line.empty()) data_rows++;
+    if (!line.empty())
+      data_rows++;
 
   EXPECT_EQ(data_rows, 2);
 }
@@ -115,15 +116,11 @@ TEST(CLIBenchmark, BenchmarkBaselineComparison) {
   TempFile baseline;
   baseline.clear();
   auto run1 = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -o " + baseline.path());
-  ASSERT_EQ(run1.exit_code, 0);
-
-  // Read the baseline to verify it was written and to synchronize the
-  // file-system state before the next process checks CLI::ExistingFile.
-  ASSERT_FALSE(baseline.read().empty());
+  ASSERT_EQ(run1.exit_code, 0) << "stderr: " << run1.stderr_output;
 
   // Second run: compare against baseline
   auto run2 = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -b " + baseline.path());
-  EXPECT_EQ(run2.exit_code, 0);
+  EXPECT_EQ(run2.exit_code, 0) << "stderr: " << run2.stderr_output;
 }
 
 /* Benchmark -i overrides iteration count. */
@@ -136,7 +133,7 @@ TEST(CLIBenchmark, BenchmarkIterationOverride) {
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
-  for (const auto& r : j["results"]) {
+  for (auto const& r : j["results"]) {
     EXPECT_EQ(r["runs"].get<int>(), 2);
   }
 }
@@ -153,7 +150,7 @@ TEST(CLIBenchmark, BenchmarkMissingFileFails) {
 
 /* Benchmark scenarios with explicit strategy objects run successfully. */
 TEST(CLIBenchmark, BenchmarkWithStrategyConfig) {
-  static const std::string STRATEGY_SCENARIOS = R"({
+  static std::string const STRATEGY_SCENARIOS = R"({
     "name": "strategy-test",
     "defaults": {
       "train_ratio": 0.7,

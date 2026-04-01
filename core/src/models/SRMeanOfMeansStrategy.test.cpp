@@ -12,13 +12,13 @@ using namespace ppforest2::types;
 using json = nlohmann::json;
 
 TEST(SRMeanOfMeansStrategy, FromJsonValid) {
-  json j        = { { "name", "mean_of_means" } };
+  json j        = {{"name", "mean_of_means"}};
   auto strategy = SRMeanOfMeansStrategy::from_json(j);
   ASSERT_NE(strategy, nullptr);
 }
 
 TEST(SRMeanOfMeansStrategy, FromJsonRoundTrip) {
-  json j        = { { "name", "mean_of_means" } };
+  json j        = {{"name", "mean_of_means"}};
   auto strategy = SRMeanOfMeansStrategy::from_json(j);
 
   json out;
@@ -29,12 +29,12 @@ TEST(SRMeanOfMeansStrategy, FromJsonRoundTrip) {
 }
 
 TEST(SRMeanOfMeansStrategy, FromJsonUnknownParam) {
-  json j = { { "name", "mean_of_means" }, { "extra", 1 } };
+  json j = {{"name", "mean_of_means"}, {"extra", 1}};
   EXPECT_THROW(SRMeanOfMeansStrategy::from_json(j), std::runtime_error);
 }
 
 TEST(SRMeanOfMeansStrategy, RegistryLookup) {
-  json j        = { { "name", "mean_of_means" } };
+  json j        = {{"name", "mean_of_means"}};
   auto strategy = SRStrategy::from_json(j);
   ASSERT_NE(strategy, nullptr);
 
@@ -44,7 +44,7 @@ TEST(SRMeanOfMeansStrategy, RegistryLookup) {
 }
 
 TEST(SRMeanOfMeansStrategy, RegistryUnknownStrategy) {
-  json j = { { "name", "unknown_sr" } };
+  json j = {{"name", "unknown_sr"}};
   EXPECT_THROW(SRStrategy::from_json(j), std::runtime_error);
 }
 
@@ -54,13 +54,9 @@ TEST(SRMeanOfMeansStrategy, ThresholdIsMidpointOfProjectedMeans) {
   // projector = [1, 0] (identity on first column)
   // projected mean_1 = 2, projected mean_2 = 6
   // threshold = (2 + 6) / 2 = 4
-  FeatureMatrix g1 = MAT(Feature, rows(2),
-      1, 2,
-      3, 4);
+  FeatureMatrix g1 = MAT(Feature, rows(2), 1, 2, 3, 4);
 
-  FeatureMatrix g2 = MAT(Feature, rows(2),
-      5, 6,
-      7, 8);
+  FeatureMatrix g2 = MAT(Feature, rows(2), 5, 6, 7, 8);
 
   pp::Projector proj = VEC(Feature, 1, 0);
 
@@ -77,13 +73,9 @@ TEST(SRMeanOfMeansStrategy, ThresholdWithNonTrivialProjector) {
   // projected mean_1 = 0.5 + 0.5 = 1.0
   // projected mean_2 = 2 + 2 = 4.0
   // threshold = (1 + 4) / 2 = 2.5
-  FeatureMatrix g1 = MAT(Feature, rows(2),
-      1, 0,
-      0, 1);
+  FeatureMatrix g1 = MAT(Feature, rows(2), 1, 0, 0, 1);
 
-  FeatureMatrix g2 = MAT(Feature, rows(2),
-      4, 0,
-      0, 4);
+  FeatureMatrix g2 = MAT(Feature, rows(2), 4, 0, 0, 4);
 
   pp::Projector proj = VEC(Feature, 1, 1);
 
@@ -93,13 +85,9 @@ TEST(SRMeanOfMeansStrategy, ThresholdWithNonTrivialProjector) {
 
 TEST(SRMeanOfMeansStrategy, ThresholdSymmetric) {
   // Swapping groups should give the same threshold
-  FeatureMatrix g1 = MAT(Feature, rows(2),
-      1, 2,
-      3, 4);
+  FeatureMatrix g1 = MAT(Feature, rows(2), 1, 2, 3, 4);
 
-  FeatureMatrix g2 = MAT(Feature, rows(2),
-      5, 6,
-      7, 8);
+  FeatureMatrix g2 = MAT(Feature, rows(2), 5, 6, 7, 8);
 
   pp::Projector proj = VEC(Feature, 0, 1);
 
@@ -108,13 +96,9 @@ TEST(SRMeanOfMeansStrategy, ThresholdSymmetric) {
 }
 
 TEST(SRMeanOfMeansStrategy, OperatorCallEqualsThreshold) {
-  FeatureMatrix g1 = MAT(Feature, rows(2),
-      1, 2,
-      3, 4);
+  FeatureMatrix g1 = MAT(Feature, rows(2), 1, 2, 3, 4);
 
-  FeatureMatrix g2 = MAT(Feature, rows(2),
-      5, 6,
-      7, 8);
+  FeatureMatrix g2 = MAT(Feature, rows(2), 5, 6, 7, 8);
 
   pp::Projector proj = VEC(Feature, 1, 0);
 

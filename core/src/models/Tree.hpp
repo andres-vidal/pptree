@@ -37,10 +37,11 @@ namespace ppforest2 {
      * @return               Trained tree.
      */
     static Tree train(
-      TrainingSpec const&          training_spec,
-      const types::FeatureMatrix&  x,
-      const types::ResponseVector& y,
-      stats::RNG&                  rng);
+        TrainingSpec const& training_spec,
+        types::FeatureMatrix const& x,
+        types::ResponseVector const& y,
+        stats::RNG& rng
+    );
 
     /**
      * @brief Train a tree from a group partition.
@@ -55,10 +56,11 @@ namespace ppforest2 {
      * @return               Trained tree.
      */
     static Tree train(
-      TrainingSpec const&          training_spec,
-      const types::FeatureMatrix&  x,
-      stats::GroupPartition const& group_spec,
-      stats::RNG&                  rng);
+        TrainingSpec const& training_spec,
+        types::FeatureMatrix const& x,
+        stats::GroupPartition const& group_spec,
+        stats::RNG& rng
+    );
 
     /** @brief Root node of the tree. */
     TreeNode::Ptr root;
@@ -67,11 +69,11 @@ namespace ppforest2 {
 
     void accept(Model::Visitor& visitor) const override;
 
-    types::Response predict(const types::FeatureVector& data) const override;
-    types::ResponseVector predict(const types::FeatureMatrix& data) const override;
-    types::FeatureMatrix predict(const types::FeatureMatrix& data, Proportions) const override;
+    types::Response predict(types::FeatureVector const& data) const override;
+    types::ResponseVector predict(types::FeatureMatrix const& data) const override;
+    types::FeatureMatrix predict(types::FeatureMatrix const& data, Proportions) const override;
 
-    bool operator==(const Tree& other) const;
-    bool operator!=(const Tree& other) const;
+    bool operator==(Tree const& other) const;
+    bool operator!=(Tree const& other) const;
   };
 }

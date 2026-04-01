@@ -21,19 +21,18 @@ namespace ppforest2::cli {
    * @param baseline  Optional baseline results for comparison.
    */
   void print_benchmark_table(
-    io::Output&                       out,
-    const SuiteResult&                current,
-    const std::optional<SuiteResult>& baseline = std::nullopt);
+      io::Output& out, SuiteResult const& current, std::optional<SuiteResult> const& baseline = std::nullopt
+  );
 
   /**
    * @brief Write suite results to a JSON file.
    */
-  void write_results_json(const SuiteResult& result, const std::string& path);
+  void write_results_json(SuiteResult const& result, std::string const& path);
 
   /**
    * @brief Write suite results to a CSV file.
    */
-  void write_results_csv(const SuiteResult& result, const std::string& path);
+  void write_results_csv(SuiteResult const& result, std::string const& path);
 
   /**
    * @brief Print results as a GitHub-flavored markdown table.
@@ -47,7 +46,6 @@ namespace ppforest2::cli {
    * @param baseline  Optional baseline results for comparison.
    */
   void print_benchmark_markdown(
-    io::Output&                       out,
-    const SuiteResult&                current,
-    const std::optional<SuiteResult>& baseline = std::nullopt);
+      io::Output& out, SuiteResult const& current, std::optional<SuiteResult> const& baseline = std::nullopt
+  );
 }

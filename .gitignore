@@ -2,7 +2,6 @@
 .debug
 .r-build
 .tools
-.vscode
 *.trace
 
 *.Rcheck

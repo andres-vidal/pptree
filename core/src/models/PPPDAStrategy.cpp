@@ -15,27 +15,24 @@ using namespace ppforest2::stats;
 
 
 namespace ppforest2::pp {
-namespace {
-  PPResult nan_result(const FeatureMatrix& x) {
-    return PPResult{
-      FeatureVector::Constant(x.cols(), std::numeric_limits<Feature>::quiet_NaN()),
-      std::numeric_limits<Feature>::quiet_NaN()
-    };
+  namespace {
+    PPResult nan_result(FeatureMatrix const& x) {
+      return PPResult{
+          FeatureVector::Constant(x.cols(), std::numeric_limits<Feature>::quiet_NaN()),
+          std::numeric_limits<Feature>::quiet_NaN()
+      };
+    }
   }
-}
 
-  PPPDAStrategy::PPPDAStrategy(float lambda) :
-    lambda(lambda) {
-  }
+  PPPDAStrategy::PPPDAStrategy(float lambda)
+      : lambda(lambda) {}
 
   void PPPDAStrategy::to_json(nlohmann::json& j) const {
-    j = { { "name", "pda" }, { "lambda", lambda } };
+    j = {{"name", "pda"}, {"lambda", lambda}};
   }
 
-  Feature PPPDAStrategy::index(
-    FeatureMatrix const&  x,
-    GroupPartition const& group_spec,
-    Projector const&      projector) const {
+  Feature
+  PPPDAStrategy::index(FeatureMatrix const& x, GroupPartition const& group_spec, Projector const& projector) const {
     FeatureMatrix A = projector;
 
     FeatureMatrix W      = group_spec.wgss(x);
@@ -55,21 +52,20 @@ namespace {
     return Feature(1) - numerator / denominator;
   }
 
-  PPResult PPPDAStrategy::optimize(
-    const FeatureMatrix&  x,
-    const GroupPartition& group_spec) const {
-    const FeatureMatrix B = group_spec.bgss(x);
-    const FeatureMatrix W = group_spec.wgss(x);
+  PPResult PPPDAStrategy::optimize(FeatureMatrix const& x, GroupPartition const& group_spec) const {
+    FeatureMatrix const B = group_spec.bgss(x);
+    FeatureMatrix const W = group_spec.wgss(x);
 
     FeatureMatrix W_pda = (Feature(1) - Feature(lambda)) * W;
-    W_pda.diagonal() = W.diagonal();
+    W_pda.diagonal()    = W.diagonal();
 
-    const FeatureMatrix WpB = W_pda + B; // symmetric
+    FeatureMatrix const WpB = W_pda + B; // symmetric
 
     Eigen::GeneralizedSelfAdjointEigenSolver<FeatureMatrix> ges;
     ges.compute(B, WpB);
 
-    if (ges.info() != Eigen::Success) return nan_result(x);
+    if (ges.info() != Eigen::Success)
+      return nan_result(x);
 
     // largest eigenvalue => best 1D projection
     FeatureVector max_eigen_vec = ges.eigenvectors().col(ges.eigenvalues().size() - 1);
@@ -77,17 +73,18 @@ namespace {
 
     // Solver may report Success but produce NaN eigenvectors when B is
     // positive-semidefinite (singular covariance from small bootstrap samples).
-    if (max_eigen_vec.hasNaN() || std::isnan(max_eigen_val)) return nan_result(x);
+    if (max_eigen_vec.hasNaN() || std::isnan(max_eigen_val))
+      return nan_result(x);
 
-    return PPResult{ pp::normalize(max_eigen_vec), max_eigen_val };
+    return PPResult{pp::normalize(max_eigen_vec), max_eigen_val};
   }
 
   PPStrategy::Ptr pda(float lambda) {
     return std::make_shared<PPPDAStrategy>(lambda);
   }
 
-  PPStrategy::Ptr PPPDAStrategy::from_json(const nlohmann::json& j) {
-    validate_json_keys(j, "PDA", { "name", "lambda" });
+  PPStrategy::Ptr PPPDAStrategy::from_json(nlohmann::json const& j) {
+    validate_json_keys(j, "PDA", {"name", "lambda"});
     return pda(j.at("lambda").get<float>());
   }
 }

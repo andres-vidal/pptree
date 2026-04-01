@@ -41,20 +41,20 @@ namespace ppforest2 {
     using Ptr = std::shared_ptr<TrainingSpec>;
 
     /** @brief Projection pursuit optimization strategy. */
-    const pp::PPStrategy::Ptr pp_strategy;
+    pp::PPStrategy::Ptr const pp_strategy;
     /** @brief Dimensionality reduction strategy. */
-    const dr::DRStrategy::Ptr dr_strategy;
+    dr::DRStrategy::Ptr const dr_strategy;
     /** @brief Group splitting rule strategy. */
-    const sr::SRStrategy::Ptr sr_strategy;
+    sr::SRStrategy::Ptr const sr_strategy;
 
     /** @brief Number of trees (0 = single tree). */
-    const int size;
+    int const size;
     /** @brief RNG seed. */
-    const int seed;
+    int const seed;
     /** @brief Number of threads for parallel forest training. */
-    const int threads;
+    int const threads;
     /** @brief Maximum retry attempts for degenerate trees. */
-    const int max_retries;
+    int const max_retries;
 
     /**
      * @brief Construct a training specification.
@@ -68,24 +68,23 @@ namespace ppforest2 {
      * @param max_retries  Maximum retry attempts for degenerate trees.
      */
     TrainingSpec(
-      pp::PPStrategy::Ptr pp,
-      dr::DRStrategy::Ptr dr,
-      sr::SRStrategy::Ptr sr,
-      int                 size        = 0,
-      int                 seed        = 0,
-      int                 threads     = 0,
-      int                 max_retries = 3);
+        pp::PPStrategy::Ptr pp,
+        dr::DRStrategy::Ptr dr,
+        sr::SRStrategy::Ptr sr,
+        int size        = 0,
+        int seed        = 0,
+        int threads     = 0,
+        int max_retries = 3
+    );
 
     /** @brief Whether this specification describes a forest (size > 0). */
-    bool is_forest() const {
-      return size > 0;
-    }
+    bool is_forest() const { return size > 0; }
 
     /** @brief Serialize the training spec to JSON. */
     void to_json(nlohmann::json& j) const;
 
     /** @brief Deserialize a training spec from JSON. */
-    static Ptr from_json(const nlohmann::json& j);
+    static Ptr from_json(nlohmann::json const& j);
 
     /**
      * @brief Create a shared pointer to a TrainingSpec.
@@ -94,8 +93,7 @@ namespace ppforest2 {
      *
      * @return Shared pointer to a new TrainingSpec.
      */
-    template<typename ... Args>
-    static Ptr make(Args&&... args) {
+    template<typename... Args> static Ptr make(Args&&... args) {
       return std::make_shared<TrainingSpec>(std::forward<Args>(args)...);
     }
 
@@ -107,8 +105,6 @@ namespace ppforest2 {
      *
      * @return The number of threads to use for training.
      */
-    int resolve_threads() const {
-      return threads > 0 ? threads : std::thread::hardware_concurrency();
-    }
+    int resolve_threads() const { return threads > 0 ? threads : std::thread::hardware_concurrency(); }
   };
 }

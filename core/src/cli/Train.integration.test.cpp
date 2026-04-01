@@ -287,7 +287,8 @@ TEST(CLITrain, CLIArgOverridesConfig) {
 
   TempFile model;
   model.clear();
-  auto result = run_ppforest2("--config " + config.path() + " -q train -d " + IRIS_CSV + " -n 7 -r 0 -s " + model.path());
+  auto result =
+      run_ppforest2("--config " + config.path() + " -q train -d " + IRIS_CSV + " -n 7 -r 0 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -437,9 +438,13 @@ TEST(CLITrain, TrainWithSRStrategy) {
 TEST(CLITrain, TrainWithAllStrategies) {
   TempFile model;
   model.clear();
-  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 "
+  auto result = run_ppforest2(
+      "-q train -d " + IRIS_CSV +
+      " -n 5 -r 0 "
       "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means "
-      "-s " + model.path());
+      "-s " +
+      model.path()
+  );
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -454,9 +459,13 @@ TEST(CLITrain, TrainWithAllStrategies) {
 TEST(CLITrain, StrategyConfigNoDisplayName) {
   TempFile model;
   model.clear();
-  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 "
+  auto result = run_ppforest2(
+      "-q train -d " + IRIS_CSV +
+      " -n 5 -r 0 "
       "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means "
-      "-s " + model.path());
+      "-s " +
+      model.path()
+  );
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
@@ -491,9 +500,8 @@ TEST(CLITrain, ImplicitExplicitPPEquivalent) {
   ASSERT_EQ(r1.exit_code, 0);
   ASSERT_EQ(r2.exit_code, 0);
 
-  EXPECT_EQ(strip_timing(json::parse(model_implicit.read())),
-    strip_timing(json::parse(model_explicit.read())))
-    << "Exports from -l and --pp should be identical";
+  EXPECT_EQ(strip_timing(json::parse(model_implicit.read())), strip_timing(json::parse(model_explicit.read())))
+      << "Exports from -l and --pp should be identical";
 }
 
 /* -v 2 and --dr uniform:vars=2 produce identical exports. */
@@ -507,9 +515,8 @@ TEST(CLITrain, ImplicitExplicitDREquivalent) {
   ASSERT_EQ(r1.exit_code, 0);
   ASSERT_EQ(r2.exit_code, 0);
 
-  EXPECT_EQ(strip_timing(json::parse(model_implicit.read())),
-    strip_timing(json::parse(model_explicit.read())))
-    << "Exports from -v and --dr should be identical";
+  EXPECT_EQ(strip_timing(json::parse(model_implicit.read())), strip_timing(json::parse(model_explicit.read())))
+      << "Exports from -v and --dr should be identical";
 }
 
 /* -l 0.3 -v 2 and --pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means produce identical exports. */
@@ -519,14 +526,17 @@ TEST(CLITrain, ImplicitExplicitAllEquivalent) {
   model_explicit.clear();
 
   auto r1 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -l 0.3 -v 2 -s " + model_implicit.path());
-  auto r2 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 "
-      "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means -s " + model_explicit.path());
+  auto r2 = run_ppforest2(
+      "-q train -d " + IRIS_CSV +
+      " -n 5 -r 0 "
+      "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means -s " +
+      model_explicit.path()
+  );
   ASSERT_EQ(r1.exit_code, 0);
   ASSERT_EQ(r2.exit_code, 0);
 
-  EXPECT_EQ(strip_timing(json::parse(model_implicit.read())),
-    strip_timing(json::parse(model_explicit.read())))
-    << "Exports from shortcuts and --pp/--dr/--sr should be identical";
+  EXPECT_EQ(strip_timing(json::parse(model_implicit.read())), strip_timing(json::parse(model_explicit.read())))
+      << "Exports from shortcuts and --pp/--dr/--sr should be identical";
 }
 
 /* Single tree: -l 0.5 and --pp pda:lambda=0.5 --dr noop --sr mean_of_means produce identical exports. */
@@ -536,14 +546,17 @@ TEST(CLITrain, ImplicitExplicitSingleTreeEquivalent) {
   model_explicit.clear();
 
   auto r1 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -r 0 -l 0.5 -s " + model_implicit.path());
-  auto r2 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -r 0 "
-      "--pp pda:lambda=0.5 --dr noop --sr mean_of_means -s " + model_explicit.path());
+  auto r2 = run_ppforest2(
+      "-q train -d " + IRIS_CSV +
+      " -n 0 -r 0 "
+      "--pp pda:lambda=0.5 --dr noop --sr mean_of_means -s " +
+      model_explicit.path()
+  );
   ASSERT_EQ(r1.exit_code, 0);
   ASSERT_EQ(r2.exit_code, 0);
 
-  EXPECT_EQ(strip_timing(json::parse(model_implicit.read())),
-    strip_timing(json::parse(model_explicit.read())))
-    << "Single tree with -l and --pp should be identical";
+  EXPECT_EQ(strip_timing(json::parse(model_implicit.read())), strip_timing(json::parse(model_explicit.read())))
+      << "Single tree with -l and --pp should be identical";
 }
 
 // ---------------------------------------------------------------------------
@@ -554,8 +567,12 @@ TEST(CLITrain, ImplicitExplicitSingleTreeEquivalent) {
 TEST(CLITrain, TrainWithStrategyThenPredict) {
   TempFile model;
   model.clear();
-  auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 "
-      "--pp pda:lambda=0.3 --dr uniform:vars=2 -s " + model.path());
+  auto train = run_ppforest2(
+      "-q train -d " + IRIS_CSV +
+      " -n 5 -r 0 "
+      "--pp pda:lambda=0.3 --dr uniform:vars=2 -s " +
+      model.path()
+  );
   ASSERT_EQ(train.exit_code, 0);
 
   TempFile output;

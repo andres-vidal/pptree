@@ -21,7 +21,7 @@ using namespace ppforest2::math;
 using namespace ppforest2::serialization;
 
 static Projector as_projector(std::vector<Feature> vector) {
-  Eigen::Map<Projector > projector(vector.data(), vector.size());
+  Eigen::Map<Projector> projector(vector.data(), vector.size());
   return projector;
 }
 
@@ -40,177 +40,102 @@ TEST(TreeResponse, EqualsDifferentResponses) {
 }
 
 TEST(TreeCondition, EqualsEqualConditions) {
-  TreeCondition c1(
-    as_projector({ 1.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c1(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
-  TreeCondition c2(
-    as_projector({ 1.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c2(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
 TEST(TreeCondition, EqualsCollinearProjectors) {
-  TreeCondition c1(
-    as_projector({ 1.0, 1.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c1(as_projector({1.0, 1.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
-  TreeCondition c2(
-    as_projector({ 2.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c2(as_projector({2.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
 TEST(TreeCondition, EqualsApproximateThresholds) {
-  TreeCondition c1(
-    as_projector({ 1.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c1(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
-  TreeCondition c2(
-    as_projector({ 1.0, 2.0 }),
-    3.000000000000001,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c2(as_projector({1.0, 2.0}), 3.000000000000001, TreeResponse::make(1), TreeResponse::make(2));
 
   ASSERT_TRUE(c1 == c2);
 }
 
 TEST(TreeCondition, EqualsNonCollinearProjectors) {
-  TreeCondition c1(
-    as_projector({ 1.0, 0.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c1(as_projector({1.0, 0.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
-  TreeCondition c2(
-    as_projector({ 0.0, 1.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c2(as_projector({0.0, 1.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(TreeCondition, EqualsDifferentThresholds) {
-  TreeCondition c1(
-    as_projector({ 1.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c1(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
-  TreeCondition c2(
-    as_projector({ 1.0, 2.0 }),
-    4.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c2(as_projector({1.0, 2.0}), 4.0, TreeResponse::make(1), TreeResponse::make(2));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(TreeCondition, EqualsDifferentResponses) {
-  TreeCondition c1(
-    as_projector({ 1.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c1(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
-  TreeCondition c2(
-    as_projector({ 1.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(3));
+  TreeCondition c2(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(3));
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(TreeCondition, EqualsDifferentStructures) {
-  TreeCondition c1(
-    as_projector({ 1.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeResponse::make(2));
+  TreeCondition c1(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2));
 
   TreeCondition c2(
-    as_projector({ 1.0, 2.0 }),
-    3.0,
-    TreeResponse::make(1),
-    TreeCondition::make(
-      as_projector({ 1.0, 2.0 }),
+      as_projector({1.0, 2.0}),
       3.0,
       TreeResponse::make(1),
-      TreeResponse::make(2)));
+      TreeCondition::make(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2))
+  );
 
   ASSERT_FALSE(c1 == c2);
 }
 
 TEST(Tree, EqualsEqualTrees) {
   Tree t1(
-    TreeCondition::make(
-      as_projector({ 1.0, 2.0 }),
-      3.0,
-      TreeResponse::make(1),
       TreeCondition::make(
-        as_projector({ 1.0, 2.0 }),
-        3.0,
-        TreeResponse::make(1),
-        TreeResponse::make(2))),
-    nullptr);
+          as_projector({1.0, 2.0}),
+          3.0,
+          TreeResponse::make(1),
+          TreeCondition::make(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2))
+      ),
+      nullptr
+  );
 
   Tree t2(
-    TreeCondition::make(
-      as_projector({ 1.0, 2.0 }),
-      3.0,
-      TreeResponse::make(1),
       TreeCondition::make(
-        as_projector({ 1.0, 2.0 }),
-        3.0,
-        TreeResponse::make(1),
-        TreeResponse::make(2))),
-    nullptr);
+          as_projector({1.0, 2.0}),
+          3.0,
+          TreeResponse::make(1),
+          TreeCondition::make(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2))
+      ),
+      nullptr
+  );
 
   ASSERT_TRUE(t1 == t2);
 }
 
 TEST(Tree, EqualsDifferentTrees) {
-  Tree t1(
-    TreeCondition::make(
-      as_projector({ 1.0, 2.0 }),
-      3.0,
-      TreeResponse::make(1),
-      TreeResponse::make(2)),
-    nullptr);
+  Tree t1(TreeCondition::make(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(2)), nullptr);
 
-  Tree t2(
-    TreeCondition::make(
-      as_projector({ 1.0, 2.0 }),
-      3.0,
-      TreeResponse::make(1),
-      TreeResponse::make(3)),
-    nullptr);
+  Tree t2(TreeCondition::make(as_projector({1.0, 2.0}), 3.0, TreeResponse::make(1), TreeResponse::make(3)), nullptr);
 
   ASSERT_FALSE(t1 == t2);
 }
 
 TEST(Tree, TrainLDAUnivariateTwoGroups) {
-  FeatureMatrix x = MAT(Feature, rows(10),
-      1, 1, 1, 1, 1,
-      2, 2, 2, 2, 2);
+  FeatureMatrix x = MAT(Feature, rows(10), 1, 1, 1, 1, 1, 2, 2, 2, 2, 2);
 
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1);
+  ResponseVector y = VEC(Response, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1);
 
   stats::RNG rng(0);
 
@@ -222,15 +147,9 @@ TEST(Tree, TrainLDAUnivariateTwoGroups) {
 }
 
 TEST(Tree, TrainLDAUnivariateThreeGroups) {
-  FeatureMatrix x = MAT(Feature, rows(15),
-      1, 1, 1, 1, 1,
-      2, 2, 2, 2, 2,
-      3, 3, 3, 3, 3);
+  FeatureMatrix x = MAT(Feature, rows(15), 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3);
 
-  ResponseVector y = VEC(Response,
-      0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1,
-      2, 2, 2, 2, 2);
+  ResponseVector y = VEC(Response, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2);
 
   stats::RNG rng(0);
 
@@ -242,29 +161,51 @@ TEST(Tree, TrainLDAUnivariateThreeGroups) {
 }
 
 TEST(Tree, TrainLDAMultivariateTwoGroups) {
-  FeatureMatrix x = MAT(Feature, rows(10),
-      1, 0, 1, 1,
-      1, 1, 0, 0,
-      1, 0, 0, 1,
-      1, 1, 1, 1,
-      4, 0, 0, 1,
-      4, 0, 0, 2,
-      4, 0, 0, 3,
-      4, 1, 0, 1,
-      4, 0, 1, 1,
-      4, 0, 1, 2);
+  FeatureMatrix x =
+      MAT(Feature,
+          rows(10),
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          4,
+          0,
+          0,
+          1,
+          4,
+          0,
+          0,
+          2,
+          4,
+          0,
+          0,
+          3,
+          4,
+          1,
+          0,
+          1,
+          4,
+          0,
+          1,
+          1,
+          4,
+          0,
+          1,
+          2);
 
-  ResponseVector y = VEC(Response,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1);
+  ResponseVector y = VEC(Response, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   stats::RNG rng(0);
 
@@ -276,69 +217,162 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
 }
 
 TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
-  FeatureMatrix x = MAT(Feature, rows(30),
-      1, 0, 1, 1, 1,
-      1, 0, 1, 0, 0,
-      1, 0, 0, 0, 1,
-      1, 0, 1, 2, 1,
-      1, 0, 0, 1, 1,
-      1, 1, 1, 1, 0,
-      1, 0, 0, 2, 1,
-      1, 0, 1, 1, 2,
-      1, 0, 0, 2, 0,
-      1, 0, 2, 1, 0,
-      2, 5, 0, 0, 1,
-      2, 5, 0, 0, 2,
-      3, 5, 1, 0, 2,
-      2, 5, 1, 0, 1,
-      2, 5, 0, 1, 1,
-      2, 5, 0, 1, 2,
-      2, 5, 2, 1, 1,
-      2, 5, 1, 1, 1,
-      2, 5, 1, 1, 2,
-      2, 5, 2, 1, 2,
-      2, 5, 1, 2, 1,
-      2, 5, 2, 1, 1,
-      9, 8, 0, 0, 1,
-      9, 8, 0, 0, 2,
-      9, 8, 1, 0, 2,
-      9, 8, 1, 0, 1,
-      9, 8, 0, 1, 1,
-      9, 8, 0, 1, 2,
-      9, 8, 2, 1, 1,
-      9, 8, 1, 1, 1);
+  FeatureMatrix x =
+      MAT(Feature,
+          rows(30),
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          2,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          2,
+          1,
+          1,
+          0,
+          1,
+          1,
+          2,
+          1,
+          0,
+          0,
+          2,
+          0,
+          1,
+          0,
+          2,
+          1,
+          0,
+          2,
+          5,
+          0,
+          0,
+          1,
+          2,
+          5,
+          0,
+          0,
+          2,
+          3,
+          5,
+          1,
+          0,
+          2,
+          2,
+          5,
+          1,
+          0,
+          1,
+          2,
+          5,
+          0,
+          1,
+          1,
+          2,
+          5,
+          0,
+          1,
+          2,
+          2,
+          5,
+          2,
+          1,
+          1,
+          2,
+          5,
+          1,
+          1,
+          1,
+          2,
+          5,
+          1,
+          1,
+          2,
+          2,
+          5,
+          2,
+          1,
+          2,
+          2,
+          5,
+          1,
+          2,
+          1,
+          2,
+          5,
+          2,
+          1,
+          1,
+          9,
+          8,
+          0,
+          0,
+          1,
+          9,
+          8,
+          0,
+          0,
+          2,
+          9,
+          8,
+          1,
+          0,
+          2,
+          9,
+          8,
+          1,
+          0,
+          1,
+          9,
+          8,
+          0,
+          1,
+          1,
+          9,
+          8,
+          0,
+          1,
+          2,
+          9,
+          8,
+          2,
+          1,
+          1,
+          9,
+          8,
+          1,
+          1,
+          1);
 
-  ResponseVector y = VEC(Response,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2);
+  ResponseVector y =
+      VEC(Response, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2);
 
   stats::RNG rng(0);
 
@@ -351,29 +385,131 @@ TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
 }
 
 TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
-  FeatureMatrix x = MAT(Feature, rows(10),
-      1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      4, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-      5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-      4, 0, 0, 3, 2, 2, 2, 2, 2, 2, 2, 2,
-      4, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-      4, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-      4, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+  FeatureMatrix x =
+      MAT(Feature,
+          rows(10),
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          4,
+          0,
+          0,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          5,
+          0,
+          0,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          4,
+          0,
+          0,
+          3,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          4,
+          1,
+          0,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          4,
+          0,
+          1,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          4,
+          0,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2);
 
-  ResponseVector y = VEC(Response,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1);
+  ResponseVector y = VEC(Response, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   stats::RNG rng(0);
 
@@ -382,7 +518,8 @@ TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
   // Property: tree should predict training data perfectly
   ResponseVector predictions = result.predict(x);
 
-  ASSERT_EQ(error_rate(predictions, y), 0.0) << "PDA tree should achieve 0% training error on well-separated 2-group data";
+  ASSERT_EQ(error_rate(predictions, y), 0.0)
+      << "PDA tree should achieve 0% training error on well-separated 2-group data";
 }
 
 TEST(TreeSimulation, PerfectSeparationZeroError) {
@@ -431,8 +568,7 @@ TEST(TreeSimulation, ManyClasses) {
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
 
-  ASSERT_LT(err, 0.50)
-    << "Tree should handle 10 groups with reasonable error";
+  ASSERT_LT(err, 0.50) << "Tree should handle 10 groups with reasonable error";
 }
 
 TEST(TreeSimulation, HighDimensionality) {
@@ -449,8 +585,7 @@ TEST(TreeSimulation, HighDimensionality) {
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
 
-  ASSERT_LT(err, 0.20)
-    << "Tree should handle high-dimensional data (p=50)";
+  ASSERT_LT(err, 0.20) << "Tree should handle high-dimensional data (p=50)";
 }
 
 TEST(TreeSimulation, SingleFeature) {
@@ -467,8 +602,7 @@ TEST(TreeSimulation, SingleFeature) {
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
 
-  ASSERT_LT(err, 0.10)
-    << "Tree should handle univariate data";
+  ASSERT_LT(err, 0.10) << "Tree should handle univariate data";
 }
 
 TEST(TreeSimulation, PDAOnOverlappingData) {
@@ -485,8 +619,7 @@ TEST(TreeSimulation, PDAOnOverlappingData) {
   ResponseVector predictions = tree.predict(data.x);
   double err                 = error_rate(predictions, data.y);
 
-  ASSERT_LT(err, 0.80)
-    << "PDA tree should produce bounded error on noisy data";
+  ASSERT_LT(err, 0.80) << "PDA tree should produce bounded error on noisy data";
 }
 
 TEST(TreeSimulation, Deterministic) {
@@ -503,13 +636,8 @@ TEST(TreeSimulation, Deterministic) {
 }
 
 TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
-  Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1)),
-    nullptr);
+  Tree tree =
+      Tree(TreeCondition::make(as_projector({1.0}), 1.5, TreeResponse::make(0), TreeResponse::make(1)), nullptr);
 
 
   FeatureVector input = VEC(Feature, 1.0);
@@ -521,16 +649,14 @@ TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
 
 TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.75,
-      TreeResponse::make(0),
       TreeCondition::make(
-        as_projector({ 1.0 }),
-        2.5,
-        TreeResponse::make(1),
-        TreeResponse::make(2))),
-    nullptr);
+          as_projector({1.0}),
+          1.75,
+          TreeResponse::make(0),
+          TreeCondition::make(as_projector({1.0}), 2.5, TreeResponse::make(1), TreeResponse::make(2))
+      ),
+      nullptr
+  );
 
   FeatureVector input = VEC(Feature, 1.0);
   ASSERT_EQ(tree.predict(input), 0);
@@ -544,12 +670,9 @@ TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
 
 TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0, 0.0, 0.0, 0.0 }),
-      2.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1)),
-    nullptr);
+      TreeCondition::make(as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeResponse::make(0), TreeResponse::make(1)),
+      nullptr
+  );
 
   FeatureVector input = VEC(Feature, 1, 0, 1, 1);
   ASSERT_EQ(tree.predict(input), 0);
@@ -560,16 +683,16 @@ TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
 
 TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
-      4.118438837901864,
       TreeCondition::make(
-        as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
-        2.5,
-        TreeResponse::make(0),
-        TreeResponse::make(1)),
-      TreeResponse::make(2)),
-    nullptr);
+          as_projector({0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0}),
+          4.118438837901864,
+          TreeCondition::make(
+              as_projector({0.0, 1.0, 0.0, 0.0, 0.0}), 2.5, TreeResponse::make(0), TreeResponse::make(1)
+          ),
+          TreeResponse::make(2)
+      ),
+      nullptr
+  );
 
   FeatureVector input = VEC(Feature, 1, 0, 0, 1, 1);
   ASSERT_EQ(tree.predict(input), 0);
@@ -582,13 +705,8 @@ TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
 }
 
 TEST(Tree, PredictDataUnivariateTwoGroups) {
-  Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1)),
-    nullptr);
+  Tree tree =
+      Tree(TreeCondition::make(as_projector({1.0}), 1.5, TreeResponse::make(0), TreeResponse::make(1)), nullptr);
 
   FeatureMatrix input = MAT(Feature, rows(2), 1.0, 2.0);
 
@@ -601,16 +719,14 @@ TEST(Tree, PredictDataUnivariateTwoGroups) {
 
 TEST(Tree, PredictDataUnivariateThreeGroups) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.75,
-      TreeResponse::make(0),
       TreeCondition::make(
-        as_projector({ 1.0 }),
-        2.5,
-        TreeResponse::make(1),
-        TreeResponse::make(2))),
-    nullptr);
+          as_projector({1.0}),
+          1.75,
+          TreeResponse::make(0),
+          TreeCondition::make(as_projector({1.0}), 2.5, TreeResponse::make(1), TreeResponse::make(2))
+      ),
+      nullptr
+  );
 
   FeatureMatrix input = MAT(Feature, rows(3), 1.0, 2.0, 3.0);
 
@@ -623,16 +739,11 @@ TEST(Tree, PredictDataUnivariateThreeGroups) {
 
 TEST(Tree, PredictDataMultivariateTwoGroups) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0, 0.0, 0.0, 0.0 }),
-      2.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1)),
-    nullptr);
+      TreeCondition::make(as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeResponse::make(0), TreeResponse::make(1)),
+      nullptr
+  );
 
-  FeatureMatrix input = MAT(Feature, rows(2),
-      1, 0, 1, 1,
-      4, 0, 0, 1);
+  FeatureMatrix input = MAT(Feature, rows(2), 1, 0, 1, 1, 4, 0, 0, 1);
 
   ResponseVector result = tree.predict(input);
 
@@ -643,21 +754,18 @@ TEST(Tree, PredictDataMultivariateTwoGroups) {
 
 TEST(Tree, PredictDataMultivariateThreeGroups) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
-      4.118438837901864,
       TreeCondition::make(
-        as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
-        2.5,
-        TreeResponse::make(0),
-        TreeResponse::make(1)),
-      TreeResponse::make(2)),
-    nullptr);
+          as_projector({0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0}),
+          4.118438837901864,
+          TreeCondition::make(
+              as_projector({0.0, 1.0, 0.0, 0.0, 0.0}), 2.5, TreeResponse::make(0), TreeResponse::make(1)
+          ),
+          TreeResponse::make(2)
+      ),
+      nullptr
+  );
 
-  FeatureMatrix input = MAT(Feature, rows(3),
-      1, 0, 0, 1, 1,
-      2, 5, 0, 0, 1,
-      9, 8, 0, 0, 1);
+  FeatureMatrix input = MAT(Feature, rows(3), 1, 0, 0, 1, 1, 2, 5, 0, 0, 1, 9, 8, 0, 0, 1);
 
   ResponseVector result = tree.predict(input);
 
@@ -668,13 +776,8 @@ TEST(Tree, PredictDataMultivariateThreeGroups) {
 
 TEST(Tree, PredictProportionsTwoGroups) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1),
-      { 0, 1 }),
-    nullptr);
+      TreeCondition::make(as_projector({1.0}), 1.5, TreeResponse::make(0), TreeResponse::make(1), {0, 1}), nullptr
+  );
 
   FeatureMatrix input = MAT(Feature, rows(2), 1.0, 2.0);
 
@@ -694,18 +797,15 @@ TEST(Tree, PredictProportionsTwoGroups) {
 
 TEST(Tree, PredictProportionsThreeGroups) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0 }),
-      1.75,
-      TreeResponse::make(0),
       TreeCondition::make(
-        as_projector({ 1.0 }),
-        2.5,
-        TreeResponse::make(1),
-        TreeResponse::make(2),
-        { 1, 2 }),
-      { 0, 1, 2 }),
-    nullptr);
+          as_projector({1.0}),
+          1.75,
+          TreeResponse::make(0),
+          TreeCondition::make(as_projector({1.0}), 2.5, TreeResponse::make(1), TreeResponse::make(2), {1, 2}),
+          {0, 1, 2}
+      ),
+      nullptr
+  );
 
   FeatureMatrix input = MAT(Feature, rows(3), 1.0, 2.0, 3.0);
 
@@ -730,19 +830,13 @@ TEST(Tree, PredictProportionsThreeGroups) {
 
 TEST(Tree, PredictProportionsRowsSumToOne) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 1.0, 0.0, 0.0, 0.0 }),
-      2.5,
-      TreeResponse::make(0),
-      TreeResponse::make(1),
-      { 0, 1 }),
-    nullptr);
+      TreeCondition::make(
+          as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeResponse::make(0), TreeResponse::make(1), {0, 1}
+      ),
+      nullptr
+  );
 
-  FeatureMatrix input = MAT(Feature, rows(4),
-      1, 0, 1, 1,
-      4, 0, 0, 1,
-      2, 1, 0, 0,
-      3, 0, 1, 0);
+  FeatureMatrix input = MAT(Feature, rows(4), 1, 0, 1, 1, 4, 0, 0, 1, 2, 1, 0, 0, 3, 0, 1, 0);
 
   FeatureMatrix result = tree.predict(input, Proportions{});
 
@@ -750,30 +844,25 @@ TEST(Tree, PredictProportionsRowsSumToOne) {
   ASSERT_EQ(result.cols(), 2);
 
   for (int i = 0; i < result.rows(); ++i) {
-    EXPECT_FLOAT_EQ(result.row(i).sum(), Feature(1))
-      << "Row " << i << " should sum to 1.0";
+    EXPECT_FLOAT_EQ(result.row(i).sum(), Feature(1)) << "Row " << i << " should sum to 1.0";
   }
 }
 
 TEST(Tree, PredictProportionsMatchesPredictions) {
   Tree tree = Tree(
-    TreeCondition::make(
-      as_projector({ 0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0 }),
-      4.118438837901864,
       TreeCondition::make(
-        as_projector({ 0.0, 1.0, 0.0, 0.0, 0.0 }),
-        2.5,
-        TreeResponse::make(0),
-        TreeResponse::make(1),
-        { 0, 1 }),
-      TreeResponse::make(2),
-      { 0, 1, 2 }),
-    nullptr);
+          as_projector({0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0}),
+          4.118438837901864,
+          TreeCondition::make(
+              as_projector({0.0, 1.0, 0.0, 0.0, 0.0}), 2.5, TreeResponse::make(0), TreeResponse::make(1), {0, 1}
+          ),
+          TreeResponse::make(2),
+          {0, 1, 2}
+      ),
+      nullptr
+  );
 
-  FeatureMatrix input = MAT(Feature, rows(3),
-      1, 0, 0, 1, 1,
-      2, 5, 0, 0, 1,
-      9, 8, 0, 0, 1);
+  FeatureMatrix input = MAT(Feature, rows(3), 1, 0, 0, 1, 1, 2, 5, 0, 0, 1, 9, 8, 0, 0, 1);
 
   ResponseVector predictions = tree.predict(input);
   FeatureMatrix proportions  = tree.predict(input, Proportions{});
@@ -783,6 +872,7 @@ TEST(Tree, PredictProportionsMatchesPredictions) {
 
   // The column with 1.0 in each row must match the predicted group
   for (int i = 0; i < input.rows(); ++i) {
-    EXPECT_FLOAT_EQ(proportions(i, predictions(i)), Feature(1)) << "Row " << i << ": proportions should have 1.0 in column for predicted group";
+    EXPECT_FLOAT_EQ(proportions(i, predictions(i)), Feature(1))
+        << "Row " << i << ": proportions should have 1.0 in column for predicted group";
   }
 }

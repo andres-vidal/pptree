@@ -33,12 +33,14 @@ namespace ppforest2 {
     /** @brief Projection pursuit index value achieved at this split. */
     types::Feature pp_index_value = 0;
 
-    TreeCondition(pp::Projector projector,
-      Threshold                 threshold,
-      TreeNode::Ptr             lower,
-      TreeNode::Ptr             upper,
-      std::set<types::Response> groups         = {},
-      types::Feature            pp_index_value = 0);
+    TreeCondition(
+        pp::Projector projector,
+        Threshold threshold,
+        TreeNode::Ptr lower,
+        TreeNode::Ptr upper,
+        std::set<types::Response> groups = {},
+        types::Feature pp_index_value    = 0
+    );
 
     void accept(TreeNode::Visitor& visitor) const override;
 
@@ -54,29 +56,25 @@ namespace ppforest2 {
      * @param data  Feature vector (p).
      * @return      Predicted group label from the reached leaf.
      */
-    types::Response predict(const types::FeatureVector& data) const override;
+    types::Response predict(types::FeatureVector const& data) const override;
 
-    bool is_leaf() const override {
-      return false;
-    }
+    bool is_leaf() const override { return false; }
 
-    int group_count() const override {
-      return static_cast<int>(groups.size());
-    }
+    int group_count() const override { return static_cast<int>(groups.size()); }
 
-    std::set<types::Response> node_groups() const override {
-      return groups;
-    }
+    std::set<types::Response> node_groups() const override { return groups; }
 
-    bool equals(const TreeNode& other) const override;
+    bool equals(TreeNode const& other) const override;
     TreeNode::Ptr clone() const override;
 
     /** @brief Factory method that returns a unique_ptr to a new TreeCondition. */
-    static Ptr make(pp::Projector projector,
-      Threshold                   threshold,
-      TreeNode::Ptr               lower,
-      TreeNode::Ptr               upper,
-      std::set<types::Response>   groups         = {},
-      types::Feature              pp_index_value = 0);
+    static Ptr make(
+        pp::Projector projector,
+        Threshold threshold,
+        TreeNode::Ptr lower,
+        TreeNode::Ptr upper,
+        std::set<types::Response> groups = {},
+        types::Feature pp_index_value    = 0
+    );
   };
 }

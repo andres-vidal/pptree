@@ -23,10 +23,11 @@ namespace ppforest2 {
      * @return               Trained bootstrap tree.
      */
     static Ptr train(
-      TrainingSpec::Ptr const&     training_spec,
-      types::FeatureMatrix const&  x,
-      stats::GroupPartition const& group_spec,
-      stats::RNG &                 rng);
+        TrainingSpec::Ptr const& training_spec,
+        types::FeatureMatrix const& x,
+        stats::GroupPartition const& group_spec,
+        stats::RNG& rng
+    );
 
     std::vector<int> sample_indices;
 
@@ -52,8 +53,6 @@ namespace ppforest2 {
      * @param row_idx   Row indices to predict.
      * @return          Predictions for each row in row_idx.
      */
-    types::ResponseVector predict_oob(
-      const types::FeatureMatrix& x,
-      const std::vector<int>&     row_idx) const;
+    types::ResponseVector predict_oob(types::FeatureMatrix const& x, std::vector<int> const& row_idx) const;
   };
 }

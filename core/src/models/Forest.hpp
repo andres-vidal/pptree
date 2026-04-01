@@ -41,10 +41,8 @@ namespace ppforest2 {
      * @param y              Response vector (n).
      * @return               Trained forest.
      */
-    static Forest train(
-      const TrainingSpec&          training_spec,
-      const types::FeatureMatrix&  x,
-      const types::ResponseVector& y);
+    static Forest
+    train(TrainingSpec const& training_spec, types::FeatureMatrix const& x, types::ResponseVector const& y);
 
     std::vector<BootstrapTree::Ptr> trees;
 
@@ -57,7 +55,7 @@ namespace ppforest2 {
      * @param data  Feature vector (p).
      * @return      Prediction.
      */
-    types::Response predict(const types::FeatureVector& data) const override;
+    types::Response predict(types::FeatureVector const& data) const override;
 
     /**
      * @brief Predict a matrix of observations.
@@ -65,7 +63,7 @@ namespace ppforest2 {
      * @param data  Feature matrix (n × p).
      * @return      Predictions (n).
      */
-    types::ResponseVector predict(const types::FeatureMatrix& data) const override;
+    types::ResponseVector predict(types::FeatureMatrix const& data) const override;
 
     /**
      * @brief Predict vote proportions for a matrix of observations.
@@ -77,7 +75,7 @@ namespace ppforest2 {
      * @param data  Feature matrix (n × p).
      * @return      Vote proportions matrix (n × G), rows sum to 1.0.
      */
-    types::FeatureMatrix predict(const types::FeatureMatrix& data, Proportions) const override;
+    types::FeatureMatrix predict(types::FeatureMatrix const& data, Proportions) const override;
 
     /**
      * @brief Add a tree to the forest.
@@ -86,8 +84,8 @@ namespace ppforest2 {
      */
     void add_tree(std::unique_ptr<BootstrapTree> tree);
 
-    bool operator==(const Forest& other) const;
-    bool operator!=(const Forest& other) const;
+    bool operator==(Forest const& other) const;
+    bool operator!=(Forest const& other) const;
 
     void accept(Model::Visitor& visitor) const override;
 
@@ -102,7 +100,7 @@ namespace ppforest2 {
      * @param x  Training feature matrix (n × p).
      * @return   OOB predictions (n); −1 where no OOB tree exists.
      */
-    types::ResponseVector oob_predict(const types::FeatureMatrix& x) const;
+    types::ResponseVector oob_predict(types::FeatureMatrix const& x) const;
 
     /**
      * @brief Out-of-bag error rate.
@@ -116,8 +114,6 @@ namespace ppforest2 {
      * @return   Error rate in [0, 1], or −1 if no observation has any
      *           OOB tree.
      */
-    double oob_error(
-      const types::FeatureMatrix&  x,
-      const types::ResponseVector& y) const;
+    double oob_error(types::FeatureMatrix const& x, types::ResponseVector const& y) const;
   };
 }

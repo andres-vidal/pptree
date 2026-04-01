@@ -5,9 +5,8 @@
 using namespace ppforest2::types;
 
 namespace ppforest2 {
-  TreeResponse::TreeResponse(Response value) :
-    value(value) {
-  }
+  TreeResponse::TreeResponse(Response value)
+      : value(value) {}
 
   void TreeResponse::accept(TreeNode::Visitor& visitor) const {
     visitor.visit(*this);
@@ -17,12 +16,12 @@ namespace ppforest2 {
     return value;
   }
 
-  Response TreeResponse::predict(const FeatureVector& data) const {
+  Response TreeResponse::predict(FeatureVector const& data) const {
     return value;
   }
 
-  bool TreeResponse::equals(const TreeNode& other) const {
-    const auto *resp = dynamic_cast<const TreeResponse *>(&other);
+  bool TreeResponse::equals(TreeNode const& other) const {
+    auto const* resp = dynamic_cast<TreeResponse const*>(&other);
     return resp && (value == resp->value);
   }
 

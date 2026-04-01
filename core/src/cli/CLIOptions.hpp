@@ -56,7 +56,7 @@ namespace ppforest2::cli {
   /**
    * @brief Warn the user about parameters that are ignored for single-tree training.
    */
-  void warn_unused_params(io::Output& out, const CLIOptions& params);
+  void warn_unused_params(io::Output& out, CLIOptions const& params);
 
   /**
    * @brief Resolve sentinel values in CLIOptions to concrete defaults.
@@ -73,5 +73,5 @@ namespace ppforest2::cli {
    * @param argv Argument vector from main().
    * @return A populated CLIOptions struct.
    */
-  CLIOptions parse_args(int argc, char *argv[]);
+  CLIOptions parse_args(int argc, char* argv[]);
 }

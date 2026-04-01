@@ -115,18 +115,16 @@ namespace ppforest2::viz {
    * value < threshold, otherwise to the upper child.
    */
   struct NodeDataVisitor : public TreeNode::Visitor {
-    const types::FeatureMatrix& x;   ///< Full observation matrix (n × p).
-    const types::ResponseVector& y;  ///< Full response vector (n).
-    std::vector<int> indices;        ///< Indices of observations reaching the current node.
-    int depth;                       ///< Current depth in the traversal.
-    std::vector<NodeData> nodes;     ///< Collected node data (pre-order).
+    types::FeatureMatrix const& x;  ///< Full observation matrix (n × p).
+    types::ResponseVector const& y; ///< Full response vector (n).
+    std::vector<int> indices;       ///< Indices of observations reaching the current node.
+    int depth;                      ///< Current depth in the traversal.
+    std::vector<NodeData> nodes;    ///< Collected node data (pre-order).
 
-    NodeDataVisitor(
-      const types::FeatureMatrix&  x,
-      const types::ResponseVector& y);
+    NodeDataVisitor(types::FeatureMatrix const& x, types::ResponseVector const& y);
 
-    void visit(const TreeCondition& node) override;
-    void visit(const TreeResponse& node) override;
+    void visit(TreeCondition const& node) override;
+    void visit(TreeResponse const& node) override;
   };
 
   // ===================================================================
@@ -151,7 +149,7 @@ namespace ppforest2::viz {
   struct HalfSpace {
     types::FeatureVector projector;
     types::Feature threshold;
-    bool is_lower;  ///< true = lower child side (projected value < threshold).
+    bool is_lower; ///< true = lower child side (projected value < threshold).
   };
 
   /**
@@ -193,7 +191,7 @@ namespace ppforest2::viz {
    */
   struct RegionPolygon {
     std::vector<std::pair<types::Feature, types::Feature>> vertices;
-    types::Response predicted_group;  ///< 0-indexed group label from the leaf.
+    types::Response predicted_group; ///< 0-indexed group label from the leaf.
   };
 
   // ===================================================================
@@ -212,9 +210,7 @@ namespace ppforest2::viz {
    * @param var_j      Index of the y-axis variable (0-based).
    * @return           2D projection vector [full_proj(var_i), full_proj(var_j)].
    */
-  types::FeatureVector project_2d(
-    const types::FeatureVector& full_proj,
-    int var_i, int var_j);
+  types::FeatureVector project_2d(types::FeatureVector const& full_proj, int var_i, int var_j);
 
   /**
    * @brief Adjust a split threshold by subtracting contributions of fixed variables.
@@ -229,9 +225,10 @@ namespace ppforest2::viz {
    * @return            Adjusted 2D threshold.
    */
   types::Feature adjust_threshold(
-    const types::FeatureVector&                        full_proj,
-    types::Feature                                     thr,
-    const std::vector<std::pair<int, types::Feature>>& fixed_vars);
+      types::FeatureVector const& full_proj,
+      types::Feature thr,
+      std::vector<std::pair<int, types::Feature>> const& fixed_vars
+  );
 
   // ===================================================================
   // Parametric Line Clipping
@@ -252,9 +249,13 @@ namespace ppforest2::viz {
    * @return           true if a valid interval remains (u_min < u_max).
    */
   bool clip_param_to_range(
-    types::Feature origin, types::Feature direction,
-    types::Feature range_min, types::Feature range_max,
-    types::Feature& u_min, types::Feature& u_max);
+      types::Feature origin,
+      types::Feature direction,
+      types::Feature range_min,
+      types::Feature range_max,
+      types::Feature& u_min,
+      types::Feature& u_max
+  );
 
   /**
    * @brief Clip a 2D decision boundary line to the visible rectangle and
@@ -286,13 +287,16 @@ namespace ppforest2::viz {
    * @see clip_param_to_range, BoundaryVisitor
    */
   bool clip_boundary_2d(
-    const types::FeatureVector& a,
-    types::Feature threshold,
-    const std::vector<HalfSpace>& constraints,
-    types::Feature x_min, types::Feature x_max,
-    types::Feature y_min, types::Feature y_max,
-    BoundarySegment& segment,
-    int depth);
+      types::FeatureVector const& a,
+      types::Feature threshold,
+      std::vector<HalfSpace> const& constraints,
+      types::Feature x_min,
+      types::Feature x_max,
+      types::Feature y_min,
+      types::Feature y_max,
+      BoundarySegment& segment,
+      int depth
+  );
 
   // ===================================================================
   // Polygon Clipping (Sutherland–Hodgman)
@@ -333,10 +337,8 @@ namespace ppforest2::viz {
    * @see RegionVisitor
    */
   Polygon clip_polygon_halfspace(
-    const Polygon&              polygon,
-    const types::FeatureVector& normal,
-    types::Feature              threshold,
-    bool                        is_lower);
+      Polygon const& polygon, types::FeatureVector const& normal, types::Feature threshold, bool is_lower
+  );
 
   // ===================================================================
   // Boundary Visitor
@@ -362,21 +364,25 @@ namespace ppforest2::viz {
    * @endcode
    */
   struct BoundaryVisitor : public TreeNode::Visitor {
-    int var_i, var_j;  ///< Indices of the two displayed feature variables.
-    std::vector<std::pair<int, types::Feature>> fixed_vars;  ///< Fixed (index, value) pairs.
-    types::Feature x_min, x_max, y_min, y_max;  ///< Visible bounding box.
+    int var_i, var_j;                                       ///< Indices of the two displayed feature variables.
+    std::vector<std::pair<int, types::Feature>> fixed_vars; ///< Fixed (index, value) pairs.
+    types::Feature x_min, x_max, y_min, y_max;              ///< Visible bounding box.
     int depth;
-    std::vector<HalfSpace> constraints;      ///< Accumulated ancestor constraints.
-    std::vector<BoundarySegment> segments;    ///< Output: clipped boundary segments.
+    std::vector<HalfSpace> constraints;    ///< Accumulated ancestor constraints.
+    std::vector<BoundarySegment> segments; ///< Output: clipped boundary segments.
 
     BoundaryVisitor(
-      int var_i, int var_j,
-      const std::vector<std::pair<int, types::Feature>>& fixed_vars,
-      types::Feature x_min, types::Feature x_max,
-      types::Feature y_min, types::Feature y_max);
+        int var_i,
+        int var_j,
+        std::vector<std::pair<int, types::Feature>> const& fixed_vars,
+        types::Feature x_min,
+        types::Feature x_max,
+        types::Feature y_min,
+        types::Feature y_max
+    );
 
-    void visit(const TreeCondition& node) override;
-    void visit(const TreeResponse& node) override;
+    void visit(TreeCondition const& node) override;
+    void visit(TreeResponse const& node) override;
   };
 
   // ===================================================================
@@ -404,20 +410,24 @@ namespace ppforest2::viz {
    * @endcode
    */
   struct RegionVisitor : public TreeNode::Visitor {
-    int var_i, var_j;  ///< Indices of the two displayed feature variables.
-    std::vector<std::pair<int, types::Feature>> fixed_vars;  ///< Fixed (index, value) pairs.
-    types::Feature x_min, x_max, y_min, y_max;  ///< Bounding box for the initial rectangle.
-    std::vector<HalfSpace> constraints;  ///< Accumulated ancestor constraints.
-    std::vector<RegionPolygon> regions;  ///< Output: one polygon per reachable leaf.
+    int var_i, var_j;                                       ///< Indices of the two displayed feature variables.
+    std::vector<std::pair<int, types::Feature>> fixed_vars; ///< Fixed (index, value) pairs.
+    types::Feature x_min, x_max, y_min, y_max;              ///< Bounding box for the initial rectangle.
+    std::vector<HalfSpace> constraints;                     ///< Accumulated ancestor constraints.
+    std::vector<RegionPolygon> regions;                     ///< Output: one polygon per reachable leaf.
 
     RegionVisitor(
-      int var_i, int var_j,
-      const std::vector<std::pair<int, types::Feature>>& fixed_vars,
-      types::Feature x_min, types::Feature x_max,
-      types::Feature y_min, types::Feature y_max);
+        int var_i,
+        int var_j,
+        std::vector<std::pair<int, types::Feature>> const& fixed_vars,
+        types::Feature x_min,
+        types::Feature x_max,
+        types::Feature y_min,
+        types::Feature y_max
+    );
 
-    void visit(const TreeCondition& node) override;
-    void visit(const TreeResponse& node) override;
+    void visit(TreeCondition const& node) override;
+    void visit(TreeResponse const& node) override;
   };
 
   // ===================================================================
@@ -432,21 +442,21 @@ namespace ppforest2::viz {
    * so that histogram bars and leaf labels align with the rectangles.
    */
   struct LayoutParams {
-    types::Feature y_spacing = 1.5f;   ///< Vertical distance between depth levels.
-    types::Feature node_w    = 0.8f;   ///< Internal node width.
-    types::Feature node_h    = 0.7f;   ///< Internal node height.
-    types::Feature leaf_w    = 0.5f;   ///< Leaf node width.
-    types::Feature leaf_h    = 0.3f;   ///< Leaf node height.
-    types::Feature gap       = 0.2f;   ///< Horizontal gap between sibling subtrees.
+    types::Feature y_spacing = 1.5f; ///< Vertical distance between depth levels.
+    types::Feature node_w    = 0.8f; ///< Internal node width.
+    types::Feature node_h    = 0.7f; ///< Internal node height.
+    types::Feature leaf_w    = 0.5f; ///< Leaf node width.
+    types::Feature leaf_h    = 0.3f; ///< Leaf node height.
+    types::Feature gap       = 0.2f; ///< Horizontal gap between sibling subtrees.
   };
 
   /**
    * @brief A positioned tree node in the computed layout.
    */
   struct LayoutNode {
-    types::Feature x, y;  ///< Center position of the node.
+    types::Feature x, y; ///< Center position of the node.
     bool is_leaf;
-    int node_idx;         ///< Pre-order index (0-based).
+    int node_idx; ///< Pre-order index (0-based).
   };
 
   /**
@@ -454,7 +464,7 @@ namespace ppforest2::viz {
    */
   struct LayoutEdge {
     types::Feature from_x, from_y, to_x, to_y;
-    std::string label;  ///< e.g. "< 1.50" or "≥ 1.50".
+    std::string label; ///< e.g. "< 1.50" or "≥ 1.50".
   };
 
   /**
@@ -493,7 +503,5 @@ namespace ppforest2::viz {
    * @param params  Layout dimensions and spacing (default: LayoutParams()).
    * @return        TreeLayout with positioned nodes and edges.
    */
-  TreeLayout compute_tree_layout(
-    const TreeNode&     root,
-    const LayoutParams& params = LayoutParams());
+  TreeLayout compute_tree_layout(TreeNode const& root, LayoutParams const& params = LayoutParams());
 }

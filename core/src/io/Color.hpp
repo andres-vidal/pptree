@@ -52,7 +52,7 @@ namespace ppforest2::io::style {
       return;
     }
 
-    #ifdef _WIN32
+#ifdef _WIN32
     HANDLE hOut  = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD dwMode = 0;
 
@@ -63,9 +63,9 @@ namespace ppforest2::io::style {
       color_enabled() = false;
     }
 
-    #else
+#else
     color_enabled() = isatty(fileno(stdout));
-    #endif
+#endif
   }
 
   /**
@@ -73,8 +73,9 @@ namespace ppforest2::io::style {
    * instead of fmt's full reset, so that emphasis and other
    * non-fg styles survive nesting.
    */
-  inline std::string styled(const std::string& s, fmt::terminal_color c) {
-    if (!color_enabled()) return s;
+  inline std::string styled(std::string const& s, fmt::terminal_color c) {
+    if (!color_enabled())
+      return s;
 
     return fmt::format("\033[{}m{}\033[39m", static_cast<uint8_t>(c), s);
   }
@@ -82,14 +83,14 @@ namespace ppforest2::io::style {
   /**
    * @brief Format text in red (for error messages).
    */
-  inline std::string error(const std::string& s) {
+  inline std::string error(std::string const& s) {
     return styled(s, fmt::terminal_color::red);
   }
 
   /**
    * @brief Format text in green (for success messages).
    */
-  inline std::string success(const std::string& s) {
+  inline std::string success(std::string const& s) {
     return styled(s, fmt::terminal_color::green);
   }
 
@@ -99,8 +100,9 @@ namespace ppforest2::io::style {
    * Uses a specific bold-off code (\033[22m) so that fg colors survive
    * nesting, e.g. success("total: " + emphasis("7")).
    */
-  inline std::string emphasis(const std::string& s) {
-    if (!color_enabled()) return s;
+  inline std::string emphasis(std::string const& s) {
+    if (!color_enabled())
+      return s;
 
     return fmt::format("\033[1m{}\033[22m", s);
   }
@@ -108,21 +110,21 @@ namespace ppforest2::io::style {
   /**
    * @brief Format text in dim gray (for hints and secondary info).
    */
-  inline std::string muted(const std::string& s) {
+  inline std::string muted(std::string const& s) {
     return styled(s, fmt::terminal_color::bright_black);
   }
 
   /**
    * @brief Format text in cyan (for informational highlights like progress bars).
    */
-  inline std::string info(const std::string& s) {
+  inline std::string info(std::string const& s) {
     return styled(s, fmt::terminal_color::cyan);
   }
 
   /**
    * @brief Format text in yellow (for warnings).
    */
-  inline std::string warning(const std::string& s) {
+  inline std::string warning(std::string const& s) {
     return styled(s, fmt::terminal_color::yellow);
   }
 }

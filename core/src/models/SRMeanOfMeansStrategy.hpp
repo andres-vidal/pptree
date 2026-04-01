@@ -14,16 +14,13 @@ namespace ppforest2::sr {
    */
   struct SRMeanOfMeansStrategy : public SRStrategy {
     void to_json(nlohmann::json& j) const override;
-    std::string display_name() const override {
-      return "Mean of means";
-    }
+    std::string display_name() const override { return "Mean of means"; }
 
     types::Feature threshold(
-      const types::FeatureMatrix& group_1,
-      const types::FeatureMatrix& group_2,
-      const pp::Projector&        projector) const override;
+        types::FeatureMatrix const& group_1, types::FeatureMatrix const& group_2, pp::Projector const& projector
+    ) const override;
 
-    static SRStrategy::Ptr from_json(const nlohmann::json& j);
+    static SRStrategy::Ptr from_json(nlohmann::json const& j);
 
     PPFOREST2_REGISTER_STRATEGY(SRStrategy, "mean_of_means")
   };

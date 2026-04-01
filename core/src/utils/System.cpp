@@ -13,7 +13,7 @@
 
 namespace ppforest2::sys {
   long get_peak_rss_bytes() {
-    #ifdef _WIN32
+#ifdef _WIN32
     PROCESS_MEMORY_COUNTERS pmc;
 
     if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
@@ -22,21 +22,21 @@ namespace ppforest2::sys {
 
     return -1;
 
-    #else
+#else
     struct rusage usage;
 
     if (getrusage(RUSAGE_SELF, &usage) == 0) {
-      #ifdef __APPLE__
-      return usage.ru_maxrss;          // macOS: already in bytes
+#ifdef __APPLE__
+      return usage.ru_maxrss; // macOS: already in bytes
 
-      #else
-      return usage.ru_maxrss * 1024L;  // Linux: reported in KB
+#else
+      return usage.ru_maxrss * 1024L; // Linux: reported in KB
 
-      #endif
+#endif
     }
 
     return -1;
 
-    #endif // ifdef _WIN32
+#endif // ifdef _WIN32
   }
 }

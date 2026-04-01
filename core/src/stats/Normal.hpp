@@ -20,13 +20,13 @@ namespace ppforest2::stats {
    * double-precision floats.
    */
   class Normal {
-    private:
-      float mean;
-      float std_dev;
+  private:
+    float mean;
+    float std_dev;
 
-      std::optional<float> cached_z;
+    std::optional<float> cached_z;
 
-      /**
+    /**
        * @brief Generate a uniform random number in (0, 1).
        *
        * Combines two 32-bit pcg32 outputs into a 53-bit integer and
@@ -36,26 +36,26 @@ namespace ppforest2::stats {
        * @param rng  Random number generator (pcg32).
        * @return     Uniform variate in (0, 1).
        */
-      double gen_unif01(RNG &rng);
+    double gen_unif01(RNG& rng);
 
-      /**
+    /**
        * @brief Transform a standard normal variate to N(mean, std_dev²).
        *
        * @param z  Standard normal variate.
        * @return   mean + std_dev * z.
        */
-      float denormalize(float z);
+    float denormalize(float z);
 
-    public:
-      /**
+  public:
+    /**
        * @brief Construct a Normal generator.
        *
        * @param mean     Distribution mean.
        * @param std_dev  Distribution standard deviation.
        */
-      Normal(float mean, float std_dev);
+    Normal(float mean, float std_dev);
 
-      /**
+    /**
        * @brief Generate a single normal variate via the Box-Muller transform.
        *
        * Draws two independent uniform variates U1, U2 ∈ (0, 1) and
@@ -71,15 +71,15 @@ namespace ppforest2::stats {
        * @param rng  Random number generator (pcg32).
        * @return     A sample from N(mean, std_dev²).
        */
-      float operator()(RNG &rng);
+    float operator()(RNG& rng);
 
-      /**
+    /**
        * @brief Generate multiple normal variates.
        *
        * @param count  Number of samples to generate.
        * @param rng    Random number generator (pcg32).
        * @return       Vector of @p count samples from N(mean, std_dev²).
        */
-      std::vector<float> operator()(int count, RNG &rng);
+    std::vector<float> operator()(int count, RNG& rng);
   };
 }

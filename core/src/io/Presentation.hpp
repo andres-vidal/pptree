@@ -28,29 +28,17 @@ namespace ppforest2::io {
     types::Vector<float> te_error;
     long peak_rss_bytes = -1;
 
-    double mean_time() const {
-      return tr_times.mean();
-    }
+    double mean_time() const { return tr_times.mean(); }
 
-    double mean_tr_error() const {
-      return tr_error.mean();
-    }
+    double mean_tr_error() const { return tr_error.mean(); }
 
-    double mean_te_error() const {
-      return te_error.mean();
-    }
+    double mean_te_error() const { return te_error.mean(); }
 
-    double std_time() const {
-      return stats::sd(tr_times);
-    }
+    double std_time() const { return stats::sd(tr_times); }
 
-    double std_tr_error() const {
-      return stats::sd(tr_error);
-    }
+    double std_tr_error() const { return stats::sd(tr_error); }
 
-    double std_te_error() const {
-      return stats::sd(te_error);
-    }
+    double std_te_error() const { return stats::sd(te_error); }
 
     /** @brief Serialize to JSON including per-iteration breakdown. */
     nlohmann::json to_json() const;
@@ -60,7 +48,7 @@ namespace ppforest2::io {
    * @brief Print evaluation results (timing, errors, memory) to stdout.
    * @param stats The aggregated model statistics.
    */
-  void print_results(Output& out, const ModelStats& stats);
+  void print_results(Output& out, ModelStats const& stats);
 
   /**
    * @brief Print a ranked variable importance table to stdout.
@@ -74,10 +62,8 @@ namespace ppforest2::io {
    * @param max_rows  Maximum number of rows to print (0 = all).
    */
   void print_variable_importance(
-    Output&                         out,
-    const VariableImportance&       vi,
-    const std::vector<std::string>& feature_names = {},
-    int                             max_rows      = 20);
+      Output& out, VariableImportance const& vi, std::vector<std::string> const& feature_names = {}, int max_rows = 20
+  );
 
   /**
    * @brief Print a formatted confusion matrix to stdout.
@@ -89,10 +75,11 @@ namespace ppforest2::io {
    * @param cm  The confusion matrix to print.
    */
   void print_confusion_matrix(
-    Output&                         out,
-    const stats::ConfusionMatrix&   cm,
-    const std::string&              title       = "Confusion Matrix",
-    const std::vector<std::string>& group_names = {});
+      Output& out,
+      stats::ConfusionMatrix const& cm,
+      std::string const& title                    = "Confusion Matrix",
+      std::vector<std::string> const& group_names = {}
+  );
 
   /**
    * @brief Optional display hints for print_configuration.
@@ -117,10 +104,7 @@ namespace ppforest2::io {
    * @param config The config JSON (trees, lambda, seed, threads, vars, data).
    * @param hints  Optional display hints for richer output (defaults, percentages).
    */
-  void print_configuration(
-    Output&                   out,
-    const nlohmann::json&     config,
-    const ConfigDisplayHints& hints = {});
+  void print_configuration(Output& out, nlohmann::json const& config, ConfigDisplayHints const& hints = {});
 
   /**
    * @brief Print a data summary table from a JSON meta object.
@@ -130,7 +114,7 @@ namespace ppforest2::io {
    * @param out  Output context.
    * @param meta The meta JSON (observations, features, groups).
    */
-  void print_data_summary(Output& out, const nlohmann::json& meta);
+  void print_data_summary(Output& out, nlohmann::json const& meta);
 
   /**
    * @brief Display a full model summary from its JSON representation.
@@ -139,8 +123,5 @@ namespace ppforest2::io {
    * degenerate warnings, timing, and variable importance.
    * Used by both `run_train` (after training) and `run_summarize` (from file).
    */
-  void print_summary(
-    Output&                   out,
-    const nlohmann::json&     model_data,
-    const ConfigDisplayHints& hints = {});
+  void print_summary(Output& out, nlohmann::json const& model_data, ConfigDisplayHints const& hints = {});
 }

@@ -10,19 +10,13 @@ using namespace ppforest2::stats;
 using namespace ppforest2::types;
 
 TEST(Stats, Sort) {
-  FeatureMatrix x = MAT(Feature, rows(3),
-      1.0, 3.0, 1.0,
-      2.0, 2.0, 3.0,
-      3.0, 1.0, 2.0);
+  FeatureMatrix x = MAT(Feature, rows(3), 1.0, 3.0, 1.0, 2.0, 2.0, 3.0, 3.0, 1.0, 2.0);
 
   ResponseVector y = VEC(Response, 1, 2, 1);
 
   sort(x, y);
 
-  FeatureMatrix expected_x = MAT(Feature, rows(3),
-      1.0, 3.0, 1.0,
-      3.0, 1.0, 2.0,
-      2.0, 2.0, 3.0);
+  FeatureMatrix expected_x = MAT(Feature, rows(3), 1.0, 3.0, 1.0, 3.0, 1.0, 2.0, 2.0, 2.0, 3.0);
 
   ResponseVector expected_y = VEC(Response, 1, 1, 2);
 
@@ -31,10 +25,7 @@ TEST(Stats, Sort) {
 }
 
 TEST(Stats, SortAlreadySorted) {
-  FeatureMatrix x = MAT(Feature, rows(3),
-      1.0, 10.0,
-      2.0, 20.0,
-      3.0, 30.0);
+  FeatureMatrix x = MAT(Feature, rows(3), 1.0, 10.0, 2.0, 20.0, 3.0, 30.0);
 
   ResponseVector y = VEC(Response, 0, 0, 1);
 
@@ -46,11 +37,7 @@ TEST(Stats, SortAlreadySorted) {
 }
 
 TEST(Stats, SortReverseSorted) {
-  FeatureMatrix x = MAT(Feature, rows(4),
-      4.0,
-      3.0,
-      2.0,
-      1.0);
+  FeatureMatrix x = MAT(Feature, rows(4), 4.0, 3.0, 2.0, 1.0);
 
   ResponseVector y = VEC(Response, 2, 1, 1, 0);
 
@@ -65,9 +52,7 @@ TEST(Stats, SortReverseSorted) {
 }
 
 TEST(Stats, SortLargerArray) {
-  FeatureMatrix x = MAT(Feature, rows(6),
-      6.0, 5.0, 4.0,
-      3.0, 2.0, 1.0);
+  FeatureMatrix x = MAT(Feature, rows(6), 6.0, 5.0, 4.0, 3.0, 2.0, 1.0);
 
   ResponseVector y = VEC(Response, 2, 1, 0, 2, 1, 0);
 
@@ -90,7 +75,7 @@ TEST(Stats, UniqueEmptyResult) {
 TEST(Stats, UniqueSingleValue) {
   ResponseVector column  = VEC(Response, 1);
   std::set<int> actual   = unique(column);
-  std::set<int> expected = { 1 };
+  std::set<int> expected = {1};
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected, actual);
@@ -100,7 +85,7 @@ TEST(Stats, UniqueSingleValueRepeated) {
   ResponseVector column = VEC(Response, 1, 1, 1);
 
   std::set<int> actual   = unique(column);
-  std::set<int> expected = { 1 };
+  std::set<int> expected = {1};
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected, actual);
@@ -109,7 +94,7 @@ TEST(Stats, UniqueSingleValueRepeated) {
 TEST(Stats, UniqueMultipleValues) {
   ResponseVector column  = VEC(Response, 1, 2, 3);
   std::set<int> actual   = unique(column);
-  std::set<int> expected = { 1, 2, 3 };
+  std::set<int> expected = {1, 2, 3};
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected, actual);
@@ -118,7 +103,7 @@ TEST(Stats, UniqueMultipleValues) {
 TEST(Stats, UniqueMultipleValuesRepeated) {
   ResponseVector column  = VEC(Response, 1, 2, 1);
   std::set<int> actual   = unique(column);
-  std::set<int> expected = { 1, 2 };
+  std::set<int> expected = {1, 2};
 
   ASSERT_EQ(expected.size(), actual.size());
   ASSERT_EQ(expected, actual);
@@ -244,11 +229,7 @@ TEST(Stats, SdVectorSingleElement) {
 }
 
 TEST(Stats, SdMatrixSingleColumn) {
-  FeatureMatrix m = MAT(Feature, rows(4),
-      2.0f,
-      4.0f,
-      4.0f,
-      4.0f);
+  FeatureMatrix m = MAT(Feature, rows(4), 2.0f, 4.0f, 4.0f, 4.0f);
 
   FeatureVector result = sd(m);
 
@@ -260,10 +241,7 @@ TEST(Stats, SdMatrixMultipleColumns) {
   // col 0: {1, 2, 3} → mean=2, var=1, sd=1
   // col 1: {4, 4, 4} → mean=4, var=0, sd=0
   // col 2: {0, 5, 10} → mean=5, var=25, sd=5
-  FeatureMatrix m = MAT(Feature, rows(3),
-      1.0f, 4.0f,  0.0f,
-      2.0f, 4.0f,  5.0f,
-      3.0f, 4.0f, 10.0f);
+  FeatureMatrix m = MAT(Feature, rows(3), 1.0f, 4.0f, 0.0f, 2.0f, 4.0f, 5.0f, 3.0f, 4.0f, 10.0f);
 
   FeatureVector result = sd(m);
 
@@ -274,12 +252,7 @@ TEST(Stats, SdMatrixMultipleColumns) {
 }
 
 TEST(Stats, SdMatrixMatchesVectorSd) {
-  FeatureMatrix m = MAT(Feature, rows(5),
-      1.0f, 10.0f,
-      3.0f, 20.0f,
-      5.0f, 30.0f,
-      7.0f, 40.0f,
-      9.0f, 50.0f);
+  FeatureMatrix m = MAT(Feature, rows(5), 1.0f, 10.0f, 3.0f, 20.0f, 5.0f, 30.0f, 7.0f, 40.0f, 9.0f, 50.0f);
 
   FeatureVector result = sd(m);
 

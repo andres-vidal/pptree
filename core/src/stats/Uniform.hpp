@@ -23,11 +23,11 @@ namespace ppforest2::stats {
    * @see https://arxiv.org/abs/1805.10941
    */
   class Uniform {
-    private:
-      int min;
-      int max;
+  private:
+    int min;
+    int max;
 
-      /**
+    /**
        * @brief Generate an unbiased random integer in [0, s) via Lemire's method.
        *
        * Computes a 64-bit product x·s where x is a 32-bit pcg32 output.
@@ -43,35 +43,35 @@ namespace ppforest2::stats {
        * @see Lemire, "Fast Random Integer Generation in an Interval"
        *      (ACM TOMS, 2019). https://arxiv.org/abs/1805.10941
        */
-      uint32_t gen_lemire(uint32_t s, RNG &rng) const;
+    uint32_t gen_lemire(uint32_t s, RNG& rng) const;
 
-    public:
-      /**
+  public:
+    /**
        * @brief Construct a uniform integer generator over [min, max].
        *
        * @param min  Inclusive lower bound (must be ≥ 0).
        * @param max  Inclusive upper bound (must be ≥ min).
        */
-      Uniform(int min, int max);
+    Uniform(int min, int max);
 
-      /**
+    /**
        * @brief Generate a single uniform random integer in [min, max].
        *
        * @param rng  Random number generator (pcg32).
        * @return     Uniformly distributed integer in [min, max].
        */
-      int operator()(RNG &rng) const;
+    int operator()(RNG& rng) const;
 
-      /**
+    /**
        * @brief Generate multiple uniform random integers (with replacement).
        *
        * @param count  Number of samples to generate.
        * @param rng    Random number generator (pcg32).
        * @return       Vector of @p count i.i.d. integers from [min, max].
        */
-      std::vector<int> operator()(int count, RNG &rng) const;
+    std::vector<int> operator()(int count, RNG& rng) const;
 
-      /**
+    /**
        * @brief Sample without replacement from [min, max].
        *
        * Implements the Fisher-Yates (Knuth) shuffle: fills a vector
@@ -87,6 +87,6 @@ namespace ppforest2::stats {
        * @param rng    Random number generator (pcg32).
        * @return       Vector of @p count distinct integers from [min, max].
        */
-      std::vector<int> distinct(int count, RNG &rng);
+    std::vector<int> distinct(int count, RNG& rng);
   };
 }

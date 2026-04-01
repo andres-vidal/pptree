@@ -19,41 +19,38 @@ using namespace ppforest2::types;
 using namespace ppforest2::utils;
 
 namespace ppforest2 {
-namespace {
-  TreeNode::Ptr degenerate_leaf(const GroupPartition& y) {
-    Response majority = *y.groups.begin();
-    int majority_size = 0;
+  namespace {
+    TreeNode::Ptr degenerate_leaf(GroupPartition const& y) {
+      Response majority = *y.groups.begin();
+      int majority_size = 0;
 
-    for (const auto& g : y.groups) {
-      int sz = y.group_size(g);
+      for (auto const& g : y.groups) {
+        int sz = y.group_size(g);
 
-      if (sz > majority_size) {
-        majority_size = sz;
-        majority      = g;
+        if (sz > majority_size) {
+          majority_size = sz;
+          majority      = g;
+        }
       }
+
+      auto leaf        = TreeResponse::make(majority);
+      leaf->degenerate = true;
+      return leaf;
     }
-
-    auto leaf = TreeResponse::make(majority);
-    leaf->degenerate = true;
-    return leaf;
   }
-}
 
-  std::map<Response, int> binary_regroup(
-    const FeatureMatrix &  x,
-    const GroupPartition & group_spec
-    ) {
+  std::map<Response, int> binary_regroup(FeatureMatrix const& x, GroupPartition const& group_spec) {
     std::vector<std::tuple<Response, Feature>> means;
 
     invariant(x.cols() == 1, "Binary regrouping requires a unidimensional data");
 
-    for (const Response group : group_spec.groups) {
+    for (Response const group : group_spec.groups) {
       Feature group_mean = group_spec.group(x, group).mean();
 
-      means.push_back({ group, group_mean });
+      means.push_back({group, group_mean});
     }
 
-    std::stable_sort(means.begin(), means.end(), [](const auto &a, const auto &b) {
+    std::stable_sort(means.begin(), means.end(), [](auto const& a, auto const& b) {
       return std::isless(std::get<1>(a), std::get<1>(b));
     });
 
@@ -73,10 +70,10 @@ namespace {
       edge_group = std::get<0>(means.front());
     }
 
-    std::map<Response, int > binary_mapping;
+    std::map<Response, int> binary_mapping;
 
     bool edge_found = false;
-    for (const auto&[group, mean] : means) {
+    for (auto const& [group, mean] : means) {
       edge_found = edge_found || group == edge_group;
 
       binary_mapping[group] = edge_found ? 1 : 0;
@@ -86,24 +83,22 @@ namespace {
   }
 
   TreeCondition::Ptr binary_step(
-    const TrainingSpec &   training_spec,
-    const FeatureMatrix &  x,
-    const GroupPartition & group_spec,
-    const DRResult&        dr) {
+      TrainingSpec const& training_spec, FeatureMatrix const& x, GroupPartition const& group_spec, DRResult const& dr
+  ) {
     Response group_1 = *group_spec.groups.begin();
     Response group_2 = *std::next(group_spec.groups.begin());
 
-    const PPStrategy &pp_strategy = *training_spec.pp_strategy;
+    PPStrategy const& pp_strategy = *training_spec.pp_strategy;
 
     auto reduced_x = x(Eigen::all, dr.selected_cols);
 
     auto [reduced_projector, pp_index_value] = pp_strategy.optimize(reduced_x, group_spec);
-    Projector projector = dr.expand(reduced_projector);
+    Projector projector                      = dr.expand(reduced_projector);
 
     auto data_group_1 = group_spec.group(x, group_1);
     auto data_group_2 = group_spec.group(x, group_2);
 
-    const SRStrategy &sr_strategy = *training_spec.sr_strategy;
+    SRStrategy const& sr_strategy = *training_spec.sr_strategy;
     Feature threshold             = sr_strategy.threshold(data_group_1, data_group_2, projector);
 
     Feature projected_mean_1 = data_group_1.colwise().mean().dot(projector);
@@ -123,23 +118,16 @@ namespace {
     TreeResponse::Ptr upper_response = TreeResponse::make(upper_group);
 
     auto condition = TreeCondition::make(
-      projector,
-      threshold,
-      std::move(lower_response),
-      std::move(upper_response),
-      group_spec.groups,
-      pp_index_value);
+        projector, threshold, std::move(lower_response), std::move(upper_response), group_spec.groups, pp_index_value
+    );
 
     return condition;
   }
 
   GroupPartition binary_split(
-    const TrainingSpec &   training_spec,
-    const FeatureMatrix &  x,
-    const GroupPartition & group_spec,
-    const DRResult&        dr
-    ) {
-    const PPStrategy &pp_strategy = *training_spec.pp_strategy;
+      TrainingSpec const& training_spec, FeatureMatrix const& x, GroupPartition const& group_spec, DRResult const& dr
+  ) {
+    PPStrategy const& pp_strategy = *training_spec.pp_strategy;
 
     FeatureMatrix reduced_x = x(Eigen::all, dr.selected_cols);
 
@@ -159,7 +147,7 @@ namespace {
 
   struct Step {
     GroupPartition y;
-    TreeNode::Ptr *node;
+    TreeNode::Ptr* node;
 
     bool pop               = false;
     TreeNode::Ptr upper    = nullptr;
@@ -168,25 +156,16 @@ namespace {
     Feature pp_index_value = 0;
     Projector projector;
 
-    Step(
-      const GroupPartition& y,
-      TreeNode::Ptr         * node,
-      const int cols
-      ) :
-      y(y),
-      node(node),
-      projector(Projector::Zero(cols)) {
-    }
+    Step(GroupPartition const& y, TreeNode::Ptr* node, int const cols)
+        : y(y)
+        , node(node)
+        , projector(Projector::Zero(cols)) {}
   };
 
-  TreeNode::Ptr build_root(
-    const TrainingSpec &   training_spec,
-    const FeatureMatrix &  x,
-    const GroupPartition & y,
-    stats::RNG &           rng
-    ) {
-    const PPStrategy &pp_strategy = *training_spec.pp_strategy;
-    const DRStrategy &dr_strategy = *training_spec.dr_strategy;
+  TreeNode::Ptr
+  build_root(TrainingSpec const& training_spec, FeatureMatrix const& x, GroupPartition const& y, stats::RNG& rng) {
+    PPStrategy const& pp_strategy = *training_spec.pp_strategy;
+    DRStrategy const& dr_strategy = *training_spec.dr_strategy;
 
     std::stack<Step> stack;
 
@@ -199,12 +178,13 @@ namespace {
 
       if (step.pop) {
         *step.node = TreeCondition::make(
-          step.projector,
-          step.threshold,
-          std::move(step.lower),
-          std::move(step.upper),
-          step.y.groups,
-          step.pp_index_value);
+            step.projector,
+            step.threshold,
+            std::move(step.lower),
+            std::move(step.upper),
+            step.y.groups,
+            step.pp_index_value
+        );
 
         stack.pop();
         continue;
@@ -266,41 +246,34 @@ namespace {
     return root;
   }
 
-  Tree Tree::train(
-    TrainingSpec const&   training_spec,
-    const FeatureMatrix&  x,
-    const ResponseVector& y,
-    stats::RNG &          rng) {
+  Tree
+  Tree::train(TrainingSpec const& training_spec, FeatureMatrix const& x, ResponseVector const& y, stats::RNG& rng) {
     GroupPartition group_spec(y);
 
     return Tree::train(training_spec, x, group_spec, rng);
   }
 
   Tree Tree::train(
-    TrainingSpec const &  training_spec,
-    const FeatureMatrix&  x,
-    GroupPartition const& group_spec,
-    stats::RNG &          rng) {
+      TrainingSpec const& training_spec, FeatureMatrix const& x, GroupPartition const& group_spec, stats::RNG& rng
+  ) {
     TreeNode::Ptr root_ptr = build_root(training_spec, x, group_spec, rng);
 
-    Tree tree(
-      std::move(root_ptr),
-      TrainingSpec::make(training_spec));
+    Tree tree(std::move(root_ptr), TrainingSpec::make(training_spec));
 
     return tree;
   }
 
-  Tree::Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec) :
-    root(std::move(root)) {
+  Tree::Tree(TreeNode::Ptr root, TrainingSpec::Ptr training_spec)
+      : root(std::move(root)) {
     this->training_spec = std::move(training_spec);
     degenerate          = this->root && this->root->degenerate;
   }
 
-  Response Tree::predict(const FeatureVector& data) const {
+  Response Tree::predict(FeatureVector const& data) const {
     return root->predict(data);
   }
 
-  ResponseVector Tree::predict(const FeatureMatrix& data) const {
+  ResponseVector Tree::predict(FeatureMatrix const& data) const {
     ResponseVector predictions(data.rows());
 
     for (int i = 0; i < data.rows(); i++) {
@@ -310,7 +283,7 @@ namespace {
     return predictions;
   }
 
-  FeatureMatrix Tree::predict(const FeatureMatrix& data, Proportions) const {
+  FeatureMatrix Tree::predict(FeatureMatrix const& data, Proportions) const {
     std::set<Response> group_set = root->node_groups();
     std::vector<Response> groups(group_set.begin(), group_set.end());
     int G = static_cast<int>(groups.size());
@@ -324,18 +297,18 @@ namespace {
     FeatureMatrix proportions = FeatureMatrix::Zero(n, G);
 
     for (int i = 0; i < n; ++i) {
-      Response pred = predict(static_cast<FeatureVector>(data.row(i)));
+      Response pred                      = predict(static_cast<FeatureVector>(data.row(i)));
       proportions(i, group_to_col[pred]) = Feature(1);
     }
 
     return proportions;
   }
 
-  bool Tree::operator==(const Tree& other) const {
+  bool Tree::operator==(Tree const& other) const {
     return *root == *other.root;
   }
 
-  bool Tree::operator!=(const Tree& other) const {
+  bool Tree::operator!=(Tree const& other) const {
     return !(*this == other);
   }
 

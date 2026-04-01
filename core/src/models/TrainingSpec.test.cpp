@@ -82,9 +82,9 @@ TEST(TrainingSpec, ToJsonRoundTripSingleTree) {
 
 TEST(TrainingSpec, FromJsonDefaultsOptionalFields) {
   json j = {
-    { "pp", { { "name", "pda" }, { "lambda", 0.3 } } },
-    { "dr", { { "name", "uniform" }, { "n_vars", 2 } } },
-    { "sr", { { "name", "mean_of_means" } } }
+      {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
+      {"dr", {{"name", "uniform"}, {"n_vars", 2}}},
+      {"sr", {{"name", "mean_of_means"}}}
   };
 
   auto spec = TrainingSpec::from_json(j);
@@ -100,28 +100,19 @@ TEST(TrainingSpec, FromJsonDefaultsOptionalFields) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, FromJsonMissingPPThrows) {
-  json j = {
-    { "dr", { { "name", "uniform" }, { "n_vars", 2 } } },
-    { "sr", { { "name", "mean_of_means" } } }
-  };
+  json j = {{"dr", {{"name", "uniform"}, {"n_vars", 2}}}, {"sr", {{"name", "mean_of_means"}}}};
 
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
 
 TEST(TrainingSpec, FromJsonMissingDRThrows) {
-  json j = {
-    { "pp", { { "name", "pda" }, { "lambda", 0.3 } } },
-    { "sr", { { "name", "mean_of_means" } } }
-  };
+  json j = {{"pp", {{"name", "pda"}, {"lambda", 0.3}}}, {"sr", {{"name", "mean_of_means"}}}};
 
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
 
 TEST(TrainingSpec, FromJsonMissingSRThrows) {
-  json j = {
-    { "pp", { { "name", "pda" }, { "lambda", 0.3 } } },
-    { "dr", { { "name", "uniform" }, { "n_vars", 2 } } }
-  };
+  json j = {{"pp", {{"name", "pda"}, {"lambda", 0.3}}}, {"dr", {{"name", "uniform"}, {"n_vars", 2}}}};
 
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }

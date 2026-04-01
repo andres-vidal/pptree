@@ -13,16 +13,13 @@ namespace ppforest2::stats {
     std::vector<int> indices(x.rows());
     std::iota(indices.begin(), indices.end(), 0);
 
-    std::stable_sort(indices.begin(), indices.end(),
-      [&y](int idx1, int idx2) {
-        return y(idx1) < y(idx2);
-      });
+    std::stable_sort(indices.begin(), indices.end(), [&y](int idx1, int idx2) { return y(idx1) < y(idx2); });
 
     x = x(indices, Eigen::all).eval();
     y = y(indices, Eigen::all).eval();
   }
 
-  std::set<Response> unique(const ResponseVector& column) {
+  std::set<Response> unique(ResponseVector const& column) {
     std::set<Response> unique_values;
 
     for (int i = 0; i < column.rows(); i++) {
@@ -32,7 +29,7 @@ namespace ppforest2::stats {
     return unique_values;
   }
 
-  float accuracy(const ResponseVector& predictions, const ResponseVector& actual) {
+  float accuracy(ResponseVector const& predictions, ResponseVector const& actual) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("predictions and actual must have the same number of rows");
     }
@@ -47,7 +44,7 @@ namespace ppforest2::stats {
     return static_cast<float>(correct) / static_cast<float>(predictions.rows());
   }
 
-  double error_rate(const ResponseVector& predictions, const ResponseVector& actual) {
+  double error_rate(ResponseVector const& predictions, ResponseVector const& actual) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("predictions and actual must have the same number of rows");
     }
@@ -55,7 +52,7 @@ namespace ppforest2::stats {
     return 1.0 - accuracy(predictions, actual);
   }
 
-  double sd(const FeatureVector& data) {
+  double sd(FeatureVector const& data) {
     if (data.rows() == 0) {
       throw std::invalid_argument("sd: data must have at least one row");
     }
@@ -67,7 +64,7 @@ namespace ppforest2::stats {
     return std::sqrt((data.array() - data.mean()).square().sum() / (data.rows() - 1));
   }
 
-  FeatureVector sd(const FeatureMatrix& data) {
+  FeatureVector sd(FeatureMatrix const& data) {
     invariant(data.rows() >= 2, "sd: matrix must have at least 2 rows");
 
     FeatureMatrix centered = data.rowwise() - data.colwise().mean();

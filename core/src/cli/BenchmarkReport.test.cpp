@@ -13,50 +13,50 @@
 using namespace ppforest2::cli;
 
 class BenchmarkReportTest : public ::testing::Test {
-  protected:
-    SuiteResult make_sample_result() {
-      SuiteResult result;
-      result.suite_name    = "test suite";
-      result.timestamp     = "2026-01-01T00:00:00";
-      result.total_time_ms = 5000;
+protected:
+  SuiteResult make_sample_result() {
+    SuiteResult result;
+    result.suite_name    = "test suite";
+    result.timestamp     = "2026-01-01T00:00:00";
+    result.total_time_ms = 5000;
 
-      ScenarioResult sr1;
-      sr1.name             = "small";
-      sr1.n                = 100;
-      sr1.p                = 5;
-      sr1.g                = 2;
-      sr1.size             = 50;
-      sr1.vars             = 0.5f;
-      sr1.runs             = 10;
-      sr1.mean_time_ms     = 12.3;
-      sr1.std_time_ms      = 1.2;
-      sr1.mean_tr_error    = 0.01;
-      sr1.mean_te_error    = 0.05;
-      sr1.peak_rss_bytes   = 5 * 1024 * 1024;
-      sr1.peak_rss_mb      = 5.0;
-      sr1.scenario_time_ms = 2500;
+    ScenarioResult sr1;
+    sr1.name             = "small";
+    sr1.n                = 100;
+    sr1.p                = 5;
+    sr1.g                = 2;
+    sr1.size             = 50;
+    sr1.vars             = 0.5f;
+    sr1.runs             = 10;
+    sr1.mean_time_ms     = 12.3;
+    sr1.std_time_ms      = 1.2;
+    sr1.mean_tr_error    = 0.01;
+    sr1.mean_te_error    = 0.05;
+    sr1.peak_rss_bytes   = 5 * 1024 * 1024;
+    sr1.peak_rss_mb      = 5.0;
+    sr1.scenario_time_ms = 2500;
 
-      ScenarioResult sr2;
-      sr2.name             = "large";
-      sr2.n                = 5000;
-      sr2.p                = 50;
-      sr2.g                = 5;
-      sr2.size             = 200;
-      sr2.vars             = 0.5f;
-      sr2.runs             = 5;
-      sr2.mean_time_ms     = 500.0;
-      sr2.std_time_ms      = 25.0;
-      sr2.mean_tr_error    = 0.02;
-      sr2.mean_te_error    = 0.10;
-      sr2.peak_rss_bytes   = 100 * 1024 * 1024;
-      sr2.peak_rss_mb      = 100.0;
-      sr2.scenario_time_ms = 2500;
+    ScenarioResult sr2;
+    sr2.name             = "large";
+    sr2.n                = 5000;
+    sr2.p                = 50;
+    sr2.g                = 5;
+    sr2.size             = 200;
+    sr2.vars             = 0.5f;
+    sr2.runs             = 5;
+    sr2.mean_time_ms     = 500.0;
+    sr2.std_time_ms      = 25.0;
+    sr2.mean_tr_error    = 0.02;
+    sr2.mean_te_error    = 0.10;
+    sr2.peak_rss_bytes   = 100 * 1024 * 1024;
+    sr2.peak_rss_mb      = 100.0;
+    sr2.scenario_time_ms = 2500;
 
-      result.results.push_back(sr1);
-      result.results.push_back(sr2);
+    result.results.push_back(sr1);
+    result.results.push_back(sr2);
 
-      return result;
-    }
+    return result;
+  }
 };
 
 TEST_F(BenchmarkReportTest, WriteAndReadJson) {
@@ -143,10 +143,10 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithBaseline) {
   auto current = make_sample_result();
 
   // Baseline with different timing to produce deltas
-  auto baseline = make_sample_result();
+  auto baseline                    = make_sample_result();
   baseline.timestamp               = "2026-01-01T00:00:00-baseline";
-  baseline.results[0].mean_time_ms = 15.0;   // current is 12.3 → improvement
-  baseline.results[1].mean_time_ms = 400.0;  // current is 500.0 → regression
+  baseline.results[0].mean_time_ms = 15.0;  // current is 12.3 → improvement
+  baseline.results[1].mean_time_ms = 400.0; // current is 500.0 → regression
 
   ppforest2::io::Output out(false);
 

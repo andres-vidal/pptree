@@ -11,5 +11,5 @@ namespace ppforest2::pp {
    * @param projector  Input projector (p).
    * @return           Normalized projector with L2 norm = 1.
    */
-  Projector normalize(const Projector &projector);
+  Projector normalize(Projector const& projector);
 }

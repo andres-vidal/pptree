@@ -4,12 +4,7 @@
 #include "stats/GroupPartition.hpp"
 
 namespace ppforest2::stats {
-  DataPacket simulate(
-    const int               n,
-    const int               p,
-    const int               G,
-    RNG&                    rng,
-    const SimulationParams& params) {
+  DataPacket simulate(int const n, int const p, int const G, RNG& rng, SimulationParams const& params) {
     types::FeatureMatrix x(n, p);
     types::ResponseVector y(n);
 
@@ -30,9 +25,9 @@ namespace ppforest2::stats {
     return DataPacket(x, y);
   }
 
-  Split split(const DataPacket& data, float train_ratio, RNG& rng) {
-    const int n          = data.x.rows();
-    const int train_size = static_cast<int>(n * train_ratio);
+  Split split(DataPacket const& data, float train_ratio, RNG& rng) {
+    int const n          = data.x.rows();
+    int const train_size = static_cast<int>(n * train_ratio);
 
     GroupPartition spec(data.y);
 
@@ -42,7 +37,7 @@ namespace ppforest2::stats {
     train_indices.reserve(train_size);
     test_indices.reserve(n - train_size);
 
-    for (const auto& group : data.groups) {
+    for (auto const& group : data.groups) {
       int group_start      = spec.group_start(group);
       int group_size       = spec.group_size(group);
       int group_end        = group_start + group_size - 1;
@@ -55,9 +50,6 @@ namespace ppforest2::stats {
       test_indices.insert(test_indices.end(), group_indices.begin() + group_train_size, group_indices.end());
     }
 
-    return {
-      .tr = train_indices,
-      .te = test_indices
-    };
+    return {.tr = train_indices, .te = test_indices};
   }
 }
