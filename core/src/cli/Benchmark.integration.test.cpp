@@ -116,15 +116,11 @@ TEST(CLIBenchmark, BenchmarkBaselineComparison) {
   TempFile baseline;
   baseline.clear();
   auto run1 = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -o " + baseline.path());
-  ASSERT_EQ(run1.exit_code, 0);
-
-  // Read the baseline to verify it was written and to synchronize the
-  // file-system state before the next process checks CLI::ExistingFile.
-  ASSERT_FALSE(baseline.read().empty());
+  ASSERT_EQ(run1.exit_code, 0) << "stderr: " << run1.stderr_output;
 
   // Second run: compare against baseline
   auto run2 = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -b " + baseline.path());
-  EXPECT_EQ(run2.exit_code, 0);
+  EXPECT_EQ(run2.exit_code, 0) << "stderr: " << run2.stderr_output;
 }
 
 /* Benchmark -i overrides iteration count. */

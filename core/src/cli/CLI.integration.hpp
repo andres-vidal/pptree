@@ -52,6 +52,7 @@ inline std::string const GLASS_CSV  = DATA_DIR + "/glass.csv";
 struct ProcessResult {
   int exit_code;
   std::string stdout_output;
+  std::string stderr_output;
 };
 
 /**
@@ -64,16 +65,18 @@ struct ProcessResult {
  * @return ProcessResult with exit code and captured stdout.
  */
 inline ProcessResult run_ppforest2(std::string const& args) {
+  ppforest2::io::TempFile stderr_file;
+
 #ifdef _WIN32
-  std::string cmd = BINARY + " " + args + " 2>NUL";
+  std::string cmd = BINARY + " " + args + " 2>\"" + stderr_file.path() + "\"";
   FILE* pipe      = _popen(cmd.c_str(), "r");
 #else
-  std::string cmd = BINARY + " " + args + " 2>/dev/null";
+  std::string cmd = BINARY + " " + args + " 2>\"" + stderr_file.path() + "\"";
   FILE* pipe      = popen(cmd.c_str(), "r");
 #endif
 
   if (!pipe) {
-    return {-1, ""};
+    return {-1, "", ""};
   }
 
   std::string output;
@@ -89,7 +92,7 @@ inline ProcessResult run_ppforest2(std::string const& args) {
   int exit_code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
 #endif
 
-  return {exit_code, output};
+  return {exit_code, output, stderr_file.read()};
 }
 
 using ppforest2::io::TempDir;
