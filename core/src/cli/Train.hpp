@@ -45,7 +45,7 @@ namespace ppforest2::cli {
    */
   TrainResult train_model(
       ppforest2::types::FeatureMatrix const& x,
-      ppforest2::types::ResponseVector const& y,
+      ppforest2::types::OutcomeVector const& y,
       CLIOptions const& params,
       ppforest2::stats::RNG& rng
   );

@@ -149,34 +149,64 @@ namespace ppforest2::cli {
       if (scenario_json.contains("size"))
         s.size = scenario_json["size"].get<int>();
 
-      if (scenario_json.contains("vars")) {
-        auto spec = ppforest2::cli::parse_vars(scenario_json["vars"]);
+      if (scenario_json.contains("p_vars")) {
+        auto spec = ppforest2::cli::parse_vars(scenario_json["p_vars"]);
 
         if (spec.is_proportion) {
-          s.vars = spec.value;
+          s.p_vars = spec.value;
         } else {
           invariant(s.p > 0, "p must be set before using integer vars count");
-          s.vars = spec.value / s.p;
+          s.p_vars = spec.value / s.p;
         }
+      } else if (scenario_json.contains("n_vars")) {
+        invariant(s.p > 0, "p must be set before using integer n_vars count");
+        s.p_vars = static_cast<float>(scenario_json["n_vars"].get<int>()) / s.p;
       }
 
       if (scenario_json.contains("lambda"))
         s.lambda = scenario_json["lambda"].get<float>();
 
-      if (scenario_json.contains("threads"))
+      // Strategy configs (JSON objects or strings)
+      auto apply_strategy = [&](std::string const& key, nlohmann::json& target) {
+        if (!scenario_json.contains(key)) {
+          return;
+        }
+
+        auto const& val = scenario_json[key];
+
+        if (val.is_object()) {
+          target = val;
+        } else if (val.is_string()) {
+          target = strategy_string_to_json(val.get<std::string>());
+        }
+      };
+
+      apply_strategy("pp", s.pp_config);
+      apply_strategy("vars", s.vars_config);
+      apply_strategy("cutpoint", s.cutpoint_config);
+      apply_strategy("stop", s.stop_config);
+      apply_strategy("binarize", s.binarize_config);
+      apply_strategy("partition", s.partition_config);
+
+      if (scenario_json.contains("threads")) {
         s.threads = scenario_json["threads"].get<int>();
+      }
 
-      if (scenario_json.contains("train_ratio"))
+      if (scenario_json.contains("train_ratio")) {
         s.train_ratio = scenario_json["train_ratio"].get<float>();
+      }
 
-      if (scenario_json.contains("seed"))
+      if (scenario_json.contains("seed")) {
         s.seed = scenario_json["seed"].get<int>();
+      }
 
-      if (scenario_json.contains("warmup"))
+      if (scenario_json.contains("warmup")) {
         s.warmup = scenario_json["warmup"].get<int>();
+      }
 
-      if (scenario_json.contains("iterations"))
+      if (scenario_json.contains("iterations")) {
         s.iterations = scenario_json["iterations"].get<int>();
+      }
 
       if (scenario_json.contains("convergence")) {
         s.convergence = parse_convergence(scenario_json["convergence"]);
@@ -201,12 +231,45 @@ namespace ppforest2::cli {
       }
 
       invariant(s.size >= 0, fmt::format("Scenario '{}': size must be >= 0", s.name));
-      invariant(s.vars > 0 && s.vars <= 1, fmt::format("Scenario '{}': vars must be in (0, 1]", s.name));
+      invariant(s.p_vars > 0 && s.p_vars <= 1, fmt::format("Scenario '{}': p_vars must be in (0, 1]", s.name));
       invariant(s.lambda >= 0 && s.lambda <= 1, fmt::format("Scenario '{}': lambda must be in [0, 1]", s.name));
       invariant(
           s.train_ratio > 0 && s.train_ratio < 1, fmt::format("Scenario '{}': train_ratio must be in (0, 1)", s.name)
       );
       invariant(s.warmup >= 0, fmt::format("Scenario '{}': warmup must be >= 0", s.name));
+    }
+
+    /**
+   * @brief Convert a JSON strategy config to a CLI string.
+   *
+   * E.g. `{"name": "pda", "lambda": 0.3}` → `"pda:lambda=0.3"`.
+   */
+    std::string json_to_strategy_string(nlohmann::json const& j) {
+      std::string result = j["name"].get<std::string>();
+      bool first         = true;
+
+      for (auto const& [key, val] : j.items()) {
+        if (key == "name") {
+          continue;
+        }
+
+        result += first ? ":" : ",";
+        first = false;
+
+        result += key + "=";
+
+        if (val.is_number_integer()) {
+          result += std::to_string(val.get<int>());
+        } else if (val.is_number_float()) {
+          result += fmt::format("{:g}", val.get<double>());
+        } else if (val.is_string()) {
+          result += val.get<std::string>();
+        } else if (val.is_boolean()) {
+          result += val.get<bool>() ? "true" : "false";
+        }
+      }
+
+      return result;
     }
 
     /**
@@ -226,7 +289,7 @@ namespace ppforest2::cli {
 
       if (s.data.empty()) {
         cmd = fmt::format(
-            "\"{}\" -q --no-color evaluate --simulate {}x{}x{} -r {} -p {} -o \"{}\"",
+            R"("{}" -q --no-color evaluate --simulate {}x{}x{} -r {} -p {} -o "{}")",
             binary_path,
             s.n,
             s.p,
@@ -237,7 +300,7 @@ namespace ppforest2::cli {
         );
       } else {
         cmd = fmt::format(
-            "\"{}\" -q --no-color evaluate --data \"{}\" -r {} -p {} -o \"{}\"",
+            R"("{}" -q --no-color evaluate --data "{}" -r {} -p {} -o "{}")",
             binary_path,
             s.data,
             s.seed,
@@ -247,12 +310,41 @@ namespace ppforest2::cli {
       }
 
       if (s.size > 0) {
-        cmd += fmt::format(" -n {} -v {}", s.size, s.vars);
+        cmd += fmt::format(" -n {}", s.size);
+
+        // vars: use strategy config if set, otherwise shortcut
+        if (!s.vars_config.is_null()) {
+          cmd += fmt::format(" --vars {}", json_to_strategy_string(s.vars_config));
+        } else {
+          cmd += fmt::format(" --p-vars {}", s.p_vars);
+        }
       } else {
         cmd += " -n 0";
       }
 
-      cmd += fmt::format(" -l {}", s.lambda);
+      // pp: use strategy config if set, otherwise lambda shortcut
+      if (!s.pp_config.is_null()) {
+        cmd += fmt::format(" --pp {}", json_to_strategy_string(s.pp_config));
+      } else {
+        cmd += fmt::format(" -l {}", s.lambda);
+      }
+
+      // Other strategy configs
+      if (!s.cutpoint_config.is_null()) {
+        cmd += fmt::format(" --cutpoint {}", json_to_strategy_string(s.cutpoint_config));
+      }
+
+      if (!s.stop_config.is_null()) {
+        cmd += fmt::format(" --stop {}", json_to_strategy_string(s.stop_config));
+      }
+
+      if (!s.binarize_config.is_null()) {
+        cmd += fmt::format(" --binarize {}", json_to_strategy_string(s.binarize_config));
+      }
+
+      if (!s.partition_config.is_null()) {
+        cmd += fmt::format(" --partition {}", json_to_strategy_string(s.partition_config));
+      }
 
       if (s.threads > 0) {
         cmd += fmt::format(" --threads {}", s.threads);
@@ -306,7 +398,7 @@ namespace ppforest2::cli {
       }
 
       result.size        = s.size;
-      result.vars        = s.vars;
+      result.p_vars      = s.p_vars;
       result.train_ratio = s.train_ratio;
 
       result.runs           = j.value("runs", 0);
@@ -386,8 +478,8 @@ namespace ppforest2::cli {
         sr.p              = r.value("p", 0);
         sr.g              = r.value("g", 0);
         sr.size           = r.value("size", 0);
-        sr.vars           = r.value("vars", 0.0f);
-        sr.train_ratio    = r.value("train_ratio", 0.7f);
+        sr.p_vars         = r.value("p_vars", 0.0F);
+        sr.train_ratio    = r.value("train_ratio", 0.7F);
         sr.runs           = r.value("runs", 0);
         sr.mean_time_ms   = r.value("mean_time_ms", 0.0);
         sr.std_time_ms    = r.value("std_time_ms", 0.0);
@@ -423,7 +515,7 @@ namespace ppforest2::cli {
       rj["p"]                = r.p;
       rj["g"]                = r.g;
       rj["size"]             = r.size;
-      rj["vars"]             = r.vars;
+      rj["p_vars"]           = r.p_vars;
       rj["train_ratio"]      = r.train_ratio;
       rj["runs"]             = r.runs;
       rj["mean_time_ms"]     = r.mean_time_ms;
@@ -457,12 +549,13 @@ namespace ppforest2::cli {
     std::string full = "\"" + cmd + "\" 2>NUL";
     FILE* pipe       = _popen(full.c_str(), "r");
 #else
-    std::string full = cmd + " 2>/dev/null";
-    FILE* pipe       = popen(full.c_str(), "r");
+    std::string const full = cmd + " 2>/dev/null";
+    FILE* pipe             = popen(full.c_str(), "r");
 #endif
 
-    if (!pipe)
+    if (!pipe) {
       return -1;
+    }
 
     // Drain the pipe (stdout is empty due to -q, but must be consumed)
     char buffer[4096];
@@ -480,7 +573,7 @@ namespace ppforest2::cli {
   }
 
   ScenarioResult run_scenario(Scenario const& scenario, std::string const& binary_path, bool quiet) {
-    ppforest2::io::TempFile output;
+    ppforest2::io::TempFile const output;
     output.clear();
     std::string cmd = build_evaluate_command(scenario, binary_path, output.path());
 
@@ -489,7 +582,7 @@ namespace ppforest2::cli {
     invariant(ret == 0, fmt::format("Scenario '{}' failed (exit code {})", scenario.name, ret));
 
     ScenarioResult result   = parse_evaluate_output(output.path(), scenario);
-    result.scenario_time_ms = wall_ms;
+    result.scenario_time_ms = static_cast<double>(wall_ms);
     return result;
   }
 
@@ -520,7 +613,7 @@ namespace ppforest2::cli {
       return 0;
     });
 
-    result.total_time_ms = total_ms;
+    result.total_time_ms = static_cast<double>(total_ms);
 
     return result;
   }
@@ -538,7 +631,7 @@ namespace ppforest2::cli {
 
     BenchmarkSuite suite;
 
-    if (int rc = out.try_or_fail([&] { suite = parse_suite(params.benchmark.scenarios_path); })) {
+    if (int const rc = out.try_or_fail([&] { suite = parse_suite(params.benchmark.scenarios_path); })) {
       return rc;
     }
 
@@ -563,7 +656,7 @@ namespace ppforest2::cli {
     // Run scenarios
     SuiteResult result;
 
-    if (int rc = out.try_or_fail([&] {
+    if (int const rc = out.try_or_fail([&] {
           result = run_suite(suite, binary_path, params.quiet, [&](int idx, int total, std::string const& name) {
             if (idx < total) {
               out.indent();
@@ -579,10 +672,11 @@ namespace ppforest2::cli {
     std::optional<SuiteResult> baseline;
 
     if (!params.benchmark.baseline_path.empty()) {
-      if (int rc = out.try_or_fail(
+      if (int const rc = out.try_or_fail(
               [&] { baseline = parse_results(params.benchmark.baseline_path); }, "Failed to load baseline"
-          ))
+          )) {
         return rc;
+      }
     }
 
     // Print results
@@ -595,15 +689,17 @@ namespace ppforest2::cli {
 
     // Export results
     if (!params.benchmark.output.empty()) {
-      if (int rc = out.try_or_fail([&] { write_results_json(result, params.benchmark.output); }))
+      if (int const rc = out.try_or_fail([&] { write_results_json(result, params.benchmark.output); })) {
         return rc;
+      }
 
       out.saved("Results", params.benchmark.output);
     }
 
     if (!params.benchmark.csv.empty()) {
-      if (int rc = out.try_or_fail([&] { write_results_csv(result, params.benchmark.csv); }))
+      if (int const rc = out.try_or_fail([&] { write_results_csv(result, params.benchmark.csv); })) {
         return rc;
+      }
 
       out.saved("CSV", params.benchmark.csv);
     }

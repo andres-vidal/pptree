@@ -15,12 +15,12 @@ using json = nlohmann::json;
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, IsForestTrue) {
-  auto spec = TrainingSpec::make(pp::pda(0.3f), dr::uniform(2), sr::mean_of_means(), 5, 0, 2, 3);
+  auto spec = TrainingSpec::builder().size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_TRUE(spec->is_forest());
 }
 
 TEST(TrainingSpec, IsForestFalse) {
-  auto spec = TrainingSpec::make(pp::pda(0.3f), dr::uniform(2), sr::mean_of_means(), 0, 0, 2, 3);
+  auto spec = TrainingSpec::builder().threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_FALSE(spec->is_forest());
 }
 
@@ -29,12 +29,12 @@ TEST(TrainingSpec, IsForestFalse) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ResolveThreadsExplicit) {
-  auto spec = TrainingSpec::make(pp::pda(0.3f), dr::uniform(2), sr::mean_of_means(), 5, 0, 4, 3);
+  auto spec = TrainingSpec::builder().size(5).threads(4).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_EQ(spec->resolve_threads(), 4);
 }
 
 TEST(TrainingSpec, ResolveThreadsDefault) {
-  auto spec = TrainingSpec::make(pp::pda(0.3f), dr::uniform(2), sr::mean_of_means(), 5, 0, 0, 3);
+  auto spec = TrainingSpec::builder().size(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_GT(spec->resolve_threads(), 0);
 }
 
@@ -43,10 +43,9 @@ TEST(TrainingSpec, ResolveThreadsDefault) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ToJsonRoundTrip) {
-  auto spec = TrainingSpec::make(pp::pda(0.3f), dr::uniform(2), sr::mean_of_means(), 5, 0, 2, 5);
+  auto spec = TrainingSpec::builder().size(5).threads(2).max_retries(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
 
-  json j;
-  spec->to_json(j);
+  auto j        = spec->to_json();
   auto restored = TrainingSpec::from_json(j);
 
   EXPECT_EQ(restored->size, 5);
@@ -54,16 +53,13 @@ TEST(TrainingSpec, ToJsonRoundTrip) {
   EXPECT_EQ(restored->threads, 2);
   EXPECT_EQ(restored->max_retries, 5);
 
-  json j2;
-  restored->to_json(j2);
-  EXPECT_EQ(j, j2);
+  EXPECT_EQ(j, restored->to_json());
 }
 
 TEST(TrainingSpec, ToJsonRoundTripSingleTree) {
-  auto spec = TrainingSpec::make(pp::pda(0.3f), dr::noop(), sr::mean_of_means(), 0, 0, 0, 3);
+  auto spec = TrainingSpec::builder().pp(pp::pda(0.3F)).make();
 
-  json j;
-  spec->to_json(j);
+  auto j        = spec->to_json();
   auto restored = TrainingSpec::from_json(j);
 
   EXPECT_EQ(restored->size, 0);
@@ -71,9 +67,7 @@ TEST(TrainingSpec, ToJsonRoundTripSingleTree) {
   EXPECT_EQ(restored->threads, 0);
   EXPECT_EQ(restored->max_retries, 3);
 
-  json j2;
-  restored->to_json(j2);
-  EXPECT_EQ(j, j2);
+  EXPECT_EQ(j, restored->to_json());
 }
 
 // ---------------------------------------------------------------------------
@@ -81,10 +75,14 @@ TEST(TrainingSpec, ToJsonRoundTripSingleTree) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, FromJsonDefaultsOptionalFields) {
-  json j = {
+  json const j = {
       {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
-      {"dr", {{"name", "uniform"}, {"n_vars", 2}}},
-      {"sr", {{"name", "mean_of_means"}}}
+      {"vars", {{"name", "uniform"}, {"count", 2}}},
+      {"cutpoint", {{"name", "mean_of_means"}}},
+      {"stop", {{"name", "pure_node"}}},
+      {"binarize", {{"name", "largest_gap"}}},
+      {"partition", {{"name", "by_group"}}},
+      {"leaf", {{"name", "majority_vote"}}}
   };
 
   auto spec = TrainingSpec::from_json(j);
@@ -100,20 +98,80 @@ TEST(TrainingSpec, FromJsonDefaultsOptionalFields) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, FromJsonMissingPPThrows) {
-  json j = {{"dr", {{"name", "uniform"}, {"n_vars", 2}}}, {"sr", {{"name", "mean_of_means"}}}};
-
+  json const j = {
+      {"vars", {{"name", "uniform"}, {"count", 2}}},
+      {"cutpoint", {{"name", "mean_of_means"}}},
+      {"stop", {{"name", "pure_node"}}},
+      {"binarize", {{"name", "largest_gap"}}},
+      {"partition", {{"name", "by_group"}}}
+  };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
 
-TEST(TrainingSpec, FromJsonMissingDRThrows) {
-  json j = {{"pp", {{"name", "pda"}, {"lambda", 0.3}}}, {"sr", {{"name", "mean_of_means"}}}};
-
+TEST(TrainingSpec, FromJsonMissingVarsThrows) {
+  json const j = {
+      {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
+      {"cutpoint", {{"name", "mean_of_means"}}},
+      {"stop", {{"name", "pure_node"}}},
+      {"binarize", {{"name", "largest_gap"}}},
+      {"partition", {{"name", "by_group"}}}
+  };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
 
-TEST(TrainingSpec, FromJsonMissingSRThrows) {
-  json j = {{"pp", {{"name", "pda"}, {"lambda", 0.3}}}, {"dr", {{"name", "uniform"}, {"n_vars", 2}}}};
+TEST(TrainingSpec, FromJsonMissingCutpointThrows) {
+  json const j = {
+      {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
+      {"vars", {{"name", "uniform"}, {"count", 2}}},
+      {"stop", {{"name", "pure_node"}}},
+      {"binarize", {{"name", "largest_gap"}}},
+      {"partition", {{"name", "by_group"}}}
+  };
+  EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
+}
 
+TEST(TrainingSpec, FromJsonMissingStopThrows) {
+  json const j = {
+      {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
+      {"vars", {{"name", "uniform"}, {"count", 2}}},
+      {"cutpoint", {{"name", "mean_of_means"}}},
+      {"binarize", {{"name", "largest_gap"}}},
+      {"partition", {{"name", "by_group"}}}
+  };
+  EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
+}
+
+TEST(TrainingSpec, FromJsonMissingBinarizeThrows) {
+  json const j = {
+      {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
+      {"vars", {{"name", "uniform"}, {"count", 2}}},
+      {"cutpoint", {{"name", "mean_of_means"}}},
+      {"stop", {{"name", "pure_node"}}},
+      {"partition", {{"name", "by_group"}}}
+  };
+  EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
+}
+
+TEST(TrainingSpec, FromJsonMissingPartitionThrows) {
+  json const j = {
+      {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
+      {"vars", {{"name", "uniform"}, {"count", 2}}},
+      {"cutpoint", {{"name", "mean_of_means"}}},
+      {"stop", {{"name", "pure_node"}}},
+      {"binarize", {{"name", "largest_gap"}}}
+  };
+  EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
+}
+
+TEST(TrainingSpec, FromJsonMissingLeafThrows) {
+  json const j = {
+      {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
+      {"vars", {{"name", "uniform"}, {"count", 2}}},
+      {"cutpoint", {{"name", "mean_of_means"}}},
+      {"stop", {{"name", "pure_node"}}},
+      {"binarize", {{"name", "largest_gap"}}},
+      {"partition", {{"name", "by_group"}}}
+  };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
 
@@ -122,14 +180,13 @@ TEST(TrainingSpec, FromJsonMissingSRThrows) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, DisplayNameNotInJson) {
-  auto spec = TrainingSpec::make(pp::pda(0.3f), dr::uniform(2), sr::mean_of_means(), 5, 0, 2, 3);
-
-  json j;
-  spec->to_json(j);
+  auto spec = TrainingSpec::builder().size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto j    = spec->to_json();
 
   EXPECT_FALSE(j["pp"].contains("display_name"));
-  EXPECT_FALSE(j["dr"].contains("display_name"));
-  EXPECT_FALSE(j["sr"].contains("display_name"));
+  EXPECT_FALSE(j["vars"].contains("display_name"));
+  EXPECT_FALSE(j["cutpoint"].contains("display_name"));
+  EXPECT_FALSE(j["leaf"].contains("display_name"));
 }
 
 // ---------------------------------------------------------------------------
@@ -137,19 +194,15 @@ TEST(TrainingSpec, DisplayNameNotInJson) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ToJsonContainsAllStrategyFields) {
-  auto spec = TrainingSpec::make(pp::pda(0.3f), dr::uniform(2), sr::mean_of_means(), 5, 0, 2, 3);
+  auto spec = TrainingSpec::builder().size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto j    = spec->to_json();
 
-  json j;
-  spec->to_json(j);
 
-  EXPECT_TRUE(j["pp"].contains("name"));
-  EXPECT_TRUE(j["pp"].contains("lambda"));
-  EXPECT_EQ(j["pp"]["name"], "pda");
-
-  EXPECT_TRUE(j["dr"].contains("name"));
-  EXPECT_TRUE(j["dr"].contains("n_vars"));
-  EXPECT_EQ(j["dr"]["name"], "uniform");
-
-  EXPECT_TRUE(j["sr"].contains("name"));
-  EXPECT_EQ(j["sr"]["name"], "mean_of_means");
+  EXPECT_EQ(j["pp"], pp::pda(0.3F)->to_json());
+  EXPECT_EQ(j["vars"], vars::uniform(2)->to_json());
+  EXPECT_EQ(j["cutpoint"], cutpoint::mean_of_means()->to_json());
+  EXPECT_EQ(j["stop"], stop::pure_node()->to_json());
+  EXPECT_EQ(j["binarize"], binarize::largest_gap()->to_json());
+  EXPECT_EQ(j["partition"], partition::by_group()->to_json());
+  EXPECT_EQ(j["leaf"], leaf::majority_vote()->to_json());
 }

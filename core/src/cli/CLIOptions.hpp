@@ -54,6 +54,13 @@ namespace ppforest2::cli {
   };
 
   /**
+   * @brief Parse a CLI strategy string into a JSON object.
+   *
+   * Converts e.g. `"pda:lambda=0.3"` to `{"name": "pda", "lambda": 0.3}`.
+   */
+  nlohmann::json strategy_string_to_json(std::string const& input);
+
+  /**
    * @brief Warn the user about parameters that are ignored for single-tree training.
    */
   void warn_unused_params(io::Output& out, CLIOptions const& params);
@@ -64,7 +71,7 @@ namespace ppforest2::cli {
    * @param params     The CLI options to initialize (modified in place).
    * @param total_vars Total number of feature columns (0 to skip vars resolution).
    */
-  void init_params(CLIOptions& params, int total_vars = 0);
+  void init_params(CLIOptions& params, unsigned int total_vars = 0);
 
   /**
    * @brief Parse command-line arguments into a CLIOptions struct.

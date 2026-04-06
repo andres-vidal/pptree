@@ -9,6 +9,7 @@
 #include "cli/Benchmark.hpp"
 #include "cli/Summarize.hpp"
 #include "cli/VarsSpec.hpp"
+#include "ppforest2.hpp"
 
 #include <CLI/CLI.hpp>
 #include <nlohmann/json.hpp>
@@ -26,6 +27,57 @@
 #endif
 
 namespace ppforest2::cli {
+  nlohmann::json strategy_string_to_json(std::string const& input) {
+    nlohmann::json j;
+
+    auto colon = input.find(':');
+    j["name"]  = (colon == std::string::npos) ? input : input.substr(0, colon);
+
+    if (colon == std::string::npos) {
+      return j;
+    }
+
+    std::string rest = input.substr(colon + 1);
+    std::istringstream ss(rest);
+    std::string token;
+
+    while (std::getline(ss, token, ',')) {
+      auto eq = token.find('=');
+
+      if (eq == std::string::npos) {
+        throw std::runtime_error("Invalid parameter (expected key=value): " + token);
+      }
+
+      std::string key = token.substr(0, eq);
+      std::string val = token.substr(eq + 1);
+
+      // Auto-detect value type: integer → float → string
+      try {
+        size_t pos = 0;
+        int ival   = std::stoi(val, &pos);
+
+        if (pos == val.size()) {
+          j[key] = ival;
+          continue;
+        }
+      } catch (...) {}
+
+      try {
+        size_t pos  = 0;
+        double dval = std::stod(val, &pos);
+
+        if (pos == val.size()) {
+          j[key] = dval;
+          continue;
+        }
+      } catch (...) {}
+
+      j[key] = val;
+    }
+
+    return j;
+  }
+
   namespace {
     /**
    * @brief Check whether a CLI option was explicitly set on the command line.
@@ -45,70 +97,10 @@ namespace ppforest2::cli {
     }
 
     /**
-   * @brief Parse a CLI strategy string into a JSON object.
-   *
-   * Converts e.g. `"pda:lambda=0.3"` to `{"name": "pda", "lambda": 0.3}`.
-   * Values are auto-detected as integer, float, or string.
-   */
-    nlohmann::json strategy_string_to_json(std::string const& input) {
-      nlohmann::json j;
-
-      auto colon = input.find(':');
-      j["name"]  = (colon == std::string::npos) ? input : input.substr(0, colon);
-
-      if (colon == std::string::npos)
-        return j;
-
-      std::string rest = input.substr(colon + 1);
-      std::istringstream ss(rest);
-      std::string token;
-
-      while (std::getline(ss, token, ',')) {
-        auto eq = token.find('=');
-
-        if (eq == std::string::npos) {
-          throw std::runtime_error("Invalid parameter (expected key=value): " + token);
-        }
-
-        std::string key = token.substr(0, eq);
-        std::string val = token.substr(eq + 1);
-
-        // Apply CLI → JSON key aliases
-        if (key == "vars")
-          key = "n_vars";
-
-        // Auto-detect value type: integer → float → string
-        try {
-          size_t pos = 0;
-          int ival   = std::stoi(val, &pos);
-
-          if (pos == val.size()) {
-            j[key] = ival;
-            continue;
-          }
-        } catch (...) {}
-
-        try {
-          size_t pos  = 0;
-          double dval = std::stod(val, &pos);
-
-          if (pos == val.size()) {
-            j[key] = dval;
-            continue;
-          }
-        } catch (...) {}
-
-        j[key] = val;
-      }
-
-      return j;
-    }
-
-    /**
    * @brief Load a JSON config file and apply values to CLI options.
    *
    * Config values are only applied where the CLI did not set an explicit
-   * value.  Strategy objects (pp, dr, sr) flow through as JSON directly
+   * value.  Strategy objects (pp, vars, cutpoint) flow through as JSON directly
    * without flattening to CLI strings.
    */
     void apply_config(CLIOptions& params, CLI::App& app) {
@@ -161,16 +153,18 @@ namespace ppforest2::cli {
       apply("threads", "threads", params.model.threads);
       apply("max-retries", "max_retries", params.model.max_retries);
 
-      // Vars (string or number in config)
-      if (!cli_set("vars", sub, app) && config.contains("vars")) {
-        auto& v = config["vars"];
+      // Vars shortcuts (n-vars / p-vars from config)
+      if (!cli_set("n-vars", sub, app) && !cli_set("p-vars", sub, app)) {
+        if (config.contains("n_vars") && config["n_vars"].is_number_integer()) {
+          params.model.n_vars = config["n_vars"].get<int>();
+        } else if (config.contains("p_vars")) {
+          auto& v = config["p_vars"];
 
-        if (v.is_string())
-          params.model.vars_input = v.get<std::string>();
-        else if (v.is_number_integer())
-          params.model.vars_input = std::to_string(v.get<int>());
-        else if (v.is_number_float())
-          params.model.vars_input = fmt::format("{:g}", v.get<double>());
+          if (v.is_number_float() || v.is_number_integer())
+            params.model.p_vars_input = fmt::format("{:g}", v.get<double>());
+          else if (v.is_string())
+            params.model.p_vars_input = v.get<std::string>();
+        }
       }
 
       // Data path
@@ -182,9 +176,13 @@ namespace ppforest2::cli {
 
       // Strategy objects: store JSON directly if CLI didn't provide
       // explicit strategy flags or shortcut params for that strategy.
-      bool cli_pp = cli_set("pp", sub, app) || cli_set("lambda", sub, app);
-      bool cli_dr = cli_set("dr", sub, app) || cli_set("vars", sub, app);
-      bool cli_sr = cli_set("sr", sub, app);
+      bool cli_pp        = cli_set("pp", sub, app) || cli_set("lambda", sub, app);
+      bool cli_vars      = cli_set("vars", sub, app) || cli_set("n-vars", sub, app) || cli_set("p-vars", sub, app);
+      bool cli_cutpoint  = cli_set("cutpoint", sub, app);
+      bool cli_stop      = cli_set("stop", sub, app);
+      bool cli_binarize  = cli_set("binarize", sub, app);
+      bool cli_partition = cli_set("partition", sub, app);
+      bool cli_leaf      = cli_set("leaf", sub, app);
 
       if (!cli_pp && config.contains("pp")) {
         if (config["pp"].is_object())
@@ -193,18 +191,46 @@ namespace ppforest2::cli {
           params.model.pp_input = config["pp"].get<std::string>();
       }
 
-      if (!cli_dr && config.contains("dr")) {
-        if (config["dr"].is_object())
-          params.model.dr_config = config["dr"];
-        else if (config["dr"].is_string())
-          params.model.dr_input = config["dr"].get<std::string>();
+      if (!cli_vars && config.contains("vars")) {
+        if (config["vars"].is_object())
+          params.model.vars_config = config["vars"];
+        else if (config["vars"].is_string())
+          params.model.vars_input = config["vars"].get<std::string>();
       }
 
-      if (!cli_sr && config.contains("sr")) {
-        if (config["sr"].is_object())
-          params.model.sr_config = config["sr"];
-        else if (config["sr"].is_string())
-          params.model.sr_input = config["sr"].get<std::string>();
+      if (!cli_cutpoint && config.contains("cutpoint")) {
+        if (config["cutpoint"].is_object())
+          params.model.cutpoint_config = config["cutpoint"];
+        else if (config["cutpoint"].is_string())
+          params.model.cutpoint_input = config["cutpoint"].get<std::string>();
+      }
+
+      if (!cli_stop && config.contains("stop")) {
+        if (config["stop"].is_object())
+          params.model.stop_config = config["stop"];
+        else if (config["stop"].is_string())
+          params.model.stop_input = config["stop"].get<std::string>();
+      }
+
+      if (!cli_binarize && config.contains("binarize")) {
+        if (config["binarize"].is_object())
+          params.model.binarize_config = config["binarize"];
+        else if (config["binarize"].is_string())
+          params.model.binarize_input = config["binarize"].get<std::string>();
+      }
+
+      if (!cli_partition && config.contains("partition")) {
+        if (config["partition"].is_object())
+          params.model.partition_config = config["partition"];
+        else if (config["partition"].is_string())
+          params.model.partition_input = config["partition"].get<std::string>();
+      }
+
+      if (!cli_leaf && config.contains("leaf")) {
+        if (config["leaf"].is_object())
+          params.model.leaf_config = config["leaf"];
+        else if (config["leaf"].is_string())
+          params.model.leaf_input = config["leaf"].get<std::string>();
       }
 
       // Warn about unknown keys
@@ -215,10 +241,15 @@ namespace ppforest2::cli {
           "seed",
           "threads",
           "max_retries",
+          "n_vars",
+          "p_vars",
           "vars",
           "pp",
-          "dr",
-          "sr",
+          "cutpoint",
+          "stop",
+          "binarize",
+          "partition",
+          "leaf",
           "data",
           "train_ratio",
           "iterations",
@@ -281,61 +312,112 @@ namespace ppforest2::cli {
         params.model.pp_config = parse_strategy_input(params.model.pp_input, "pp");
       }
 
-      if (!params.model.dr_input.empty()) {
-        params.model.dr_config = parse_strategy_input(params.model.dr_input, "dr");
+      if (!params.model.vars_input.empty()) {
+        params.model.vars_config = parse_strategy_input(params.model.vars_input, "vars");
       }
 
-      if (!params.model.sr_input.empty()) {
-        params.model.sr_config = parse_strategy_input(params.model.sr_input, "sr");
+      if (!params.model.cutpoint_input.empty()) {
+        params.model.cutpoint_config = parse_strategy_input(params.model.cutpoint_input, "cutpoint");
+      }
+
+      if (!params.model.stop_input.empty()) {
+        params.model.stop_config = parse_strategy_input(params.model.stop_input, "stop");
+      }
+
+      if (!params.model.binarize_input.empty()) {
+        params.model.binarize_config = parse_strategy_input(params.model.binarize_input, "binarize");
+      }
+
+      if (!params.model.partition_input.empty()) {
+        params.model.partition_config = parse_strategy_input(params.model.partition_input, "partition");
+      }
+
+      if (!params.model.leaf_input.empty()) {
+        params.model.leaf_config = parse_strategy_input(params.model.leaf_input, "leaf");
       }
 
       // Validate strategy configs (from CLI strings or config file objects)
       if (!params.model.pp_config.is_null()) {
         try {
-          pp::PPStrategy::from_json(params.model.pp_config);
+          pp::ProjectionPursuit::from_json(params.model.pp_config);
         } catch (std::exception const& e) {
           fmt::print(stderr, "Error: Invalid pp strategy: {}\n", e.what());
           std::exit(1);
         }
       }
 
-      if (!params.model.dr_config.is_null()) {
+      if (!params.model.vars_config.is_null()) {
         try {
-          auto dr_json = params.model.dr_config;
+          auto vars_json = params.model.vars_config;
 
-          if (dr_json.contains("n_vars")) {
-            // n_vars can be an integer (count) or float (proportion).
-            // Pass through vars_input for resolution in init_params.
-            if (dr_json["n_vars"].is_number_integer()) {
-              params.model.vars_input = std::to_string(dr_json["n_vars"].get<int>());
+          if (vars_json.contains("count")) {
+            // count can be an integer (count) or float (proportion).
+            if (vars_json["count"].is_number_integer()) {
+              params.model.n_vars = vars_json["count"].get<int>();
             } else {
-              params.model.vars_input = fmt::format("{:g}", dr_json["n_vars"].get<double>());
+              params.model.p_vars_input = fmt::format("{:g}", vars_json["count"].get<double>());
             }
 
             // Validate with from_json. For proportions (float), substitute
             // a dummy integer so from_json can validate the strategy name.
-            if (!dr_json["n_vars"].is_number_integer()) {
-              dr_json["n_vars"] = 1;
+            if (!vars_json["count"].is_number_integer()) {
+              vars_json["count"] = 1;
             }
 
-            dr::DRStrategy::from_json(dr_json);
+            vars::VariableSelection::from_json(vars_json);
           } else {
-            // No n_vars (e.g. noop): validate and set sentinel
-            dr::DRStrategy::from_json(dr_json);
+            // No count (e.g. all): validate and set sentinel
+            vars::VariableSelection::from_json(vars_json);
             params.model.n_vars = 0;
             params.model.p_vars = -1;
           }
         } catch (std::exception const& e) {
-          fmt::print(stderr, "Error: Invalid dr strategy: {}\n", e.what());
+          fmt::print(stderr, "Error: Invalid vars strategy: {}\n", e.what());
           std::exit(1);
         }
       }
 
-      if (!params.model.sr_config.is_null()) {
+      if (!params.model.cutpoint_config.is_null()) {
         try {
-          sr::SRStrategy::from_json(params.model.sr_config);
+          cutpoint::SplitCutpoint::from_json(params.model.cutpoint_config);
         } catch (std::exception const& e) {
-          fmt::print(stderr, "Error: Invalid sr strategy: {}\n", e.what());
+          fmt::print(stderr, "Error: Invalid cutpoint strategy: {}\n", e.what());
+          std::exit(1);
+        }
+      }
+
+      if (!params.model.stop_config.is_null()) {
+        try {
+          stop::StopRule::from_json(params.model.stop_config);
+        } catch (std::exception const& e) {
+          fmt::print(stderr, "Error: Invalid stop strategy: {}\n", e.what());
+          std::exit(1);
+        }
+      }
+
+      if (!params.model.binarize_config.is_null()) {
+        try {
+          binarize::Binarization::from_json(params.model.binarize_config);
+        } catch (std::exception const& e) {
+          fmt::print(stderr, "Error: Invalid binarize strategy: {}\n", e.what());
+          std::exit(1);
+        }
+      }
+
+      if (!params.model.partition_config.is_null()) {
+        try {
+          partition::StepPartition::from_json(params.model.partition_config);
+        } catch (std::exception const& e) {
+          fmt::print(stderr, "Error: Invalid partition strategy: {}\n", e.what());
+          std::exit(1);
+        }
+      }
+
+      if (!params.model.leaf_config.is_null()) {
+        try {
+          leaf::LeafStrategy::from_json(params.model.leaf_config);
+        } catch (std::exception const& e) {
+          fmt::print(stderr, "Error: Invalid leaf strategy: {}\n", e.what());
           std::exit(1);
         }
       }
@@ -362,18 +444,22 @@ namespace ppforest2::cli {
         std::exit(1);
       }
 
-      // Interpret --vars input
-      if (!params.model.vars_input.empty()) {
+      // Interpret --p-vars input (fraction or decimal proportion)
+      if (!params.model.p_vars_input.empty()) {
         try {
-          auto spec = parse_vars(params.model.vars_input);
+          auto spec = parse_vars(params.model.p_vars_input);
 
           if (spec.is_proportion) {
             params.model.p_vars = spec.value;
           } else {
-            params.model.n_vars = static_cast<int>(spec.value);
+            // User passed an integer to --p-vars, treat as error
+            fmt::print(
+                stderr, "Error: --p-vars expects a proportion (e.g. 0.5 or 1/2), use --n-vars for integer counts\n"
+            );
+            std::exit(1);
           }
         } catch (std::exception const& e) {
-          fmt::print(stderr, "Error: Invalid --vars value: {}\n", e.what());
+          fmt::print(stderr, "Error: Invalid --p-vars value: {}\n", e.what());
           std::exit(1);
         }
       }
@@ -431,7 +517,7 @@ namespace ppforest2::cli {
       }
 
       if (params.model.p_vars != -1 || params.model.n_vars != -1) {
-        out.println("Warning: --vars parameter is ignored when training a single tree");
+        out.println("Warning: --n-vars/--p-vars parameter is ignored when training a single tree");
         has_warnings = true;
       }
 
@@ -441,7 +527,11 @@ namespace ppforest2::cli {
     }
   }
 
-  void init_params(CLIOptions& params, int total_vars) {
+  int proportion_to_count(float p, unsigned int total) {
+    return static_cast<int>(std::round(static_cast<float>(total) * p));
+  }
+
+  void init_params(CLIOptions& params, unsigned int total_vars) {
     if (params.model.lambda == -1) {
       params.model.lambda = 0.5;
     }
@@ -468,12 +558,12 @@ namespace ppforest2::cli {
 
     if (total_vars > 0 && params.model.size > 0) {
       if (params.model.n_vars != -1) {
-        params.model.p_vars = static_cast<float>(params.model.n_vars) / total_vars;
+        params.model.p_vars = static_cast<float>(params.model.n_vars) / static_cast<float>(total_vars);
       } else if (params.model.p_vars != -1) {
-        params.model.n_vars = std::round(total_vars * params.model.p_vars);
+        params.model.n_vars = proportion_to_count(params.model.p_vars, total_vars);
       } else {
         params.model.p_vars            = 0.5;
-        params.model.n_vars            = std::round(total_vars * params.model.p_vars);
+        params.model.n_vars            = proportion_to_count(params.model.p_vars, total_vars);
         params.model.used_default_vars = true;
       }
     }
@@ -483,16 +573,16 @@ namespace ppforest2::cli {
       params.model.pp_config = {{"name", "pda"}, {"lambda", params.model.lambda}};
     }
 
-    if (params.model.dr_config.is_null()) {
+    if (params.model.vars_config.is_null()) {
       if (params.model.size > 0 && params.model.n_vars > 0) {
-        params.model.dr_config = {{"name", "uniform"}, {"n_vars", params.model.n_vars}};
+        params.model.vars_config = {{"name", "uniform"}, {"count", params.model.n_vars}};
       } else {
-        params.model.dr_config = {{"name", "noop"}};
+        params.model.vars_config = {{"name", "all"}};
       }
     }
 
-    if (params.model.sr_config.is_null()) {
-      params.model.sr_config = {{"name", "mean_of_means"}};
+    if (params.model.cutpoint_config.is_null()) {
+      params.model.cutpoint_config = {{"name", "mean_of_means"}};
     }
   }
 

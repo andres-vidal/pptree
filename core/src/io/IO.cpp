@@ -156,7 +156,7 @@ namespace ppforest2::io::csv {
     int const n = static_cast<int>(raw_rows.size());
 
     types::FeatureMatrix x(n, n_features);
-    types::ResponseVector y(n);
+    types::OutcomeVector y(n);
 
     std::unordered_map<std::string, int> label_mapping;
     std::vector<std::string> label_names;
@@ -178,7 +178,7 @@ namespace ppforest2::io::csv {
         }
       }
 
-      // Response label (last column).
+      // Outcome label (last column).
       std::string const& label_str = row[static_cast<std::size_t>(n_cols - 1)];
 
       if (label_mapping.find(label_str) == label_mapping.end()) {
@@ -196,7 +196,7 @@ namespace ppforest2::io::csv {
     stats::DataPacket data = read(filename);
 
     types::FeatureMatrix x  = data.x;
-    types::ResponseVector y = data.y;
+    types::OutcomeVector y = data.y;
 
     if (!stats::GroupPartition::is_contiguous(y)) {
       stats::sort(x, y);

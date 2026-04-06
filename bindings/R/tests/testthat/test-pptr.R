@@ -136,9 +136,29 @@ describe("pptr training spec", {
     expect_equal(model$training_spec$pp$name, "pda")
   })
 
-  it("the dr strategy is noop", {
+  it("the vars strategy is all", {
     model <- pptr(Type ~ ., data = iris)
-    expect_equal(model$training_spec$dr$name, "noop")
+    expect_equal(model$training_spec$vars$name, "all")
+  })
+
+  it("the stop strategy is pure_node", {
+    model <- pptr(Type ~ ., data = iris)
+    expect_equal(model$training_spec$stop$name, "pure_node")
+  })
+
+  it("the binarize strategy is largest_gap", {
+    model <- pptr(Type ~ ., data = iris)
+    expect_equal(model$training_spec$binarize$name, "largest_gap")
+  })
+
+  it("the partition strategy is by_group", {
+    model <- pptr(Type ~ ., data = iris)
+    expect_equal(model$training_spec$partition$name, "by_group")
+  })
+
+  it("the leaf strategy is majority_vote", {
+    model <- pptr(Type ~ ., data = iris)
+    expect_equal(model$training_spec$leaf$name, "majority_vote")
   })
 })
 
@@ -173,9 +193,42 @@ describe("pptr with strategy objects", {
     expect_equal(j_shortcut, j_strategy)
   })
 
+  it("trains with explicit stop, binarize, partition, leaf", {
+    model <- pptr(Type ~ ., data = iris, stop = stop_pure_node(), binarize = binarize_largest_gap(), partition = partition_by_group(), leaf = leaf_majority_vote(), seed = 0)
+    expect_s3_class(model, "pptr")
+    expect_equal(model$training_spec$stop$name, "pure_node")
+    expect_equal(model$training_spec$binarize$name, "largest_gap")
+    expect_equal(model$training_spec$partition$name, "by_group")
+    expect_equal(model$training_spec$leaf$name, "majority_vote")
+  })
+
+  it("rejects non-stop_strategy objects", {
+    expect_error(
+      pptr(Type ~ ., data = iris, stop = list(name = "pure_node")),
+      "stop_strategy")
+  })
+
+  it("rejects non-binarize_strategy objects", {
+    expect_error(
+      pptr(Type ~ ., data = iris, binarize = list(name = "largest_gap")),
+      "binarize_strategy")
+  })
+
+  it("rejects non-partition_strategy objects", {
+    expect_error(
+      pptr(Type ~ ., data = iris, partition = list(name = "by_group")),
+      "partition_strategy")
+  })
+
+  it("rejects non-leaf_strategy objects", {
+    expect_error(
+      pptr(Type ~ ., data = iris, leaf = list(name = "majority_vote")),
+      "leaf_strategy")
+  })
+
   it("default tree and fully explicit defaults produce identical export", {
     model_default  <- pptr(Type ~ ., data = iris, seed = 0)
-    model_explicit <- pptr(Type ~ ., data = iris, pp = pp_pda(0), sr = sr_mean_of_means(), seed = 0)
+    model_explicit <- pptr(Type ~ ., data = iris, pp = pp_pda(0), cutpoint = cutpoint_mean_of_means(), stop = stop_pure_node(), binarize = binarize_largest_gap(), partition = partition_by_group(), leaf = leaf_majority_vote(), seed = 0)
 
     path_default  <- tempfile(fileext = ".json")
     path_explicit <- tempfile(fileext = ".json")
@@ -202,9 +255,9 @@ describe("pptr with strategy objects", {
       "pp_strategy")
   })
 
-  it("rejects non-sr_strategy objects", {
+  it("rejects non-cutpoint_strategy objects", {
     expect_error(
-      pptr(Type ~ ., data = iris, sr = list(name = "mean_of_means")),
-      "sr_strategy")
+      pptr(Type ~ ., data = iris, cutpoint = list(name = "mean_of_means")),
+      "cutpoint_strategy")
   })
 })

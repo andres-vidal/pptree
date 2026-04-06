@@ -33,6 +33,12 @@
   ASSERT_EQ(a.cols(), b.cols()); \
   ASSERT_EQ(a, b);
 
+#define EXPECT_EQ_DATA(a, b)     \
+  EXPECT_EQ(a.size(), b.size()); \
+  EXPECT_EQ(a.rows(), b.rows()); \
+  EXPECT_EQ(a.cols(), b.cols()); \
+  EXPECT_EQ(a, b);
+
 // Workaround for GCC miscompilation of long overloaded operator, chains
 // (see https://stackoverflow.com/questions/79872387).
 // Use these instead of Eigen's comma initializer (operator<<) for matrices and vectors.

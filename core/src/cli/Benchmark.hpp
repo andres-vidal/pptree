@@ -66,12 +66,20 @@ namespace ppforest2::cli {
 
     // Model parameters
     int size     = 100;
-    float vars   = 0.5f;
-    float lambda = 0.5f;
+    float p_vars = 0.5F;
+    float lambda = 0.5F;
     int threads  = -1;
 
+    // Strategy configs (optional; passed as --pp, --vars, etc. to evaluate)
+    nlohmann::json pp_config;
+    nlohmann::json vars_config;
+    nlohmann::json cutpoint_config;
+    nlohmann::json stop_config;
+    nlohmann::json binarize_config;
+    nlohmann::json partition_config;
+
     // Evaluation parameters
-    float train_ratio = 0.7f;
+    float train_ratio = 0.7F;
     int seed          = 0;
     int warmup        = 0;
 
@@ -92,8 +100,8 @@ namespace ppforest2::cli {
     // Data shape (copied from scenario for reporting; 0 for real-data scenarios)
     int n = 0, p = 0, g = 0;
     int size          = 0;
-    float vars        = 0;
-    float train_ratio = 0.7f;
+    float p_vars      = 0;
+    float train_ratio = 0.7F;
 
     // Aggregated metrics
     int runs             = 0;

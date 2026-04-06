@@ -80,7 +80,7 @@ namespace {
   }
 
   void compare_predictions(
-      json const& expected_json, ResponseVector const& actual, std::vector<std::string> const& group_names
+      json const& expected_json, OutcomeVector const& actual, std::vector<std::string> const& group_names
   ) {
     auto expected = expected_json.get<std::vector<std::string>>();
 
@@ -109,6 +109,7 @@ namespace {
 
     // Compare labels
     std::vector<std::string> actual_labels;
+    actual_labels.reserve(actual.label_index.size());
     for (auto const& [label, idx] : actual.label_index) {
       actual_labels.push_back(group_names[static_cast<std::size_t>(label)]);
     }
@@ -117,11 +118,13 @@ namespace {
   }
 
   void compare_vi(json const& expected_json, std::string const& key, FeatureVector const& actual, float tolerance) {
-    if (!expected_json.contains(key))
+    if (!expected_json.contains(key)) {
       return;
+    }
 
-    if (actual.size() == 0)
+    if (actual.size() == 0) {
       return;
+    }
 
     auto expected = expected_json[key].get<std::vector<float>>();
 
@@ -130,6 +133,33 @@ namespace {
     for (int i = 0; i < actual.size(); ++i) {
       EXPECT_NEAR(expected[i], actual(i), tolerance) << "VI '" << key << "' mismatch at index " << i;
     }
+  }
+
+  void compare_strategy(json const& expected, json const& actual, std::string const& label) {
+    for (auto const& [key, value] : expected.items()) {
+      ASSERT_TRUE(actual.contains(key)) << label << ": missing key '" << key << "'";
+
+      if (value.is_number_float()) {
+        EXPECT_NEAR(value.get<float>(), actual[key].get<float>(), 1e-5f) << label << "." << key;
+      } else {
+        EXPECT_EQ(value, actual[key]) << label << "." << key;
+      }
+    }
+  }
+
+  void compare_config(json const& golden, TrainingSpec const& spec) {
+    auto const& config = golden["config"];
+
+    compare_strategy(config["pp"], spec.pp->to_json(), "pp");
+    compare_strategy(config["vars"], spec.vars->to_json(), "vars");
+    compare_strategy(config["cutpoint"], spec.cutpoint->to_json(), "cutpoint");
+    compare_strategy(config["stop"], spec.stop->to_json(), "stop");
+    compare_strategy(config["binarize"], spec.binarize->to_json(), "binarize");
+    compare_strategy(config["partition"], spec.partition->to_json(), "partition");
+
+    EXPECT_EQ(config["size"].get<int>(), spec.size);
+    EXPECT_EQ(config["seed"].get<int>(), spec.seed);
+    EXPECT_EQ(config["max_retries"].get<int>(), spec.max_retries);
   }
 
   void compare_node(json const& expected, json const& actual, float tolerance, std::string const& path) {
@@ -150,8 +180,8 @@ namespace {
     EXPECT_NEAR(expected["pp_index_value"].get<float>(), actual["pp_index_value"].get<float>(), tolerance)
         << path << ".pp_index_value mismatch";
 
-    EXPECT_NEAR(expected["threshold"].get<float>(), actual["threshold"].get<float>(), tolerance)
-        << path << ".threshold mismatch";
+    EXPECT_NEAR(expected["cutpoint"].get<float>(), actual["cutpoint"].get<float>(), tolerance)
+        << path << ".cutpoint mismatch";
 
     auto expected_proj = expected["projector"].get<std::vector<float>>();
     auto actual_proj   = actual["projector"].get<std::vector<float>>();
@@ -170,7 +200,7 @@ namespace {
       json const& expected_json,
       Tree const& actual,
       std::vector<std::string> const& group_names,
-      float tolerance = 1e-3f
+      float tolerance = 1e-3F
   ) {
     json actual_json = serialization::to_json(actual, group_names);
     compare_node(expected_json["root"], actual_json["root"], tolerance, "root");
@@ -180,11 +210,11 @@ namespace {
       json const& expected_json,
       Forest const& actual,
       std::vector<std::string> const& group_names,
-      float tolerance = 1e-3f
+      float tolerance = 1e-3F
   ) {
-    json actual_json     = serialization::to_json(actual, group_names);
-    auto& expected_trees = expected_json["trees"];
-    auto& actual_trees   = actual_json["trees"];
+    json actual_json           = serialization::to_json(actual, group_names);
+    auto const& expected_trees = expected_json["trees"];
+    auto const& actual_trees   = actual_json["trees"];
 
     ASSERT_EQ(expected_trees.size(), actual_trees.size()) << "Tree count mismatch";
 
@@ -215,34 +245,35 @@ namespace {
 // Macro to reduce boilerplate for each golden test
 // ---------------------------------------------------------------------------
 
-#define GOLDEN_TREE_TEST(TestName, dataset_name, slug_name, csv_file, lambda_val, seed_val)                           \
-  TEST(Reproducibility, TestName) {                                                                                   \
-    auto path = resolve_golden_path(dataset_name, slug_name);                                                         \
-    invariant(std::filesystem::exists(path), "Golden file missing: " + path);                                         \
-                                                                                                                      \
-    auto golden      = load_golden(path);                                                                             \
-    auto group_names = golden["meta"]["groups"].get<std::vector<std::string>>();                                      \
-    auto data        = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                                               \
-                                                                                                                      \
-    RNG rng(seed_val);                                                                                                \
-    Tree tree = Tree::train(TrainingSpec(pp::pda(lambda_val), dr::noop(), sr::mean_of_means()), data.x, data.y, rng); \
-                                                                                                                      \
-    compare_model_structure(golden["model"], tree, group_names);                                                      \
-                                                                                                                      \
-    auto predictions = tree.predict(data.x);                                                                          \
-    compare_predictions(golden["predictions"], predictions, group_names);                                             \
-                                                                                                                      \
-    ConfusionMatrix cm(predictions, data.y);                                                                          \
-    EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                                                \
-    compare_confusion_matrix(golden["training_confusion_matrix"], cm, group_names);                                   \
-                                                                                                                      \
-    if (golden.contains("variable_importance")) {                                                                     \
-      const int n_vars    = static_cast<int>(data.x.cols());                                                          \
-      FeatureVector scale = stats::sd(data.x);                                                                        \
-      scale               = (scale.array() > Feature(0)).select(scale, Feature(1));                                   \
-      FeatureVector vi2   = variable_importance_projections(tree, n_vars, &scale);                                    \
-      compare_vi(golden["variable_importance"], "projections", vi2, 1e-3f);                                           \
-    }                                                                                                                 \
+#define GOLDEN_TREE_TEST(TestName, dataset_name, slug_name, csv_file, lambda_val, seed_val) \
+  TEST(Reproducibility, TestName) {                                                         \
+    auto path = resolve_golden_path(dataset_name, slug_name);                               \
+    invariant(std::filesystem::exists(path), "Golden file missing: " + path);               \
+                                                                                            \
+    auto golden      = load_golden(path);                                                   \
+    auto group_names = golden["meta"]["groups"].get<std::vector<std::string>>();            \
+    auto data        = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                     \
+                                                                                            \
+    auto spec = TrainingSpec::builder().seed(seed_val).pp(pp::pda(lambda_val)).build();     \
+    Tree tree = Tree::train(spec, data.x, data.y);                                          \
+                                                                                            \
+    compare_model_structure(golden["model"], tree, group_names);                            \
+    compare_config(golden, *tree.training_spec);                                            \
+                                                                                            \
+    auto predictions = tree.predict(data.x);                                                \
+    compare_predictions(golden["predictions"], predictions, group_names);                   \
+                                                                                            \
+    ConfusionMatrix cm(predictions, data.y);                                                \
+    EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                      \
+    compare_confusion_matrix(golden["training_confusion_matrix"], cm, group_names);         \
+                                                                                            \
+    if (golden.contains("variable_importance")) {                                           \
+      const int n_vars    = static_cast<int>(data.x.cols());                                \
+      FeatureVector scale = stats::sd(data.x);                                              \
+      scale               = (scale.array() > Feature(0)).select(scale, Feature(1));         \
+      FeatureVector vi2   = variable_importance_projections(tree, n_vars, &scale);          \
+      compare_vi(golden["variable_importance"], "projections", vi2, 1e-3f);                 \
+    }                                                                                       \
   }
 
 #define GOLDEN_FOREST_TEST(TestName, dataset_name, slug_name, csv_file, n_trees, lambda_val, n_vars_val, seed_val) \
@@ -255,12 +286,19 @@ namespace {
     auto data        = io::csv::read_sorted(DATA_DIR + "/" + csv_file);                                            \
                                                                                                                    \
     Forest forest = Forest::train(                                                                                 \
-        TrainingSpec(pp::pda(lambda_val), dr::uniform(n_vars_val), sr::mean_of_means(), n_trees, seed_val, 1),     \
+        TrainingSpec::builder()                                                                                    \
+            .size(n_trees)                                                                                         \
+            .seed(seed_val)                                                                                        \
+            .threads(1)                                                                                            \
+            .pp(pp::pda(lambda_val))                                                                               \
+            .vars(vars::uniform(n_vars_val))                                                                       \
+            .build(),                                                                                              \
         data.x,                                                                                                    \
         data.y                                                                                                     \
     );                                                                                                             \
                                                                                                                    \
     compare_model_structure(golden["model"], forest, group_names);                                                 \
+    compare_config(golden, *forest.training_spec);                                                                 \
                                                                                                                    \
     auto predictions = forest.predict(data.x);                                                                     \
     compare_predictions(golden["predictions"], predictions, group_names);                                          \

@@ -16,44 +16,52 @@ namespace ppforest2 {
    *
    * @code
    *   TrainingSpec spec(pp::pda(0.0), dr::noop(), sr::mean_of_means());
-   *   stats::RNG rng(0);
-   *
-   *   Tree tree = Tree::train(spec, x, y, rng);
-   *   types::Response label = tree.predict(x.row(0));
-   *   types::ResponseVector preds = tree.predict(x);
+   *   Tree tree = Tree::train(spec, x, y);
+   *   types::Outcome label = tree.predict(x.row(0));
+   *   types::OutcomeVector preds = tree.predict(x);
    * @endcode
    */
   struct Tree : public Model {
     /**
      * @brief Train a tree from a response vector.
      *
-     * Constructs a GroupPartition from @p y and delegates to the
-     * GroupPartition overload.
+     * Creates an RNG from training_spec.seed and trains the tree.
      *
      * @param training_spec  Training specification (strategy + DR).
      * @param x              Feature matrix (n × p).
-     * @param y              Response vector (n).
+     * @param y              Outcome vector (n).
+     * @return               Trained tree.
+     */
+    static Tree train(TrainingSpec const& training_spec, types::FeatureMatrix const& x, types::OutcomeVector const& y);
+
+    /**
+     * @brief Train a tree from a response vector with an external RNG.
+     *
+     * Used internally by BootstrapTree and Forest, which manage
+     * their own RNG streams.
+     *
+     * @param training_spec  Training specification (strategy + DR).
+     * @param x              Feature matrix (n × p).
+     * @param y              Outcome vector (n).
      * @param rng            Random number generator.
      * @return               Trained tree.
      */
     static Tree train(
-        TrainingSpec const& training_spec,
-        types::FeatureMatrix const& x,
-        types::ResponseVector const& y,
-        stats::RNG& rng
+        TrainingSpec const& training_spec, types::FeatureMatrix const& x, types::OutcomeVector const& y, stats::RNG& rng
     );
 
     /**
      * @brief Train a tree from a group partition.
      *
-     * Recursively splits the data by finding optimal projections
-     * at each node until pure leaves are reached.
+     * Creates an RNG from training_spec.seed and trains the tree.
+     */
+    static Tree
+    train(TrainingSpec const& training_spec, types::FeatureMatrix const& x, stats::GroupPartition const& group_spec);
+
+    /**
+     * @brief Train a tree from a group partition with an external RNG.
      *
-     * @param training_spec  Training specification (strategy + DR).
-     * @param x              Feature matrix (n × p).
-     * @param group_spec     Group partition.
-     * @param rng            Random number generator.
-     * @return               Trained tree.
+     * Used internally by BootstrapTree and Forest.
      */
     static Tree train(
         TrainingSpec const& training_spec,
@@ -69,8 +77,8 @@ namespace ppforest2 {
 
     void accept(Model::Visitor& visitor) const override;
 
-    types::Response predict(types::FeatureVector const& data) const override;
-    types::ResponseVector predict(types::FeatureMatrix const& data) const override;
+    types::Outcome predict(types::FeatureVector const& data) const override;
+    types::OutcomeVector predict(types::FeatureMatrix const& data) const override;
     types::FeatureMatrix predict(types::FeatureMatrix const& data, Proportions) const override;
 
     bool operator==(Tree const& other) const;

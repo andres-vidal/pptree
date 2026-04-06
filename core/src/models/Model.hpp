@@ -53,7 +53,7 @@ namespace ppforest2 {
      * @param data  Feature vector (p).
      * @return      Predicted group label.
      */
-    virtual types::Response predict(types::FeatureVector const& data) const = 0;
+    virtual types::Outcome predict(types::FeatureVector const& data) const = 0;
 
     /**
      * @brief Predict a matrix of observations.
@@ -61,7 +61,7 @@ namespace ppforest2 {
      * @param data  Feature matrix (n × p).
      * @return      Predicted group labels (n).
      */
-    virtual types::ResponseVector predict(types::FeatureMatrix const& data) const = 0;
+    virtual types::OutcomeVector predict(types::FeatureMatrix const& data) const = 0;
 
     /**
      * @brief Predict proportions for a matrix of observations.
@@ -83,9 +83,9 @@ namespace ppforest2 {
      *
      * @param spec  Training specification.
      * @param x     Feature matrix (n × p).
-     * @param y     Response vector (n).
+     * @param y     Outcome vector (n).
      * @return      Trained model (Tree or Forest).
      */
-    static Ptr train(TrainingSpec const& spec, types::FeatureMatrix const& x, types::ResponseVector const& y);
+    static Ptr train(TrainingSpec const& spec, types::FeatureMatrix const& x, types::OutcomeVector const& y);
   };
 }

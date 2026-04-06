@@ -50,9 +50,9 @@ namespace ppforest2 {
     return oob;
   }
 
-  ResponseVector BootstrapTree::predict_oob(FeatureMatrix const& x, std::vector<int> const& row_idx) const {
+  OutcomeVector BootstrapTree::predict_oob(FeatureMatrix const& x, std::vector<int> const& row_idx) const {
     if (row_idx.empty()) {
-      return ResponseVector(0);
+      return OutcomeVector(0);
     }
 
     return predict(static_cast<FeatureMatrix>(x(row_idx, Eigen::all)));

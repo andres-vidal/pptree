@@ -17,20 +17,20 @@ static std::string const MINIMAL_SCENARIOS = R"({
     "iterations": 1
   },
   "scenarios": [
-    { "name": "tiny-forest", "n": 50, "p": 3, "g": 2, "size": 5, "vars": 0.5 },
+    { "name": "tiny-forest", "n": 50, "p": 3, "g": 2, "size": 5, "p_vars": 0.5 },
     { "name": "tiny-tree",   "n": 50, "p": 3, "g": 2, "size": 0 }
   ]
 })";
-
-static TempFile write_scenarios() {
-  TempFile f;
-  {
-    std::ofstream out(f.path());
-    out << MINIMAL_SCENARIOS;
+namespace {
+  TempFile write_scenarios() {
+    TempFile f;
+    {
+      std::ofstream out(f.path());
+      out << MINIMAL_SCENARIOS;
+    }
+    return f;
   }
-  return f;
 }
-
 /* Benchmark runs successfully with a scenarios file. */
 TEST(CLIBenchmark, BenchmarkRunsSuccessfully) {
   auto scenarios = write_scenarios();
@@ -46,7 +46,7 @@ TEST(CLIBenchmark, BenchmarkNoScenariosFails) {
 
 /* Benchmark with invalid scenarios file must fail. */
 TEST(CLIBenchmark, BenchmarkInvalidScenariosFails) {
-  TempFile bad;
+  TempFile const bad;
   {
     std::ofstream out(bad.path());
     out << "not valid json";
@@ -58,7 +58,7 @@ TEST(CLIBenchmark, BenchmarkInvalidScenariosFails) {
 /* Benchmark -o produces valid JSON results. */
 TEST(CLIBenchmark, BenchmarkJsonOutput) {
   auto scenarios = write_scenarios();
-  TempFile output;
+  TempFile const output;
   output.clear();
 
   auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -o " + output.path());
@@ -85,7 +85,7 @@ TEST(CLIBenchmark, BenchmarkJsonOutput) {
 /* Benchmark --csv produces valid CSV with header and data rows. */
 TEST(CLIBenchmark, BenchmarkCsvOutput) {
   auto scenarios = write_scenarios();
-  TempFile csv_out(".csv");
+  TempFile const csv_out(".csv");
   csv_out.clear();
 
   auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " --csv " + csv_out.path());
@@ -101,9 +101,11 @@ TEST(CLIBenchmark, BenchmarkCsvOutput) {
   std::string line;
   int data_rows = 0;
 
-  while (std::getline(in, line))
-    if (!line.empty())
+  while (std::getline(in, line)) {
+    if (!line.empty()) {
       data_rows++;
+    }
+  }
 
   EXPECT_EQ(data_rows, 2);
 }
@@ -113,7 +115,7 @@ TEST(CLIBenchmark, BenchmarkBaselineComparison) {
   auto scenarios = write_scenarios();
 
   // First run: produce baseline
-  TempFile baseline;
+  TempFile const baseline;
   baseline.clear();
   auto run1 = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -o " + baseline.path());
   ASSERT_EQ(run1.exit_code, 0) << "stderr: " << run1.stderr_output;
@@ -126,7 +128,7 @@ TEST(CLIBenchmark, BenchmarkBaselineComparison) {
 /* Benchmark -i overrides iteration count. */
 TEST(CLIBenchmark, BenchmarkIterationOverride) {
   auto scenarios = write_scenarios();
-  TempFile output;
+  TempFile const output;
   output.clear();
 
   auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -i 2 -o " + output.path());
@@ -157,23 +159,21 @@ TEST(CLIBenchmark, BenchmarkWithStrategyConfig) {
       "seed": 0,
       "iterations": 1,
       "pp": { "name": "pda", "lambda": 0.3 },
-      "sr": { "name": "mean_of_means" }
+      "cutpoint": { "name": "mean_of_means" }
     },
     "scenarios": [
-      { "name": "strat-forest", "n": 50, "p": 3, "g": 2, "size": 5,
-        "dr": { "name": "uniform", "n_vars": 2 } },
-      { "name": "strat-tree",   "n": 50, "p": 3, "g": 2, "size": 0,
-        "dr": { "name": "noop" } }
+      { "name": "strat-forest", "n": 50, "p": 3, "g": 2, "size": 5, "p_vars": 0.67 },
+      { "name": "strat-tree",   "n": 50, "p": 3, "g": 2, "size": 0 }
     ]
   })";
 
-  TempFile scenarios;
+  TempFile const scenarios;
   {
     std::ofstream out(scenarios.path());
     out << STRATEGY_SCENARIOS;
   }
 
-  TempFile output;
+  TempFile const output;
   output.clear();
   auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);

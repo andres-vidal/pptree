@@ -19,34 +19,34 @@ namespace ppforest2::stats {
     return true;
   }
 
-  GroupPartition::BlockMap GroupPartition::init_Blocks(GroupVector const& y) {
-    std::map<Group, Block> Blocks;
+  GroupPartition::BlockMap GroupPartition::init_blocks(GroupVector const& y) {
+    std::map<Group, Block> blocks;
 
     for (int i = 0; i < y.rows(); i++) {
-      if (Blocks.count(y(i)) == 0) {
+      if (blocks.count(y(i)) == 0) {
         Group curr   = y(i);
-        Blocks[curr] = Block{.start = i};
+        blocks[curr] = Block{.start = i};
 
         if (i != 0) {
           Group prev        = y(i - 1);
-          Blocks[curr].prev = prev;
-          Blocks[prev].next = curr;
-          Blocks[prev].end  = i - 1;
-          Blocks[prev].size = i - Blocks[prev].start;
+          blocks[curr].prev = prev;
+          blocks[prev].next = curr;
+          blocks[prev].end  = i - 1;
+          blocks[prev].size = i - blocks[prev].start;
         }
       } else if (y(i - 1) != y(i)) {
         throw std::invalid_argument("GroupPartition: data is not organized in contiguous groups");
       }
     }
 
-    Group last           = y(y.rows() - 1);
-    Blocks.at(last).end  = y.rows() - 1;
-    Blocks.at(last).size = y.rows() - Blocks.at(last).start;
+    Group const last     = y(y.rows() - 1);
+    blocks.at(last).end  = y.rows() - 1;
+    blocks.at(last).size = y.rows() - blocks.at(last).start;
 
-    return Blocks;
+    return blocks;
   }
 
-  GroupPartition::GroupMap GroupPartition::init_supergroups() {
+  GroupPartition::GroupMap GroupPartition::init_supergroups(GroupSet const& groups) {
     GroupMap sg;
 
     for (Group const& g : groups) {
@@ -58,14 +58,20 @@ namespace ppforest2::stats {
 
   GroupPartition::GroupPartition(GroupVector const& y)
       : groups(unique(y))
-      , Blocks(init_Blocks(y))
-      , supergroups(init_supergroups())
+      , Blocks(init_blocks(y))
+      , supergroups(init_supergroups(groups))
+      , subgroups(utils::invert(supergroups)) {}
+
+  GroupPartition::GroupPartition(BlockMap const& Blocks_)
+      : groups(utils::keys(Blocks_))
+      , Blocks(Blocks_)
+      , supergroups(init_supergroups(groups))
       , subgroups(utils::invert(supergroups)) {}
 
   GroupPartition::GroupPartition(BlockMap const& Blocks_, GroupSet const& groups_)
       : groups(groups_)
       , Blocks(Blocks_)
-      , supergroups(init_supergroups())
+      , supergroups(init_supergroups(groups_))
       , subgroups(utils::invert(supergroups)) {}
 
   GroupPartition::GroupPartition(BlockMap const& Blocks_, GroupMap const& supergroups_)
@@ -97,10 +103,10 @@ namespace ppforest2::stats {
   }
 
   FeatureMatrix GroupPartition::bgss(FeatureMatrix const& x) const {
-    FeatureVector global_mean = mean(x);
-    FeatureMatrix result      = FeatureMatrix::Zero(x.cols(), x.cols());
+    FeatureVector const global_mean = mean(x);
+    FeatureMatrix result            = FeatureMatrix::Zero(x.cols(), x.cols());
 
-    GroupSet groups = utils::values(supergroups);
+    GroupSet const groups = utils::values(supergroups);
 
     for (Group const& g : groups) {
       auto group_data = group(x, g);
@@ -116,7 +122,7 @@ namespace ppforest2::stats {
   FeatureMatrix GroupPartition::wgss(FeatureMatrix const& x) const {
     FeatureMatrix result = FeatureMatrix::Zero(x.cols(), x.cols());
 
-    GroupSet groups = utils::values(supergroups);
+    GroupSet const groups = utils::values(supergroups);
 
     for (Group const& g : groups) {
       auto group_data = group(x, g);
@@ -128,23 +134,44 @@ namespace ppforest2::stats {
     return result;
   }
 
-  GroupPartition GroupPartition::subset(GroupSet groups_) const {
-    BlockMap subset_Blocks;
+  GroupPartition GroupPartition::subset(GroupSet const& groups) const {
+    BlockMap subset_blocks;
     std::optional<Group> prev;
 
-    for (auto const& g : groups_) {
+    for (auto const& g : groups) {
       Block Block = {.start = Blocks.at(g).start, .end = Blocks.at(g).end, .size = Blocks.at(g).size};
 
       if (prev) {
         Block.prev                   = *prev;
-        subset_Blocks.at(*prev).next = g;
+        subset_blocks.at(*prev).next = g;
       }
 
-      subset_Blocks[g] = Block;
+      subset_blocks[g] = Block;
       prev             = g;
     }
 
-    return GroupPartition(subset_Blocks, groups_);
+    return GroupPartition(subset_blocks, groups);
+  }
+
+  std::pair<GroupPartition, GroupPartition> GroupPartition::split(SplitSizes const& left_sizes) const {
+    BlockMap l_blocks;
+    BlockMap r_blocks;
+
+    for (auto const& [g, block] : Blocks) {
+      int const left_count = left_sizes.count(g) != 0U ? left_sizes.at(g) : 0;
+
+      invariant(left_count >= 0 && left_count <= block.size, "GroupPartition::split: left_count out of range");
+
+      if (left_count > 0) {
+        l_blocks.emplace(g, Block{block.start, block.start + left_count - 1, left_count});
+      }
+
+      if (left_count < block.size) {
+        r_blocks.emplace(g, Block{block.start + left_count, block.end, block.size - left_count});
+      }
+    }
+
+    return {GroupPartition(l_blocks), GroupPartition(r_blocks)};
   }
 
   GroupPartition GroupPartition::remap(GroupMap const& mapping) const {

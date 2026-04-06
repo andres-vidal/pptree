@@ -6,8 +6,8 @@
 #include "models/BootstrapTree.hpp"
 #include "models/Forest.hpp"
 #include "models/Tree.hpp"
-#include "models/TreeCondition.hpp"
-#include "models/TreeResponse.hpp"
+#include "models/TreeBranch.hpp"
+#include "models/TreeLeaf.hpp"
 #include "models/TrainingSpec.hpp"
 #include "utils/Macros.hpp"
 
@@ -16,22 +16,18 @@ using namespace ppforest2::pp;
 using namespace ppforest2::stats;
 using namespace ppforest2::types;
 
-static Projector as_projector(std::vector<Feature> v) {
-  Eigen::Map<Projector> p(v.data(), v.size());
-  return p;
+namespace {
+  Projector as_projector(std::vector<Feature> v) {
+    return Eigen::Map<Projector>(v.data(), v.size());
+  }
 }
-
 // ---------------------------------------------------------------------------
 // oob_indices
 // ---------------------------------------------------------------------------
 
 TEST(BootstrapTreeOobIndices, ComplementOfSampleIndices) {
   // sample_indices = {0, 1, 2}, n_total = 5  =>  OOB = {3, 4}
-  BootstrapTree bt(
-      TreeResponse::make(1),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{0, 1, 2}
-  );
+  BootstrapTree const bt(TreeLeaf::make(1), TrainingSpec::builder().make(), std::vector<int>{0, 1, 2});
 
   auto oob = bt.oob_indices(5);
 
@@ -41,24 +37,18 @@ TEST(BootstrapTreeOobIndices, ComplementOfSampleIndices) {
 }
 
 TEST(BootstrapTreeOobIndices, EmptyWhenAllInBag) {
-  BootstrapTree bt(
-      TreeResponse::make(1),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{0, 1, 2, 3}
-  );
+  BootstrapTree const bt(TreeLeaf::make(1), TrainingSpec::builder().make(), std::vector<int>{0, 1, 2, 3});
 
   auto oob = bt.oob_indices(4);
   ASSERT_TRUE(oob.empty());
 }
 
 TEST(BootstrapTreeOobIndices, AllOobWhenNoneInBag) {
-  BootstrapTree bt(
-      TreeResponse::make(1), TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()), std::vector<int>{}
-  );
+  BootstrapTree const bt(TreeLeaf::make(1), TrainingSpec::builder().make(), std::vector<int>{});
 
   auto oob = bt.oob_indices(3);
 
-  ASSERT_EQ(oob.size(), 3u);
+  ASSERT_EQ(oob.size(), 3U);
   ASSERT_EQ(oob[0], 0);
   ASSERT_EQ(oob[1], 1);
   ASSERT_EQ(oob[2], 2);
@@ -66,15 +56,11 @@ TEST(BootstrapTreeOobIndices, AllOobWhenNoneInBag) {
 
 TEST(BootstrapTreeOobIndices, DuplicatesInSampleCountedOnce) {
   // With duplicates {0, 0, 1} the in-bag set is {0, 1}, OOB = {2, 3}
-  BootstrapTree bt(
-      TreeResponse::make(1),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
-      std::vector<int>{0, 0, 1}
-  );
+  BootstrapTree const bt(TreeLeaf::make(1), TrainingSpec::builder().make(), std::vector<int>{0, 0, 1});
 
   auto oob = bt.oob_indices(4);
 
-  ASSERT_EQ(oob.size(), 2u);
+  ASSERT_EQ(oob.size(), 2U);
   ASSERT_EQ(oob[0], 2);
   ASSERT_EQ(oob[1], 3);
 }
@@ -85,19 +71,16 @@ TEST(BootstrapTreeOobIndices, DuplicatesInSampleCountedOnce) {
 
 TEST(BootstrapTreePredictOob, MatchesRowwisePredict) {
   // Tree splits at 5.0 on x[0]: rows with x[0] < 5 -> 0, else -> 1
-  auto condition =
-      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
-
-  BootstrapTree bt(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+  BootstrapTree const bt(
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F),
+      TrainingSpec::builder().make(),
       std::vector<int>{0, 1, 4, 5}
   );
 
-  FeatureMatrix x = MAT(Feature, rows(6), 0.0f, 0.5f, 0.1f, 0.3f, 0.2f, 0.7f, 9.8f, 0.4f, 9.9f, 0.6f, 9.7f, 0.2f);
+  FeatureMatrix const x = MAT(Feature, rows(6), 0.0F, 0.5F, 0.1F, 0.3F, 0.2F, 0.7F, 9.8F, 0.4F, 9.9F, 0.6F, 9.7F, 0.2F);
 
-  std::vector<int> oob_idx = {2, 3};
-  ResponseVector preds     = bt.predict_oob(x, oob_idx);
+  std::vector<int> const oob_idx = {2, 3};
+  OutcomeVector preds            = bt.predict_oob(x, oob_idx);
 
   ASSERT_EQ(preds.size(), 2);
   EXPECT_EQ(preds(0), 0) << "Row 2 has x[0]=0.2 < 5";
@@ -105,14 +88,12 @@ TEST(BootstrapTreePredictOob, MatchesRowwisePredict) {
 }
 
 TEST(BootstrapTreePredictOob, EmptyIndicesReturnsEmptyVector) {
-  BootstrapTree bt(
-      TreeResponse::make(1), TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()), std::vector<int>{0, 1}
-  );
+  BootstrapTree const bt(TreeLeaf::make(1), TrainingSpec::builder().make(), std::vector<int>{0, 1});
 
   FeatureMatrix x(4, 2);
   x << 0, 0, 1, 1, 9, 9, 8, 8;
 
-  ResponseVector preds = bt.predict_oob(x, std::vector<int>{});
+  OutcomeVector const preds = bt.predict_oob(x, std::vector<int>{});
 
   ASSERT_EQ(preds.size(), 0);
 }
@@ -125,23 +106,23 @@ TEST(BootstrapTreePredictOob, EmptyIndicesReturnsEmptyVector) {
 struct IndexCollector : public TreeNode::Visitor {
   std::vector<Feature> values;
 
-  void visit(TreeCondition const& node) override {
+  void visit(TreeBranch const& node) override {
     values.push_back(node.pp_index_value);
     node.lower->accept(*this);
     node.upper->accept(*this);
   }
 
-  void visit(TreeResponse const& /*node*/) override {}
+  void visit(TreeLeaf const& /*node*/) override {}
 };
 
 TEST(PpIndexValue, StoredAfterTraining) {
   // Two well-separated groups: col 0 discriminates.
-  FeatureMatrix x = MAT(Feature, rows(6), 0.0f, 0.5f, 0.1f, 0.3f, 0.2f, 0.7f, 9.8f, 0.4f, 9.9f, 0.6f, 9.7f, 0.2f);
+  FeatureMatrix const x = MAT(Feature, rows(6), 0.0F, 0.5F, 0.1F, 0.3F, 0.2F, 0.7F, 9.8F, 0.4F, 9.9F, 0.6F, 9.7F, 0.2F);
 
-  ResponseVector y = VEC(Response, 0, 0, 0, 1, 1, 1);
+  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
 
   stats::RNG rng(0, 0);
-  Tree tree = Tree::train(TrainingSpec(pp::pda(0.0f), dr::noop(), sr::mean_of_means()), x, y, rng);
+  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
 
   IndexCollector collector;
   tree.root->accept(collector);
@@ -150,7 +131,7 @@ TEST(PpIndexValue, StoredAfterTraining) {
 
   bool any_nonzero = false;
 
-  for (Feature v : collector.values) {
+  for (Feature const v : collector.values) {
     if (v != Feature(0)) {
       any_nonzero = true;
       break;
@@ -168,15 +149,15 @@ TEST(VariableImportance2, TreeOverloadSingleNode) {
   // projector=[1,0], G_s=2, pp_index_value=0.9
   // VI2[0] = |1| / 2 = 0.5
   // VI2[1] = |0| / 2 = 0.0
-  auto condition =
-      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
 
-  Tree tree(std::move(condition), nullptr);
+  Tree const tree(
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F), nullptr
+  );
 
   FeatureVector vi2 = variable_importance_projections(tree, 2);
 
-  ASSERT_NEAR(vi2(0), 0.5f, 1e-5f);
-  ASSERT_NEAR(vi2(1), 0.0f, 1e-5f);
+  ASSERT_NEAR(vi2(0), 0.5F, 1e-5F);
+  ASSERT_NEAR(vi2(1), 0.0F, 1e-5F);
 }
 
 TEST(VariableImportance2, TreeOverloadTwoNodes) {
@@ -187,18 +168,24 @@ TEST(VariableImportance2, TreeOverloadTwoNodes) {
   //
   // VI2[0] = |1|/3 + |0|/2 = 1/3
   // VI2[1] = |0|/3 + |1|/2 = 1/2
-  auto inner =
-      TreeCondition::make(as_projector({0.0f, 1.0f}), 3.0f, TreeResponse::make(1), TreeResponse::make(2), {1, 2}, 0.6f);
 
-  auto root =
-      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), std::move(inner), {0, 1, 2}, 0.8f);
 
-  Tree tree(std::move(root), nullptr);
+  Tree const tree(
+      TreeBranch::make(
+          as_projector({1.0F, 0.0F}),
+          5.0F,
+          TreeLeaf::make(0),
+          TreeBranch::make(as_projector({0.0F, 1.0F}), 3.0F, TreeLeaf::make(1), TreeLeaf::make(2), {1, 2}, 0.6F),
+          {0, 1, 2},
+          0.8F
+      ),
+      nullptr
+  );
 
   FeatureVector vi2 = variable_importance_projections(tree, 2);
 
-  ASSERT_NEAR(vi2(0), 1.0f / 3.0f, 1e-5f);
-  ASSERT_NEAR(vi2(1), 1.0f / 2.0f, 1e-5f);
+  ASSERT_NEAR(vi2(0), 1.0F / 3.0F, 1e-5F);
+  ASSERT_NEAR(vi2(1), 1.0F / 2.0F, 1e-5F);
 }
 
 TEST(VariableImportance2, TreeOverloadWithScale) {
@@ -206,18 +193,19 @@ TEST(VariableImportance2, TreeOverloadWithScale) {
   // scale=[2.0, 3.0]
   // VI2[0] = |0.5| * 2.0 / 2 = 0.5
   // VI2[1] = |0.2| * 3.0 / 2 = 0.3
-  auto condition =
-      TreeCondition::make(as_projector({0.5f, 0.2f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
 
-  Tree tree(std::move(condition), nullptr);
+
+  Tree const tree(
+      TreeBranch::make(as_projector({0.5F, 0.2F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F), nullptr
+  );
 
   FeatureVector scale(2);
-  scale << 2.0f, 3.0f;
+  scale << 2.0F, 3.0F;
 
   FeatureVector vi2 = variable_importance_projections(tree, 2, &scale);
 
-  ASSERT_NEAR(vi2(0), 0.5f, 1e-5f);
-  ASSERT_NEAR(vi2(1), 0.3f, 1e-5f);
+  ASSERT_NEAR(vi2(0), 0.5F, 1e-5F);
+  ASSERT_NEAR(vi2(1), 0.3F, 1e-5F);
 }
 
 // ---------------------------------------------------------------------------
@@ -230,21 +218,17 @@ TEST(VariableImportance2, HandBuiltSingleNodeTree) {
   // Expected VI2[j] = |a_j| / G_s:
   //   VI2[0] = 1.0 / 2 = 0.5
   //   VI2[1] = 0.0 / 2 = 0.0
-
-  auto condition =
-      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
-
   Forest forest;
   forest.add_tree(std::make_unique<BootstrapTree>(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F),
+      TrainingSpec::builder().make(),
       std::vector<int>{0, 1, 2, 3}
   ));
 
   FeatureVector vi2 = variable_importance_projections(forest, 2);
 
-  ASSERT_NEAR(vi2(0), 0.5f, 1e-5f);
-  ASSERT_NEAR(vi2(1), 0.0f, 1e-5f);
+  ASSERT_NEAR(vi2(0), 0.5F, 1e-5F);
+  ASSERT_NEAR(vi2(1), 0.0F, 1e-5F);
 }
 
 TEST(VariableImportance2, HandBuiltTwoNodeTree) {
@@ -255,22 +239,24 @@ TEST(VariableImportance2, HandBuiltTwoNodeTree) {
   //
   // VI2[0] = (1/B) * (|1|/3 + |0|/2) = 1/3
   // VI2[1] = (1/B) * (|0|/3 + |1|/2) = 1/2
-
-  auto inner =
-      TreeCondition::make(as_projector({0.0f, 1.0f}), 3.0f, TreeResponse::make(1), TreeResponse::make(2), {1, 2}, 0.6f);
-
-  auto root =
-      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), std::move(inner), {0, 1, 2}, 0.8f);
-
   Forest forest;
   forest.add_tree(std::make_unique<BootstrapTree>(
-      std::move(root), TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()), std::vector<int>{0, 1, 2, 3}
+      TreeBranch::make(
+          as_projector({1.0F, 0.0F}),
+          5.0F,
+          TreeLeaf::make(0),
+          TreeBranch::make(as_projector({0.0F, 1.0F}), 3.0F, TreeLeaf::make(1), TreeLeaf::make(2), {1, 2}, 0.6F),
+          {0, 1, 2},
+          0.8F
+      ),
+      TrainingSpec::builder().make(),
+      std::vector<int>{0, 1, 2, 3}
   ));
 
   FeatureVector vi2 = variable_importance_projections(forest, 2);
 
-  ASSERT_NEAR(vi2(0), 1.0f / 3.0f, 1e-5f);
-  ASSERT_NEAR(vi2(1), 1.0f / 2.0f, 1e-5f);
+  ASSERT_NEAR(vi2(0), 1.0F / 3.0F, 1e-5F);
+  ASSERT_NEAR(vi2(1), 1.0F / 2.0F, 1e-5F);
 }
 
 // ---------------------------------------------------------------------------
@@ -287,24 +273,20 @@ TEST(VariableImportance3, HandBuiltSingleNodeTree) {
   // denom = B * (G-1) = 1 * (2-1) = 1
   // VI3[0] = 1.0 * 0.9 / 1 = 0.9,  VI3[1] = 0.0
 
-  FeatureMatrix x = MAT(Feature, rows(4), 0.0f, 0.0f, 0.1f, 0.1f, 9.9f, 0.0f, 9.8f, 0.1f);
-
-  ResponseVector y = VEC(Response, 0, 0, 1, 1);
-
-  auto condition =
-      TreeCondition::make(as_projector({1.0f, 0.0f}), 5.0f, TreeResponse::make(0), TreeResponse::make(1), {0, 1}, 0.9f);
+  FeatureMatrix const x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
+  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
 
   Forest forest;
   forest.add_tree(std::make_unique<BootstrapTree>(
-      std::move(condition),
-      TrainingSpec::make(pp::pda(0.0f), dr::noop(), sr::mean_of_means()),
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F),
+      TrainingSpec::builder().make(),
       std::vector<int>{0, 1, 2, 3}
   )); // all in-bag
 
   FeatureVector vi3 = variable_importance_weighted_projections(forest, x, y);
 
-  ASSERT_NEAR(vi3(0), 0.9f, 1e-5f);
-  ASSERT_NEAR(vi3(1), 0.0f, 1e-5f);
+  ASSERT_NEAR(vi3(0), 0.9F, 1e-5F);
+  ASSERT_NEAR(vi3(1), 0.0F, 1e-5F);
 }
 
 // ---------------------------------------------------------------------------
@@ -314,53 +296,53 @@ TEST(VariableImportance3, HandBuiltSingleNodeTree) {
 TEST(VariableImportance1, DiscriminatingVariableHighestImportance) {
   // Col 0 perfectly separates the two groups.
   // Col 1 is pure noise (same values in both groups).
-  FeatureMatrix x =
+  FeatureMatrix const x =
       MAT(Feature,
           rows(20),
-          0.0f,
-          1.0f,
-          0.1f,
-          2.0f,
-          0.2f,
-          0.5f,
-          0.3f,
-          1.5f,
-          0.4f,
-          0.8f,
-          0.5f,
-          1.2f,
-          0.6f,
-          0.9f,
-          0.7f,
-          1.8f,
-          0.8f,
-          0.6f,
-          0.9f,
-          1.1f,
-          9.0f,
-          1.0f,
-          9.1f,
-          2.0f,
-          9.2f,
-          0.5f,
-          9.3f,
-          1.5f,
-          9.4f,
-          0.8f,
-          9.5f,
-          1.2f,
-          9.6f,
-          0.9f,
-          9.7f,
-          1.8f,
-          9.8f,
-          0.6f,
-          9.9f,
-          1.1f);
+          0.0F,
+          1.0F,
+          0.1F,
+          2.0F,
+          0.2F,
+          0.5F,
+          0.3F,
+          1.5F,
+          0.4F,
+          0.8F,
+          0.5F,
+          1.2F,
+          0.6F,
+          0.9F,
+          0.7F,
+          1.8F,
+          0.8F,
+          0.6F,
+          0.9F,
+          1.1F,
+          9.0F,
+          1.0F,
+          9.1F,
+          2.0F,
+          9.2F,
+          0.5F,
+          9.3F,
+          1.5F,
+          9.4F,
+          0.8F,
+          9.5F,
+          1.2F,
+          9.6F,
+          0.9F,
+          9.7F,
+          1.8F,
+          9.8F,
+          0.6F,
+          9.9F,
+          1.1F);
 
-  ResponseVector y = VEC(Response, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-  Forest forest = Forest::train(TrainingSpec(pp::pda(0.0f), dr::noop(), sr::mean_of_means(), 10, 0), x, y);
+  Forest const forest = Forest::train(TrainingSpec::builder().size(10).build(), x, y);
 
   FeatureVector vi1 = variable_importance_permuted(forest, x, y, 0);
 

@@ -14,7 +14,7 @@ using namespace ppforest2::cli;
 
 class BenchmarkReportTest : public ::testing::Test {
 protected:
-  SuiteResult make_sample_result() {
+  static SuiteResult make_sample_result() {
     SuiteResult result;
     result.suite_name    = "test suite";
     result.timestamp     = "2026-01-01T00:00:00";
@@ -26,7 +26,7 @@ protected:
     sr1.p                = 5;
     sr1.g                = 2;
     sr1.size             = 50;
-    sr1.vars             = 0.5f;
+    sr1.p_vars           = 0.5F;
     sr1.runs             = 10;
     sr1.mean_time_ms     = 12.3;
     sr1.std_time_ms      = 1.2;
@@ -42,13 +42,13 @@ protected:
     sr2.p                = 50;
     sr2.g                = 5;
     sr2.size             = 200;
-    sr2.vars             = 0.5f;
+    sr2.p_vars           = 0.5F;
     sr2.runs             = 5;
     sr2.mean_time_ms     = 500.0;
     sr2.std_time_ms      = 25.0;
     sr2.mean_tr_error    = 0.02;
     sr2.mean_te_error    = 0.10;
-    sr2.peak_rss_bytes   = 100 * 1024 * 1024;
+    sr2.peak_rss_bytes   = 100UL * 1024UL * 1024UL;
     sr2.peak_rss_mb      = 100.0;
     sr2.scenario_time_ms = 2500;
 
@@ -60,8 +60,8 @@ protected:
 };
 
 TEST_F(BenchmarkReportTest, WriteAndReadJson) {
-  auto result      = make_sample_result();
-  std::string path = (std::filesystem::temp_directory_path() / "ppforest2-test-report.json").string();
+  auto const result      = make_sample_result();
+  std::string const path = (std::filesystem::temp_directory_path() / "ppforest2-test-report.json").string();
 
   write_results_json(result, path);
 
@@ -79,8 +79,8 @@ TEST_F(BenchmarkReportTest, WriteAndReadJson) {
 }
 
 TEST_F(BenchmarkReportTest, WriteCsv) {
-  auto result      = make_sample_result();
-  std::string path = (std::filesystem::temp_directory_path() / "ppforest2-test-report.csv").string();
+  auto const result      = make_sample_result();
+  std::string const path = (std::filesystem::temp_directory_path() / "ppforest2-test-report.csv").string();
 
   write_results_csv(result, path);
 
@@ -111,7 +111,7 @@ TEST_F(BenchmarkReportTest, WriteCsv) {
 }
 
 TEST_F(BenchmarkReportTest, FormatMarkdownWithoutBaseline) {
-  auto result = make_sample_result();
+  auto const result = make_sample_result();
   ppforest2::io::Output out(false);
 
   testing::internal::CaptureStdout();
@@ -128,7 +128,7 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithoutBaseline) {
   EXPECT_TRUE(md.find("| Peak RSS |") != std::string::npos);
 
   // No delta columns
-  std::string delta = "\xCE\x94";
+  std::string const delta = "\xCE\x94";
   EXPECT_TRUE(md.find(delta) == std::string::npos);
 
   // Scenario rows
@@ -140,7 +140,7 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithoutBaseline) {
 }
 
 TEST_F(BenchmarkReportTest, FormatMarkdownWithBaseline) {
-  auto current = make_sample_result();
+  auto const current = make_sample_result();
 
   // Baseline with different timing to produce deltas
   auto baseline                    = make_sample_result();
@@ -159,15 +159,15 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithBaseline) {
   EXPECT_TRUE(md.find("Baseline:") != std::string::npos);
 
   // Delta columns present
-  std::string delta = "\xCE\x94";
+  std::string const delta = "\xCE\x94";
   EXPECT_TRUE(md.find(delta + " Time") != std::string::npos);
   EXPECT_TRUE(md.find(delta + " RSS") != std::string::npos);
 
   // Green circle for improvement (small scenario: 12.3 vs 15.0 = -18%)
-  std::string green = "\xF0\x9F\x9F\xA2";
+  std::string const green = "\xF0\x9F\x9F\xA2";
   EXPECT_TRUE(md.find(green) != std::string::npos);
 
   // Red circle for regression (large scenario: 500 vs 400 = +25%)
-  std::string red = "\xF0\x9F\x94\xB4";
+  std::string const red = "\xF0\x9F\x94\xB4";
   EXPECT_TRUE(md.find(red) != std::string::npos);
 }

@@ -117,7 +117,7 @@ For more control, you can pass strategy objects directly instead of using the sh
 # These two calls produce identical results:
 forest_shortcut <- pprf(Type ~ ., data = iris, size = 10, lambda = 0.5, n_vars = 2, seed = 0)
 
-forest_explicit <- pprf(Type ~ ., data = iris, size = 10, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2), seed = )
+forest_explicit <- pprf(Type ~ ., data = iris, size = 10, pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2), seed = 0)
 
 all.equal(predict(forest_shortcut, iris), predict(forest_explicit, iris))
 ```
@@ -125,9 +125,9 @@ all.equal(predict(forest_shortcut, iris), predict(forest_explicit, iris))
 Available strategy constructors:
 
 - `pp_pda(lambda)` — PDA projection pursuit (`lambda = 0` for LDA)
-- `dr_uniform(n_vars)` or `dr_uniform(p_vars)` — random variable selection
-- `dr_noop()` — use all variables (default for single trees)
-- `sr_mean_of_means()` — midpoint split rule (default)
+- `vars_uniform(n_vars)` or `vars_uniform(p_vars)` — random variable selection
+- `vars_all()` — use all variables (default for single trees)
+- `cutpoint_mean_of_means()` — midpoint split rule (default)
 
 Strategy objects can also be passed as engine arguments in parsnip:
 
@@ -135,7 +135,7 @@ Strategy objects can also be passed as engine arguments in parsnip:
 library(parsnip)
 
 spec <- pp_rand_forest(trees = 10) |>
-  set_engine("ppforest2", pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2)) |>
+  set_engine("ppforest2", pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2)) |>
   set_mode("classification")
 
 fit <- spec |> fit(Type ~ ., data = iris)

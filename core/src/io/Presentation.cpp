@@ -5,9 +5,7 @@
  */
 #include "io/Presentation.hpp"
 #include "io/Table.hpp"
-#include "models/DRStrategy.hpp"
-#include "models/PPStrategy.hpp"
-#include "models/SRStrategy.hpp"
+#include "ppforest2.hpp"
 #include "serialization/Json.hpp"
 
 #include <fmt/format.h>
@@ -62,14 +60,14 @@ namespace ppforest2::io {
       columns.push_back({"Peak RSS", 10, Align::right});
     }
 
-    Row header = header_labels(columns);
+    Row const header = header_labels(columns);
 
     out.println("{}", format_row(columns, header));
     out.println("{}", muted(format_separator(columns)));
 
-    std::string time_str = fmt::format("{:.2f} +/- {:.2f}", stats.mean_time(), stats.std_time());
-    std::string tr_err   = fmt::format("{:.2f}%", stats.mean_tr_error() * 100);
-    std::string te_err   = fmt::format("{:.2f}%", stats.mean_te_error() * 100);
+    std::string const time_str = fmt::format("{:.2f} +/- {:.2f}", stats.mean_time(), stats.std_time());
+    std::string const tr_err   = fmt::format("{:.2f}%", stats.mean_tr_error() * 100);
+    std::string const te_err   = fmt::format("{:.2f}%", stats.mean_te_error() * 100);
 
     Row cells = {
         fmt::format("{}", stats.tr_times.size()),
@@ -100,7 +98,7 @@ namespace ppforest2::io {
 
     int const p = static_cast<int>(vi2.size());
 
-    bool has_names = static_cast<int>(feature_names.size()) == p;
+    bool const has_names = static_cast<int>(feature_names.size()) == p;
 
     std::vector<int> order(static_cast<std::size_t>(p));
     std::iota(order.begin(), order.end(), 0);
@@ -115,11 +113,12 @@ namespace ppforest2::io {
 
     if (has_names) {
       for (int rank = 0; rank < rows; ++rank) {
-        int j   = order[static_cast<std::size_t>(rank)];
-        int len = static_cast<int>(feature_names[static_cast<std::size_t>(j)].size());
+        int const j   = order[static_cast<std::size_t>(rank)];
+        int const len = static_cast<int>(feature_names[static_cast<std::size_t>(j)].size());
 
-        if (len + 1 > var_width)
+        if (len + 1 > var_width) {
           var_width = len + 1;
+        }
       }
     }
 
@@ -133,11 +132,13 @@ namespace ppforest2::io {
         {"Projection", 12, Align::right},
     };
 
-    if (show_vi3)
+    if (show_vi3) {
       columns.push_back({"Weighted", 12, Align::right});
+    }
 
-    if (show_vi1)
+    if (show_vi1) {
       columns.push_back({"Permuted", 12, Align::right});
+    }
 
     // Header
     Row header = header_labels(columns);
@@ -145,19 +146,19 @@ namespace ppforest2::io {
     header[1]  = muted(fmt::format("{}", "\xcf\x83"));
     header[2]  = emphasis(header[2]);
 
-    if (show_vi3)
+    if (show_vi3) {
       header[3] = emphasis(header[3]);
-
-    if (show_vi1)
+    }
+    if (show_vi1) {
       header[show_vi3 ? 4 : 3] = emphasis(header[show_vi3 ? 4 : 3]);
-
+    }
     out.println("{}", format_row(columns, header));
     out.println("{}", muted(format_separator(columns)));
 
     // Data rows
     for (int rank = 0; rank < rows; ++rank) {
-      int j         = order[static_cast<std::size_t>(rank)];
-      std::string v = has_names ? feature_names[static_cast<std::size_t>(j)] : fmt::format("x{}", j + 1);
+      int const j         = order[static_cast<std::size_t>(rank)];
+      std::string const v = has_names ? feature_names[static_cast<std::size_t>(j)] : fmt::format("x{}", j + 1);
 
       Row cells = {
           v,
@@ -165,11 +166,13 @@ namespace ppforest2::io {
           fmt::format("{:.6f}", vi2(j)),
       };
 
-      if (show_vi3)
+      if (show_vi3) {
         cells.push_back(fmt::format("{:.6f}", vi3(j)));
+      }
 
-      if (show_vi1)
+      if (show_vi1) {
         cells.push_back(fmt::format("{:.6f}", vi1(j)));
+      }
 
       out.println("{}", format_row(columns, cells));
     }
@@ -178,7 +181,7 @@ namespace ppforest2::io {
       out.println("{}", muted(fmt::format("... {} more variables not shown", p - rows)));
     }
 
-    bool all_ones = (scale.array() - types::Feature(1)).abs().maxCoeff() < types::Feature(1e-6);
+    bool const all_ones = (scale.array() - types::Feature(1)).abs().maxCoeff() < types::Feature(1e-6);
 
     if (!all_ones) {
       out.newline();
@@ -205,14 +208,14 @@ namespace ppforest2::io {
 
     auto group_err = cm.group_errors();
 
-    bool has_names = !group_names.empty();
+    bool const has_names = !group_names.empty();
 
     // Compute column width: max of group name lengths and default width (5).
     int col_width = 5;
 
     if (has_names) {
       for (auto const& [label, idx] : cm.label_index) {
-        int name_len = static_cast<int>(group_names[static_cast<std::size_t>(label)].size());
+        int const name_len = static_cast<int>(group_names[static_cast<std::size_t>(label)].size());
 
         if (name_len + 1 > col_width) {
           col_width = name_len + 1;
@@ -225,7 +228,7 @@ namespace ppforest2::io {
 
     if (has_names) {
       for (auto const& [label, idx] : cm.label_index) {
-        int name_len = static_cast<int>(group_names[static_cast<std::size_t>(label)].size());
+        int const name_len = static_cast<int>(group_names[static_cast<std::size_t>(label)].size());
 
         if (name_len > row_label_width) {
           row_label_width = name_len;
@@ -253,8 +256,8 @@ namespace ppforest2::io {
       std::string row       = fmt::format("{:>{}}", row_label, row_label_width);
 
       for (auto const& [col_label, col_idx] : cm.label_index) {
-        int val          = cm.values(row_idx, col_idx);
-        std::string cell = fmt::format("{:>{}}", val, col_width - 1);
+        int val                = cm.values(row_idx, col_idx);
+        std::string const cell = fmt::format("{:>{}}", val, col_width - 1);
 
         if (row_idx == col_idx) {
           row += " " + success(cell);
@@ -274,17 +277,21 @@ namespace ppforest2::io {
 
   namespace {
     std::string json_value_to_string(nlohmann::json const& v) {
-      if (v.is_string())
+      if (v.is_string()) {
         return v.get<std::string>();
+      }
 
-      if (v.is_number_integer())
+      if (v.is_number_integer()) {
         return std::to_string(v.get<int>());
+      }
 
-      if (v.is_number_float())
+      if (v.is_number_float()) {
         return fmt::format("{}", v.get<double>());
+      }
 
-      if (v.is_boolean())
+      if (v.is_boolean()) {
         return v.get<bool>() ? "true" : "false";
+      }
 
       return v.dump();
     }
@@ -315,41 +322,66 @@ namespace ppforest2::io {
     out.println("{}", format_row(columns, header));
     out.println("{}", muted(format_separator(columns)));
 
-    // Strategy sections: pp, dr, sr
+    // Strategy sections: pp, vars, cutpoint
     // Resolve display names by instantiating strategies from JSON via the registry.
     auto strategy_display_name = [](std::string const& key, nlohmann::json const& section) -> std::string {
       try {
-        if (key == "pp")
-          return pp::PPStrategy::from_json(section)->display_name();
+        if (key == "pp") {
+          return pp::ProjectionPursuit::from_json(section)->display_name();
+        }
 
-        if (key == "dr")
-          return dr::DRStrategy::from_json(section)->display_name();
+        if (key == "vars") {
+          return vars::VariableSelection::from_json(section)->display_name();
+        }
 
-        if (key == "sr")
-          return sr::SRStrategy::from_json(section)->display_name();
-      } catch (...) {}
+        if (key == "cutpoint") {
+          return cutpoint::SplitCutpoint::from_json(section)->display_name();
+        }
+
+        if (key == "stop") {
+          return stop::StopRule::from_json(section)->display_name();
+        }
+
+        if (key == "binarize") {
+          return binarize::Binarization::from_json(section)->display_name();
+        }
+
+        if (key == "partition") {
+          return partition::StepPartition::from_json(section)->display_name();
+        }
+
+        if (key == "leaf") {
+          return leaf::LeafStrategy::from_json(section)->display_name();
+        }
+      } catch (std::exception const& e) {
+        fmt::print(stderr, "Warning: could not resolve display name for strategy '{}': {}\n", key, e.what());
+      }
       return section.value("name", key);
     };
 
-    for (auto const& key : {"pp", "dr", "sr"}) {
-      if (!config.contains(key))
+    for (auto const& key : {"pp", "vars", "cutpoint"}) {
+      if (!config.contains(key)) {
         continue;
+      }
 
-      auto const& section = config[key];
-      std::string display = strategy_display_name(key, section);
+      auto const& section       = config[key];
+      std::string const display = strategy_display_name(key, section);
       out.println("{}", format_row(columns, {std::string(key) + " method", display}));
 
       for (auto const& [k, v] : section.items()) {
-        if (k == "name")
+        if (k == "name") {
           continue;
+        }
 
         std::string value = json_value_to_string(v);
 
-        if (k == "n_vars" && hints.vars_percent >= 0)
+        if (k == "count" && hints.vars_percent >= 0) {
           value += fmt::format(" ({}%)", hints.vars_percent);
+        }
 
-        if (k == "n_vars" && hints.default_vars)
+        if (k == "count" && hints.default_vars) {
           value += dtag(true);
+        }
 
         out.println("{}", format_row(columns, {k, value}));
       }
@@ -411,8 +443,9 @@ namespace ppforest2::io {
       std::string names;
 
       for (std::size_t i = 0; i < group_names.size(); ++i) {
-        if (i > 0)
+        if (i > 0) {
           names += ", ";
+        }
 
         names += group_names[i];
       }
@@ -462,7 +495,7 @@ namespace ppforest2::io {
       out.newline();
     }
 
-    bool is_degenerate = model_data.contains("model") && model_data["model"].value("degenerate", false);
+    bool const is_degenerate = model_data.contains("model") && model_data["model"].value("degenerate", false);
 
     if (is_degenerate) {
       out.println("{} Some splits could not separate groups (degenerate nodes).", emphasis(warning("Warning:")));

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "models/TreeNode.hpp"
-#include "models/TreeCondition.hpp"
-#include "models/TreeResponse.hpp"
+#include "models/TreeBranch.hpp"
+#include "models/TreeLeaf.hpp"
 #include "models/Tree.hpp"
 #include "models/BootstrapTree.hpp"
 #include "models/Forest.hpp"
@@ -75,19 +75,19 @@ namespace ppforest2::serialization {
      *
      * Only defined for Export<Model::Ptr>.
      */
-    void compute_metrics(types::FeatureMatrix const& x, types::ResponseVector const& y);
+    void compute_metrics(types::FeatureMatrix const& x, types::OutcomeVector const& y);
   };
 
   // Explicit specialization declarations for Export<Model::Ptr>.
   template<> json Export<Model::Ptr>::to_json() const;
-  template<> void Export<Model::Ptr>::compute_metrics(types::FeatureMatrix const&, types::ResponseVector const&);
+  template<> void Export<Model::Ptr>::compute_metrics(types::FeatureMatrix const&, types::OutcomeVector const&);
 
   /** @brief Visitor that serializes a tree node to JSON. */
   struct JsonNodeVisitor : public TreeNode::Visitor {
     json result;
     GroupNames const* group_names = nullptr;
-    void visit(TreeCondition const& node) override;
-    void visit(TreeResponse const& node) override;
+    void visit(TreeBranch const& node) override;
+    void visit(TreeLeaf const& node) override;
   };
 
   /** @brief Visitor that serializes a model (Tree or Forest) to JSON. */
@@ -100,7 +100,7 @@ namespace ppforest2::serialization {
 
   /** @brief Map integer response codes to group name strings. */
   std::vector<std::string>
-  to_labels(types::ResponseVector const& predictions, std::vector<std::string> const& group_names);
+  to_labels(types::OutcomeVector const& predictions, std::vector<std::string> const& group_names);
 
   /** @name Serialization */
   ///@{
@@ -144,8 +144,8 @@ namespace ppforest2::serialization {
   /** @name Stream operators */
   ///@{
   std::ostream& operator<<(std::ostream& os, TreeNode const& node);
-  std::ostream& operator<<(std::ostream& os, TreeCondition const& condition);
-  std::ostream& operator<<(std::ostream& os, TreeResponse const& response);
+  std::ostream& operator<<(std::ostream& os, TreeBranch const& condition);
+  std::ostream& operator<<(std::ostream& os, TreeLeaf const& response);
   std::ostream& operator<<(std::ostream& os, Tree const& tree);
   std::ostream& operator<<(std::ostream& os, Forest const& forest);
 

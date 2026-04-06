@@ -10,7 +10,7 @@
  *
  * | Interface            | Dispatches over                   | Use when |
  * |----------------------|-----------------------------------|----------|
- * | TreeNode::Visitor      | TreeCondition (split), TreeResponse (leaf) | You need to walk the tree structure |
+ * | TreeNode::Visitor      | TreeBranch (split), TreeLeaf (leaf) | You need to walk the tree structure |
  * | Model::Visitor         | Tree, Forest                      | You need to handle trees and forests differently |
  *
  * @section vis_dispatch How double dispatch works
@@ -23,12 +23,12 @@
  *   node->accept(visitor);
  *
  *   // 2. The concrete node type calls visit(*this):
- *   void TreeCondition::accept(TreeNode::Visitor& v) const { v.visit(*this); }
- *   void TreeResponse::accept(TreeNode::Visitor& v) const  { v.visit(*this); }
+ *   void TreeBranch::accept(TreeNode::Visitor& v) const { v.visit(*this); }
+ *   void TreeLeaf::accept(TreeNode::Visitor& v) const  { v.visit(*this); }
  *
  *   // 3. The visitor's concrete visit() method runs:
- *   void MyVisitor::visit(const TreeCondition& cond) { ... }
- *   void MyVisitor::visit(const TreeResponse& resp)  { ... }
+ *   void MyVisitor::visit(const TreeBranch& cond) { ... }
+ *   void MyVisitor::visit(const TreeLeaf& resp)  { ... }
  * @endcode
  *
  * This resolves both the node type and the visitor type at runtime
@@ -40,35 +40,35 @@
  *
  * @code
  *   struct TreeNode::Visitor {
- *     virtual void visit(const TreeCondition& condition) = 0;
- *     virtual void visit(const TreeResponse& response) = 0;
+ *     virtual void visit(const TreeBranch& condition) = 0;
+ *     virtual void visit(const TreeLeaf& response) = 0;
  *   };
  * @endcode
  *
- * **TreeCondition** (internal split node) provides:
+ * **TreeBranch** (internal split node) provides:
  * - `projector` — the projection vector (p) used at this split
- * - `threshold` — the split threshold in projected space
+ * - `cutpoint` — the split cutpoint in projected space
  * - `lower` / `upper` — child nodes (TreeNode::Ptr)
  * - `groups` — set of group labels reachable from this node
  * - `pp_index_value` — the PP index value achieved at this split
  * - `training_spec` — the TrainingSpec used to build this subtree
  *
- * **TreeResponse** (leaf node) provides:
+ * **TreeLeaf** (leaf node) provides:
  * - `value` — the predicted group label
  *
  * @subsection vis_treenode_traversal Traversal pattern
  *
  * To walk the full tree, recursively call `accept()` on child nodes
- * inside your `visit(TreeCondition&)` method:
+ * inside your `visit(TreeBranch&)` method:
  *
  * @code
- *   void visit(const TreeCondition& cond) override {
+ *   void visit(const TreeBranch& cond) override {
  *     // ... process this split node ...
  *     cond.lower->accept(*this);   // recurse left
  *     cond.upper->accept(*this);   // recurse right
  *   }
  *
- *   void visit(const TreeResponse& resp) override {
+ *   void visit(const TreeLeaf& resp) override {
  *     // ... process this leaf node (base case) ...
  *   }
  * @endcode
@@ -76,8 +76,8 @@
  * @subsection vis_treenode_example Example: computing tree depth
  *
  * @code
- *   #include "models/TreeCondition.hpp"
- *   #include "models/TreeResponse.hpp"
+ *   #include "models/TreeBranch.hpp"
+ *   #include "models/TreeLeaf.hpp"
  *
  *   namespace ppforest2 {
  *
@@ -85,7 +85,7 @@
  *     int max_depth = 0;
  *     int current_depth = 0;
  *
- *     void visit(const TreeCondition& cond) override {
+ *     void visit(const TreeBranch& cond) override {
  *       ++current_depth;
  *       if (current_depth > max_depth)
  *         max_depth = current_depth;
@@ -96,7 +96,7 @@
  *       --current_depth;   // backtrack
  *     }
  *
- *     void visit(const TreeResponse&) override {
+ *     void visit(const TreeLeaf&) override {
  *       ++current_depth;
  *       if (current_depth > max_depth)
  *         max_depth = current_depth;
@@ -120,12 +120,12 @@
  *   struct LeafCountVisitor : public TreeNode::Visitor {
  *     int count = 0;
  *
- *     void visit(const TreeCondition& cond) override {
+ *     void visit(const TreeBranch& cond) override {
  *       cond.lower->accept(*this);
  *       cond.upper->accept(*this);
  *     }
  *
- *     void visit(const TreeResponse&) override {
+ *     void visit(const TreeLeaf&) override {
  *       ++count;
  *     }
  *   };
@@ -156,19 +156,19 @@
  *
  * @code
  *   struct AllLabelsVisitor : public Model::Visitor {
- *     std::set<types::Response> labels;
+ *     std::set<types::Outcome> labels;
  *
  *     void visit(const Tree& tree) override {
  *       // Use a TreeNode::Visitor to walk the tree:
  *       struct LabelCollector : public TreeNode::Visitor {
- *         std::set<types::Response>& labels;
- *         LabelCollector(std::set<types::Response>& l) : labels(l) {}
+ *         std::set<types::Outcome>& labels;
+ *         LabelCollector(std::set<types::Outcome>& l) : labels(l) {}
  *
- *         void visit(const TreeCondition& c) override {
+ *         void visit(const TreeBranch& c) override {
  *           c.lower->accept(*this);
  *           c.upper->accept(*this);
  *         }
- *         void visit(const TreeResponse& r) override {
+ *         void visit(const TreeLeaf& r) override {
  *           labels.insert(r.value);
  *         }
  *       };
@@ -216,10 +216,10 @@
  *   be shared across threads.  Use one visitor per thread if needed.
  *
  * - **Recursive traversal** — call `cond.lower->accept(*this)` and
- *   `cond.upper->accept(*this)` inside `visit(TreeCondition&)` to
+ *   `cond.upper->accept(*this)` inside `visit(TreeBranch&)` to
  *   walk the full tree.  Omit these calls if you only need to inspect
  *   the root.
  *
  * @see TreeNode::Visitor, Model::Visitor,
- *      VIVisitor, TreeCondition, TreeResponse
+ *      VIVisitor, TreeBranch, TreeLeaf
  */

@@ -19,10 +19,10 @@ namespace ppforest2 {
    * supported.
    *
    * @code
-   *   TrainingSpec spec(pp::pda(0.0), dr::uniform(3), sr::mean_of_means(), 500, 0);
+   *   TrainingSpec spec(pp::pda(0.0), vars::uniform(3), cutpoint::mean_of_means(), 500, 0);
    *   Forest forest = Forest::train(spec, x, y);
    *
-   *   types::ResponseVector preds = forest.predict(x_test);
+   *   types::OutcomeVector preds = forest.predict(x_test);
    *   double oob = forest.oob_error(x, y);
    *
    *   // Vote proportions — (n × G) matrix, rows sum to 1.
@@ -38,11 +38,11 @@ namespace ppforest2 {
      *
      * @param training_spec  Training specification.
      * @param x              Feature matrix (n × p).
-     * @param y              Response vector (n).
+     * @param y              Outcome vector (n).
      * @return               Trained forest.
      */
     static Forest
-    train(TrainingSpec const& training_spec, types::FeatureMatrix const& x, types::ResponseVector const& y);
+    train(TrainingSpec const& training_spec, types::FeatureMatrix const& x, types::OutcomeVector const& y);
 
     std::vector<BootstrapTree::Ptr> trees;
 
@@ -55,7 +55,7 @@ namespace ppforest2 {
      * @param data  Feature vector (p).
      * @return      Prediction.
      */
-    types::Response predict(types::FeatureVector const& data) const override;
+    types::Outcome predict(types::FeatureVector const& data) const override;
 
     /**
      * @brief Predict a matrix of observations.
@@ -63,7 +63,7 @@ namespace ppforest2 {
      * @param data  Feature matrix (n × p).
      * @return      Predictions (n).
      */
-    types::ResponseVector predict(types::FeatureMatrix const& data) const override;
+    types::OutcomeVector predict(types::FeatureMatrix const& data) const override;
 
     /**
      * @brief Predict vote proportions for a matrix of observations.
@@ -100,7 +100,7 @@ namespace ppforest2 {
      * @param x  Training feature matrix (n × p).
      * @return   OOB predictions (n); −1 where no OOB tree exists.
      */
-    types::ResponseVector oob_predict(types::FeatureMatrix const& x) const;
+    types::OutcomeVector oob_predict(types::FeatureMatrix const& x) const;
 
     /**
      * @brief Out-of-bag error rate.
@@ -114,6 +114,6 @@ namespace ppforest2 {
      * @return   Error rate in [0, 1], or −1 if no observation has any
      *           OOB tree.
      */
-    double oob_error(types::FeatureMatrix const& x, types::ResponseVector const& y) const;
+    double oob_error(types::FeatureMatrix const& x, types::OutcomeVector const& y) const;
   };
 }

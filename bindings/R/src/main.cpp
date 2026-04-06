@@ -14,8 +14,6 @@ using namespace ppforest2;
 using namespace ppforest2::types;
 using namespace ppforest2::stats;
 using namespace ppforest2::pp;
-using namespace ppforest2::dr;
-using namespace ppforest2::sr;
 using namespace ppforest2::viz;
 using namespace ppforest2::serialization;
 
@@ -29,7 +27,7 @@ bool ppforest2_has_openmp() {
 }
 
 // [[Rcpp::export]]
-Model::Ptr ppforest2_train(TrainingSpec::Ptr spec, FeatureMatrix x, ResponseVector y) {
+Model::Ptr ppforest2_train(TrainingSpec::Ptr spec, FeatureMatrix x, OutcomeVector y) {
   y.array() -= 1; // R 1-based → C++ 0-based
 
   if (!GroupPartition::is_contiguous(y)) {
@@ -40,15 +38,15 @@ Model::Ptr ppforest2_train(TrainingSpec::Ptr spec, FeatureMatrix x, ResponseVect
 }
 
 // [[Rcpp::export]]
-ResponseVector ppforest2_predict_tree(Tree const& tree, FeatureMatrix const& data) {
-  ResponseVector result = tree.predict(data);
+OutcomeVector ppforest2_predict_tree(Tree const& tree, FeatureMatrix const& data) {
+  OutcomeVector result = tree.predict(data);
   result.array() += 1; // C++ 0-based → R 1-based
   return result;
 }
 
 // [[Rcpp::export]]
-ResponseVector ppforest2_predict_tree_forest(Forest const& forest, FeatureMatrix const& data) {
-  ResponseVector result = forest.predict(data);
+OutcomeVector ppforest2_predict_tree_forest(Forest const& forest, FeatureMatrix const& data) {
+  OutcomeVector result = forest.predict(data);
   result.array() += 1; // C++ 0-based → R 1-based
   return result;
 }
@@ -75,34 +73,34 @@ FeatureVector ppforest2_vi_projections_forest(Forest const& forest, int n_vars, 
 
 // [[Rcpp::export]]
 FeatureVector ppforest2_vi_weighted_forest(
-    Forest const& forest, FeatureMatrix const& x, ResponseVector y, FeatureVector const& scale
+    Forest const& forest, FeatureMatrix const& x, OutcomeVector y, FeatureVector const& scale
 ) {
   y.array() -= 1; // R 1-based → C++ 0-based
   return variable_importance_weighted_projections(forest, x, y, &scale);
 }
 
 // [[Rcpp::export]]
-FeatureVector ppforest2_vi_permuted_forest(Forest const& forest, FeatureMatrix const& x, ResponseVector y, int seed) {
+FeatureVector ppforest2_vi_permuted_forest(Forest const& forest, FeatureMatrix const& x, OutcomeVector y, int seed) {
   y.array() -= 1; // R 1-based → C++ 0-based
   return variable_importance_permuted(forest, x, y, seed);
 }
 
 // [[Rcpp::export]]
-double ppforest2_oob_error(Forest const& forest, FeatureMatrix const& x, ResponseVector y) {
+double ppforest2_oob_error(Forest const& forest, FeatureMatrix const& x, OutcomeVector y) {
   y.array() -= 1; // R 1-based → C++ 0-based
   return forest.oob_error(x, y);
 }
 
 // [[Rcpp::export]]
-ResponseVector ppforest2_oob_predict(Forest const& forest, FeatureMatrix const& x) {
-  ResponseVector result = forest.oob_predict(x);
+OutcomeVector ppforest2_oob_predict(Forest const& forest, FeatureMatrix const& x) {
+  OutcomeVector result = forest.oob_predict(x);
   // Convert C++ 0-based → R 1-based; sentinel -1 stays as 0 (handled in R)
   result.array() += 1;
   return result;
 }
 
 // [[Rcpp::export]]
-Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, ResponseVector y) {
+Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, OutcomeVector y) {
   y.array() -= 1; // R 1-based → C++ 0-based
   NodeDataVisitor visitor(x, y);
   tree.root->accept(visitor);
@@ -128,7 +126,7 @@ Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, Re
           Rcpp::Named("is_leaf")   = false,
           Rcpp::Named("depth")     = nd.depth,
           Rcpp::Named("projector") = Rcpp::wrap(nd.projector),
-          Rcpp::Named("threshold") = nd.threshold,
+          Rcpp::Named("cutpoint")  = nd.cutpoint,
           Rcpp::Named("projected") = Rcpp::NumericVector(nd.projected_values.begin(), nd.projected_values.end()),
           Rcpp::Named("groups")    = groups_r
       );
@@ -319,7 +317,7 @@ std::string ppforest2_save_model_json(
     std::vector<std::string> groups,
     bool include_metrics,
     FeatureMatrix const& x,
-    ResponseVector y,
+    OutcomeVector y,
     std::vector<std::string> feature_names
 ) {
   y.array() -= 1;

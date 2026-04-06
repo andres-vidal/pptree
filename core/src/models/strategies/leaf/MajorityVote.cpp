@@ -1,0 +1,40 @@
+#include "models/strategies/leaf/MajorityVote.hpp"
+
+#include "models/TreeLeaf.hpp"
+#include "models/strategies/NodeContext.hpp"
+
+#include <nlohmann/json.hpp>
+
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
+
+namespace ppforest2::leaf {
+  nlohmann::json MajorityVote::to_json() const {
+    return {{"name", "majority_vote"}};
+  }
+
+  TreeNode::Ptr MajorityVote::create_leaf(NodeContext const& ctx, RNG& /*rng*/) const {
+    Outcome majority  = *ctx.y.groups.begin();
+    int majority_size = 0;
+
+    for (auto const& g : ctx.y.groups) {
+      int const sz = ctx.y.group_size(g);
+
+      if (sz > majority_size) {
+        majority_size = sz;
+        majority      = g;
+      }
+    }
+
+    return TreeLeaf::make(majority);
+  }
+
+  LeafStrategy::Ptr majority_vote() {
+    return std::make_shared<MajorityVote>();
+  }
+
+  LeafStrategy::Ptr MajorityVote::from_json(nlohmann::json const& j) {
+    validate_json_keys(j, "majority_vote leaf", {"name"});
+    return majority_vote();
+  }
+}

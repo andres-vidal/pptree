@@ -12,7 +12,7 @@
 #'
 #' @param nd A node data list from \code{ppforest2_tree_node_data()},
 #'   with \code{$projected} (numeric), \code{$groups} (integer),
-#'   and \code{$threshold} (numeric).
+#'   and \code{$cutpoint} (numeric).
 #' @param cx,cy Center position of the node on the layout canvas.
 #' @param node_w,node_h Width and height of the node rectangle.
 #' @param group_labels Character vector of group names (model$groups).
@@ -20,8 +20,8 @@
 #' @return List with:
 #'   \describe{
 #'     \item{bars}{data.frame with xmin, xmax, ymin, ymax, group columns}
-#'     \item{thr_x}{x-coordinate of the threshold line in canvas space}
-#'     \item{thr_y_min, thr_y_max}{y-extent of the threshold line}
+#'     \item{thr_x}{x-coordinate of the cutpoint line in canvas space}
+#'     \item{thr_y_min, thr_y_max}{y-extent of the cutpoint line}
 #'     \item{ticks}{data.frame with x, y, label for axis tick labels}
 #'   }
 #'   or NULL if no non-empty bins exist.
@@ -29,7 +29,7 @@
 compute_histogram_bars <- function(nd, cx, cy, node_w, node_h, group_labels, n_bins = 15) {
   vals <- nd$projected
   cls <- group_labels[nd$groups]
-  threshold <- nd$threshold
+  cutpoint <- nd$cutpoint
 
   breaks <- seq(min(vals), max(vals), length.out = n_bins + 1)
   unique_groups <- unique(cls)
@@ -74,7 +74,7 @@ compute_histogram_bars <- function(nd, cx, cy, node_w, node_h, group_labels, n_b
   bar_df$ymax <- bar_df$ymin + bar_df$count / max_count * draw_h
 
   # Threshold line in data coordinates
-  thr_x <- cx - node_w / 2 + node_w * margin + (threshold - val_min) / val_range * draw_w
+  thr_x <- cx - node_w / 2 + node_w * margin + (cutpoint - val_min) / val_range * draw_w
 
   # Axis tick data
   tick_y <- cy - node_h / 2
@@ -140,7 +140,7 @@ format_projector <- function(projector, var_names, max_terms = 4L) {
 #'   \item Edges connecting parent to child nodes (grey segments with labels)
 #'   \item Internal nodes as white rectangles containing stacked group
 #'     histograms of the projected values at that split, with a dashed
-#'     threshold line
+#'     cutpoint line
 #'   \item A compact projector equation below each internal node showing
 #'     the top coefficients (controlled by \code{max_terms})
 #'   \item Leaf nodes as group-colored rectangles with the predicted group
@@ -176,7 +176,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
   node_df$node_idx <- node_df$node_idx + 1L
   edge_df <- layout$edges
 
-  # Collect all histogram bars, threshold lines, and axis ticks
+  # Collect all histogram bars, cutpoint lines, and axis ticks
   all_bars <- list()
   all_thr_segs <- list()
   all_ticks <- list()
@@ -286,7 +286,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     p <- p + ggplot2::geom_segment(
       data = thr_df,
       ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
-      linetype = "dashed", color = ppforest2_col_threshold, linewidth = ppforest2_lw_medium
+      linetype = "dashed", color = ppforest2_col_cutpoint, linewidth = ppforest2_lw_medium
     )
   }
 

@@ -18,10 +18,10 @@ namespace ppforest2::stats {
   struct DataPacket {
     /** @brief Feature matrix (n × p). */
     types::FeatureMatrix const x;
-    /** @brief Response vector (n). */
-    types::Vector<types::Response> const y;
+    /** @brief Outcome vector (n). */
+    types::Vector<types::Outcome> const y;
     /** @brief Set of distinct group labels. */
-    std::set<types::Response> const groups;
+    std::set<types::Outcome> const groups;
     /**
      * @brief Original group label names, indexed by integer code.
      *
@@ -40,8 +40,8 @@ namespace ppforest2::stats {
 
     DataPacket(
         types::FeatureMatrix const& x,
-        types::Vector<types::Response> const& y,
-        std::set<types::Response> const& groups,
+        types::Vector<types::Outcome> const& y,
+        std::set<types::Outcome> const& groups,
         std::vector<std::string> const& group_names   = {},
         std::vector<std::string> const& feature_names = {}
     )
@@ -53,7 +53,7 @@ namespace ppforest2::stats {
 
     DataPacket(
         types::FeatureMatrix const& x,
-        types::Vector<types::Response> const& y,
+        types::Vector<types::Outcome> const& y,
         std::vector<std::string> const& group_names   = {},
         std::vector<std::string> const& feature_names = {}
     )
@@ -65,7 +65,7 @@ namespace ppforest2::stats {
 
     DataPacket()
         : x(types::FeatureMatrix())
-        , y(types::Vector<types::Response>())
-        , groups(std::set<types::Response>()) {}
+        , y(types::Vector<types::Outcome>())
+        , groups(std::set<types::Outcome>()) {}
   };
 }

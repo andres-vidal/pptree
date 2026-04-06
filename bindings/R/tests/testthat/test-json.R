@@ -216,7 +216,7 @@ describe("R save_json meta matches golden file", {
 })
 
 describe("save_json / load_json with non-default strategies", {
-  it("preserves tree training spec (pp, dr, sr) after round-trip", {
+  it("preserves tree training spec (pp, vars, cutpoint) after round-trip", {
     model <- pptr(Type ~ ., data = iris, pp = pp_pda(0.5), seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path)
@@ -224,30 +224,30 @@ describe("save_json / load_json with non-default strategies", {
 
     expect_equal(loaded$training_spec$pp$name, "pda")
     expect_equal(loaded$training_spec$pp$lambda, 0.5, tolerance = 1e-5)
-    expect_equal(loaded$training_spec$dr$name, "noop")
-    expect_equal(loaded$training_spec$sr$name, "mean_of_means")
+    expect_equal(loaded$training_spec$vars$name, "all")
+    expect_equal(loaded$training_spec$cutpoint$name, "mean_of_means")
   })
 
-  it("preserves forest training spec with dr_uniform after round-trip", {
-    model <- pprf(Type ~ ., data = iris, size = 3, pp = pp_pda(0.3), dr = dr_uniform(n_vars = 2), seed = 0)
+  it("preserves forest training spec with vars_uniform after round-trip", {
+    model <- pprf(Type ~ ., data = iris, size = 3, pp = pp_pda(0.3), vars = vars_uniform(n_vars = 2), seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path)
     loaded <- load_json(path)
 
     expect_equal(loaded$training_spec$pp$name, "pda")
     expect_equal(loaded$training_spec$pp$lambda, 0.3, tolerance = 1e-5)
-    expect_equal(loaded$training_spec$dr$name, "uniform")
-    expect_equal(loaded$training_spec$dr$n_vars, 2)
-    expect_equal(loaded$training_spec$sr$name, "mean_of_means")
+    expect_equal(loaded$training_spec$vars$name, "uniform")
+    expect_equal(loaded$training_spec$vars$count, 2)
+    expect_equal(loaded$training_spec$cutpoint$name, "mean_of_means")
   })
 
-  it("preserves forest training spec with dr_noop after round-trip", {
-    model <- pprf(Type ~ ., data = iris, size = 3, dr = dr_noop(), seed = 0)
+  it("preserves forest training spec with vars_all after round-trip", {
+    model <- pprf(Type ~ ., data = iris, size = 3, vars = vars_all(), seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path)
     loaded <- load_json(path)
 
-    expect_equal(loaded$training_spec$dr$name, "noop")
+    expect_equal(loaded$training_spec$vars$name, "all")
   })
 
   it("does not include display_name in saved JSON", {
@@ -257,12 +257,12 @@ describe("save_json / load_json with non-default strategies", {
 
     j <- jsonlite::fromJSON(readLines(path, warn = FALSE))
     expect_null(j$config$pp$display_name)
-    expect_null(j$config$dr$display_name)
-    expect_null(j$config$sr$display_name)
+    expect_null(j$config$vars$display_name)
+    expect_null(j$config$cutpoint$display_name)
   })
 
   it("predictions are correct after loading model with non-default strategies", {
-    model <- pprf(Type ~ ., data = iris, size = 3, pp = pp_pda(0.3), dr = dr_uniform(n_vars = 2), seed = 0)
+    model <- pprf(Type ~ ., data = iris, size = 3, pp = pp_pda(0.3), vars = vars_uniform(n_vars = 2), seed = 0)
     path <- tempfile(fileext = ".json")
     save_json(model, path)
     loaded <- load_json(path)

@@ -77,10 +77,10 @@ TEST(JsonRoundTrip, ModelDispatchForest) {
 }
 
 TEST(JsonRoundTrip, ConfusionMatrix) {
-  ResponseVector predictions(6);
+  OutcomeVector predictions(6);
   predictions << 0, 0, 1, 1, 2, 2;
 
-  ResponseVector actual(6);
+  OutcomeVector actual(6);
   actual << 0, 1, 1, 1, 2, 0;
 
   ConfusionMatrix cm(predictions, actual);
@@ -145,10 +145,10 @@ TEST(JsonLabeled, IntegerFormatOmitsGroupNames) {
 }
 
 TEST(JsonLabeled, ConfusionMatrixLabelsAreStrings) {
-  ResponseVector predictions(6);
+  OutcomeVector predictions(6);
   predictions << 0, 0, 1, 1, 2, 2;
 
-  ResponseVector actual(6);
+  OutcomeVector actual(6);
   actual << 0, 1, 1, 1, 2, 0;
 
   GroupNames names = {"setosa", "versicolor", "virginica"};
@@ -218,10 +218,10 @@ TEST(JsonStructure, ForestAlwaysHasDegenerate) {
 }
 
 TEST(JsonStructure, ConfusionMatrixRoundTrip) {
-  ResponseVector predictions(6);
+  OutcomeVector predictions(6);
   predictions << 0, 0, 1, 1, 2, 2;
 
-  ResponseVector actual(6);
+  OutcomeVector actual(6);
   actual << 0, 1, 1, 1, 2, 0;
 
   ConfusionMatrix cm(predictions, actual);

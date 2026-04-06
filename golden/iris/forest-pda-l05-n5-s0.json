@@ -1,11 +1,19 @@
 {
   "config": {
+    "binarize": {
+      "name": "largest_gap"
+    },
+    "cutpoint": {
+      "name": "mean_of_means"
+    },
     "dataset": "iris",
-    "dr": {
-      "n_vars": 2,
-      "name": "uniform"
+    "leaf": {
+      "name": "majority_vote"
     },
     "max_retries": 3,
+    "partition": {
+      "name": "by_group"
+    },
     "platform": "macos-clang",
     "pp": {
       "lambda": 0.5,
@@ -13,10 +21,14 @@
     },
     "seed": 0,
     "size": 5,
-    "sr": {
-      "name": "mean_of_means"
+    "stop": {
+      "name": "pure_node"
     },
-    "threads": 1
+    "threads": 1,
+    "vars": {
+      "count": 2,
+      "name": "uniform"
+    }
   },
   "error_rate": 0.04000002145767212,
   "meta": {
@@ -40,6 +52,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.1561974734067917,
           "degenerate": false,
           "groups": [
             "setosa",
@@ -57,8 +70,8 @@
             0.045732155442237854,
             0.0
           ],
-          "threshold": 0.1561974734067917,
           "upper": {
+            "cutpoint": -0.32427382469177246,
             "degenerate": false,
             "groups": [
               "versicolor",
@@ -75,7 +88,6 @@
               0.0,
               -0.24575704336166382
             ],
-            "threshold": -0.32427382469177246,
             "upper": {
               "degenerate": false,
               "value": "versicolor"
@@ -238,6 +250,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.13322386145591736,
           "degenerate": false,
           "groups": [
             "setosa",
@@ -255,8 +268,8 @@
             0.02943904884159565,
             0.04236765205860138
           ],
-          "threshold": 0.13322386145591736,
           "upper": {
+            "cutpoint": 0.5355552434921265,
             "degenerate": false,
             "groups": [
               "versicolor",
@@ -273,7 +286,6 @@
               0.05779830366373062,
               0.1524035930633545
             ],
-            "threshold": 0.5355552434921265,
             "upper": {
               "degenerate": false,
               "value": "virginica"
@@ -436,6 +448,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.0787852481007576,
           "degenerate": false,
           "groups": [
             "setosa",
@@ -443,6 +456,7 @@
             "virginica"
           ],
           "lower": {
+            "cutpoint": 0.6253975629806519,
             "degenerate": false,
             "groups": [
               "versicolor",
@@ -459,7 +473,6 @@
               0.11552704125642776,
               0.0
             ],
-            "threshold": 0.6253975629806519,
             "upper": {
               "degenerate": false,
               "value": "virginica"
@@ -472,7 +485,6 @@
             0.0,
             0.0
           ],
-          "threshold": -0.0787852481007576,
           "upper": {
             "degenerate": false,
             "value": "setosa"
@@ -634,6 +646,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.04669567197561264,
           "degenerate": false,
           "groups": [
             "setosa",
@@ -651,8 +664,8 @@
             0.0,
             0.09381933510303497
           ],
-          "threshold": -0.04669567197561264,
           "upper": {
+            "cutpoint": 0.4378364682197571,
             "degenerate": false,
             "groups": [
               "versicolor",
@@ -669,7 +682,6 @@
               0.0,
               0.22458972036838531
             ],
-            "threshold": 0.4378364682197571,
             "upper": {
               "degenerate": false,
               "value": "virginica"
@@ -832,6 +844,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.18230001628398895,
           "degenerate": false,
           "groups": [
             "setosa",
@@ -849,8 +862,8 @@
             0.043008189648389816,
             0.0
           ],
-          "threshold": 0.18230001628398895,
           "upper": {
+            "cutpoint": 0.6542659997940063,
             "degenerate": false,
             "groups": [
               "versicolor",
@@ -867,7 +880,6 @@
               0.12047691643238068,
               0.0
             ],
-            "threshold": 0.6542659997940063,
             "upper": {
               "degenerate": false,
               "value": "virginica"

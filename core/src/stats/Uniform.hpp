@@ -79,7 +79,7 @@ namespace ppforest2::stats {
        * and returns the first @p count elements.  The result is a
        * uniformly distributed subset of size @p count with no repeats.
        *
-       * This is the method used by DRUniformStrategy and bootstrap
+       * This is the method used by vars::Uniform and bootstrap
        * sampling, ensuring reproducible variable selection across
        * platforms.
        *

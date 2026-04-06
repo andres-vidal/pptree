@@ -19,14 +19,18 @@
  *
  * | Abstraction       | Header                 | Purpose |
  * |-------------------|------------------------|---------|
- * | Tree              | models/Tree.hpp        | A single projection pursuit decision tree |
- * | Forest            | models/Forest.hpp      | An ensemble of bootstrap trees with OOB estimation |
- * | TrainingSpec      | models/TrainingSpec.hpp | Composes a PP, DR, and SR strategy into a training configuration |
- * | PPStrategy        | models/PPStrategy.hpp  | Projection pursuit index optimisation (e.g. PDA) |
- * | DRStrategy        | models/DRStrategy.hpp  | Dimensionality reduction / variable selection |
- * | SRStrategy        | models/SRStrategy.hpp  | Split threshold rule |
- * | GroupPartition    | stats/GroupPartition.hpp| Contiguous-block representation of grouped observations |
- * | VariableImportance| models/VariableImportance.hpp | Three variable importance measures (permuted, projections, weighted) |
+ * | Tree              | models/Tree.hpp                        | A single projection pursuit decision tree |
+ * | Forest            | models/Forest.hpp                      | An ensemble of bootstrap trees with OOB estimation |
+ * | TrainingSpec      | models/TrainingSpec.hpp                | Composes seven strategies into a training configuration |
+ * | ProjectionPursuit | strategies/pp/ProjectionPursuit.hpp    | Projection pursuit index optimisation (e.g. PDA) |
+ * | VariableSelection | strategies/vars/VariableSelection.hpp  | Variable subset selection |
+ * | SplitCutpoint     | strategies/cutpoint/SplitCutpoint.hpp  | Split cutpoint computation |
+ * | StopRule          | strategies/stop/StopRule.hpp           | Node stopping condition |
+ * | Binarization      | strategies/binarize/Binarization.hpp   | Multiclass → binary regrouping |
+ * | StepPartition     | strategies/partition/StepPartition.hpp | Observation partitioning |
+ * | LeafStrategy      | strategies/leaf/LeafStrategy.hpp       | Leaf node creation |
+ * | GroupPartition    | stats/GroupPartition.hpp               | Grouped observations with arbitrary row indices |
+ * | VariableImportance| models/VariableImportance.hpp          | Three variable importance measures (permuted, projections, weighted) |
  *
  * @section quick_start Quick start
  *
@@ -38,21 +42,23 @@
  *   // Load data — CSV last column is the response, labels encoded as integers.
  *   auto data = io::csv::read_sorted("iris.csv");
  *
+ *   using namespace ppforest2;
+ *
  *   // Compose strategies into a training spec:
  *   TrainingSpec spec(
- *     pp::pda(0.0),           // LDA (no penalty)
- *     dr::noop(),              // use all variables
- *     sr::mean_of_means());   // midpoint split rule
+ *     0, 0, 0, 3,                   // size (0 = single tree), seed, threads, max_retries
+ *     pp::pda(0.0),                 // LDA (no penalty)
+ *     vars::all(),                  // use all variables
+ *     cutpoint::mean_of_means());   // midpoint split rule
  *
  *   // Train via the unified entry point:
  *   auto model = Model::train(spec, data.x, data.y);
  *
  *   // Or train directly:
- *   stats::RNG rng(0);
- *   Tree tree = Tree::train(spec, data.x, data.y, rng);
+ *   Tree tree = Tree::train(spec, data.x, data.y);
  *
- *   types::Response label = tree.predict(data.x.row(0));
- *   types::ResponseVector preds = tree.predict(data.x);
+ *   types::Outcome label = tree.predict(data.x.row(0));
+ *   types::OutcomeVector preds = tree.predict(data.x);
  * @endcode
  *
  * @subsection train_forest Training a random forest
@@ -60,16 +66,18 @@
  * @code
  *   #include "ppforest2.hpp"
  *
+ *   using namespace ppforest2;
+ *
  *   // PDA with uniform random variable selection:
  *   TrainingSpec spec(
- *     pp::pda(0.0),           // LDA
- *     dr::uniform(3),          // sample 3 variables per split
- *     sr::mean_of_means(),    // midpoint split rule
- *     500, 0);                // size, seed
+ *     500, 0, 0, 3,                 // size, seed, threads, max_retries
+ *     pp::pda(0.0),                 // LDA
+ *     vars::uniform(3),             // sample 3 variables per split
+ *     cutpoint::mean_of_means());   // midpoint split rule
  *
  *   Forest forest = Forest::train(spec, x, y);
  *
- *   types::ResponseVector preds = forest.predict(x_test);
+ *   types::OutcomeVector preds = forest.predict(x_test);
  *
  *   // Out-of-bag error — uses only trees where each obs was not in the bootstrap sample.
  *   double oob = forest.oob_error(x, y);
@@ -100,36 +108,54 @@
  *
  * @section strategy_pattern Strategy pattern
  *
- * Tree training is parameterised by three pluggable strategies.  Concrete
+ * Tree training is parameterised by seven pluggable strategies.  Concrete
  * implementations are composed at runtime via TrainingSpec, so new
- * optimisation criteria or variable selection methods can be added
- * without changing the tree-building logic.
+ * optimisation criteria, variable selection methods, or splitting rules
+ * can be added without changing the tree-building logic.
  *
- * - **PPStrategy** — projection pursuit index optimisation. \n
- *   Built-in: PPPDAStrategy (Generalised LDA, with optional PDA
- *   penalty via @c lambda).  @c lambda = 0 gives standard LDA;
+ * - **pp::ProjectionPursuit** — projection pursuit index optimisation. \n
+ *   Built-in: pp::PDA (Generalised LDA, with optional PDA penalty
+ *   via @c lambda).  @c lambda = 0 gives standard LDA;
  *   @c lambda in (0, 1] penalises the within-group covariance matrix.
  *
- * - **DRStrategy** — dimensionality reduction (variable subset selection). \n
- *   Built-in: DRNoopStrategy (use all variables, for single trees),
- *   DRUniformStrategy (sample @c n_vars uniformly at random, for forests).
+ * - **vars::VariableSelection** — variable subset selection. \n
+ *   Built-in: vars::All (use all variables, for single trees),
+ *   vars::Uniform (sample @c count variables uniformly at random, for forests).
  *
- * - **SRStrategy** — split threshold computation. \n
- *   Built-in: SRMeanOfMeansStrategy (midpoint of projected group means).
+ * - **cutpoint::SplitCutpoint** — split cutpoint computation. \n
+ *   Built-in: cutpoint::MeanOfMeans (midpoint of projected group means).
+ *
+ * - **stop::StopRule** — node stopping condition. \n
+ *   Built-in: stop::PureNode (stop when the node contains a single group).
+ *
+ * - **binarize::Binarization** — multiclass → binary regrouping. \n
+ *   Built-in: binarize::LargestGap (largest gap between projected group means).
+ *
+ * - **partition::StepPartition** — observation partitioning. \n
+ *   Built-in: partition::ByGroup (route all observations of a group to the same child).
+ *
+ * - **leaf::LeafStrategy** — leaf node creation. \n
+ *   Built-in: leaf::MajorityVote (assign the majority class).
  *
  * TrainingSpec is a single concrete class that composes these strategies
  * together with forest-level parameters (size, seed, threads, max retries):
  *
  * @code
+ *   using namespace ppforest2;
+ *
  *   // Single tree with PDA:
- *   TrainingSpec spec(pp::pda(0.5), dr::noop(), sr::mean_of_means());
+ *   TrainingSpec spec(
+ *     0, 0, 0, 3,                   // size, seed, threads, max_retries
+ *     pp::pda(0.5),                 // PDA with lambda = 0.5
+ *     vars::all(),                  // use all variables
+ *     cutpoint::mean_of_means());   // midpoint of group means
  *
  *   // Random forest:
  *   TrainingSpec spec(
- *     pp::pda(0.5),          // PDA with lambda = 0.5
- *     dr::uniform(4),         // sample 4 variables per split
- *     sr::mean_of_means(),   // midpoint of group means
- *     100, 0);               // size, seed
+ *     100, 0, 0, 3,                 // size, seed, threads, max_retries
+ *     pp::pda(0.5),                 // PDA with lambda = 0.5
+ *     vars::uniform(4),             // sample 4 variables per split
+ *     cutpoint::mean_of_means());   // midpoint of group means
  * @endcode
  *
  * Strategies are held via `shared_ptr` and are immutable after construction,
@@ -144,8 +170,8 @@
  * Two visitor interfaces avoid `dynamic_cast` and keep traversal logic
  * decoupled from the model types:
  *
- * - **TreeNode::Visitor** — dispatches over internal nodes (TreeCondition)
- *   and leaf nodes (TreeResponse).  Used by serialisation, visualisation,
+ * - **TreeNode::Visitor** — dispatches over internal nodes (TreeBranch)
+ *   and leaf nodes (TreeLeaf).  Used by serialisation, visualisation,
  *   and variable importance.
  *
  * - **Model::Visitor** — dispatches over Tree and Forest.  Used by the
@@ -182,11 +208,15 @@
  * | Namespace                   | Purpose |
  * |-----------------------------|---------|
  * | ppforest2                   | Core model types: Tree, Forest, TrainingSpec, VariableImportance |
- * | ppforest2::types            | Numeric type aliases (Feature, Response, FeatureMatrix, ...) |
+ * | ppforest2::types            | Numeric type aliases (Feature, Outcome, FeatureMatrix, ...) |
  * | ppforest2::stats            | Statistical infrastructure: RNG, GroupPartition, Uniform, ConfusionMatrix |
- * | ppforest2::pp               | Projection pursuit strategies |
- * | ppforest2::dr               | Dimensionality reduction strategies |
- * | ppforest2::sr               | Split rule strategies |
+ * | ppforest2::pp     | Projection pursuit strategies |
+ * | ppforest2::vars   | Variable selection strategies |
+ * | ppforest2::cutpoint | Split cutpoint strategies |
+ * | ppforest2::stop   | Stopping rule strategies |
+ * | ppforest2::binarize | Multiclass binarization strategies |
+ * | ppforest2::partition | Observation partition strategies |
+ * | ppforest2::leaf | Leaf node creation strategies |
  * | ppforest2::serialization    | JSON serialization and deserialization |
  * | ppforest2::viz              | Visualisation visitors for tree structure and decision boundaries |
  * | ppforest2::io               | File I/O (CSV, JSON) and presentation utilities |

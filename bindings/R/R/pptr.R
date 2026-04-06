@@ -15,9 +15,13 @@ NULL
 #' @param lambda A regularization parameter. If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA). Cannot be used together with \code{pp}.
 #' @param seed An optional integer seed for reproducibility. If \code{NULL} (default), a seed is drawn from R's RNG, so \code{set.seed()} controls reproducibility. If an integer is provided, that value is used directly.
 #' @param pp A projection pursuit strategy object created by \code{\link{pp_pda}}. Cannot be used together with \code{lambda}.
-#' @param sr A split rule strategy object created by \code{\link{sr_mean_of_means}} (default).
+#' @param cutpoint A split cutpoint strategy object created by \code{\link{cutpoint_mean_of_means}} (default).
+#' @param stop A stopping rule object created by \code{\link{stop_pure_node}} (default).
+#' @param binarize A binarization strategy object created by \code{\link{binarize_largest_gap}} (default).
+#' @param partition A partition strategy object created by \code{\link{partition_by_group}} (default).
+#' @param leaf A leaf strategy object created by \code{\link{leaf_majority_vote}} (default).
 #' @return A pptr model trained on \code{x} and \code{y}.
-#' @seealso \code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{sr_mean_of_means}}, \code{vignette("introduction")} for a tutorial
+#' @seealso \code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{cutpoint_mean_of_means}}, \code{\link{stop_pure_node}}, \code{\link{binarize_largest_gap}}, \code{\link{partition_by_group}}, \code{\link{leaf_majority_vote}}, \code{vignette("introduction")} for a tutorial
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
@@ -47,10 +51,15 @@ pptr <- function(
     lambda = 0,
     seed = NULL,
     pp = NULL,
-    sr = NULL) {
+    cutpoint = NULL,
+    stop = NULL,
+    binarize = NULL,
+    partition = NULL,
+    leaf = NULL) {
   strategies <- resolve_strategies(
     pp = pp, lambda = lambda, lambda_missing = missing(lambda),
-    sr = sr)
+    cutpoint = cutpoint, stop = stop, binarize = binarize, partition = partition,
+    leaf = leaf)
 
   if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1 || seed != as.integer(seed)))
     stop("`seed` must be a single integer or NULL.")
@@ -68,12 +77,16 @@ pptr <- function(
 
   training_spec <- list(
     pp = strategies$pp,
-    dr = strategies$dr,
-    sr = strategies$sr,
+    vars = strategies$vars,
+    cutpoint = strategies$cutpoint,
+    stop = strategies$stop,
+    binarize = strategies$binarize,
+    partition = strategies$partition,
+    leaf = strategies$leaf,
     size = 0L,
     seed = as.integer(seed),
     threads = 0L,
-    max_retries = 0L)
+    max_retries = 3L)
 
   model <- ppforest2_train(training_spec, args$x, args$y)
 
@@ -164,7 +177,7 @@ print_node <- function(model, node, depth = 0) {
 
     cat(
       indent,
-      "If (", projection_str, ") < ", node$threshold, ":\n",
+      "If (", projection_str, ") < ", node$cutpoint, ":\n",
       sep = ""
     )
 

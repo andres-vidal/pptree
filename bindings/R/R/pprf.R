@@ -22,10 +22,14 @@ NULL
 #' @param max_retries Maximum number of retries for degenerate trees (default: 3). When a bootstrap sample yields a singular covariance matrix, the tree is retrained with a different seed up to this many times.
 #' @param threads The number of threads to use. The default is the number of cores available.
 #' @param pp A projection pursuit strategy object created by \code{\link{pp_pda}}. Cannot be used together with \code{lambda}.
-#' @param dr A dimensionality reduction strategy object created by \code{\link{dr_uniform}} or \code{\link{dr_noop}}. Cannot be used together with \code{n_vars} or \code{p_vars}.
-#' @param sr A split rule strategy object created by \code{\link{sr_mean_of_means}} (default).
+#' @param vars A variable selection strategy object created by \code{\link{vars_uniform}} or \code{\link{vars_all}}. Cannot be used together with \code{n_vars} or \code{p_vars}.
+#' @param cutpoint A split cutpoint strategy object created by \code{\link{cutpoint_mean_of_means}} (default).
+#' @param stop A stopping rule object created by \code{\link{stop_pure_node}} (default).
+#' @param binarize A binarization strategy object created by \code{\link{binarize_largest_gap}} (default).
+#' @param partition A partition strategy object created by \code{\link{partition_by_group}} (default).
+#' @param leaf A leaf strategy object created by \code{\link{leaf_majority_vote}} (default).
 #' @return A pprf model trained on \code{x} and \code{y}.
-#' @seealso \code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{dr_uniform}}, \code{\link{dr_noop}}, \code{\link{sr_mean_of_means}}, \code{vignette("introduction")} for a tutorial
+#' @seealso \code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{vars_uniform}}, \code{\link{vars_all}}, \code{\link{cutpoint_mean_of_means}}, \code{\link{stop_pure_node}}, \code{\link{binarize_largest_gap}}, \code{\link{partition_by_group}}, \code{\link{leaf_majority_vote}}, \code{vignette("introduction")} for a tutorial
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
@@ -60,8 +64,12 @@ pprf <- function(
     max_retries = 3L,
     threads = NULL,
     pp = NULL,
-    dr = NULL,
-    sr = NULL) {
+    vars = NULL,
+    cutpoint = NULL,
+    stop = NULL,
+    binarize = NULL,
+    partition = NULL,
+    leaf = NULL) {
   if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1 || seed != as.integer(seed)))
     stop("`seed` must be a single integer or NULL.")
 
@@ -83,10 +91,10 @@ pprf <- function(
 
   strategies <- resolve_strategies(
     pp = pp, lambda = lambda, lambda_missing = missing(lambda),
-    dr = dr, n_vars = n_vars, n_vars_missing = missing(n_vars),
+    vars = vars, n_vars = n_vars, n_vars_missing = missing(n_vars),
     p_vars = p_vars, p_vars_missing = missing(p_vars),
-    sr = sr,
-    default_dr = dr_uniform(),
+    cutpoint = cutpoint, stop = stop, binarize = binarize, partition = partition,
+    leaf = leaf, default_vars = vars_uniform(),
     n_features = ncol(x))
 
   if (is.null(seed)) {
@@ -101,8 +109,12 @@ pprf <- function(
 
   training_spec <- list(
     pp = strategies$pp,
-    dr = strategies$dr,
-    sr = strategies$sr,
+    vars = strategies$vars,
+    cutpoint = strategies$cutpoint,
+    stop = strategies$stop,
+    binarize = strategies$binarize,
+    partition = strategies$partition,
+    leaf = strategies$leaf,
     size = as.integer(size),
     seed = as.integer(seed),
     threads = if (is.null(threads)) 0L else as.integer(threads),

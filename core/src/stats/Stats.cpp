@@ -9,7 +9,7 @@
 using namespace ppforest2::types;
 
 namespace ppforest2::stats {
-  void sort(FeatureMatrix& x, ResponseVector& y) {
+  void sort(FeatureMatrix& x, OutcomeVector& y) {
     std::vector<int> indices(x.rows());
     std::iota(indices.begin(), indices.end(), 0);
 
@@ -19,8 +19,8 @@ namespace ppforest2::stats {
     y = y(indices, Eigen::all).eval();
   }
 
-  std::set<Response> unique(ResponseVector const& column) {
-    std::set<Response> unique_values;
+  std::set<Outcome> unique(OutcomeVector const& column) {
+    std::set<Outcome> unique_values;
 
     for (int i = 0; i < column.rows(); i++) {
       unique_values.insert(column(i));
@@ -29,7 +29,7 @@ namespace ppforest2::stats {
     return unique_values;
   }
 
-  float accuracy(ResponseVector const& predictions, ResponseVector const& actual) {
+  float accuracy(OutcomeVector const& predictions, OutcomeVector const& actual) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("predictions and actual must have the same number of rows");
     }
@@ -44,7 +44,7 @@ namespace ppforest2::stats {
     return static_cast<float>(correct) / static_cast<float>(predictions.rows());
   }
 
-  double error_rate(ResponseVector const& predictions, ResponseVector const& actual) {
+  double error_rate(OutcomeVector const& predictions, OutcomeVector const& actual) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("predictions and actual must have the same number of rows");
     }

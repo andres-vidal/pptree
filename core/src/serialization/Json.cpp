@@ -12,7 +12,7 @@ using namespace ppforest2::types;
 
 namespace ppforest2::serialization {
   std::vector<std::string>
-  to_labels(types::ResponseVector const& predictions, std::vector<std::string> const& group_names) {
+  to_labels(types::OutcomeVector const& predictions, std::vector<std::string> const& group_names) {
     std::vector<std::string> labels;
     labels.reserve(static_cast<std::size_t>(predictions.size()));
 
@@ -26,9 +26,7 @@ namespace ppforest2::serialization {
   template<> json Export<Model::Ptr>::to_json() const {
     json result = serialization::to_json(*model, groups);
 
-    json config;
-    model->training_spec->to_json(config);
-    result["config"] = config;
+    result["config"] = model->training_spec->to_json();
 
     json meta;
     meta["observations"]  = n_observations;
@@ -52,7 +50,7 @@ namespace ppforest2::serialization {
     return result;
   }
 
-  void JsonNodeVisitor::visit(TreeCondition const& node) {
+  void JsonNodeVisitor::visit(TreeBranch const& node) {
     JsonNodeVisitor lower_visitor;
     lower_visitor.group_names = group_names;
     node.lower->accept(lower_visitor);
@@ -63,7 +61,7 @@ namespace ppforest2::serialization {
 
     result = json{
         {"projector", node.projector},
-        {"threshold", node.threshold},
+        {"cutpoint", node.cutpoint},
         {"pp_index_value", node.pp_index_value},
         {"lower", lower_visitor.result},
         {"upper", upper_visitor.result},
@@ -82,7 +80,7 @@ namespace ppforest2::serialization {
     }
   }
 
-  void JsonNodeVisitor::visit(TreeResponse const& node) {
+  void JsonNodeVisitor::visit(TreeLeaf const& node) {
     if (group_names) {
       result = json{
           {"value", (*group_names)[static_cast<std::size_t>(node.value)]},
@@ -290,7 +288,7 @@ namespace ppforest2::serialization {
 
   static TreeNode::Ptr node_from_json(json const& j) {
     if (j.contains("value")) {
-      auto leaf        = TreeResponse::make(j["value"].get<Response>());
+      auto leaf        = TreeLeaf::make(j["value"].get<Outcome>());
       leaf->degenerate = j.value("degenerate", false);
       return leaf;
     }
@@ -299,19 +297,19 @@ namespace ppforest2::serialization {
 
     pp::Projector projector = Eigen::Map<pp::Projector const>(proj_vec.data(), static_cast<int>(proj_vec.size()));
 
-    Feature const threshold      = j["threshold"].get<Feature>();
+    Feature const cut            = j["cutpoint"].get<Feature>();
     Feature const pp_index_value = j.value("pp_index_value", Feature(0));
 
-    std::set<Response> groups;
+    std::set<Outcome> groups;
 
     if (j.contains("groups")) {
       for (auto const& g : j["groups"]) {
-        groups.insert(g.get<Response>());
+        groups.insert(g.get<Outcome>());
       }
     }
 
-    auto node = TreeCondition::make(
-        projector, threshold, node_from_json(j["lower"]), node_from_json(j["upper"]), groups, pp_index_value
+    auto node = TreeBranch::make(
+        projector, cut, node_from_json(j["lower"]), node_from_json(j["upper"]), groups, pp_index_value
     );
 
     node->degenerate = node->degenerate || j.value("degenerate", false);
@@ -322,18 +320,18 @@ namespace ppforest2::serialization {
   // Internal: node deserialization (labeled — resolves string → int)
   // -----------------------------------------------------------------------
 
-  static Response resolve_label(json const& value, GroupNames const& group_names) {
+  static Outcome resolve_label(json const& value, GroupNames const& group_names) {
     if (value.is_string()) {
       auto it = std::find(group_names.begin(), group_names.end(), value.get<std::string>());
-      return static_cast<Response>(std::distance(group_names.begin(), it));
+      return static_cast<Outcome>(std::distance(group_names.begin(), it));
     }
 
-    return value.get<Response>();
+    return value.get<Outcome>();
   }
 
   static TreeNode::Ptr node_from_json(json const& j, GroupNames const& group_names) {
     if (j.contains("value")) {
-      auto leaf        = TreeResponse::make(resolve_label(j["value"], group_names));
+      auto leaf        = TreeLeaf::make(resolve_label(j["value"], group_names));
       leaf->degenerate = j.value("degenerate", false);
       return leaf;
     }
@@ -342,10 +340,10 @@ namespace ppforest2::serialization {
 
     pp::Projector projector = Eigen::Map<pp::Projector const>(proj_vec.data(), static_cast<int>(proj_vec.size()));
 
-    Feature const threshold      = j["threshold"].get<Feature>();
+    Feature const cut            = j["cutpoint"].get<Feature>();
     Feature const pp_index_value = j.value("pp_index_value", Feature(0));
 
-    std::set<Response> groups;
+    std::set<Outcome> groups;
 
     if (j.contains("groups")) {
       for (auto const& g : j["groups"]) {
@@ -353,9 +351,9 @@ namespace ppforest2::serialization {
       }
     }
 
-    auto node = TreeCondition::make(
+    auto node = TreeBranch::make(
         projector,
-        threshold,
+        cut,
         node_from_json(j["lower"], group_names),
         node_from_json(j["upper"], group_names),
         groups,
@@ -437,7 +435,7 @@ namespace ppforest2::serialization {
     return vi;
   }
 
-  template<> void Export<Model::Ptr>::compute_metrics(types::FeatureMatrix const& x, types::ResponseVector const& y) {
+  template<> void Export<Model::Ptr>::compute_metrics(types::FeatureMatrix const& x, types::OutcomeVector const& y) {
     int const n_vars = static_cast<int>(x.cols());
     int const seed   = model->training_spec->seed;
 
@@ -446,20 +444,20 @@ namespace ppforest2::serialization {
     vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
     // Training confusion matrix
-    ResponseVector train_preds = model->predict(x);
+    OutcomeVector train_preds = model->predict(x);
     training_confusion_matrix  = stats::ConfusionMatrix(train_preds, y);
 
     // Model-specific metrics (OOB for forests)
     struct MetricsVisitor : Model::Visitor {
       FeatureMatrix const& x;
-      ResponseVector const& y;
+      OutcomeVector const& y;
       int n_vars, seed;
       VariableImportance& vi;
       Export<Model::Ptr>& self;
 
       MetricsVisitor(
           FeatureMatrix const& x,
-          ResponseVector const& y,
+          OutcomeVector const& y,
           int n_vars,
           int seed,
           VariableImportance& vi,
@@ -473,7 +471,7 @@ namespace ppforest2::serialization {
           , self(self) {}
 
       void visit(Forest const& forest) override {
-        ResponseVector oob_preds = forest.oob_predict(x);
+        OutcomeVector oob_preds = forest.oob_predict(x);
 
         std::vector<int> oob_rows;
         for (int i = 0; i < oob_preds.size(); ++i) {
@@ -482,8 +480,8 @@ namespace ppforest2::serialization {
         }
 
         if (!oob_rows.empty()) {
-          ResponseVector preds_oob  = oob_preds(oob_rows, Eigen::all).eval();
-          ResponseVector y_oob      = y(oob_rows, Eigen::all).eval();
+          OutcomeVector preds_oob  = oob_preds(oob_rows, Eigen::all).eval();
+          OutcomeVector y_oob      = y(oob_rows, Eigen::all).eval();
           self.oob_error            = stats::error_rate(preds_oob, y_oob);
           self.oob_confusion_matrix = stats::ConfusionMatrix(preds_oob, y_oob);
         }
@@ -610,11 +608,11 @@ namespace ppforest2::serialization {
     return os << to_json(node).dump(2, ' ', false);
   }
 
-  std::ostream& operator<<(std::ostream& os, TreeCondition const& condition) {
+  std::ostream& operator<<(std::ostream& os, TreeBranch const& condition) {
     return os << to_json(static_cast<TreeNode const&>(condition)).dump(2, ' ', false);
   }
 
-  std::ostream& operator<<(std::ostream& os, TreeResponse const& response) {
+  std::ostream& operator<<(std::ostream& os, TreeLeaf const& response) {
     return os << to_json(static_cast<TreeNode const&>(response)).dump(2, ' ', false);
   }
 

@@ -40,11 +40,11 @@ namespace ppforest2::stats {
    * @endcode
    */
   class GroupPartition {
-    using Group       = types::Response;
-    using GroupSet    = std::set<types::Response>;
-    using GroupMap    = std::map<types::Response, types::Response>;
-    using GroupInvMap = std::map<types::Response, GroupSet>;
-    using GroupVector = types::Vector<types::Response>;
+    using Group       = types::Outcome;
+    using GroupSet    = std::set<types::Outcome>;
+    using GroupMap    = std::map<types::Outcome, types::Outcome>;
+    using GroupInvMap = std::map<types::Outcome, GroupSet>;
+    using GroupVector = types::Vector<types::Outcome>;
 
   public:
     /** @brief Check whether all equal values in @p y form a single contiguous block. */
@@ -53,9 +53,9 @@ namespace ppforest2::stats {
     /**
        * @brief Construct from a sorted response vector.
        *
-       * @param y  Response vector (n) with contiguous group blocks.
+       * @param y  Outcome vector (n) with contiguous group blocks.
        */
-    GroupPartition(types::ResponseVector const& y);
+    GroupPartition(types::OutcomeVector const& y);
 
     /** @brief First row index of the block for @p group. */
     int group_start(Group const& group) const;
@@ -67,11 +67,15 @@ namespace ppforest2::stats {
     /**
        * @brief Extract rows belonging to a group (or supergroup).
        *
+       * Returns an Eigen block expression (zero-copy view) into @p x.
+       * The result must be consumed immediately or assigned to a
+       * concrete matrix — do not store it in `auto` across statements.
+       *
        * @param x      Feature matrix (n × p).
        * @param group  Group label.
-       * @return       Sub-matrix of rows belonging to @p group.
+       * @return       Block expression over the rows of @p group.
        */
-    auto group(types::FeatureMatrix const& x, Group const& group) const {
+    template<typename Derived> auto group(Eigen::MatrixBase<Derived> const& x, Group const& group) const {
       std::vector<int> indices;
 
       auto const& subs = this->subgroups.at(group);
@@ -92,7 +96,7 @@ namespace ppforest2::stats {
        * @param x  Feature matrix (n × p).
        * @return   Sub-matrix with all grouped rows.
        */
-    auto data(types::FeatureMatrix const& x) const {
+    template<typename Derived> auto data(Eigen::MatrixBase<Derived> const& x) const {
       std::vector<int> indices;
 
       for (auto const& kv : Blocks) {
@@ -118,7 +122,25 @@ namespace ppforest2::stats {
        * @param groups  Set of group labels to keep.
        * @return        New GroupPartition restricted to @p groups.
        */
-    GroupPartition subset(GroupSet groups) const;
+    GroupPartition subset(GroupSet const& groups) const;
+
+    using SplitSizes = std::map<types::Outcome, int>;
+
+    /**
+       * @brief Split each group's block into left and right children.
+       *
+       * For each leaf group, @p left_sizes specifies how many rows go to
+       * the left child (the first rows of the block).  The remaining rows
+       * go to the right child.  Groups absent from @p left_sizes go
+       * entirely to the right child (left_count = 0).
+       *
+       * The caller is responsible for having already reordered rows within
+       * each block so that left-bound observations come first.
+       *
+       * @param left_sizes  Maps each leaf group to its left child row count.
+       * @return            Pair of {left, right} GroupPartitions.
+       */
+    std::pair<GroupPartition, GroupPartition> split(SplitSizes const& left_sizes) const;
 
     /**
        * @brief Merge groups according to a mapping.
@@ -147,15 +169,17 @@ namespace ppforest2::stats {
       int start;
       int end;
       int size;
-      std::optional<types::Response> next;
-      std::optional<types::Response> prev;
+      std::optional<types::Outcome> next;
+      std::optional<types::Outcome> prev;
     };
 
-    using BlockMap = std::map<types::Response, Block>;
+    using BlockMap = std::map<types::Outcome, Block>;
     BlockMap const Blocks;
 
-    BlockMap init_Blocks(GroupVector const& y);
-    GroupMap init_supergroups();
+    static BlockMap init_blocks(GroupVector const& y);
+    static GroupMap init_supergroups(GroupSet const& groups);
+
+    explicit GroupPartition(BlockMap const& Blocks);
 
     GroupPartition(BlockMap const& Blocks, GroupSet const& groups);
 

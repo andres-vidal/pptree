@@ -28,8 +28,10 @@ TEST(Threading, ForestSameResultsSingleVsMulti) {
 
   auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
 
-  Forest f1 = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(2), sr::mean_of_means(), 10, 0, 1), data.x, data.y);
-  Forest f4 = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(2), sr::mean_of_means(), 10, 0, 4), data.x, data.y);
+  Forest const f1 =
+      Forest::train(TrainingSpec::builder().size(10).threads(1).vars(vars::uniform(2)).build(), data.x, data.y);
+  Forest const f4 =
+      Forest::train(TrainingSpec::builder().size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
 
   ASSERT_EQ(f1, f4) << "1-thread and 4-thread forests should be identical";
 }
@@ -41,8 +43,10 @@ TEST(Threading, ForestSameResultsAcrossRuns) {
 
   auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
 
-  Forest f1 = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(2), sr::mean_of_means(), 10, 0, 4), data.x, data.y);
-  Forest f2 = Forest::train(TrainingSpec(pp::pda(0.0f), dr::uniform(2), sr::mean_of_means(), 10, 0, 4), data.x, data.y);
+  Forest const f1 =
+      Forest::train(TrainingSpec::builder().size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
+  Forest const f2 =
+      Forest::train(TrainingSpec::builder().size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
 
   ASSERT_EQ(f1, f2) << "Two runs with same seed and thread count should be identical";
 }

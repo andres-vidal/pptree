@@ -81,7 +81,7 @@ static void compare_confusion_matrix(json const& actual, json const& expected) {
     model.clear();                                                                                           \
     auto train = run_ppforest2(                                                                              \
         "-q train -d " + csv + " -n " + std::to_string(n_trees) + " -l " + std::to_string(lambda) + " -r " + \
-        std::to_string(seed) + " -v " + std::to_string(n_vars) +                                             \
+        std::to_string(seed) + " --n-vars " + std::to_string(n_vars) +                                       \
         " --threads 1"                                                                                       \
         " -s " +                                                                                             \
         model.path()                                                                                         \

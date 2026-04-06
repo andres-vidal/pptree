@@ -146,7 +146,7 @@ describe("pprf input validation", {
 
   it("accepts valid p_vars", {
     model <- pprf(x = iris[, 1:4], y = iris[, 5], p_vars = 0.5, size = 2, threads = 1)
-    expect_equal(model$training_spec$dr$n_vars, 2)
+    expect_equal(model$training_spec$vars$count, 2)
   })
 })
 
@@ -163,12 +163,12 @@ describe("pprf training spec", {
 
   it("preserves the n_vars parameter in the returned model", {
     model <- pprf(Type ~ ., data = iris, n_vars = 2, threads = 1)
-    expect_equal(model$training_spec$dr$n_vars, 2)
+    expect_equal(model$training_spec$vars$count, 2)
   })
 
   it("the n_vars parameter is the number of variables by default", {
     model <- pprf(x = iris[, 1:4], y = iris[, 5], threads = 1)
-    expect_equal(model$training_spec$dr$n_vars, ncol(iris) - 1)
+    expect_equal(model$training_spec$vars$count, ncol(iris) - 1)
   })
 
   it("generates as many trees as indicated by the size parameter", {
@@ -186,29 +186,49 @@ describe("pprf training spec", {
     expect_equal(model$training_spec$pp$name, "pda")
   })
 
-  it("the dr strategy is uniform", {
+  it("the vars strategy is uniform", {
     model <- pprf(Type ~ ., data = iris, threads = 1)
-    expect_equal(model$training_spec$dr$name, "uniform")
+    expect_equal(model$training_spec$vars$name, "uniform")
+  })
+
+  it("the stop strategy is pure_node", {
+    model <- pprf(Type ~ ., data = iris, threads = 1)
+    expect_equal(model$training_spec$stop$name, "pure_node")
+  })
+
+  it("the binarize strategy is largest_gap", {
+    model <- pprf(Type ~ ., data = iris, threads = 1)
+    expect_equal(model$training_spec$binarize$name, "largest_gap")
+  })
+
+  it("the partition strategy is by_group", {
+    model <- pprf(Type ~ ., data = iris, threads = 1)
+    expect_equal(model$training_spec$partition$name, "by_group")
+  })
+
+  it("the leaf strategy is majority_vote", {
+    model <- pprf(Type ~ ., data = iris, threads = 1)
+    expect_equal(model$training_spec$leaf$name, "majority_vote")
   })
 })
 
 describe("pprf with strategy objects", {
-  it("trains with pp and dr", {
-    model <- pprf(Type ~ ., data = iris, size = 2, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2), seed = 0, threads = 1)
+  it("trains with pp and vars", {
+    model <- pprf(Type ~ ., data = iris, size = 2, pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2), seed = 0, threads = 1)
     expect_s3_class(model, "pprf")
     expect_equal(model$training_spec$pp$lambda, 0.5)
-    expect_equal(model$training_spec$dr$n_vars, 2)
+    expect_equal(model$training_spec$vars$count, 2)
   })
 
-  it("trains with dr using p_vars", {
-    model <- pprf(Type ~ ., data = iris, size = 2, dr = dr_uniform(p_vars = 0.5), seed = 0, threads = 1)
+  it("trains with vars using p_vars", {
+    model <- pprf(Type ~ ., data = iris, size = 2, vars = vars_uniform(p_vars = 0.5), seed = 0, threads = 1)
     expect_s3_class(model, "pprf")
-    expect_equal(model$training_spec$dr$n_vars, 2)  # 0.5 * 4 = 2
+    expect_equal(model$training_spec$vars$count, 2)  # 0.5 * 4 = 2
   })
 
   it("produces identical export as shortcut params", {
     model_shortcut <- pprf(Type ~ ., data = iris, size = 3, lambda = 0.5, n_vars = 2, seed = 0, threads = 1)
-    model_strategy <- pprf(Type ~ ., data = iris, size = 3, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2), seed = 0, threads = 1)
+    model_strategy <- pprf(Type ~ ., data = iris, size = 3, pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2), seed = 0, threads = 1)
 
     path_shortcut <- tempfile(fileext = ".json")
     path_strategy <- tempfile(fileext = ".json")
@@ -223,9 +243,9 @@ describe("pprf with strategy objects", {
     expect_equal(j_shortcut, j_strategy)
   })
 
-  it("p_vars shortcut and dr_uniform(p_vars) produce identical export", {
+  it("p_vars shortcut and vars_uniform(p_vars) produce identical export", {
     model_shortcut <- pprf(Type ~ ., data = iris, size = 3, p_vars = 0.5, seed = 0, threads = 1)
-    model_strategy <- pprf(Type ~ ., data = iris, size = 3, dr = dr_uniform(p_vars = 0.5), seed = 0, threads = 1)
+    model_strategy <- pprf(Type ~ ., data = iris, size = 3, vars = vars_uniform(p_vars = 0.5), seed = 0, threads = 1)
 
     path_shortcut <- tempfile(fileext = ".json")
     path_strategy <- tempfile(fileext = ".json")
@@ -246,42 +266,75 @@ describe("pprf with strategy objects", {
       "Cannot use `pp` together with `lambda`")
   })
 
-  it("errors when mixing dr and n_vars", {
+  it("errors when mixing vars and n_vars", {
     expect_error(
-      pprf(Type ~ ., data = iris, dr = dr_uniform(n_vars = 2), n_vars = 3),
-      "Cannot use `dr` together with `n_vars`/`p_vars`")
+      pprf(Type ~ ., data = iris, vars = vars_uniform(n_vars = 2), n_vars = 3),
+      "Cannot use `vars` together with `n_vars`/`p_vars`")
   })
 
-  it("errors when mixing dr and p_vars", {
+  it("errors when mixing vars and p_vars", {
     expect_error(
-      pprf(Type ~ ., data = iris, dr = dr_uniform(n_vars = 2), p_vars = 0.5),
-      "Cannot use `dr` together with `n_vars`/`p_vars`")
+      pprf(Type ~ ., data = iris, vars = vars_uniform(n_vars = 2), p_vars = 0.5),
+      "Cannot use `vars` together with `n_vars`/`p_vars`")
   })
 
-  it("rejects non-dr_strategy objects", {
+  it("rejects non-vars_strategy objects for vars", {
     expect_error(
-      pprf(Type ~ ., data = iris, dr = list(name = "uniform", n_vars = 2)),
-      "dr_strategy")
+      pprf(Type ~ ., data = iris, vars = list(name = "uniform", count = 2)),
+      "vars_strategy object")
   })
 
   it("works with parsnip engine args pattern", {
-    model <- pprf(Type ~ ., data = iris, size = 2, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2), seed = 0, threads = 1)
+    model <- pprf(Type ~ ., data = iris, size = 2, pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2), seed = 0, threads = 1)
     preds <- predict(model, iris)
     expect_length(preds, 150)
   })
 
-  it("trains with dr_noop (no variable subsampling)", {
-    model <- pprf(Type ~ ., data = iris, size = 2, dr = dr_noop(), seed = 0, threads = 1)
+  it("trains with vars_all (no variable subsampling)", {
+    model <- pprf(Type ~ ., data = iris, size = 2, vars = vars_all(), seed = 0, threads = 1)
     expect_s3_class(model, "pprf")
-    expect_equal(model$training_spec$dr$name, "noop")
+    expect_equal(model$training_spec$vars$name, "all")
   })
 
   it("training spec reflects strategy objects, not just defaults", {
-    model <- pprf(Type ~ ., data = iris, size = 2, pp = pp_pda(0.7), dr = dr_uniform(n_vars = 3), sr = sr_mean_of_means(), seed = 0, threads = 1)
+    model <- pprf(Type ~ ., data = iris, size = 2, pp = pp_pda(0.7), vars = vars_uniform(n_vars = 3), cutpoint = cutpoint_mean_of_means(), seed = 0, threads = 1)
     expect_equal(model$training_spec$pp$name, "pda")
     expect_equal(model$training_spec$pp$lambda, 0.7, tolerance = 1e-5)
-    expect_equal(model$training_spec$dr$name, "uniform")
-    expect_equal(model$training_spec$dr$n_vars, 3)
-    expect_equal(model$training_spec$sr$name, "mean_of_means")
+    expect_equal(model$training_spec$vars$name, "uniform")
+    expect_equal(model$training_spec$vars$count, 3)
+    expect_equal(model$training_spec$cutpoint$name, "mean_of_means")
+  })
+
+  it("trains with explicit stop, binarize, partition, leaf", {
+    model <- pprf(Type ~ ., data = iris, size = 2, stop = stop_pure_node(), binarize = binarize_largest_gap(), partition = partition_by_group(), leaf = leaf_majority_vote(), seed = 0, threads = 1)
+    expect_s3_class(model, "pprf")
+    expect_equal(model$training_spec$stop$name, "pure_node")
+    expect_equal(model$training_spec$binarize$name, "largest_gap")
+    expect_equal(model$training_spec$partition$name, "by_group")
+    expect_equal(model$training_spec$leaf$name, "majority_vote")
+  })
+
+  it("rejects non-stop_strategy objects", {
+    expect_error(
+      pprf(Type ~ ., data = iris, stop = list(name = "pure_node")),
+      "stop_strategy")
+  })
+
+  it("rejects non-binarize_strategy objects", {
+    expect_error(
+      pprf(Type ~ ., data = iris, binarize = list(name = "largest_gap")),
+      "binarize_strategy")
+  })
+
+  it("rejects non-partition_strategy objects", {
+    expect_error(
+      pprf(Type ~ ., data = iris, partition = list(name = "by_group")),
+      "partition_strategy")
+  })
+
+  it("rejects non-leaf_strategy objects", {
+    expect_error(
+      pprf(Type ~ ., data = iris, leaf = list(name = "majority_vote")),
+      "leaf_strategy")
   })
 })

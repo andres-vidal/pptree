@@ -1,11 +1,19 @@
 {
   "config": {
+    "binarize": {
+      "name": "largest_gap"
+    },
+    "cutpoint": {
+      "name": "mean_of_means"
+    },
     "dataset": "wine",
-    "dr": {
-      "n_vars": 4,
-      "name": "uniform"
+    "leaf": {
+      "name": "majority_vote"
     },
     "max_retries": 3,
+    "partition": {
+      "name": "by_group"
+    },
     "platform": "macos-clang",
     "pp": {
       "lambda": 0.0,
@@ -13,10 +21,14 @@
     },
     "seed": 0,
     "size": 10,
-    "sr": {
-      "name": "mean_of_means"
+    "stop": {
+      "name": "pure_node"
     },
-    "threads": 1
+    "threads": 1,
+    "vars": {
+      "count": 4,
+      "name": "uniform"
+    }
   },
   "error_rate": 0.016853928565979004,
   "meta": {
@@ -49,6 +61,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.05081738904118538,
           "degenerate": false,
           "groups": [
             "1",
@@ -75,8 +88,8 @@
             0.0,
             0.0
           ],
-          "threshold": 0.05081738904118538,
           "upper": {
+            "cutpoint": -1.2645559310913086,
             "degenerate": false,
             "groups": [
               "1",
@@ -102,7 +115,6 @@
               -0.04026632383465767,
               0.0
             ],
-            "threshold": -1.2645559310913086,
             "upper": {
               "degenerate": false,
               "value": "2"
@@ -293,6 +305,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.8867096900939941,
           "degenerate": false,
           "groups": [
             "1",
@@ -319,8 +332,8 @@
             0.0,
             0.0
           ],
-          "threshold": 0.8867096900939941,
           "upper": {
+            "cutpoint": 0.3423623740673065,
             "degenerate": false,
             "groups": [
               "1",
@@ -346,7 +359,6 @@
               0.08475308865308762,
               8.633081597508863e-05
             ],
-            "threshold": 0.3423623740673065,
             "upper": {
               "degenerate": false,
               "value": "1"
@@ -537,6 +549,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -1.0922678709030151,
           "degenerate": false,
           "groups": [
             "1",
@@ -563,8 +576,8 @@
             -0.05300239101052284,
             0.0
           ],
-          "threshold": -1.0922678709030151,
           "upper": {
+            "cutpoint": -0.39454060792922974,
             "degenerate": false,
             "groups": [
               "2",
@@ -590,7 +603,6 @@
               0.0,
               0.0
             ],
-            "threshold": -0.39454060792922974,
             "upper": {
               "degenerate": false,
               "value": "2"
@@ -781,6 +793,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.1350383162498474,
           "degenerate": false,
           "groups": [
             "1",
@@ -807,8 +820,8 @@
             0.0,
             0.0
           ],
-          "threshold": 0.1350383162498474,
           "upper": {
+            "cutpoint": 0.2542194724082947,
             "degenerate": false,
             "groups": [
               "1",
@@ -834,7 +847,6 @@
               0.01854129135608673,
               0.0002391274756519124
             ],
-            "threshold": 0.2542194724082947,
             "upper": {
               "degenerate": false,
               "value": "1"
@@ -1025,6 +1037,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.019633816555142403,
           "degenerate": false,
           "groups": [
             "1",
@@ -1051,8 +1064,8 @@
             0.08045367896556854,
             0.0
           ],
-          "threshold": 0.019633816555142403,
           "upper": {
+            "cutpoint": 0.45080018043518066,
             "degenerate": false,
             "groups": [
               "1",
@@ -1078,7 +1091,6 @@
               0.0,
               0.0
             ],
-            "threshold": 0.45080018043518066,
             "upper": {
               "degenerate": false,
               "value": "1"
@@ -1269,6 +1281,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.15727202594280243,
           "degenerate": false,
           "groups": [
             "1",
@@ -1276,6 +1289,7 @@
             "3"
           ],
           "lower": {
+            "cutpoint": 0.2793511748313904,
             "degenerate": false,
             "groups": [
               "2",
@@ -1301,7 +1315,6 @@
               0.0,
               0.0
             ],
-            "threshold": 0.2793511748313904,
             "upper": {
               "degenerate": false,
               "value": "2"
@@ -1323,7 +1336,6 @@
             0.05047610402107239,
             0.0
           ],
-          "threshold": 0.15727202594280243,
           "upper": {
             "degenerate": false,
             "value": "1"
@@ -1513,6 +1525,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.8771417140960693,
           "degenerate": false,
           "groups": [
             "1",
@@ -1539,8 +1552,8 @@
             0.0,
             0.0
           ],
-          "threshold": 0.8771417140960693,
           "upper": {
+            "cutpoint": 0.18650111556053162,
             "degenerate": false,
             "groups": [
               "1",
@@ -1566,7 +1579,6 @@
               0.0,
               0.0
             ],
-            "threshold": 0.18650111556053162,
             "upper": {
               "degenerate": false,
               "value": "1"
@@ -1757,6 +1769,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.030240319669246674,
           "degenerate": false,
           "groups": [
             "1",
@@ -1764,6 +1777,7 @@
             "3"
           ],
           "lower": {
+            "cutpoint": -0.04030472785234451,
             "degenerate": false,
             "groups": [
               "2",
@@ -1789,7 +1803,6 @@
               0.0,
               0.0
             ],
-            "threshold": -0.04030472785234451,
             "upper": {
               "degenerate": false,
               "value": "3"
@@ -1811,7 +1824,6 @@
             0.0,
             0.0001991647732211277
           ],
-          "threshold": 0.030240319669246674,
           "upper": {
             "degenerate": false,
             "value": "1"
@@ -2001,6 +2013,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.2438400685787201,
           "degenerate": false,
           "groups": [
             "1",
@@ -2027,8 +2040,8 @@
             0.07230362296104431,
             0.0
           ],
-          "threshold": 0.2438400685787201,
           "upper": {
+            "cutpoint": 0.9195986986160278,
             "degenerate": false,
             "groups": [
               "1",
@@ -2054,7 +2067,6 @@
               0.0,
               0.0
             ],
-            "threshold": 0.9195986986160278,
             "upper": {
               "degenerate": false,
               "value": "1"
@@ -2245,6 +2257,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.06990763545036316,
           "degenerate": false,
           "groups": [
             "1",
@@ -2271,8 +2284,8 @@
             0.0,
             0.0
           ],
-          "threshold": 0.06990763545036316,
           "upper": {
+            "cutpoint": 0.28082433342933655,
             "degenerate": false,
             "groups": [
               "1",
@@ -2298,7 +2311,6 @@
               0.10898882895708084,
               0.0
             ],
-            "threshold": 0.28082433342933655,
             "upper": {
               "degenerate": false,
               "value": "1"

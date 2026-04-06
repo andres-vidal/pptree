@@ -22,7 +22,7 @@ TEST_F(TrainTest, JsonContainsModelAndConfig) {
   EXPECT_TRUE(config["pp"].contains("lambda"));
   EXPECT_EQ(config["seed"], 0);
   EXPECT_TRUE(config.contains("threads"));
-  EXPECT_TRUE(config.contains("dr"));
+  EXPECT_TRUE(config.contains("vars"));
   EXPECT_EQ(config["data"], IRIS_CSV);
 }
 
@@ -44,7 +44,7 @@ TEST(CLITrain, TrainSingleTreeMetaMatchesGolden) {
   ASSERT_TRUE(golden_in.is_open());
   auto golden_meta = json::parse(golden_in)["meta"];
 
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -r 0 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -55,7 +55,7 @@ TEST(CLITrain, TrainSingleTreeMetaMatchesGolden) {
 
 /* Single tree (t=0) saves with model_type "tree". */
 TEST(CLITrain, TrainAndSaveSingleTree) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -67,14 +67,14 @@ TEST(CLITrain, TrainAndSaveSingleTree) {
 
 /* --no-save suppresses model file creation. */
 TEST(CLITrain, TrainNoSave) {
-  TempDir dir;
+  TempDir const dir;
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-save");
   EXPECT_EQ(result.exit_code, 0);
 }
 
 /* Saving to an existing file must fail (no silent overwrite). */
 TEST(CLITrain, TrainCollisionFails) {
-  TempFile model;
+  TempFile const model;
   // Don't clear - file exists, should fail
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -s " + model.path());
   EXPECT_NE(result.exit_code, 0);
@@ -130,15 +130,15 @@ TEST_F(TrainTest, VISavedToJson) {
   EXPECT_TRUE(vi.contains("weighted_projections"));
   EXPECT_TRUE(vi.contains("permuted"));
 
-  EXPECT_EQ(vi["scale"].size(), 4u);
-  EXPECT_EQ(vi["projections"].size(), 4u);
-  EXPECT_EQ(vi["weighted_projections"].size(), 4u);
-  EXPECT_EQ(vi["permuted"].size(), 4u);
+  EXPECT_EQ(vi["scale"].size(), 4U);
+  EXPECT_EQ(vi["projections"].size(), 4U);
+  EXPECT_EQ(vi["weighted_projections"].size(), 4U);
+  EXPECT_EQ(vi["permuted"].size(), 4U);
 }
 
 /* With --no-metrics the saved JSON must not contain oob_error or variable_importance. */
 TEST(CLITrain, TrainNoMetricsNotInJson) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-metrics -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -161,7 +161,7 @@ TEST(CLITrain, TrainSingleTreeShowsVI2Only) {
 
 /* Single tree saved JSON contains only scale and projections (no weighted/permuted). */
 TEST(CLITrain, TrainSingleTreeVISavedToJson) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -175,8 +175,8 @@ TEST(CLITrain, TrainSingleTreeVISavedToJson) {
   EXPECT_FALSE(vi.contains("weighted_projections"));
   EXPECT_FALSE(vi.contains("permuted"));
 
-  EXPECT_EQ(vi["scale"].size(), 4u);
-  EXPECT_EQ(vi["projections"].size(), 4u);
+  EXPECT_EQ(vi["scale"].size(), 4U);
+  EXPECT_EQ(vi["projections"].size(), 4U);
 }
 
 /* Quiet mode suppresses the VI table but still saves it to JSON. */
@@ -213,9 +213,9 @@ TEST(CLITrain, SingleTreeTrainShowsTrainingCM) {
 
 /* Fraction "1/3" is accepted end-to-end for train. */
 TEST(CLITrain, TrainWithFractionVars) {
-  TempFile model;
+  TempFile const model;
   model.clear();
-  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -v 1/3 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --p-vars 1/3 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -225,7 +225,7 @@ TEST(CLITrain, TrainWithFractionVars) {
 
 /* Single tree config omits the "vars" key (not applicable). */
 TEST(CLITrain, TrainSingleTreeConfigNoVars) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 0 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -233,8 +233,8 @@ TEST(CLITrain, TrainSingleTreeConfigNoVars) {
   auto j = json::parse(model.read());
   EXPECT_EQ(j["model_type"], "tree");
   EXPECT_EQ(j["config"]["size"], 0);
-  // Single tree uses noop DR strategy
-  EXPECT_EQ(j["config"]["dr"]["name"], "noop");
+  // Single tree uses all vars strategy
+  EXPECT_EQ(j["config"]["vars"]["name"], "all");
 }
 
 // ---------------------------------------------------------------------------
@@ -243,8 +243,8 @@ TEST(CLITrain, TrainSingleTreeConfigNoVars) {
 
 /* Saving without .json extension auto-appends it. */
 TEST(CLITrain, TrainAutoAppendsJsonExtension) {
-  TempDir dir;
-  std::string path_no_ext = dir.file("mymodel");
+  TempDir const dir;
+  std::string const path_no_ext = dir.file("mymodel");
 
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -s " + path_no_ext);
   EXPECT_EQ(result.exit_code, 0);
@@ -257,35 +257,35 @@ TEST(CLITrain, TrainAutoAppendsJsonExtension) {
 
 /* Training with explicit lambda saves it to config. */
 TEST(CLITrain, TrainLambdaSaved) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -l 0.5 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
-  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.5f);
+  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.5F);
 }
 
 /* Training with explicit vars saves it to config. */
 TEST(CLITrain, TrainVarsSaved) {
-  TempFile model;
+  TempFile const model;
   model.clear();
-  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -v 2 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --n-vars 2 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
-  EXPECT_EQ(j["config"]["dr"]["n_vars"], 2);
+  EXPECT_EQ(j["config"]["vars"]["count"], 2);
 }
 
 /* CLI args override config file values. */
 TEST(CLITrain, CLIArgOverridesConfig) {
-  TempFile config;
+  TempFile const config;
   {
     std::ofstream out(config.path());
     out << R"({"size": 3, "seed": 99})";
   }
 
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result =
       run_ppforest2("--config " + config.path() + " -q train -d " + IRIS_CSV + " -n 7 -r 0 -s " + model.path());
@@ -302,38 +302,38 @@ TEST(CLITrain, CLIArgOverridesConfig) {
 
 /* Config file accepts structured strategy format (pp/dr/sr objects). */
 TEST(CLITrain, ConfigFileExplicitStrategies) {
-  TempFile config;
+  TempFile const config;
   {
     std::ofstream out(config.path());
     out << R"({
       "pp": { "name": "pda", "lambda": 0.3 },
-      "dr": { "name": "uniform", "n_vars": 2 },
-      "sr": { "name": "mean_of_means" },
+      "vars": { "name": "uniform", "count": 2 },
+      "cutpoint": { "name": "mean_of_means" },
       "size": 5,
       "seed": 0
     })";
   }
 
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("--config " + config.path() + " -q train -d " + IRIS_CSV + " -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
   EXPECT_EQ(j["config"]["size"], 5);
-  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.3f);
-  EXPECT_EQ(j["config"]["dr"]["n_vars"], 2);
+  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.3F);
+  EXPECT_EQ(j["config"]["vars"]["count"], 2);
 }
 
 /* Config file accepts threads key. */
 TEST(CLITrain, ConfigFileThreadsKey) {
-  TempFile config;
+  TempFile const config;
   {
     std::ofstream out(config.path());
     out << R"({"size": 5, "seed": 0, "threads": 1})";
   }
 
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("--config " + config.path() + " -q train -d " + IRIS_CSV + " -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -348,100 +348,100 @@ TEST(CLITrain, ConfigFileThreadsKey) {
 
 /* Train and predict on crab data succeeds. */
 TEST(CLITrain, TrainPredictCrab) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto train = run_ppforest2("-q train -d " + CRAB_CSV + " -n 5 -r 0 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
-  TempFile output;
+  TempFile const output;
   output.clear();
   auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + CRAB_CSV + " -o " + output.path());
   EXPECT_EQ(predict.exit_code, 0);
 
   auto j = json::parse(output.read());
   EXPECT_TRUE(j.contains("predictions"));
-  EXPECT_GT(j["predictions"].size(), 0u);
+  EXPECT_GT(j["predictions"].size(), 0U);
   EXPECT_TRUE(j.contains("error_rate"));
   EXPECT_TRUE(j.contains("confusion_matrix"));
 }
 
 /* Train and predict on wine data succeeds. */
 TEST(CLITrain, TrainPredictWine) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto train = run_ppforest2("-q train -d " + WINE_CSV + " -n 5 -r 0 -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
 
-  TempFile output;
+  TempFile const output;
   output.clear();
   auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + WINE_CSV + " -o " + output.path());
   EXPECT_EQ(predict.exit_code, 0);
 
   auto j = json::parse(output.read());
   EXPECT_TRUE(j.contains("predictions"));
-  EXPECT_GT(j["predictions"].size(), 0u);
+  EXPECT_GT(j["predictions"].size(), 0U);
   EXPECT_TRUE(j.contains("error_rate"));
   EXPECT_TRUE(j.contains("confusion_matrix"));
 }
 
 // ---------------------------------------------------------------------------
-// Explicit strategy flags (--pp, --dr, --sr)
+// Explicit strategy flags (--pp, --vars, --cutpoint)
 // ---------------------------------------------------------------------------
 
 /* Train with --pp pda:lambda=0.3 saves PDA lambda in config. */
 TEST(CLITrain, TrainWithPPStrategy) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --pp pda:lambda=0.3 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
   EXPECT_EQ(j["config"]["pp"]["name"], "pda");
-  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.3f);
+  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.3F);
 }
 
-/* Train with --dr uniform:vars=2 saves DR config. */
-TEST(CLITrain, TrainWithDRStrategy) {
-  TempFile model;
+/* Train with --vars uniform:count=2 saves vars config. */
+TEST(CLITrain, TrainWithVarsStrategy) {
+  TempFile const model;
   model.clear();
-  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --dr uniform:vars=2 -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --vars uniform:count=2 -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
-  EXPECT_EQ(j["config"]["dr"]["name"], "uniform");
-  EXPECT_EQ(j["config"]["dr"]["n_vars"], 2);
+  EXPECT_EQ(j["config"]["vars"]["name"], "uniform");
+  EXPECT_EQ(j["config"]["vars"]["count"], 2);
 }
 
-/* Train with --dr noop saves noop DR config. */
-TEST(CLITrain, TrainWithDRNoop) {
-  TempFile model;
+/* Train with --vars all saves all vars config. */
+TEST(CLITrain, TrainWithVarsAll) {
+  TempFile const model;
   model.clear();
-  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --dr noop -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --vars all -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
-  EXPECT_EQ(j["config"]["dr"]["name"], "noop");
+  EXPECT_EQ(j["config"]["vars"]["name"], "all");
 }
 
-/* Train with --sr mean_of_means saves SR config. */
-TEST(CLITrain, TrainWithSRStrategy) {
-  TempFile model;
+/* Train with --cutpoint mean_of_means saves cutpoint config. */
+TEST(CLITrain, TrainWithThresholdStrategy) {
+  TempFile const model;
   model.clear();
-  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --sr mean_of_means -s " + model.path());
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --cutpoint mean_of_means -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
-  EXPECT_EQ(j["config"]["sr"]["name"], "mean_of_means");
+  EXPECT_EQ(j["config"]["cutpoint"]["name"], "mean_of_means");
 }
 
 /* Train with all three explicit strategy flags produces correct config. */
 TEST(CLITrain, TrainWithAllStrategies) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2(
       "-q train -d " + IRIS_CSV +
       " -n 5 -r 0 "
-      "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means "
+      "--pp pda:lambda=0.3 --vars uniform:count=2 --cutpoint mean_of_means "
       "-s " +
       model.path()
   );
@@ -449,20 +449,48 @@ TEST(CLITrain, TrainWithAllStrategies) {
 
   auto j = json::parse(model.read());
   EXPECT_EQ(j["config"]["pp"]["name"], "pda");
-  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.3f);
-  EXPECT_EQ(j["config"]["dr"]["name"], "uniform");
-  EXPECT_EQ(j["config"]["dr"]["n_vars"], 2);
-  EXPECT_EQ(j["config"]["sr"]["name"], "mean_of_means");
+  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.3F);
+  EXPECT_EQ(j["config"]["vars"]["name"], "uniform");
+  EXPECT_EQ(j["config"]["vars"]["count"], 2);
+  EXPECT_EQ(j["config"]["cutpoint"]["name"], "mean_of_means");
+}
+
+/* Train with --leaf majority_vote saves leaf config. */
+TEST(CLITrain, TrainWithLeafStrategy) {
+  TempFile const model;
+  model.clear();
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --leaf majority_vote -s " + model.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(model.read());
+  EXPECT_EQ(j["config"]["leaf"]["name"], "majority_vote");
+}
+
+/* Default leaf strategy is majority_vote when --leaf is not specified. */
+TEST(CLITrain, TrainDefaultLeafStrategy) {
+  TempFile const model;
+  model.clear();
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -s " + model.path());
+  EXPECT_EQ(result.exit_code, 0);
+
+  auto j = json::parse(model.read());
+  EXPECT_EQ(j["config"]["leaf"]["name"], "majority_vote");
+}
+
+/* Invalid --leaf value fails. */
+TEST(CLITrain, TrainInvalidLeafFails) {
+  auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --leaf unknown_leaf --no-save");
+  EXPECT_NE(result.exit_code, 0);
 }
 
 /* Strategy config does not contain display_name (presentation-only). */
 TEST(CLITrain, StrategyConfigNoDisplayName) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto result = run_ppforest2(
       "-q train -d " + IRIS_CSV +
       " -n 5 -r 0 "
-      "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means "
+      "--pp pda:lambda=0.3 --vars uniform:count=2 --cutpoint mean_of_means "
       "-s " +
       model.path()
   );
@@ -470,8 +498,8 @@ TEST(CLITrain, StrategyConfigNoDisplayName) {
 
   auto j = json::parse(model.read());
   EXPECT_FALSE(j["config"]["pp"].contains("display_name"));
-  EXPECT_FALSE(j["config"]["dr"].contains("display_name"));
-  EXPECT_FALSE(j["config"]["sr"].contains("display_name"));
+  EXPECT_FALSE(j["config"]["vars"].contains("display_name"));
+  EXPECT_FALSE(j["config"]["cutpoint"].contains("display_name"));
 }
 
 // ---------------------------------------------------------------------------
@@ -484,14 +512,17 @@ TEST(CLITrain, StrategyConfigNoDisplayName) {
  * training_duration_ms varies between runs even with the same seed;
  * everything else (model, config, meta, metrics) must be identical.
  */
-static json strip_timing(json j) {
-  j.erase("training_duration_ms");
-  return j;
+namespace {
+  json strip_timing(json j) {
+    j.erase("training_duration_ms");
+    return j;
+  }
 }
 
 /* -l 0.3 and --pp pda:lambda=0.3 produce identical exports. */
 TEST(CLITrain, ImplicitExplicitPPEquivalent) {
-  TempFile model_implicit, model_explicit;
+  TempFile const model_implicit;
+  TempFile const model_explicit;
   model_implicit.clear();
   model_explicit.clear();
 
@@ -504,44 +535,47 @@ TEST(CLITrain, ImplicitExplicitPPEquivalent) {
       << "Exports from -l and --pp should be identical";
 }
 
-/* -v 2 and --dr uniform:vars=2 produce identical exports. */
-TEST(CLITrain, ImplicitExplicitDREquivalent) {
-  TempFile model_implicit, model_explicit;
+/* --n-vars 2 and --vars uniform:count=2 produce identical exports. */
+TEST(CLITrain, ImplicitExplicitVarsEquivalent) {
+  TempFile const model_implicit;
+  TempFile const model_explicit;
   model_implicit.clear();
   model_explicit.clear();
 
-  auto r1 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -v 2 -s " + model_implicit.path());
-  auto r2 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --dr uniform:vars=2 -s " + model_explicit.path());
+  auto r1 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --n-vars 2 -s " + model_implicit.path());
+  auto r2 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --vars uniform:count=2 -s " + model_explicit.path());
   ASSERT_EQ(r1.exit_code, 0);
   ASSERT_EQ(r2.exit_code, 0);
 
   EXPECT_EQ(strip_timing(json::parse(model_implicit.read())), strip_timing(json::parse(model_explicit.read())))
-      << "Exports from -v and --dr should be identical";
+      << "Exports from --n-vars and --vars should be identical";
 }
 
-/* -l 0.3 -v 2 and --pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means produce identical exports. */
+/* -l 0.3 --n-vars 2 and --pp pda:lambda=0.3 --vars uniform:count=2 --cutpoint mean_of_means produce identical exports. */
 TEST(CLITrain, ImplicitExplicitAllEquivalent) {
-  TempFile model_implicit, model_explicit;
+  TempFile const model_implicit;
+  TempFile const model_explicit;
   model_implicit.clear();
   model_explicit.clear();
 
-  auto r1 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -l 0.3 -v 2 -s " + model_implicit.path());
+  auto r1 = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -l 0.3 --n-vars 2 -s " + model_implicit.path());
   auto r2 = run_ppforest2(
       "-q train -d " + IRIS_CSV +
       " -n 5 -r 0 "
-      "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means -s " +
+      "--pp pda:lambda=0.3 --vars uniform:count=2 --cutpoint mean_of_means -s " +
       model_explicit.path()
   );
   ASSERT_EQ(r1.exit_code, 0);
   ASSERT_EQ(r2.exit_code, 0);
 
   EXPECT_EQ(strip_timing(json::parse(model_implicit.read())), strip_timing(json::parse(model_explicit.read())))
-      << "Exports from shortcuts and --pp/--dr/--sr should be identical";
+      << "Exports from shortcuts and --pp/--vars/--cutpoint should be identical";
 }
 
-/* Single tree: -l 0.5 and --pp pda:lambda=0.5 --dr noop --sr mean_of_means produce identical exports. */
+/* Single tree: -l 0.5 and --pp pda:lambda=0.5 --vars all --cutpoint mean_of_means produce identical exports. */
 TEST(CLITrain, ImplicitExplicitSingleTreeEquivalent) {
-  TempFile model_implicit, model_explicit;
+  TempFile const model_implicit;
+  TempFile const model_explicit;
   model_implicit.clear();
   model_explicit.clear();
 
@@ -549,7 +583,7 @@ TEST(CLITrain, ImplicitExplicitSingleTreeEquivalent) {
   auto r2 = run_ppforest2(
       "-q train -d " + IRIS_CSV +
       " -n 0 -r 0 "
-      "--pp pda:lambda=0.5 --dr noop --sr mean_of_means -s " +
+      "--pp pda:lambda=0.5 --vars all --cutpoint mean_of_means -s " +
       model_explicit.path()
   );
   ASSERT_EQ(r1.exit_code, 0);
@@ -565,22 +599,22 @@ TEST(CLITrain, ImplicitExplicitSingleTreeEquivalent) {
 
 /* Model trained with --pp can be loaded by predict. */
 TEST(CLITrain, TrainWithStrategyThenPredict) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto train = run_ppforest2(
       "-q train -d " + IRIS_CSV +
       " -n 5 -r 0 "
-      "--pp pda:lambda=0.3 --dr uniform:vars=2 -s " +
+      "--pp pda:lambda=0.3 --vars uniform:count=2 -s " +
       model.path()
   );
   ASSERT_EQ(train.exit_code, 0);
 
-  TempFile output;
+  TempFile const output;
   output.clear();
   auto predict = run_ppforest2("-q predict -M " + model.path() + " -d " + IRIS_CSV + " -o " + output.path());
   EXPECT_EQ(predict.exit_code, 0);
 
   auto j = json::parse(output.read());
   EXPECT_TRUE(j.contains("predictions"));
-  EXPECT_GT(j["predictions"].size(), 0u);
+  EXPECT_GT(j["predictions"].size(), 0U);
 }

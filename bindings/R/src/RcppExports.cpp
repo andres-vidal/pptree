@@ -23,165 +23,165 @@ BEGIN_RCPP
 END_RCPP
 }
 // ppforest2_train
-Model::Ptr ppforest2_train(TrainingSpec::Ptr spec, FeatureMatrix x, ResponseVector y);
+Model::Ptr ppforest2_train(TrainingSpec::Ptr spec, FeatureMatrix x, OutcomeVector y);
 RcppExport SEXP _ppforest2_ppforest2_train(SEXP specSEXP, SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< TrainingSpec::Ptr >::type spec(specSEXP);
     Rcpp::traits::input_parameter< FeatureMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< OutcomeVector >::type y(ySEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_train(spec, x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_predict_tree
-ResponseVector ppforest2_predict_tree(const Tree& tree, const FeatureMatrix& data);
+OutcomeVector ppforest2_predict_tree(Tree const& tree, FeatureMatrix const& data);
 RcppExport SEXP _ppforest2_ppforest2_predict_tree(SEXP treeSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Tree const& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_predict_tree(tree, data));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_predict_tree_forest
-ResponseVector ppforest2_predict_tree_forest(const Forest& forest, const FeatureMatrix& data);
+OutcomeVector ppforest2_predict_tree_forest(Forest const& forest, FeatureMatrix const& data);
 RcppExport SEXP _ppforest2_ppforest2_predict_tree_forest(SEXP forestSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Forest const& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_predict_tree_forest(forest, data));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_predict_tree_prob
-FeatureMatrix ppforest2_predict_tree_prob(const Tree& tree, const FeatureMatrix& data);
+FeatureMatrix ppforest2_predict_tree_prob(Tree const& tree, FeatureMatrix const& data);
 RcppExport SEXP _ppforest2_ppforest2_predict_tree_prob(SEXP treeSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Tree const& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_predict_tree_prob(tree, data));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_predict_forest_prob
-FeatureMatrix ppforest2_predict_forest_prob(const Forest& forest, const FeatureMatrix& data);
+FeatureMatrix ppforest2_predict_forest_prob(Forest const& forest, FeatureMatrix const& data);
 RcppExport SEXP _ppforest2_ppforest2_predict_forest_prob(SEXP forestSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Forest const& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_predict_forest_prob(forest, data));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_vi_projections_tree
-FeatureVector ppforest2_vi_projections_tree(const Tree& tree, int n_vars, const FeatureVector& scale);
+FeatureVector ppforest2_vi_projections_tree(Tree const& tree, int n_vars, FeatureVector const& scale);
 RcppExport SEXP _ppforest2_ppforest2_vi_projections_tree(SEXP treeSEXP, SEXP n_varsSEXP, SEXP scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< Tree const& >::type tree(treeSEXP);
     Rcpp::traits::input_parameter< int >::type n_vars(n_varsSEXP);
-    Rcpp::traits::input_parameter< const FeatureVector& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< FeatureVector const& >::type scale(scaleSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_vi_projections_tree(tree, n_vars, scale));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_vi_projections_forest
-FeatureVector ppforest2_vi_projections_forest(const Forest& forest, int n_vars, const FeatureVector& scale);
+FeatureVector ppforest2_vi_projections_forest(Forest const& forest, int n_vars, FeatureVector const& scale);
 RcppExport SEXP _ppforest2_ppforest2_vi_projections_forest(SEXP forestSEXP, SEXP n_varsSEXP, SEXP scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< Forest const& >::type forest(forestSEXP);
     Rcpp::traits::input_parameter< int >::type n_vars(n_varsSEXP);
-    Rcpp::traits::input_parameter< const FeatureVector& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< FeatureVector const& >::type scale(scaleSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_vi_projections_forest(forest, n_vars, scale));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_vi_weighted_forest
-FeatureVector ppforest2_vi_weighted_forest(const Forest& forest, const FeatureMatrix& x, ResponseVector y, const FeatureVector& scale);
+FeatureVector ppforest2_vi_weighted_forest(Forest const& forest, FeatureMatrix const& x, OutcomeVector y, FeatureVector const& scale);
 RcppExport SEXP _ppforest2_ppforest2_vi_weighted_forest(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP, SEXP scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const FeatureVector& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< Forest const& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< OutcomeVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< FeatureVector const& >::type scale(scaleSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_vi_weighted_forest(forest, x, y, scale));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_vi_permuted_forest
-FeatureVector ppforest2_vi_permuted_forest(const Forest& forest, const FeatureMatrix& x, ResponseVector y, int seed);
+FeatureVector ppforest2_vi_permuted_forest(Forest const& forest, FeatureMatrix const& x, OutcomeVector y, int seed);
 RcppExport SEXP _ppforest2_ppforest2_vi_permuted_forest(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Forest const& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< OutcomeVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_vi_permuted_forest(forest, x, y, seed));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_oob_error
-double ppforest2_oob_error(const Forest& forest, const FeatureMatrix& x, ResponseVector y);
+double ppforest2_oob_error(Forest const& forest, FeatureMatrix const& x, OutcomeVector y);
 RcppExport SEXP _ppforest2_ppforest2_oob_error(SEXP forestSEXP, SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Forest const& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< OutcomeVector >::type y(ySEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_oob_error(forest, x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_oob_predict
-ResponseVector ppforest2_oob_predict(const Forest& forest, const FeatureMatrix& x);
+OutcomeVector ppforest2_oob_predict(Forest const& forest, FeatureMatrix const& x);
 RcppExport SEXP _ppforest2_ppforest2_oob_predict(SEXP forestSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Forest& >::type forest(forestSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Forest const& >::type forest(forestSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_oob_predict(forest, x));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_tree_node_data
-Rcpp::List ppforest2_tree_node_data(const Tree& tree, const FeatureMatrix& x, ResponseVector y);
+Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, OutcomeVector y);
 RcppExport SEXP _ppforest2_ppforest2_tree_node_data(SEXP treeSEXP, SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Tree const& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< OutcomeVector >::type y(ySEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_tree_node_data(tree, x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_boundary_segments
-Rcpp::DataFrame ppforest2_boundary_segments(const Tree& tree, Rcpp::IntegerVector var_indices, Rcpp::NumericVector fixed_values, double x_min, double x_max, double y_min, double y_max);
+Rcpp::DataFrame ppforest2_boundary_segments(Tree const& tree, Rcpp::IntegerVector var_indices, Rcpp::NumericVector fixed_values, double x_min, double x_max, double y_min, double y_max);
 RcppExport SEXP _ppforest2_ppforest2_boundary_segments(SEXP treeSEXP, SEXP var_indicesSEXP, SEXP fixed_valuesSEXP, SEXP x_minSEXP, SEXP x_maxSEXP, SEXP y_minSEXP, SEXP y_maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< Tree const& >::type tree(treeSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type var_indices(var_indicesSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type fixed_values(fixed_valuesSEXP);
     Rcpp::traits::input_parameter< double >::type x_min(x_minSEXP);
@@ -193,12 +193,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // ppforest2_decision_regions
-Rcpp::List ppforest2_decision_regions(const Tree& tree, Rcpp::IntegerVector var_indices, Rcpp::NumericVector fixed_values, double x_min, double x_max, double y_min, double y_max);
+Rcpp::List ppforest2_decision_regions(Tree const& tree, Rcpp::IntegerVector var_indices, Rcpp::NumericVector fixed_values, double x_min, double x_max, double y_min, double y_max);
 RcppExport SEXP _ppforest2_ppforest2_decision_regions(SEXP treeSEXP, SEXP var_indicesSEXP, SEXP fixed_valuesSEXP, SEXP x_minSEXP, SEXP x_maxSEXP, SEXP y_minSEXP, SEXP y_maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< Tree const& >::type tree(treeSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type var_indices(var_indicesSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type fixed_values(fixed_valuesSEXP);
     Rcpp::traits::input_parameter< double >::type x_min(x_minSEXP);
@@ -210,18 +210,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // ppforest2_tree_layout
-Rcpp::List ppforest2_tree_layout(const Tree& tree);
+Rcpp::List ppforest2_tree_layout(Tree const& tree);
 RcppExport SEXP _ppforest2_ppforest2_tree_layout(SEXP treeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Tree& >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< Tree const& >::type tree(treeSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_tree_layout(tree));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_save_model_json
-std::string ppforest2_save_model_json(Model::Ptr model, std::vector<std::string> groups, bool include_metrics, const FeatureMatrix& x, ResponseVector y, std::vector<std::string> feature_names);
+std::string ppforest2_save_model_json(Model::Ptr model, std::vector<std::string> groups, bool include_metrics, FeatureMatrix const& x, OutcomeVector y, std::vector<std::string> feature_names);
 RcppExport SEXP _ppforest2_ppforest2_save_model_json(SEXP modelSEXP, SEXP groupsSEXP, SEXP include_metricsSEXP, SEXP xSEXP, SEXP ySEXP, SEXP feature_namesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -229,20 +229,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Model::Ptr >::type model(modelSEXP);
     Rcpp::traits::input_parameter< std::vector<std::string> >::type groups(groupsSEXP);
     Rcpp::traits::input_parameter< bool >::type include_metrics(include_metricsSEXP);
-    Rcpp::traits::input_parameter< const FeatureMatrix& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< ResponseVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< FeatureMatrix const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< OutcomeVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< std::vector<std::string> >::type feature_names(feature_namesSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_save_model_json(model, groups, include_metrics, x, y, feature_names));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppforest2_load_model_json
-ppforest2::serialization::Export<Model::Ptr> ppforest2_load_model_json(const std::string& path);
+ppforest2::serialization::Export<Model::Ptr> ppforest2_load_model_json(std::string const& path);
 RcppExport SEXP _ppforest2_ppforest2_load_model_json(SEXP pathSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::string& >::type path(pathSEXP);
+    Rcpp::traits::input_parameter< std::string const& >::type path(pathSEXP);
     rcpp_result_gen = Rcpp::wrap(ppforest2_load_model_json(path));
     return rcpp_result_gen;
 END_RCPP

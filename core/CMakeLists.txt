@@ -168,10 +168,14 @@ if(NOT PPFOREST2_CORE_ONLY)
     src/test.cpp
     src/models/Tree.test.cpp
     src/models/Forest.test.cpp
-    src/models/PPPDAStrategy.test.cpp
-    src/models/DRUniformStrategy.test.cpp
-    src/models/DRNoopStrategy.test.cpp
-    src/models/SRMeanOfMeansStrategy.test.cpp
+    src/models/strategies/pp/PDA.test.cpp
+    src/models/strategies/vars/Uniform.test.cpp
+    src/models/strategies/vars/All.test.cpp
+    src/models/strategies/cutpoint/MeanOfMeans.test.cpp
+    src/models/strategies/stop/PureNode.test.cpp
+    src/models/strategies/binarize/LargestGap.test.cpp
+    src/models/strategies/partition/ByGroup.test.cpp
+    src/models/strategies/leaf/MajorityVote.test.cpp
     src/models/TrainingSpec.test.cpp
     src/models/VariableImportance.test.cpp
     src/models/Visualization.test.cpp

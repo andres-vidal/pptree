@@ -42,6 +42,37 @@ prepare_data <- function(data, golden) {
 }
 
 # ---------------------------------------------------------------------------
+# Config (strategy) comparison
+# ---------------------------------------------------------------------------
+
+compare_strategy <- function(spec_strategy, config_strategy) {
+  # Compare all fields from the golden config against the training spec.
+  # The R training spec has an extra display_name field from wrap(); ignore it.
+  for (key in names(config_strategy)) {
+    expect_equal(spec_strategy[[key]], config_strategy[[key]], tolerance = 1e-5, info = paste("strategy field:", key))
+  }
+}
+
+compare_config <- function(model, golden) {
+  config <- golden$config
+  spec <- model$training_spec
+
+  # Strategies
+  compare_strategy(spec$pp, config$pp)
+  compare_strategy(spec$vars, config$vars)
+  compare_strategy(spec$cutpoint, config$cutpoint)
+  compare_strategy(spec$stop, config$stop)
+  compare_strategy(spec$binarize, config$binarize)
+  compare_strategy(spec$partition, config$partition)
+  compare_strategy(spec$leaf, config$leaf)
+
+  # Scalar fields
+  expect_equal(spec$size, config$size)
+  expect_equal(spec$seed, config$seed)
+  expect_equal(spec$max_retries, config$max_retries)
+}
+
+# ---------------------------------------------------------------------------
 # Model structure comparison
 # ---------------------------------------------------------------------------
 
@@ -66,7 +97,7 @@ normalize_node <- function(node, group_names = NULL) {
 
     list(
       projector      = as.numeric(unlist(node$projector)),
-      threshold      = as.numeric(node$threshold),
+      cutpoint      = as.numeric(node$cutpoint),
       pp_index_value = as.numeric(node$pp_index_value),
       groups         = groups,
       lower          = normalize_node(node$lower, group_names),
@@ -149,6 +180,10 @@ describe("Reproducibility: iris tree-pda-s0", {
   d <- prepare_data(iris, golden)
   model <- pptr(Type ~ ., data = d, seed = 0)
 
+  it("training config matches golden file", {
+    compare_config(model, golden)
+  })
+
   it("model structure matches golden file", {
     compare_tree(model$root, golden$model$root, as_vec(golden$meta$groups))
   })
@@ -179,6 +214,10 @@ describe("Reproducibility: crab tree-pda-s0", {
   d <- prepare_data(crab, golden)
   model <- pptr(Type ~ ., data = d, seed = 0)
 
+  it("training config matches golden file", {
+    compare_config(model, golden)
+  })
+
   it("model structure matches golden file", {
     compare_tree(model$root, golden$model$root, as_vec(golden$meta$groups))
   })
@@ -208,6 +247,10 @@ describe("Reproducibility: iris forest-pda-n5-s0", {
   golden <- load_golden("iris", "forest-pda-n5-s0.json")
   d <- prepare_data(iris, golden)
   model <- pprf(Type ~ ., data = d, size = 5, n_vars = 2, seed = 0, threads = 1)
+
+  it("training config matches golden file", {
+    compare_config(model, golden)
+  })
 
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
@@ -258,6 +301,10 @@ describe("Reproducibility: iris forest-pda-l05-n5-s0", {
   d <- prepare_data(iris, golden)
   model <- pprf(Type ~ ., data = d, size = 5, n_vars = 2, lambda = 0.5, seed = 0, threads = 1)
 
+  it("training config matches golden file", {
+    compare_config(model, golden)
+  })
+
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
       compare_tree(model$trees[[i]]$root, golden$model$trees[[i]]$root,
@@ -306,6 +353,10 @@ describe("Reproducibility: crab forest-pda-n10-s0", {
   golden <- load_golden("crab", "forest-pda-n10-s0.json")
   d <- prepare_data(crab, golden)
   model <- pprf(Type ~ ., data = d, size = 10, n_vars = 3, seed = 0, threads = 1)
+
+  it("training config matches golden file", {
+    compare_config(model, golden)
+  })
 
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
@@ -356,6 +407,10 @@ describe("Reproducibility: wine forest-pda-n10-s0", {
   d <- prepare_data(wine, golden)
   model <- pprf(Type ~ ., data = d, size = 10, n_vars = 4, seed = 0, threads = 1)
 
+  it("training config matches golden file", {
+    compare_config(model, golden)
+  })
+
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {
       compare_tree(model$trees[[i]]$root, golden$model$trees[[i]]$root,
@@ -404,6 +459,10 @@ describe("Reproducibility: glass forest-pda-n10-s0", {
   golden <- load_golden("glass", "forest-pda-n10-s0.json")
   d <- prepare_data(glass, golden)
   model <- pprf(Type ~ ., data = d, size = 10, n_vars = 3, seed = 0, threads = 1)
+
+  it("training config matches golden file", {
+    compare_config(model, golden)
+  })
 
   it("model structure matches golden file", {
     for (i in seq_along(model$trees)) {

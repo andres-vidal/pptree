@@ -1,6 +1,6 @@
 #pragma once
 
-#include "models/TreeCondition.hpp"
+#include "models/TreeBranch.hpp"
 #include "utils/Types.hpp"
 
 #include <vector>
@@ -47,7 +47,7 @@ namespace ppforest2 {
      *
      * @param node  Split node with projector and pp_index_value.
      */
-    void visit(TreeCondition const& node) override {
+    void visit(TreeBranch const& node) override {
       int const n_vars         = static_cast<int>(vi2_contributions.size());
       int const G_s            = static_cast<int>(node.groups.size());
       types::Feature const I_s = node.pp_index_value;
@@ -77,6 +77,6 @@ namespace ppforest2 {
      * Leaf nodes hold only a class label and do not contribute to variable
      * importance.
      */
-    void visit(TreeResponse const&) override {}
+    void visit(TreeLeaf const&) override {}
   };
 }

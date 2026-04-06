@@ -18,8 +18,8 @@ namespace ppforest2 {
   // Helpers
   // -------------------------------------------------------------------------
 
-  static ResponseVector gather_labels(ResponseVector const& y, std::vector<int> const& idx) {
-    ResponseVector labels(static_cast<int>(idx.size()));
+  static OutcomeVector gather_labels(OutcomeVector const& y, std::vector<int> const& idx) {
+    OutcomeVector labels(static_cast<int>(idx.size()));
 
     for (int i = 0; i < static_cast<int>(idx.size()); ++i) {
       labels(i) = y(idx[i]);
@@ -32,7 +32,7 @@ namespace ppforest2 {
   // VI1 — Permuted importance
   // -------------------------------------------------------------------------
   FeatureVector
-  variable_importance_permuted(Forest const& forest, FeatureMatrix const& x, ResponseVector const& y, int seed) {
+  variable_importance_permuted(Forest const& forest, FeatureMatrix const& x, OutcomeVector const& y, int seed) {
     int const n_vars  = static_cast<int>(x.cols());
     int const n_total = static_cast<int>(x.rows());
     int const B       = static_cast<int>(forest.trees.size());
@@ -54,8 +54,8 @@ namespace ppforest2 {
         continue;
       }
 
-      ResponseVector oob_labels    = gather_labels(y, oob_idx);
-      ResponseVector baseline_pred = tree.predict_oob(x, oob_idx);
+      OutcomeVector oob_labels    = gather_labels(y, oob_idx);
+      OutcomeVector baseline_pred = tree.predict_oob(x, oob_idx);
 
       float const baseline_acc = stats::accuracy(baseline_pred, oob_labels);
 
@@ -70,7 +70,7 @@ namespace ppforest2 {
         perm_x.row(i) = x.row(oob_idx[i]);
       }
 
-      ResponseVector perm_pred(n_oob);
+      OutcomeVector perm_pred(n_oob);
 
       for (int j = 0; j < n_vars; ++j) {
         // Save and permute column j.
@@ -157,14 +157,14 @@ namespace ppforest2 {
   // VI3 — Weighted projections importance
   // -------------------------------------------------------------------------
   FeatureVector variable_importance_weighted_projections(
-      Forest const& forest, FeatureMatrix const& x, ResponseVector const& y, FeatureVector const* scale
+      Forest const& forest, FeatureMatrix const& x, OutcomeVector const& y, FeatureVector const* scale
   ) {
     int const n_vars  = static_cast<int>(x.cols());
     int const n_total = static_cast<int>(x.rows());
     int const B       = static_cast<int>(forest.trees.size());
 
     // Count G = number of unique groups.
-    std::set<Response> group_set;
+    std::set<Outcome> group_set;
 
     for (int i = 0; i < y.size(); ++i) {
       group_set.insert(y(i));
@@ -187,9 +187,9 @@ namespace ppforest2 {
       Feature e_k = Feature(0);
 
       if (!oob_idx.empty()) {
-        ResponseVector oob_labels = gather_labels(y, oob_idx);
-        ResponseVector oob_preds  = tree.predict_oob(x, oob_idx);
-        e_k                       = static_cast<Feature>(stats::error_rate(oob_preds, oob_labels));
+        OutcomeVector oob_labels = gather_labels(y, oob_idx);
+        OutcomeVector oob_preds  = tree.predict_oob(x, oob_idx);
+        e_k                      = static_cast<Feature>(stats::error_rate(oob_preds, oob_labels));
       }
 
       VIVisitor visitor(n_vars, scale);

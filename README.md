@@ -49,7 +49,7 @@ make build
 ppforest2 train --data data.csv --trees 100 --lambda 0.5 --save model.json
 
 # Explicit strategy selection (equivalent to the above)
-ppforest2 train --data data.csv --trees 100 --pp pda:lambda=0.5 --save model.json
+ppforest2 train --data data.csv --trees 100 --pp-strategy pda:lambda=0.5 --save model.json
 
 # Predict on new data using a saved model
 ppforest2 predict --model model.json --data test.csv
@@ -90,7 +90,7 @@ predict(forest, iris, type = "prob")   # vote proportions
 summary(forest)                        # variable importance & model info
 
 # Explicit strategy selection (equivalent to lambda + n_vars shortcuts)
-forest <- pprf(Type ~ ., data = iris, size = 50, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2))
+forest <- pprf(Type ~ ., data = iris, size = 50, pp = pp_pda(0.5), vars = vars_uniform(count = 2))
 ```
 
 Visualize models (requires `ggplot2`):
@@ -167,9 +167,12 @@ ppforest2 train -d data.csv --no-metrics         # skip variable importance
 | `-v, --vars <spec>`      | `0.5`         | Features per split (see [Variable selection](#variable-selection)) |
 | `--threads <N>`          | *(all cores)* | Number of OpenMP threads                                           |
 | `--max-retries <N>`      | `3`           | Max retries for degenerate trees                                   |
-| `--pp <spec>`            | —             | PP strategy (e.g. `pda`, `pda:lambda=0.5`); excludes `--lambda`    |
-| `--dr <spec>`            | —             | DR strategy (e.g. `noop`, `uniform:vars=3`); excludes `--vars`     |
-| `--sr <spec>`            | —             | SR strategy (e.g. `mean_of_means`)                                 |
+| `--pp-strategy <spec>`        | `pda:lambda=0.5` | PP strategy (e.g. `pda:lambda=0.5`); excludes `--lambda`       |
+| `--vars-strategy <spec>`      | `uniform`     | Variable selection strategy (e.g. `all`, `uniform:count=3`); excludes `--vars` |
+| `--cutpoint-strategy <spec>`  | `mean_of_means` | Cutpoint strategy (e.g. `mean_of_means`)                       |
+| `--stop-strategy <spec>`      | `pure_node`   | Stop rule (e.g. `pure_node`)                                      |
+| `--binarize-strategy <spec>`  | `largest_gap` | Binarization strategy (e.g. `largest_gap`)                         |
+| `--partition-strategy <spec>` | `by_group`    | Partition strategy (e.g. `by_group`)                               |
 | `-s, --save <file>`      | `model.json`  | Output model path (`.json` added if missing)                       |
 | `--no-save`              | —             | Skip saving the model                                              |
 | `--no-metrics`           | —             | Skip variable importance computation                               |
@@ -245,7 +248,7 @@ ppforest2 evaluate -d data.csv -t 50 -i 20
 | `--convergence-min <N>`     | `10`     | Minimum iterations before checking convergence    |
 | `--convergence-window <N>`  | `3`      | Consecutive stable checks required to stop        |
 
-All model parameters (`--trees`, `--lambda`, `--seed`, `--vars`, `--threads`, `--max-retries`) are also available.
+All model parameters (`--trees`, `--lambda`, `--seed`, `--vars`, `--threads`, `--max-retries`) and strategy flags (`--pp-strategy`, `--vars-strategy`, `--cutpoint-strategy`, `--stop-strategy`, `--binarize-strategy`, `--partition-strategy`) are also available.
 
 ### `benchmark` — Multi-Scenario Benchmarks
 
@@ -300,9 +303,9 @@ The project is organized into a shared C++ core and language-specific bindings:
 
 The C++ core uses two design patterns to keep the algorithm extensible without heavily modifying existing code:
 
-- **Strategy** — The projection-pursuit optimization step (`PPStrategy`), dimensionality reduction step (`DRStrategy`), and split-point rule (`SRStrategy`) are each defined as abstract interfaces. Concrete implementations (e.g. `PPPDAStrategy`, `DRUniformStrategy`) are composed at runtime via `TrainingSpec`, a single concrete class that holds the three strategy objects (via `shared_ptr`) together with forest-level parameters (size, seed, threads, max retries). New optimization criteria or variable selection methods can be added without changing the tree-building logic — just implement the interface and pass it to `TrainingSpec`. Each strategy implements `to_json()` for serialization.
+- **Strategy** — Six strategy families under `ppforest2::strategy::` control each step of node training: projection pursuit (`pp::ProjectionPursuit`), variable selection (`vars::VariableSelection`), cutpoint (`cutpoint::SplitCutpoint`), stopping rule (`stop::StopRule`), binarization (`binarize::Binarization`), and data partition (`partition::StepPartition`). Concrete implementations (e.g. `pp::PDA`, `vars::Uniform`, `binarize::LargestGap`) are composed at runtime via `TrainingSpec`, a single concrete class that holds the six strategy objects (via `shared_ptr`) together with forest-level parameters (size, seed, threads, max retries). All strategies share a uniform `(NodeContext&, RNG&)` interface — each reads what it needs from the mutable context and writes its results back. New optimization criteria, stopping rules, or partition methods can be added without changing the tree-building logic — just implement the interface and pass it to `TrainingSpec`. Each strategy implements `to_json()` for serialization and is auto-registered via a CRTP macro.
 
-- **Visitor** — `TreeNode::Visitor` dispatches over the two node types (internal `TreeCondition` and leaf `TreeResponse`) and `Model::Visitor` dispatches over `Tree` and `Forest`. This avoids `dynamic_cast` and keeps traversal logic (serialization, visualization layout, variable importance) decoupled from the model types themselves.
+- **Visitor** — `TreeNode::Visitor` dispatches over the two node types (internal `TreeBranch` and leaf `TreeLeaf`) and `Model::Visitor` dispatches over `Tree` and `Forest`. This avoids `dynamic_cast` and keeps traversal logic (serialization, visualization layout, variable importance) decoupled from the model types themselves.
 
 ## Prerequisites
 

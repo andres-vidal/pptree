@@ -4,13 +4,17 @@ add_library(ppforest2-models OBJECT
   BootstrapTree.cpp
   Forest.cpp
   TreeNode.cpp
-  TreeCondition.cpp
-  TreeResponse.cpp
+  TreeBranch.cpp
+  TreeLeaf.cpp
   TrainingSpec.cpp
-  PPPDAStrategy.cpp
-  DRUniformStrategy.cpp
-  DRNoopStrategy.cpp
-  SRMeanOfMeansStrategy.cpp
+  strategies/pp/PDA.cpp
+  strategies/vars/Uniform.cpp
+  strategies/vars/All.cpp
+  strategies/cutpoint/MeanOfMeans.cpp
+  strategies/stop/PureNode.cpp
+  strategies/binarize/LargestGap.cpp
+  strategies/partition/ByGroup.cpp
+  strategies/leaf/MajorityVote.cpp
   Projector.cpp
   VariableImportance.cpp
   Visualization.cpp)

@@ -35,7 +35,7 @@ get_node_bfs <- function(root, index) {
 #'
 #' Projects all training observations onto the node's projector vector,
 #' draws overlapping histograms coloured by group, and marks the split
-#' threshold with a dashed vertical line.  This shows how well the
+#' cutpoint with a dashed vertical line.  This shows how well the
 #' node's projection separates the groups.
 #'
 #' @param model A pptr model with \code{$root}, \code{$x}, \code{$y},
@@ -62,7 +62,7 @@ plot_projection <- function(model, node = 1L, ...) {
     stringsAsFactors = FALSE
   )
 
-  threshold <- target_node$threshold
+  cutpoint <- target_node$cutpoint
 
   ggplot2::ggplot(df, ggplot2::aes(x = projected, fill = group)) +
     ggplot2::geom_histogram(
@@ -71,9 +71,9 @@ plot_projection <- function(model, node = 1L, ...) {
       position = "identity"
     ) +
     ggplot2::geom_vline(
-      xintercept = threshold,
+      xintercept = cutpoint,
       linetype   = "dashed",
-      color      = ppforest2_col_threshold,
+      color      = ppforest2_col_cutpoint,
       linewidth  = ppforest2_lw_medium
     ) +
     ggplot2::labs(

@@ -78,7 +78,7 @@ namespace ppforest2::cli {
     };
 
     json build_predict_result(
-        ResponseVector const& predictions,
+        OutcomeVector const& predictions,
         DataPacket const& data,
         Model const& model,
         std::vector<std::string> const& group_names,

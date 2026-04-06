@@ -47,7 +47,7 @@ TEST_F(SummarizeTest, MetaHasDataDimensions) {
   ASSERT_TRUE(model_json_.contains("meta"));
   EXPECT_EQ(model_json_["meta"]["observations"].get<int>(), 150);
   EXPECT_EQ(model_json_["meta"]["features"].get<int>(), 4);
-  EXPECT_EQ(model_json_["meta"]["groups"].size(), 3u);
+  EXPECT_EQ(model_json_["meta"]["groups"].size(), 3U);
 }
 
 /* Saved model must contain training duration. */
@@ -67,7 +67,7 @@ TEST_F(SummarizeTest, NoEphemeralFields) {
 
 /* Summarize succeeds on a model trained with --no-metrics. */
 TEST(CLISummarize, SummarizeNoMetricsModel) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-metrics -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
@@ -87,7 +87,7 @@ TEST(CLISummarize, SummarizeNoMetricsModel) {
 
 /* Summarize with --data recomputes metrics for a --no-metrics model. */
 TEST(CLISummarize, SummarizeWithDataRecomputesMetrics) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto train = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-metrics -s " + model.path());
   ASSERT_EQ(train.exit_code, 0);
@@ -115,11 +115,11 @@ TEST_F(SummarizeTest, SummarizeWithDataSkipsExistingMetrics) {
 /* Saved forest must contain sample_indices for each tree. */
 TEST_F(SummarizeTest, HasSampleIndices) {
   auto trees = model_json_["model"]["trees"];
-  ASSERT_GT(trees.size(), 0u);
+  ASSERT_GT(trees.size(), 0U);
 
   for (auto const& tree : trees) {
     ASSERT_TRUE(tree.contains("sample_indices")) << "Each tree must have sample_indices";
-    EXPECT_GT(tree["sample_indices"].size(), 0u);
+    EXPECT_GT(tree["sample_indices"].size(), 0U);
   }
 }
 
@@ -129,12 +129,12 @@ TEST_F(SummarizeTest, HasSampleIndices) {
 
 /* Summarize shows strategy display names for non-default strategies. */
 TEST(CLISummarize, SummarizeNonDefaultStrategies) {
-  TempFile model;
+  TempFile const model;
   model.clear();
   auto train = run_ppforest2(
       "-q train -d " + IRIS_CSV +
       " -n 5 -r 0 "
-      "--pp pda:lambda=0.5 --dr noop -s " +
+      "--pp pda:lambda=0.5 --vars all -s " +
       model.path()
   );
   ASSERT_EQ(train.exit_code, 0);

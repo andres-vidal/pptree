@@ -113,8 +113,8 @@ namespace ppforest2::cli {
         io::Output& out,
         FeatureMatrix& tr_x,
         FeatureMatrix& te_x,
-        ResponseVector& tr_y,
-        ResponseVector& te_y,
+        OutcomeVector& tr_y,
+        OutcomeVector& te_y,
         CLIOptions const& params,
         ppforest2::stats::RNG& rng
     ) {
@@ -202,9 +202,7 @@ namespace ppforest2::cli {
     }
 
     json build_export_config(CLIOptions const& params, TrainingSpec const& spec) {
-      json config;
-      spec.to_json(config);
-
+      json config           = spec.to_json();
       config["train-ratio"] = params.evaluate.train_ratio;
 
       if (params.convergence.enabled) {
@@ -230,7 +228,7 @@ namespace ppforest2::cli {
 
       std::filesystem::create_directories(dir);
 
-      json config = build_export_config(params, spec);
+      json const config = build_export_config(params, spec);
       io::json::write_file(config, dir + "/config.json");
 
       io::csv::write(full_data, dir + "/data.csv");
@@ -259,16 +257,24 @@ namespace ppforest2::cli {
 
     FeatureMatrix tr_x  = full_data.x(data_split.tr, Eigen::all);
     FeatureMatrix te_x  = full_data.x(data_split.te, Eigen::all);
-    ResponseVector tr_y = full_data.y(data_split.tr);
-    ResponseVector te_y = full_data.y(data_split.te);
+    OutcomeVector tr_y = full_data.y(data_split.tr);
+    OutcomeVector te_y = full_data.y(data_split.te);
 
     io::Output out(params.quiet);
 
-    auto& m   = params.model;
+    auto& m           = params.model;
+    auto default_json = [](nlohmann::json const& config, std::string const& default_name) {
+      return config.is_null() ? json{{"name", default_name}} : config;
+    };
+
     auto spec = TrainingSpec::from_json({
         {"pp", m.pp_config},
-        {"dr", m.dr_config},
-        {"sr", m.sr_config},
+        {"vars", m.vars_config},
+        {"cutpoint", m.cutpoint_config},
+        {"stop", default_json(m.stop_config, "pure_node")},
+        {"binarize", default_json(m.binarize_config, "largest_gap")},
+        {"partition", default_json(m.partition_config, "by_group")},
+        {"leaf", default_json(m.leaf_config, "majority_vote")},
         {"size", m.size},
         {"seed", m.seed},
         {"threads", m.threads},
@@ -276,8 +282,7 @@ namespace ppforest2::cli {
     });
 
     {
-      json config;
-      spec->to_json(config);
+      json const config = spec->to_json();
 
       io::ConfigDisplayHints hints;
       hints.vars_percent    = params.model.size > 0 ? static_cast<int>(params.model.p_vars * 100) : -1;

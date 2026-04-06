@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <sstream>
 
 /**
  * @brief Runtime assertion that throws on failure.

@@ -11,23 +11,23 @@ using json = nlohmann::json;
 class BenchmarkParsingTest : public ::testing::Test {};
 
 TEST_F(BenchmarkParsingTest, ParseMinimalScenario) {
-  json j = {{"scenarios", {{{"name", "test"}, {"n", 100}, {"p", 5}, {"g", 2}}}}};
+  json const j = {{"scenarios", {{{"name", "test"}, {"n", 100}, {"p", 5}, {"g", 2}}}}};
 
   auto suite = parse_suite(j);
 
-  ASSERT_EQ(suite.scenarios.size(), 1u);
+  ASSERT_EQ(suite.scenarios.size(), 1U);
   EXPECT_EQ(suite.scenarios[0].name, "test");
   EXPECT_EQ(suite.scenarios[0].n, 100);
   EXPECT_EQ(suite.scenarios[0].p, 5);
   EXPECT_EQ(suite.scenarios[0].g, 2);
   // Check defaults
   EXPECT_EQ(suite.scenarios[0].size, 100);
-  EXPECT_FLOAT_EQ(suite.scenarios[0].vars, 0.5f);
-  EXPECT_FLOAT_EQ(suite.scenarios[0].lambda, 0.5f);
+  EXPECT_FLOAT_EQ(suite.scenarios[0].p_vars, 0.5F);
+  EXPECT_FLOAT_EQ(suite.scenarios[0].lambda, 0.5F);
 }
 
 TEST_F(BenchmarkParsingTest, ParseWithDefaults) {
-  json j = {
+  json const j = {
       {"defaults", {{"size", 50}, {"lambda", 0.3}, {"seed", 123}, {"warmup", 3}}},
       {"scenarios",
        {{{"name", "a"}, {"n", 200}, {"p", 10}, {"g", 3}},
@@ -36,36 +36,36 @@ TEST_F(BenchmarkParsingTest, ParseWithDefaults) {
 
   auto suite = parse_suite(j);
 
-  ASSERT_EQ(suite.scenarios.size(), 2u);
+  ASSERT_EQ(suite.scenarios.size(), 2U);
 
   // Scenario a inherits all defaults
   EXPECT_EQ(suite.scenarios[0].size, 50);
-  EXPECT_FLOAT_EQ(suite.scenarios[0].lambda, 0.3f);
+  EXPECT_FLOAT_EQ(suite.scenarios[0].lambda, 0.3F);
   EXPECT_EQ(suite.scenarios[0].seed, 123);
   EXPECT_EQ(suite.scenarios[0].warmup, 3);
 
   // Scenario b overrides trees
   EXPECT_EQ(suite.scenarios[1].size, 200);
-  EXPECT_FLOAT_EQ(suite.scenarios[1].lambda, 0.3f);
+  EXPECT_FLOAT_EQ(suite.scenarios[1].lambda, 0.3F);
   EXPECT_EQ(suite.scenarios[1].seed, 123);
 }
 
 TEST_F(BenchmarkParsingTest, ParseWithConvergence) {
-  json j = {
+  json const j = {
       {"defaults", {{"convergence", {{"cv", 0.03}, {"max", 100}}}}},
       {"scenarios", {{{"name", "a"}, {"n", 100}, {"p", 5}, {"g", 2}}}}
   };
 
   auto suite = parse_suite(j);
 
-  EXPECT_FLOAT_EQ(suite.scenarios[0].convergence.cv, 0.03f);
+  EXPECT_FLOAT_EQ(suite.scenarios[0].convergence.cv, 0.03F);
   EXPECT_EQ(suite.scenarios[0].convergence.max, 100);
   // Default window
   EXPECT_EQ(suite.scenarios[0].convergence.window, 3);
 }
 
 TEST_F(BenchmarkParsingTest, FixedIterationsOverrideConvergence) {
-  json j = {
+  json const j = {
       {"defaults", {{"convergence", {{"max", 100}}}}},
       {"scenarios", {{{"name", "fixed"}, {"n", 100}, {"p", 5}, {"g", 2}, {"iterations", 5}}}}
   };
@@ -76,7 +76,7 @@ TEST_F(BenchmarkParsingTest, FixedIterationsOverrideConvergence) {
 }
 
 TEST_F(BenchmarkParsingTest, ParseSuiteName) {
-  json j = {{"name", "my benchmarks"}, {"scenarios", {{{"name", "a"}, {"n", 100}, {"p", 5}, {"g", 2}}}}};
+  json const j = {{"name", "my benchmarks"}, {"scenarios", {{{"name", "a"}, {"n", 100}, {"p", 5}, {"g", 2}}}}};
 
   auto suite = parse_suite(j);
 
@@ -84,32 +84,32 @@ TEST_F(BenchmarkParsingTest, ParseSuiteName) {
 }
 
 TEST_F(BenchmarkParsingTest, MissingScenariosArrayThrows) {
-  json j = {{"defaults", {}}};
+  json const j = {{"defaults", {}}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
 
 TEST_F(BenchmarkParsingTest, EmptyScenariosArrayThrows) {
-  json j = {{"scenarios", json::array()}};
+  json const j = {{"scenarios", json::array()}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
 
 TEST_F(BenchmarkParsingTest, InvalidScenarioThrows) {
   // g must be > 1
-  json j = {{"scenarios", {{{"name", "bad"}, {"n", 100}, {"p", 5}, {"g", 1}}}}};
+  json const j = {{"scenarios", {{{"name", "bad"}, {"n", 100}, {"p", 5}, {"g", 1}}}}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
 
 TEST_F(BenchmarkParsingTest, MissingNameThrows) {
-  json j = {{"scenarios", {{{"n", 100}, {"p", 5}, {"g", 2}}}}};
+  json const j = {{"scenarios", {{{"n", 100}, {"p", 5}, {"g", 2}}}}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
 
 TEST_F(BenchmarkParsingTest, NegativeNThrows) {
-  json j = {{"scenarios", {{{"name", "bad"}, {"n", -1}, {"p", 5}, {"g", 2}}}}};
+  json const j = {{"scenarios", {{{"name", "bad"}, {"n", -1}, {"p", 5}, {"g", 2}}}}};
 
   EXPECT_THROW(parse_suite(j), std::runtime_error);
 }
@@ -117,7 +117,7 @@ TEST_F(BenchmarkParsingTest, NegativeNThrows) {
 TEST_F(BenchmarkParsingTest, ParseDefaultScenariosFile) {
   auto suite = parse_suite(std::string(PPFOREST2_BENCH_SCENARIOS));
 
-  EXPECT_GT(suite.scenarios.size(), 0u);
+  EXPECT_GT(suite.scenarios.size(), 0U);
 
   for (auto const& s : suite.scenarios) {
     EXPECT_FALSE(s.name.empty());
@@ -148,13 +148,13 @@ TEST_F(SuiteResultTest, ToJsonRoundtrip) {
   sr.p              = 5;
   sr.g              = 2;
   sr.size           = 50;
-  sr.vars           = 0.5f;
+  sr.p_vars         = 0.5F;
   sr.runs           = 10;
   sr.mean_time_ms   = 12.3;
   sr.std_time_ms    = 1.2;
   sr.mean_tr_error  = 0.01;
   sr.mean_te_error  = 0.05;
-  sr.peak_rss_bytes = 1024 * 1024;
+  sr.peak_rss_bytes = 1024UL * 1024UL;
   sr.peak_rss_mb    = 1.0;
 
   result.results.push_back(sr);
@@ -165,7 +165,7 @@ TEST_F(SuiteResultTest, ToJsonRoundtrip) {
   EXPECT_EQ(j["timestamp"], "2026-01-01T00:00:00");
   EXPECT_DOUBLE_EQ(j["total_time_ms"], 1234.5);
 
-  ASSERT_EQ(j["results"].size(), 1u);
+  ASSERT_EQ(j["results"].size(), 1U);
   EXPECT_EQ(j["results"][0]["name"], "scenario1");
   EXPECT_EQ(j["results"][0]["n"], 100);
   EXPECT_EQ(j["results"][0]["size"], 50);
@@ -191,11 +191,11 @@ TEST_F(SuiteResultTest, ToJsonOmitsPeakRSSWhenNegative) {
 }
 
 TEST_F(BenchmarkParsingTest, ParseDataScenario) {
-  json j = {{"scenarios", {{{"name", "csv-test"}, {"data", "data/iris.csv"}, {"size", 50}}}}};
+  json const j = {{"scenarios", {{{"name", "csv-test"}, {"data", "data/iris.csv"}, {"size", 50}}}}};
 
   auto suite = parse_suite(j);
 
-  ASSERT_EQ(suite.scenarios.size(), 1u);
+  ASSERT_EQ(suite.scenarios.size(), 1U);
   EXPECT_EQ(suite.scenarios[0].name, "csv-test");
   EXPECT_EQ(suite.scenarios[0].data, "data/iris.csv");
   EXPECT_EQ(suite.scenarios[0].size, 50);
@@ -204,7 +204,7 @@ TEST_F(BenchmarkParsingTest, ParseDataScenario) {
 TEST_F(BenchmarkParsingTest, DataScenarioSkipsNPGValidation) {
   // A data scenario with default n/p/g (which would be fine anyway)
   // but the point is that validation doesn't require explicit n/p/g
-  json j = {{"scenarios", {{{"name", "csv-test"}, {"data", "some/file.csv"}}}}};
+  json const j = {{"scenarios", {{{"name", "csv-test"}, {"data", "some/file.csv"}}}}};
 
   EXPECT_NO_THROW(parse_suite(j));
 }
@@ -245,18 +245,18 @@ TEST_F(BenchmarkParsingTest, SimulationScenarioToJsonOmitsDataField) {
   EXPECT_FALSE(j["results"][0].contains("data"));
 }
 
-TEST_F(BenchmarkParsingTest, ScenarioVarsAsIntegerCount) {
-  json j = {{"scenarios", {{{"name", "int-vars"}, {"n", 100}, {"p", 10}, {"g", 2}, {"vars", 3}}}}};
+TEST_F(BenchmarkParsingTest, ScenarioNVarsAsIntegerCount) {
+  json const j = {{"scenarios", {{{"name", "int-vars"}, {"n", 100}, {"p", 10}, {"g", 2}, {"n_vars", 3}}}}};
 
   auto suite = parse_suite(j);
 
-  EXPECT_FLOAT_EQ(suite.scenarios[0].vars, 0.3f);
+  EXPECT_FLOAT_EQ(suite.scenarios[0].p_vars, 0.3F);
 }
 
-TEST_F(BenchmarkParsingTest, ScenarioVarsAsFraction) {
-  json j = {{"scenarios", {{{"name", "frac-vars"}, {"n", 100}, {"p", 10}, {"g", 2}, {"vars", "1/3"}}}}};
+TEST_F(BenchmarkParsingTest, ScenarioPVarsAsFraction) {
+  json const j = {{"scenarios", {{{"name", "frac-vars"}, {"n", 100}, {"p", 10}, {"g", 2}, {"p_vars", "1/3"}}}}};
 
   auto suite = parse_suite(j);
 
-  EXPECT_NEAR(suite.scenarios[0].vars, 1.0f / 3.0f, 1e-6);
+  EXPECT_NEAR(suite.scenarios[0].p_vars, 1.0F / 3.0F, 1e-6);
 }

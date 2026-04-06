@@ -1,10 +1,19 @@
 {
   "config": {
+    "binarize": {
+      "name": "largest_gap"
+    },
+    "cutpoint": {
+      "name": "mean_of_means"
+    },
     "dataset": "crab",
-    "dr": {
-      "name": "noop"
+    "leaf": {
+      "name": "majority_vote"
     },
     "max_retries": 3,
+    "partition": {
+      "name": "by_group"
+    },
     "platform": "macos-clang",
     "pp": {
       "lambda": 0.0,
@@ -12,10 +21,13 @@
     },
     "seed": 0,
     "size": 0,
-    "sr": {
-      "name": "mean_of_means"
+    "stop": {
+      "name": "pure_node"
     },
-    "threads": 1
+    "threads": 1,
+    "vars": {
+      "name": "all"
+    }
   },
   "error_rate": 0.05500000715255737,
   "meta": {
@@ -38,6 +50,7 @@
   "model": {
     "degenerate": false,
     "root": {
+      "cutpoint": 0.03410697728395462,
       "degenerate": false,
       "groups": [
         "BlueMale",
@@ -46,6 +59,7 @@
         "OrangeFemale"
       ],
       "lower": {
+        "cutpoint": 0.16444548964500427,
         "degenerate": false,
         "groups": [
           "BlueMale",
@@ -63,7 +77,6 @@
           -0.006997755263000727,
           0.009622174315154552
         ],
-        "threshold": 0.16444548964500427,
         "upper": {
           "degenerate": false,
           "value": "BlueFemale"
@@ -77,8 +90,8 @@
         -0.03911910578608513,
         0.03310954570770264
       ],
-      "threshold": 0.03410697728395462,
       "upper": {
+        "cutpoint": 0.1984570324420929,
         "degenerate": false,
         "groups": [
           "OrangeMale",
@@ -96,7 +109,6 @@
           0.012746374122798443,
           -0.005568522959947586
         ],
-        "threshold": 0.1984570324420929,
         "upper": {
           "degenerate": false,
           "value": "OrangeFemale"

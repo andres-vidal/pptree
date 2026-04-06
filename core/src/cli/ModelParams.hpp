@@ -17,17 +17,25 @@ namespace ppforest2::cli {
     float p_vars    = -1;
     int n_vars      = -1;
     int max_retries = 3;
-    std::string vars_input;
+    std::string p_vars_input;
 
-    /** @brief Explicit strategy inputs (--pp, --dr, --sr flags). */
+    /** @brief Explicit strategy inputs (--X flags). */
     std::string pp_input;
-    std::string dr_input;
-    std::string sr_input;
+    std::string vars_input;
+    std::string cutpoint_input;
+    std::string stop_input;
+    std::string binarize_input;
+    std::string partition_input;
+    std::string leaf_input;
 
-    /** @brief Strategy JSON objects loaded from config file (pp/dr/sr). */
+    /** @brief Strategy JSON objects (from CLI strings or config file). */
     nlohmann::json pp_config;
-    nlohmann::json dr_config;
-    nlohmann::json sr_config;
+    nlohmann::json vars_config;
+    nlohmann::json cutpoint_config;
+    nlohmann::json stop_config;
+    nlohmann::json binarize_config;
+    nlohmann::json partition_config;
+    nlohmann::json leaf_config;
 
     bool used_default_seed    = false;
     bool used_default_threads = false;

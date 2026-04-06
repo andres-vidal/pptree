@@ -45,7 +45,7 @@ namespace ppforest2 {
    * @return        FeatureVector of size p with per-variable importance.
    */
   types::FeatureVector variable_importance_permuted(
-      Forest const& forest, types::FeatureMatrix const& x, types::ResponseVector const& y, int seed = 0
+      Forest const& forest, types::FeatureMatrix const& x, types::OutcomeVector const& y, int seed = 0
   );
 
   /**
@@ -93,7 +93,7 @@ namespace ppforest2 {
   types::FeatureVector variable_importance_weighted_projections(
       Forest const& forest,
       types::FeatureMatrix const& x,
-      types::ResponseVector const& y,
+      types::OutcomeVector const& y,
       types::FeatureVector const* scale = nullptr
   );
 }

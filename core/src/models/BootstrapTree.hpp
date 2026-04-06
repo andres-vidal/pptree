@@ -53,6 +53,6 @@ namespace ppforest2 {
      * @param row_idx   Row indices to predict.
      * @return          Predictions for each row in row_idx.
      */
-    types::ResponseVector predict_oob(types::FeatureMatrix const& x, std::vector<int> const& row_idx) const;
+    types::OutcomeVector predict_oob(types::FeatureMatrix const& x, std::vector<int> const& row_idx) const;
   };
 }

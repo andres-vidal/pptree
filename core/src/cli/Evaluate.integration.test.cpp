@@ -38,7 +38,7 @@ TEST(CLIEvaluate, EvaluateSingleTree) {
 
 /* -o writes evaluation stats (runs, mean_time, peak_rss) to JSON. */
 TEST(CLIEvaluate, EvaluateOutputFile) {
-  TempFile output;
+  TempFile const output;
   output.clear();
   auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -51,8 +51,8 @@ TEST(CLIEvaluate, EvaluateOutputFile) {
 
 /* -e exports config.json, data.csv, and results.json to a directory. */
 TEST(CLIEvaluate, EvaluateExport) {
-  TempDir dir;
-  std::string export_path = dir.path() + "/exp1";
+  TempDir const dir;
+  std::string const export_path = dir.path() + "/exp1";
 
   auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -l 0.3 -i 1 -e " + export_path);
   EXPECT_EQ(result.exit_code, 0);
@@ -66,7 +66,7 @@ TEST(CLIEvaluate, EvaluateExport) {
   auto config = json::parse(config_in);
   EXPECT_EQ(config["data"], "data.csv");
   EXPECT_EQ(config["size"], 5);
-  EXPECT_FLOAT_EQ(config["pp"]["lambda"].get<float>(), 0.3f);
+  EXPECT_FLOAT_EQ(config["pp"]["lambda"].get<float>(), 0.3F);
   EXPECT_EQ(config["seed"], 0);
   EXPECT_TRUE(config.contains("threads"));
   EXPECT_TRUE(config.contains("train-ratio"));
@@ -75,7 +75,7 @@ TEST(CLIEvaluate, EvaluateExport) {
 
 /* Output to an existing file must fail. */
 TEST(CLIEvaluate, EvaluateOutputCollisionFails) {
-  TempFile output;
+  TempFile const output;
   // Don't clear - file exists, should fail
   auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 -o " + output.path());
   EXPECT_NE(result.exit_code, 0);
@@ -83,7 +83,7 @@ TEST(CLIEvaluate, EvaluateOutputCollisionFails) {
 
 /* Export to an existing directory must fail. */
 TEST(CLIEvaluate, EvaluateExportCollisionFails) {
-  TempDir dir;
+  TempDir const dir;
   // dir.path() already exists, should fail
   auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 -e " + dir.path());
   EXPECT_NE(result.exit_code, 0);
@@ -91,7 +91,7 @@ TEST(CLIEvaluate, EvaluateExportCollisionFails) {
 
 /* JSON output includes an iterations array with per-run metrics. */
 TEST(CLIEvaluate, EvaluateOutputHasIterationsArray) {
-  TempFile output;
+  TempFile const output;
   output.clear();
   auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -106,7 +106,7 @@ TEST(CLIEvaluate, EvaluateOutputHasIterationsArray) {
 
 /* Multiple iterations (-i 3) produce matching array size. */
 TEST(CLIEvaluate, EvaluateMultipleIterationsArray) {
-  TempFile output;
+  TempFile const output;
   output.clear();
   auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 3 -o " + output.path());
   EXPECT_EQ(result.exit_code, 0);
@@ -138,7 +138,7 @@ TEST(CLIEvaluate, EvaluateInvalidSimFormatFails) {
 
 /* Fraction "1/3" is accepted end-to-end for evaluate. */
 TEST(CLIEvaluate, EvaluateWithFractionVars) {
-  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 -v 1/3");
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 --p-vars 1/3");
   EXPECT_EQ(result.exit_code, 0);
 }
 
@@ -146,14 +146,14 @@ TEST(CLIEvaluate, EvaluateWithFractionVars) {
 // Explicit strategy flags
 // ---------------------------------------------------------------------------
 
-/* Evaluate with --pp and --dr produces correct config in export. */
+/* Evaluate with --pp and --vars produces correct config in export. */
 TEST(CLIEvaluate, EvaluateWithStrategyFlags) {
-  TempDir dir;
-  std::string export_path = dir.path() + "/exp_strategies";
+  TempDir const dir;
+  std::string const export_path = dir.path() + "/exp_strategies";
 
   auto result = run_ppforest2(
       "-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 "
-      "--pp pda:lambda=0.3 --dr uniform:vars=2 --sr mean_of_means "
+      "--pp pda:lambda=0.3 --vars uniform:count=2 --cutpoint mean_of_means "
       "-e " +
       export_path
   );
@@ -162,14 +162,14 @@ TEST(CLIEvaluate, EvaluateWithStrategyFlags) {
   std::ifstream config_in(export_path + "/config.json");
   auto config = json::parse(config_in);
   EXPECT_EQ(config["pp"]["name"], "pda");
-  EXPECT_FLOAT_EQ(config["pp"]["lambda"].get<float>(), 0.3f);
-  EXPECT_EQ(config["dr"]["name"], "uniform");
-  EXPECT_EQ(config["dr"]["n_vars"], 2);
-  EXPECT_EQ(config["sr"]["name"], "mean_of_means");
+  EXPECT_FLOAT_EQ(config["pp"]["lambda"].get<float>(), 0.3F);
+  EXPECT_EQ(config["vars"]["name"], "uniform");
+  EXPECT_EQ(config["vars"]["count"], 2);
+  EXPECT_EQ(config["cutpoint"]["name"], "mean_of_means");
 }
 
-/* Evaluate with --dr noop succeeds (no variable subsampling). */
-TEST(CLIEvaluate, EvaluateWithDRNoop) {
-  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 --dr noop");
+/* Evaluate with --vars all succeeds (no variable subsampling). */
+TEST(CLIEvaluate, EvaluateWithVarsAll) {
+  auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 --vars all");
   EXPECT_EQ(result.exit_code, 0);
 }

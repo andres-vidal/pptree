@@ -1,11 +1,19 @@
 {
   "config": {
+    "binarize": {
+      "name": "largest_gap"
+    },
+    "cutpoint": {
+      "name": "mean_of_means"
+    },
     "dataset": "crab",
-    "dr": {
-      "n_vars": 3,
-      "name": "uniform"
+    "leaf": {
+      "name": "majority_vote"
     },
     "max_retries": 3,
+    "partition": {
+      "name": "by_group"
+    },
     "platform": "macos-clang",
     "pp": {
       "lambda": 0.0,
@@ -13,10 +21,14 @@
     },
     "seed": 0,
     "size": 10,
-    "sr": {
-      "name": "mean_of_means"
+    "stop": {
+      "name": "pure_node"
     },
-    "threads": 1
+    "threads": 1,
+    "vars": {
+      "count": 3,
+      "name": "uniform"
+    }
   },
   "error_rate": 0.04500001668930054,
   "meta": {
@@ -42,6 +54,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.028619008138775826,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -50,6 +63,7 @@
             "OrangeFemale"
           ],
           "lower": {
+            "cutpoint": 0.08440925180912018,
             "degenerate": false,
             "groups": [
               "BlueMale",
@@ -67,7 +81,6 @@
               0.0,
               0.03929555416107178
             ],
-            "threshold": 0.08440925180912018,
             "upper": {
               "degenerate": false,
               "value": "BlueFemale"
@@ -81,8 +94,8 @@
             -0.04083272069692612,
             0.0697483941912651
           ],
-          "threshold": -0.028619008138775826,
           "upper": {
+            "cutpoint": -0.2741118371486664,
             "degenerate": false,
             "groups": [
               "OrangeMale",
@@ -100,7 +113,6 @@
               -0.07196094840765,
               0.22175298631191254
             ],
-            "threshold": -0.2741118371486664,
             "upper": {
               "degenerate": false,
               "value": "OrangeMale"
@@ -313,6 +325,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.22141636908054352,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -332,8 +345,8 @@
             0.0,
             0.0
           ],
-          "threshold": -0.22141636908054352,
           "upper": {
+            "cutpoint": -0.08051735162734985,
             "degenerate": false,
             "groups": [
               "BlueMale",
@@ -352,8 +365,8 @@
               0.06369812786579132,
               0.0
             ],
-            "threshold": -0.08051735162734985,
             "upper": {
+              "cutpoint": -0.1146593913435936,
               "degenerate": false,
               "groups": [
                 "BlueMale",
@@ -371,7 +384,6 @@
                 0.04878376051783562,
                 0.0
               ],
-              "threshold": -0.1146593913435936,
               "upper": {
                 "degenerate": false,
                 "value": "BlueFemale"
@@ -585,6 +597,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.047768741846084595,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -593,6 +606,7 @@
             "OrangeFemale"
           ],
           "lower": {
+            "cutpoint": -0.05517814680933952,
             "degenerate": false,
             "groups": [
               "BlueFemale",
@@ -600,6 +614,7 @@
               "OrangeFemale"
             ],
             "lower": {
+              "cutpoint": -0.12573011219501495,
               "degenerate": false,
               "groups": [
                 "BlueFemale",
@@ -617,7 +632,6 @@
                 0.1525423675775528,
                 0.0
               ],
-              "threshold": -0.12573011219501495,
               "upper": {
                 "degenerate": false,
                 "value": "BlueFemale"
@@ -631,7 +645,6 @@
               0.0,
               0.0
             ],
-            "threshold": -0.05517814680933952,
             "upper": {
               "degenerate": false,
               "value": "OrangeMale"
@@ -645,7 +658,6 @@
             0.0,
             -0.0826045349240303
           ],
-          "threshold": 0.047768741846084595,
           "upper": {
             "degenerate": false,
             "value": "BlueMale"
@@ -857,6 +869,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.010950854048132896,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -876,8 +889,8 @@
             -0.0673028975725174,
             0.0
           ],
-          "threshold": -0.010950854048132896,
           "upper": {
+            "cutpoint": -0.06578098237514496,
             "degenerate": false,
             "groups": [
               "BlueFemale",
@@ -885,6 +898,7 @@
               "OrangeFemale"
             ],
             "lower": {
+              "cutpoint": 0.1876659095287323,
               "degenerate": false,
               "groups": [
                 "BlueFemale",
@@ -902,7 +916,6 @@
                 0.0,
                 0.011298522353172302
               ],
-              "threshold": 0.1876659095287323,
               "upper": {
                 "degenerate": false,
                 "value": "OrangeFemale"
@@ -916,7 +929,6 @@
               0.0,
               0.0
             ],
-            "threshold": -0.06578098237514496,
             "upper": {
               "degenerate": false,
               "value": "OrangeMale"
@@ -1129,6 +1141,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.21025866270065308,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -1148,8 +1161,8 @@
             0.0,
             0.0
           ],
-          "threshold": -0.21025866270065308,
           "upper": {
+            "cutpoint": 0.07477173954248428,
             "degenerate": false,
             "groups": [
               "BlueMale",
@@ -1157,6 +1170,7 @@
               "OrangeMale"
             ],
             "lower": {
+              "cutpoint": 0.1936415135860443,
               "degenerate": false,
               "groups": [
                 "BlueMale",
@@ -1174,7 +1188,6 @@
                 -0.03945566713809967,
                 0.0
               ],
-              "threshold": 0.1936415135860443,
               "upper": {
                 "degenerate": false,
                 "value": "BlueFemale"
@@ -1188,7 +1201,6 @@
               -0.0648629441857338,
               0.0
             ],
-            "threshold": 0.07477173954248428,
             "upper": {
               "degenerate": false,
               "value": "OrangeMale"
@@ -1401,6 +1413,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.04961651191115379,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -1409,6 +1422,7 @@
             "OrangeFemale"
           ],
           "lower": {
+            "cutpoint": 0.20065174996852875,
             "degenerate": false,
             "groups": [
               "BlueMale",
@@ -1426,7 +1440,6 @@
               -0.0422990657389164,
               0.0
             ],
-            "threshold": 0.20065174996852875,
             "upper": {
               "degenerate": false,
               "value": "BlueFemale"
@@ -1440,8 +1453,8 @@
             -0.0492427684366703,
             0.0
           ],
-          "threshold": 0.04961651191115379,
           "upper": {
+            "cutpoint": 0.22852295637130737,
             "degenerate": false,
             "groups": [
               "OrangeMale",
@@ -1459,7 +1472,6 @@
               0.02889963798224926,
               0.0
             ],
-            "threshold": 0.22852295637130737,
             "upper": {
               "degenerate": false,
               "value": "OrangeFemale"
@@ -1672,6 +1684,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 0.08761648088693619,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -1680,6 +1693,7 @@
             "OrangeFemale"
           ],
           "lower": {
+            "cutpoint": 0.4454326331615448,
             "degenerate": false,
             "groups": [
               "BlueMale",
@@ -1697,7 +1711,6 @@
               0.0,
               -0.13785745203495026
             ],
-            "threshold": 0.4454326331615448,
             "upper": {
               "degenerate": false,
               "value": "BlueMale"
@@ -1711,8 +1724,8 @@
             0.0,
             -0.005542580503970385
           ],
-          "threshold": 0.08761648088693619,
           "upper": {
+            "cutpoint": -0.2312498390674591,
             "degenerate": false,
             "groups": [
               "BlueFemale",
@@ -1730,7 +1743,6 @@
               0.0,
               0.010135120712220669
             ],
-            "threshold": -0.2312498390674591,
             "upper": {
               "degenerate": false,
               "value": "BlueFemale"
@@ -1943,6 +1955,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.02869252860546112,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -1951,6 +1964,7 @@
             "OrangeFemale"
           ],
           "lower": {
+            "cutpoint": 0.1819317489862442,
             "degenerate": false,
             "groups": [
               "OrangeMale",
@@ -1968,7 +1982,6 @@
               0.0,
               0.01397355180233717
             ],
-            "threshold": 0.1819317489862442,
             "upper": {
               "degenerate": false,
               "value": "OrangeFemale"
@@ -1982,8 +1995,8 @@
             0.032170619815588,
             -0.03632661700248718
           ],
-          "threshold": -0.02869252860546112,
           "upper": {
+            "cutpoint": 0.18141716718673706,
             "degenerate": false,
             "groups": [
               "BlueMale",
@@ -2001,7 +2014,6 @@
               -0.03974078223109245,
               0.0
             ],
-            "threshold": 0.18141716718673706,
             "upper": {
               "degenerate": false,
               "value": "BlueFemale"
@@ -2214,6 +2226,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.19861993193626404,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -2233,8 +2246,8 @@
             0.0,
             -0.04069986939430237
           ],
-          "threshold": -0.19861993193626404,
           "upper": {
+            "cutpoint": -0.07710142433643341,
             "degenerate": false,
             "groups": [
               "BlueMale",
@@ -2253,8 +2266,8 @@
               0.0,
               -0.07490488141775131
             ],
-            "threshold": -0.07710142433643341,
             "upper": {
+              "cutpoint": -0.08874854445457458,
               "degenerate": false,
               "groups": [
                 "BlueMale",
@@ -2272,7 +2285,6 @@
                 0.03484040126204491,
                 -0.013951235450804234
               ],
-              "threshold": -0.08874854445457458,
               "upper": {
                 "degenerate": false,
                 "value": "BlueMale"
@@ -2486,6 +2498,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.14673037827014923,
           "degenerate": false,
           "groups": [
             "BlueMale",
@@ -2494,6 +2507,7 @@
             "OrangeFemale"
           ],
           "lower": {
+            "cutpoint": 0.13685013353824615,
             "degenerate": false,
             "groups": [
               "BlueFemale",
@@ -2511,7 +2525,6 @@
               -0.12607848644256592,
               0.0
             ],
-            "threshold": 0.13685013353824615,
             "upper": {
               "degenerate": false,
               "value": "OrangeFemale"
@@ -2525,8 +2538,8 @@
             0.0,
             0.035802725702524185
           ],
-          "threshold": -0.14673037827014923,
           "upper": {
+            "cutpoint": 0.05782175436615944,
             "degenerate": false,
             "groups": [
               "BlueMale",
@@ -2544,7 +2557,6 @@
               -0.07200822979211807,
               0.0
             ],
-            "threshold": 0.05782175436615944,
             "upper": {
               "degenerate": false,
               "value": "OrangeMale"

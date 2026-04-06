@@ -23,17 +23,17 @@ namespace ppforest2::stats {
    * @brief Sort a feature matrix and a response vector by the response values.
    *
    * @param x  Feature matrix.
-   * @param y  Response vector.
+   * @param y  Outcome vector.
    */
-  void sort(types::FeatureMatrix& x, types::ResponseVector& y);
+  void sort(types::FeatureMatrix& x, types::OutcomeVector& y);
 
   /**
    * @brief Unique values of a response vector.
    *
-   * @param column  Response vector.
+   * @param column  Outcome vector.
    * @return        Set of unique response values.
    */
-  std::set<types::Response> unique(types::ResponseVector const& column);
+  std::set<types::Outcome> unique(types::OutcomeVector const& column);
 
   /**
    * @brief Accuracy of a prediction.
@@ -42,7 +42,7 @@ namespace ppforest2::stats {
    * @param actual       Actual response vector.
    * @return             Accuracy (0 to 1).
    */
-  float accuracy(types::ResponseVector const& predictions, types::ResponseVector const& actual);
+  float accuracy(types::OutcomeVector const& predictions, types::OutcomeVector const& actual);
 
   /**
    * @brief Error rate of a prediction.
@@ -51,7 +51,7 @@ namespace ppforest2::stats {
    * @param actual       Actual response vector.
    * @return             Error rate (0 to 1).
    */
-  double error_rate(types::ResponseVector const& predictions, types::ResponseVector const& actual);
+  double error_rate(types::OutcomeVector const& predictions, types::OutcomeVector const& actual);
 
   /**
    * @brief Sample standard deviation of a vector.

@@ -1,10 +1,19 @@
 {
   "config": {
+    "binarize": {
+      "name": "largest_gap"
+    },
+    "cutpoint": {
+      "name": "mean_of_means"
+    },
     "dataset": "iris",
-    "dr": {
-      "name": "noop"
+    "leaf": {
+      "name": "majority_vote"
     },
     "max_retries": 3,
+    "partition": {
+      "name": "by_group"
+    },
     "platform": "macos-clang",
     "pp": {
       "lambda": 0.0,
@@ -12,10 +21,13 @@
     },
     "seed": 0,
     "size": 0,
-    "sr": {
-      "name": "mean_of_means"
+    "stop": {
+      "name": "pure_node"
     },
-    "threads": 1
+    "threads": 1,
+    "vars": {
+      "name": "all"
+    }
   },
   "error_rate": 0.019999980926513672,
   "meta": {
@@ -36,6 +48,7 @@
   "model": {
     "degenerate": false,
     "root": {
+      "cutpoint": 0.06660760939121246,
       "degenerate": false,
       "groups": [
         "setosa",
@@ -43,6 +56,7 @@
         "virginica"
       ],
       "lower": {
+        "cutpoint": -0.20751327276229858,
         "degenerate": false,
         "groups": [
           "versicolor",
@@ -59,7 +73,6 @@
           -0.08680269867181778,
           -0.15424948930740356
         ],
-        "threshold": -0.20751327276229858,
         "upper": {
           "degenerate": false,
           "value": "versicolor"
@@ -72,7 +85,6 @@
         -0.04083551838994026,
         -0.010446807369589806
       ],
-      "threshold": 0.06660760939121246,
       "upper": {
         "degenerate": false,
         "value": "setosa"

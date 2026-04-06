@@ -89,7 +89,7 @@ build_region_df <- function(regions, group_labels) {
 #'   \item Solid vertical lines at each split's decision boundary
 #' }
 #'
-#' Boundary positions are computed as \code{threshold / projector[1]} for
+#' Boundary positions are computed as \code{cutpoint / projector[1]} for
 #' each internal node.  For a 1D projector \code{a = [a1]}, the split
 #' condition \code{a^T x < t} becomes \code{a1 * x < t}, i.e.
 #' \code{x < t/a1}.  The sorted boundary positions partition the x-axis
@@ -113,7 +113,7 @@ plot_boundaries_1d <- function(model) {
 
   boundary_x <- vapply(
     Filter(function(nd) !nd$is_leaf, nodes),
-    function(nd) nd$threshold / nd$projector[1],
+    function(nd) nd$cutpoint / nd$projector[1],
     numeric(1)
   )
   boundary_x <- sort(boundary_x)

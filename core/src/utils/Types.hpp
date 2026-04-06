@@ -18,7 +18,7 @@ namespace ppforest2::types {
 #endif
 
   /** @brief Scalar type for group labels (integer). */
-  using Response = int;
+  using Outcome = int;
 
   /** @brief Dynamic-size matrix of feature values. */
   using FeatureMatrix = Eigen::Matrix<Feature, Eigen::Dynamic, Eigen::Dynamic>;
@@ -26,7 +26,7 @@ namespace ppforest2::types {
   using FeatureVector = Eigen::Matrix<Feature, Eigen::Dynamic, 1>;
 
   /** @brief Dynamic-size column vector of group labels. */
-  using ResponseVector = Eigen::Matrix<Response, Eigen::Dynamic, 1>;
+  using OutcomeVector = Eigen::Matrix<Outcome, Eigen::Dynamic, 1>;
 
   /** @brief Generic dynamic-size matrix. */
   template<typename T> using Matrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;

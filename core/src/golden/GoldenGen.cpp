@@ -64,7 +64,7 @@ struct GoldenConfig {
     std::string s;
 
     if (size > 0) {
-      s = (lambda > 0) ? "forest-pda" : "forest-pda";
+      s = "forest-pda";
 
       if (lambda > 0) {
         std::string l = fmt::format("{:g}", lambda);
@@ -90,47 +90,55 @@ struct GoldenConfig {
  *
  * @param config The configuration to generate a golden file for.
  */
-static void generate_golden(GoldenConfig const& config) {
-  std::string dir  = GOLDEN_DIR + "/" + config.dataset();
-  std::string path = dir + "/" + config.slug() + ".json";
+namespace {
+  void generate_golden(GoldenConfig const& config) {
+    std::string const dir  = GOLDEN_DIR + "/" + config.dataset();
+    std::string const path = dir + "/" + config.slug() + ".json";
 
-  std::filesystem::create_directories(dir);
+    std::filesystem::create_directories(dir);
 
-  DataPacket data = io::csv::read_sorted(config.csv_path);
+    DataPacket const data = io::csv::read_sorted(config.csv_path);
 
-  // Train
-  auto dr = (config.size > 0) ? dr::uniform(config.n_vars) : dr::noop();
+    // Train
+    auto vars = (config.size > 0) ? vars::uniform(config.n_vars) : vars::all();
 
-  TrainingSpec spec(pp::pda(config.lambda), std::move(dr), sr::mean_of_means(), config.size, config.seed, 1);
+    TrainingSpec const spec = TrainingSpec::builder()
+                                  .size(config.size)
+                                  .seed(config.seed)
+                                  .threads(1)
+                                  .pp(pp::pda(config.lambda))
+                                  .vars(std::move(vars))
+                                  .build();
 
-  auto model = Model::train(spec, data.x, data.y);
+    auto model = Model::train(spec, data.x, data.y);
 
-  // Serialize model + meta + config + metrics
-  serialization::Export<Model::Ptr> model_export{
-      std::move(model),
-      data.group_names,
-      nullptr,
-      static_cast<int>(data.x.rows()),
-      static_cast<int>(data.x.cols()),
-      data.feature_names,
-  };
+    // Serialize model + meta + config + metrics
+    serialization::Export<Model::Ptr> model_export{
+        std::move(model),
+        data.group_names,
+        nullptr,
+        static_cast<int>(data.x.rows()),
+        static_cast<int>(data.x.cols()),
+        data.feature_names,
+    };
 
-  model_export.compute_metrics(data.x, data.y);
+    model_export.compute_metrics(data.x, data.y);
 
-  json result                  = model_export.to_json();
-  result["config"]["platform"] = PLATFORM;
-  result["config"]["dataset"]  = config.dataset();
+    json result                  = model_export.to_json();
+    result["config"]["platform"] = PLATFORM;
+    result["config"]["dataset"]  = config.dataset();
 
-  // Golden-specific fields
-  ResponseVector predictions = model_export.model->predict(data.x);
-  result["predictions"]      = serialization::to_labels(predictions, data.group_names);
-  result["vote_proportions"] = to_json(model_export.model->predict(data.x, Proportions{}));
+    // Golden-specific fields
+    OutcomeVector const predictions = model_export.model->predict(data.x);
+    result["predictions"]           = serialization::to_labels(predictions, data.group_names);
+    result["vote_proportions"]      = to_json(model_export.model->predict(data.x, Proportions{}));
 
-  ConfusionMatrix cm(predictions, data.y);
-  result["error_rate"] = cm.error();
+    ConfusionMatrix const cm(predictions, data.y);
+    result["error_rate"] = cm.error();
 
-  io::json::write_file(result, path);
-  fmt::print("  {} -> {}\n", config.slug(), path);
+    io::json::write_file(result, path);
+    fmt::print("  {} -> {}\n", config.slug(), path);
+  }
 }
 
 int main(int argc, char* argv[]) {
@@ -139,14 +147,14 @@ int main(int argc, char* argv[]) {
   fmt::print("Generating golden files in: {}\n", output_dir);
   fmt::print("Platform: {}\n\n", PLATFORM);
 
-  std::vector<GoldenConfig> configs = {
-      {DATA_DIR + "/iris.csv", 0, 0.0f, 0, 0},
-      {DATA_DIR + "/iris.csv", 5, 0.0f, 2, 0},
-      {DATA_DIR + "/iris.csv", 5, 0.5f, 2, 0},
-      {DATA_DIR + "/crab.csv", 0, 0.0f, 0, 0},
-      {DATA_DIR + "/crab.csv", 10, 0.0f, 3, 0},
-      {DATA_DIR + "/wine.csv", 10, 0.0f, 4, 0},
-      {DATA_DIR + "/glass.csv", 10, 0.0f, 3, 0},
+  std::vector<GoldenConfig> const configs = {
+      {DATA_DIR + "/iris.csv", 0, 0.0F, 0, 0},
+      {DATA_DIR + "/iris.csv", 5, 0.0F, 2, 0},
+      {DATA_DIR + "/iris.csv", 5, 0.5F, 2, 0},
+      {DATA_DIR + "/crab.csv", 0, 0.0F, 0, 0},
+      {DATA_DIR + "/crab.csv", 10, 0.0F, 3, 0},
+      {DATA_DIR + "/wine.csv", 10, 0.0F, 4, 0},
+      {DATA_DIR + "/glass.csv", 10, 0.0F, 3, 0},
   };
 
   for (auto const& config : configs) {

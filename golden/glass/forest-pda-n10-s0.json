@@ -1,11 +1,19 @@
 {
   "config": {
+    "binarize": {
+      "name": "largest_gap"
+    },
+    "cutpoint": {
+      "name": "mean_of_means"
+    },
     "dataset": "glass",
-    "dr": {
-      "n_vars": 3,
-      "name": "uniform"
+    "leaf": {
+      "name": "majority_vote"
     },
     "max_retries": 3,
+    "partition": {
+      "name": "by_group"
+    },
     "platform": "macos-clang",
     "pp": {
       "lambda": 0.0,
@@ -13,10 +21,14 @@
     },
     "seed": 0,
     "size": 10,
-    "sr": {
-      "name": "mean_of_means"
+    "stop": {
+      "name": "pure_node"
     },
-    "threads": 1
+    "threads": 1,
+    "vars": {
+      "count": 3,
+      "name": "uniform"
+    }
   },
   "error_rate": 0.42990654706954956,
   "meta": {
@@ -48,6 +60,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -1.1991151571273804,
           "degenerate": false,
           "groups": [
             "1",
@@ -58,6 +71,7 @@
             "7"
           ],
           "lower": {
+            "cutpoint": -8.832939147949219,
             "degenerate": false,
             "groups": [
               "6",
@@ -79,7 +93,6 @@
               0.0,
               -3.276475667953491
             ],
-            "threshold": -8.832939147949219,
             "upper": {
               "degenerate": false,
               "value": "6"
@@ -97,8 +110,8 @@
             0.0,
             -0.022064493969082832
           ],
-          "threshold": -1.1991151571273804,
           "upper": {
+            "cutpoint": 28.2385311126709,
             "degenerate": false,
             "groups": [
               "1",
@@ -122,8 +135,8 @@
               0.0,
               0.0
             ],
-            "threshold": 28.2385311126709,
             "upper": {
+              "cutpoint": 0.2995912730693817,
               "degenerate": false,
               "groups": [
                 "1",
@@ -146,8 +159,8 @@
                 0.0,
                 0.20003493130207062
               ],
-              "threshold": 0.2995912730693817,
               "upper": {
+                "cutpoint": 1.5800701379776,
                 "degenerate": false,
                 "groups": [
                   "2",
@@ -169,7 +182,6 @@
                   0.0547453910112381,
                   0.0
                 ],
-                "threshold": 1.5800701379776,
                 "upper": {
                   "degenerate": false,
                   "value": "3"
@@ -398,6 +410,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.55420982837677,
           "degenerate": false,
           "groups": [
             "1",
@@ -423,8 +436,8 @@
             -0.1476711481809616,
             0.0
           ],
-          "threshold": -0.55420982837677,
           "upper": {
+            "cutpoint": 1.5176191329956055,
             "degenerate": false,
             "groups": [
               "1",
@@ -434,6 +447,7 @@
               "6"
             ],
             "lower": {
+              "cutpoint": 1.157795786857605,
               "degenerate": false,
               "groups": [
                 "1",
@@ -442,6 +456,7 @@
                 "5"
               ],
               "lower": {
+                "cutpoint": 2.395585775375366,
                 "degenerate": false,
                 "groups": [
                   "1",
@@ -449,6 +464,7 @@
                   "3"
                 ],
                 "lower": {
+                  "cutpoint": -75.8327407836914,
                   "degenerate": false,
                   "groups": [
                     "1",
@@ -470,7 +486,6 @@
                     0.0,
                     0.0
                   ],
-                  "threshold": -75.8327407836914,
                   "upper": {
                     "degenerate": false,
                     "value": "3"
@@ -488,7 +503,6 @@
                   0.0,
                   0.0
                 ],
-                "threshold": 2.395585775375366,
                 "upper": {
                   "degenerate": false,
                   "value": "2"
@@ -506,7 +520,6 @@
                 0.0,
                 0.0
               ],
-              "threshold": 1.157795786857605,
               "upper": {
                 "degenerate": false,
                 "value": "5"
@@ -524,7 +537,6 @@
               0.0,
               -0.010475764982402325
             ],
-            "threshold": 1.5176191329956055,
             "upper": {
               "degenerate": false,
               "value": "6"
@@ -751,6 +763,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -0.33378374576568604,
           "degenerate": false,
           "groups": [
             "1",
@@ -761,6 +774,7 @@
             "7"
           ],
           "lower": {
+            "cutpoint": 2.965477705001831,
             "degenerate": false,
             "groups": [
               "1",
@@ -770,6 +784,7 @@
               "6"
             ],
             "lower": {
+              "cutpoint": -16.881763458251953,
               "degenerate": false,
               "groups": [
                 "5",
@@ -791,7 +806,6 @@
                 0.0,
                 0.0
               ],
-              "threshold": -16.881763458251953,
               "upper": {
                 "degenerate": false,
                 "value": "6"
@@ -809,8 +823,8 @@
               0.0,
               0.0
             ],
-            "threshold": 2.965477705001831,
             "upper": {
+              "cutpoint": 0.17196819186210632,
               "degenerate": false,
               "groups": [
                 "1",
@@ -833,8 +847,8 @@
                 0.01685994490981102,
                 0.0
               ],
-              "threshold": 0.17196819186210632,
               "upper": {
+                "cutpoint": 2.2318978309631348,
                 "degenerate": false,
                 "groups": [
                   "1",
@@ -856,7 +870,6 @@
                   0.0,
                   1.1494966745376587
                 ],
-                "threshold": 2.2318978309631348,
                 "upper": {
                   "degenerate": false,
                   "value": "1"
@@ -876,7 +889,6 @@
             0.027859695255756378,
             0.0
           ],
-          "threshold": -0.33378374576568604,
           "upper": {
             "degenerate": false,
             "value": "7"
@@ -1102,6 +1114,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -18.666624069213867,
           "degenerate": false,
           "groups": [
             "1",
@@ -1112,6 +1125,7 @@
             "7"
           ],
           "lower": {
+            "cutpoint": -2.920656204223633,
             "degenerate": false,
             "groups": [
               "5",
@@ -1133,7 +1147,6 @@
               0.0,
               0.0
             ],
-            "threshold": -2.920656204223633,
             "upper": {
               "degenerate": false,
               "value": "5"
@@ -1151,8 +1164,8 @@
             0.0,
             0.04963555559515953
           ],
-          "threshold": -18.666624069213867,
           "upper": {
+            "cutpoint": 9.208803176879883,
             "degenerate": false,
             "groups": [
               "1",
@@ -1161,6 +1174,7 @@
               "6"
             ],
             "lower": {
+              "cutpoint": -0.10072676837444305,
               "degenerate": false,
               "groups": [
                 "1",
@@ -1183,8 +1197,8 @@
                 0.0,
                 -0.01391737349331379
               ],
-              "threshold": -0.10072676837444305,
               "upper": {
+                "cutpoint": -62.86990737915039,
                 "degenerate": false,
                 "groups": [
                   "1",
@@ -1206,7 +1220,6 @@
                   1.4432073831558228,
                   0.0
                 ],
-                "threshold": -62.86990737915039,
                 "upper": {
                   "degenerate": false,
                   "value": "3"
@@ -1225,7 +1238,6 @@
               -0.5961005687713623,
               0.0
             ],
-            "threshold": 9.208803176879883,
             "upper": {
               "degenerate": false,
               "value": "6"
@@ -1452,6 +1464,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": -3.7081847190856934,
           "degenerate": false,
           "groups": [
             "1",
@@ -1462,6 +1475,7 @@
             "7"
           ],
           "lower": {
+            "cutpoint": -3.497084617614746,
             "degenerate": false,
             "groups": [
               "1",
@@ -1485,8 +1499,8 @@
               -0.0030144215561449528,
               0.0
             ],
-            "threshold": -3.497084617614746,
             "upper": {
+              "cutpoint": 1.5616472959518433,
               "degenerate": false,
               "groups": [
                 "1",
@@ -1494,6 +1508,7 @@
                 "3"
               ],
               "lower": {
+                "cutpoint": 7.655698776245117,
                 "degenerate": false,
                 "groups": [
                   "1",
@@ -1515,7 +1530,6 @@
                   0.8673081398010254,
                   0.0
                 ],
-                "threshold": 7.655698776245117,
                 "upper": {
                   "degenerate": false,
                   "value": "1"
@@ -1533,7 +1547,6 @@
                 -0.10402929782867432,
                 0.0
               ],
-              "threshold": 1.5616472959518433,
               "upper": {
                 "degenerate": false,
                 "value": "2"
@@ -1552,8 +1565,8 @@
             0.0,
             0.0
           ],
-          "threshold": -3.7081847190856934,
           "upper": {
+            "cutpoint": 8.394309997558594,
             "degenerate": false,
             "groups": [
               "5",
@@ -1575,7 +1588,6 @@
               0.0,
               0.0
             ],
-            "threshold": 8.394309997558594,
             "upper": {
               "degenerate": false,
               "value": "5"
@@ -1802,6 +1814,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 2.0033624172210693,
           "degenerate": false,
           "groups": [
             "1",
@@ -1812,6 +1825,7 @@
             "7"
           ],
           "lower": {
+            "cutpoint": -0.7938449382781982,
             "degenerate": false,
             "groups": [
               "1",
@@ -1835,8 +1849,8 @@
               0.0,
               0.41423922777175903
             ],
-            "threshold": -0.7938449382781982,
             "upper": {
+              "cutpoint": -21.398618698120117,
               "degenerate": false,
               "groups": [
                 "1",
@@ -1859,8 +1873,8 @@
                 0.0,
                 0.26801371574401855
               ],
-              "threshold": -21.398618698120117,
               "upper": {
+                "cutpoint": 0.45611295104026794,
                 "degenerate": false,
                 "groups": [
                   "1",
@@ -1882,7 +1896,6 @@
                   0.0,
                   -0.8516249656677246
                 ],
-                "threshold": 0.45611295104026794,
                 "upper": {
                   "degenerate": false,
                   "value": "3"
@@ -1902,8 +1915,8 @@
             0.0,
             -0.0746944323182106
           ],
-          "threshold": 2.0033624172210693,
           "upper": {
+            "cutpoint": 11.23758602142334,
             "degenerate": false,
             "groups": [
               "5",
@@ -1925,7 +1938,6 @@
               0.0,
               0.0
             ],
-            "threshold": 11.23758602142334,
             "upper": {
               "degenerate": false,
               "value": "7"
@@ -2152,6 +2164,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 36.57688522338867,
           "degenerate": false,
           "groups": [
             "1",
@@ -2162,6 +2175,7 @@
             "7"
           ],
           "lower": {
+            "cutpoint": 6.0327348709106445,
             "degenerate": false,
             "groups": [
               "1",
@@ -2186,8 +2200,8 @@
               0.0,
               0.0
             ],
-            "threshold": 6.0327348709106445,
             "upper": {
+              "cutpoint": 1.0778993368148804,
               "degenerate": false,
               "groups": [
                 "1",
@@ -2196,6 +2210,7 @@
                 "7"
               ],
               "lower": {
+                "cutpoint": -0.3053436875343323,
                 "degenerate": false,
                 "groups": [
                   "1",
@@ -2203,6 +2218,7 @@
                   "3"
                 ],
                 "lower": {
+                  "cutpoint": 6.811897277832031,
                   "degenerate": false,
                   "groups": [
                     "1",
@@ -2224,7 +2240,6 @@
                     0.0,
                     0.0
                   ],
-                  "threshold": 6.811897277832031,
                   "upper": {
                     "degenerate": false,
                     "value": "3"
@@ -2242,7 +2257,6 @@
                   0.0,
                   0.0
                 ],
-                "threshold": -0.3053436875343323,
                 "upper": {
                   "degenerate": false,
                   "value": "2"
@@ -2260,7 +2274,6 @@
                 0.0,
                 -0.021090175956487656
               ],
-              "threshold": 1.0778993368148804,
               "upper": {
                 "degenerate": false,
                 "value": "7"
@@ -2279,7 +2292,6 @@
             0.0,
             0.0
           ],
-          "threshold": 36.57688522338867,
           "upper": {
             "degenerate": false,
             "value": "5"
@@ -2505,6 +2517,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 1.740896463394165,
           "degenerate": false,
           "groups": [
             "1",
@@ -2515,6 +2528,7 @@
             "7"
           ],
           "lower": {
+            "cutpoint": 0.0177113376557827,
             "degenerate": false,
             "groups": [
               "1",
@@ -2539,8 +2553,8 @@
               0.055119700729846954,
               0.0
             ],
-            "threshold": 0.0177113376557827,
             "upper": {
+              "cutpoint": 1.6730642318725586,
               "degenerate": false,
               "groups": [
                 "1",
@@ -2549,6 +2563,7 @@
                 "6"
               ],
               "lower": {
+                "cutpoint": 38.894012451171875,
                 "degenerate": false,
                 "groups": [
                   "1",
@@ -2556,6 +2571,7 @@
                   "3"
                 ],
                 "lower": {
+                  "cutpoint": 23.836755752563477,
                   "degenerate": false,
                   "groups": [
                     "1",
@@ -2577,7 +2593,6 @@
                     0.0,
                     0.0
                   ],
-                  "threshold": 23.836755752563477,
                   "upper": {
                     "degenerate": false,
                     "value": "1"
@@ -2595,7 +2610,6 @@
                   0.0,
                   0.0
                 ],
-                "threshold": 38.894012451171875,
                 "upper": {
                   "degenerate": false,
                   "value": "2"
@@ -2613,7 +2627,6 @@
                 0.06152042746543884,
                 0.0
               ],
-              "threshold": 1.6730642318725586,
               "upper": {
                 "degenerate": false,
                 "value": "6"
@@ -2632,7 +2645,6 @@
             0.13157477974891663,
             0.0
           ],
-          "threshold": 1.740896463394165,
           "upper": {
             "degenerate": false,
             "value": "7"
@@ -2858,6 +2870,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 18.230981826782227,
           "degenerate": false,
           "groups": [
             "1",
@@ -2883,8 +2896,8 @@
             0.0,
             0.0
           ],
-          "threshold": 18.230981826782227,
           "upper": {
+            "cutpoint": -0.8945550918579102,
             "degenerate": false,
             "groups": [
               "1",
@@ -2894,6 +2907,7 @@
               "6"
             ],
             "lower": {
+              "cutpoint": 0.3035939335823059,
               "degenerate": false,
               "groups": [
                 "1",
@@ -2902,6 +2916,7 @@
                 "6"
               ],
               "lower": {
+                "cutpoint": 5.917070388793945,
                 "degenerate": false,
                 "groups": [
                   "1",
@@ -2923,7 +2938,6 @@
                   0.0,
                   0.0
                 ],
-                "threshold": 5.917070388793945,
                 "upper": {
                   "degenerate": false,
                   "value": "1"
@@ -2941,8 +2955,8 @@
                 0.06286062300205231,
                 0.20385554432868958
               ],
-              "threshold": 0.3035939335823059,
               "upper": {
+                "cutpoint": 4.803142547607422,
                 "degenerate": false,
                 "groups": [
                   "2",
@@ -2964,7 +2978,6 @@
                   0.0,
                   0.9656906723976135
                 ],
-                "threshold": 4.803142547607422,
                 "upper": {
                   "degenerate": false,
                   "value": "2"
@@ -2983,7 +2996,6 @@
               0.5438004732131958,
               0.0
             ],
-            "threshold": -0.8945550918579102,
             "upper": {
               "degenerate": false,
               "value": "5"
@@ -3210,6 +3222,7 @@
       {
         "degenerate": false,
         "root": {
+          "cutpoint": 4.915366172790527,
           "degenerate": false,
           "groups": [
             "1",
@@ -3220,6 +3233,7 @@
             "7"
           ],
           "lower": {
+            "cutpoint": -9.547109603881836,
             "degenerate": false,
             "groups": [
               "5",
@@ -3242,8 +3256,8 @@
               0.0,
               0.28588539361953735
             ],
-            "threshold": -9.547109603881836,
             "upper": {
+              "cutpoint": -4.498659610748291,
               "degenerate": false,
               "groups": [
                 "5",
@@ -3265,7 +3279,6 @@
                 0.0,
                 0.44523078203201294
               ],
-              "threshold": -4.498659610748291,
               "upper": {
                 "degenerate": false,
                 "value": "5"
@@ -3284,8 +3297,8 @@
             0.0,
             0.0614190474152565
           ],
-          "threshold": 4.915366172790527,
           "upper": {
+            "cutpoint": -1.340134859085083,
             "degenerate": false,
             "groups": [
               "1",
@@ -3293,6 +3306,7 @@
               "3"
             ],
             "lower": {
+              "cutpoint": -2.870224714279175,
               "degenerate": false,
               "groups": [
                 "1",
@@ -3314,7 +3328,6 @@
                 0.021927526220679283,
                 0.2859015464782715
               ],
-              "threshold": -2.870224714279175,
               "upper": {
                 "degenerate": false,
                 "value": "1"
@@ -3332,7 +3345,6 @@
               0.06837674975395203,
               0.0
             ],
-            "threshold": -1.340134859085083,
             "upper": {
               "degenerate": false,
               "value": "2"

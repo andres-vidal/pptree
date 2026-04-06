@@ -34,14 +34,14 @@
  * When the feature space has p > 2 variables, the visualization selects
  * two variables (var_i, var_j) for the display axes and holds the
  * remaining p−2 variables at fixed values (typically medians).  Each
- * split's p-dimensional projector and threshold are reduced to 2D via
- * project_2d() and adjust_threshold(), preserving the boundary geometry
+ * split's p-dimensional projector and cutpoint are reduced to 2D via
+ * project_2d() and adjust_cutpoint(), preserving the boundary geometry
  * in the chosen 2D slice.
  *
  * @section protocol Visitor Protocol
  *
  * All visitors inherit from TreeNode::Visitor and implement visit() for
- * TreeCondition (internal) and TreeResponse (leaf) nodes.  Traversal
+ * TreeBranch (internal) and TreeLeaf (leaf) nodes.  Traversal
  * is initiated by calling tree.root->accept(visitor).  Results
  * accumulate in public member vectors (nodes, segments, regions) that
  * the R layer reads via Rcpp exports in main.cpp.
@@ -53,8 +53,8 @@
  * (immutable) tree.
  */
 
-#include "models/TreeCondition.hpp"
-#include "models/TreeResponse.hpp"
+#include "models/TreeBranch.hpp"
+#include "models/TreeLeaf.hpp"
 #include "utils/Types.hpp"
 
 #include <vector>
@@ -74,7 +74,7 @@ namespace ppforest2::viz {
    *     the node's projector vector.
    *   - @c groups: group label (1-indexed response) of each reaching
    *     observation, parallel to @c projected_values.
-   *   - @c projector, @c threshold: the split parameters (copied for
+   *   - @c projector, @c cutpoint: the split parameters (copied for
    *     convenience so the R side can render histograms without re-accessing
    *     the tree).
    *
@@ -87,10 +87,10 @@ namespace ppforest2::viz {
     bool is_leaf;
     int depth;
     types::FeatureVector projector;
-    types::Feature threshold;
-    types::Response value;
+    types::Feature cutpoint;
+    types::Outcome value;
     std::vector<types::Feature> projected_values;
-    std::vector<types::Response> groups;
+    std::vector<types::Outcome> groups;
   };
 
   /**
@@ -106,25 +106,25 @@ namespace ppforest2::viz {
    *
    * At each split node the visitor projects all reaching observations onto
    * the node's projector, records the projected values and group labels,
-   * partitions observation indices by the threshold, and recurses into the
+   * partitions observation indices by the cutpoint, and recurses into the
    * lower and upper children.  Nodes are accumulated in **pre-order**
    * (parent before children, left before right).
    *
    * The observation routing respects the tree structure exactly: an
    * observation reaching a split goes to the lower child if its projected
-   * value < threshold, otherwise to the upper child.
+   * value < cutpoint, otherwise to the upper child.
    */
   struct NodeDataVisitor : public TreeNode::Visitor {
-    types::FeatureMatrix const& x;  ///< Full observation matrix (n × p).
-    types::ResponseVector const& y; ///< Full response vector (n).
-    std::vector<int> indices;       ///< Indices of observations reaching the current node.
-    int depth;                      ///< Current depth in the traversal.
-    std::vector<NodeData> nodes;    ///< Collected node data (pre-order).
+    types::FeatureMatrix const& x; ///< Full observation matrix (n × p).
+    types::OutcomeVector const& y; ///< Full response vector (n).
+    std::vector<int> indices;      ///< Indices of observations reaching the current node.
+    int depth;                     ///< Current depth in the traversal.
+    std::vector<NodeData> nodes;   ///< Collected node data (pre-order).
 
-    NodeDataVisitor(types::FeatureMatrix const& x, types::ResponseVector const& y);
+    NodeDataVisitor(types::FeatureMatrix const& x, types::OutcomeVector const& y);
 
-    void visit(TreeCondition const& node) override;
-    void visit(TreeResponse const& node) override;
+    void visit(TreeBranch const& node) override;
+    void visit(TreeLeaf const& node) override;
   };
 
   // ===================================================================
@@ -134,8 +134,8 @@ namespace ppforest2::viz {
   /**
    * @brief A half-space constraint derived from an ancestor split.
    *
-   * Represents the constraint  projector^T x < threshold  (if @c is_lower)
-   * or  projector^T x >= threshold  (if !is_lower).  Stored in the full
+   * Represents the constraint  projector^T x < cutpoint  (if @c is_lower)
+   * or  projector^T x >= cutpoint  (if !is_lower).  Stored in the full
    * p-dimensional space; projected to 2D when needed by the visitors.
    *
    * As BoundaryVisitor and RegionVisitor traverse the tree, they
@@ -148,8 +148,8 @@ namespace ppforest2::viz {
    */
   struct HalfSpace {
     types::FeatureVector projector;
-    types::Feature threshold;
-    bool is_lower; ///< true = lower child side (projected value < threshold).
+    types::Feature cutpoint;
+    bool is_lower; ///< true = lower child side (projected value < cutpoint).
   };
 
   /**
@@ -191,7 +191,7 @@ namespace ppforest2::viz {
    */
   struct RegionPolygon {
     std::vector<std::pair<types::Feature, types::Feature>> vertices;
-    types::Response predicted_group; ///< 0-indexed group label from the leaf.
+    types::Outcome predicted_group; ///< 0-indexed group label from the leaf.
   };
 
   // ===================================================================
@@ -213,18 +213,18 @@ namespace ppforest2::viz {
   types::FeatureVector project_2d(types::FeatureVector const& full_proj, int var_i, int var_j);
 
   /**
-   * @brief Adjust a split threshold by subtracting contributions of fixed variables.
+   * @brief Adjust a split cutpoint by subtracting contributions of fixed variables.
    *
    * When projecting from p dimensions to 2D, the remaining (p − 2) variables
-   * are held at fixed values (typically medians).  The effective 2D threshold
+   * are held at fixed values (typically medians).  The effective 2D cutpoint
    * is:  t' = t − Σ_{k ∈ fixed} projector_k × value_k
    *
    * @param full_proj   Full projector vector (p).
-   * @param thr         Original p-dimensional threshold.
+   * @param thr         Original p-dimensional cutpoint.
    * @param fixed_vars  Pairs of (variable index, fixed value) for non-displayed variables.
-   * @return            Adjusted 2D threshold.
+   * @return            Adjusted 2D cutpoint.
    */
-  types::Feature adjust_threshold(
+  types::Feature adjust_cutpoint(
       types::FeatureVector const& full_proj,
       types::Feature thr,
       std::vector<std::pair<int, types::Feature>> const& fixed_vars
@@ -261,15 +261,15 @@ namespace ppforest2::viz {
    * @brief Clip a 2D decision boundary line to the visible rectangle and
    *        all ancestor half-space constraints.
    *
-   * The boundary of a split with 2D projector @p a and threshold @p threshold
-   * is the line  a^T x = threshold.  This function parametrizes the line,
+   * The boundary of a split with 2D projector @p a and cutpoint @p cutpoint
+   * is the line  a^T x = cutpoint.  This function parametrizes the line,
    * clips to the bounding box [x_min, x_max] × [y_min, y_max], then clips
    * against each ancestor constraint.  If any visible portion remains, writes
    * the endpoints into @p segment and returns true.
    *
    * Algorithm (parametric line clipping):
    *   1. Compute direction D = (-a1, a0) tangent to the boundary line.
-   *   2. Find a base point P0 on the line: a^T P0 = threshold.
+   *   2. Find a base point P0 on the line: a^T P0 = cutpoint.
    *   3. Parametrize as P(u) = P0 + u·D with u ∈ (-∞, +∞).
    *   4. Clip [u_min, u_max] to the bounding box (clip_param_to_range).
    *   5. For each ancestor constraint a_c^T x ⋛ t_c, compute the
@@ -277,7 +277,7 @@ namespace ppforest2::viz {
    *   6. If u_min < u_max, the segment P(u_min)→P(u_max) is visible.
    *
    * @param a            2D projection of the split's projector.
-   * @param threshold    Adjusted 2D threshold.
+   * @param cutpoint    Adjusted 2D cutpoint.
    * @param constraints  Ancestor half-space constraints (already in 2D).
    * @param x_min, x_max, y_min, y_max  Visible bounding box.
    * @param[out] segment  Output segment (valid only if function returns true).
@@ -288,7 +288,7 @@ namespace ppforest2::viz {
    */
   bool clip_boundary_2d(
       types::FeatureVector const& a,
-      types::Feature threshold,
+      types::Feature cutpoint,
       std::vector<HalfSpace> const& constraints,
       types::Feature x_min,
       types::Feature x_max,
@@ -310,8 +310,8 @@ namespace ppforest2::viz {
    *
    * Implements one pass of the Sutherland–Hodgman algorithm.  The half-space
    * is defined by:
-   *   - @c is_lower = true:  normal^T x < threshold  (strict)
-   *   - @c is_lower = false: normal^T x >= threshold
+   *   - @c is_lower = true:  normal^T x < cutpoint  (strict)
+   *   - @c is_lower = false: normal^T x >= cutpoint
    *
    * Vertices are processed in order; edges crossing the boundary are split
    * at the intersection point.  The result is a (possibly empty) polygon
@@ -330,14 +330,14 @@ namespace ppforest2::viz {
    *
    * @param polygon    Input polygon (ordered vertices).
    * @param normal     2D normal vector of the half-space boundary.
-   * @param threshold  Offset of the half-space boundary.
+   * @param cutpoint  Offset of the half-space boundary.
    * @param is_lower   Which side of the boundary to keep.
    * @return           Clipped polygon (empty if fully outside).
    *
    * @see RegionVisitor
    */
   Polygon clip_polygon_halfspace(
-      Polygon const& polygon, types::FeatureVector const& normal, types::Feature threshold, bool is_lower
+      Polygon const& polygon, types::FeatureVector const& normal, types::Feature cutpoint, bool is_lower
   );
 
   // ===================================================================
@@ -381,8 +381,8 @@ namespace ppforest2::viz {
         types::Feature y_max
     );
 
-    void visit(TreeCondition const& node) override;
-    void visit(TreeResponse const& node) override;
+    void visit(TreeBranch const& node) override;
+    void visit(TreeLeaf const& node) override;
   };
 
   // ===================================================================
@@ -394,7 +394,7 @@ namespace ppforest2::viz {
    *
    * At each leaf, starts with the full bounding box as a rectangle and
    * clips it against every ancestor split's half-space constraint
-   * (projected to 2D via project_2d / adjust_threshold).  The result is
+   * (projected to 2D via project_2d / adjust_cutpoint).  The result is
    * a convex polygon representing the leaf's decision region in the
    * (var_i, var_j) plane.
    *
@@ -426,8 +426,8 @@ namespace ppforest2::viz {
         types::Feature y_max
     );
 
-    void visit(TreeCondition const& node) override;
-    void visit(TreeResponse const& node) override;
+    void visit(TreeBranch const& node) override;
+    void visit(TreeLeaf const& node) override;
   };
 
   // ===================================================================
@@ -460,7 +460,7 @@ namespace ppforest2::viz {
   };
 
   /**
-   * @brief An edge between two positioned nodes with a threshold label.
+   * @brief An edge between two positioned nodes with a cutpoint label.
    */
   struct LayoutEdge {
     types::Feature from_x, from_y, to_x, to_y;
@@ -485,7 +485,7 @@ namespace ppforest2::viz {
    *   - Sibling subtrees are separated by @c params.gap.
    *
    * Edges connect each parent's bottom center to each child's top center.
-   * Each edge is labelled with the split direction and threshold value
+   * Each edge is labelled with the split direction and cutpoint value
    * (e.g. "< 1.50" for the lower child, "≥ 1.50" for the upper child).
    *
    * Nodes are accumulated in **pre-order** traversal (matching

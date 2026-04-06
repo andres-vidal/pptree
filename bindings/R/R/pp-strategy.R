@@ -11,7 +11,7 @@ NULL
 #'   If \code{lambda = 0}, the model uses Linear Discriminant Analysis (LDA).
 #'   If \code{lambda > 0}, the model uses Penalized Discriminant Analysis (PDA).
 #' @return A \code{pp_strategy} object.
-#' @seealso \code{\link{pptr}}, \code{\link{pprf}}, \code{\link{dr_uniform}}, \code{\link{dr_noop}}, \code{\link{sr_mean_of_means}}
+#' @seealso \code{\link{pptr}}, \code{\link{pprf}}, \code{\link{vars_uniform}}, \code{\link{vars_all}}, \code{\link{cutpoint_mean_of_means}}
 #' @examples
 #' # PDA with lambda = 0.5
 #' pp_pda(0.5)
@@ -20,7 +20,7 @@ NULL
 #' pptr(Type ~ ., data = iris, pp = pp_pda(0.5))
 #'
 #' # Use with pprf
-#' pprf(Type ~ ., data = iris, pp = pp_pda(0.5), dr = dr_uniform(2))
+#' pprf(Type ~ ., data = iris, pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2))
 #'
 #' @export
 pp_pda <- function(lambda = 0) {

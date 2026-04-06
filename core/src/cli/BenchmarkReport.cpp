@@ -72,8 +72,9 @@ namespace ppforest2::cli {
     using namespace ppforest2::io::style;
     using namespace ppforest2::io::layout;
 
-    bool has_baseline   = baseline.has_value();
-    auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
+    bool const has_baseline = baseline.has_value();
+    auto const baseline_index =
+        has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
 
     // Title
     std::string title = emphasis(current.suite_name);
@@ -104,31 +105,36 @@ namespace ppforest2::cli {
         {"Time (ms)", 18, Align::right},
     };
 
-    if (has_baseline)
+    if (has_baseline) {
       columns.push_back({"delta", 8, Align::right});
+    }
 
     columns.push_back({"Peak RSS", 12, Align::right});
 
-    if (has_baseline)
+    if (has_baseline) {
       columns.push_back({"delta", 8, Align::right});
+    }
 
     columns.push_back({"Train Err", 9, Align::right});
 
-    if (has_baseline)
+    if (has_baseline) {
       columns.push_back({"delta", 8, Align::right});
+    }
 
     columns.push_back({"Test Err", 8, Align::right});
 
-    if (has_baseline)
+    if (has_baseline) {
       columns.push_back({"delta", 8, Align::right});
+    }
 
     // Header — style Scenario and delta labels
     Row header = header_labels(columns);
     header[0]  = emphasis(header[0]);
 
-    for (std::size_t i = 0; i < header.size(); ++i) {
-      if (header[i] == "delta")
-        header[i] = muted("delta");
+    for (auto& h : header) {
+      if (h == "delta") {
+        h = muted("delta");
+      }
     }
 
     out.println("{}", format_row(columns, header));
@@ -136,12 +142,12 @@ namespace ppforest2::cli {
 
     // Data rows
     for (auto const& r : current.results) {
-      std::string time_str   = fmt::format("{:.1f} +/- {:.1f}", r.mean_time_ms, r.std_time_ms);
-      std::string vars_str   = r.size > 0 ? fmt::format("{:.2f}", r.vars) : muted("--");
-      std::string split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
-      std::string rss_str    = format_rss(r.peak_rss_mb);
-      std::string tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
-      std::string te_err_str = fmt::format("{:.1f}%", r.mean_te_error * 100);
+      std::string const time_str   = fmt::format("{:.1f} +/- {:.1f}", r.mean_time_ms, r.std_time_ms);
+      std::string const vars_str   = r.size > 0 ? fmt::format("{:.2f}", r.p_vars) : muted("--");
+      std::string const split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
+      std::string const rss_str    = format_rss(r.peak_rss_mb);
+      std::string const tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
+      std::string const te_err_str = fmt::format("{:.1f}%", r.mean_te_error * 100);
 
       Row cells = {
           r.name,
@@ -155,9 +161,14 @@ namespace ppforest2::cli {
           time_str,
       };
 
-      std::string time_delta, rss_delta, tr_err_delta, te_err_delta;
+
+      std::string rss_delta;
+      std::string tr_err_delta;
+      std::string te_err_delta;
 
       if (has_baseline) {
+        std::string time_delta;
+
         auto it = baseline_index.find(r.name);
 
         if (it != baseline_index.end()) {
@@ -219,8 +230,9 @@ namespace ppforest2::cli {
     using namespace ppforest2::io::style;
     using namespace ppforest2::io::layout;
 
-    bool has_baseline   = baseline.has_value();
-    auto baseline_index = has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
+    bool const has_baseline = baseline.has_value();
+    auto const baseline_index =
+        has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
 
     out.println("## {}", current.suite_name);
     out.newline();
@@ -248,35 +260,39 @@ namespace ppforest2::cli {
         {"Time (ms)", 0, Align::right},
     };
 
-    if (has_baseline)
+    if (has_baseline) {
       columns.push_back({"\xCE\x94 Time", 0, Align::right});
+    }
 
     columns.push_back({"Peak RSS", 0, Align::right});
 
-    if (has_baseline)
+    if (has_baseline) {
       columns.push_back({"\xCE\x94 RSS", 0, Align::right});
+    }
 
     columns.push_back({"Train Err", 0, Align::right});
 
-    if (has_baseline)
+    if (has_baseline) {
       columns.push_back({"\xCE\x94 Train", 0, Align::right});
+    }
 
     columns.push_back({"Test Err", 0, Align::right});
 
-    if (has_baseline)
+    if (has_baseline) {
       columns.push_back({"\xCE\x94 Test", 0, Align::right});
+    }
 
     out.println("{}", format_md_row(header_labels(columns)));
     out.println("{}", format_md_separator(columns));
 
     // Data rows
     for (auto const& r : current.results) {
-      std::string time_str   = fmt::format("{:.1f} \xC2\xB1 {:.1f}", r.mean_time_ms, r.std_time_ms);
-      std::string vars_str   = r.size > 0 ? fmt::format("{:.2f}", r.vars) : "--";
-      std::string split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
-      std::string rss_str    = format_rss(r.peak_rss_mb);
-      std::string tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
-      std::string te_err_str = fmt::format("{:.1f}%", r.mean_te_error * 100);
+      std::string const time_str   = fmt::format("{:.1f} \xC2\xB1 {:.1f}", r.mean_time_ms, r.std_time_ms);
+      std::string const vars_str   = r.size > 0 ? fmt::format("{:.2f}", r.p_vars) : "--";
+      std::string const split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
+      std::string const rss_str    = format_rss(r.peak_rss_mb);
+      std::string const tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
+      std::string const te_err_str = fmt::format("{:.1f}%", r.mean_te_error * 100);
 
       Row cells = {
           r.name,
@@ -357,7 +373,7 @@ namespace ppforest2::cli {
           r.p,
           r.g,
           r.size,
-          r.vars,
+          r.p_vars,
           r.train_ratio,
           r.runs,
           r.mean_time_ms,

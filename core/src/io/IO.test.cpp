@@ -130,13 +130,13 @@ TEST(CSVReadTest, CrabsDatasetWithCategoricalSex) {
 class ExitedWithNonZero {
 public:
   bool operator()(int exit_status) const {
-#ifdef _WIN32
+    // clang-format off
+    #ifdef _WIN32
     return exit_status != 0;
-
-#else
-    return testing::ExitedWithCode(0)(exit_status) == false && WIFEXITED(exit_status);
-
-#endif
+    #else
+    return testing::ExitedWithCode(0)(exit_status) && WIFEXITED(exit_status);
+    #endif
+    // clang-format on
   }
 };
 

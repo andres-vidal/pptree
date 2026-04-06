@@ -3,7 +3,7 @@
   "defaults": {
     "size": 100,
     "lambda": 0.5,
-    "vars": 0.5,
+    "p_vars": 0.5,
     "train_ratio": 0.7,
     "seed": 0,
     "threads": -1,

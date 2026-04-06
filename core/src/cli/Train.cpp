@@ -28,36 +28,46 @@ namespace ppforest2::cli {
   void add_model_options(CLI::App* sub, ModelParams& model) {
     sub->add_option("-n,--size", model.size, "Number of trees (default: 100, 0 for single tree)")
         ->check(CLI::NonNegativeNumber);
-    auto lambda_opt = sub->add_option("-l,--lambda", model.lambda, "Method selection (0=LDA, (0,1]=PDA)")
-                          ->check(CLI::Range(0.0f, 1.0f));
+    auto* lambda_opt = sub->add_option("-l,--lambda", model.lambda, "Method selection (0=LDA, (0,1]=PDA)")
+                           ->check(CLI::Range(0.0F, 1.0F));
     sub->add_option("--threads", model.threads, "Number of threads (default: CPU cores)")->check(CLI::PositiveNumber);
     sub->add_option("-r,--seed", model.seed, "Random seed (default: random)");
-    auto vars_opt = sub->add_option(
-        "-v,--vars",
-        model.vars_input,
-        "Features per split (integer=count, decimal or fraction=proportion, default: 0.5)"
+    auto* n_vars_opt =
+        sub->add_option("--n-vars", model.n_vars, "Features per split (integer count)")->check(CLI::PositiveNumber);
+    auto* p_vars_opt = sub->add_option(
+        "--p-vars", model.p_vars_input, "Features per split (proportion, e.g. 0.5 or 1/2, default: 0.5)"
     );
     sub->add_option("--max-retries", model.max_retries, "Max retries for degenerate trees (default: 3)")
         ->check(CLI::NonNegativeNumber);
 
+    n_vars_opt->excludes(p_vars_opt);
+    p_vars_opt->excludes(n_vars_opt);
+
     // Explicit strategy flags (mutually exclusive with shortcut params)
-    auto pp_opt = sub->add_option("--pp", model.pp_input, "PP strategy (e.g. pda, pda:lambda=0.5)");
-    auto dr_opt = sub->add_option("--dr", model.dr_input, "DR strategy (e.g. noop, uniform:vars=3)");
-    sub->add_option("--sr", model.sr_input, "Split rule strategy (e.g. mean_of_means)");
+    auto* pp_opt = sub->add_option("--pp", model.pp_input, "PP strategy (e.g. pda, pda:lambda=0.5)");
+    auto* vars_opt =
+        sub->add_option("--vars", model.vars_input, "Variable selection strategy (e.g. all, uniform:count=3)");
+    sub->add_option("--cutpoint", model.cutpoint_input, "Split cutpoint strategy (e.g. mean_of_means)");
+    sub->add_option("--stop", model.stop_input, "Stop rule strategy (e.g. pure_node)");
+    sub->add_option("--binarize", model.binarize_input, "Binarization strategy (e.g. largest_gap)");
+    sub->add_option("--partition", model.partition_input, "Partition strategy (e.g. by_group)");
+    sub->add_option("--leaf", model.leaf_input, "Leaf strategy (e.g. majority_vote)");
 
     pp_opt->excludes(lambda_opt);
     lambda_opt->excludes(pp_opt);
-    dr_opt->excludes(vars_opt);
-    vars_opt->excludes(dr_opt);
+    vars_opt->excludes(n_vars_opt);
+    vars_opt->excludes(p_vars_opt);
+    n_vars_opt->excludes(vars_opt);
+    p_vars_opt->excludes(vars_opt);
   }
 
   CLI::App* setup_train(CLI::App& app, CLIOptions& params) {
-    auto sub = app.add_subcommand("train", "Train a model");
+    auto* sub = app.add_subcommand("train", "Train a model");
     sub->add_option("-d,--data", params.data_path, "CSV training data")->required()->check(CLI::ExistingFile);
     add_model_options(sub, params.model);
-    auto save_opt =
+    auto* save_opt =
         sub->add_option("-s,--save", params.save_path, "Save trained model to JSON file (default: model.json)");
-    auto no_save = sub->add_flag("--no-save", params.no_save, "Skip saving the model (for benchmarking)");
+    auto* no_save = sub->add_flag("--no-save", params.no_save, "Skip saving the model (for benchmarking)");
     save_opt->excludes(no_save);
     no_save->excludes(save_opt);
     sub->add_flag("--no-metrics", params.no_metrics, "Skip variable importance computation and output");
@@ -100,17 +110,27 @@ namespace ppforest2::cli {
   }
 
   TrainResult
-  train_model(FeatureMatrix const& x, ResponseVector const& y, CLIOptions const& params, ppforest2::stats::RNG& rng) {
-    auto& m   = params.model;
-    auto spec = TrainingSpec::from_json({
+  train_model(FeatureMatrix const& x, OutcomeVector const& y, CLIOptions const& params, ppforest2::stats::RNG& rng) {
+    auto const& m     = params.model;
+    auto default_json = [](nlohmann::json const& config, std::string const& default_name) {
+      return config.is_null() ? json{{"name", default_name}} : config;
+    };
+
+    json const spec_json = {
         {"pp", m.pp_config},
-        {"dr", m.dr_config},
-        {"sr", m.sr_config},
+        {"vars", m.vars_config},
+        {"cutpoint", m.cutpoint_config},
+        {"stop", default_json(m.stop_config, "pure_node")},
+        {"binarize", default_json(m.binarize_config, "largest_gap")},
+        {"partition", default_json(m.partition_config, "by_group")},
+        {"leaf", default_json(m.leaf_config, "majority_vote")},
         {"size", m.size},
         {"seed", m.seed},
         {"threads", m.threads},
         {"max_retries", m.max_retries},
-    });
+    };
+
+    auto spec = TrainingSpec::from_json(spec_json);
 
     auto [model, ms] = io::measure_time_ms([&] { return Model::train(*spec, x, y); });
 
@@ -130,8 +150,8 @@ namespace ppforest2::cli {
 
     init_params(params, data.x.cols());
 
-    FeatureMatrix x  = data.x;
-    ResponseVector y = data.y;
+    FeatureMatrix const x  = data.x;
+    OutcomeVector const y = data.y;
 
     auto train_result = train_model(x, y, params, rng);
 

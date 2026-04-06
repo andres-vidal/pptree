@@ -132,6 +132,7 @@
     "--suppress=missingIncludeSystem",
     "--quiet"
   ],
+  "clangd.path": "/opt/homebrew/opt/llvm@19/bin/clangd",
   "clangd.arguments": [
     "--background-index",
     "--clang-tidy",

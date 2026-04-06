@@ -6,7 +6,7 @@
 namespace ppforest2::stats {
   DataPacket simulate(int const n, int const p, int const G, RNG& rng, SimulationParams const& params) {
     types::FeatureMatrix x(n, p);
-    types::ResponseVector y(n);
+    types::OutcomeVector y(n);
 
     for (int i = 0; i < n; ++i) {
       float group_mean = params.mean + (i % G) * params.mean_separation;

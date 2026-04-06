@@ -1,8 +1,9 @@
 #include "models/Tree.hpp"
 
-#include "models/TreeCondition.hpp"
-#include "models/TreeResponse.hpp"
+#include "models/TreeBranch.hpp"
+#include "models/TreeLeaf.hpp"
 #include "models/BootstrapTree.hpp"
+#include "models/strategies/NodeContext.hpp"
 #include "utils/Invariant.hpp"
 #include "utils/Map.hpp"
 
@@ -12,161 +13,63 @@
 #include <Eigen/Dense>
 
 using namespace ppforest2::pp;
-using namespace ppforest2::dr;
-using namespace ppforest2::sr;
 using namespace ppforest2::stats;
 using namespace ppforest2::types;
 using namespace ppforest2::utils;
 
 namespace ppforest2 {
   namespace {
-    TreeNode::Ptr degenerate_leaf(GroupPartition const& y) {
-      Response majority = *y.groups.begin();
-      int majority_size = 0;
-
-      for (auto const& g : y.groups) {
-        int sz = y.group_size(g);
-
-        if (sz > majority_size) {
-          majority_size = sz;
-          majority      = g;
-        }
-      }
-
-      auto leaf        = TreeResponse::make(majority);
+    TreeNode::Ptr degenerate_leaf(TrainingSpec const& spec, NodeContext const& ctx, stats::RNG& rng) {
+      auto leaf        = spec.create_leaf(ctx, rng);
       leaf->degenerate = true;
       return leaf;
     }
-  }
 
-  std::map<Response, int> binary_regroup(FeatureMatrix const& x, GroupPartition const& group_spec) {
-    std::vector<std::tuple<Response, Feature>> means;
+    void orient_branches(
+        Outcome& group_a, Outcome& group_b, FeatureMatrix const& x, GroupPartition const& y, Projector const& projector
+    ) {
+      Feature mean_a = y.group(x, group_a).colwise().mean().dot(projector);
+      Feature mean_b = y.group(x, group_b).colwise().mean().dot(projector);
 
-    invariant(x.cols() == 1, "Binary regrouping requires a unidimensional data");
-
-    for (Response const group : group_spec.groups) {
-      Feature group_mean = group_spec.group(x, group).mean();
-
-      means.push_back({group, group_mean});
-    }
-
-    std::stable_sort(means.begin(), means.end(), [](auto const& a, auto const& b) {
-      return std::isless(std::get<1>(a), std::get<1>(b));
-    });
-
-    Feature edge_gap    = -1;
-    Response edge_group = -1;
-
-    for (size_t i = 0; i + 1 < means.size(); i++) {
-      Feature gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);
-
-      if (gap > edge_gap) {
-        edge_gap   = gap;
-        edge_group = std::get<0>(means[i + 1]);
+      if (mean_a > mean_b) {
+        std::swap(group_a, group_b);
       }
     }
 
-    if (edge_group == -1) {
-      edge_group = std::get<0>(means.front());
+    std::pair<Outcome, Outcome> orient_branches(
+        Outcome const& group_a,
+        Outcome const& group_b,
+        FeatureMatrix const& x,
+        GroupPartition const& y,
+        Projector const& projector
+    ) {
+      Outcome lower = group_a;
+      Outcome upper = group_b;
+      orient_branches(lower, upper, x, y, projector);
+      return {lower, upper};
     }
-
-    std::map<Response, int> binary_mapping;
-
-    bool edge_found = false;
-    for (auto const& [group, mean] : means) {
-      edge_found = edge_found || group == edge_group;
-
-      binary_mapping[group] = edge_found ? 1 : 0;
-    }
-
-    return binary_mapping;
-  }
-
-  TreeCondition::Ptr binary_step(
-      TrainingSpec const& training_spec, FeatureMatrix const& x, GroupPartition const& group_spec, DRResult const& dr
-  ) {
-    Response group_1 = *group_spec.groups.begin();
-    Response group_2 = *std::next(group_spec.groups.begin());
-
-    PPStrategy const& pp_strategy = *training_spec.pp_strategy;
-
-    auto reduced_x = x(Eigen::all, dr.selected_cols);
-
-    auto [reduced_projector, pp_index_value] = pp_strategy.optimize(reduced_x, group_spec);
-    Projector projector                      = dr.expand(reduced_projector);
-
-    auto data_group_1 = group_spec.group(x, group_1);
-    auto data_group_2 = group_spec.group(x, group_2);
-
-    SRStrategy const& sr_strategy = *training_spec.sr_strategy;
-    Feature threshold             = sr_strategy.threshold(data_group_1, data_group_2, projector);
-
-    Feature projected_mean_1 = data_group_1.colwise().mean().dot(projector);
-    Feature projected_mean_2 = data_group_2.colwise().mean().dot(projector);
-
-    Response lower_group, upper_group;
-
-    if (projected_mean_1 < projected_mean_2) {
-      lower_group = group_1;
-      upper_group = group_2;
-    } else {
-      lower_group = group_2;
-      upper_group = group_1;
-    }
-
-    TreeResponse::Ptr lower_response = TreeResponse::make(lower_group);
-    TreeResponse::Ptr upper_response = TreeResponse::make(upper_group);
-
-    auto condition = TreeCondition::make(
-        projector, threshold, std::move(lower_response), std::move(upper_response), group_spec.groups, pp_index_value
-    );
-
-    return condition;
-  }
-
-  GroupPartition binary_split(
-      TrainingSpec const& training_spec, FeatureMatrix const& x, GroupPartition const& group_spec, DRResult const& dr
-  ) {
-    PPStrategy const& pp_strategy = *training_spec.pp_strategy;
-
-    FeatureMatrix reduced_x = x(Eigen::all, dr.selected_cols);
-
-    Projector projector = dr.expand(pp_strategy(reduced_x, group_spec));
-
-    if (projector.hasNaN()) {
-      return group_spec.collapse();
-    }
-
-    FeatureMatrix projected_x = x * projector;
-
-    std::map<Response, int> binary_mapping = binary_regroup(projected_x, group_spec);
-
-
-    return group_spec.remap(binary_mapping);
   }
 
   struct Step {
     GroupPartition y;
     TreeNode::Ptr* node;
+    int depth;
 
     bool pop               = false;
     TreeNode::Ptr upper    = nullptr;
     TreeNode::Ptr lower    = nullptr;
-    Threshold threshold    = 0;
+    Cutpoint cutpoint      = 0;
     Feature pp_index_value = 0;
     Projector projector;
 
-    Step(GroupPartition const& y, TreeNode::Ptr* node, int const cols)
+    Step(GroupPartition const& y, TreeNode::Ptr* node, int const cols, int depth = 0)
         : y(y)
         , node(node)
+        , depth(depth)
         , projector(Projector::Zero(cols)) {}
   };
 
-  TreeNode::Ptr
-  build_root(TrainingSpec const& training_spec, FeatureMatrix const& x, GroupPartition const& y, stats::RNG& rng) {
-    PPStrategy const& pp_strategy = *training_spec.pp_strategy;
-    DRStrategy const& dr_strategy = *training_spec.dr_strategy;
-
+  TreeNode::Ptr build_root(TrainingSpec const& spec, FeatureMatrix const& x, GroupPartition const& y, stats::RNG& rng) {
     std::stack<Step> stack;
 
     TreeNode::Ptr root;
@@ -177,9 +80,9 @@ namespace ppforest2 {
       Step& step = stack.top();
 
       if (step.pop) {
-        *step.node = TreeCondition::make(
+        *step.node = TreeBranch::make(
             step.projector,
-            step.threshold,
+            step.cutpoint,
             std::move(step.lower),
             std::move(step.upper),
             step.y.groups,
@@ -190,55 +93,164 @@ namespace ppforest2 {
         continue;
       }
 
-      if (step.y.groups.size() == 1) {
-        *step.node = TreeResponse::make(*step.y.groups.begin());
+      NodeContext ctx(x, step.y, step.depth);
+
+      /**
+       * 1. Stop rule
+       *
+       * Check if the node should stop growing.
+       * If it should, create a leaf node that may be degenerate.
+       * Otherwise, continue to the next step.
+       */
+      if (spec.should_stop(ctx, rng)) {
+        *step.node = spec.create_leaf(ctx, rng);
         stack.pop();
         continue;
       }
 
-      DRResult dr = dr_strategy(x, step.y, rng);
+      /**
+       * 2. Variable selection
+       *
+       * Select a subset of variables for this split. For single trees this
+       * is typically all variables; for forests a random subset introduces
+       * diversity across trees.
+       */
+      spec.select_vars(ctx, rng);
 
+      /**
+       * Binary case (2 groups)
+       *
+       * With only two groups there is no need for binarization or a separate
+       * partition step — the projector directly separates the two groups,
+       * and each group becomes a leaf.
+       */
       if (step.y.groups.size() == 2) {
-        auto node = binary_step(training_spec, x, step.y, dr);
+        Outcome const group_1 = *step.y.groups.begin();
+        Outcome const group_2 = *std::next(step.y.groups.begin());
 
-        if (node->projector.hasNaN()) {
-          *step.node = degenerate_leaf(step.y);
-        } else {
-          *step.node = std::move(node);
+        /**
+         * 3. Projection
+         *
+         * Find the projector that maximizes the projection pursuit index
+         * on the two groups. A NaN projector indicates a degenerate case
+         * (e.g. singular within-group covariance).
+         */
+        spec.find_projection(ctx, rng);
+
+        if (ctx.projector.hasNaN()) {
+          *step.node = degenerate_leaf(spec, ctx, rng);
+          stack.pop();
+          continue;
         }
 
+        /**
+         * 4. Cutpoint
+         *
+         * Compute the split cutpoint in the projected 1D space, then
+         * assign groups to branches by comparing their projected means.
+         */
+        spec.find_cutpoint(ctx, rng);
+
+        auto [lower_group, upper_group] = orient_branches(group_1, group_2, x, step.y, ctx.projector);
+
+        TreeLeaf::Ptr lower_response = TreeLeaf::make(lower_group);
+        TreeLeaf::Ptr upper_response = TreeLeaf::make(upper_group);
+
+        *step.node = TreeBranch::make(
+            ctx.projector,
+            ctx.cutpoint,
+            std::move(lower_response),
+            std::move(upper_response),
+            step.y.groups,
+            ctx.pp_index_value
+        );
+
         stack.pop();
         continue;
       }
 
-      auto split = binary_split(training_spec, x, step.y, dr);
+      /**
+       * Multiclass case (>2 groups)
+       *
+       * The projection pursuit index is defined for two groups, so multiclass
+       * nodes require two projection steps with a binarization step in between:
+       *
+       *   3. First projection  — on all G groups, used for binarization.
+       *   4. Binarization      — reduce G groups to 2 superclasses.
+       *   5. Second projection — on the 2 superclasses, used for the split.
+       *   6. Cutpoint          — split value in the second projected space.
+       *   7. Partition          — route original groups to child nodes.
+       */
 
-      if (split.groups.size() < 2) {
-        *step.node = degenerate_leaf(step.y);
+      /**
+       * 3. First projection (G groups)
+       *
+       * Project all G group means onto 1D. The resulting ordering is used
+       * by the binarization strategy to decide which groups go together.
+       */
+      spec.find_projection(ctx, rng);
+
+      if (ctx.projector.hasNaN()) {
+        *step.node = degenerate_leaf(spec, ctx, rng);
         stack.pop();
         continue;
       }
 
-      auto temp_node = binary_step(training_spec, x, split, dr);
+      /**
+       * 4. Binarization
+       *
+       * Reduce the G-group problem to a binary one by grouping the original
+       * classes into two superclasses. The default strategy (LargestGap)
+       * sorts groups by their projected mean and splits at the largest gap.
+       */
+      spec.regroup(ctx, rng);
 
-      if (temp_node->projector.hasNaN()) {
-        *step.node = degenerate_leaf(step.y);
+      if (!ctx.binary_y.has_value() || ctx.binary_y->groups.size() < 2) {
+        *step.node = degenerate_leaf(spec, ctx, rng);
         stack.pop();
         continue;
       }
 
-      Response binary_lower_group = temp_node->lower->response();
-      Response binary_upper_group = temp_node->upper->response();
+      /**
+       * 5. Second projection (2 superclasses)
+       *
+       * Re-run projection pursuit on the binary partition. This projector
+       * is optimized for separating the two superclasses and is the one
+       * stored in the tree node.
+       */
+      spec.find_projection(ctx, rng);
 
-      step.projector      = temp_node->projector;
-      step.threshold      = temp_node->threshold;
-      step.pp_index_value = temp_node->pp_index_value;
+      if (ctx.projector.hasNaN()) {
+        *step.node = degenerate_leaf(spec, ctx, rng);
+        stack.pop();
+        continue;
+      }
 
-      auto lower_y = split.subset(split.subgroups.at(binary_lower_group));
-      auto upper_y = split.subset(split.subgroups.at(binary_upper_group));
+      /**
+       * 6. Cutpoint
+       *
+       * Compute the split cutpoint in the second projected space, then
+       * orient the branches so the lower-mean superclass goes left.
+       */
+      spec.find_cutpoint(ctx, rng);
 
-      stack.emplace(lower_y, &step.lower, x.cols());
-      stack.emplace(upper_y, &step.upper, x.cols());
+      orient_branches(ctx.binary_0, ctx.binary_1, x, *ctx.binary_y, ctx.projector);
+
+      /**
+       * 7. Partition
+       *
+       * Route the original groups to child nodes based on the binary
+       * mapping. Each child receives a GroupPartition with the subset
+       * of groups assigned to its superclass.
+       */
+      auto [lower_y, upper_y] = spec.split(ctx, rng);
+
+      step.projector      = ctx.projector;
+      step.cutpoint       = ctx.cutpoint;
+      step.pp_index_value = ctx.pp_index_value;
+
+      stack.emplace(lower_y, &step.lower, x.cols(), step.depth + 1);
+      stack.emplace(upper_y, &step.upper, x.cols(), step.depth + 1);
 
       step.pop = true;
     }
@@ -246,9 +258,18 @@ namespace ppforest2 {
     return root;
   }
 
-  Tree
-  Tree::train(TrainingSpec const& training_spec, FeatureMatrix const& x, ResponseVector const& y, stats::RNG& rng) {
-    GroupPartition group_spec(y);
+  Tree Tree::train(TrainingSpec const& training_spec, FeatureMatrix const& x, OutcomeVector const& y) {
+    stats::RNG rng(training_spec.seed);
+    return Tree::train(training_spec, x, y, rng);
+  }
+
+  Tree Tree::train(TrainingSpec const& training_spec, FeatureMatrix const& x, GroupPartition const& group_spec) {
+    stats::RNG rng(training_spec.seed);
+    return Tree::train(training_spec, x, group_spec, rng);
+  }
+
+  Tree Tree::train(TrainingSpec const& training_spec, FeatureMatrix const& x, OutcomeVector const& y, stats::RNG& rng) {
+    GroupPartition const group_spec(y);
 
     return Tree::train(training_spec, x, group_spec, rng);
   }
@@ -269,12 +290,12 @@ namespace ppforest2 {
     degenerate          = this->root && this->root->degenerate;
   }
 
-  Response Tree::predict(FeatureVector const& data) const {
+  Outcome Tree::predict(FeatureVector const& data) const {
     return root->predict(data);
   }
 
-  ResponseVector Tree::predict(FeatureMatrix const& data) const {
-    ResponseVector predictions(data.rows());
+  OutcomeVector Tree::predict(FeatureMatrix const& data) const {
+    OutcomeVector predictions(data.rows());
 
     for (int i = 0; i < data.rows(); i++) {
       predictions(i) = predict((FeatureVector)data.row(i));
@@ -284,20 +305,20 @@ namespace ppforest2 {
   }
 
   FeatureMatrix Tree::predict(FeatureMatrix const& data, Proportions) const {
-    std::set<Response> group_set = root->node_groups();
-    std::vector<Response> groups(group_set.begin(), group_set.end());
-    int G = static_cast<int>(groups.size());
+    std::set<Outcome> group_set = root->node_groups();
+    std::vector<Outcome> groups(group_set.begin(), group_set.end());
+    int const G = static_cast<int>(groups.size());
 
-    std::map<Response, int> group_to_col;
+    std::map<Outcome, int> group_to_col;
     for (int g = 0; g < G; ++g) {
       group_to_col[groups[static_cast<std::size_t>(g)]] = g;
     }
 
-    int n                     = static_cast<int>(data.rows());
+    int const n               = static_cast<int>(data.rows());
     FeatureMatrix proportions = FeatureMatrix::Zero(n, G);
 
     for (int i = 0; i < n; ++i) {
-      Response pred                      = predict(static_cast<FeatureVector>(data.row(i)));
+      Outcome const pred                 = predict(static_cast<FeatureVector>(data.row(i)));
       proportions(i, group_to_col[pred]) = Feature(1);
     }
 

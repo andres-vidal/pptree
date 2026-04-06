@@ -12,7 +12,11 @@ pptr(
   lambda = 0,
   seed = NULL,
   pp = NULL,
-  sr = NULL
+  cutpoint = NULL,
+  stop = NULL,
+  binarize = NULL,
+  partition = NULL,
+  leaf = NULL
 )
 }
 \arguments{
@@ -30,7 +34,15 @@ pptr(
 
 \item{pp}{A projection pursuit strategy object created by \code{\link{pp_pda}}. Cannot be used together with \code{lambda}.}
 
-\item{sr}{A split rule strategy object created by \code{\link{sr_mean_of_means}} (default).}
+\item{cutpoint}{A split cutpoint strategy object created by \code{\link{cutpoint_mean_of_means}} (default).}
+
+\item{stop}{A stopping rule object created by \code{\link{stop_pure_node}} (default).}
+
+\item{binarize}{A binarization strategy object created by \code{\link{binarize_largest_gap}} (default).}
+
+\item{partition}{A partition strategy object created by \code{\link{partition_by_group}} (default).}
+
+\item{leaf}{A leaf strategy object created by \code{\link{leaf_majority_vote}} (default).}
 }
 \value{
 A pptr model trained on \code{x} and \code{y}.
@@ -61,5 +73,5 @@ pptr(Type ~ ., data = crabs, lambda = 0.5)
 
 }
 \seealso{
-\code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{sr_mean_of_means}}, \code{vignette("introduction")} for a tutorial
+\code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{cutpoint_mean_of_means}}, \code{\link{stop_pure_node}}, \code{\link{binarize_largest_gap}}, \code{\link{partition_by_group}}, \code{\link{leaf_majority_vote}}, \code{vignette("introduction")} for a tutorial
 }

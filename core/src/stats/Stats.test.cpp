@@ -12,13 +12,13 @@ using namespace ppforest2::types;
 TEST(Stats, Sort) {
   FeatureMatrix x = MAT(Feature, rows(3), 1.0, 3.0, 1.0, 2.0, 2.0, 3.0, 3.0, 1.0, 2.0);
 
-  ResponseVector y = VEC(Response, 1, 2, 1);
+  OutcomeVector y = VEC(Outcome, 1, 2, 1);
 
   sort(x, y);
 
   FeatureMatrix expected_x = MAT(Feature, rows(3), 1.0, 3.0, 1.0, 3.0, 1.0, 2.0, 2.0, 2.0, 3.0);
 
-  ResponseVector expected_y = VEC(Response, 1, 1, 2);
+  OutcomeVector expected_y = VEC(Outcome, 1, 1, 2);
 
   ASSERT_EQ_DATA(expected_x, x);
   ASSERT_EQ_DATA(expected_y, y);
@@ -27,11 +27,11 @@ TEST(Stats, Sort) {
 TEST(Stats, SortAlreadySorted) {
   FeatureMatrix x = MAT(Feature, rows(3), 1.0, 10.0, 2.0, 20.0, 3.0, 30.0);
 
-  ResponseVector y = VEC(Response, 0, 0, 1);
+  OutcomeVector y = VEC(Outcome, 0, 0, 1);
 
   sort(x, y);
 
-  ResponseVector expected_y = VEC(Response, 0, 0, 1);
+  OutcomeVector expected_y = VEC(Outcome, 0, 0, 1);
 
   ASSERT_EQ(expected_y, y);
 }
@@ -39,11 +39,11 @@ TEST(Stats, SortAlreadySorted) {
 TEST(Stats, SortReverseSorted) {
   FeatureMatrix x = MAT(Feature, rows(4), 4.0, 3.0, 2.0, 1.0);
 
-  ResponseVector y = VEC(Response, 2, 1, 1, 0);
+  OutcomeVector y = VEC(Outcome, 2, 1, 1, 0);
 
   sort(x, y);
 
-  ResponseVector expected_y = VEC(Response, 0, 1, 1, 2);
+  OutcomeVector expected_y = VEC(Outcome, 0, 1, 1, 2);
 
   ASSERT_EQ(expected_y, y);
   // Feature matrix should be reordered to match
@@ -54,7 +54,7 @@ TEST(Stats, SortReverseSorted) {
 TEST(Stats, SortLargerArray) {
   FeatureMatrix x = MAT(Feature, rows(6), 6.0, 5.0, 4.0, 3.0, 2.0, 1.0);
 
-  ResponseVector y = VEC(Response, 2, 1, 0, 2, 1, 0);
+  OutcomeVector y = VEC(Outcome, 2, 1, 0, 2, 1, 0);
 
   sort(x, y);
 
@@ -64,7 +64,7 @@ TEST(Stats, SortLargerArray) {
 }
 
 TEST(Stats, UniqueEmptyResult) {
-  ResponseVector column(0);
+  OutcomeVector column(0);
   std::set<int> actual = unique(column);
   std::set<int> expected;
 
@@ -73,7 +73,7 @@ TEST(Stats, UniqueEmptyResult) {
 }
 
 TEST(Stats, UniqueSingleValue) {
-  ResponseVector column  = VEC(Response, 1);
+  OutcomeVector column   = VEC(Outcome, 1);
   std::set<int> actual   = unique(column);
   std::set<int> expected = {1};
 
@@ -82,7 +82,7 @@ TEST(Stats, UniqueSingleValue) {
 }
 
 TEST(Stats, UniqueSingleValueRepeated) {
-  ResponseVector column = VEC(Response, 1, 1, 1);
+  OutcomeVector column = VEC(Outcome, 1, 1, 1);
 
   std::set<int> actual   = unique(column);
   std::set<int> expected = {1};
@@ -92,7 +92,7 @@ TEST(Stats, UniqueSingleValueRepeated) {
 }
 
 TEST(Stats, UniqueMultipleValues) {
-  ResponseVector column  = VEC(Response, 1, 2, 3);
+  OutcomeVector column   = VEC(Outcome, 1, 2, 3);
   std::set<int> actual   = unique(column);
   std::set<int> expected = {1, 2, 3};
 
@@ -101,7 +101,7 @@ TEST(Stats, UniqueMultipleValues) {
 }
 
 TEST(Stats, UniqueMultipleValuesRepeated) {
-  ResponseVector column  = VEC(Response, 1, 2, 1);
+  OutcomeVector column   = VEC(Outcome, 1, 2, 1);
   std::set<int> actual   = unique(column);
   std::set<int> expected = {1, 2};
 
@@ -110,8 +110,8 @@ TEST(Stats, UniqueMultipleValuesRepeated) {
 }
 
 TEST(Stats, AccuracyMax) {
-  ResponseVector predictions = VEC(Response, 1, 2, 3);
-  ResponseVector actual      = VEC(Response, 1, 2, 3);
+  OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
+  OutcomeVector actual      = VEC(Outcome, 1, 2, 3);
 
   float result   = accuracy(predictions, actual);
   float expected = 1.0;
@@ -120,8 +120,8 @@ TEST(Stats, AccuracyMax) {
 }
 
 TEST(Stats, AccuracyMin) {
-  ResponseVector predictions = VEC(Response, 1, 2, 3);
-  ResponseVector actual      = VEC(Response, 3, 3, 1);
+  OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
+  OutcomeVector actual      = VEC(Outcome, 3, 3, 1);
 
   float result   = accuracy(predictions, actual);
   float expected = 0.0;
@@ -130,8 +130,8 @@ TEST(Stats, AccuracyMin) {
 }
 
 TEST(Stats, AccuracyGeneric1) {
-  ResponseVector predictions = VEC(Response, 1, 2, 3);
-  ResponseVector actual      = VEC(Response, 1, 3, 3);
+  OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
+  OutcomeVector actual      = VEC(Outcome, 1, 3, 3);
 
   float result   = accuracy(predictions, actual);
   float expected = 2.0 / 3.0;
@@ -140,8 +140,8 @@ TEST(Stats, AccuracyGeneric1) {
 }
 
 TEST(Stats, AccuracyGeneric2) {
-  ResponseVector predictions = VEC(Response, 1, 2, 3, 4);
-  ResponseVector actual      = VEC(Response, 1, 1, 3, 3);
+  OutcomeVector predictions = VEC(Outcome, 1, 2, 3, 4);
+  OutcomeVector actual      = VEC(Outcome, 1, 1, 3, 3);
 
   float result   = accuracy(predictions, actual);
   float expected = 1.0 / 2.0;
@@ -150,22 +150,22 @@ TEST(Stats, AccuracyGeneric2) {
 }
 
 TEST(Stats, AccuracyMorePredictionsThanObservations) {
-  ResponseVector predictions  = VEC(Response, 0, 1, 2);
-  ResponseVector observations = VEC(Response, 0, 1);
+  OutcomeVector predictions  = VEC(Outcome, 0, 1, 2);
+  OutcomeVector observations = VEC(Outcome, 0, 1);
 
   ASSERT_THROW(accuracy(predictions, observations), std::invalid_argument);
 }
 
 TEST(Stats, AccuracyMoreObservationsThanPredictions) {
-  ResponseVector predictions  = VEC(Response, 0, 1);
-  ResponseVector observations = VEC(Response, 0, 1, 2);
+  OutcomeVector predictions  = VEC(Outcome, 0, 1);
+  OutcomeVector observations = VEC(Outcome, 0, 1, 2);
 
   ASSERT_THROW(accuracy(predictions, observations), std::invalid_argument);
 }
 
 TEST(Stats, ErrorRateMax) {
-  ResponseVector predictions = VEC(Response, 1, 2, 3);
-  ResponseVector actual      = VEC(Response, 3, 3, 1);
+  OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
+  OutcomeVector actual      = VEC(Outcome, 3, 3, 1);
 
   float result   = error_rate(predictions, actual);
   float expected = 1.0;
@@ -174,8 +174,8 @@ TEST(Stats, ErrorRateMax) {
 }
 
 TEST(Stats, ErrorRateMin) {
-  ResponseVector predictions = VEC(Response, 1, 2, 3);
-  ResponseVector actual      = VEC(Response, 1, 2, 3);
+  OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
+  OutcomeVector actual      = VEC(Outcome, 1, 2, 3);
 
   float result   = error_rate(predictions, actual);
   float expected = 0.0;
@@ -184,8 +184,8 @@ TEST(Stats, ErrorRateMin) {
 }
 
 TEST(Stats, ErrorRateGeneric1) {
-  ResponseVector predictions = VEC(Response, 1, 2, 3);
-  ResponseVector actual      = VEC(Response, 1, 3, 3);
+  OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
+  OutcomeVector actual      = VEC(Outcome, 1, 3, 3);
 
   float result   = error_rate(predictions, actual);
   float expected = 1.0 / 3.0;
@@ -194,8 +194,8 @@ TEST(Stats, ErrorRateGeneric1) {
 }
 
 TEST(Stats, ErrorRateGeneric2) {
-  ResponseVector predictions = VEC(Response, 1, 2, 3, 4);
-  ResponseVector actual      = VEC(Response, 1, 1, 3, 3);
+  OutcomeVector predictions = VEC(Outcome, 1, 2, 3, 4);
+  OutcomeVector actual      = VEC(Outcome, 1, 1, 3, 3);
 
   float result   = error_rate(predictions, actual);
   float expected = 1.0 / 2.0;
@@ -204,15 +204,15 @@ TEST(Stats, ErrorRateGeneric2) {
 }
 
 TEST(Stats, ErrorRateMorePredictionsThanObservations) {
-  ResponseVector predictions  = VEC(Response, 0, 1, 2);
-  ResponseVector observations = VEC(Response, 0, 1);
+  OutcomeVector predictions  = VEC(Outcome, 0, 1, 2);
+  OutcomeVector observations = VEC(Outcome, 0, 1);
 
   ASSERT_THROW(error_rate(predictions, observations), std::invalid_argument);
 }
 
 TEST(Stats, ErrorRateMoreObservationsThanPredictions) {
-  ResponseVector predictions  = VEC(Response, 0, 1);
-  ResponseVector observations = VEC(Response, 0, 1, 2);
+  OutcomeVector predictions  = VEC(Outcome, 0, 1);
+  OutcomeVector observations = VEC(Outcome, 0, 1, 2);
 
   ASSERT_THROW(error_rate(predictions, observations), std::invalid_argument);
 }

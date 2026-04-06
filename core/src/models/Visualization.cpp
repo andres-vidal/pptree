@@ -20,16 +20,16 @@ namespace ppforest2::viz {
    * Traverses the tree in pre-order, routing observations by the split
    * condition at each internal node.  At each condition node, every
    * reaching observation is projected onto the node's projector, and
-   * the projected value is compared against the threshold to partition
+   * the projected value is compared against the cutpoint to partition
    * observations into the lower and upper children.
    *
    * The result is a pre-order sequence of NodeData structs containing:
    *   - For internal nodes: projected values, group labels, projector,
-   *     threshold (used for histogram rendering in the tree diagram).
+   *     cutpoint (used for histogram rendering in the tree diagram).
    *   - For leaf nodes: group labels of reaching observations, and the
    *     predicted group (used for leaf labels and coloring).
    */
-  NodeDataVisitor::NodeDataVisitor(types::FeatureMatrix const& x, types::ResponseVector const& y)
+  NodeDataVisitor::NodeDataVisitor(types::FeatureMatrix const& x, types::OutcomeVector const& y)
       : x(x)
       , y(y)
       , depth(0) {
@@ -41,13 +41,13 @@ namespace ppforest2::viz {
     }
   }
 
-  void NodeDataVisitor::visit(TreeCondition const& node) {
+  void NodeDataVisitor::visit(TreeBranch const& node) {
     // Collect projected values for all observations reaching this node.
     NodeData nd;
     nd.is_leaf   = false;
     nd.depth     = depth;
     nd.projector = node.projector;
-    nd.threshold = node.threshold;
+    nd.cutpoint  = node.cutpoint;
     nd.value     = 0;
 
     // Partition observations into lower/upper based on projected value.
@@ -59,7 +59,7 @@ namespace ppforest2::viz {
       nd.projected_values.push_back(proj_val);
       nd.groups.push_back(y(idx));
 
-      if (proj_val < node.threshold) {
+      if (proj_val < node.cutpoint) {
         lower_indices.push_back(idx);
       } else {
         upper_indices.push_back(idx);
@@ -82,12 +82,12 @@ namespace ppforest2::viz {
     indices = std::move(saved_indices);
   }
 
-  void NodeDataVisitor::visit(TreeResponse const& node) {
+  void NodeDataVisitor::visit(TreeLeaf const& node) {
     NodeData nd;
-    nd.is_leaf   = true;
-    nd.depth     = depth;
-    nd.threshold = 0;
-    nd.value     = node.value;
+    nd.is_leaf  = true;
+    nd.depth    = depth;
+    nd.cutpoint = 0;
+    nd.value    = node.value;
 
     for (int idx : indices) {
       nd.groups.push_back(y(idx));
@@ -101,9 +101,9 @@ namespace ppforest2::viz {
    *
    * When visualizing a p-dimensional tree in 2D, we select two variables
    * (var_i, var_j) for the axes and hold all others at fixed values
-   * (typically medians).  Each split's projector and threshold are then
+   * (typically medians).  Each split's projector and cutpoint are then
    * reduced to 2D by extracting the two relevant components and
-   * subtracting the fixed variables' contributions from the threshold.
+   * subtracting the fixed variables' contributions from the cutpoint.
    */
   types::FeatureVector project_2d(types::FeatureVector const& full_proj, int var_i, int var_j) {
     types::FeatureVector proj2d(2);
@@ -112,7 +112,7 @@ namespace ppforest2::viz {
     return proj2d;
   }
 
-  types::Feature adjust_threshold(
+  types::Feature adjust_cutpoint(
       types::FeatureVector const& full_proj,
       types::Feature thr,
       std::vector<std::pair<int, types::Feature>> const& fixed_vars
@@ -165,7 +165,7 @@ namespace ppforest2::viz {
 
   bool clip_boundary_2d(
       types::FeatureVector const& a,
-      types::Feature threshold,
+      types::Feature cutpoint,
       std::vector<HalfSpace> const& constraints,
       types::Feature x_min,
       types::Feature x_max,
@@ -176,7 +176,7 @@ namespace ppforest2::viz {
   ) {
     types::Feature const eps = static_cast<types::Feature>(1e-12);
 
-    // Direction tangent to the boundary line a^T x = threshold.
+    // Direction tangent to the boundary line a^T x = cutpoint.
     // Perpendicular to a = (a0, a1) is D = (-a1, a0).
     types::Feature dx = -a(1);
     types::Feature dy = a(0);
@@ -186,9 +186,9 @@ namespace ppforest2::viz {
 
     if (std::abs(a(1)) > std::abs(a(0))) {
       px = 0;
-      py = threshold / a(1);
+      py = cutpoint / a(1);
     } else {
-      px = threshold / a(0);
+      px = cutpoint / a(0);
       py = 0;
     }
 
@@ -210,16 +210,16 @@ namespace ppforest2::viz {
       if (std::abs(denom) < eps)
         continue;
 
-      types::Feature u_intersect = (con.threshold - (con.projector(0) * px + con.projector(1) * py)) / denom;
+      types::Feature u_intersect = (con.cutpoint - (con.projector(0) * px + con.projector(1) * py)) / denom;
 
       if (con.is_lower) {
-        // Constraint: con.projector^T x < con.threshold
+        // Constraint: con.projector^T x < con.cutpoint
         if (denom > 0)
           u_max = std::min(u_max, u_intersect);
         else
           u_min = std::max(u_min, u_intersect);
       } else {
-        // Constraint: con.projector^T x >= con.threshold
+        // Constraint: con.projector^T x >= con.cutpoint
         if (denom > 0)
           u_min = std::max(u_min, u_intersect);
         else
@@ -262,7 +262,7 @@ namespace ppforest2::viz {
    */
 
   Polygon clip_polygon_halfspace(
-      Polygon const& polygon, types::FeatureVector const& normal, types::Feature threshold, bool is_lower
+      Polygon const& polygon, types::FeatureVector const& normal, types::Feature cutpoint, bool is_lower
   ) {
     if (polygon.empty())
       return {}
@@ -276,9 +276,9 @@ namespace ppforest2::viz {
       auto const& curr = polygon[i];
       auto const& next = polygon[(i + 1) % n];
 
-      // Signed distance from the boundary: normal^T x - threshold
-      types::Feature d_curr = normal(0) * curr.first + normal(1) * curr.second - threshold;
-      types::Feature d_next = normal(0) * next.first + normal(1) * next.second - threshold;
+      // Signed distance from the boundary: normal^T x - cutpoint
+      types::Feature d_curr = normal(0) * curr.first + normal(1) * curr.second - cutpoint;
+      types::Feature d_next = normal(0) * next.first + normal(1) * next.second - cutpoint;
 
       // Determine which side each vertex is on.
       //   is_lower (a^T x < t):  inside means d < 0
@@ -315,7 +315,7 @@ namespace ppforest2::viz {
    *
    * Tree traversal that collects clipped boundary segments.  At each
    * split node:
-   *   1. Project the split's projector/threshold to 2D.
+   *   1. Project the split's projector/cutpoint to 2D.
    *   2. Project all accumulated ancestor constraints to 2D.
    *   3. Clip the boundary line to the bbox + constraints.
    *   4. Push/pop the current split as a constraint for child traversal.
@@ -339,10 +339,10 @@ namespace ppforest2::viz {
       , y_max(y_max)
       , depth(0) {}
 
-  void BoundaryVisitor::visit(TreeCondition const& node) {
+  void BoundaryVisitor::visit(TreeBranch const& node) {
     // Project current split to 2D.
     types::FeatureVector proj2d = project_2d(node.projector, var_i, var_j);
-    types::Feature thr2d        = adjust_threshold(node.projector, node.threshold, fixed_vars);
+    types::Feature thr2d        = adjust_cutpoint(node.projector, node.cutpoint, fixed_vars);
 
     // Project all ancestor constraints to 2D for clipping.
     std::vector<HalfSpace> constraints2d;
@@ -351,7 +351,7 @@ namespace ppforest2::viz {
     for (auto const& con : constraints) {
       HalfSpace hs2d;
       hs2d.projector = project_2d(con.projector, var_i, var_j);
-      hs2d.threshold = adjust_threshold(con.projector, con.threshold, fixed_vars);
+      hs2d.cutpoint  = adjust_cutpoint(con.projector, con.cutpoint, fixed_vars);
       hs2d.is_lower  = con.is_lower;
       constraints2d.push_back(hs2d);
     }
@@ -364,10 +364,10 @@ namespace ppforest2::viz {
     }
 
     // Push this split as a constraint and recurse.
-    // Lower child: projector^T x < threshold.
+    // Lower child: projector^T x < cutpoint.
     HalfSpace lower_con;
     lower_con.projector = node.projector;
-    lower_con.threshold = node.threshold;
+    lower_con.cutpoint  = node.cutpoint;
     lower_con.is_lower  = true;
     constraints.push_back(lower_con);
 
@@ -375,7 +375,7 @@ namespace ppforest2::viz {
     node.lower->accept(*this);
     depth--;
 
-    // Upper child: projector^T x >= threshold.
+    // Upper child: projector^T x >= cutpoint.
     constraints.back().is_lower = false;
 
     depth++;
@@ -385,7 +385,7 @@ namespace ppforest2::viz {
     constraints.pop_back();
   }
 
-  void BoundaryVisitor::visit(TreeResponse const&) {
+  void BoundaryVisitor::visit(TreeLeaf const&) {
     // Leaf nodes have no boundary to emit.
   }
 
@@ -396,7 +396,7 @@ namespace ppforest2::viz {
    * region.  The algorithm:
    *   1. Start with the bounding box as a rectangle (CCW winding).
    *   2. For each ancestor constraint on the root-to-leaf path, project
-   *      the constraint to 2D (project_2d + adjust_threshold) and clip
+   *      the constraint to 2D (project_2d + adjust_cutpoint) and clip
    *      the polygon using Sutherland–Hodgman (clip_polygon_halfspace).
    *   3. If the polygon is non-empty, store it with the leaf's group.
    *
@@ -427,11 +427,11 @@ namespace ppforest2::viz {
       , y_min(y_min)
       , y_max(y_max) {}
 
-  void RegionVisitor::visit(TreeCondition const& node) {
+  void RegionVisitor::visit(TreeBranch const& node) {
     // Push this split as lower constraint, recurse left.
     HalfSpace con;
     con.projector = node.projector;
-    con.threshold = node.threshold;
+    con.cutpoint  = node.cutpoint;
     con.is_lower  = true;
     constraints.push_back(con);
 
@@ -445,14 +445,14 @@ namespace ppforest2::viz {
     constraints.pop_back();
   }
 
-  void RegionVisitor::visit(TreeResponse const& node) {
+  void RegionVisitor::visit(TreeLeaf const& node) {
     // Start with the bounding box as a rectangle (CCW winding).
     Polygon poly = {{x_min, y_min}, {x_max, y_min}, {x_max, y_max}, {x_min, y_max}};
 
     // Clip against each ancestor constraint in 2D.
     for (auto const& con : constraints) {
       types::FeatureVector proj2d = project_2d(con.projector, var_i, var_j);
-      types::Feature thr2d        = adjust_threshold(con.projector, con.threshold, fixed_vars);
+      types::Feature thr2d        = adjust_cutpoint(con.projector, con.cutpoint, fixed_vars);
 
       poly = clip_polygon_halfspace(poly, proj2d, thr2d, con.is_lower);
 
@@ -484,8 +484,8 @@ namespace ppforest2::viz {
       types::Feature width;    ///< Total horizontal span of this subtree.
     };
 
-    /// Format a threshold value for edge labels (e.g. "1.50").
-    std::string format_threshold(types::Feature t) {
+    /// Format a cutpoint value for edge labels (e.g. "1.50").
+    std::string format_cutpoint(types::Feature t) {
       std::ostringstream oss;
       oss << std::fixed << std::setprecision(2) << t;
       return oss.str();
@@ -524,7 +524,7 @@ namespace ppforest2::viz {
           , edges(edges)
           , result{0, 0} {}
 
-      void visit(TreeResponse const& /* response */) override {
+      void visit(TreeLeaf const& /* response */) override {
         types::Feature y_pos = -static_cast<types::Feature>(depth) * params.y_spacing;
         int my_idx           = node_idx;
         node_idx++;
@@ -535,7 +535,7 @@ namespace ppforest2::viz {
         result = {cx, params.leaf_w + 0.1f};
       }
 
-      void visit(TreeCondition const& condition) override {
+      void visit(TreeBranch const& condition) override {
         types::Feature y_pos = -static_cast<types::Feature>(depth) * params.y_spacing;
         int my_idx           = node_idx;
         node_idx++;
@@ -563,7 +563,7 @@ namespace ppforest2::viz {
         types::Feature left_child_h  = condition.lower->is_leaf() ? params.leaf_h : params.node_h;
         types::Feature right_child_h = condition.upper->is_leaf() ? params.leaf_h : params.node_h;
 
-        std::string thr = format_threshold(condition.threshold);
+        std::string thr = format_cutpoint(condition.cutpoint);
 
         edges.push_back({center_x, from_y, left_visitor.result.center_x, child_y + left_child_h / 2, "< " + thr});
 
