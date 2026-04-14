@@ -1,5 +1,8 @@
 var NAVTREEINDEX4 =
 {
+"structppforest2_1_1binarize_1_1LargestGap.html":[4,0,1,0,1],
+"structppforest2_1_1binarize_1_1LargestGap.html#a1a780d96a799710b3aff7eda3f20337c":[3,0,2,0,1,3],
+"structppforest2_1_1binarize_1_1LargestGap.html#a1a780d96a799710b3aff7eda3f20337c":[4,0,1,0,1,3],
 "structppforest2_1_1binarize_1_1LargestGap.html#a3dd2207af9e8b73ca492e49c69cd8042":[3,0,2,0,1,0],
 "structppforest2_1_1binarize_1_1LargestGap.html#a3dd2207af9e8b73ca492e49c69cd8042":[4,0,1,0,1,0],
 "structppforest2_1_1binarize_1_1LargestGap.html#a871f2cd3df2fee6d779fcd7818ecf788":[3,0,2,0,1,2],
@@ -246,8 +249,5 @@ var NAVTREEINDEX4 =
 "structppforest2_1_1cli_1_1ScenarioResult.html#a0c55bd0a3cc116bac43e9edfeea0320f":[4,0,1,1,7,3],
 "structppforest2_1_1cli_1_1ScenarioResult.html#a325f94104f19e71609c5965fb2569445":[3,0,2,1,7,1],
 "structppforest2_1_1cli_1_1ScenarioResult.html#a325f94104f19e71609c5965fb2569445":[4,0,1,1,7,1],
-"structppforest2_1_1cli_1_1ScenarioResult.html#a4aba54b9a903d47386853443c7654f89":[3,0,2,1,7,2],
-"structppforest2_1_1cli_1_1ScenarioResult.html#a4aba54b9a903d47386853443c7654f89":[4,0,1,1,7,2],
-"structppforest2_1_1cli_1_1ScenarioResult.html#a9360f725defedf027715918f18036bde":[3,0,2,1,7,0],
-"structppforest2_1_1cli_1_1ScenarioResult.html#a9360f725defedf027715918f18036bde":[4,0,1,1,7,0]
+"structppforest2_1_1cli_1_1ScenarioResult.html#a4aba54b9a903d47386853443c7654f89":[3,0,2,1,7,2]
 };

@@ -1,5 +1,8 @@
 var NAVTREEINDEX5 =
 {
+"structppforest2_1_1cli_1_1ScenarioResult.html#a4aba54b9a903d47386853443c7654f89":[4,0,1,1,7,2],
+"structppforest2_1_1cli_1_1ScenarioResult.html#a9360f725defedf027715918f18036bde":[3,0,2,1,7,0],
+"structppforest2_1_1cli_1_1ScenarioResult.html#a9360f725defedf027715918f18036bde":[4,0,1,1,7,0],
 "structppforest2_1_1cli_1_1SimulateParams.html":[3,0,2,1,8],
 "structppforest2_1_1cli_1_1SimulateParams.html":[4,0,1,1,8],
 "structppforest2_1_1cli_1_1SimulateParams.html#a21ef9b43dfba26ad5390f869689ed571":[3,0,2,1,8,9],
@@ -246,8 +249,5 @@ var NAVTREEINDEX5 =
 "structppforest2_1_1pp_1_1PDA.html#a8da45f0129f19e731347f09f3311e262":[4,0,1,6,0,3],
 "structppforest2_1_1pp_1_1PDA.html#aa258bf5a5a567019fcb7c757f4d55dc7":[3,0,2,7,0,2],
 "structppforest2_1_1pp_1_1PDA.html#aa258bf5a5a567019fcb7c757f4d55dc7":[4,0,1,6,0,2],
-"structppforest2_1_1pp_1_1PDA.html#adaf7f625cd8f09fee60c45d5dcecac02":[3,0,2,7,0,0],
-"structppforest2_1_1pp_1_1PDA.html#adaf7f625cd8f09fee60c45d5dcecac02":[4,0,1,6,0,0],
-"structppforest2_1_1pp_1_1ProjectionPursuit.html":[3,0,2,7,1],
-"structppforest2_1_1pp_1_1ProjectionPursuit.html":[4,0,1,6,1]
+"structppforest2_1_1pp_1_1PDA.html#adaf7f625cd8f09fee60c45d5dcecac02":[3,0,2,7,0,0]
 };

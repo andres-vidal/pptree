@@ -120,8 +120,10 @@ var hierarchy =
     [ "ppforest2::TreeNode::Visitor", "structppforest2_1_1TreeNode_1_1Visitor.html", [
       [ "ppforest2::VIVisitor", "structppforest2_1_1VIVisitor.html", null ],
       [ "ppforest2::serialization::JsonNodeVisitor", "structppforest2_1_1serialization_1_1JsonNodeVisitor.html", null ],
-      [ "ppforest2::viz::BoundaryVisitor", "structppforest2_1_1viz_1_1BoundaryVisitor.html", null ],
       [ "ppforest2::viz::NodeDataVisitor", "structppforest2_1_1viz_1_1NodeDataVisitor.html", null ],
-      [ "ppforest2::viz::RegionVisitor", "structppforest2_1_1viz_1_1RegionVisitor.html", null ]
+      [ "ppforest2::viz::SpatialVisitor", "structppforest2_1_1viz_1_1SpatialVisitor.html", [
+        [ "ppforest2::viz::BoundaryVisitor", "structppforest2_1_1viz_1_1BoundaryVisitor.html", null ],
+        [ "ppforest2::viz::RegionVisitor", "structppforest2_1_1viz_1_1RegionVisitor.html", null ]
+      ] ]
     ] ]
 ];

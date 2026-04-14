@@ -24,7 +24,7 @@ var searchData=
   ['bootstraptree_21',['BootstrapTree',['../structppforest2_1_1BootstrapTree.html',1,'ppforest2::BootstrapTree'],['../structppforest2_1_1BootstrapTree.html#a0948eda6cfeb64e5b6138214d899a0e9',1,'ppforest2::BootstrapTree::BootstrapTree()']]],
   ['bootstraptree_2ehpp_22',['BootstrapTree.hpp',['../BootstrapTree_8hpp.html',1,'']]],
   ['boundarysegment_23',['BoundarySegment',['../structppforest2_1_1viz_1_1BoundarySegment.html',1,'ppforest2::viz']]],
-  ['boundaryvisitor_24',['BoundaryVisitor',['../structppforest2_1_1viz_1_1BoundaryVisitor.html',1,'ppforest2::viz::BoundaryVisitor'],['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a1658b984dcce8865f834a58ad9c5d694',1,'ppforest2::viz::BoundaryVisitor::BoundaryVisitor()']]],
+  ['boundaryvisitor_24',['BoundaryVisitor',['../structppforest2_1_1viz_1_1BoundaryVisitor.html',1,'ppforest2::viz']]],
   ['build_25',['build',['../structppforest2_1_1TrainingSpec_1_1Builder.html#a92a59e56cb4fca5d8eb1b0b612635f5d',1,'ppforest2::TrainingSpec::Builder']]],
   ['builder_26',['Builder',['../structppforest2_1_1TrainingSpec_1_1Builder.html',1,'ppforest2::TrainingSpec']]],
   ['builder_27',['builder',['../structppforest2_1_1TrainingSpec.html#add8ac3224b4572ec224ba045bba73349',1,'ppforest2::TrainingSpec']]],

@@ -30,7 +30,7 @@ var searchData=
   ['configdisplayhints_27',['ConfigDisplayHints',['../structppforest2_1_1io_1_1ConfigDisplayHints.html',1,'ppforest2::io']]],
   ['confusionmatrix_28',['ConfusionMatrix',['../structppforest2_1_1stats_1_1ConfusionMatrix.html',1,'ppforest2::stats::ConfusionMatrix'],['../structppforest2_1_1stats_1_1ConfusionMatrix.html#a530dfa8c207b578e0e373a35b9535d82',1,'ppforest2::stats::ConfusionMatrix::ConfusionMatrix()=default'],['../structppforest2_1_1stats_1_1ConfusionMatrix.html#a65c189ee3aab174e2c73ec5383524af5',1,'ppforest2::stats::ConfusionMatrix::ConfusionMatrix(types::OutcomeVector const &amp;predictions, types::OutcomeVector const &amp;actual)']]],
   ['confusionmatrix_2ehpp_29',['ConfusionMatrix.hpp',['../ConfusionMatrix_8hpp.html',1,'']]],
-  ['constraints_30',['constraints',['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a0d233281d9f3867707bd8604e4350f74',1,'ppforest2::viz::BoundaryVisitor::constraints'],['../structppforest2_1_1viz_1_1RegionVisitor.html#a4421e4ade990f3f113add1f359a841e0',1,'ppforest2::viz::RegionVisitor::constraints']]],
+  ['constraints_30',['constraints',['../structppforest2_1_1viz_1_1SpatialVisitor.html#a194eb84dbbb2dd08da96e33be561ccf1',1,'ppforest2::viz::SpatialVisitor']]],
   ['conventions_31',['Conventions',['../extending_strategies.html#strat_conventions',1,'Conventions'],['../extending_visitors.html#vis_conventions',1,'Conventions']]],
   ['convergence_32',['Convergence',['../structppforest2_1_1cli_1_1EvaluateParams_1_1Convergence.html',1,'ppforest2::cli::EvaluateParams']]],
   ['convergence_33',['convergence',['../structppforest2_1_1cli_1_1EvaluateParams.html#a9371b051b409b767f056085fab4d4da8',1,'ppforest2::cli::EvaluateParams']]],

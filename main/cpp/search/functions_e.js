@@ -22,5 +22,6 @@ var searchData=
   ['println_19',['println',['../structppforest2_1_1io_1_1Output.html#aad1af2cabeaae871adb58a19d4d6bb20',1,'ppforest2::io::Output']]],
   ['progress_20',['progress',['../structppforest2_1_1io_1_1Output.html#a4c6405f8250f801e4f0f1121c641296e',1,'ppforest2::io::Output']]],
   ['project_5f2d_21',['project_2d',['../namespaceppforest2_1_1viz.html#afc5861a44d368bc6472de2033ae4ef30',1,'ppforest2::viz']]],
-  ['pure_5fnode_22',['pure_node',['../namespaceppforest2_1_1stop.html#afa5a9adfdd8f61e9ee548181f9c0bdf2',1,'ppforest2::stop']]]
+  ['project_5fhalfspace_5f2d_22',['project_halfspace_2d',['../namespaceppforest2_1_1viz.html#a15cc9eecb78baad458dce491dfd4a783',1,'ppforest2::viz']]],
+  ['pure_5fnode_23',['pure_node',['../namespaceppforest2_1_1stop.html#afa5a9adfdd8f61e9ee548181f9c0bdf2',1,'ppforest2::stop']]]
 ];

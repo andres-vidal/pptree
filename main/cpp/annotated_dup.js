@@ -89,6 +89,7 @@ var annotated_dup =
         [ "NodeDataVisitor", "structppforest2_1_1viz_1_1NodeDataVisitor.html", "structppforest2_1_1viz_1_1NodeDataVisitor" ],
         [ "RegionPolygon", "structppforest2_1_1viz_1_1RegionPolygon.html", "structppforest2_1_1viz_1_1RegionPolygon" ],
         [ "RegionVisitor", "structppforest2_1_1viz_1_1RegionVisitor.html", "structppforest2_1_1viz_1_1RegionVisitor" ],
+        [ "SpatialVisitor", "structppforest2_1_1viz_1_1SpatialVisitor.html", "structppforest2_1_1viz_1_1SpatialVisitor" ],
         [ "TreeLayout", "structppforest2_1_1viz_1_1TreeLayout.html", "structppforest2_1_1viz_1_1TreeLayout" ]
       ] ],
       [ "BootstrapTree", "structppforest2_1_1BootstrapTree.html", "structppforest2_1_1BootstrapTree" ],

@@ -9,7 +9,7 @@ var searchData=
   ['find_6',['find',['../structppforest2_1_1cli_1_1Baseline.html#abb3a225daf835da419ebf1d253f0e053',1,'ppforest2::cli::Baseline']]],
   ['find_5fcutpoint_7',['find_cutpoint',['../structppforest2_1_1TrainingSpec.html#a664d94eb4e95f926dd77be129781de5f',1,'ppforest2::TrainingSpec']]],
   ['find_5fprojection_8',['find_projection',['../structppforest2_1_1TrainingSpec.html#a5ee96262dd25ba73f168419f2bcaa585',1,'ppforest2::TrainingSpec']]],
-  ['fixed_5fvars_9',['fixed_vars',['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a11092d4739350d7e2288232c276c726a',1,'ppforest2::viz::BoundaryVisitor::fixed_vars'],['../structppforest2_1_1viz_1_1RegionVisitor.html#a9d2be2d66077ab5fa35005fa9a7ba4f9',1,'ppforest2::viz::RegionVisitor::fixed_vars']]],
+  ['fixed_5fvars_9',['fixed_vars',['../structppforest2_1_1viz_1_1SpatialVisitor.html#ac3a4064dba249126564b627fcd19ef80',1,'ppforest2::viz::SpatialVisitor']]],
   ['flush_10',['flush',['../structppforest2_1_1io_1_1Output.html#a3af377b8a53f2166f839cdf5af89be89',1,'ppforest2::io::Output']]],
   ['for_20adding_20a_20new_20strategy_11',['Checklist for adding a new strategy',['../extending_strategies.html#strat_checklist',1,'']]],
   ['forest_12',['Forest',['../structppforest2_1_1Forest.html',1,'ppforest2::Forest'],['../structppforest2_1_1Forest.html#aebf6bbdeb3ff9672fc037cc5f48a5e8c',1,'ppforest2::Forest::Forest()'],['../structppforest2_1_1Forest.html#aa9654ca989c78e65a9d1da2f5d3e2d02',1,'ppforest2::Forest::Forest(TrainingSpec::Ptr training_spec)']]],

@@ -1,5 +1,8 @@
 var NAVTREEINDEX3 =
 {
+"structppforest2_1_1TrainingSpec.html#a5fd12b597b37db0545299815eaa0b115":[4,0,1,17,15],
+"structppforest2_1_1TrainingSpec.html#a664d94eb4e95f926dd77be129781de5f":[3,0,2,21,5],
+"structppforest2_1_1TrainingSpec.html#a664d94eb4e95f926dd77be129781de5f":[4,0,1,17,5],
 "structppforest2_1_1TrainingSpec.html#a6b13c28d4494a8eb8f29f79d4e60699a":[3,0,2,21,8],
 "structppforest2_1_1TrainingSpec.html#a6b13c28d4494a8eb8f29f79d4e60699a":[4,0,1,17,8],
 "structppforest2_1_1TrainingSpec.html#a75b4cd1ce51fbca9ac24c9db4b5853cb":[3,0,2,21,17],
@@ -246,8 +249,5 @@ var NAVTREEINDEX3 =
 "structppforest2_1_1binarize_1_1Binarization_1_1Result.html#a408c5a0995a0caf7214fa7c3c1f18336":[4,0,1,0,0,0,2],
 "structppforest2_1_1binarize_1_1Binarization_1_1Result.html#acd53b445b9bec91cfbd0c5998dbeb89e":[3,0,2,0,0,0,0],
 "structppforest2_1_1binarize_1_1Binarization_1_1Result.html#acd53b445b9bec91cfbd0c5998dbeb89e":[4,0,1,0,0,0,0],
-"structppforest2_1_1binarize_1_1LargestGap.html":[3,0,2,0,1],
-"structppforest2_1_1binarize_1_1LargestGap.html":[4,0,1,0,1],
-"structppforest2_1_1binarize_1_1LargestGap.html#a1a780d96a799710b3aff7eda3f20337c":[3,0,2,0,1,3],
-"structppforest2_1_1binarize_1_1LargestGap.html#a1a780d96a799710b3aff7eda3f20337c":[4,0,1,0,1,3]
+"structppforest2_1_1binarize_1_1LargestGap.html":[3,0,2,0,1]
 };

@@ -139,6 +139,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1viz_1_1RegionVisitor.html">RegionVisitor</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visitor that collects convex decision region polygons.  <a href="structppforest2_1_1viz_1_1RegionVisitor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1viz_1_1SpatialVisitor.html">SpatialVisitor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class for visitors that traverse a tree in a 2D feature plane.  <a href="structppforest2_1_1viz_1_1SpatialVisitor.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1viz_1_1TreeLayout.html">TreeLayout</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Complete tree layout: positioned nodes and labelled edges.  <a href="structppforest2_1_1viz_1_1TreeLayout.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,6 +172,9 @@ Functions</h2></td></tr>
 <tr class="memitem:afc5861a44d368bc6472de2033ae4ef30" id="r_afc5861a44d368bc6472de2033ae4ef30"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc5861a44d368bc6472de2033ae4ef30">project_2d</a> (<a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;full_proj, int var_i, int var_j)</td></tr>
 <tr class="memdesc:afc5861a44d368bc6472de2033ae4ef30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract a 2D sub-projection from a full p-dimensional projector.  <br /></td></tr>
 <tr class="separator:afc5861a44d368bc6472de2033ae4ef30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15cc9eecb78baad458dce491dfd4a783" id="r_a15cc9eecb78baad458dce491dfd4a783"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1viz_1_1HalfSpace.html">HalfSpace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15cc9eecb78baad458dce491dfd4a783">project_halfspace_2d</a> (<a class="el" href="structppforest2_1_1viz_1_1HalfSpace.html">HalfSpace</a> const &amp;hs, int var_i, int var_j, std::vector&lt; std::pair&lt; int, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> &gt; &gt; const &amp;fixed_vars)</td></tr>
+<tr class="memdesc:a15cc9eecb78baad458dce491dfd4a783"><td class="mdescLeft">&#160;</td><td class="mdescRight">Project a p-dimensional <a class="el" href="structppforest2_1_1viz_1_1HalfSpace.html" title="A half-space constraint derived from an ancestor split.">HalfSpace</a> constraint to the 2D display plane.  <br /></td></tr>
+<tr class="separator:a15cc9eecb78baad458dce491dfd4a783"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="aa490550458907d5beeea4c5a2f126d5e" name="aa490550458907d5beeea4c5a2f126d5e"></a>
@@ -498,6 +504,50 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>2D projection vector [full_proj(var_i), full_proj(var_j)]. </dd></dl>
+
+</div>
+</div>
+<a id="a15cc9eecb78baad458dce491dfd4a783" name="a15cc9eecb78baad458dce491dfd4a783"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15cc9eecb78baad458dce491dfd4a783">&#9670;&#160;</a></span>project_halfspace_2d()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structppforest2_1_1viz_1_1HalfSpace.html">HalfSpace</a> ppforest2::viz::project_halfspace_2d </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1viz_1_1HalfSpace.html">HalfSpace</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>hs</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>var_i</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>var_j</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::pair&lt; int, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> &gt; &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>fixed_vars</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Project a p-dimensional <a class="el" href="structppforest2_1_1viz_1_1HalfSpace.html" title="A half-space constraint derived from an ancestor split.">HalfSpace</a> constraint to the 2D display plane. </p>
+<p>Extracts the two relevant projector components and adjusts the cutpoint by subtracting the contributions of fixed variables.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hs</td><td>Full-dimensional half-space constraint. </td></tr>
+    <tr><td class="paramname">var_i</td><td>Index of the x-axis variable (0-based). </td></tr>
+    <tr><td class="paramname">var_j</td><td>Index of the y-axis variable (0-based). </td></tr>
+    <tr><td class="paramname">fixed_vars</td><td>Pairs of (variable index, fixed value) for non-displayed variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>2D half-space constraint. </dd></dl>
 
 </div>
 </div>

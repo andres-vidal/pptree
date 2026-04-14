@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"namespaceppforest2_1_1io_1_1text.html":[3,0,2,3,4],
+"namespaceppforest2_1_1io_1_1text.html#a03789b6a6901bf15ad883b62f87c81b4":[3,0,2,3,4,1],
 "namespaceppforest2_1_1io_1_1text.html#a3aab94f939be855338010b564970d2dc":[3,0,2,3,4,0],
 "namespaceppforest2_1_1leaf.html":[3,0,2,4],
 "namespaceppforest2_1_1leaf.html#a8f0900a222040866b97fdbc9d0c371e8":[3,0,2,4,2],
@@ -77,13 +79,14 @@ var NAVTREEINDEX2 =
 "namespaceppforest2_1_1vars.html#a48f01a668ad17d1842b23d1dfe140429":[3,0,2,14,4],
 "namespaceppforest2_1_1vars.html#a614863a07b853f618cc2da854f98f28b":[3,0,2,14,3],
 "namespaceppforest2_1_1viz.html":[3,0,2,15],
-"namespaceppforest2_1_1viz.html#a02f60ef6252c7a5ad6e7fbd5807a355f":[3,0,2,15,14],
-"namespaceppforest2_1_1viz.html#a40011a64c4d80fbd4117bf7ed0543d95":[3,0,2,15,13],
-"namespaceppforest2_1_1viz.html#a73d933ab90a48c472424d63c8782929f":[3,0,2,15,16],
-"namespaceppforest2_1_1viz.html#a93a5132ac7059c203558f4f63225e9a9":[3,0,2,15,12],
-"namespaceppforest2_1_1viz.html#aa490550458907d5beeea4c5a2f126d5e":[3,0,2,15,11],
-"namespaceppforest2_1_1viz.html#acdf2a58cc119f00a0fed0480e9469c7b":[3,0,2,15,15],
-"namespaceppforest2_1_1viz.html#afc5861a44d368bc6472de2033ae4ef30":[3,0,2,15,17],
+"namespaceppforest2_1_1viz.html#a02f60ef6252c7a5ad6e7fbd5807a355f":[3,0,2,15,15],
+"namespaceppforest2_1_1viz.html#a15cc9eecb78baad458dce491dfd4a783":[3,0,2,15,19],
+"namespaceppforest2_1_1viz.html#a40011a64c4d80fbd4117bf7ed0543d95":[3,0,2,15,14],
+"namespaceppforest2_1_1viz.html#a73d933ab90a48c472424d63c8782929f":[3,0,2,15,17],
+"namespaceppforest2_1_1viz.html#a93a5132ac7059c203558f4f63225e9a9":[3,0,2,15,13],
+"namespaceppforest2_1_1viz.html#aa490550458907d5beeea4c5a2f126d5e":[3,0,2,15,12],
+"namespaceppforest2_1_1viz.html#acdf2a58cc119f00a0fed0480e9469c7b":[3,0,2,15,16],
+"namespaceppforest2_1_1viz.html#afc5861a44d368bc6472de2033ae4ef30":[3,0,2,15,18],
 "namespaces.html":[3,0],
 "pages.html":[],
 "stats_2Uniform_8hpp.html":[5,0,0,0,4,6],
@@ -246,8 +249,5 @@ var NAVTREEINDEX2 =
 "structppforest2_1_1TrainingSpec.html#a3ac0655308fe6c450d1a58abd4457f44":[4,0,1,17,11],
 "structppforest2_1_1TrainingSpec.html#a5ee96262dd25ba73f168419f2bcaa585":[3,0,2,21,6],
 "structppforest2_1_1TrainingSpec.html#a5ee96262dd25ba73f168419f2bcaa585":[4,0,1,17,6],
-"structppforest2_1_1TrainingSpec.html#a5fd12b597b37db0545299815eaa0b115":[3,0,2,21,15],
-"structppforest2_1_1TrainingSpec.html#a5fd12b597b37db0545299815eaa0b115":[4,0,1,17,15],
-"structppforest2_1_1TrainingSpec.html#a664d94eb4e95f926dd77be129781de5f":[3,0,2,21,5],
-"structppforest2_1_1TrainingSpec.html#a664d94eb4e95f926dd77be129781de5f":[4,0,1,17,5]
+"structppforest2_1_1TrainingSpec.html#a5fd12b597b37db0545299815eaa0b115":[3,0,2,21,15]
 };

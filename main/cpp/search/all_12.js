@@ -10,7 +10,7 @@ var searchData=
   ['reference_7',['Existing visitors as reference',['../extending_visitors.html#vis_existing',1,'']]],
   ['regionpolygon_8',['RegionPolygon',['../structppforest2_1_1viz_1_1RegionPolygon.html',1,'ppforest2::viz']]],
   ['regions_9',['regions',['../structppforest2_1_1viz_1_1RegionVisitor.html#aa89748b5392906a8177cf40151226856',1,'ppforest2::viz::RegionVisitor']]],
-  ['regionvisitor_10',['RegionVisitor',['../structppforest2_1_1viz_1_1RegionVisitor.html',1,'ppforest2::viz::RegionVisitor'],['../structppforest2_1_1viz_1_1RegionVisitor.html#a61a2b96c112afe74522aadd04a009a2b',1,'ppforest2::viz::RegionVisitor::RegionVisitor()']]],
+  ['regionvisitor_10',['RegionVisitor',['../structppforest2_1_1viz_1_1RegionVisitor.html',1,'ppforest2::viz']]],
   ['register_5fstrategy_11',['register_strategy',['../structStrategy.html#ac90fa8b155a9853c1523aa35ea8ae8cf',1,'Strategy']]],
   ['registration_12',['Self-Registration',['../extending_strategies.html#strat_registration',1,'']]],
   ['regroup_13',['regroup',['../structppforest2_1_1binarize_1_1Binarization.html#aa4fc852857951162661dec820a2f9798',1,'ppforest2::binarize::Binarization::regroup()'],['../structppforest2_1_1binarize_1_1LargestGap.html#a1a780d96a799710b3aff7eda3f20337c',1,'ppforest2::binarize::LargestGap::regroup()'],['../structppforest2_1_1TrainingSpec.html#ab976e4dd567b056e1c4181dd71a19dcf',1,'ppforest2::TrainingSpec::regroup()']]],

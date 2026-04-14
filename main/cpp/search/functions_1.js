@@ -7,8 +7,7 @@ var searchData=
   ['bgss_4',['bgss',['../classppforest2_1_1stats_1_1GroupPartition.html#a8c26c6a76b3c37fc0db844351acabd90',1,'ppforest2::stats::GroupPartition']]],
   ['binarize_5',['binarize',['../structppforest2_1_1TrainingSpec_1_1Builder.html#abccf11f0c782eeddce193982ed82af5e',1,'ppforest2::TrainingSpec::Builder']]],
   ['bootstraptree_6',['BootstrapTree',['../structppforest2_1_1BootstrapTree.html#a0948eda6cfeb64e5b6138214d899a0e9',1,'ppforest2::BootstrapTree']]],
-  ['boundaryvisitor_7',['BoundaryVisitor',['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a1658b984dcce8865f834a58ad9c5d694',1,'ppforest2::viz::BoundaryVisitor']]],
-  ['build_8',['build',['../structppforest2_1_1TrainingSpec_1_1Builder.html#a92a59e56cb4fca5d8eb1b0b612635f5d',1,'ppforest2::TrainingSpec::Builder']]],
-  ['builder_9',['builder',['../structppforest2_1_1TrainingSpec.html#add8ac3224b4572ec224ba045bba73349',1,'ppforest2::TrainingSpec']]],
-  ['by_5fgroup_10',['by_group',['../namespaceppforest2_1_1partition.html#af7ee5186c1ab34b7be12b7314944834b',1,'ppforest2::partition']]]
+  ['build_7',['build',['../structppforest2_1_1TrainingSpec_1_1Builder.html#a92a59e56cb4fca5d8eb1b0b612635f5d',1,'ppforest2::TrainingSpec::Builder']]],
+  ['builder_8',['builder',['../structppforest2_1_1TrainingSpec.html#add8ac3224b4572ec224ba045bba73349',1,'ppforest2::TrainingSpec']]],
+  ['by_5fgroup_9',['by_group',['../namespaceppforest2_1_1partition.html#af7ee5186c1ab34b7be12b7314944834b',1,'ppforest2::partition']]]
 ];
