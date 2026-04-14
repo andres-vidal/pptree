@@ -136,6 +136,7 @@ pprf <- function(
     model$trees[[i]]$groups <- groups
   }
 
+  model$seed <- seed
   model$groups <- groups
   model$formula <- formula
   model$x <- x

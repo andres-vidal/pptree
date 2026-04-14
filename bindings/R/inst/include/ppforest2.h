@@ -113,7 +113,6 @@ namespace Rcpp {
 
     Rcpp::List result = Rcpp::List::create(
         Rcpp::Named("training_spec") = Rcpp::wrap(*forest.training_spec),
-        Rcpp::Named("seed")          = Rcpp::wrap(forest.training_spec->seed),
         Rcpp::Named("trees")         = trees,
         Rcpp::Named("degenerate")    = forest.degenerate
     );
