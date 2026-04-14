@@ -2,6 +2,7 @@
 
 [![C++ Tests](https://github.com/andres-vidal/ppforest2/actions/workflows/run-test.yml/badge.svg)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-test.yml)
 [![R Package Check](https://github.com/andres-vidal/ppforest2/actions/workflows/run-r-check.yml/badge.svg)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-r-check.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/andres-vidal/aafefce6b546eeb2f678ca607a950941/raw/ppforest2-coverage.json)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-coverage.yml)
 
 > **Work in progress** — this repository contains ongoing research and development work. Interfaces and behavior are expected to evolve as the project matures.
 
@@ -314,6 +315,7 @@ The C++ core uses two design patterns to keep the algorithm extensible without h
 | **C++ core** | `cmake` >= 3.20, `make`, `gcc` | `cmake` >= 3.20, `make`, `clang` | `cmake` >= 3.20, `make`, MinGW `gcc` |
 | **R package**| `R` >= 3.5       | `R` >= 3.5      | `R` >= 3.5, `Rtools`                |
 | **OpenMP** (optional) | Usually included with `gcc` | `brew install libomp` | Usually included with MinGW |
+| **Coverage** (optional) | `lcov` >= 2  | `brew install lcov` | —                                    |
 | **R docs**   | TeX distribution with `pdflatex` | TeX distribution with `pdflatex` | TeX distribution with `pdflatex` |
 
 For the R package, the C++ compiler must match the one R was built with (`gcc` on Linux/Windows, `clang` on macOS). OpenMP is optional but recommended for multi-threaded forest training; without it, forests train on a single thread.
@@ -327,7 +329,8 @@ make build              # Release build (C++ core + CLI + tests)
 make test               # Build and run C++ tests (GoogleTest)
 make build-debug        # Debug build with AddressSanitizer
 make test-debug         # Run debug tests
-make clean              # Remove all build artifacts (.build/, .debug/, .r-build/)
+make coverage           # Build with coverage, run tests, generate report and HTML
+make clean              # Remove all build artifacts (.build/, .debug/, .coverage/, .r-build/)
 ```
 
 The release build produces the `ppforest2` CLI binary and the `ppforest2-test` test runner in `.build/`. The debug build enables AddressSanitizer (on Linux) and runtime assertions.

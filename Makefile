@@ -2,6 +2,7 @@ MAKEFLAGS += --no-print-directory
 
 BUILD_DIR = .build
 BUILD_DIR_DEBUG = .debug
+BUILD_DIR_COV = .coverage
 R_BUILD_DIR = .r-build
 
 NLHOMANN_JSON_HEADERS_PATH = ${BUILD_DIR}/_deps/json-src/include
@@ -15,7 +16,7 @@ CMAKE_EXTRA += -DPPFOREST2_NATIVE_ARCH=OFF
 endif
 
 clean:
-	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG} ${R_BUILD_DIR}
+	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG} ${BUILD_DIR_COV} ${R_BUILD_DIR}
 
 fetch-deps:
 	@mkdir -p ${BUILD_DIR}
@@ -39,6 +40,22 @@ test: build
 
 test-debug: build-debug
 	@cd ./$(BUILD_DIR_DEBUG) && ./ppforest2-test
+
+build-coverage:
+	@mkdir -p ${BUILD_DIR_COV}
+	@cd ${BUILD_DIR_COV} && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DPPFOREST2_COVERAGE=ON ${CMAKE_EXTRA} ../core && make
+
+test-coverage: build-coverage
+	@cd ./$(BUILD_DIR_COV) && ./ppforest2-test
+
+LCOV_IGNORE = --ignore-errors mismatch,inconsistent,unsupported,range,format,category,unused
+
+coverage: test-coverage
+	@lcov --capture --directory ${BUILD_DIR_COV} --output-file ${BUILD_DIR_COV}/coverage.info --quiet ${LCOV_IGNORE} --rc branch_coverage=0
+	@lcov --extract ${BUILD_DIR_COV}/coverage.info '*/core/src/*' -o ${BUILD_DIR_COV}/coverage-filtered.info --quiet ${LCOV_IGNORE}
+	@lcov --remove ${BUILD_DIR_COV}/coverage-filtered.info '*/_deps/*' '*.test.*' '*/golden/*' '*test.cpp' -o ${BUILD_DIR_COV}/coverage-filtered.info --quiet ${LCOV_IGNORE}
+	@genhtml ${BUILD_DIR_COV}/coverage-filtered.info -o ${BUILD_DIR_COV}/html --quiet ${LCOV_IGNORE}
+	@python3 scripts/coverage-report.py ${BUILD_DIR_COV}/html
 
 golden-regen: build
 	@cd ./$(BUILD_DIR) && ./ppforest2-golden-gen

@@ -1,5 +1,6 @@
 .build
 .debug
+.coverage
 .r-build
 .tools
 *.trace

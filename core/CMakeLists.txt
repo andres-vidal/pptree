@@ -51,6 +51,8 @@ if(PPFOREST2_NATIVE_ARCH AND NOT CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_options(-march=native)
 endif()
 
+option(PPFOREST2_COVERAGE "Enable code coverage instrumentation" OFF)
+
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_options(-O0)
   add_compile_options(-g)
@@ -61,14 +63,13 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_definitions(EIGEN_RUNTIME_NO_MALLOC)
   add_compile_options(-fno-omit-frame-pointer)
 
-  add_link_options(--coverage)
-
-  if(UNIX AND NOT APPLE)
+  if(PPFOREST2_COVERAGE)
+    add_compile_options(--coverage)
+    add_link_options(--coverage)
+  elseif(UNIX AND NOT APPLE)
     add_compile_options(-fsanitize=address,undefined)
     add_link_options(-fsanitize=address,undefined)
   endif()
-
-  add_link_options(--coverage)
 
   if(WIN32)
     add_compile_options(-Wa,-mbig-obj)
