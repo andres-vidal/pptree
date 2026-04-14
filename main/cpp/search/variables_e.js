@@ -5,5 +5,5 @@ var searchData=
   ['results_2',['results',['../structppforest2_1_1cli_1_1SuiteResult.html#aa9f2411e2330a2c157623f4f7235fc8c',1,'ppforest2::cli::SuiteResult']]],
   ['root_3',['root',['../structppforest2_1_1Tree.html#a0ee08cf6521ba72ea9a4b84b346b70f6',1,'ppforest2::Tree']]],
   ['rows_4',['rows',['../structppforest2_1_1cli_1_1SimulateParams.html#a77dc759a5167ccbd01aeda7ec3bd2d4e',1,'ppforest2::cli::SimulateParams']]],
-  ['runs_5',['runs',['../structppforest2_1_1cli_1_1ScenarioResult.html#a212b9b0d7890c264c7cab41696747c65',1,'ppforest2::cli::ScenarioResult']]]
+  ['runs_5',['runs',['../structppforest2_1_1io_1_1EvaluateResult.html#a75c445aa0a83f1fb26c3160f4c5fab3c',1,'ppforest2::io::EvaluateResult']]]
 ];

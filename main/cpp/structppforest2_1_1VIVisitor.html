@@ -117,12 +117,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af9b2ea7aba5603c55669be94213a74e2" id="r_af9b2ea7aba5603c55669be94213a74e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9b2ea7aba5603c55669be94213a74e2">VIVisitor</a> (int n_vars, <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const *<a class="el" href="#a0b64708adeb552d42ced14b5d01d10ba">scale</a>=nullptr)</td></tr>
 <tr class="memdesc:af9b2ea7aba5603c55669be94213a74e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a visitor for a tree with <code class="param">n_vars</code> variables.  <br /></td></tr>
 <tr class="separator:af9b2ea7aba5603c55669be94213a74e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a761aad1d69f1b1cf31b1d7dcedf67b10" id="r_a761aad1d69f1b1cf31b1d7dcedf67b10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a761aad1d69f1b1cf31b1d7dcedf67b10">visit</a> (<a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> const &amp;node) override</td></tr>
-<tr class="memdesc:a761aad1d69f1b1cf31b1d7dcedf67b10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visit a split node; accumulate contributions and recurse.  <br /></td></tr>
-<tr class="separator:a761aad1d69f1b1cf31b1d7dcedf67b10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0dc1beb4fa534054ee1f4ac1c9385f62" id="r_a0dc1beb4fa534054ee1f4ac1c9385f62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0dc1beb4fa534054ee1f4ac1c9385f62">visit</a> (<a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> const &amp;) override</td></tr>
-<tr class="memdesc:a0dc1beb4fa534054ee1f4ac1c9385f62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visit a leaf node; no contribution to VI.  <br /></td></tr>
-<tr class="separator:a0dc1beb4fa534054ee1f4ac1c9385f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adda8cabf7a118f01fbc3fb3d86cd57f2" id="r_adda8cabf7a118f01fbc3fb3d86cd57f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adda8cabf7a118f01fbc3fb3d86cd57f2">visit</a> (<a class="el" href="structppforest2_1_1TreeBranch.html">TreeBranch</a> const &amp;node) override</td></tr>
+<tr class="memdesc:adda8cabf7a118f01fbc3fb3d86cd57f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visit a split node; accumulate contributions and recurse.  <br /></td></tr>
+<tr class="separator:adda8cabf7a118f01fbc3fb3d86cd57f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac629a4849cc49dcf5a9fad03cc8e4530" id="r_ac629a4849cc49dcf5a9fad03cc8e4530"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac629a4849cc49dcf5a9fad03cc8e4530">visit</a> (<a class="el" href="structppforest2_1_1TreeLeaf.html">TreeLeaf</a> const &amp;) override</td></tr>
+<tr class="memdesc:ac629a4849cc49dcf5a9fad03cc8e4530"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visit a leaf node; no contribution to VI.  <br /></td></tr>
+<tr class="separator:ac629a4849cc49dcf5a9fad03cc8e4530"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -182,8 +182,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a761aad1d69f1b1cf31b1d7dcedf67b10" name="a761aad1d69f1b1cf31b1d7dcedf67b10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a761aad1d69f1b1cf31b1d7dcedf67b10">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
+<a id="adda8cabf7a118f01fbc3fb3d86cd57f2" name="adda8cabf7a118f01fbc3fb3d86cd57f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adda8cabf7a118f01fbc3fb3d86cd57f2">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -194,7 +194,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void ppforest2::VIVisitor::visit </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeBranch.html">TreeBranch</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -213,12 +213,12 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#ae0012f890f7222f07c4a4d1c919b5e1b">ppforest2::TreeNode::Visitor</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#a32aaa3f520bd7778ee1f3e9da48776ca">ppforest2::TreeNode::Visitor</a>.</p>
 
 </div>
 </div>
-<a id="a0dc1beb4fa534054ee1f4ac1c9385f62" name="a0dc1beb4fa534054ee1f4ac1c9385f62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dc1beb4fa534054ee1f4ac1c9385f62">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
+<a id="ac629a4849cc49dcf5a9fad03cc8e4530" name="ac629a4849cc49dcf5a9fad03cc8e4530"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac629a4849cc49dcf5a9fad03cc8e4530">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -229,7 +229,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void ppforest2::VIVisitor::visit </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeLeaf.html">TreeLeaf</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -243,7 +243,7 @@ Public Attributes</h2></td></tr>
 <p>Visit a leaf node; no contribution to VI. </p>
 <p>Leaf nodes hold only a class label and do not contribute to variable importance. </p>
 
-<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#a108bd70b895abb667aed72e0f1bcfa73">ppforest2::TreeNode::Visitor</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#a6a192faabb8cb7e5f7a95b3d7957f66c">ppforest2::TreeNode::Visitor</a>.</p>
 
 </div>
 </div>

@@ -105,10 +105,14 @@ $(function(){initNavTree('TrainingSpec_8hpp.html',''); initResizable(true); });
   <div class="headertitle"><div class="title">TrainingSpec.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="PPPDAStrategy_8hpp_source.html">models/PPPDAStrategy.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="DRUniformStrategy_8hpp_source.html">models/DRUniformStrategy.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="DRNoopStrategy_8hpp_source.html">models/DRNoopStrategy.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="SRMeanOfMeansStrategy_8hpp_source.html">models/SRMeanOfMeansStrategy.hpp</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="PDA_8hpp_source.html">models/strategies/pp/PDA.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="models_2strategies_2vars_2Uniform_8hpp_source.html">models/strategies/vars/Uniform.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="All_8hpp_source.html">models/strategies/vars/All.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeanOfMeans_8hpp_source.html">models/strategies/cutpoint/MeanOfMeans.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PureNode_8hpp_source.html">models/strategies/stop/PureNode.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LargestGap_8hpp_source.html">models/strategies/binarize/LargestGap.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ByGroup_8hpp_source.html">models/strategies/partition/ByGroup.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MajorityVote_8hpp_source.html">models/strategies/leaf/MajorityVote.hpp</a>&quot;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;nlohmann/json.hpp&gt;</code><br />
@@ -117,6 +121,9 @@ $(function(){initNavTree('TrainingSpec_8hpp.html',''); initResizable(true); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1TrainingSpec_1_1Builder.html">ppforest2::TrainingSpec::Builder</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fluent builder for <a class="el" href="structppforest2_1_1TrainingSpec.html" title="Training configuration for projection pursuit trees and forests.">TrainingSpec</a>.  <a href="structppforest2_1_1TrainingSpec_1_1Builder.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1TrainingSpec.html">ppforest2::TrainingSpec</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training configuration for projection pursuit trees and forests.  <a href="structppforest2_1_1TrainingSpec.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,6 +131,7 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html">ppforest2</a></td></tr>
+<tr class="memdesc:namespaceppforest2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binarization strategies for multiclass-to-binary reduction. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->

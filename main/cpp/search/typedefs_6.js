@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['threshold_0',['Threshold',['../namespaceppforest2.html#ad86c43fe58242b878d5590d1d130772a',1,'ppforest2']]]
+  ['outcome_0',['Outcome',['../namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170',1,'ppforest2::types']]],
+  ['outcomevector_1',['OutcomeVector',['../namespaceppforest2_1_1types.html#a2432f13302eed47b33e7b5a73e57b020',1,'ppforest2::types']]]
 ];

@@ -12,9 +12,9 @@ var namespaceppforest2_1_1serialization =
     [ "from_json< VariableImportance >", "namespaceppforest2_1_1serialization.html#a73f462ea74e7daaa9d3fbd0c0b37d85a", null ],
     [ "operator<<", "namespaceppforest2_1_1serialization.html#a643c37746e4a2bad98b28088337c97b9", null ],
     [ "operator<<", "namespaceppforest2_1_1serialization.html#a725ee201b77a9bf944b4249cf7186bf2", null ],
-    [ "operator<<", "namespaceppforest2_1_1serialization.html#af54bcb7188a42c59cadce483f37b888d", null ],
+    [ "operator<<", "namespaceppforest2_1_1serialization.html#a227e771a6ac8a83b80bfa18c3bc5a370", null ],
+    [ "operator<<", "namespaceppforest2_1_1serialization.html#a64b677e179dfa2f1e4c0c92193440c12", null ],
     [ "operator<<", "namespaceppforest2_1_1serialization.html#a281d0b90afbe38b0b695ef88cff0d65f", null ],
-    [ "operator<<", "namespaceppforest2_1_1serialization.html#acd6d8ba2b045bda0bb4cea53ba78e9fa", null ],
     [ "operator<<", "namespaceppforest2_1_1serialization.html#aa99ef6904bad22dda99eba8b0ef9da1f", null ],
     [ "operator<<", "namespaceppforest2_1_1serialization.html#a251232df8450673666940be5f17d20ee", null ],
     [ "operator<<", "namespaceppforest2_1_1serialization.html#a6ef5ffe2412c40ce9d1f427297d64e99", null ],
@@ -33,5 +33,5 @@ var namespaceppforest2_1_1serialization =
     [ "to_json", "namespaceppforest2_1_1serialization.html#ac8ffbb16ee61f5e2edca5a28e27442df", null ],
     [ "to_json", "namespaceppforest2_1_1serialization.html#a6f5c70391e6831b723860f7fb878dba0", null ],
     [ "to_json", "namespaceppforest2_1_1serialization.html#a107afa7dd5edd4dffbb2d201dbda07b3", null ],
-    [ "to_labels", "namespaceppforest2_1_1serialization.html#a7d48297c6e3bbd3bbd6ca9dd3c048594", null ]
+    [ "to_labels", "namespaceppforest2_1_1serialization.html#a81ef3dbd6cc8e9bc258dcda56d58b691", null ]
 ];

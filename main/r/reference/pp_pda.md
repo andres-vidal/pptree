@@ -28,9 +28,9 @@ A `pp_strategy` object.
 
 [`pptr`](https://andres-vidal.github.io/ppforest2/main/r/reference/pptr.md),
 [`pprf`](https://andres-vidal.github.io/ppforest2/main/r/reference/pprf.md),
-[`dr_uniform`](https://andres-vidal.github.io/ppforest2/main/r/reference/dr_uniform.md),
-[`dr_noop`](https://andres-vidal.github.io/ppforest2/main/r/reference/dr_noop.md),
-[`sr_mean_of_means`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md)
+[`vars_uniform`](https://andres-vidal.github.io/ppforest2/main/r/reference/vars_uniform.md),
+[`vars_all`](https://andres-vidal.github.io/ppforest2/main/r/reference/vars_all.md),
+[`cutpoint_mean_of_means`](https://andres-vidal.github.io/ppforest2/main/r/reference/cutpoint_mean_of_means.md)
 
 ## Examples
 
@@ -63,27 +63,27 @@ pptr(Type ~ ., data = iris, pp = pp_pda(0.5))
 #> 
 
 # Use with pprf
-pprf(Type ~ ., data = iris, pp = pp_pda(0.5), dr = dr_uniform(2))
+pprf(Type ~ ., data = iris, pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2))
 #> 
 #> Random Forest of Project-Pursuit Oblique Decision Tree
 #> -------------------------------------
 #> Tree 1:
-#> If ([ 0 0 0.05 0 ] * x) < 0.1617731:
+#> If ([ 0 0 0.03 0.04 ] * x) < 0.1317591:
 #>   Predict: setosa 
 #> Else:
-#>  If ([ 0.01 0 0 0.24 ] * x) < 0.4458542:
+#>  If ([ 0 0 0.04 0.17 ] * x) < 0.4950379:
 #>    Predict: versicolor 
 #>  Else:
 #>    Predict: virginica 
 #> 
 #> Tree 2:
-#> If ([ 0.02 0 0 0.09 ] * x) < 0.2074318:
-#>   Predict: setosa 
-#> Else:
-#>  If ([ 0 0 0.06 0.15 ] * x) < 0.5487639:
+#> If ([ 0 0.05 0 -0.09 ] * x) < 0.06891914:
+#>  If ([ 0 0 0.06 0.16 ] * x) < 0.5307753:
 #>    Predict: versicolor 
 #>  Else:
 #>    Predict: virginica 
+#> Else:
+#>   Predict: setosa 
 #> 
 #> 
 ```

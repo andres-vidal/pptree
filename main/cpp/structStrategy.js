@@ -6,5 +6,5 @@ var structStrategy =
     [ "display_name", "structStrategy.html#af1ce78657a37580a4b15dc5747f76519", null ],
     [ "from_json", "structStrategy.html#a9e314b0628debdf68c17e25f10f339c8", null ],
     [ "register_strategy", "structStrategy.html#ac90fa8b155a9853c1523aa35ea8ae8cf", null ],
-    [ "to_json", "structStrategy.html#a60b638e6088f71a745df00a0de7eeab2", null ]
+    [ "to_json", "structStrategy.html#a62c864302f9daa7f425877f5f1401ae0", null ]
 ];

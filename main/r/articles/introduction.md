@@ -40,8 +40,12 @@ summary(tree)
 #> Project-Pursuit Oblique Decision Tree
 #> 
 #> pp method: LDA (lambda=0)
-#> dr method: All variables
-#> sr method: Mean of means
+#> vars method: All variables
+#> cutpoint method: Mean of means
+#> stop rule: Pure node
+#> binarize method: Largest gap
+#> partition method: By group
+#> leaf method: Majority vote
 #> 
 #> 
 #> Data Summary:
@@ -100,8 +104,12 @@ summary(forest)
 #> 
 #> Size: 100 trees
 #> pp method: LDA (lambda=0)
-#> dr method: Uniform random (n_vars=2)
-#> sr method: Mean of means
+#> vars method: Uniform random (count=2)
+#> cutpoint method: Mean of means
+#> stop rule: Pure node
+#> binarize method: Largest gap
+#> partition method: By group
+#> leaf method: Majority vote
 #> 
 #> 
 #> Data Summary:
@@ -228,8 +236,12 @@ summary(tree_pda)
 #> Project-Pursuit Oblique Decision Tree
 #> 
 #> pp method: PDA (lambda=0.5)
-#> dr method: All variables
-#> sr method: Mean of means
+#> vars method: All variables
+#> cutpoint method: Mean of means
+#> stop rule: Pure node
+#> binarize method: Largest gap
+#> partition method: By group
+#> leaf method: Majority vote
 #> 
 #> 
 #> Data Summary:
@@ -273,20 +285,20 @@ equivalent but makes the strategy choice explicit:
 # These two calls produce identical results:
 forest_shortcut <- pprf(Type ~ ., data = iris, size = 10, lambda = 0.5, n_vars = 2, seed = 0)
 
-forest_explicit <- pprf(Type ~ ., data = iris, size = 10, pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2), seed = )
+forest_explicit <- pprf(Type ~ ., data = iris, size = 10, pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2), seed = 0)
 
 all.equal(predict(forest_shortcut, iris), predict(forest_explicit, iris))
-#> [1] "3 string mismatches"
+#> [1] TRUE
 ```
 
 Available strategy constructors:
 
 - `pp_pda(lambda)` — PDA projection pursuit (`lambda = 0` for LDA)
-- `dr_uniform(n_vars)` or `dr_uniform(p_vars)` — random variable
+- `vars_uniform(n_vars)` or `vars_uniform(p_vars)` — random variable
   selection
-- [`dr_noop()`](https://andres-vidal.github.io/ppforest2/main/r/reference/dr_noop.md)
+- [`vars_all()`](https://andres-vidal.github.io/ppforest2/main/r/reference/vars_all.md)
   — use all variables (default for single trees)
-- [`sr_mean_of_means()`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md)
+- [`cutpoint_mean_of_means()`](https://andres-vidal.github.io/ppforest2/main/r/reference/cutpoint_mean_of_means.md)
   — midpoint split rule (default)
 
 Strategy objects can also be passed as engine arguments in parsnip:
@@ -295,7 +307,7 @@ Strategy objects can also be passed as engine arguments in parsnip:
 library(parsnip)
 
 spec <- pp_rand_forest(trees = 10) |>
-  set_engine("ppforest2", pp = pp_pda(0.5), dr = dr_uniform(n_vars = 2)) |>
+  set_engine("ppforest2", pp = pp_pda(0.5), vars = vars_uniform(n_vars = 2)) |>
   set_mode("classification")
 
 fit <- spec |> fit(Type ~ ., data = iris)

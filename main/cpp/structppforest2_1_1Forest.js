@@ -4,13 +4,13 @@ var structppforest2_1_1Forest =
     [ "Forest", "structppforest2_1_1Forest.html#aa9654ca989c78e65a9d1da2f5d3e2d02", null ],
     [ "accept", "structppforest2_1_1Forest.html#ad88835a72b166e172fc4cfe4d284b377", null ],
     [ "add_tree", "structppforest2_1_1Forest.html#a2b19dd1a1bc6e66fd817fb5d1b62fd33", null ],
-    [ "oob_error", "structppforest2_1_1Forest.html#a4458d72bb49f06ed9535a04f8abd4965", null ],
-    [ "oob_predict", "structppforest2_1_1Forest.html#a41aae0d3e7caf90cd57417a94ab3af59", null ],
+    [ "oob_error", "structppforest2_1_1Forest.html#ac3dd6295f825388142bc101f857c7d87", null ],
+    [ "oob_predict", "structppforest2_1_1Forest.html#ae3b30d46825b6abf577c5f4c23fa6d39", null ],
     [ "operator!=", "structppforest2_1_1Forest.html#aff9e804c5b515dad0db3cbfee59d7ab8", null ],
     [ "operator==", "structppforest2_1_1Forest.html#ab401a04b0f8f21e345c447de8b87bd72", null ],
-    [ "predict", "structppforest2_1_1Forest.html#a0d51b9ff5f1efb47d7541aa5057ce417", null ],
+    [ "predict", "structppforest2_1_1Forest.html#a73532e4a301cb5c010d7b136e254444f", null ],
     [ "predict", "structppforest2_1_1Forest.html#ab51fe8b9cd603263f7dbc4607072b4c5", null ],
-    [ "predict", "structppforest2_1_1Forest.html#ae3a02fb669e28ec74528747d2d9dc3c2", null ],
-    [ "train", "structppforest2_1_1Forest.html#a2b7b125d99a38f8d548c7d896689526d", null ],
+    [ "predict", "structppforest2_1_1Forest.html#a1780bd932b6cd8173ff0bbe97f5cfde9", null ],
+    [ "train", "structppforest2_1_1Forest.html#a423a5a8d2feed18c47cf71a2cdf2658f", null ],
     [ "trees", "structppforest2_1_1Forest.html#ad5d1affa0b4c09155a5ce0e630bcafac", null ]
 ];

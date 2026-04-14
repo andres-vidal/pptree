@@ -142,21 +142,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:acf538798f71c698194827b16a4bd100a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of distinct groups reachable from this node.  <br /></td></tr>
 <tr class="separator:acf538798f71c698194827b16a4bd100a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a010d9b1fc895976b4834b2c2567163f6" id="r_a010d9b1fc895976b4834b2c2567163f6"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a010d9b1fc895976b4834b2c2567163f6">is_leaf</a> () const =0</td></tr>
-<tr class="memdesc:a010d9b1fc895976b4834b2c2567163f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether this node is a leaf (<a class="el" href="structppforest2_1_1TreeResponse.html" title="Leaf node in a projection pursuit tree.">TreeResponse</a>).  <br /></td></tr>
+<tr class="memdesc:a010d9b1fc895976b4834b2c2567163f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether this node is a leaf (<a class="el" href="structppforest2_1_1TreeLeaf.html" title="Leaf node in a projection pursuit tree.">TreeLeaf</a>).  <br /></td></tr>
 <tr class="separator:a010d9b1fc895976b4834b2c2567163f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03d94afef8ffcb1cd00f264dbd6a5194" id="r_a03d94afef8ffcb1cd00f264dbd6a5194"><td class="memItemLeft" align="right" valign="top">virtual std::set&lt; <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03d94afef8ffcb1cd00f264dbd6a5194">node_groups</a> () const =0</td></tr>
-<tr class="memdesc:a03d94afef8ffcb1cd00f264dbd6a5194"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorted set of group labels reachable from this node.  <br /></td></tr>
-<tr class="separator:a03d94afef8ffcb1cd00f264dbd6a5194"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8593ecd443fed079cd55bbf6fe0f239b" id="r_a8593ecd443fed079cd55bbf6fe0f239b"><td class="memItemLeft" align="right" valign="top">virtual std::set&lt; <a class="el" href="namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170">types::Outcome</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8593ecd443fed079cd55bbf6fe0f239b">node_groups</a> () const =0</td></tr>
+<tr class="memdesc:a8593ecd443fed079cd55bbf6fe0f239b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorted set of group labels reachable from this node.  <br /></td></tr>
+<tr class="separator:a8593ecd443fed079cd55bbf6fe0f239b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0888205e9aceff2ace569f92da60630c" id="r_a0888205e9aceff2ace569f92da60630c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0888205e9aceff2ace569f92da60630c">operator!=</a> (<a class="el" href="structppforest2_1_1TreeNode.html">TreeNode</a> const &amp;other) const</td></tr>
 <tr class="separator:a0888205e9aceff2ace569f92da60630c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5f62d3cca16de0142de37d4e1b6ad19" id="r_af5f62d3cca16de0142de37d4e1b6ad19"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5f62d3cca16de0142de37d4e1b6ad19">operator==</a> (<a class="el" href="structppforest2_1_1TreeNode.html">TreeNode</a> const &amp;other) const</td></tr>
 <tr class="separator:af5f62d3cca16de0142de37d4e1b6ad19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95c3c24a93ccaf9e025b6e80e92333be" id="r_a95c3c24a93ccaf9e025b6e80e92333be"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95c3c24a93ccaf9e025b6e80e92333be">predict</a> (<a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;data) const =0</td></tr>
-<tr class="memdesc:a95c3c24a93ccaf9e025b6e80e92333be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predict the group label for a single observation.  <br /></td></tr>
-<tr class="separator:a95c3c24a93ccaf9e025b6e80e92333be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ff08d96717ede9a4812bac0ca787276" id="r_a3ff08d96717ede9a4812bac0ca787276"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3ff08d96717ede9a4812bac0ca787276">response</a> () const =0</td></tr>
-<tr class="memdesc:a3ff08d96717ede9a4812bac0ca787276"><td class="mdescLeft">&#160;</td><td class="mdescRight">The group label at this node (leaf value or majority group).  <br /></td></tr>
-<tr class="separator:a3ff08d96717ede9a4812bac0ca787276"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1a68c080b2d3c864db905c6596e8761" id="r_ac1a68c080b2d3c864db905c6596e8761"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170">types::Outcome</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1a68c080b2d3c864db905c6596e8761">predict</a> (<a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;data) const =0</td></tr>
+<tr class="memdesc:ac1a68c080b2d3c864db905c6596e8761"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predict the group label for a single observation.  <br /></td></tr>
+<tr class="separator:ac1a68c080b2d3c864db905c6596e8761"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89bba06b61229b8a0fa212477bebb5ac" id="r_a89bba06b61229b8a0fa212477bebb5ac"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170">types::Outcome</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a89bba06b61229b8a0fa212477bebb5ac">response</a> () const =0</td></tr>
+<tr class="memdesc:a89bba06b61229b8a0fa212477bebb5ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">The group label at this node (leaf value or majority group).  <br /></td></tr>
+<tr class="separator:a89bba06b61229b8a0fa212477bebb5ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -166,7 +166,7 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract base class for nodes in a projection pursuit tree. </p>
-<p>A tree is a recursive structure of nodes: internal split nodes (<a class="el" href="structppforest2_1_1TreeCondition.html" title="Internal split node in a projection pursuit tree.">TreeCondition</a>) that project and threshold, and leaf nodes (<a class="el" href="structppforest2_1_1TreeResponse.html" title="Leaf node in a projection pursuit tree.">TreeResponse</a>) that hold a group label. </p>
+<p>A tree is a recursive structure of nodes: internal split nodes (<a class="el" href="structppforest2_1_1TreeBranch.html" title="Internal split node in a projection pursuit tree.">TreeBranch</a>) that project and split, and leaf nodes (<a class="el" href="structppforest2_1_1TreeLeaf.html" title="Leaf node in a projection pursuit tree.">TreeLeaf</a>) that hold a group label. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="aa03af85bbfe1c0f8d8ce50f18c96623c" name="aa03af85bbfe1c0f8d8ce50f18c96623c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa03af85bbfe1c0f8d8ce50f18c96623c">&#9670;&#160;</a></span>Ptr</h2>
@@ -234,7 +234,7 @@ Public Attributes</h2></td></tr>
 
 <p>Accept a tree node visitor (double dispatch). </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#a7dd80b4ff4412f587347c50e832b6601">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#a4dd4c2b0834ca7523a6a24327b953d80">ppforest2::TreeResponse</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TreeBranch.html#aa6f10c078595f3f05b1ae2a5da09efa9">ppforest2::TreeBranch</a>, and <a class="el" href="structppforest2_1_1TreeLeaf.html#ac80c5cd434008db9c503f5bcbc262b03">ppforest2::TreeLeaf</a>.</p>
 
 </div>
 </div>
@@ -263,7 +263,7 @@ Public Attributes</h2></td></tr>
 
 <p>Deep copy of this node and its subtree. </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#a098a15e1e211878b33be889b36c2a741">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#a98d85931fdf139a8706f5d9be99c2af0">ppforest2::TreeResponse</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TreeBranch.html#a63d7d7430a2738ec896e93d1a3f2fd84">ppforest2::TreeBranch</a>, and <a class="el" href="structppforest2_1_1TreeLeaf.html#ab9cd9f424430d17464122d761bdc89ea">ppforest2::TreeLeaf</a>.</p>
 
 </div>
 </div>
@@ -292,7 +292,7 @@ Public Attributes</h2></td></tr>
 
 <p>Structural equality comparison (value-based). </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#a98230e199315f32eb0b44ab6fbaea35a">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#a7331f80e49bf41bfc436d9c284a0c272">ppforest2::TreeResponse</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TreeBranch.html#a6fa479b403f64c40613ddd5a872b9d84">ppforest2::TreeBranch</a>, and <a class="el" href="structppforest2_1_1TreeLeaf.html#a205b9430e4fa5dfce1b2a025cdbc2d37">ppforest2::TreeLeaf</a>.</p>
 
 </div>
 </div>
@@ -321,7 +321,7 @@ Public Attributes</h2></td></tr>
 
 <p>Number of distinct groups reachable from this node. </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#ae554a6dd51b7d2296aa75827157bf7ab">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#a4899f6b5bd6bd7e80878b9fe7a4a36dc">ppforest2::TreeResponse</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TreeBranch.html#af9b7c133f8156ffa53cc6b35d429c87f">ppforest2::TreeBranch</a>, and <a class="el" href="structppforest2_1_1TreeLeaf.html#a903def1fef2ffffff65194a22a950b6a">ppforest2::TreeLeaf</a>.</p>
 
 </div>
 </div>
@@ -348,14 +348,14 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Whether this node is a leaf (<a class="el" href="structppforest2_1_1TreeResponse.html" title="Leaf node in a projection pursuit tree.">TreeResponse</a>). </p>
+<p>Whether this node is a leaf (<a class="el" href="structppforest2_1_1TreeLeaf.html" title="Leaf node in a projection pursuit tree.">TreeLeaf</a>). </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#a1bc39a6582fc702b1e2728d582e79b61">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#afec18b1e2545f347bfc2dd7dca0d0e9c">ppforest2::TreeResponse</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TreeBranch.html#a8eec84c1ed6fa234f5caddab90cfc175">ppforest2::TreeBranch</a>, and <a class="el" href="structppforest2_1_1TreeLeaf.html#a67aecd5852e944f308177a8a62075ae9">ppforest2::TreeLeaf</a>.</p>
 
 </div>
 </div>
-<a id="a03d94afef8ffcb1cd00f264dbd6a5194" name="a03d94afef8ffcb1cd00f264dbd6a5194"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03d94afef8ffcb1cd00f264dbd6a5194">&#9670;&#160;</a></span>node_groups()</h2>
+<a id="a8593ecd443fed079cd55bbf6fe0f239b" name="a8593ecd443fed079cd55bbf6fe0f239b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8593ecd443fed079cd55bbf6fe0f239b">&#9670;&#160;</a></span>node_groups()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -364,7 +364,7 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::set&lt; <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> &gt; ppforest2::TreeNode::node_groups </td>
+          <td class="memname">virtual std::set&lt; <a class="el" href="namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170">types::Outcome</a> &gt; ppforest2::TreeNode::node_groups </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -379,7 +379,7 @@ Public Attributes</h2></td></tr>
 
 <p>Sorted set of group labels reachable from this node. </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#a6a2b3cdfe05eaacee10019260bf1db55">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#a3d73100e9764c2a9481c2e167f7eb5e7">ppforest2::TreeResponse</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TreeBranch.html#a1d70fa6b7049727f93fc181abdbfe1ec">ppforest2::TreeBranch</a>, and <a class="el" href="structppforest2_1_1TreeLeaf.html#aa6e7ae0b94963d52907a2035efbbdf44">ppforest2::TreeLeaf</a>.</p>
 
 </div>
 </div>
@@ -417,8 +417,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a95c3c24a93ccaf9e025b6e80e92333be" name="a95c3c24a93ccaf9e025b6e80e92333be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95c3c24a93ccaf9e025b6e80e92333be">&#9670;&#160;</a></span>predict()</h2>
+<a id="ac1a68c080b2d3c864db905c6596e8761" name="ac1a68c080b2d3c864db905c6596e8761"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1a68c080b2d3c864db905c6596e8761">&#9670;&#160;</a></span>predict()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -427,7 +427,7 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> ppforest2::TreeNode::predict </td>
+          <td class="memname">virtual <a class="el" href="namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170">types::Outcome</a> ppforest2::TreeNode::predict </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>data</em></span></td><td>)</td>
           <td> const</td>
@@ -449,12 +449,12 @@ Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Predicted group label. </dd></dl>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#ada4462b6c30b15fa6b18112b17e3d18b">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#a5785dc8c97e4c16cf486d830178f6624">ppforest2::TreeResponse</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TreeBranch.html#aa971af377573bdfc48de08aaf8358c45">ppforest2::TreeBranch</a>, and <a class="el" href="structppforest2_1_1TreeLeaf.html#a1a890e09379e0243e5fb5671eddf099a">ppforest2::TreeLeaf</a>.</p>
 
 </div>
 </div>
-<a id="a3ff08d96717ede9a4812bac0ca787276" name="a3ff08d96717ede9a4812bac0ca787276"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ff08d96717ede9a4812bac0ca787276">&#9670;&#160;</a></span>response()</h2>
+<a id="a89bba06b61229b8a0fa212477bebb5ac" name="a89bba06b61229b8a0fa212477bebb5ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89bba06b61229b8a0fa212477bebb5ac">&#9670;&#160;</a></span>response()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -463,7 +463,7 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="namespaceppforest2_1_1types.html#a421bc51b648a3f3a8e2d3d5c17293c7e">types::Response</a> ppforest2::TreeNode::response </td>
+          <td class="memname">virtual <a class="el" href="namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170">types::Outcome</a> ppforest2::TreeNode::response </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -478,7 +478,7 @@ Public Attributes</h2></td></tr>
 
 <p>The group label at this node (leaf value or majority group). </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1TreeCondition.html#ae64fd60a89f2f5bf2785188866ce64fa">ppforest2::TreeCondition</a>, and <a class="el" href="structppforest2_1_1TreeResponse.html#a7a4e650892f7799dc073e5debf5b3765">ppforest2::TreeResponse</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1TreeBranch.html#a113de1113264fbf9f4435166716b270d">ppforest2::TreeBranch</a>, and <a class="el" href="structppforest2_1_1TreeLeaf.html#ac636bcff048089aa65528e24b55288ab">ppforest2::TreeLeaf</a>.</p>
 
 </div>
 </div>

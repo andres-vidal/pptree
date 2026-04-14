@@ -101,6 +101,7 @@ $(function(){initNavTree('IO_8hpp.html',''); initResizable(true); });
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">IO.hpp File Reference</div></div>
 </div><!--header-->
@@ -110,6 +111,7 @@ $(function(){initNavTree('IO_8hpp.html',''); initResizable(true); });
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="DataPacket_8hpp_source.html">stats/DataPacket.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Types_8hpp_source.html">utils/Types.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Invariant_8hpp_source.html">utils/Invariant.hpp</a>&quot;</code><br />
 <code>#include &lt;nlohmann/json.hpp&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 </div>
@@ -118,6 +120,7 @@ $(function(){initNavTree('IO_8hpp.html',''); initResizable(true); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html">ppforest2</a></td></tr>
+<tr class="memdesc:namespaceppforest2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binarization strategies for multiclass-to-binary reduction. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io.html">ppforest2::io</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,12 +128,25 @@ Namespaces</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1json.html">ppforest2::io::json</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1text.html">ppforest2::io::text</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a31a35114954164986de8ad9d9cde19da" id="r_a31a35114954164986de8ad9d9cde19da"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1json.html#a31a35114954164986de8ad9d9cde19da">ppforest2::io::json::ErrorHandler</a> = void (*)(bool, std::string const&amp;)</td></tr>
+<tr class="memdesc:a31a35114954164986de8ad9d9cde19da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error handler signature: (condition, message).  <br /></td></tr>
+<tr class="separator:a31a35114954164986de8ad9d9cde19da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3aab94f939be855338010b564970d2dc" id="r_a3aab94f939be855338010b564970d2dc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1text.html#a3aab94f939be855338010b564970d2dc">ppforest2::io::text::ErrorHandler</a> = void (*)(bool, std::string const&amp;)</td></tr>
+<tr class="separator:a3aab94f939be855338010b564970d2dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a587b4620e094a4f498b3df6bfc835e52" id="r_a587b4620e094a4f498b3df6bfc835e52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io.html#a587b4620e094a4f498b3df6bfc835e52">ppforest2::io::check_dir_not_exists</a> (std::string const &amp;path)</td></tr>
 <tr class="memdesc:a587b4620e094a4f498b3df6bfc835e52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exit with an error if a directory already exists at the given path.  <br /></td></tr>
 <tr class="separator:a587b4620e094a4f498b3df6bfc835e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25b0db555a3583b12ecf5fcf25b91554" id="r_a25b0db555a3583b12ecf5fcf25b91554"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io.html#a25b0db555a3583b12ecf5fcf25b91554">ppforest2::io::check_file_exists</a> (std::string const &amp;path)</td></tr>
+<tr class="memdesc:a25b0db555a3583b12ecf5fcf25b91554"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exit with an error if a file does not exist at the given path.  <br /></td></tr>
+<tr class="separator:a25b0db555a3583b12ecf5fcf25b91554"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8c7ad637a7a6b11ff927795e2446952" id="r_af8c7ad637a7a6b11ff927795e2446952"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io.html#af8c7ad637a7a6b11ff927795e2446952">ppforest2::io::check_file_not_exists</a> (std::string const &amp;path)</td></tr>
 <tr class="memdesc:af8c7ad637a7a6b11ff927795e2446952"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exit with an error if a file already exists at the given path.  <br /></td></tr>
 <tr class="separator:af8c7ad637a7a6b11ff927795e2446952"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,18 +156,21 @@ Functions</h2></td></tr>
 <tr class="memitem:ae218cd92b9213fafd1ab3936a857223c" id="r_ae218cd92b9213fafd1ab3936a857223c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1stats_1_1DataPacket.html">stats::DataPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1csv.html#ae218cd92b9213fafd1ab3936a857223c">ppforest2::io::csv::read</a> (std::string const &amp;filename)</td></tr>
 <tr class="memdesc:ae218cd92b9213fafd1ab3936a857223c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a CSV file into a DataPacket.  <br /></td></tr>
 <tr class="separator:ae218cd92b9213fafd1ab3936a857223c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad505fbfcd50a991553551edfb3873963" id="r_ad505fbfcd50a991553551edfb3873963"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1json.html#ad505fbfcd50a991553551edfb3873963">ppforest2::io::json::read_file</a> (std::string const &amp;path)</td></tr>
-<tr class="memdesc:ad505fbfcd50a991553551edfb3873963"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a JSON file and parse its contents.  <br /></td></tr>
-<tr class="separator:ad505fbfcd50a991553551edfb3873963"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e375343b451d2712caa5c94020a6768" id="r_a2e375343b451d2712caa5c94020a6768"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1json.html#a2e375343b451d2712caa5c94020a6768">ppforest2::io::json::read_file</a> (std::string const &amp;path, <a class="el" href="namespaceppforest2_1_1io_1_1json.html#a31a35114954164986de8ad9d9cde19da">ErrorHandler</a> on_error=<a class="el" href="Invariant_8hpp.html#a9c99fa2f0f941c79208042fafab8cc95">invariant</a>)</td></tr>
+<tr class="memdesc:a2e375343b451d2712caa5c94020a6768"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a JSON file and parse its contents.  <br /></td></tr>
+<tr class="separator:a2e375343b451d2712caa5c94020a6768"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90b7b870d6c273bdc1dea4577b4319c4" id="r_a90b7b870d6c273bdc1dea4577b4319c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1stats_1_1DataPacket.html">stats::DataPacket</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1csv.html#a90b7b870d6c273bdc1dea4577b4319c4">ppforest2::io::csv::read_sorted</a> (std::string const &amp;filename)</td></tr>
 <tr class="memdesc:a90b7b870d6c273bdc1dea4577b4319c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a CSV file and sort rows so that response groups are contiguous.  <br /></td></tr>
 <tr class="separator:a90b7b870d6c273bdc1dea4577b4319c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c0009a801161f7c53fcc8c92a4fc1d5" id="r_a3c0009a801161f7c53fcc8c92a4fc1d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1csv.html#a3c0009a801161f7c53fcc8c92a4fc1d5">ppforest2::io::csv::write</a> (<a class="el" href="structppforest2_1_1stats_1_1DataPacket.html">stats::DataPacket</a> const &amp;data, std::string const &amp;filename)</td></tr>
 <tr class="memdesc:a3c0009a801161f7c53fcc8c92a4fc1d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a DataPacket to a CSV file (features followed by label, no header).  <br /></td></tr>
 <tr class="separator:a3c0009a801161f7c53fcc8c92a4fc1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9a7bf5c64c21aa0c2ccc3b75d5cbf6f" id="r_af9a7bf5c64c21aa0c2ccc3b75d5cbf6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1json.html#af9a7bf5c64c21aa0c2ccc3b75d5cbf6f">ppforest2::io::json::write_file</a> (nlohmann::json const &amp;data, std::string const &amp;path)</td></tr>
-<tr class="memdesc:af9a7bf5c64c21aa0c2ccc3b75d5cbf6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a JSON object to a file (pretty-printed with indent 2).  <br /></td></tr>
-<tr class="separator:af9a7bf5c64c21aa0c2ccc3b75d5cbf6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4c294e34ceb3fbf6b874bcc1816d3de" id="r_ae4c294e34ceb3fbf6b874bcc1816d3de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1json.html#ae4c294e34ceb3fbf6b874bcc1816d3de">ppforest2::io::json::write_file</a> (nlohmann::json const &amp;data, std::string const &amp;path, <a class="el" href="namespaceppforest2_1_1io_1_1json.html#a31a35114954164986de8ad9d9cde19da">ErrorHandler</a> on_error=<a class="el" href="Invariant_8hpp.html#a9c99fa2f0f941c79208042fafab8cc95">invariant</a>)</td></tr>
+<tr class="memdesc:ae4c294e34ceb3fbf6b874bcc1816d3de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a JSON object to a file (pretty-printed with indent 2).  <br /></td></tr>
+<tr class="separator:ae4c294e34ceb3fbf6b874bcc1816d3de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03789b6a6901bf15ad883b62f87c81b4" id="r_a03789b6a6901bf15ad883b62f87c81b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1text.html#a03789b6a6901bf15ad883b62f87c81b4">ppforest2::io::text::write_file</a> (std::string const &amp;content, std::string const &amp;path, <a class="el" href="namespaceppforest2_1_1io_1_1text.html#a3aab94f939be855338010b564970d2dc">ErrorHandler</a> on_error=<a class="el" href="Invariant_8hpp.html#a9c99fa2f0f941c79208042fafab8cc95">invariant</a>)</td></tr>
+<tr class="memdesc:a03789b6a6901bf15ad883b62f87c81b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a string to a file.  <br /></td></tr>
+<tr class="separator:a03789b6a6901bf15ad883b62f87c81b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>File I/O utilities, JSON and CSV reading/writing. </p>

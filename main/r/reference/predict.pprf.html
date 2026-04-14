@@ -100,7 +100,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [109] virginica  virginica  virginica  virginica  virginica  virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [115] virginica  virginica  virginica  virginica  virginica  virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [121] virginica  virginica  virginica  virginica  virginica  virginica </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [127] virginica  virginica  virginica  virginica  virginica  virginica </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [127] virginica  virginica  virginica  versicolor virginica  virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [133] virginica  versicolor virginica  virginica  virginica  virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [139] virginica  virginica  virginica  virginica  virginica  virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [145] virginica  virginica  virginica  virginica  virginica  virginica </span>
@@ -109,11 +109,11 @@
 <span class="r-in"><span><span class="co"># Example 2: with the `crabs` dataset</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="pprf.html">pprf</a></span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crabs</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">crabs</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [112] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [149] B B O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] B B B B B B B B B B B B B B B B B B B B B B B B B B B B B O B B B B B O O</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] O O O O O O O O O O O O O B B B B B B B B B B B B B B B B B B B B B B B B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] B B B B B B B B B B B B B B B B B B B B B O B O O O B B B B B B B B B B B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [112] B B B B B B B B O B O O O O O O O O O O O O O O O O O O O O O O O O O O O</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [149] O O B B B B B B B B B B O O O O O O O O O O O O O O O O O O O O O O O O O</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [186] O O O O O O O O O O O O O O O</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: B O</span>
 <span class="r-in"><span></span></span>
@@ -193,7 +193,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 70       0        1.0       0.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 71       0        0.5       0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 72       0        1.0       0.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73       0        0.5       0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73       0        1.0       0.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 74       0        1.0       0.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 75       0        1.0       0.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 76       0        1.0       0.0</span>
@@ -250,12 +250,12 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 127      0        0.0       1.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 128      0        0.0       1.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 129      0        0.0       1.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 130      0        0.0       1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130      0        0.5       0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 131      0        0.0       1.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 132      0        0.0       1.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 133      0        0.0       1.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 134      0        0.5       0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 135      0        0.0       1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134      0        1.0       0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135      0        0.5       0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 136      0        0.0       1.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 137      0        0.0       1.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 138      0        0.0       1.0</span>

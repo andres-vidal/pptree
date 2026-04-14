@@ -144,9 +144,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7a2ad90daf73d2b35baa3406f338210f" id="r_a7a2ad90daf73d2b35baa3406f338210f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a2ad90daf73d2b35baa3406f338210f">saved</a> (std::string const &amp;label, std::string const &amp;path) const</td></tr>
 <tr class="memdesc:a7a2ad90daf73d2b35baa3406f338210f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a file-save confirmation: "label saved to path".  <br /></td></tr>
 <tr class="separator:a7a2ad90daf73d2b35baa3406f338210f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0aeb57cfa722b014ebb376bfa8d356a" id="r_ac0aeb57cfa722b014ebb376bfa8d356a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0aeb57cfa722b014ebb376bfa8d356a">try_or_fail</a> (std::function&lt; void()&gt; const &amp;f, std::string const &amp;context=&quot;&quot;) const</td></tr>
-<tr class="memdesc:ac0aeb57cfa722b014ebb376bfa8d356a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a callable, catch std::exception, print error, return 1.  <br /></td></tr>
-<tr class="separator:ac0aeb57cfa722b014ebb376bfa8d356a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -157,7 +154,7 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Quiet-aware, indentation-aware output context. </p>
-<p>Construct once per subcommand from CLIOptions::quiet and thread through all printing functions. Stdout methods respect quiet mode and prepend the current indentation. Stderr methods always print. </p>
+<p>Construct once per subcommand from Params::quiet and thread through all printing functions. Stdout methods respect quiet mode and prepend the current indentation. Stderr methods always print. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a50de1293a5494f9168e2f67d1c933606" name="a50de1293a5494f9168e2f67d1c933606"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a50de1293a5494f9168e2f67d1c933606">&#9670;&#160;</a></span>Output()</h2>
@@ -454,38 +451,6 @@ template&lt;typename... Args&gt; </div>
 </div><div class="memdoc">
 
 <p>Print a file-save confirmation: "label saved to path". </p>
-
-</div>
-</div>
-<a id="ac0aeb57cfa722b014ebb376bfa8d356a" name="ac0aeb57cfa722b014ebb376bfa8d356a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac0aeb57cfa722b014ebb376bfa8d356a">&#9670;&#160;</a></span>try_or_fail()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int ppforest2::io::Output::try_or_fail </td>
-          <td>(</td>
-          <td class="paramtype">std::function&lt; void()&gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>context</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>&#160;) const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Run a callable, catch std::exception, print error, return 1. </p>
-<p>If the callable succeeds, returns 0. If it throws, prints the error message to stderr with red "Error:" prefix and returns 1. </p>
 
 </div>
 </div>

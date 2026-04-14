@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ppforest2: core/src/models/Strategy.hpp Source File</title>
+<title>ppforest2: core/src/models/strategies/Strategy.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -111,33 +111,34 @@ $(function(){initNavTree('Strategy_8hpp_source.html',''); initResizable(true); }
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;nlohmann/json.hpp&gt;</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span></div>
-<div class="foldopen" id="foldopen00023" data-start="{" data-end="};">
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structStrategy.html">   23</a></span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Derived&gt; <span class="keyword">struct </span><a class="code hl_struct" href="structStrategy.html">Strategy</a> {</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">   24</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Ptr</a> = std::shared_ptr&lt;Derived&gt;;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structStrategy.html#a1c6fd534c2289652b63961a15400f681">   27</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structStrategy.html#a1c6fd534c2289652b63961a15400f681">Factory</a> = <a class="code hl_typedef" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Ptr</a> (*)(nlohmann::json <span class="keyword">const</span>&amp;);</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structStrategy.html#ae907514e63d4662491af488f4e80480f">   29</a></span>  <span class="keyword">virtual</span> <a class="code hl_function" href="structStrategy.html#ae907514e63d4662491af488f4e80480f">~Strategy</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structStrategy.html#a60b638e6088f71a745df00a0de7eeab2">   39</a></span>  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="structStrategy.html#a60b638e6088f71a745df00a0de7eeab2">to_json</a>(nlohmann::json&amp; j) <span class="keyword">const</span> = 0;</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structStrategy.html#af1ce78657a37580a4b15dc5747f76519">   42</a></span>  <span class="keyword">virtual</span> std::string <a class="code hl_function" href="structStrategy.html#af1ce78657a37580a4b15dc5747f76519">display_name</a>() <span class="keyword">const</span> = 0;</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span></div>
-<div class="foldopen" id="foldopen00055" data-start="{" data-end="}">
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="structStrategy.html#ac90fa8b155a9853c1523aa35ea8ae8cf">   55</a></span>  <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="structStrategy.html#ac90fa8b155a9853c1523aa35ea8ae8cf">register_strategy</a>(std::string <span class="keyword">const</span>&amp; name, <a class="code hl_typedef" href="structStrategy.html#a1c6fd534c2289652b63961a15400f681">Factory</a> factory) {</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    registry()[name] = factory;</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>  }</div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structStrategy.html">   24</a></span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Derived&gt; <span class="keyword">struct </span><a class="code hl_struct" href="structStrategy.html">Strategy</a> {</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">   25</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Ptr</a> = std::shared_ptr&lt;Derived&gt;;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structStrategy.html#a1c6fd534c2289652b63961a15400f681">   28</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structStrategy.html#a1c6fd534c2289652b63961a15400f681">Factory</a> = <a class="code hl_typedef" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Ptr</a> (*)(nlohmann::json <span class="keyword">const</span>&amp;);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structStrategy.html#ae907514e63d4662491af488f4e80480f">   30</a></span>  <span class="keyword">virtual</span> <a class="code hl_function" href="structStrategy.html#ae907514e63d4662491af488f4e80480f">~Strategy</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structStrategy.html#a62c864302f9daa7f425877f5f1401ae0">   38</a></span>  <span class="keyword">virtual</span> nlohmann::json <a class="code hl_function" href="structStrategy.html#a62c864302f9daa7f425877f5f1401ae0">to_json</a>() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structStrategy.html#af1ce78657a37580a4b15dc5747f76519">   41</a></span>  <span class="keyword">virtual</span> std::string <a class="code hl_function" href="structStrategy.html#af1ce78657a37580a4b15dc5747f76519">display_name</a>() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span></div>
+<div class="foldopen" id="foldopen00054" data-start="{" data-end="}">
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="structStrategy.html#ac90fa8b155a9853c1523aa35ea8ae8cf">   54</a></span>  <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="structStrategy.html#ac90fa8b155a9853c1523aa35ea8ae8cf">register_strategy</a>(std::string <span class="keyword">const</span>&amp; name, <a class="code hl_typedef" href="structStrategy.html#a1c6fd534c2289652b63961a15400f681">Factory</a> factory) {</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    registry()[name] = factory;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  }</div>
 </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span></div>
-<div class="foldopen" id="foldopen00068" data-start="{" data-end="}">
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="structStrategy.html#a9e314b0628debdf68c17e25f10f339c8">   68</a></span>  <span class="keyword">static</span> <a class="code hl_typedef" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Ptr</a> <a class="code hl_function" href="structStrategy.html#a9e314b0628debdf68c17e25f10f339c8">from_json</a>(nlohmann::json <span class="keyword">const</span>&amp; j) {</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keyword">auto</span> name = j.at(<span class="stringliteral">&quot;name&quot;</span>).get&lt;std::string&gt;();</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keyword">auto</span>&amp; reg = registry();</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keyword">auto</span> it   = reg.find(name);</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordflow">if</span> (it == reg.end())</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>      <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Unknown strategy: &quot;</span> + name);</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span></div>
+<div class="foldopen" id="foldopen00067" data-start="{" data-end="}">
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="structStrategy.html#a9e314b0628debdf68c17e25f10f339c8">   67</a></span>  <span class="keyword">static</span> <a class="code hl_typedef" href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Ptr</a> <a class="code hl_function" href="structStrategy.html#a9e314b0628debdf68c17e25f10f339c8">from_json</a>(nlohmann::json <span class="keyword">const</span>&amp; j) {</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keyword">auto</span> name = j.at(<span class="stringliteral">&quot;name&quot;</span>).get&lt;std::string&gt;();</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keyword">auto</span>&amp; reg = registry();</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keyword">auto</span> it   = reg.find(name);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordflow">if</span> (it == reg.end()) {</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>      <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Unknown strategy: &quot;</span> + name);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    }</div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordflow">return</span> it-&gt;second(j);</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>  }</div>
@@ -155,12 +156,12 @@ $(function(){initNavTree('Strategy_8hpp_source.html',''); initResizable(true); }
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="Strategy_8hpp.html#a17147e1a4c1343aabff5cce99c045f2d">  100</a></span><span class="preprocessor">#define PPFOREST2_REGISTER_STRATEGY(StrategyBase, name) \</span></div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="preprocessor">  inline static const bool registered_ = StrategyBase::register_strategy(name, from_json);</span></div>
 </div>
-<div class="ttc" id="astructStrategy_html"><div class="ttname"><a href="structStrategy.html">Strategy</a></div><div class="ttdoc">CRTP base class providing self-registration for strategy types.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:23</div></div>
-<div class="ttc" id="astructStrategy_html_a1c6fd534c2289652b63961a15400f681"><div class="ttname"><a href="structStrategy.html#a1c6fd534c2289652b63961a15400f681">Strategy::Factory</a></div><div class="ttdeci">Ptr(*)(nlohmann::json const  &amp;) Factory</div><div class="ttdoc">Factory function type for deserializing a strategy from JSON.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:27</div></div>
-<div class="ttc" id="astructStrategy_html_a30c651b4431c97d3504039607df398c9"><div class="ttname"><a href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Strategy::Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; Derived &gt; Ptr</div><div class="ttdef"><b>Definition</b> Strategy.hpp:24</div></div>
-<div class="ttc" id="astructStrategy_html_a60b638e6088f71a745df00a0de7eeab2"><div class="ttname"><a href="structStrategy.html#a60b638e6088f71a745df00a0de7eeab2">Strategy::to_json</a></div><div class="ttdeci">virtual void to_json(nlohmann::json &amp;j) const =0</div><div class="ttdoc">Serialize this strategy&#39;s configuration to JSON.</div></div>
-<div class="ttc" id="astructStrategy_html_a9e314b0628debdf68c17e25f10f339c8"><div class="ttname"><a href="structStrategy.html#a9e314b0628debdf68c17e25f10f339c8">Strategy::from_json</a></div><div class="ttdeci">static Ptr from_json(nlohmann::json const &amp;j)</div><div class="ttdoc">Construct a strategy from its JSON representation.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:68</div></div>
-<div class="ttc" id="astructStrategy_html_ac90fa8b155a9853c1523aa35ea8ae8cf"><div class="ttname"><a href="structStrategy.html#ac90fa8b155a9853c1523aa35ea8ae8cf">Strategy::register_strategy</a></div><div class="ttdeci">static bool register_strategy(std::string const &amp;name, Factory factory)</div><div class="ttdoc">Register a concrete strategy for JSON deserialization.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:55</div></div>
+<div class="ttc" id="astructStrategy_html"><div class="ttname"><a href="structStrategy.html">Strategy</a></div><div class="ttdoc">CRTP base class providing self-registration for strategy types.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:24</div></div>
+<div class="ttc" id="astructStrategy_html_a1c6fd534c2289652b63961a15400f681"><div class="ttname"><a href="structStrategy.html#a1c6fd534c2289652b63961a15400f681">Strategy::Factory</a></div><div class="ttdeci">Ptr(*)(nlohmann::json const  &amp;) Factory</div><div class="ttdoc">Factory function type for deserializing a strategy from JSON.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:28</div></div>
+<div class="ttc" id="astructStrategy_html_a30c651b4431c97d3504039607df398c9"><div class="ttname"><a href="structStrategy.html#a30c651b4431c97d3504039607df398c9">Strategy::Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; Derived &gt; Ptr</div><div class="ttdef"><b>Definition</b> Strategy.hpp:25</div></div>
+<div class="ttc" id="astructStrategy_html_a62c864302f9daa7f425877f5f1401ae0"><div class="ttname"><a href="structStrategy.html#a62c864302f9daa7f425877f5f1401ae0">Strategy::to_json</a></div><div class="ttdeci">virtual nlohmann::json to_json() const =0</div><div class="ttdoc">Serialize this strategy&#39;s configuration to JSON.</div></div>
+<div class="ttc" id="astructStrategy_html_a9e314b0628debdf68c17e25f10f339c8"><div class="ttname"><a href="structStrategy.html#a9e314b0628debdf68c17e25f10f339c8">Strategy::from_json</a></div><div class="ttdeci">static Ptr from_json(nlohmann::json const &amp;j)</div><div class="ttdoc">Construct a strategy from its JSON representation.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:67</div></div>
+<div class="ttc" id="astructStrategy_html_ac90fa8b155a9853c1523aa35ea8ae8cf"><div class="ttname"><a href="structStrategy.html#ac90fa8b155a9853c1523aa35ea8ae8cf">Strategy::register_strategy</a></div><div class="ttdeci">static bool register_strategy(std::string const &amp;name, Factory factory)</div><div class="ttdoc">Register a concrete strategy for JSON deserialization.</div><div class="ttdef"><b>Definition</b> Strategy.hpp:54</div></div>
 <div class="ttc" id="astructStrategy_html_ae907514e63d4662491af488f4e80480f"><div class="ttname"><a href="structStrategy.html#ae907514e63d4662491af488f4e80480f">Strategy::~Strategy</a></div><div class="ttdeci">virtual ~Strategy()=default</div></div>
 <div class="ttc" id="astructStrategy_html_af1ce78657a37580a4b15dc5747f76519"><div class="ttname"><a href="structStrategy.html#af1ce78657a37580a4b15dc5747f76519">Strategy::display_name</a></div><div class="ttdeci">virtual std::string display_name() const =0</div><div class="ttdoc">Human-readable name for display in summaries.</div></div>
 </div><!-- fragment --></div><!-- contents -->
@@ -168,7 +169,7 @@ $(function(){initNavTree('Strategy_8hpp_source.html',''); initResizable(true); }
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_4270bfced15e0e73154b13468c7c9ad9.html">core</a></li><li class="navelem"><a class="el" href="dir_90fd98a0ba30abf7a6068a44995d2d6b.html">src</a></li><li class="navelem"><a class="el" href="dir_8e76ed0efff60e6b272a3fbebc7bd454.html">models</a></li><li class="navelem"><a class="el" href="Strategy_8hpp.html">Strategy.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_4270bfced15e0e73154b13468c7c9ad9.html">core</a></li><li class="navelem"><a class="el" href="dir_90fd98a0ba30abf7a6068a44995d2d6b.html">src</a></li><li class="navelem"><a class="el" href="dir_8e76ed0efff60e6b272a3fbebc7bd454.html">models</a></li><li class="navelem"><a class="el" href="dir_4a57a0303029b4cfcda3f4672d0f165c.html">strategies</a></li><li class="navelem"><a class="el" href="Strategy_8hpp.html">Strategy.hpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.13.2 </li>
   </ul>
 </div>

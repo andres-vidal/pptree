@@ -114,10 +114,7 @@ $(function(){initNavTree('CLI_8integration_8hpp.html',''); initResizable(true); 
 <code>#include &quot;<a class="el" href="TempFile_8hpp_source.html">io/TempFile.hpp</a>&quot;</code><br />
 <code>#include &lt;cstdio&gt;</code><br />
 <code>#include &lt;cstdlib&gt;</code><br />
-<code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &lt;sstream&gt;</code><br />
-<code>#include &lt;filesystem&gt;</code><br />
 <code>#include &lt;nlohmann/json.hpp&gt;</code><br />
 </div>
 <p><a href="CLI_8integration_8hpp_source.html">Go to the source code of this file.</a></p>
@@ -145,7 +142,7 @@ Typedefs</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a7b6ba34ca786285297fcc86d2b588411" id="r_a7b6ba34ca786285297fcc86d2b588411"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structProcessResult.html">ProcessResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7b6ba34ca786285297fcc86d2b588411">run_ppforest2</a> (std::string const &amp;args)</td></tr>
-<tr class="memdesc:a7b6ba34ca786285297fcc86d2b588411"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawn the <a class="el" href="namespaceppforest2.html">ppforest2</a> binary with the given argument string.  <br /></td></tr>
+<tr class="memdesc:a7b6ba34ca786285297fcc86d2b588411"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawn the <a class="el" href="namespaceppforest2.html" title="Binarization strategies for multiclass-to-binary reduction.">ppforest2</a> binary with the given argument string.  <br /></td></tr>
 <tr class="separator:a7b6ba34ca786285297fcc86d2b588411"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
@@ -167,7 +164,7 @@ Variables</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Shared utilities for <a class="el" href="namespaceCLI.html">CLI</a> integration tests. </p>
-<p>Each test spawns the <a class="el" href="namespaceppforest2.html">ppforest2</a> binary as a child process and checks its exit code and stdout output. Temporary files (<a class="el" href="classTempFile.html" title="RAII temporary file with automatic cleanup.">TempFile</a>, <a class="el" href="classTempDir.html" title="RAII temporary directory with automatic cleanup.">TempDir</a>) are used for model and output artifacts; they are automatically cleaned up. </p>
+<p>Each test spawns the <a class="el" href="namespaceppforest2.html" title="Binarization strategies for multiclass-to-binary reduction.">ppforest2</a> binary as a child process and checks its exit code and stdout output. Temporary files (<a class="el" href="classTempFile.html" title="RAII temporary file with automatic cleanup.">TempFile</a>, <a class="el" href="classTempDir.html" title="RAII temporary directory with automatic cleanup.">TempDir</a>) are used for model and output artifacts; they are automatically cleaned up. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="ab701e3ac61a85b337ec5c1abaad6742d" name="ab701e3ac61a85b337ec5c1abaad6742d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab701e3ac61a85b337ec5c1abaad6742d">&#9670;&#160;</a></span>json</h2>
@@ -207,7 +204,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Spawn the <a class="el" href="namespaceppforest2.html">ppforest2</a> binary with the given argument string. </p>
+<p>Spawn the <a class="el" href="namespaceppforest2.html" title="Binarization strategies for multiclass-to-binary reduction.">ppforest2</a> binary with the given argument string. </p>
 <p>Stderr is redirected to /dev/null (NUL on Windows) so only stdout is captured. The exit code is extracted via WEXITSTATUS on POSIX.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

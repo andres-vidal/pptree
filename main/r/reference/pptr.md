@@ -20,7 +20,11 @@ pptr(
   lambda = 0,
   seed = NULL,
   pp = NULL,
-  sr = NULL
+  cutpoint = NULL,
+  stop = NULL,
+  binarize = NULL,
+  partition = NULL,
+  leaf = NULL
 )
 ```
 
@@ -64,10 +68,34 @@ pptr(
   [`pp_pda`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_pda.md).
   Cannot be used together with `lambda`.
 
-- sr:
+- cutpoint:
 
-  A split rule strategy object created by
-  [`sr_mean_of_means`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md)
+  A split cutpoint strategy object created by
+  [`cutpoint_mean_of_means`](https://andres-vidal.github.io/ppforest2/main/r/reference/cutpoint_mean_of_means.md)
+  (default).
+
+- stop:
+
+  A stopping rule object created by
+  [`stop_pure_node`](https://andres-vidal.github.io/ppforest2/main/r/reference/stop_pure_node.md)
+  (default).
+
+- binarize:
+
+  A binarization strategy object created by
+  [`binarize_largest_gap`](https://andres-vidal.github.io/ppforest2/main/r/reference/binarize_largest_gap.md)
+  (default).
+
+- partition:
+
+  A partition strategy object created by
+  [`partition_by_group`](https://andres-vidal.github.io/ppforest2/main/r/reference/partition_by_group.md)
+  (default).
+
+- leaf:
+
+  A leaf strategy object created by
+  [`leaf_majority_vote`](https://andres-vidal.github.io/ppforest2/main/r/reference/leaf_majority_vote.md)
   (default).
 
 ## Value
@@ -85,7 +113,11 @@ A pptr model trained on `x` and `y`.
 [`pp_tree`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_tree.md)
 for parsnip integration,
 [`pp_pda`](https://andres-vidal.github.io/ppforest2/main/r/reference/pp_pda.md),
-[`sr_mean_of_means`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md),
+[`cutpoint_mean_of_means`](https://andres-vidal.github.io/ppforest2/main/r/reference/cutpoint_mean_of_means.md),
+[`stop_pure_node`](https://andres-vidal.github.io/ppforest2/main/r/reference/stop_pure_node.md),
+[`binarize_largest_gap`](https://andres-vidal.github.io/ppforest2/main/r/reference/binarize_largest_gap.md),
+[`partition_by_group`](https://andres-vidal.github.io/ppforest2/main/r/reference/partition_by_group.md),
+[`leaf_majority_vote`](https://andres-vidal.github.io/ppforest2/main/r/reference/leaf_majority_vote.md),
 [`vignette("introduction")`](https://andres-vidal.github.io/ppforest2/main/r/articles/introduction.md)
 for a tutorial
 

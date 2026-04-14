@@ -114,11 +114,11 @@ $(function(){initNavTree('structppforest2_1_1serialization_1_1Export.html',''); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6716a3b8d123b7abf62b53bbd5107f09" id="r_a6716a3b8d123b7abf62b53bbd5107f09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6716a3b8d123b7abf62b53bbd5107f09">compute_metrics</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;, <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;)</td></tr>
-<tr class="separator:a6716a3b8d123b7abf62b53bbd5107f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae07fa3df4f3e450c1d931f148c5cf829" id="r_ae07fa3df4f3e450c1d931f148c5cf829"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae07fa3df4f3e450c1d931f148c5cf829">compute_metrics</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x, <a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;y)</td></tr>
-<tr class="memdesc:ae07fa3df4f3e450c1d931f148c5cf829"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and store metrics on this export.  <br /></td></tr>
-<tr class="separator:ae07fa3df4f3e450c1d931f148c5cf829"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb7b2886db2d9de6dfc1805adbea713d" id="r_adb7b2886db2d9de6dfc1805adbea713d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb7b2886db2d9de6dfc1805adbea713d">compute_metrics</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;, <a class="el" href="namespaceppforest2_1_1types.html#a2432f13302eed47b33e7b5a73e57b020">types::OutcomeVector</a> const &amp;)</td></tr>
+<tr class="separator:adb7b2886db2d9de6dfc1805adbea713d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0db25c1d7e623361206c0fdb9daed678" id="r_a0db25c1d7e623361206c0fdb9daed678"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0db25c1d7e623361206c0fdb9daed678">compute_metrics</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x, <a class="el" href="namespaceppforest2_1_1types.html#a2432f13302eed47b33e7b5a73e57b020">types::OutcomeVector</a> const &amp;y)</td></tr>
+<tr class="memdesc:a0db25c1d7e623361206c0fdb9daed678"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and store metrics on this export.  <br /></td></tr>
+<tr class="separator:a0db25c1d7e623361206c0fdb9daed678"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53a47907040a2535990379a8ce86b26a" id="r_a53a47907040a2535990379a8ce86b26a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1serialization.html#afced42a0b2c517da2664a9a849d90899">json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53a47907040a2535990379a8ce86b26a">to_json</a> () const</td></tr>
 <tr class="memdesc:a53a47907040a2535990379a8ce86b26a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to JSON. Only defined for <a class="el" href="structppforest2_1_1serialization_1_1Export.html" title="A model bundled with its export metadata and optional metrics.">Export&lt;Model::Ptr&gt;</a>.  <br /></td></tr>
 <tr class="separator:a53a47907040a2535990379a8ce86b26a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -154,10 +154,10 @@ Public Attributes</h2></td></tr>
 struct ppforest2::serialization::Export&lt; T &gt;</div><p>A model bundled with its export metadata and optional metrics. </p>
 <p>Represents the full JSON export format: <code>{ model_type, model, config, meta, [metrics] }</code>.</p>
 <p>Use <code>j.get&lt;<a class="el" href="structppforest2_1_1serialization_1_1Export.html" title="A model bundled with its export metadata and optional metrics.">Export</a>&lt;<a class="el" href="structppforest2_1_1Tree.html" title="A single projection pursuit decision tree.">Tree</a>&gt;&gt;()</code> or <code>j.get&lt;<a class="el" href="structppforest2_1_1serialization_1_1Export.html" title="A model bundled with its export metadata and optional metrics.">Export</a>&lt;<a class="el" href="structppforest2_1_1Model.html#a3ffbdce63220339317c38d465b7d4ca9">Model::Ptr</a>&gt;&gt;()</code> to deserialize a full export, and <code>model_export.to_json()</code> to serialize.</p>
-<p>For <code><a class="el" href="structppforest2_1_1serialization_1_1Export.html" title="A model bundled with its export metadata and optional metrics.">Export</a>&lt;<a class="el" href="structppforest2_1_1Model.html#a3ffbdce63220339317c38d465b7d4ca9">Model::Ptr</a>&gt;</code>, construct with training data to compute metrics automatically, or use <code><a class="el" href="#ae07fa3df4f3e450c1d931f148c5cf829" title="Compute and store metrics on this export.">compute_metrics()</a></code> after construction. </p>
+<p>For <code><a class="el" href="structppforest2_1_1serialization_1_1Export.html" title="A model bundled with its export metadata and optional metrics.">Export</a>&lt;<a class="el" href="structppforest2_1_1Model.html#a3ffbdce63220339317c38d465b7d4ca9">Model::Ptr</a>&gt;</code>, construct with training data to compute metrics automatically, or use <code><a class="el" href="#a0db25c1d7e623361206c0fdb9daed678" title="Compute and store metrics on this export.">compute_metrics()</a></code> after construction. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6716a3b8d123b7abf62b53bbd5107f09" name="a6716a3b8d123b7abf62b53bbd5107f09"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6716a3b8d123b7abf62b53bbd5107f09">&#9670;&#160;</a></span>compute_metrics() <span class="overload">[1/2]</span></h2>
+<a id="adb7b2886db2d9de6dfc1805adbea713d" name="adb7b2886db2d9de6dfc1805adbea713d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb7b2886db2d9de6dfc1805adbea713d">&#9670;&#160;</a></span>compute_metrics() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -170,15 +170,15 @@ struct ppforest2::serialization::Export&lt; T &gt;</div><p>A model bundled with 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a2432f13302eed47b33e7b5a73e57b020">types::OutcomeVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ae07fa3df4f3e450c1d931f148c5cf829" name="ae07fa3df4f3e450c1d931f148c5cf829"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae07fa3df4f3e450c1d931f148c5cf829">&#9670;&#160;</a></span>compute_metrics() <span class="overload">[2/2]</span></h2>
+<a id="a0db25c1d7e623361206c0fdb9daed678" name="a0db25c1d7e623361206c0fdb9daed678"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0db25c1d7e623361206c0fdb9daed678">&#9670;&#160;</a></span>compute_metrics() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -193,7 +193,7 @@ template&lt;typename T&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a2432f13302eed47b33e7b5a73e57b020">types::OutcomeVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -52,7 +52,11 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <span>  lambda <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pp <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sr <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  cutpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  stop <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  binarize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  partition <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  leaf <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -88,8 +92,24 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
 <dd><p>A projection pursuit strategy object created by <code><a href="pp_pda.html">pp_pda</a></code>. Cannot be used together with <code>lambda</code>.</p></dd>
 
 
-<dt id="arg-sr">sr<a class="anchor" aria-label="anchor" href="#arg-sr"></a></dt>
-<dd><p>A split rule strategy object created by <code><a href="sr_mean_of_means.html">sr_mean_of_means</a></code> (default).</p></dd>
+<dt id="arg-cutpoint">cutpoint<a class="anchor" aria-label="anchor" href="#arg-cutpoint"></a></dt>
+<dd><p>A split cutpoint strategy object created by <code><a href="cutpoint_mean_of_means.html">cutpoint_mean_of_means</a></code> (default).</p></dd>
+
+
+<dt id="arg-stop">stop<a class="anchor" aria-label="anchor" href="#arg-stop"></a></dt>
+<dd><p>A stopping rule object created by <code><a href="stop_pure_node.html">stop_pure_node</a></code> (default).</p></dd>
+
+
+<dt id="arg-binarize">binarize<a class="anchor" aria-label="anchor" href="#arg-binarize"></a></dt>
+<dd><p>A binarization strategy object created by <code><a href="binarize_largest_gap.html">binarize_largest_gap</a></code> (default).</p></dd>
+
+
+<dt id="arg-partition">partition<a class="anchor" aria-label="anchor" href="#arg-partition"></a></dt>
+<dd><p>A partition strategy object created by <code><a href="partition_by_group.html">partition_by_group</a></code> (default).</p></dd>
+
+
+<dt id="arg-leaf">leaf<a class="anchor" aria-label="anchor" href="#arg-leaf"></a></dt>
+<dd><p>A leaf strategy object created by <code><a href="leaf_majority_vote.html">leaf_majority_vote</a></code> (default).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -98,7 +118,7 @@ If <code>lambda = 0</code>, the model is trained using Linear Discriminant Analy
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="predict.pptr.html">predict.pptr</a></code>, <code><a href="formula.pptr.html">formula.pptr</a></code>, <code><a href="summary.pptr.html">summary.pptr</a></code>, <code><a href="print.pptr.html">print.pptr</a></code>, <code><a href="save_json.html">save_json</a></code>, <code><a href="load_json.html">load_json</a></code>, <code><a href="pp_tree.html">pp_tree</a></code> for parsnip integration, <code><a href="pp_pda.html">pp_pda</a></code>, <code><a href="sr_mean_of_means.html">sr_mean_of_means</a></code>, <code><a href="../articles/introduction.html">vignette("introduction")</a></code> for a tutorial</p></div>
+    <div class="dont-index"><p><code><a href="predict.pptr.html">predict.pptr</a></code>, <code><a href="formula.pptr.html">formula.pptr</a></code>, <code><a href="summary.pptr.html">summary.pptr</a></code>, <code><a href="print.pptr.html">print.pptr</a></code>, <code><a href="save_json.html">save_json</a></code>, <code><a href="load_json.html">load_json</a></code>, <code><a href="pp_tree.html">pp_tree</a></code> for parsnip integration, <code><a href="pp_pda.html">pp_pda</a></code>, <code><a href="cutpoint_mean_of_means.html">cutpoint_mean_of_means</a></code>, <code><a href="stop_pure_node.html">stop_pure_node</a></code>, <code><a href="binarize_largest_gap.html">binarize_largest_gap</a></code>, <code><a href="partition_by_group.html">partition_by_group</a></code>, <code><a href="leaf_majority_vote.html">leaf_majority_vote</a></code>, <code><a href="../articles/introduction.html">vignette("introduction")</a></code> for a tutorial</p></div>
     </div>
 
     <div class="section level2">

@@ -7,53 +7,58 @@ var annotated_dup =
       [ "adl_serializer< ppforest2::serialization::Export< ppforest2::Tree > >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Tree_01_4_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1serialization_1_1Export_3_01ppforest2_1_1Tree_01_4_01_4" ],
       [ "adl_serializer< ppforest2::stats::ConfusionMatrix >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1stats_1_1ConfusionMatrix_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1stats_1_1ConfusionMatrix_01_4" ],
       [ "adl_serializer< ppforest2::Tree >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1Tree_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1Tree_01_4" ],
-      [ "adl_serializer< ppforest2::VariableImportance >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1VariableImportance_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1VariableImportance_01_4" ]
+      [ "adl_serializer< ppforest2::VariableImportance >", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1VariableImportance_01_4.html", "structnlohmann_1_1adl__serializer_3_01ppforest2_1_1VariableImportance_01_4" ],
+      [ "adl_serializer< std::optional< T > >", "structnlohmann_1_1adl__serializer_3_01std_1_1optional_3_01T_01_4_01_4.html", "structnlohmann_1_1adl__serializer_3_01std_1_1optional_3_01T_01_4_01_4" ]
     ] ],
     [ "ppforest2", "namespaceppforest2.html", [
+      [ "binarize", "namespaceppforest2_1_1binarize.html", [
+        [ "Binarization", "structppforest2_1_1binarize_1_1Binarization.html", "structppforest2_1_1binarize_1_1Binarization" ],
+        [ "LargestGap", "structppforest2_1_1binarize_1_1LargestGap.html", "structppforest2_1_1binarize_1_1LargestGap" ]
+      ] ],
       [ "cli", "namespaceppforest2_1_1cli.html", [
+        [ "Baseline", "structppforest2_1_1cli_1_1Baseline.html", "structppforest2_1_1cli_1_1Baseline" ],
         [ "BenchmarkParams", "structppforest2_1_1cli_1_1BenchmarkParams.html", "structppforest2_1_1cli_1_1BenchmarkParams" ],
+        [ "BenchmarkReport", "structppforest2_1_1cli_1_1BenchmarkReport.html", "structppforest2_1_1cli_1_1BenchmarkReport" ],
         [ "BenchmarkSuite", "structppforest2_1_1cli_1_1BenchmarkSuite.html", "structppforest2_1_1cli_1_1BenchmarkSuite" ],
-        [ "CLIOptions", "structppforest2_1_1cli_1_1CLIOptions.html", "structppforest2_1_1cli_1_1CLIOptions" ],
-        [ "ConvergenceCriteria", "structppforest2_1_1cli_1_1ConvergenceCriteria.html", "structppforest2_1_1cli_1_1ConvergenceCriteria" ],
-        [ "ConvergenceParams", "structppforest2_1_1cli_1_1ConvergenceParams.html", "structppforest2_1_1cli_1_1ConvergenceParams" ],
         [ "EvaluateParams", "structppforest2_1_1cli_1_1EvaluateParams.html", "structppforest2_1_1cli_1_1EvaluateParams" ],
         [ "ModelParams", "structppforest2_1_1cli_1_1ModelParams.html", "structppforest2_1_1cli_1_1ModelParams" ],
-        [ "Scenario", "structppforest2_1_1cli_1_1Scenario.html", "structppforest2_1_1cli_1_1Scenario" ],
+        [ "Params", "structppforest2_1_1cli_1_1Params.html", "structppforest2_1_1cli_1_1Params" ],
         [ "ScenarioResult", "structppforest2_1_1cli_1_1ScenarioResult.html", "structppforest2_1_1cli_1_1ScenarioResult" ],
         [ "SimulateParams", "structppforest2_1_1cli_1_1SimulateParams.html", "structppforest2_1_1cli_1_1SimulateParams" ],
         [ "SuiteResult", "structppforest2_1_1cli_1_1SuiteResult.html", "structppforest2_1_1cli_1_1SuiteResult" ],
-        [ "TrainResult", "structppforest2_1_1cli_1_1TrainResult.html", "structppforest2_1_1cli_1_1TrainResult" ],
-        [ "VarsSpec", "structppforest2_1_1cli_1_1VarsSpec.html", "structppforest2_1_1cli_1_1VarsSpec" ]
+        [ "TrainResult", "structppforest2_1_1cli_1_1TrainResult.html", "structppforest2_1_1cli_1_1TrainResult" ]
       ] ],
-      [ "dr", "namespaceppforest2_1_1dr.html", [
-        [ "DRNoopStrategy", "structppforest2_1_1dr_1_1DRNoopStrategy.html", "structppforest2_1_1dr_1_1DRNoopStrategy" ],
-        [ "DRResult", "structppforest2_1_1dr_1_1DRResult.html", "structppforest2_1_1dr_1_1DRResult" ],
-        [ "DRStrategy", "structppforest2_1_1dr_1_1DRStrategy.html", "structppforest2_1_1dr_1_1DRStrategy" ],
-        [ "DRUniformStrategy", "structppforest2_1_1dr_1_1DRUniformStrategy.html", "structppforest2_1_1dr_1_1DRUniformStrategy" ]
+      [ "cutpoint", "namespaceppforest2_1_1cutpoint.html", [
+        [ "MeanOfMeans", "structppforest2_1_1cutpoint_1_1MeanOfMeans.html", "structppforest2_1_1cutpoint_1_1MeanOfMeans" ],
+        [ "SplitCutpoint", "structppforest2_1_1cutpoint_1_1SplitCutpoint.html", "structppforest2_1_1cutpoint_1_1SplitCutpoint" ]
       ] ],
       [ "io", "namespaceppforest2_1_1io.html", [
         [ "layout", "namespaceppforest2_1_1io_1_1layout.html", [
           [ "Column", "structppforest2_1_1io_1_1layout_1_1Column.html", "structppforest2_1_1io_1_1layout_1_1Column" ]
         ] ],
         [ "ConfigDisplayHints", "structppforest2_1_1io_1_1ConfigDisplayHints.html", "structppforest2_1_1io_1_1ConfigDisplayHints" ],
+        [ "EvaluateResult", "structppforest2_1_1io_1_1EvaluateResult.html", "structppforest2_1_1io_1_1EvaluateResult" ],
         [ "ModelStats", "structppforest2_1_1io_1_1ModelStats.html", "structppforest2_1_1io_1_1ModelStats" ],
         [ "Output", "structppforest2_1_1io_1_1Output.html", "structppforest2_1_1io_1_1Output" ],
         [ "TempDir", "classppforest2_1_1io_1_1TempDir.html", "classppforest2_1_1io_1_1TempDir" ],
         [ "TempFile", "classppforest2_1_1io_1_1TempFile.html", "classppforest2_1_1io_1_1TempFile" ]
       ] ],
+      [ "leaf", "namespaceppforest2_1_1leaf.html", [
+        [ "LeafStrategy", "structppforest2_1_1leaf_1_1LeafStrategy.html", "structppforest2_1_1leaf_1_1LeafStrategy" ],
+        [ "MajorityVote", "structppforest2_1_1leaf_1_1MajorityVote.html", "structppforest2_1_1leaf_1_1MajorityVote" ]
+      ] ],
+      [ "partition", "namespaceppforest2_1_1partition.html", [
+        [ "ByGroup", "structppforest2_1_1partition_1_1ByGroup.html", "structppforest2_1_1partition_1_1ByGroup" ],
+        [ "StepPartition", "structppforest2_1_1partition_1_1StepPartition.html", "structppforest2_1_1partition_1_1StepPartition" ]
+      ] ],
       [ "pp", "namespaceppforest2_1_1pp.html", [
-        [ "PPPDAStrategy", "structppforest2_1_1pp_1_1PPPDAStrategy.html", "structppforest2_1_1pp_1_1PPPDAStrategy" ],
-        [ "PPResult", "structppforest2_1_1pp_1_1PPResult.html", "structppforest2_1_1pp_1_1PPResult" ],
-        [ "PPStrategy", "structppforest2_1_1pp_1_1PPStrategy.html", "structppforest2_1_1pp_1_1PPStrategy" ]
+        [ "PDA", "structppforest2_1_1pp_1_1PDA.html", "structppforest2_1_1pp_1_1PDA" ],
+        [ "ProjectionPursuit", "structppforest2_1_1pp_1_1ProjectionPursuit.html", "structppforest2_1_1pp_1_1ProjectionPursuit" ]
       ] ],
       [ "serialization", "namespaceppforest2_1_1serialization.html", [
         [ "Export", "structppforest2_1_1serialization_1_1Export.html", "structppforest2_1_1serialization_1_1Export" ],
         [ "JsonModelVisitor", "structppforest2_1_1serialization_1_1JsonModelVisitor.html", "structppforest2_1_1serialization_1_1JsonModelVisitor" ],
         [ "JsonNodeVisitor", "structppforest2_1_1serialization_1_1JsonNodeVisitor.html", "structppforest2_1_1serialization_1_1JsonNodeVisitor" ]
-      ] ],
-      [ "sr", "namespaceppforest2_1_1sr.html", [
-        [ "SRMeanOfMeansStrategy", "structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html", "structppforest2_1_1sr_1_1SRMeanOfMeansStrategy" ],
-        [ "SRStrategy", "structppforest2_1_1sr_1_1SRStrategy.html", "structppforest2_1_1sr_1_1SRStrategy" ]
       ] ],
       [ "stats", "namespaceppforest2_1_1stats.html", [
         [ "ConfusionMatrix", "structppforest2_1_1stats_1_1ConfusionMatrix.html", "structppforest2_1_1stats_1_1ConfusionMatrix" ],
@@ -63,6 +68,15 @@ var annotated_dup =
         [ "SimulationParams", "structppforest2_1_1stats_1_1SimulationParams.html", "structppforest2_1_1stats_1_1SimulationParams" ],
         [ "Split", "structppforest2_1_1stats_1_1Split.html", "structppforest2_1_1stats_1_1Split" ],
         [ "Uniform", "classppforest2_1_1stats_1_1Uniform.html", "classppforest2_1_1stats_1_1Uniform" ]
+      ] ],
+      [ "stop", "namespaceppforest2_1_1stop.html", [
+        [ "PureNode", "structppforest2_1_1stop_1_1PureNode.html", "structppforest2_1_1stop_1_1PureNode" ],
+        [ "StopRule", "structppforest2_1_1stop_1_1StopRule.html", "structppforest2_1_1stop_1_1StopRule" ]
+      ] ],
+      [ "vars", "namespaceppforest2_1_1vars.html", [
+        [ "All", "structppforest2_1_1vars_1_1All.html", "structppforest2_1_1vars_1_1All" ],
+        [ "Uniform", "structppforest2_1_1vars_1_1Uniform.html", "structppforest2_1_1vars_1_1Uniform" ],
+        [ "VariableSelection", "structppforest2_1_1vars_1_1VariableSelection.html", "structppforest2_1_1vars_1_1VariableSelection" ]
       ] ],
       [ "viz", "namespaceppforest2_1_1viz.html", [
         [ "BoundarySegment", "structppforest2_1_1viz_1_1BoundarySegment.html", "structppforest2_1_1viz_1_1BoundarySegment" ],
@@ -80,12 +94,13 @@ var annotated_dup =
       [ "BootstrapTree", "structppforest2_1_1BootstrapTree.html", "structppforest2_1_1BootstrapTree" ],
       [ "Forest", "structppforest2_1_1Forest.html", "structppforest2_1_1Forest" ],
       [ "Model", "structppforest2_1_1Model.html", "structppforest2_1_1Model" ],
+      [ "NodeContext", "structppforest2_1_1NodeContext.html", "structppforest2_1_1NodeContext" ],
       [ "Proportions", "structppforest2_1_1Proportions.html", null ],
       [ "TrainingSpec", "structppforest2_1_1TrainingSpec.html", "structppforest2_1_1TrainingSpec" ],
       [ "Tree", "structppforest2_1_1Tree.html", "structppforest2_1_1Tree" ],
-      [ "TreeCondition", "structppforest2_1_1TreeCondition.html", "structppforest2_1_1TreeCondition" ],
+      [ "TreeBranch", "structppforest2_1_1TreeBranch.html", "structppforest2_1_1TreeBranch" ],
+      [ "TreeLeaf", "structppforest2_1_1TreeLeaf.html", "structppforest2_1_1TreeLeaf" ],
       [ "TreeNode", "structppforest2_1_1TreeNode.html", "structppforest2_1_1TreeNode" ],
-      [ "TreeResponse", "structppforest2_1_1TreeResponse.html", "structppforest2_1_1TreeResponse" ],
       [ "UserError", "classppforest2_1_1UserError.html", null ],
       [ "VariableImportance", "structppforest2_1_1VariableImportance.html", "structppforest2_1_1VariableImportance" ],
       [ "VIVisitor", "structppforest2_1_1VIVisitor.html", "structppforest2_1_1VIVisitor" ]

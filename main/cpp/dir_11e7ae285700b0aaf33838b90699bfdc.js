@@ -6,5 +6,5 @@ var dir_11e7ae285700b0aaf33838b90699bfdc =
     [ "Normal.hpp", "Normal_8hpp.html", "Normal_8hpp" ],
     [ "Simulation.hpp", "Simulation_8hpp.html", "Simulation_8hpp" ],
     [ "Stats.hpp", "Stats_8hpp.html", "Stats_8hpp" ],
-    [ "Uniform.hpp", "Uniform_8hpp.html", "Uniform_8hpp" ]
+    [ "Uniform.hpp", "stats_2Uniform_8hpp.html", "stats_2Uniform_8hpp" ]
 ];

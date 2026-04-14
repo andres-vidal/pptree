@@ -122,6 +122,8 @@ Macros</h2></td></tr>
 <tr class="memitem:a8a74b1623b7806c08bf1fc5542103316" id="r_a8a74b1623b7806c08bf1fc5542103316"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a74b1623b7806c08bf1fc5542103316">ASSERT_EQ_DATA</a>(a,  b)</td></tr>
 <tr class="memdesc:a8a74b1623b7806c08bf1fc5542103316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assert that two Eigen objects have identical size and values.  <br /></td></tr>
 <tr class="separator:a8a74b1623b7806c08bf1fc5542103316"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a998dac2c3d778b269b7108bb5e0e0130" id="r_a998dac2c3d778b269b7108bb5e0e0130"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a998dac2c3d778b269b7108bb5e0e0130">EXPECT_EQ_DATA</a>(a,  b)</td></tr>
+<tr class="separator:a998dac2c3d778b269b7108bb5e0e0130"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4660d6ffcf62118b533a60baf351bd49" id="r_a4660d6ffcf62118b533a60baf351bd49"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4660d6ffcf62118b533a60baf351bd49">MAT</a>(T,  ROWS, ...)</td></tr>
 <tr class="separator:a4660d6ffcf62118b533a60baf351bd49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab810951a8a979526caa74d68de176862" id="r_ab810951a8a979526caa74d68de176862"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab810951a8a979526caa74d68de176862">VEC</a>(T, ...)</td></tr>
@@ -218,6 +220,31 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a998dac2c3d778b269b7108bb5e0e0130" name="a998dac2c3d778b269b7108bb5e0e0130"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a998dac2c3d778b269b7108bb5e0e0130">&#9670;&#160;</a></span>EXPECT_EQ_DATA</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define EXPECT_EQ_DATA</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>a</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>b</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">  EXPECT_EQ(a.size(), b.size()); \</div>
+<div class="line">  EXPECT_EQ(a.rows(), b.rows()); \</div>
+<div class="line">  EXPECT_EQ(a.cols(), b.cols()); \</div>
+<div class="line">  EXPECT_EQ(a, b);</div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="a4660d6ffcf62118b533a60baf351bd49" name="a4660d6ffcf62118b533a60baf351bd49"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4660d6ffcf62118b533a60baf351bd49">&#9670;&#160;</a></span>MAT</h2>
 
@@ -248,7 +275,8 @@ Functions</h2></td></tr>
 <div class="line">    invariant(_vals.size() % _rows == 0, <span class="stringliteral">&quot;Element count not divisible by ROWS&quot;</span>);                \</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">int</span> _cols = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(_vals.size()) / _rows;                                   \</div>
 <div class="line">    <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor&gt;&gt;( \</div>
-<div class="line">        _vals.data(), _rows, _cols);                                                            \</div>
+<div class="line">        _vals.data(), _rows, _cols                                                              \</div>
+<div class="line">    );                                                                                          \</div>
 <div class="line">  })()</div>
 </div><!-- fragment -->
 </div>

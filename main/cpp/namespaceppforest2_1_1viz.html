@@ -119,7 +119,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A half-space constraint derived from an ancestor split.  <a href="structppforest2_1_1viz_1_1HalfSpace.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1viz_1_1LayoutEdge.html">LayoutEdge</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An edge between two positioned nodes with a threshold label.  <a href="structppforest2_1_1viz_1_1LayoutEdge.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An edge between two positioned nodes with a cutpoint label.  <a href="structppforest2_1_1viz_1_1LayoutEdge.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1viz_1_1LayoutNode.html">LayoutNode</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A positioned tree node in the computed layout.  <a href="structppforest2_1_1viz_1_1LayoutNode.html#details">More...</a><br /></td></tr>
@@ -151,18 +151,18 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa3e5633460b12d11ee1c4dc4057da6c1" id="r_aa3e5633460b12d11ee1c4dc4057da6c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3e5633460b12d11ee1c4dc4057da6c1">adjust_threshold</a> (<a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;full_proj, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> thr, std::vector&lt; std::pair&lt; int, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> &gt; &gt; const &amp;fixed_vars)</td></tr>
-<tr class="memdesc:aa3e5633460b12d11ee1c4dc4057da6c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjust a split threshold by subtracting contributions of fixed variables.  <br /></td></tr>
-<tr class="separator:aa3e5633460b12d11ee1c4dc4057da6c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55994b7690db6305e06d63fab2c83943" id="r_a55994b7690db6305e06d63fab2c83943"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a55994b7690db6305e06d63fab2c83943">clip_boundary_2d</a> (<a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;a, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> threshold, std::vector&lt; <a class="el" href="structppforest2_1_1viz_1_1HalfSpace.html">HalfSpace</a> &gt; const &amp;constraints, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> x_min, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> x_max, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> y_min, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> y_max, <a class="el" href="structppforest2_1_1viz_1_1BoundarySegment.html">BoundarySegment</a> &amp;segment, int depth)</td></tr>
-<tr class="memdesc:a55994b7690db6305e06d63fab2c83943"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clip a 2D decision boundary line to the visible rectangle and all ancestor half-space constraints.  <br /></td></tr>
-<tr class="separator:a55994b7690db6305e06d63fab2c83943"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93a5132ac7059c203558f4f63225e9a9" id="r_a93a5132ac7059c203558f4f63225e9a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93a5132ac7059c203558f4f63225e9a9">adjust_cutpoint</a> (<a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;full_proj, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> thr, std::vector&lt; std::pair&lt; int, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> &gt; &gt; const &amp;fixed_vars)</td></tr>
+<tr class="memdesc:a93a5132ac7059c203558f4f63225e9a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjust a split cutpoint by subtracting contributions of fixed variables.  <br /></td></tr>
+<tr class="separator:a93a5132ac7059c203558f4f63225e9a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40011a64c4d80fbd4117bf7ed0543d95" id="r_a40011a64c4d80fbd4117bf7ed0543d95"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40011a64c4d80fbd4117bf7ed0543d95">clip_boundary_2d</a> (<a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;a, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> cutpoint, std::vector&lt; <a class="el" href="structppforest2_1_1viz_1_1HalfSpace.html">HalfSpace</a> &gt; const &amp;constraints, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> x_min, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> x_max, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> y_min, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> y_max, <a class="el" href="structppforest2_1_1viz_1_1BoundarySegment.html">BoundarySegment</a> &amp;segment, int depth)</td></tr>
+<tr class="memdesc:a40011a64c4d80fbd4117bf7ed0543d95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clip a 2D decision boundary line to the visible rectangle and all ancestor half-space constraints.  <br /></td></tr>
+<tr class="separator:a40011a64c4d80fbd4117bf7ed0543d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02f60ef6252c7a5ad6e7fbd5807a355f" id="r_a02f60ef6252c7a5ad6e7fbd5807a355f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02f60ef6252c7a5ad6e7fbd5807a355f">clip_param_to_range</a> (<a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> origin, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> direction, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> range_min, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> range_max, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> &amp;u_min, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> &amp;u_max)</td></tr>
 <tr class="memdesc:a02f60ef6252c7a5ad6e7fbd5807a355f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clip a parametric interval [u_min, u_max] to a 1D range.  <br /></td></tr>
 <tr class="separator:a02f60ef6252c7a5ad6e7fbd5807a355f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2dd21fab1e9c41926d4d6b3e3a53c35" id="r_ae2dd21fab1e9c41926d4d6b3e3a53c35"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#aa490550458907d5beeea4c5a2f126d5e">Polygon</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2dd21fab1e9c41926d4d6b3e3a53c35">clip_polygon_halfspace</a> (<a class="el" href="#aa490550458907d5beeea4c5a2f126d5e">Polygon</a> const &amp;polygon, <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;normal, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> threshold, bool is_lower)</td></tr>
-<tr class="memdesc:ae2dd21fab1e9c41926d4d6b3e3a53c35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clip a convex polygon against a single half-space.  <br /></td></tr>
-<tr class="separator:ae2dd21fab1e9c41926d4d6b3e3a53c35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdf2a58cc119f00a0fed0480e9469c7b" id="r_acdf2a58cc119f00a0fed0480e9469c7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#aa490550458907d5beeea4c5a2f126d5e">Polygon</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acdf2a58cc119f00a0fed0480e9469c7b">clip_polygon_halfspace</a> (<a class="el" href="#aa490550458907d5beeea4c5a2f126d5e">Polygon</a> const &amp;polygon, <a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;normal, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> cutpoint, bool is_lower)</td></tr>
+<tr class="memdesc:acdf2a58cc119f00a0fed0480e9469c7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clip a convex polygon against a single half-space.  <br /></td></tr>
+<tr class="separator:acdf2a58cc119f00a0fed0480e9469c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73d933ab90a48c472424d63c8782929f" id="r_a73d933ab90a48c472424d63c8782929f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1viz_1_1TreeLayout.html">TreeLayout</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73d933ab90a48c472424d63c8782929f">compute_tree_layout</a> (<a class="el" href="structppforest2_1_1TreeNode.html">TreeNode</a> const &amp;root, <a class="el" href="structppforest2_1_1viz_1_1LayoutParams.html">LayoutParams</a> const &amp;params=<a class="el" href="structppforest2_1_1viz_1_1LayoutParams.html">LayoutParams</a>())</td></tr>
 <tr class="memdesc:a73d933ab90a48c472424d63c8782929f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a left-aligned tree layout for rendering.  <br /></td></tr>
 <tr class="separator:a73d933ab90a48c472424d63c8782929f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -188,14 +188,14 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aa3e5633460b12d11ee1c4dc4057da6c1" name="aa3e5633460b12d11ee1c4dc4057da6c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3e5633460b12d11ee1c4dc4057da6c1">&#9670;&#160;</a></span>adjust_threshold()</h2>
+<a id="a93a5132ac7059c203558f4f63225e9a9" name="a93a5132ac7059c203558f4f63225e9a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93a5132ac7059c203558f4f63225e9a9">&#9670;&#160;</a></span>adjust_cutpoint()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> ppforest2::viz::adjust_threshold </td>
+          <td class="memname"><a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> ppforest2::viz::adjust_cutpoint </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>full_proj</em></span>, </td>
         </tr>
@@ -212,22 +212,22 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Adjust a split threshold by subtracting contributions of fixed variables. </p>
-<p>When projecting from p dimensions to 2D, the remaining (p − 2) variables are held at fixed values (typically medians). The effective 2D threshold is: t' = t − Σ_{k ∈ fixed} projector_k × value_k</p>
+<p>Adjust a split cutpoint by subtracting contributions of fixed variables. </p>
+<p>When projecting from p dimensions to 2D, the remaining (p − 2) variables are held at fixed values (typically medians). The effective 2D cutpoint is: t' = t − Σ_{k ∈ fixed} projector_k × value_k</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">full_proj</td><td>Full projector vector (p). </td></tr>
-    <tr><td class="paramname">thr</td><td>Original p-dimensional threshold. </td></tr>
+    <tr><td class="paramname">thr</td><td>Original p-dimensional cutpoint. </td></tr>
     <tr><td class="paramname">fixed_vars</td><td>Pairs of (variable index, fixed value) for non-displayed variables. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Adjusted 2D threshold. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Adjusted 2D cutpoint. </dd></dl>
 
 </div>
 </div>
-<a id="a55994b7690db6305e06d63fab2c83943" name="a55994b7690db6305e06d63fab2c83943"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55994b7690db6305e06d63fab2c83943">&#9670;&#160;</a></span>clip_boundary_2d()</h2>
+<a id="a40011a64c4d80fbd4117bf7ed0543d95" name="a40011a64c4d80fbd4117bf7ed0543d95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40011a64c4d80fbd4117bf7ed0543d95">&#9670;&#160;</a></span>clip_boundary_2d()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -240,7 +240,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a></td>          <td class="paramname"><span class="paramname"><em>threshold</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a></td>          <td class="paramname"><span class="paramname"><em>cutpoint</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -281,10 +281,10 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Clip a 2D decision boundary line to the visible rectangle and all ancestor half-space constraints. </p>
-<p>The boundary of a split with 2D projector <code class="param">a</code> and threshold <code class="param">threshold</code> is the line a^T x = threshold. This function parametrizes the line, clips to the bounding box [x_min, x_max] × [y_min, y_max], then clips against each ancestor constraint. If any visible portion remains, writes the endpoints into <code class="param">segment</code> and returns true.</p>
+<p>The boundary of a split with 2D projector <code class="param">a</code> and cutpoint <code class="param">cutpoint</code> is the line a^T x = cutpoint. This function parametrizes the line, clips to the bounding box [x_min, x_max] × [y_min, y_max], then clips against each ancestor constraint. If any visible portion remains, writes the endpoints into <code class="param">segment</code> and returns true.</p>
 <p>Algorithm (parametric line clipping):</p><ol type="1">
 <li>Compute direction D = (-a1, a0) tangent to the boundary line.</li>
-<li>Find a base point P0 on the line: a^T P0 = threshold.</li>
+<li>Find a base point P0 on the line: a^T P0 = cutpoint.</li>
 <li>Parametrize as P(u) = P0 + u·D with u ∈ (-∞, +∞).</li>
 <li>Clip [u_min, u_max] to the bounding box (clip_param_to_range).</li>
 <li>For each ancestor constraint a_c^T x ⋛ t_c, compute the intersection parameter and tighten the interval.</li>
@@ -293,7 +293,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">a</td><td>2D projection of the split's projector. </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">threshold</td><td>Adjusted 2D threshold. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">cutpoint</td><td>Adjusted 2D cutpoint. </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">constraints</td><td>Ancestor half-space constraints (already in 2D). </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">x_min,x_max,y_min,y_max</td><td>Visible bounding box. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">segment</td><td>Output segment (valid only if function returns true). </td></tr>
@@ -362,8 +362,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae2dd21fab1e9c41926d4d6b3e3a53c35" name="ae2dd21fab1e9c41926d4d6b3e3a53c35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2dd21fab1e9c41926d4d6b3e3a53c35">&#9670;&#160;</a></span>clip_polygon_halfspace()</h2>
+<a id="acdf2a58cc119f00a0fed0480e9469c7b" name="acdf2a58cc119f00a0fed0480e9469c7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdf2a58cc119f00a0fed0480e9469c7b">&#9670;&#160;</a></span>clip_polygon_halfspace()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -381,7 +381,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a></td>          <td class="paramname"><span class="paramname"><em>threshold</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a></td>          <td class="paramname"><span class="paramname"><em>cutpoint</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -393,8 +393,8 @@ Functions</h2></td></tr>
 
 <p>Clip a convex polygon against a single half-space. </p>
 <p>Implements one pass of the Sutherland–Hodgman algorithm. The half-space is defined by:</p><ul>
-<li><code>is_lower</code> = true: normal^T x &lt; threshold (strict)</li>
-<li><code>is_lower</code> = false: normal^T x &gt;= threshold</li>
+<li><code>is_lower</code> = true: normal^T x &lt; cutpoint (strict)</li>
+<li><code>is_lower</code> = false: normal^T x &gt;= cutpoint</li>
 </ul>
 <p>Vertices are processed in order; edges crossing the boundary are split at the intersection point. The result is a (possibly empty) polygon fully contained in the half-space.</p>
 <p>For each edge (curr → next), exactly one of four cases applies:</p><ul>
@@ -409,7 +409,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">polygon</td><td>Input polygon (ordered vertices). </td></tr>
     <tr><td class="paramname">normal</td><td>2D normal vector of the half-space boundary. </td></tr>
-    <tr><td class="paramname">threshold</td><td>Offset of the half-space boundary. </td></tr>
+    <tr><td class="paramname">cutpoint</td><td>Offset of the half-space boundary. </td></tr>
     <tr><td class="paramname">is_lower</td><td>Which side of the boundary to keep. </td></tr>
   </table>
   </dd>
@@ -445,7 +445,7 @@ Functions</h2></td></tr>
 <li>y decreases with depth (root at top, leaves at bottom).</li>
 <li>Sibling subtrees are separated by <code>params.gap</code>.</li>
 </ul>
-<p>Edges connect each parent's bottom center to each child's top center. Each edge is labelled with the split direction and threshold value (e.g. "&lt; 1.50" for the lower child, "≥ 1.50" for the upper child).</p>
+<p>Edges connect each parent's bottom center to each child's top center. Each edge is labelled with the split direction and cutpoint value (e.g. "&lt; 1.50" for the lower child, "≥ 1.50" for the upper child).</p>
 <p>Nodes are accumulated in <b>pre-order</b> traversal (matching <a class="el" href="structppforest2_1_1viz_1_1NodeDataVisitor.html" title="Visitor that routes observations through the tree and collects per-node projection data for histogram...">NodeDataVisitor</a>'s order, so indices correspond). This invariant is critical: the R layer uses the pre-order index to match layout positions with the node data from <a class="el" href="structppforest2_1_1viz_1_1NodeDataVisitor.html" title="Visitor that routes observations through the tree and collects per-node projection data for histogram...">NodeDataVisitor</a>.</p>
 <p>Algorithm (recursive bottom-up):</p><ol type="1">
 <li>For a leaf, place it at x_offset + leaf_w/2 and return its width.</li>

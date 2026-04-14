@@ -6,9 +6,10 @@ var namespaceppforest2_1_1io =
       [ "write", "namespaceppforest2_1_1io_1_1csv.html#a3c0009a801161f7c53fcc8c92a4fc1d5", null ]
     ] ],
     [ "json", "namespaceppforest2_1_1io_1_1json.html", [
+      [ "ErrorHandler", "namespaceppforest2_1_1io_1_1json.html#a31a35114954164986de8ad9d9cde19da", null ],
       [ "ensure_extension", "namespaceppforest2_1_1io_1_1json.html#ae227d27da9c739ddb238d8b9abc0a7ca", null ],
-      [ "read_file", "namespaceppforest2_1_1io_1_1json.html#ad505fbfcd50a991553551edfb3873963", null ],
-      [ "write_file", "namespaceppforest2_1_1io_1_1json.html#af9a7bf5c64c21aa0c2ccc3b75d5cbf6f", null ]
+      [ "read_file", "namespaceppforest2_1_1io_1_1json.html#a2e375343b451d2712caa5c94020a6768", null ],
+      [ "write_file", "namespaceppforest2_1_1io_1_1json.html#ae4c294e34ceb3fbf6b874bcc1816d3de", null ]
     ] ],
     [ "layout", "namespaceppforest2_1_1io_1_1layout.html", "namespaceppforest2_1_1io_1_1layout" ],
     [ "style", "namespaceppforest2_1_1io_1_1style.html", [
@@ -22,12 +23,18 @@ var namespaceppforest2_1_1io =
       [ "success", "namespaceppforest2_1_1io_1_1style.html#ae131d36c9e5b7148b15b9bb16c27290f", null ],
       [ "warning", "namespaceppforest2_1_1io_1_1style.html#aca30a95edc3caf674e86f35bcc0fdd42", null ]
     ] ],
+    [ "text", "namespaceppforest2_1_1io_1_1text.html", [
+      [ "ErrorHandler", "namespaceppforest2_1_1io_1_1text.html#a3aab94f939be855338010b564970d2dc", null ],
+      [ "write_file", "namespaceppforest2_1_1io_1_1text.html#a03789b6a6901bf15ad883b62f87c81b4", null ]
+    ] ],
     [ "ConfigDisplayHints", "structppforest2_1_1io_1_1ConfigDisplayHints.html", "structppforest2_1_1io_1_1ConfigDisplayHints" ],
+    [ "EvaluateResult", "structppforest2_1_1io_1_1EvaluateResult.html", "structppforest2_1_1io_1_1EvaluateResult" ],
     [ "ModelStats", "structppforest2_1_1io_1_1ModelStats.html", "structppforest2_1_1io_1_1ModelStats" ],
     [ "Output", "structppforest2_1_1io_1_1Output.html", "structppforest2_1_1io_1_1Output" ],
     [ "TempDir", "classppforest2_1_1io_1_1TempDir.html", "classppforest2_1_1io_1_1TempDir" ],
     [ "TempFile", "classppforest2_1_1io_1_1TempFile.html", "classppforest2_1_1io_1_1TempFile" ],
     [ "check_dir_not_exists", "namespaceppforest2_1_1io.html#a587b4620e094a4f498b3df6bfc835e52", null ],
+    [ "check_file_exists", "namespaceppforest2_1_1io.html#a25b0db555a3583b12ecf5fcf25b91554", null ],
     [ "check_file_not_exists", "namespaceppforest2_1_1io.html#af8c7ad637a7a6b11ff927795e2446952", null ],
     [ "measure_time_ms", "namespaceppforest2_1_1io.html#a27548afe6815bfe21d68e54f71b37fdd", null ],
     [ "now_iso8601", "namespaceppforest2_1_1io.html#af3bea8d81a602627c7d483ac468c0870", null ],

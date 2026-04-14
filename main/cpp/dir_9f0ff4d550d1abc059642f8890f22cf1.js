@@ -7,9 +7,10 @@ var dir_9f0ff4d550d1abc059642f8890f22cf1 =
     [ "CLIOptions.hpp", "CLIOptions_8hpp.html", "CLIOptions_8hpp" ],
     [ "Evaluate.hpp", "Evaluate_8hpp.html", "Evaluate_8hpp" ],
     [ "EvaluateParams.hpp", "EvaluateParams_8hpp.html", "EvaluateParams_8hpp" ],
+    [ "JsonApply.hpp", "JsonApply_8hpp.html", "JsonApply_8hpp" ],
     [ "ModelParams.hpp", "ModelParams_8hpp.html", "ModelParams_8hpp" ],
     [ "Predict.hpp", "Predict_8hpp.html", "Predict_8hpp" ],
     [ "Summarize.hpp", "Summarize_8hpp.html", "Summarize_8hpp" ],
     [ "Train.hpp", "Train_8hpp.html", "Train_8hpp" ],
-    [ "VarsSpec.hpp", "VarsSpec_8hpp.html", "VarsSpec_8hpp" ]
+    [ "Validation.hpp", "Validation_8hpp.html", "Validation_8hpp" ]
 ];

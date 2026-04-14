@@ -128,9 +128,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af1ce78657a37580a4b15dc5747f76519" id="r_af1ce78657a37580a4b15dc5747f76519"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1ce78657a37580a4b15dc5747f76519">display_name</a> () const =0</td></tr>
 <tr class="memdesc:af1ce78657a37580a4b15dc5747f76519"><td class="mdescLeft">&#160;</td><td class="mdescRight">Human-readable name for display in summaries.  <br /></td></tr>
 <tr class="separator:af1ce78657a37580a4b15dc5747f76519"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60b638e6088f71a745df00a0de7eeab2" id="r_a60b638e6088f71a745df00a0de7eeab2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a60b638e6088f71a745df00a0de7eeab2">to_json</a> (nlohmann::json &amp;j) const =0</td></tr>
-<tr class="memdesc:a60b638e6088f71a745df00a0de7eeab2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize this strategy's configuration to JSON.  <br /></td></tr>
-<tr class="separator:a60b638e6088f71a745df00a0de7eeab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62c864302f9daa7f425877f5f1401ae0" id="r_a62c864302f9daa7f425877f5f1401ae0"><td class="memItemLeft" align="right" valign="top">virtual nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62c864302f9daa7f425877f5f1401ae0">to_json</a> () const =0</td></tr>
+<tr class="memdesc:a62c864302f9daa7f425877f5f1401ae0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize this strategy's configuration to JSON.  <br /></td></tr>
+<tr class="separator:a62c864302f9daa7f425877f5f1401ae0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -144,11 +144,11 @@ Static Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Derived&gt;<br />
 struct Strategy&lt; Derived &gt;</div><p>CRTP base class providing self-registration for strategy types. </p>
-<p>Each strategy family (PP, DR, SR) inherits from <a class="el" href="structStrategy.html" title="CRTP base class providing self-registration for strategy types.">Strategy&lt;Derived&gt;</a> to get a shared_ptr <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> typedef, a static registry of named factory functions, and a <a class="el" href="#a9e314b0628debdf68c17e25f10f339c8" title="Construct a strategy from its JSON representation.">from_json()</a> dispatcher that looks up the "name" field and delegates to the registered factory.</p>
+<p>Each strategy family (ProjectionPursuit, VariableSelection, SplitCutpoint, StopRule, Binarization, StepPartition) inherits from <a class="el" href="structStrategy.html" title="CRTP base class providing self-registration for strategy types.">Strategy&lt;Derived&gt;</a> to get a shared_ptr <a class="el" href="#a30c651b4431c97d3504039607df398c9">Ptr</a> typedef, a static registry of named factory functions, and a <a class="el" href="#a9e314b0628debdf68c17e25f10f339c8" title="Construct a strategy from its JSON representation.">from_json()</a> dispatcher that looks up the "name" field and delegates to the registered factory.</p>
 <p>Concrete strategies register themselves at static-init time via the PPFOREST2_REGISTER_STRATEGY macro.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Derived</td><td>The strategy base class (e.g. PPStrategy). </td></tr>
+    <tr><td class="paramname">Derived</td><td>The strategy base class (e.g. ProjectionPursuit). </td></tr>
   </table>
   </dd>
 </dl>
@@ -243,7 +243,7 @@ template&lt;typename Derived&gt; </div>
 
 <p>Human-readable name for display in summaries. </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1dr_1_1DRNoopStrategy.html#acb2c8e3b5fd450806fe314a09b116afa">ppforest2::dr::DRNoopStrategy</a>, <a class="el" href="structppforest2_1_1dr_1_1DRUniformStrategy.html#a09748600bf517010726dd00ed75e4b21">ppforest2::dr::DRUniformStrategy</a>, <a class="el" href="structppforest2_1_1pp_1_1PPPDAStrategy.html#aaacc432fd61baad76e748fd17e89ec8b">ppforest2::pp::PPPDAStrategy</a>, and <a class="el" href="structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html#a83363402688b7aaec776312edf0e87ad">ppforest2::sr::SRMeanOfMeansStrategy</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1binarize_1_1LargestGap.html#aabaa9741ddbac8bfbca9e6c4b9e1da0d">ppforest2::binarize::LargestGap</a>, <a class="el" href="structppforest2_1_1cutpoint_1_1MeanOfMeans.html#ae4ed0d71ec9d4ddeed4f45af19c22d29">ppforest2::cutpoint::MeanOfMeans</a>, <a class="el" href="structppforest2_1_1leaf_1_1MajorityVote.html#a9afcd4552b5a18e28b1d3af439c38ba8">ppforest2::leaf::MajorityVote</a>, <a class="el" href="structppforest2_1_1partition_1_1ByGroup.html#a9b0458199216421a7855c2eabcbb59cd">ppforest2::partition::ByGroup</a>, <a class="el" href="structppforest2_1_1pp_1_1PDA.html#aa258bf5a5a567019fcb7c757f4d55dc7">ppforest2::pp::PDA</a>, <a class="el" href="structppforest2_1_1stop_1_1PureNode.html#ab2de8e378813f72a1ae54689af60d0cf">ppforest2::stop::PureNode</a>, <a class="el" href="structppforest2_1_1vars_1_1All.html#abf1ed3eb85e3c1116a179e3ebdb47f41">ppforest2::vars::All</a>, and <a class="el" href="structppforest2_1_1vars_1_1Uniform.html#a897f46a9d2fe7641797386e9a593c314">ppforest2::vars::Uniform</a>.</p>
 
 </div>
 </div>
@@ -326,8 +326,8 @@ template&lt;typename Derived&gt; </div>
 
 </div>
 </div>
-<a id="a60b638e6088f71a745df00a0de7eeab2" name="a60b638e6088f71a745df00a0de7eeab2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60b638e6088f71a745df00a0de7eeab2">&#9670;&#160;</a></span>to_json()</h2>
+<a id="a62c864302f9daa7f425877f5f1401ae0" name="a62c864302f9daa7f425877f5f1401ae0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62c864302f9daa7f425877f5f1401ae0">&#9670;&#160;</a></span>to_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -338,9 +338,9 @@ template&lt;typename Derived&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void <a class="el" href="structStrategy.html">Strategy</a>&lt; Derived &gt;::to_json </td>
+          <td class="memname">virtual nlohmann::json <a class="el" href="structStrategy.html">Strategy</a>&lt; Derived &gt;::to_json </td>
           <td>(</td>
-          <td class="paramtype">nlohmann::json &amp;</td>          <td class="paramname"><span class="paramname"><em>j</em></span></td><td>)</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -352,20 +352,14 @@ template&lt;typename Derived&gt; </div>
 </div><div class="memdoc">
 
 <p>Serialize this strategy's configuration to JSON. </p>
-<p>Must include a "name" field identifying the strategy type, plus any strategy-specific parameters.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">j</td><td>JSON object to populate. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Must include a "name" field identifying the strategy type, plus any strategy-specific parameters. </p>
 
-<p>Implemented in <a class="el" href="structppforest2_1_1dr_1_1DRNoopStrategy.html#adcbb6b73b2db8594930abc0076cfb8f6">ppforest2::dr::DRNoopStrategy</a>, <a class="el" href="structppforest2_1_1dr_1_1DRUniformStrategy.html#afdfc39a17dd084c34e0342d246636362">ppforest2::dr::DRUniformStrategy</a>, <a class="el" href="structppforest2_1_1pp_1_1PPPDAStrategy.html#ab96999ebfed8f339abe60125d1a1c5ca">ppforest2::pp::PPPDAStrategy</a>, and <a class="el" href="structppforest2_1_1sr_1_1SRMeanOfMeansStrategy.html#a5e1238cf1e070cc6d31923377ee0f642">ppforest2::sr::SRMeanOfMeansStrategy</a>.</p>
+<p>Implemented in <a class="el" href="structppforest2_1_1binarize_1_1LargestGap.html#abc2a9bb38c3c1bbd87db874726e2c9e2">ppforest2::binarize::LargestGap</a>, <a class="el" href="structppforest2_1_1cutpoint_1_1MeanOfMeans.html#aad97662b1ca955d93ff1d25ebd007d9d">ppforest2::cutpoint::MeanOfMeans</a>, <a class="el" href="structppforest2_1_1leaf_1_1MajorityVote.html#af3c42aab31df87712e718c7a28cd42ef">ppforest2::leaf::MajorityVote</a>, <a class="el" href="structppforest2_1_1partition_1_1ByGroup.html#a15251d08f71e848b99df03c3270cb8ee">ppforest2::partition::ByGroup</a>, <a class="el" href="structppforest2_1_1pp_1_1PDA.html#a3764e05f769f7ba5eb7c8318db3010b1">ppforest2::pp::PDA</a>, <a class="el" href="structppforest2_1_1stop_1_1PureNode.html#ac6035281ed0f4477a4af1c9ebf70cb1c">ppforest2::stop::PureNode</a>, <a class="el" href="structppforest2_1_1vars_1_1All.html#a8a59bec52649b857f47b11b6f7f6b6bb">ppforest2::vars::All</a>, and <a class="el" href="structppforest2_1_1vars_1_1Uniform.html#a6ca122c99b39437c9682388f10707118">ppforest2::vars::Uniform</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>core/src/models/<a class="el" href="Strategy_8hpp_source.html">Strategy.hpp</a></li>
+<li>core/src/models/strategies/<a class="el" href="Strategy_8hpp_source.html">Strategy.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

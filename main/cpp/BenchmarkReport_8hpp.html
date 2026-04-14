@@ -100,8 +100,8 @@ $(function(){initNavTree('BenchmarkReport_8hpp.html',''); initResizable(true); }
 
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a>  </div>
   <div class="headertitle"><div class="title">BenchmarkReport.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -110,33 +110,40 @@ $(function(){initNavTree('BenchmarkReport_8hpp.html',''); initResizable(true); }
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Benchmark_8hpp_source.html">cli/Benchmark.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Output_8hpp_source.html">io/Output.hpp</a>&quot;</code><br />
-<code>#include &lt;string&gt;</code><br />
+<code>#include &quot;<a class="el" href="Table_8hpp_source.html">io/Table.hpp</a>&quot;</code><br />
 <code>#include &lt;optional&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="BenchmarkReport_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1Baseline.html">ppforest2::cli::Baseline</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A baseline suite with a pre-built name → result index.  <a href="structppforest2_1_1cli_1_1Baseline.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1BenchmarkReport.html">ppforest2::cli::BenchmarkReport</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Benchmark report with comparison, display, and export.  <a href="structppforest2_1_1cli_1_1BenchmarkReport.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1BenchmarkReport_1_1Markdown.html">ppforest2::cli::BenchmarkReport::Markdown</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structppforest2_1_1cli_1_1BenchmarkReport_1_1Markdown.html" title="Markdown style with emoji indicators.">Markdown</a> style with emoji indicators.  <a href="structppforest2_1_1cli_1_1BenchmarkReport_1_1Markdown.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1BenchmarkReport_1_1Style.html">ppforest2::cli::BenchmarkReport::Style</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display style for benchmark report output.  <a href="structppforest2_1_1cli_1_1BenchmarkReport_1_1Style.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1BenchmarkReport_1_1Text.html">ppforest2::cli::BenchmarkReport::Text</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Terminal style with ANSI color decorators.  <a href="structppforest2_1_1cli_1_1BenchmarkReport_1_1Text.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html">ppforest2</a></td></tr>
+<tr class="memdesc:namespaceppforest2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binarization strategies for multiclass-to-binary reduction. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html">ppforest2::cli</a></td></tr>
 <tr class="memdesc:namespaceppforest2_1_1cli"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command-line interface: argument parsing, subcommands, and benchmark/evaluation orchestration. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a25888d0d76a9315126a3128021963446" id="r_a25888d0d76a9315126a3128021963446"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#a25888d0d76a9315126a3128021963446">ppforest2::cli::print_benchmark_markdown</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">io::Output</a> &amp;out, <a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a> const &amp;current, std::optional&lt; <a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; const &amp;baseline=std::nullopt)</td></tr>
-<tr class="memdesc:a25888d0d76a9315126a3128021963446"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print results as a GitHub-flavored markdown table.  <br /></td></tr>
-<tr class="separator:a25888d0d76a9315126a3128021963446"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae778112c09d17a0b4b9b74034dde1d7f" id="r_ae778112c09d17a0b4b9b74034dde1d7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#ae778112c09d17a0b4b9b74034dde1d7f">ppforest2::cli::print_benchmark_table</a> (<a class="el" href="structppforest2_1_1io_1_1Output.html">io::Output</a> &amp;out, <a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a> const &amp;current, std::optional&lt; <a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a> &gt; const &amp;baseline=std::nullopt)</td></tr>
-<tr class="memdesc:ae778112c09d17a0b4b9b74034dde1d7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a formatted results table to stdout.  <br /></td></tr>
-<tr class="separator:ae778112c09d17a0b4b9b74034dde1d7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a678c2287e27cb2a96c13185b1017f0c1" id="r_a678c2287e27cb2a96c13185b1017f0c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#a678c2287e27cb2a96c13185b1017f0c1">ppforest2::cli::write_results_csv</a> (<a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a> const &amp;result, std::string const &amp;path)</td></tr>
-<tr class="memdesc:a678c2287e27cb2a96c13185b1017f0c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write suite results to a CSV file.  <br /></td></tr>
-<tr class="separator:a678c2287e27cb2a96c13185b1017f0c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b7d113bf340a905c9c5d783a1543765" id="r_a0b7d113bf340a905c9c5d783a1543765"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#a0b7d113bf340a905c9c5d783a1543765">ppforest2::cli::write_results_json</a> (<a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a> const &amp;result, std::string const &amp;path)</td></tr>
-<tr class="memdesc:a0b7d113bf340a905c9c5d783a1543765"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write suite results to a JSON file.  <br /></td></tr>
-<tr class="separator:a0b7d113bf340a905c9c5d783a1543765"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Benchmark result formatting, comparison, and export. </p>

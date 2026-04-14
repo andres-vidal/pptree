@@ -35,8 +35,12 @@ summary(model)
 #> 
 #> Size: 2 trees
 #> pp method: LDA (lambda=0)
-#> dr method: Uniform random (n_vars=4)
-#> sr method: Mean of means
+#> vars method: Uniform random (count=4)
+#> cutpoint method: Mean of means
+#> stop rule: Pure node
+#> binarize method: Largest gap
+#> partition method: By group
+#> leaf method: Majority vote
 #> 
 #> 
 #> Data Summary:
@@ -52,27 +56,27 @@ summary(model)
 #> Actual       setosa versicolor virginica
 #>   setosa         50          0         0
 #>   versicolor      0         49         1
-#>   virginica       0          1        49
+#>   virginica       0          4        46
 #> 
-#> Training error: 1.33%
+#> Training error: 3.33%
 #> 
 #> OOB Confusion Matrix:
 #> 
 #>             Predicted
 #> Actual       setosa versicolor virginica
-#>   setosa         30          0         0
-#>   versicolor      0         29         0
-#>   virginica       0          0        31
+#>   setosa         34          0         0
+#>   versicolor      0         31         0
+#>   virginica       0          3        30
 #> 
-#> OOB error: 0%
+#> OOB error: 3.06%
 #> 
 #> Variable Importance:
 #> 
 #>       Variable         σ Projection   Weighted   Permuted
-#> 1 Petal.Length 1.7652982 0.11812986 0.10914339 0.66332722
-#> 2  Petal.Width 0.7622377 0.04823423 0.03898794 0.22586522
-#> 3 Sepal.Length 0.8280661 0.02621456 0.02295329 0.05950212
-#> 4  Sepal.Width 0.4358663 0.01906149 0.01900462 0.06375226
+#> 1 Petal.Length 1.7652982 0.07846245 0.07242692 0.41032788
+#> 2  Petal.Width 0.7622377 0.07662326 0.06041355 0.30295083
+#> 3  Sepal.Width 0.4358663 0.02399131 0.02208606 0.06278688
+#> 4 Sepal.Length 0.8280661 0.01523169 0.01314180 0.03000000
 #> 
 #> Note: Variable importance was calculated using scaled coefficients (|a_j| * σ_j).
 #> Variable contributions can only be theoretically interpreted as such

@@ -116,10 +116,10 @@ $(function(){initNavTree('structppforest2_1_1viz_1_1BoundaryVisitor.html',''); i
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1658b984dcce8865f834a58ad9c5d694" id="r_a1658b984dcce8865f834a58ad9c5d694"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1658b984dcce8865f834a58ad9c5d694">BoundaryVisitor</a> (int <a class="el" href="#a1fe47cc575f36bb0bb56c14a424d07c0">var_i</a>, int <a class="el" href="#a254c687f33c265a008e40a86d1144f18">var_j</a>, std::vector&lt; std::pair&lt; int, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> &gt; &gt; const &amp;<a class="el" href="#a11092d4739350d7e2288232c276c726a">fixed_vars</a>, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> <a class="el" href="#ac545004b29322b72d88dd954018fbad8">x_min</a>, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> <a class="el" href="#ab25edfffc37560e367432892f5ad8be6">x_max</a>, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> <a class="el" href="#a3ab995ff6b9ff8a67e1066f14ba56d58">y_min</a>, <a class="el" href="namespaceppforest2_1_1types.html#adeb8ffeb8e3c9fe860715ace6693b04c">types::Feature</a> <a class="el" href="#a8706d26fa08ffa531a74951d66d674c0">y_max</a>)</td></tr>
 <tr class="separator:a1658b984dcce8865f834a58ad9c5d694"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79a00f94ea1be2ae2e781bab04042d8d" id="r_a79a00f94ea1be2ae2e781bab04042d8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a79a00f94ea1be2ae2e781bab04042d8d">visit</a> (<a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> const &amp;node) override</td></tr>
-<tr class="separator:a79a00f94ea1be2ae2e781bab04042d8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd08306b6b796ed91acc1ce4decf70cd" id="r_afd08306b6b796ed91acc1ce4decf70cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd08306b6b796ed91acc1ce4decf70cd">visit</a> (<a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> const &amp;node) override</td></tr>
-<tr class="separator:afd08306b6b796ed91acc1ce4decf70cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d36bb7987f952c53e7b65f875b62cbc" id="r_a4d36bb7987f952c53e7b65f875b62cbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d36bb7987f952c53e7b65f875b62cbc">visit</a> (<a class="el" href="structppforest2_1_1TreeBranch.html">TreeBranch</a> const &amp;node) override</td></tr>
+<tr class="separator:a4d36bb7987f952c53e7b65f875b62cbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74533ec5c71264757c2b3f7249335f84" id="r_a74533ec5c71264757c2b3f7249335f84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74533ec5c71264757c2b3f7249335f84">visit</a> (<a class="el" href="structppforest2_1_1TreeLeaf.html">TreeLeaf</a> const &amp;node) override</td></tr>
+<tr class="separator:a74533ec5c71264757c2b3f7249335f84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -160,10 +160,10 @@ Public Attributes</h2></td></tr>
 <div class="line">tree.root-&gt;accept(visitor);</div>
 <div class="line"><span class="comment">// visitor.segments contains all visible boundary segments</span></div>
 <div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_a1658b984dcce8865f834a58ad9c5d694"><div class="ttname"><a href="#a1658b984dcce8865f834a58ad9c5d694">ppforest2::viz::BoundaryVisitor::BoundaryVisitor</a></div><div class="ttdeci">BoundaryVisitor(int var_i, int var_j, std::vector&lt; std::pair&lt; int, types::Feature &gt; &gt; const &amp;fixed_vars, types::Feature x_min, types::Feature x_max, types::Feature y_min, types::Feature y_max)</div></div>
-<div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_a3ab995ff6b9ff8a67e1066f14ba56d58"><div class="ttname"><a href="#a3ab995ff6b9ff8a67e1066f14ba56d58">ppforest2::viz::BoundaryVisitor::y_min</a></div><div class="ttdeci">types::Feature y_min</div><div class="ttdef"><b>Definition</b> Visualization.hpp:364</div></div>
-<div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_a8706d26fa08ffa531a74951d66d674c0"><div class="ttname"><a href="#a8706d26fa08ffa531a74951d66d674c0">ppforest2::viz::BoundaryVisitor::y_max</a></div><div class="ttdeci">types::Feature y_max</div><div class="ttdoc">Visible bounding box.</div><div class="ttdef"><b>Definition</b> Visualization.hpp:364</div></div>
-<div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_ab25edfffc37560e367432892f5ad8be6"><div class="ttname"><a href="#ab25edfffc37560e367432892f5ad8be6">ppforest2::viz::BoundaryVisitor::x_max</a></div><div class="ttdeci">types::Feature x_max</div><div class="ttdef"><b>Definition</b> Visualization.hpp:364</div></div>
-<div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_ac545004b29322b72d88dd954018fbad8"><div class="ttname"><a href="#ac545004b29322b72d88dd954018fbad8">ppforest2::viz::BoundaryVisitor::x_min</a></div><div class="ttdeci">types::Feature x_min</div><div class="ttdef"><b>Definition</b> Visualization.hpp:364</div></div>
+<div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_a3ab995ff6b9ff8a67e1066f14ba56d58"><div class="ttname"><a href="#a3ab995ff6b9ff8a67e1066f14ba56d58">ppforest2::viz::BoundaryVisitor::y_min</a></div><div class="ttdeci">types::Feature y_min</div><div class="ttdef"><b>Definition</b> Visualization.hpp:369</div></div>
+<div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_a8706d26fa08ffa531a74951d66d674c0"><div class="ttname"><a href="#a8706d26fa08ffa531a74951d66d674c0">ppforest2::viz::BoundaryVisitor::y_max</a></div><div class="ttdeci">types::Feature y_max</div><div class="ttdoc">Visible bounding box.</div><div class="ttdef"><b>Definition</b> Visualization.hpp:369</div></div>
+<div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_ab25edfffc37560e367432892f5ad8be6"><div class="ttname"><a href="#ab25edfffc37560e367432892f5ad8be6">ppforest2::viz::BoundaryVisitor::x_max</a></div><div class="ttdeci">types::Feature x_max</div><div class="ttdef"><b>Definition</b> Visualization.hpp:369</div></div>
+<div class="ttc" id="astructppforest2_1_1viz_1_1BoundaryVisitor_html_ac545004b29322b72d88dd954018fbad8"><div class="ttname"><a href="#ac545004b29322b72d88dd954018fbad8">ppforest2::viz::BoundaryVisitor::x_min</a></div><div class="ttdeci">types::Feature x_min</div><div class="ttdef"><b>Definition</b> Visualization.hpp:369</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1658b984dcce8865f834a58ad9c5d694" name="a1658b984dcce8865f834a58ad9c5d694"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1658b984dcce8865f834a58ad9c5d694">&#9670;&#160;</a></span>BoundaryVisitor()</h2>
@@ -212,8 +212,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a79a00f94ea1be2ae2e781bab04042d8d" name="a79a00f94ea1be2ae2e781bab04042d8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a79a00f94ea1be2ae2e781bab04042d8d">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
+<a id="a4d36bb7987f952c53e7b65f875b62cbc" name="a4d36bb7987f952c53e7b65f875b62cbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d36bb7987f952c53e7b65f875b62cbc">&#9670;&#160;</a></span>visit() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -224,7 +224,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void ppforest2::viz::BoundaryVisitor::visit </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeCondition.html">TreeCondition</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeBranch.html">TreeBranch</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -235,12 +235,12 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#ae0012f890f7222f07c4a4d1c919b5e1b">ppforest2::TreeNode::Visitor</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#a32aaa3f520bd7778ee1f3e9da48776ca">ppforest2::TreeNode::Visitor</a>.</p>
 
 </div>
 </div>
-<a id="afd08306b6b796ed91acc1ce4decf70cd" name="afd08306b6b796ed91acc1ce4decf70cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd08306b6b796ed91acc1ce4decf70cd">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
+<a id="a74533ec5c71264757c2b3f7249335f84" name="a74533ec5c71264757c2b3f7249335f84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74533ec5c71264757c2b3f7249335f84">&#9670;&#160;</a></span>visit() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -251,7 +251,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void ppforest2::viz::BoundaryVisitor::visit </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeResponse.html">TreeResponse</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structppforest2_1_1TreeLeaf.html">TreeLeaf</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -262,7 +262,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#a108bd70b895abb667aed72e0f1bcfa73">ppforest2::TreeNode::Visitor</a>.</p>
+<p>Implements <a class="el" href="structppforest2_1_1TreeNode_1_1Visitor.html#a6a192faabb8cb7e5f7a95b3d7957f66c">ppforest2::TreeNode::Visitor</a>.</p>
 
 </div>
 </div>

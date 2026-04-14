@@ -119,14 +119,19 @@ Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1style.html">style</a></td></tr>
 <tr class="memdesc:namespaceppforest2_1_1io_1_1style"><td class="mdescLeft">&#160;</td><td class="mdescRight">TTY-aware ANSI colored output utilities. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1io_1_1text.html">text</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1io_1_1ConfigDisplayHints.html">ConfigDisplayHints</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional display hints for print_configuration.  <a href="structppforest2_1_1io_1_1ConfigDisplayHints.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1io_1_1EvaluateResult.html">EvaluateResult</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Summary of an evaluation run.  <a href="structppforest2_1_1io_1_1EvaluateResult.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1io_1_1ModelStats.html">ModelStats</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aggregated statistics across multiple training iterations.  <a href="structppforest2_1_1io_1_1ModelStats.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-iteration training statistics.  <a href="structppforest2_1_1io_1_1ModelStats.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1io_1_1Output.html">Output</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quiet-aware, indentation-aware output context.  <a href="structppforest2_1_1io_1_1Output.html#details">More...</a><br /></td></tr>
@@ -143,6 +148,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a587b4620e094a4f498b3df6bfc835e52" id="r_a587b4620e094a4f498b3df6bfc835e52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a587b4620e094a4f498b3df6bfc835e52">check_dir_not_exists</a> (std::string const &amp;path)</td></tr>
 <tr class="memdesc:a587b4620e094a4f498b3df6bfc835e52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exit with an error if a directory already exists at the given path.  <br /></td></tr>
 <tr class="separator:a587b4620e094a4f498b3df6bfc835e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25b0db555a3583b12ecf5fcf25b91554" id="r_a25b0db555a3583b12ecf5fcf25b91554"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25b0db555a3583b12ecf5fcf25b91554">check_file_exists</a> (std::string const &amp;path)</td></tr>
+<tr class="memdesc:a25b0db555a3583b12ecf5fcf25b91554"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exit with an error if a file does not exist at the given path.  <br /></td></tr>
+<tr class="separator:a25b0db555a3583b12ecf5fcf25b91554"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8c7ad637a7a6b11ff927795e2446952" id="r_af8c7ad637a7a6b11ff927795e2446952"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af8c7ad637a7a6b11ff927795e2446952">check_file_not_exists</a> (std::string const &amp;path)</td></tr>
 <tr class="memdesc:af8c7ad637a7a6b11ff927795e2446952"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exit with an error if a file already exists at the given path.  <br /></td></tr>
 <tr class="separator:af8c7ad637a7a6b11ff927795e2446952"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,6 +200,31 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>The directory path to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a25b0db555a3583b12ecf5fcf25b91554" name="a25b0db555a3583b12ecf5fcf25b91554"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25b0db555a3583b12ecf5fcf25b91554">&#9670;&#160;</a></span>check_file_exists()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ppforest2::io::check_file_exists </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Exit with an error if a file does not exist at the given path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>The file path to check. </td></tr>
   </table>
   </dd>
 </dl>

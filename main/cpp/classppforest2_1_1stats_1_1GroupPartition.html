@@ -100,6 +100,7 @@ $(function(){initNavTree('classppforest2_1_1stats_1_1GroupPartition.html',''); i
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
@@ -113,30 +114,37 @@ $(function(){initNavTree('classppforest2_1_1stats_1_1GroupPartition.html',''); i
 
 <p><code>#include &lt;<a class="el" href="GroupPartition_8hpp_source.html">GroupPartition.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a9e7b978334c0942ce7cf2b2408bf505e" id="r_a9e7b978334c0942ce7cf2b2408bf505e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e7b978334c0942ce7cf2b2408bf505e">SplitSizes</a> = std::map&lt;<a class="el" href="namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170">types::Outcome</a>, int&gt;</td></tr>
+<tr class="separator:a9e7b978334c0942ce7cf2b2408bf505e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0a0eaaa183c0503825f1fbfee792ebcc" id="r_a0a0eaaa183c0503825f1fbfee792ebcc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a0eaaa183c0503825f1fbfee792ebcc">GroupPartition</a> (<a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;y)</td></tr>
-<tr class="memdesc:a0a0eaaa183c0503825f1fbfee792ebcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from a sorted response vector.  <br /></td></tr>
-<tr class="separator:a0a0eaaa183c0503825f1fbfee792ebcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7bee186e3741bed72fb5de3f6561093" id="r_aa7bee186e3741bed72fb5de3f6561093"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa7bee186e3741bed72fb5de3f6561093">GroupPartition</a> (<a class="el" href="namespaceppforest2_1_1types.html#a2432f13302eed47b33e7b5a73e57b020">types::OutcomeVector</a> const &amp;y)</td></tr>
+<tr class="memdesc:aa7bee186e3741bed72fb5de3f6561093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from a sorted response vector.  <br /></td></tr>
+<tr class="separator:aa7bee186e3741bed72fb5de3f6561093"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c26c6a76b3c37fc0db844351acabd90" id="r_a8c26c6a76b3c37fc0db844351acabd90"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c26c6a76b3c37fc0db844351acabd90">bgss</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x) const</td></tr>
 <tr class="memdesc:a8c26c6a76b3c37fc0db844351acabd90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Between-group sum of squares matrix (p × p).  <br /></td></tr>
 <tr class="separator:a8c26c6a76b3c37fc0db844351acabd90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae309e07418f3315f94e4501646cff612" id="r_ae309e07418f3315f94e4501646cff612"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae309e07418f3315f94e4501646cff612">collapse</a> () const</td></tr>
 <tr class="memdesc:ae309e07418f3315f94e4501646cff612"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collapse all groups into a single supergroup.  <br /></td></tr>
 <tr class="separator:ae309e07418f3315f94e4501646cff612"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36b8a9aab9f77e205ba94d18157e25a5" id="r_a36b8a9aab9f77e205ba94d18157e25a5"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36b8a9aab9f77e205ba94d18157e25a5">data</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x) const</td></tr>
-<tr class="memdesc:a36b8a9aab9f77e205ba94d18157e25a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract all rows across all groups.  <br /></td></tr>
-<tr class="separator:a36b8a9aab9f77e205ba94d18157e25a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a565e492fc0d240c662be6e9e2ebf9e4f" id="r_a565e492fc0d240c662be6e9e2ebf9e4f"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a565e492fc0d240c662be6e9e2ebf9e4f">group</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x, Group const &amp;group) const</td></tr>
-<tr class="memdesc:a565e492fc0d240c662be6e9e2ebf9e4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract rows belonging to a group (or supergroup).  <br /></td></tr>
-<tr class="separator:a565e492fc0d240c662be6e9e2ebf9e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b872a690cf53ec757d3b2538b243e5a" id="r_a9b872a690cf53ec757d3b2538b243e5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b872a690cf53ec757d3b2538b243e5a">group_end</a> (Group const &amp;<a class="el" href="#a565e492fc0d240c662be6e9e2ebf9e4f">group</a>) const</td></tr>
+<tr class="memitem:a9462169118e52e5345b8bce762bf3c69" id="r_a9462169118e52e5345b8bce762bf3c69"><td class="memTemplParams" colspan="2">template&lt;typename Derived&gt; </td></tr>
+<tr class="memitem:a9462169118e52e5345b8bce762bf3c69"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a9462169118e52e5345b8bce762bf3c69">data</a> (Eigen::MatrixBase&lt; Derived &gt; const &amp;x) const</td></tr>
+<tr class="memdesc:a9462169118e52e5345b8bce762bf3c69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract all rows across all groups.  <br /></td></tr>
+<tr class="separator:a9462169118e52e5345b8bce762bf3c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeecac3a6d8477466483066db93466fe0" id="r_aeecac3a6d8477466483066db93466fe0"><td class="memTemplParams" colspan="2">template&lt;typename Derived&gt; </td></tr>
+<tr class="memitem:aeecac3a6d8477466483066db93466fe0"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aeecac3a6d8477466483066db93466fe0">group</a> (Eigen::MatrixBase&lt; Derived &gt; const &amp;x, Group const &amp;group) const</td></tr>
+<tr class="memdesc:aeecac3a6d8477466483066db93466fe0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract rows belonging to a group (or supergroup).  <br /></td></tr>
+<tr class="separator:aeecac3a6d8477466483066db93466fe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b872a690cf53ec757d3b2538b243e5a" id="r_a9b872a690cf53ec757d3b2538b243e5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b872a690cf53ec757d3b2538b243e5a">group_end</a> (Group const &amp;<a class="el" href="#aeecac3a6d8477466483066db93466fe0">group</a>) const</td></tr>
 <tr class="memdesc:a9b872a690cf53ec757d3b2538b243e5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Last row index (inclusive) of the block for <code class="param">group</code>.  <br /></td></tr>
 <tr class="separator:a9b872a690cf53ec757d3b2538b243e5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae08ce9003aaf1548074e392aa48c1431" id="r_ae08ce9003aaf1548074e392aa48c1431"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae08ce9003aaf1548074e392aa48c1431">group_size</a> (Group const &amp;<a class="el" href="#a565e492fc0d240c662be6e9e2ebf9e4f">group</a>) const</td></tr>
+<tr class="memitem:ae08ce9003aaf1548074e392aa48c1431" id="r_ae08ce9003aaf1548074e392aa48c1431"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae08ce9003aaf1548074e392aa48c1431">group_size</a> (Group const &amp;<a class="el" href="#aeecac3a6d8477466483066db93466fe0">group</a>) const</td></tr>
 <tr class="memdesc:ae08ce9003aaf1548074e392aa48c1431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of observations in <code class="param">group</code>.  <br /></td></tr>
 <tr class="separator:ae08ce9003aaf1548074e392aa48c1431"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8d6e647a443742758f23e8a54c880d8" id="r_ad8d6e647a443742758f23e8a54c880d8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8d6e647a443742758f23e8a54c880d8">group_start</a> (Group const &amp;<a class="el" href="#a565e492fc0d240c662be6e9e2ebf9e4f">group</a>) const</td></tr>
+<tr class="memitem:ad8d6e647a443742758f23e8a54c880d8" id="r_ad8d6e647a443742758f23e8a54c880d8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8d6e647a443742758f23e8a54c880d8">group_start</a> (Group const &amp;<a class="el" href="#aeecac3a6d8477466483066db93466fe0">group</a>) const</td></tr>
 <tr class="memdesc:ad8d6e647a443742758f23e8a54c880d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">First row index of the block for <code class="param">group</code>.  <br /></td></tr>
 <tr class="separator:ad8d6e647a443742758f23e8a54c880d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a653310430e825a53355e48dad3add927" id="r_a653310430e825a53355e48dad3add927"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a409985f07e7a60fd352934db8849d25c">types::FeatureVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a653310430e825a53355e48dad3add927">mean</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x) const</td></tr>
@@ -145,9 +153,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a00a4207e9ae26ad217b46f6ef506fce5" id="r_a00a4207e9ae26ad217b46f6ef506fce5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00a4207e9ae26ad217b46f6ef506fce5">remap</a> (GroupMap const &amp;mapping) const</td></tr>
 <tr class="memdesc:a00a4207e9ae26ad217b46f6ef506fce5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merge groups according to a mapping.  <br /></td></tr>
 <tr class="separator:a00a4207e9ae26ad217b46f6ef506fce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74d9a3a7e7c401bf22a019f8cf764af8" id="r_a74d9a3a7e7c401bf22a019f8cf764af8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74d9a3a7e7c401bf22a019f8cf764af8">subset</a> (GroupSet <a class="el" href="#a6f94f02c89f225d4e28d2369af86bc50">groups</a>) const</td></tr>
-<tr class="memdesc:a74d9a3a7e7c401bf22a019f8cf764af8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a partition containing only the given groups.  <br /></td></tr>
-<tr class="separator:a74d9a3a7e7c401bf22a019f8cf764af8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb93c814425f78941f33a13849537f20" id="r_aeb93c814425f78941f33a13849537f20"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a>, <a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb93c814425f78941f33a13849537f20">split</a> (<a class="el" href="#a9e7b978334c0942ce7cf2b2408bf505e">SplitSizes</a> const &amp;left_sizes) const</td></tr>
+<tr class="memdesc:aeb93c814425f78941f33a13849537f20"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structppforest2_1_1stats_1_1Split.html" title="Indices for a train/test split.">Split</a> each group's block into left and right children.  <br /></td></tr>
+<tr class="separator:aeb93c814425f78941f33a13849537f20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa248cfefb808710f06c748251b4f0e48" id="r_aa248cfefb808710f06c748251b4f0e48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa248cfefb808710f06c748251b4f0e48">subset</a> (GroupSet const &amp;<a class="el" href="#a6f94f02c89f225d4e28d2369af86bc50">groups</a>) const</td></tr>
+<tr class="memdesc:aa248cfefb808710f06c748251b4f0e48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a partition containing only the given groups.  <br /></td></tr>
+<tr class="separator:aa248cfefb808710f06c748251b4f0e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a332e13fca827ef071096980bb35521fc" id="r_a332e13fca827ef071096980bb35521fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a332e13fca827ef071096980bb35521fc">wgss</a> (<a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;x) const</td></tr>
 <tr class="memdesc:a332e13fca827ef071096980bb35521fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Within-group sum of squares matrix (p × p).  <br /></td></tr>
 <tr class="separator:a332e13fca827ef071096980bb35521fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,7 +186,7 @@ Public Attributes</h2></td></tr>
 <p>Assumes the response vector is sorted so that observations of the same group are contiguous. Stores the start/end row indices of each group block and provides efficient extraction, subsetting, and computation of between- and within-group statistics.</p>
 <p>Groups can be hierarchically merged via <a class="el" href="#a00a4207e9ae26ad217b46f6ef506fce5" title="Merge groups according to a mapping.">remap()</a>, which assigns supergroup labels while tracking the original subgroups.</p>
 <div class="fragment"><div class="line"><span class="comment">// y must be sorted so equal values are contiguous.</span></div>
-<div class="line"><a class="code hl_function" href="#a0a0eaaa183c0503825f1fbfee792ebcc">GroupPartition</a> gp(y);</div>
+<div class="line"><a class="code hl_function" href="#aa7bee186e3741bed72fb5de3f6561093">GroupPartition</a> gp(y);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Extract rows belonging to group 0:</span></div>
 <div class="line"><span class="keyword">auto</span> x_group0 = gp.group(x, 0);</div>
@@ -185,11 +196,26 @@ Public Attributes</h2></td></tr>
 <div class="line"><span class="keyword">auto</span> W = gp.wgss(x);   <span class="comment">// within-group sum of squares  (p × p)</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Restrict to a subset of groups:</span></div>
-<div class="line"><a class="code hl_function" href="#a0a0eaaa183c0503825f1fbfee792ebcc">GroupPartition</a> sub = gp.subset({0, 2});</div>
-<div class="ttc" id="aclassppforest2_1_1stats_1_1GroupPartition_html_a0a0eaaa183c0503825f1fbfee792ebcc"><div class="ttname"><a href="#a0a0eaaa183c0503825f1fbfee792ebcc">ppforest2::stats::GroupPartition::GroupPartition</a></div><div class="ttdeci">GroupPartition(types::ResponseVector const &amp;y)</div><div class="ttdoc">Construct from a sorted response vector.</div></div>
-</div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a0a0eaaa183c0503825f1fbfee792ebcc" name="a0a0eaaa183c0503825f1fbfee792ebcc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a0eaaa183c0503825f1fbfee792ebcc">&#9670;&#160;</a></span>GroupPartition()</h2>
+<div class="line"><a class="code hl_function" href="#aa7bee186e3741bed72fb5de3f6561093">GroupPartition</a> sub = gp.subset({0, 2});</div>
+<div class="ttc" id="aclassppforest2_1_1stats_1_1GroupPartition_html_aa7bee186e3741bed72fb5de3f6561093"><div class="ttname"><a href="#aa7bee186e3741bed72fb5de3f6561093">ppforest2::stats::GroupPartition::GroupPartition</a></div><div class="ttdeci">GroupPartition(types::OutcomeVector const &amp;y)</div><div class="ttdoc">Construct from a sorted response vector.</div></div>
+</div><!-- fragment --> </div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a9e7b978334c0942ce7cf2b2408bf505e" name="a9e7b978334c0942ce7cf2b2408bf505e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e7b978334c0942ce7cf2b2408bf505e">&#9670;&#160;</a></span>SplitSizes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a9e7b978334c0942ce7cf2b2408bf505e">ppforest2::stats::GroupPartition::SplitSizes</a> = std::map&lt;<a class="el" href="namespaceppforest2_1_1types.html#a25e0aa0a8a8179e427aa0b47c9441170">types::Outcome</a>, int&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aa7bee186e3741bed72fb5de3f6561093" name="aa7bee186e3741bed72fb5de3f6561093"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7bee186e3741bed72fb5de3f6561093">&#9670;&#160;</a></span>GroupPartition()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -197,7 +223,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">ppforest2::stats::GroupPartition::GroupPartition </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a4cc32c7bf71b27689fd027a8814821da">types::ResponseVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a2432f13302eed47b33e7b5a73e57b020">types::OutcomeVector</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -206,7 +232,7 @@ Public Attributes</h2></td></tr>
 <p>Construct from a sorted response vector. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">y</td><td>Response vector (n) with contiguous group blocks. </td></tr>
+    <tr><td class="paramname">y</td><td>Outcome vector (n) with contiguous group blocks. </td></tr>
   </table>
   </dd>
 </dl>
@@ -253,11 +279,13 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a36b8a9aab9f77e205ba94d18157e25a5" name="a36b8a9aab9f77e205ba94d18157e25a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36b8a9aab9f77e205ba94d18157e25a5">&#9670;&#160;</a></span>data()</h2>
+<a id="a9462169118e52e5345b8bce762bf3c69" name="a9462169118e52e5345b8bce762bf3c69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9462169118e52e5345b8bce762bf3c69">&#9670;&#160;</a></span>data()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Derived&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -265,7 +293,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">auto ppforest2::stats::GroupPartition::data </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
+          <td class="paramtype">Eigen::MatrixBase&lt; Derived &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -287,11 +315,13 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a565e492fc0d240c662be6e9e2ebf9e4f" name="a565e492fc0d240c662be6e9e2ebf9e4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a565e492fc0d240c662be6e9e2ebf9e4f">&#9670;&#160;</a></span>group()</h2>
+<a id="aeecac3a6d8477466483066db93466fe0" name="aeecac3a6d8477466483066db93466fe0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeecac3a6d8477466483066db93466fe0">&#9670;&#160;</a></span>group()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Derived&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -299,7 +329,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">auto ppforest2::stats::GroupPartition::group </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceppforest2_1_1types.html#a20733a55a09432e8f9f924eb11fb5b0d">types::FeatureMatrix</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype">Eigen::MatrixBase&lt; Derived &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -315,6 +345,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Extract rows belonging to a group (or supergroup). </p>
+<p>Returns an Eigen block expression (zero-copy view) into <code class="param">x</code>. The result must be consumed immediately or assigned to a concrete matrix — do not store it in <code>auto</code> across statements.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x</td><td>Feature matrix (n × p). </td></tr>
@@ -322,7 +353,7 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Sub-matrix of rows belonging to <code class="param">group</code>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Block expression over the rows of <code class="param">group</code>. </dd></dl>
 
 </div>
 </div>
@@ -455,8 +486,36 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a74d9a3a7e7c401bf22a019f8cf764af8" name="a74d9a3a7e7c401bf22a019f8cf764af8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74d9a3a7e7c401bf22a019f8cf764af8">&#9670;&#160;</a></span>subset()</h2>
+<a id="aeb93c814425f78941f33a13849537f20" name="aeb93c814425f78941f33a13849537f20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb93c814425f78941f33a13849537f20">&#9670;&#160;</a></span>split()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a>, <a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a> &gt; ppforest2::stats::GroupPartition::split </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#a9e7b978334c0942ce7cf2b2408bf505e">SplitSizes</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>left_sizes</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="structppforest2_1_1stats_1_1Split.html" title="Indices for a train/test split.">Split</a> each group's block into left and right children. </p>
+<p>For each leaf group, <code class="param">left_sizes</code> specifies how many rows go to the left child (the first rows of the block). The remaining rows go to the right child. Groups absent from <code class="param">left_sizes</code> go entirely to the right child (left_count = 0).</p>
+<p>The caller is responsible for having already reordered rows within each block so that left-bound observations come first.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">left_sizes</td><td>Maps each leaf group to its left child row count. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pair of {left, right} GroupPartitions. </dd></dl>
+
+</div>
+</div>
+<a id="aa248cfefb808710f06c748251b4f0e48" name="aa248cfefb808710f06c748251b4f0e48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa248cfefb808710f06c748251b4f0e48">&#9670;&#160;</a></span>subset()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -464,7 +523,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classppforest2_1_1stats_1_1GroupPartition.html">GroupPartition</a> ppforest2::stats::GroupPartition::subset </td>
           <td>(</td>
-          <td class="paramtype">GroupSet</td>          <td class="paramname"><span class="paramname"><em>groups</em></span></td><td>)</td>
+          <td class="paramtype">GroupSet const &amp;</td>          <td class="paramname"><span class="paramname"><em>groups</em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>

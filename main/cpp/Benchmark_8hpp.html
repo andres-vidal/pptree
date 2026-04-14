@@ -102,7 +102,6 @@ $(function(){initNavTree('Benchmark_8hpp.html',''); initResizable(true); });
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">Benchmark.hpp File Reference</div></div>
 </div><!--header-->
@@ -111,11 +110,10 @@ $(function(){initNavTree('Benchmark_8hpp.html',''); initResizable(true); });
 <p>Benchmark scenario types, JSON parsing, and subprocess-based execution.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="CLIOptions_8hpp_source.html">cli/CLIOptions.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EvaluateResult_8hpp_source.html">io/EvaluateResult.hpp</a>&quot;</code><br />
 <code>#include &lt;nlohmann/json.hpp&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;optional&gt;</code><br />
-<code>#include &lt;functional&gt;</code><br />
 </div>
 <p><a href="Benchmark_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -123,12 +121,6 @@ $(function(){initNavTree('Benchmark_8hpp.html',''); initResizable(true); });
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html">ppforest2::cli::BenchmarkSuite</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A suite of scenarios with shared defaults.  <a href="structppforest2_1_1cli_1_1BenchmarkSuite.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1ConvergenceCriteria.html">ppforest2::cli::ConvergenceCriteria</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convergence criteria for adaptive stopping in benchmarks.  <a href="structppforest2_1_1cli_1_1ConvergenceCriteria.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1Scenario.html">ppforest2::cli::Scenario</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A single benchmark scenario: data shape + model config.  <a href="structppforest2_1_1cli_1_1Scenario.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structppforest2_1_1cli_1_1ScenarioResult.html">ppforest2::cli::ScenarioResult</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result of running a single benchmark scenario.  <a href="structppforest2_1_1cli_1_1ScenarioResult.html#details">More...</a><br /></td></tr>
@@ -142,44 +134,37 @@ Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCLI.html">CLI</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2.html">ppforest2</a></td></tr>
+<tr class="memdesc:namespaceppforest2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binarization strategies for multiclass-to-binary reduction. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html">ppforest2::cli</a></td></tr>
 <tr class="memdesc:namespaceppforest2_1_1cli"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command-line interface: argument parsing, subcommands, and benchmark/evaluation orchestration. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:aec952f15057d29e4ffa744fde757e838" id="r_aec952f15057d29e4ffa744fde757e838"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#aec952f15057d29e4ffa744fde757e838">ppforest2::cli::ProgressCallback</a> = std::function&lt;void(int scenario_index, int total, std::string const&amp; name)&gt;</td></tr>
-<tr class="memdesc:aec952f15057d29e4ffa744fde757e838"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for progress reporting during benchmark execution.  <br /></td></tr>
-<tr class="separator:aec952f15057d29e4ffa744fde757e838"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa562bf6eb40d346e351be0609435d214" id="r_aa562bf6eb40d346e351be0609435d214"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#aa562bf6eb40d346e351be0609435d214">ppforest2::cli::parse_results</a> (std::string const &amp;path)</td></tr>
-<tr class="memdesc:aa562bf6eb40d346e351be0609435d214"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html" title="Aggregated results for an entire suite run.">SuiteResult</a> from a JSON file (for baseline comparison).  <br /></td></tr>
-<tr class="separator:aa562bf6eb40d346e351be0609435d214"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac31a76d56df07fc69b8e4c2ce26e73a6" id="r_ac31a76d56df07fc69b8e4c2ce26e73a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#ac31a76d56df07fc69b8e4c2ce26e73a6">ppforest2::cli::parse_suite</a> (nlohmann::json const &amp;j)</td></tr>
 <tr class="memdesc:ac31a76d56df07fc69b8e4c2ce26e73a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html" title="A suite of scenarios with shared defaults.">BenchmarkSuite</a> from a JSON object.  <br /></td></tr>
 <tr class="separator:ac31a76d56df07fc69b8e4c2ce26e73a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5828d971dc0e7234fa576a5dd39efdee" id="r_a5828d971dc0e7234fa576a5dd39efdee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#a5828d971dc0e7234fa576a5dd39efdee">ppforest2::cli::parse_suite</a> (std::string const &amp;path)</td></tr>
 <tr class="memdesc:a5828d971dc0e7234fa576a5dd39efdee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a <a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html" title="A suite of scenarios with shared defaults.">BenchmarkSuite</a> from a JSON file path.  <br /></td></tr>
 <tr class="separator:a5828d971dc0e7234fa576a5dd39efdee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb67891b15f42f7bec15e9dc900d62b8" id="r_abb67891b15f42f7bec15e9dc900d62b8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#abb67891b15f42f7bec15e9dc900d62b8">ppforest2::cli::run_benchmark</a> (<a class="el" href="structppforest2_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params, std::string const &amp;binary_path)</td></tr>
-<tr class="memdesc:abb67891b15f42f7bec15e9dc900d62b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the benchmark subcommand.  <br /></td></tr>
-<tr class="separator:abb67891b15f42f7bec15e9dc900d62b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a2049621629530cc11fa26ea7e4662e" id="r_a8a2049621629530cc11fa26ea7e4662e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1ScenarioResult.html">ScenarioResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#a8a2049621629530cc11fa26ea7e4662e">ppforest2::cli::run_scenario</a> (<a class="el" href="structppforest2_1_1cli_1_1Scenario.html">Scenario</a> const &amp;scenario, std::string const &amp;binary_path, bool quiet=false)</td></tr>
-<tr class="memdesc:a8a2049621629530cc11fa26ea7e4662e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a single scenario as a subprocess.  <br /></td></tr>
-<tr class="separator:a8a2049621629530cc11fa26ea7e4662e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc11226820de7a825d6a48c4d337efd1" id="r_adc11226820de7a825d6a48c4d337efd1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#adc11226820de7a825d6a48c4d337efd1">ppforest2::cli::run_suite</a> (<a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a> const &amp;suite, std::string const &amp;binary_path, bool quiet=false, <a class="el" href="namespaceppforest2_1_1cli.html#aec952f15057d29e4ffa744fde757e838">ProgressCallback</a> progress=nullptr)</td></tr>
-<tr class="memdesc:adc11226820de7a825d6a48c4d337efd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run all scenarios in a suite via subprocess invocations.  <br /></td></tr>
-<tr class="separator:adc11226820de7a825d6a48c4d337efd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22dffebbed0dbfea3b8bbce9b92f2274" id="r_a22dffebbed0dbfea3b8bbce9b92f2274"><td class="memItemLeft" align="right" valign="top">CLI::App *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#a22dffebbed0dbfea3b8bbce9b92f2274">ppforest2::cli::setup_benchmark</a> (CLI::App &amp;app, <a class="el" href="structppforest2_1_1cli_1_1CLIOptions.html">CLIOptions</a> &amp;params)</td></tr>
-<tr class="memdesc:a22dffebbed0dbfea3b8bbce9b92f2274"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register benchmark subcommand options on <code class="param">app</code>.  <br /></td></tr>
-<tr class="separator:a22dffebbed0dbfea3b8bbce9b92f2274"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7475619b2d8c16599fffa04a41629da" id="r_aa7475619b2d8c16599fffa04a41629da"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#aa7475619b2d8c16599fffa04a41629da">ppforest2::cli::run_benchmark</a> (<a class="el" href="structppforest2_1_1cli_1_1Params.html">Params</a> &amp;params, std::string const &amp;binary_path)</td></tr>
+<tr class="memdesc:aa7475619b2d8c16599fffa04a41629da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the benchmark subcommand.  <br /></td></tr>
+<tr class="separator:aa7475619b2d8c16599fffa04a41629da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad22b99ef105e60c4b7844045776885c1" id="r_ad22b99ef105e60c4b7844045776885c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1ScenarioResult.html">ScenarioResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#ad22b99ef105e60c4b7844045776885c1">ppforest2::cli::run_scenario</a> (nlohmann::json const &amp;scenario, std::string const &amp;binary_path)</td></tr>
+<tr class="memdesc:ad22b99ef105e60c4b7844045776885c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a single scenario as a subprocess.  <br /></td></tr>
+<tr class="separator:ad22b99ef105e60c4b7844045776885c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec41d4b49e63a3d0e9527264b1699eb9" id="r_aec41d4b49e63a3d0e9527264b1699eb9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structppforest2_1_1cli_1_1SuiteResult.html">SuiteResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#aec41d4b49e63a3d0e9527264b1699eb9">ppforest2::cli::run_suite</a> (<a class="el" href="structppforest2_1_1cli_1_1BenchmarkSuite.html">BenchmarkSuite</a> const &amp;suite, std::string const &amp;binary_path, <a class="el" href="structppforest2_1_1io_1_1Output.html">io::Output</a> &amp;out)</td></tr>
+<tr class="memdesc:aec41d4b49e63a3d0e9527264b1699eb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run all scenarios in a suite via subprocess invocations.  <br /></td></tr>
+<tr class="separator:aec41d4b49e63a3d0e9527264b1699eb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd6111d25df8501b1760306547c3aa7a" id="r_abd6111d25df8501b1760306547c3aa7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceppforest2_1_1cli.html#abd6111d25df8501b1760306547c3aa7a">ppforest2::cli::setup_benchmark</a> (CLI::App &amp;app, <a class="el" href="structppforest2_1_1cli_1_1Params.html">Params</a> &amp;params)</td></tr>
+<tr class="memdesc:abd6111d25df8501b1760306547c3aa7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register benchmark subcommand options on <code class="param">app</code>.  <br /></td></tr>
+<tr class="separator:abd6111d25df8501b1760306547c3aa7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Benchmark scenario types, JSON parsing, and subprocess-based execution. </p>
-<p>Each benchmark scenario runs as a separate <code><a class="el" href="namespaceppforest2.html">ppforest2</a> evaluate</code> process, giving accurate per-scenario peak RSS measurements. </p>
+<p>Each benchmark scenario runs as a separate <code><a class="el" href="namespaceppforest2.html" title="Binarization strategies for multiclass-to-binary reduction.">ppforest2</a> evaluate</code> process, giving accurate per-scenario peak RSS measurements.</p>
+<p>Scenarios are represented as plain JSON objects throughout — no intermediate typed struct. Default merging, validation, and config extraction all operate on JSON directly. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

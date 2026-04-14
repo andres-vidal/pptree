@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['matrix_0',['Matrix',['../namespaceppforest2_1_1types.html#ac1e616da571ea80e3ce8bbfc479c8297',1,'ppforest2::types']]]
+  ['groupnames_0',['GroupNames',['../namespaceppforest2_1_1serialization.html#a765380bc535afaefa14aa99a8ff8aae4',1,'ppforest2::serialization']]]
 ];

@@ -9,10 +9,10 @@
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/index.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/news/index.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/NCI60.html</loc></url>
+<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/binarize_largest_gap.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/crab.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/crabs.html</loc></url>
-<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/dr_noop.html</loc></url>
-<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/dr_uniform.html</loc></url>
+<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/cutpoint_mean_of_means.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/fishcatch.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pprf.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pptr.html</loc></url>
@@ -20,11 +20,13 @@
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/image.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/index.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/iris.html</loc></url>
+<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/leaf_majority_vote.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/leukemia.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/load_json.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/lymphoma.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/olive.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/parkinson.html</loc></url>
+<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/partition_by_group.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/plot.pprf.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/plot.pptr.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/pp_pda.html</loc></url>
@@ -37,9 +39,11 @@
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/print.pprf.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/print.pptr.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/save_json.html</loc></url>
-<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.html</loc></url>
+<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/stop_pure_node.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.html</loc></url>
+<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/vars_all.html</loc></url>
+<url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/vars_uniform.html</loc></url>
 <url><loc>https://andres-vidal.github.io/ppforest2/main/r/reference/wine.html</loc></url>
 </urlset>
 

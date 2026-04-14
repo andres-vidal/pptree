@@ -34,8 +34,12 @@ summary(model)
 #> Project-Pursuit Oblique Decision Tree
 #> 
 #> pp method: LDA (lambda=0)
-#> dr method: All variables
-#> sr method: Mean of means
+#> vars method: All variables
+#> cutpoint method: Mean of means
+#> stop rule: Pure node
+#> binarize method: Largest gap
+#> partition method: By group
+#> leaf method: Majority vote
 #> 
 #> 
 #> Data Summary:

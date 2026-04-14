@@ -63,7 +63,7 @@ If <code>lambda &gt; 0</code>, the model uses Penalized Discriminant Analysis (P
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="pptr.html">pptr</a></code>, <code><a href="pprf.html">pprf</a></code>, <code><a href="dr_uniform.html">dr_uniform</a></code>, <code><a href="dr_noop.html">dr_noop</a></code>, <code><a href="sr_mean_of_means.html">sr_mean_of_means</a></code></p></div>
+    <div class="dont-index"><p><code><a href="pptr.html">pptr</a></code>, <code><a href="pprf.html">pprf</a></code>, <code><a href="vars_uniform.html">vars_uniform</a></code>, <code><a href="vars_all.html">vars_all</a></code>, <code><a href="cutpoint_mean_of_means.html">cutpoint_mean_of_means</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -96,27 +96,27 @@ If <code>lambda &gt; 0</code>, the model uses Penalized Discriminant Analysis (P
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use with pprf</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="pprf.html">pprf</a></span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span>, pp <span class="op">=</span> <span class="fu">pp_pda</span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>, dr <span class="op">=</span> <span class="fu"><a href="dr_uniform.html">dr_uniform</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="pprf.html">pprf</a></span><span class="op">(</span><span class="va">Type</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span>, pp <span class="op">=</span> <span class="fu">pp_pda</span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>, vars <span class="op">=</span> <span class="fu"><a href="vars_uniform.html">vars_uniform</a></span><span class="op">(</span>n_vars <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest of Project-Pursuit Oblique Decision Tree</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 1:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 0 0.05 0 ] * x) &lt; 0.1617731:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 0 0.03 0.04 ] * x) &lt; 0.1317591:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0.01 0 0 0.24 ] * x) &lt; 0.4458542:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0 0.04 0.17 ] * x) &lt; 0.4950379:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree 2:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0.02 0 0 0.09 ] * x) &lt; 0.2074318:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0 0.06 0.15 ] * x) &lt; 0.5487639:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> If ([ 0 0.05 0 -0.09 ] * x) &lt; 0.06891914:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  If ([ 0 0 0.06 0.16 ] * x) &lt; 0.5307753:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: versicolor </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Else:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Predict: virginica </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Else:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Predict: setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>

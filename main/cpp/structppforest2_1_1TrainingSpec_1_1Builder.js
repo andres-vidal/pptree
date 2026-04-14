@@ -1,0 +1,27 @@
+var structppforest2_1_1TrainingSpec_1_1Builder =
+[
+    [ "binarize", "structppforest2_1_1TrainingSpec_1_1Builder.html#abccf11f0c782eeddce193982ed82af5e", null ],
+    [ "build", "structppforest2_1_1TrainingSpec_1_1Builder.html#a92a59e56cb4fca5d8eb1b0b612635f5d", null ],
+    [ "cutpoint", "structppforest2_1_1TrainingSpec_1_1Builder.html#a9592837405d5aab3364ac4d4a5f350d9", null ],
+    [ "leaf", "structppforest2_1_1TrainingSpec_1_1Builder.html#a0d5b44777f9f3de6dc1aba34746302e1", null ],
+    [ "make", "structppforest2_1_1TrainingSpec_1_1Builder.html#a55c91f27bfbcca7ee6884f46d6afe7f8", null ],
+    [ "max_retries", "structppforest2_1_1TrainingSpec_1_1Builder.html#a3de32379095ef860dafabd96be7d158a", null ],
+    [ "partition", "structppforest2_1_1TrainingSpec_1_1Builder.html#a1a2c93df2956b780eb39996fe96032b5", null ],
+    [ "pp", "structppforest2_1_1TrainingSpec_1_1Builder.html#a90b63f3cf730287e45f65a1552c8e29c", null ],
+    [ "seed", "structppforest2_1_1TrainingSpec_1_1Builder.html#a135e8f261b1d9f22b9c5d984dfe4c79f", null ],
+    [ "size", "structppforest2_1_1TrainingSpec_1_1Builder.html#a3fc5702229a012ae6e341d09f2851d72", null ],
+    [ "stop", "structppforest2_1_1TrainingSpec_1_1Builder.html#ae05467b9e6b70a8d97ce2b8b377f5b3e", null ],
+    [ "threads", "structppforest2_1_1TrainingSpec_1_1Builder.html#a1b376c81d5588acef2c3c847a0fa205f", null ],
+    [ "vars", "structppforest2_1_1TrainingSpec_1_1Builder.html#a94f160890175c83c461e81ca58353303", null ],
+    [ "binarize_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a21844da1bacfdb216f1c29b1c3f36510", null ],
+    [ "cutpoint_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a25af3d9dbb2df671d7a9b4f8fbc8cf04", null ],
+    [ "leaf_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a6822a835d8ef2f74d9e8618262e337df", null ],
+    [ "max_retries_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a136b8f4058177215e4f98be192c7124c", null ],
+    [ "partition_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a638a4938fec79482f6ade4546a25f09f", null ],
+    [ "pp_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a914035fdd4cb7b0209624f6021caf831", null ],
+    [ "seed_", "structppforest2_1_1TrainingSpec_1_1Builder.html#aa5600e230fef03cfb8a394a6341dd374", null ],
+    [ "size_", "structppforest2_1_1TrainingSpec_1_1Builder.html#aff874a3ce8aaca80755d37b83fc4178a", null ],
+    [ "stop_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a8b255ed4831a70e04fc9a766b736a611", null ],
+    [ "threads_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a07b188cd9937b9aa248ec05b6b626624", null ],
+    [ "vars_", "structppforest2_1_1TrainingSpec_1_1Builder.html#a2dbfce9c1ae10ad76ccb1b9df03b50e5", null ]
+];

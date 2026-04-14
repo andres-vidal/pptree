@@ -1,8 +1,8 @@
 var structppforest2_1_1viz_1_1RegionVisitor =
 [
     [ "RegionVisitor", "structppforest2_1_1viz_1_1RegionVisitor.html#a61a2b96c112afe74522aadd04a009a2b", null ],
-    [ "visit", "structppforest2_1_1viz_1_1RegionVisitor.html#a03f3546e06cf87daefe0f64dbab171b3", null ],
-    [ "visit", "structppforest2_1_1viz_1_1RegionVisitor.html#acd2e7241b570adbbf277031d2d0a03d0", null ],
+    [ "visit", "structppforest2_1_1viz_1_1RegionVisitor.html#a674a683bf2e49a3847669f28658288dc", null ],
+    [ "visit", "structppforest2_1_1viz_1_1RegionVisitor.html#a1380d33b0877735687a06bb1b7019ae2", null ],
     [ "constraints", "structppforest2_1_1viz_1_1RegionVisitor.html#a4421e4ade990f3f113add1f359a841e0", null ],
     [ "fixed_vars", "structppforest2_1_1viz_1_1RegionVisitor.html#a9d2be2d66077ab5fa35005fa9a7ba4f9", null ],
     [ "regions", "structppforest2_1_1viz_1_1RegionVisitor.html#aa89748b5392906a8177cf40151226856", null ],

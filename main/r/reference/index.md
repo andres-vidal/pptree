@@ -4,14 +4,14 @@
 
 - [`NCI60`](https://andres-vidal.github.io/ppforest2/main/r/reference/NCI60.md)
   : NCI60 Dataset
+- [`binarize_largest_gap()`](https://andres-vidal.github.io/ppforest2/main/r/reference/binarize_largest_gap.md)
+  : Largest-gap binarization strategy.
 - [`crab`](https://andres-vidal.github.io/ppforest2/main/r/reference/crab.md)
   : Australian Crabs Dataset
 - [`crabs`](https://andres-vidal.github.io/ppforest2/main/r/reference/crabs.md)
   : Crabs Dataset
-- [`dr_noop()`](https://andres-vidal.github.io/ppforest2/main/r/reference/dr_noop.md)
-  : No-op dimensionality reduction strategy.
-- [`dr_uniform()`](https://andres-vidal.github.io/ppforest2/main/r/reference/dr_uniform.md)
-  : Uniform random variable selection strategy.
+- [`cutpoint_mean_of_means()`](https://andres-vidal.github.io/ppforest2/main/r/reference/cutpoint_mean_of_means.md)
+  : Mean-of-means split cutpoint strategy.
 - [`fishcatch`](https://andres-vidal.github.io/ppforest2/main/r/reference/fishcatch.md)
   : Fish Catch Dataset
 - [`formula(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/formula.pprf.md)
@@ -24,6 +24,8 @@
   : Image Dataset
 - [`iris`](https://andres-vidal.github.io/ppforest2/main/r/reference/iris.md)
   : Iris Flower Dataset
+- [`leaf_majority_vote()`](https://andres-vidal.github.io/ppforest2/main/r/reference/leaf_majority_vote.md)
+  : Majority-vote leaf strategy.
 - [`leukemia`](https://andres-vidal.github.io/ppforest2/main/r/reference/leukemia.md)
   : Leukemia Dataset
 - [`load_json()`](https://andres-vidal.github.io/ppforest2/main/r/reference/load_json.md)
@@ -34,6 +36,8 @@
   : Olive Dataset
 - [`parkinson`](https://andres-vidal.github.io/ppforest2/main/r/reference/parkinson.md)
   : Parkinson Dataset
+- [`partition_by_group()`](https://andres-vidal.github.io/ppforest2/main/r/reference/partition_by_group.md)
+  : Group-based partition strategy.
 - [`plot(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/plot.pprf.md)
   : Plot a pprf model.
 - [`plot(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/plot.pptr.md)
@@ -60,11 +64,15 @@
   : Prints a pptr model.
 - [`save_json()`](https://andres-vidal.github.io/ppforest2/main/r/reference/save_json.md)
   : Save a model to a JSON file.
-- [`sr_mean_of_means()`](https://andres-vidal.github.io/ppforest2/main/r/reference/sr_mean_of_means.md)
-  : Mean-of-means split rule strategy.
+- [`stop_pure_node()`](https://andres-vidal.github.io/ppforest2/main/r/reference/stop_pure_node.md)
+  : Pure-node stopping rule.
 - [`summary(`*`<pprf>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pprf.md)
   : Summarizes a pprf model.
 - [`summary(`*`<pptr>`*`)`](https://andres-vidal.github.io/ppforest2/main/r/reference/summary.pptr.md)
   : Summarizes a pptr model.
+- [`vars_all()`](https://andres-vidal.github.io/ppforest2/main/r/reference/vars_all.md)
+  : All-variables selection strategy.
+- [`vars_uniform()`](https://andres-vidal.github.io/ppforest2/main/r/reference/vars_uniform.md)
+  : Uniform random variable selection strategy.
 - [`wine`](https://andres-vidal.github.io/ppforest2/main/r/reference/wine.md)
   : Wine Dataset

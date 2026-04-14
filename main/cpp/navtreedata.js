@@ -30,17 +30,15 @@ var NAVTREE =
       [ "Architecture", "extending_strategies.html#strat_architecture", null ],
       [ "Conventions", "extending_strategies.html#strat_conventions", null ],
       [ "Self-Registration", "extending_strategies.html#strat_registration", null ],
-      [ "Adding a new PPStrategy", "extending_strategies.html#strat_pp", [
+      [ "Adding a new pp::ProjectionPursuit", "extending_strategies.html#strat_pp", [
         [ "Interface to implement", "extending_strategies.html#strat_pp_interface", null ],
         [ "Example: a random projection strategy", "extending_strategies.html#strat_pp_example", null ]
       ] ],
-      [ "Adding a new DRStrategy", "extending_strategies.html#strat_dr", [
-        [ "Interface to implement", "extending_strategies.html#strat_dr_interface", null ],
-        [ "Example: top-variance variable selection", "extending_strategies.html#strat_dr_example", null ]
+      [ "Adding a new vars::VariableSelection", "extending_strategies.html#strat_vars", [
+        [ "Interface to implement", "extending_strategies.html#strat_vars_interface", null ]
       ] ],
-      [ "Adding a new SRStrategy", "extending_strategies.html#strat_sr", [
-        [ "Interface to implement", "extending_strategies.html#strat_sr_interface", null ],
-        [ "Example: median-based split", "extending_strategies.html#strat_sr_example", null ]
+      [ "Adding a new cutpoint::SplitCutpoint", "extending_strategies.html#strat_cutpoint", [
+        [ "Interface to implement", "extending_strategies.html#strat_cutpoint_interface", null ]
       ] ],
       [ "Composing strategies", "extending_strategies.html#strat_compose", null ],
       [ "Checklist for adding a new strategy", "extending_strategies.html#strat_checklist", null ]
@@ -77,7 +75,8 @@ var NAVTREE =
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", "functions_vars" ],
-        [ "Typedefs", "functions_type.html", null ]
+        [ "Typedefs", "functions_type.html", null ],
+        [ "Related Symbols", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -95,12 +94,14 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"BenchmarkParams_8hpp.html",
-"extending_strategies.html#strat_checklist",
-"namespaceppforest2_1_1sr.html#a5984b53061082b99be1d9c764a4b7045",
-"structppforest2_1_1TreeNode.html#a5ec62c510e282beae85c9e9a59e11efc",
-"structppforest2_1_1cli_1_1ScenarioResult.html#aa196c76adf908bb442964bbb1253e53b",
-"structppforest2_1_1sr_1_1SRStrategy.html#a365d3745431cd197be128639fc635b22"
+"All_8hpp.html",
+"classppforest2_1_1stats_1_1Normal.html#abd0d0034cf3c3d5fa237423cabd71e08",
+"namespaceppforest2_1_1io_1_1text.html#a3aab94f939be855338010b564970d2dc",
+"structppforest2_1_1TrainingSpec.html#a6b13c28d4494a8eb8f29f79d4e60699a",
+"structppforest2_1_1binarize_1_1LargestGap.html#a3dd2207af9e8b73ca492e49c69cd8042",
+"structppforest2_1_1cli_1_1SimulateParams.html",
+"structppforest2_1_1pp_1_1ProjectionPursuit.html#a327191037fabdf8b5810e58f2eecedfa",
+"structppforest2_1_1viz_1_1NodeData.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

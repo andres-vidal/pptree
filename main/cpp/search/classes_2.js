@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['clioptions_0',['CLIOptions',['../structppforest2_1_1cli_1_1CLIOptions.html',1,'ppforest2::cli']]],
-  ['column_1',['Column',['../structppforest2_1_1io_1_1layout_1_1Column.html',1,'ppforest2::io::layout']]],
-  ['configdisplayhints_2',['ConfigDisplayHints',['../structppforest2_1_1io_1_1ConfigDisplayHints.html',1,'ppforest2::io']]],
-  ['confusionmatrix_3',['ConfusionMatrix',['../structppforest2_1_1stats_1_1ConfusionMatrix.html',1,'ppforest2::stats']]],
-  ['convergencecriteria_4',['ConvergenceCriteria',['../structppforest2_1_1cli_1_1ConvergenceCriteria.html',1,'ppforest2::cli']]],
-  ['convergenceparams_5',['ConvergenceParams',['../structppforest2_1_1cli_1_1ConvergenceParams.html',1,'ppforest2::cli']]]
+  ['column_0',['Column',['../structppforest2_1_1io_1_1layout_1_1Column.html',1,'ppforest2::io::layout']]],
+  ['configdisplayhints_1',['ConfigDisplayHints',['../structppforest2_1_1io_1_1ConfigDisplayHints.html',1,'ppforest2::io']]],
+  ['confusionmatrix_2',['ConfusionMatrix',['../structppforest2_1_1stats_1_1ConfusionMatrix.html',1,'ppforest2::stats']]],
+  ['convergence_3',['Convergence',['../structppforest2_1_1cli_1_1EvaluateParams_1_1Convergence.html',1,'ppforest2::cli::EvaluateParams']]]
 ];
