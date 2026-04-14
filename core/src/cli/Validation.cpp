@@ -21,11 +21,8 @@ namespace ppforest2::cli {
 
   namespace {
     void validate_data_source(nlohmann::json const& config, std::vector<std::string>& errors) {
-      bool has_data =
-          config.contains("data") && config["data"].is_string() && !config["data"].get<std::string>().empty();
-      bool has_simulate =
-          config.contains("simulate") && config["simulate"].is_string()
-          && !config["simulate"].get<std::string>().empty();
+      bool has_data     = !config.value("data", "").empty();
+      bool has_simulate = !config.value("simulate", "").empty();
 
       check(has_data || has_simulate, "data source is required (data or simulate)", errors);
 

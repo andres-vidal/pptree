@@ -35,7 +35,7 @@ namespace ppforest2::cli {
 
     std::optional<float> train_ratio;
     std::optional<int> iterations; ///< Fixed count (disables convergence when set > 0).
-    int warmup = 0;               ///< Warmup iterations discarded before measuring.
+    int warmup = 0;                ///< Warmup iterations discarded before measuring.
     std::string export_path;
 
     /** @brief Whether adaptive convergence stopping is active (disabled when iterations is set). */

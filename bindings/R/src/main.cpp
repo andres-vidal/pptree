@@ -137,10 +137,8 @@ Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, Ou
 }
 
 namespace {
-  std::vector<std::pair<int, types::Feature>> build_fixed_vars(
-      Rcpp::IntegerVector const& var_indices,
-      Rcpp::NumericVector const& fixed_values
-  ) {
+  std::vector<std::pair<int, types::Feature>>
+  build_fixed_vars(Rcpp::IntegerVector const& var_indices, Rcpp::NumericVector const& fixed_values) {
     std::vector<std::pair<int, types::Feature>> fixed_vars;
 
     if (fixed_values.size() > 0) {

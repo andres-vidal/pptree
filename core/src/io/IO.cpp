@@ -5,17 +5,16 @@
 #include "io/IO.hpp"
 #include "stats/GroupPartition.hpp"
 #include "stats/Stats.hpp"
-#include "utils/Invariant.hpp"
 #include "utils/UserError.hpp"
 
-#include "csv.hpp"
+#include "csv.hpp" // IWYU pragma: keep
 
 #include <fmt/format.h>
 
-#include <vector>
-#include <unordered_map>
-#include <fstream>
 #include <filesystem>
+#include <fstream>
+#include <unordered_map>
+#include <vector>
 
 namespace ppforest2::io {
   void check_file_exists(std::string const& path) {

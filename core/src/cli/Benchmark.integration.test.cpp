@@ -70,7 +70,7 @@ TEST(CLIBenchmark, BenchmarkJsonOutput) {
   EXPECT_TRUE(j.contains("timestamp"));
   EXPECT_TRUE(j.contains("total_time_ms"));
   EXPECT_TRUE(j.contains("results"));
-  EXPECT_EQ(j["results"].size(), 2u);
+  EXPECT_EQ(j["results"].size(), 2U);
 
   for (auto const& r : j["results"]) {
     EXPECT_TRUE(r.contains("name"));
@@ -126,7 +126,7 @@ TEST(CLIBenchmark, BenchmarkBothOutputFormats) {
 
   // JSON output is valid
   auto j = json::parse(json_out.read());
-  EXPECT_EQ(j["results"].size(), 2u);
+  EXPECT_EQ(j["results"].size(), 2U);
 
   // CSV output has header + 2 data rows
   std::ifstream in(csv_out.path());
@@ -212,5 +212,5 @@ TEST(CLIBenchmark, BenchmarkWithStrategyConfig) {
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(output.read());
-  EXPECT_EQ(j["results"].size(), 2u);
+  EXPECT_EQ(j["results"].size(), 2U);
 }
