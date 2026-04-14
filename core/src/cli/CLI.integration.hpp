@@ -14,6 +14,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <memory>
 #include <string>
 
 #include <nlohmann/json.hpp>
@@ -84,12 +85,14 @@ inline ProcessResult run_ppforest2(std::string const& args) {
     output += buffer;
   }
 
-#ifdef _WIN32
+  // clang-format off
+  #ifdef _WIN32
   int exit_code = _pclose(pipe);
-#else
+  #else
   int status    = pclose(pipe);
   int exit_code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
-#endif
+  #endif
+  // clang-format on
 
   return {exit_code, output, stderr_file.read()};
 }
@@ -106,7 +109,7 @@ using ppforest2::io::TempFile;
 class SavedModelTest : public ::testing::Test {
 protected:
   void SetUp() override {
-    model_.reset(new TempFile());
+    model_ = std::make_unique<TempFile>();
     model_->clear();
     auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 -s " + model_->path());
     ASSERT_EQ(result.exit_code, 0);

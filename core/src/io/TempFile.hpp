@@ -33,10 +33,9 @@ namespace ppforest2::io {
       char tmp_dir[MAX_PATH];
       GetTempPathA(MAX_PATH, tmp_dir);
       char tmp_file[MAX_PATH];
-      GetTempFileNameA(tmp_dir, "ppt", 0, tmp_file);
-      std::string base = tmp_file;
-      std::remove(base.c_str());
-      path_ = base + suffix;
+      GetTempFileNameA(tmp_dir, "ppforest2", 0, tmp_file);
+      sentinel_ = tmp_file;
+      path_ = sentinel_ + suffix;
       std::ofstream touch(path_);
       #else
       std::string tmpl = "/tmp/ppforest2_XXXXXX" + suffix;
@@ -57,6 +56,14 @@ namespace ppforest2::io {
       if (!path_.empty()) {
         std::remove(path_.c_str());
       }
+
+      // clang-format off
+      #ifdef _WIN32
+      if (!sentinel_.empty()) {
+        std::remove(sentinel_.c_str());
+      }
+      #endif
+      // clang-format on
     }
 
     TempFile(TempFile const&)            = delete;
@@ -65,12 +72,29 @@ namespace ppforest2::io {
     TempFile(TempFile&& other) noexcept
         : path_(std::move(other.path_)) {
       other.path_.clear();
+      // clang-format off
+      #ifdef _WIN32
+      sentinel_ = std::move(other.sentinel_);
+      other.sentinel_.clear();
+      #endif
+      // clang-format on
     }
 
     TempFile& operator=(TempFile&& other) noexcept {
       if (this != &other) {
-        if (!path_.empty())
+        if (!path_.empty()) {
           std::remove(path_.c_str());
+        }
+
+        // clang-format off
+        #ifdef _WIN32
+        if (!sentinel_.empty()) {
+          std::remove(sentinel_.c_str());
+        }
+        sentinel_ = std::move(other.sentinel_);
+        other.sentinel_.clear();
+        #endif
+        // clang-format on
 
         path_ = std::move(other.path_);
         other.path_.clear();
@@ -94,6 +118,11 @@ namespace ppforest2::io {
 
   private:
     std::string path_;
+    // clang-format off
+    #ifdef _WIN32
+    std::string sentinel_;  // keep the .tmp file alive to prevent GetTempFileNameA reuse
+    #endif
+    // clang-format on
   };
 
   /**
@@ -105,7 +134,9 @@ namespace ppforest2::io {
   class TempDir {
   public:
     TempDir() {
-#ifdef _WIN32
+      // clang-format off
+      #ifdef _WIN32
+      // clang-format on
       char tmp_dir[MAX_PATH];
       GetTempPathA(MAX_PATH, tmp_dir);
       char tmp_file[MAX_PATH];
@@ -114,17 +145,20 @@ namespace ppforest2::io {
       std::remove(tmp_file);
       path_ = tmp_file;
       std::filesystem::create_directories(path_);
-#else
+      // clang-format off
+      #else
+      // clang-format on
       path_ = "/tmp/ppforest2_dir_XXXXXX";
       std::vector<char> buf(path_.begin(), path_.end());
       buf.push_back('\0');
       char* result = mkdtemp(buf.data());
 
-      if (result) {
+      if (result != nullptr) {
         path_ = result;
       }
-
-#endif
+      // clang-format off
+      #endif
+      // clang-format on
     }
 
     ~TempDir() {
