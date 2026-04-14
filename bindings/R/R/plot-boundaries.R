@@ -24,7 +24,7 @@
 #' @param ... Passed through to the specific boundary plot function.
 #' @return A ggplot2 object.
 #' @noRd
-plot_boundaries <- function(model, ...) {
+plot_boundaries <- function(model, compact = FALSE, ...) {
   p <- ncol(model$x)
 
   if (p == 1L) {
@@ -32,7 +32,7 @@ plot_boundaries <- function(model, ...) {
   } else if (p == 2L) {
     plot_boundaries_2d(model, ...)
   } else {
-    plot_boundaries_pairwise(model, ...)
+    plot_boundaries_pairwise(model, compact = compact, ...)
   }
 }
 
@@ -118,9 +118,7 @@ plot_boundaries_1d <- function(model) {
   )
   boundary_x <- sort(boundary_x)
 
-  x_range <- range(model$x[, 1])
-  x_pad <- diff(x_range) * 0.05
-  x_range <- x_range + c(-x_pad, x_pad)
+  x_range <- pad_range(range(model$x[, 1]))
 
   # Build region rectangles from sorted boundaries
   # Predict the group for the midpoint of each region
@@ -211,12 +209,8 @@ plot_boundaries_2d <- function(model, ...) {
 
   obs_group_labels <- group_labels[model$y]
 
-  x_range <- range(model$x[, 1])
-  y_range <- range(model$x[, 2])
-  x_pad <- diff(x_range) * 0.05
-  y_pad <- diff(y_range) * 0.05
-  x_range <- x_range + c(-x_pad, x_pad)
-  y_range <- y_range + c(-y_pad, y_pad)
+  x_range <- pad_range(range(model$x[, 1]))
+  y_range <- pad_range(range(model$x[, 2]))
 
   # Equalize ranges so the plot is square with coord_fixed
   eq <- equalize_ranges(x_range, y_range)
@@ -331,12 +325,31 @@ strip_upper_triangle <- function(p) {
   panel_rows <- sort(unique(panels$t))
   panel_cols <- sort(unique(panels$l))
 
+  # Collect upper-triangle positions (facet_col > facet_row)
+  upper_tri <- data.frame(
+    gtable_row = integer(0), gtable_col = integer(0)
+  )
   for (i in seq_len(nrow(panels))) {
     facet_row <- match(panels$t[i], panel_rows)
     facet_col <- match(panels$l[i], panel_cols)
-
     if (facet_col > facet_row) {
-      g$grobs[[which(g$layout$name == panels$name[i])]] <- grid::nullGrob()
+      upper_tri <- rbind(upper_tri, data.frame(
+        gtable_row = panels$t[i], gtable_col = panels$l[i]
+      ))
+    }
+  }
+
+  if (nrow(upper_tri) == 0) return(g)
+
+  # Blank all grobs that overlap upper-triangle panel cells
+  for (j in seq_len(nrow(g$layout))) {
+    row_j <- g$layout$t[j]
+    col_j <- g$layout$l[j]
+    for (k in seq_len(nrow(upper_tri))) {
+      if (row_j == upper_tri$gtable_row[k] &&
+          col_j == upper_tri$gtable_col[k]) {
+        g$grobs[[j]] <- grid::nullGrob()
+      }
     }
   }
 
@@ -347,7 +360,7 @@ strip_upper_triangle <- function(p) {
 #' @param ... Passed to \code{geom_segment} (e.g. additional aesthetics).
 #' @return A gtable with empty upper-triangle panels removed.
 #' @noRd
-plot_boundaries_pairwise <- function(model, ...) {
+plot_boundaries_pairwise <- function(model, compact = FALSE, ...) {
   vnames <- get_variable_names(model)
   group_labels <- model$groups
   group_colors <- get_group_colors(group_labels)
@@ -372,12 +385,8 @@ plot_boundaries_pairwise <- function(model, ...) {
     j <- pairs[[k]][2]
     other <- setdiff(seq_len(n_vars), c(i, j))
 
-    x_range <- range(model$x[, i])
-    y_range <- range(model$x[, j])
-    x_pad <- diff(x_range) * 0.05
-    y_pad <- diff(y_range) * 0.05
-    x_range <- x_range + c(-x_pad, x_pad)
-    y_range <- y_range + c(-y_pad, y_pad)
+    x_range <- pad_range(range(model$x[, i]))
+    y_range <- pad_range(range(model$x[, j]))
 
     # Region bbox matches the padded data range exactly.  Combined with
     # scale expansion(0) below, this ensures region polygons tile each
@@ -459,7 +468,7 @@ plot_boundaries_pairwise <- function(model, ...) {
   )
 
   p <- p +
-    ggplot2::facet_grid(y_var ~ x_var, scales = "free", switch = "both") +
+    ggplot2::facet_grid(y_var ~ x_var, scales = "free", switch = "x") +
     ggplot2::scale_fill_manual(values = group_colors, name = "Class") +
     ggplot2::scale_color_manual(values = group_colors, name = "Class") +
     ggplot2::scale_x_continuous(expand = ggplot2::expansion(0)) +
@@ -469,8 +478,30 @@ plot_boundaries_pairwise <- function(model, ...) {
     ggplot2::theme(
       aspect.ratio     = 1,
       strip.placement  = "outside",
-      axis.title       = ggplot2::element_blank()
+      axis.title       = ggplot2::element_blank(),
+      axis.text.y      = ggplot2::element_blank(),
+      axis.ticks.y     = ggplot2::element_blank(),
+      legend.position  = "bottom"
     )
+
+
+  # Compact mode: drop aspect ratio and axis text so panels fill all
+  # available space (used by the mosaic where room is constrained).
+  if (is.numeric(compact)) {
+    # compact is the title size in pt
+    p <- p + ggplot2::theme(
+      aspect.ratio = NULL,
+      axis.text    = ggplot2::element_blank(),
+      axis.ticks   = ggplot2::element_blank(),
+      plot.title   = ggplot2::element_text(size = compact)
+    )
+  } else if (isTRUE(compact)) {
+    p <- p + ggplot2::theme(
+      aspect.ratio = NULL,
+      axis.text    = ggplot2::element_blank(),
+      axis.ticks   = ggplot2::element_blank()
+    )
+  }
 
   strip_upper_triangle(p)
 }

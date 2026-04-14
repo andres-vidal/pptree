@@ -13,7 +13,6 @@
 ppforest2_*.tar.gz
 
 .DS_Store
-Rplots.pdf
 
 bindings/R/src/core
 bindings/R/src/Makevars

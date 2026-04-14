@@ -125,6 +125,16 @@ namespace ppforest2::viz {
     return thr;
   }
 
+  HalfSpace project_halfspace_2d(
+      HalfSpace const& hs, int var_i, int var_j, std::vector<std::pair<int, types::Feature>> const& fixed_vars
+  ) {
+    return {
+        project_2d(hs.projector, var_i, var_j),
+        adjust_cutpoint(hs.projector, hs.cutpoint, fixed_vars),
+        hs.is_lower,
+    };
+  }
+
   /**
    * Parametric Line Clipping
    *
@@ -154,8 +164,9 @@ namespace ppforest2::viz {
     types::Feature u1 = (range_min - origin) / direction;
     types::Feature u2 = (range_max - origin) / direction;
 
-    if (direction < 0)
+    if (direction < 0) {
       std::swap(u1, u2);
+    }
 
     u_min = std::max(u_min, u1);
     u_max = std::min(u_max, u2);
@@ -182,14 +193,13 @@ namespace ppforest2::viz {
     types::Feature dy = a(0);
 
     // Find a point P0 on the line.
-    types::Feature px, py;
+    types::Feature px = 0;
+    types::Feature py = 0;
 
     if (std::abs(a(1)) > std::abs(a(0))) {
-      px = 0;
       py = cutpoint / a(1);
     } else {
       px = cutpoint / a(0);
-      py = 0;
     }
 
     // Start with a large parametric interval and clip.
@@ -197,37 +207,39 @@ namespace ppforest2::viz {
     types::Feature u_max = static_cast<types::Feature>(1e6);
 
     // Clip to bounding box.
-    if (!clip_param_to_range(px, dx, x_min, x_max, u_min, u_max))
+    if (!clip_param_to_range(px, dx, x_min, x_max, u_min, u_max)) {
       return false;
+    }
 
-    if (!clip_param_to_range(py, dy, y_min, y_max, u_min, u_max))
+    if (!clip_param_to_range(py, dy, y_min, y_max, u_min, u_max)) {
       return false;
+    }
 
     // Clip against each ancestor half-space constraint.
     for (auto const& con : constraints) {
       types::Feature denom = con.projector(0) * dx + con.projector(1) * dy;
 
-      if (std::abs(denom) < eps)
+      if (std::abs(denom) < eps) {
         continue;
+      }
 
       types::Feature u_intersect = (con.cutpoint - (con.projector(0) * px + con.projector(1) * py)) / denom;
 
-      if (con.is_lower) {
-        // Constraint: con.projector^T x < con.cutpoint
-        if (denom > 0)
-          u_max = std::min(u_max, u_intersect);
-        else
-          u_min = std::max(u_min, u_intersect);
+      // is_lower keeps the side where projector^T x < cutpoint;
+      // !is_lower keeps projector^T x >= cutpoint.  The sign of denom
+      // determines which parametric bound to tighten.  Flipping
+      // is_lower is equivalent to flipping the sign of denom.
+      bool tighten_max = (denom > 0) == con.is_lower;
+
+      if (tighten_max) {
+        u_max = std::min(u_max, u_intersect);
       } else {
-        // Constraint: con.projector^T x >= con.cutpoint
-        if (denom > 0)
-          u_min = std::max(u_min, u_intersect);
-        else
-          u_max = std::min(u_max, u_intersect);
+        u_min = std::max(u_min, u_intersect);
       }
 
-      if (u_min >= u_max)
+      if (u_min >= u_max) {
         return false;
+      }
     }
 
     // Compute clipped endpoints.
@@ -264,10 +276,9 @@ namespace ppforest2::viz {
   Polygon clip_polygon_halfspace(
       Polygon const& polygon, types::FeatureVector const& normal, types::Feature cutpoint, bool is_lower
   ) {
-    if (polygon.empty())
-      return {}
-
-      ;
+    if (polygon.empty()) {
+      return {};
+    }
 
     Polygon result;
     std::size_t n = polygon.size();
@@ -286,42 +297,32 @@ namespace ppforest2::viz {
       bool curr_inside = is_lower ? (d_curr < 0) : (d_curr >= 0);
       bool next_inside = is_lower ? (d_next < 0) : (d_next >= 0);
 
-      if (curr_inside && next_inside) {
-        // Both inside — emit next vertex.
-        result.push_back(next);
-      } else if (curr_inside && !next_inside) {
-        // Leaving — emit intersection point.
-        types::Feature t_param = d_curr / (d_curr - d_next);
-        result.push_back(
-            {curr.first + t_param * (next.first - curr.first), curr.second + t_param * (next.second - curr.second)}
-        );
-      } else if (!curr_inside && next_inside) {
-        // Entering — emit intersection point then next vertex.
-        types::Feature t_param = d_curr / (d_curr - d_next);
-        result.push_back(
-            {curr.first + t_param * (next.first - curr.first), curr.second + t_param * (next.second - curr.second)}
-        );
-        result.push_back(next);
+      // Emit intersection when the edge crosses the boundary.
+      if (curr_inside != next_inside) {
+        types::Feature t = d_curr / (d_curr - d_next);
+        result.emplace_back(curr.first + t * (next.first - curr.first), curr.second + t * (next.second - curr.second));
       }
 
-      // Both outside — emit nothing.
+      // Emit next vertex when it's inside.
+      if (next_inside) {
+        result.push_back(next);
+      }
     }
 
     return result;
   }
 
   /**
-   * BoundaryVisitor
+   * SpatialVisitor
    *
-   * Tree traversal that collects clipped boundary segments.  At each
-   * split node:
-   *   1. Project the split's projector/cutpoint to 2D.
-   *   2. Project all accumulated ancestor constraints to 2D.
-   *   3. Clip the boundary line to the bbox + constraints.
-   *   4. Push/pop the current split as a constraint for child traversal.
+   * Base class for visitors that project tree splits into a 2D feature
+   * plane.  Implements the common traversal pattern: push the current
+   * split as a constraint, recurse into both children (lower then
+   * upper), and pop.  Subclasses override visit(TreeBranch) to add
+   * per-node work and call the base for traversal.
    */
 
-  BoundaryVisitor::BoundaryVisitor(
+  SpatialVisitor::SpatialVisitor(
       int var_i,
       int var_j,
       std::vector<std::pair<int, types::Feature>> const& fixed_vars,
@@ -339,111 +340,64 @@ namespace ppforest2::viz {
       , y_max(y_max)
       , depth(0) {}
 
+  void SpatialVisitor::visit(TreeBranch const& node) {
+    // Push this split as a constraint and recurse.
+    constraints.emplace_back(node.projector, node.cutpoint, true);
+
+    depth++;
+    node.lower->accept(*this);
+    depth--;
+
+    // Flip to upper constraint, recurse right.
+    constraints.back().is_lower = false;
+
+    depth++;
+    node.upper->accept(*this);
+    depth--;
+
+    constraints.pop_back();
+  }
+
+  void SpatialVisitor::visit(TreeLeaf const&) {}
+
+  /**
+   * BoundaryVisitor
+   *
+   * At each split node, projects the boundary and all ancestor
+   * constraints to 2D, clips the boundary line, and stores visible
+   * segments.  Then delegates to SpatialVisitor for constraint
+   * management and child traversal.
+   */
+
   void BoundaryVisitor::visit(TreeBranch const& node) {
-    // Project current split to 2D.
-    types::FeatureVector proj2d = project_2d(node.projector, var_i, var_j);
-    types::Feature thr2d        = adjust_cutpoint(node.projector, node.cutpoint, fixed_vars);
+    HalfSpace split2d = project_halfspace_2d({node.projector, node.cutpoint, true}, var_i, var_j, fixed_vars);
 
     // Project all ancestor constraints to 2D for clipping.
     std::vector<HalfSpace> constraints2d;
     constraints2d.reserve(constraints.size());
 
     for (auto const& con : constraints) {
-      HalfSpace hs2d;
-      hs2d.projector = project_2d(con.projector, var_i, var_j);
-      hs2d.cutpoint  = adjust_cutpoint(con.projector, con.cutpoint, fixed_vars);
-      hs2d.is_lower  = con.is_lower;
-      constraints2d.push_back(hs2d);
+      constraints2d.push_back(project_halfspace_2d(con, var_i, var_j, fixed_vars));
     }
 
     // Clip the boundary and store if visible.
     BoundarySegment seg;
 
-    if (clip_boundary_2d(proj2d, thr2d, constraints2d, x_min, x_max, y_min, y_max, seg, depth)) {
+    if (clip_boundary_2d(split2d.projector, split2d.cutpoint, constraints2d, x_min, x_max, y_min, y_max, seg, depth)) {
       segments.push_back(seg);
     }
 
-    // Push this split as a constraint and recurse.
-    // Lower child: projector^T x < cutpoint.
-    HalfSpace lower_con;
-    lower_con.projector = node.projector;
-    lower_con.cutpoint  = node.cutpoint;
-    lower_con.is_lower  = true;
-    constraints.push_back(lower_con);
-
-    depth++;
-    node.lower->accept(*this);
-    depth--;
-
-    // Upper child: projector^T x >= cutpoint.
-    constraints.back().is_lower = false;
-
-    depth++;
-    node.upper->accept(*this);
-    depth--;
-
-    constraints.pop_back();
-  }
-
-  void BoundaryVisitor::visit(TreeLeaf const&) {
-    // Leaf nodes have no boundary to emit.
+    SpatialVisitor::visit(node);
   }
 
   /**
    * RegionVisitor
    *
    * At each leaf, computes the convex polygon for that leaf's decision
-   * region.  The algorithm:
-   *   1. Start with the bounding box as a rectangle (CCW winding).
-   *   2. For each ancestor constraint on the root-to-leaf path, project
-   *      the constraint to 2D (project_2d + adjust_cutpoint) and clip
-   *      the polygon using Sutherland–Hodgman (clip_polygon_halfspace).
-   *   3. If the polygon is non-empty, store it with the leaf's group.
-   *
-   * The bounding box should match the visible coordinate range in the
-   * plot (the padded data range).  When combined with zero scale
-   * expansion in ggplot2, this ensures the region polygons exactly
-   * tile the visible area with no whitespace gaps.
-   *
-   * Constraints are accumulated on a stack during tree traversal
-   * (push on entry, pop on exit), so each leaf sees exactly its
-   * ancestor constraints.
+   * region by clipping the bounding box against all ancestor constraints
+   * projected to 2D (Sutherland–Hodgman).  Traversal and constraint
+   * management are handled by SpatialVisitor.
    */
-
-  RegionVisitor::RegionVisitor(
-      int var_i,
-      int var_j,
-      std::vector<std::pair<int, types::Feature>> const& fixed_vars,
-      types::Feature x_min,
-      types::Feature x_max,
-      types::Feature y_min,
-      types::Feature y_max
-  )
-      : var_i(var_i)
-      , var_j(var_j)
-      , fixed_vars(fixed_vars)
-      , x_min(x_min)
-      , x_max(x_max)
-      , y_min(y_min)
-      , y_max(y_max) {}
-
-  void RegionVisitor::visit(TreeBranch const& node) {
-    // Push this split as lower constraint, recurse left.
-    HalfSpace con;
-    con.projector = node.projector;
-    con.cutpoint  = node.cutpoint;
-    con.is_lower  = true;
-    constraints.push_back(con);
-
-    node.lower->accept(*this);
-
-    // Flip to upper constraint, recurse right.
-    constraints.back().is_lower = false;
-
-    node.upper->accept(*this);
-
-    constraints.pop_back();
-  }
 
   void RegionVisitor::visit(TreeLeaf const& node) {
     // Start with the bounding box as a rectangle (CCW winding).
@@ -451,13 +405,12 @@ namespace ppforest2::viz {
 
     // Clip against each ancestor constraint in 2D.
     for (auto const& con : constraints) {
-      types::FeatureVector proj2d = project_2d(con.projector, var_i, var_j);
-      types::Feature thr2d        = adjust_cutpoint(con.projector, con.cutpoint, fixed_vars);
+      HalfSpace hs2d = project_halfspace_2d(con, var_i, var_j, fixed_vars);
+      poly           = clip_polygon_halfspace(poly, hs2d.projector, hs2d.cutpoint, hs2d.is_lower);
 
-      poly = clip_polygon_halfspace(poly, proj2d, thr2d, con.is_lower);
-
-      if (poly.empty())
+      if (poly.empty()) {
         return; // Region unreachable in this 2D slice.
+      }
     }
 
     RegionPolygon region;
@@ -492,12 +445,12 @@ namespace ppforest2::viz {
     }
 
     /**
-   * @brief Visitor that recursively lays out tree nodes.
-   *
-   * Carries shared mutable state (depth, node_idx, x_offset) and
-   * writes positioned nodes/edges into output vectors.  After
-   * accepting a node, the result is available in @c result.
-   */
+     * @brief Visitor that recursively lays out tree nodes.
+     *
+     * Carries shared mutable state (depth, node_idx, x_offset) and
+     * writes positioned nodes/edges into output vectors.  After
+     * accepting a node, the result is available in @c result.
+     */
     struct LayoutVisitor : TreeNode::Visitor {
       int depth;
       int& node_idx;

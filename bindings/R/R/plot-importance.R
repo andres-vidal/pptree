@@ -106,9 +106,13 @@ plot_importance_grid <- function(model, ...) {
   available <- intersect(names(metric_labels), names(model$vi))
 
   plots <- lapply(available, function(m) {
+    # Use short subtitle per panel instead of full title
     plot_importance(model, metric = m) +
+      ggplot2::labs(title = metric_labels[m]) +
       ggplot2::theme(plot.margin = ggplot2::margin(5, 10, 5, 10))
   })
 
-  Reduce(`+`, plots) + patchwork::plot_layout(nrow = 1)
+  Reduce(`+`, plots) +
+    patchwork::plot_layout(nrow = 1) +
+    patchwork::plot_annotation(title = "Variable Importance")
 }

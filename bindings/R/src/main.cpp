@@ -136,6 +136,29 @@ Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, Ou
   return result;
 }
 
+namespace {
+  std::vector<std::pair<int, types::Feature>> build_fixed_vars(
+      Rcpp::IntegerVector const& var_indices,
+      Rcpp::NumericVector const& fixed_values
+  ) {
+    std::vector<std::pair<int, types::Feature>> fixed_vars;
+
+    if (fixed_values.size() > 0) {
+      int p = static_cast<int>(var_indices.size()) + static_cast<int>(fixed_values.size());
+      std::set<int> used(var_indices.begin(), var_indices.end());
+      int fv_idx = 0;
+
+      for (int k = 0; k < p; ++k) {
+        if (used.find(k) == used.end()) {
+          fixed_vars.push_back({k, static_cast<types::Feature>(fixed_values[fv_idx++])});
+        }
+      }
+    }
+
+    return fixed_vars;
+  }
+}
+
 // [[Rcpp::export]]
 Rcpp::DataFrame ppforest2_boundary_segments(
     Tree const& tree,
@@ -146,28 +169,11 @@ Rcpp::DataFrame ppforest2_boundary_segments(
     double y_min,
     double y_max
 ) {
-  int vi = var_indices[0];
-  int vj = var_indices[1];
-
-  int p = static_cast<int>(var_indices.size()) + static_cast<int>(fixed_values.size());
-
-  std::vector<std::pair<int, types::Feature>> fixed_vars;
-
-  if (fixed_values.size() > 0) {
-    // Find the variable index not in var_indices
-    std::set<int> used(var_indices.begin(), var_indices.end());
-    int fv_idx = 0;
-
-    for (int k = 0; k < p; ++k) {
-      if (used.find(k) == used.end()) {
-        fixed_vars.push_back({k, static_cast<types::Feature>(fixed_values[fv_idx++])});
-      }
-    }
-  }
+  auto fixed_vars = build_fixed_vars(var_indices, fixed_values);
 
   BoundaryVisitor visitor(
-      vi,
-      vj,
+      var_indices[0],
+      var_indices[1],
       fixed_vars,
       static_cast<types::Feature>(x_min),
       static_cast<types::Feature>(x_max),
@@ -180,13 +186,15 @@ Rcpp::DataFrame ppforest2_boundary_segments(
   int n = static_cast<int>(visitor.segments.size());
   Rcpp::NumericVector xs(n), ys(n), xe(n), ye(n);
   Rcpp::IntegerVector depths(n);
+  int idx = 0;
 
-  for (int i = 0; i < n; ++i) {
-    xs[i]     = visitor.segments[static_cast<std::size_t>(i)].x_start;
-    ys[i]     = visitor.segments[static_cast<std::size_t>(i)].y_start;
-    xe[i]     = visitor.segments[static_cast<std::size_t>(i)].x_end;
-    ye[i]     = visitor.segments[static_cast<std::size_t>(i)].y_end;
-    depths[i] = visitor.segments[static_cast<std::size_t>(i)].depth;
+  for (auto const& seg : visitor.segments) {
+    xs[idx]     = seg.x_start;
+    ys[idx]     = seg.y_start;
+    xe[idx]     = seg.x_end;
+    ye[idx]     = seg.y_end;
+    depths[idx] = seg.depth;
+    idx++;
   }
 
   return Rcpp::DataFrame::create(
@@ -208,27 +216,11 @@ Rcpp::List ppforest2_decision_regions(
     double y_min,
     double y_max
 ) {
-  int vi = var_indices[0];
-  int vj = var_indices[1];
-
-  int p = static_cast<int>(var_indices.size()) + static_cast<int>(fixed_values.size());
-
-  std::vector<std::pair<int, types::Feature>> fixed_vars;
-
-  if (fixed_values.size() > 0) {
-    std::set<int> used(var_indices.begin(), var_indices.end());
-    int fv_idx = 0;
-
-    for (int k = 0; k < p; ++k) {
-      if (used.find(k) == used.end()) {
-        fixed_vars.push_back({k, static_cast<types::Feature>(fixed_values[fv_idx++])});
-      }
-    }
-  }
+  auto fixed_vars = build_fixed_vars(var_indices, fixed_values);
 
   RegionVisitor visitor(
-      vi,
-      vj,
+      var_indices[0],
+      var_indices[1],
       fixed_vars,
       static_cast<types::Feature>(x_min),
       static_cast<types::Feature>(x_max),
@@ -271,12 +263,14 @@ Rcpp::List ppforest2_tree_layout(Tree const& tree) {
   Rcpp::NumericVector nx(n_nodes), ny(n_nodes);
   Rcpp::LogicalVector n_leaf(n_nodes);
   Rcpp::IntegerVector n_idx(n_nodes);
+  int ni = 0;
 
-  for (int i = 0; i < n_nodes; ++i) {
-    nx[i]     = layout.nodes[static_cast<std::size_t>(i)].x;
-    ny[i]     = layout.nodes[static_cast<std::size_t>(i)].y;
-    n_leaf[i] = layout.nodes[static_cast<std::size_t>(i)].is_leaf;
-    n_idx[i]  = layout.nodes[static_cast<std::size_t>(i)].node_idx;
+  for (auto const& node : layout.nodes) {
+    nx[ni]     = node.x;
+    ny[ni]     = node.y;
+    n_leaf[ni] = node.is_leaf;
+    n_idx[ni]  = node.node_idx;
+    ni++;
   }
 
   Rcpp::DataFrame node_df = Rcpp::DataFrame::create(
@@ -287,13 +281,15 @@ Rcpp::List ppforest2_tree_layout(Tree const& tree) {
   int n_edges = static_cast<int>(layout.edges.size());
   Rcpp::NumericVector efx(n_edges), efy(n_edges), etx(n_edges), ety(n_edges);
   Rcpp::CharacterVector elabel(n_edges);
+  int ei = 0;
 
-  for (int i = 0; i < n_edges; ++i) {
-    efx[i]    = layout.edges[static_cast<std::size_t>(i)].from_x;
-    efy[i]    = layout.edges[static_cast<std::size_t>(i)].from_y;
-    etx[i]    = layout.edges[static_cast<std::size_t>(i)].to_x;
-    ety[i]    = layout.edges[static_cast<std::size_t>(i)].to_y;
-    elabel[i] = layout.edges[static_cast<std::size_t>(i)].label;
+  for (auto const& edge : layout.edges) {
+    efx[ei]    = edge.from_x;
+    efy[ei]    = edge.from_y;
+    etx[ei]    = edge.to_x;
+    ety[ei]    = edge.to_y;
+    elabel[ei] = edge.label;
+    ei++;
   }
 
   Rcpp::DataFrame edge_df = Rcpp::DataFrame::create(

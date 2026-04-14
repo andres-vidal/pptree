@@ -149,7 +149,12 @@ namespace ppforest2::viz {
   struct HalfSpace {
     types::FeatureVector projector;
     types::Feature cutpoint;
-    bool is_lower; ///< true = lower child side (projected value < cutpoint).
+    bool is_lower = false; ///< true = lower child side (projected value < cutpoint).
+
+    HalfSpace(types::FeatureVector projector, types::Feature cutpoint, bool is_lower)
+        : projector(std::move(projector))
+        , cutpoint(cutpoint)
+        , is_lower(is_lower) {}
   };
 
   /**
@@ -228,6 +233,22 @@ namespace ppforest2::viz {
       types::FeatureVector const& full_proj,
       types::Feature thr,
       std::vector<std::pair<int, types::Feature>> const& fixed_vars
+  );
+
+  /**
+   * @brief Project a p-dimensional HalfSpace constraint to the 2D display plane.
+   *
+   * Extracts the two relevant projector components and adjusts the cutpoint
+   * by subtracting the contributions of fixed variables.
+   *
+   * @param hs          Full-dimensional half-space constraint.
+   * @param var_i       Index of the x-axis variable (0-based).
+   * @param var_j       Index of the y-axis variable (0-based).
+   * @param fixed_vars  Pairs of (variable index, fixed value) for non-displayed variables.
+   * @return            2D half-space constraint.
+   */
+  HalfSpace project_halfspace_2d(
+      HalfSpace const& hs, int var_i, int var_j, std::vector<std::pair<int, types::Feature>> const& fixed_vars
   );
 
   // ===================================================================
@@ -341,6 +362,54 @@ namespace ppforest2::viz {
   );
 
   // ===================================================================
+  // Spatial Visitor (shared base for boundary and region visitors)
+  // ===================================================================
+
+  /**
+   * @brief Base class for visitors that traverse a tree in a 2D feature plane.
+   *
+   * Holds the shared state for projecting p-dimensional splits into
+   * (var_i, var_j) space with the remaining variables fixed: the two
+   * display variable indices, fixed variable values, the visible
+   * bounding box, and the stack of ancestor half-space constraints.
+   *
+   * Implements the common traversal logic in visit(TreeBranch): push the
+   * current split as a constraint, recurse into both children (lower then
+   * upper), and pop.  Subclasses override visit_branch() to do work at
+   * each split node (e.g. clip and emit a boundary segment) and
+   * visit(TreeLeaf) for leaf-specific work.
+   */
+  struct SpatialVisitor : public TreeNode::Visitor {
+    int var_i, var_j;                                       ///< Indices of the two displayed feature variables.
+    std::vector<std::pair<int, types::Feature>> fixed_vars; ///< Fixed (index, value) pairs.
+    types::Feature x_min, x_max, y_min, y_max;              ///< Visible bounding box.
+    int depth;
+    std::vector<HalfSpace> constraints; ///< Accumulated ancestor half-space constraints.
+
+    SpatialVisitor(
+        int var_i,
+        int var_j,
+        std::vector<std::pair<int, types::Feature>> const& fixed_vars,
+        types::Feature x_min,
+        types::Feature x_max,
+        types::Feature y_min,
+        types::Feature y_max
+    );
+
+    /**
+     * @brief Push constraint, recurse into children, pop.
+     *
+     * Subclasses that need per-node work (e.g. BoundaryVisitor) override
+     * this, do their work, then call SpatialVisitor::visit(node) for the
+     * traversal.
+     */
+    void visit(TreeBranch const& node) override;
+
+    /** @brief No-op default; override in subclasses that need leaf work. */
+    void visit(TreeLeaf const& node) override;
+  };
+
+  // ===================================================================
   // Boundary Visitor
   // ===================================================================
 
@@ -363,26 +432,11 @@ namespace ppforest2::viz {
    *   // visitor.segments contains all visible boundary segments
    * @endcode
    */
-  struct BoundaryVisitor : public TreeNode::Visitor {
-    int var_i, var_j;                                       ///< Indices of the two displayed feature variables.
-    std::vector<std::pair<int, types::Feature>> fixed_vars; ///< Fixed (index, value) pairs.
-    types::Feature x_min, x_max, y_min, y_max;              ///< Visible bounding box.
-    int depth;
-    std::vector<HalfSpace> constraints;    ///< Accumulated ancestor constraints.
+  struct BoundaryVisitor : public SpatialVisitor {
+    using SpatialVisitor::SpatialVisitor;
     std::vector<BoundarySegment> segments; ///< Output: clipped boundary segments.
 
-    BoundaryVisitor(
-        int var_i,
-        int var_j,
-        std::vector<std::pair<int, types::Feature>> const& fixed_vars,
-        types::Feature x_min,
-        types::Feature x_max,
-        types::Feature y_min,
-        types::Feature y_max
-    );
-
     void visit(TreeBranch const& node) override;
-    void visit(TreeLeaf const& node) override;
   };
 
   // ===================================================================
@@ -394,9 +448,9 @@ namespace ppforest2::viz {
    *
    * At each leaf, starts with the full bounding box as a rectangle and
    * clips it against every ancestor split's half-space constraint
-   * (projected to 2D via project_2d / adjust_cutpoint).  The result is
-   * a convex polygon representing the leaf's decision region in the
-   * (var_i, var_j) plane.
+   * (projected to 2D via project_halfspace_2d).  The result is a convex
+   * polygon representing the leaf's decision region in the (var_i, var_j)
+   * plane.
    *
    * Uses the Sutherland–Hodgman algorithm (clip_polygon_halfspace) for
    * each constraint.  If the polygon becomes empty (leaf unreachable in
@@ -409,24 +463,11 @@ namespace ppforest2::viz {
    *   // visitor.regions has one polygon per reachable leaf
    * @endcode
    */
-  struct RegionVisitor : public TreeNode::Visitor {
-    int var_i, var_j;                                       ///< Indices of the two displayed feature variables.
-    std::vector<std::pair<int, types::Feature>> fixed_vars; ///< Fixed (index, value) pairs.
-    types::Feature x_min, x_max, y_min, y_max;              ///< Bounding box for the initial rectangle.
-    std::vector<HalfSpace> constraints;                     ///< Accumulated ancestor constraints.
-    std::vector<RegionPolygon> regions;                     ///< Output: one polygon per reachable leaf.
+  struct RegionVisitor : public SpatialVisitor {
+    using SpatialVisitor::SpatialVisitor;
+    std::vector<RegionPolygon> regions; ///< Output: one polygon per reachable leaf.
 
-    RegionVisitor(
-        int var_i,
-        int var_j,
-        std::vector<std::pair<int, types::Feature>> const& fixed_vars,
-        types::Feature x_min,
-        types::Feature x_max,
-        types::Feature y_min,
-        types::Feature y_max
-    );
 
-    void visit(TreeBranch const& node) override;
     void visit(TreeLeaf const& node) override;
   };
 

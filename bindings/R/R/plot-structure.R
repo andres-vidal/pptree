@@ -327,15 +327,23 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     )
   }
 
-  # Color scale and title
+  # Color scale, title, and legend
   p <- p +
     ggplot2::scale_fill_manual(values = group_colors, name = "Class") +
-    ggplot2::ggtitle("PP Decision Tree Structure") +
+    ggplot2::ggtitle("Tree Structure") +
     ggplot2::coord_cartesian(
       xlim = c(min(node_df$x) - node_w / 2 - 0.2,
                max(node_df$x) + node_w / 2 + 0.2),
       ylim = c(min(node_df$y) - node_h / 2 - 0.3,
-               max(node_df$y) + node_h / 2 + 0.2)
+               max(node_df$y) + node_h / 2 + 0.1)
+    ) +
+    ggplot2::theme(
+      plot.title       = ggplot2::element_text(hjust = 0, margin = ggplot2::margin(b = 5)),
+      plot.title.position = "plot",
+      legend.position  = "top",
+      legend.justification = "left",
+      legend.margin    = ggplot2::margin(t = 0, b = 5),
+      plot.margin      = ggplot2::margin(2, 5, 2, 5)
     )
 
   p

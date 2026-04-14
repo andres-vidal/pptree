@@ -101,7 +101,9 @@ ppforest2_col_bar       <- "#5B8BA0"
 ppforest2_theme <- function() {
   ggplot2::theme_minimal(base_size = 11) +
   ggplot2::theme(
-    plot.title       = ggplot2::element_text(size = ggplot2::rel(1.1)),
+    plot.title       = ggplot2::element_text(size = ggplot2::rel(1.1), hjust = 0),
+    plot.title.position = "plot",
+    axis.title       = ggplot2::element_text(size = ggplot2::rel(0.85)),
     panel.grid.minor = ggplot2::element_blank()
   )
 }
@@ -171,4 +173,15 @@ equalize_ranges <- function(x_range, y_range) {
     x = c(x_mid - max_span / 2, x_mid + max_span / 2),
     y = c(y_mid - max_span / 2, y_mid + max_span / 2)
   )
+}
+
+#' Pad a numeric range symmetrically by a fraction of its span.
+#'
+#' @param rng Numeric vector of length 2 (min, max).
+#' @param frac Fraction of the span to add on each side (default 0.05).
+#' @return Numeric vector of length 2 (padded min, padded max).
+#' @noRd
+pad_range <- function(rng, frac = 0.05) {
+  pad <- diff(rng) * frac
+  rng + c(-pad, pad)
 }
