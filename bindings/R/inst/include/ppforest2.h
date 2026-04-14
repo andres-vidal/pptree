@@ -11,6 +11,20 @@ using namespace ppforest2::pp;
 constexpr char const* CLASS_PPRF = "pprf";
 constexpr char const* CLASS_PPTR = "pptr";
 
+// Index conversion helpers: C++ uses 0-based indices, R uses 1-based.
+inline Outcome to_r_index(Outcome i) {
+  return i + 1;
+}
+inline Outcome to_cpp_index(Outcome i) {
+  return i - 1;
+}
+inline void to_r_indices(OutcomeVector& v) {
+  v.array() += 1;
+}
+inline void to_cpp_indices(OutcomeVector& v) {
+  v.array() -= 1;
+}
+
 namespace Rcpp {
   SEXP wrap(TreeNode const&);
   SEXP wrap(Tree const&);
@@ -54,8 +68,7 @@ namespace Rcpp {
   }
 
   inline SEXP wrap(TreeLeaf const& node) {
-    Rcpp::List result =
-        Rcpp::List::create(Rcpp::Named("value") = Rcpp::wrap(node.value + 1)); // C++ 0-based → R 1-based
+    Rcpp::List result = Rcpp::List::create(Rcpp::Named("value") = Rcpp::wrap(to_r_index(node.value)));
 
     if (node.degenerate) {
       result["degenerate"] = true;
@@ -66,7 +79,8 @@ namespace Rcpp {
 
   inline SEXP wrap(TreeBranch const& node) {
     Rcpp::IntegerVector groups(node.groups.begin(), node.groups.end());
-    groups = groups + 1; // C++ 0-based → R 1-based
+    for (int k = 0; k < groups.size(); ++k)
+      groups[k] = to_r_index(groups[k]);
 
     Rcpp::List result = Rcpp::List::create(
         Rcpp::Named("projector")      = Rcpp::wrap(node.projector),
@@ -256,7 +270,7 @@ namespace Rcpp {
     Rcpp::List rnode(x);
 
     if (rnode.containsElementNamed("value")) {
-      return std::make_unique<TreeLeaf>(Rcpp::as<Feature>(rnode["value"]) - 1); // R 1-based → C++ 0-based
+      return std::make_unique<TreeLeaf>(to_cpp_index(Rcpp::as<Feature>(rnode["value"])));
     }
 
     auto lower = as<std::unique_ptr<TreeNode>>(rnode["lower"]);
@@ -266,7 +280,7 @@ namespace Rcpp {
     if (rnode.containsElementNamed("groups")) {
       Rcpp::IntegerVector rgroups(rnode["groups"]);
       for (auto g : rgroups)
-        groups.insert(g - 1); // R 1-based → C++ 0-based
+        groups.insert(to_cpp_index(g));
     }
 
     Feature pp_index_value = 0;
@@ -286,7 +300,7 @@ namespace Rcpp {
 
   template<> inline TreeLeaf as(SEXP x) {
     Rcpp::List rresp(x);
-    return TreeLeaf(Rcpp::as<Feature>(rresp["value"]) - 1); // R 1-based → C++ 0-based
+    return TreeLeaf(to_cpp_index(Rcpp::as<Feature>(rresp["value"])));
   }
 
   template<> inline TreeBranch as(SEXP x) {
@@ -299,7 +313,7 @@ namespace Rcpp {
     if (rcond.containsElementNamed("groups")) {
       Rcpp::IntegerVector rgroups(rcond["groups"]);
       for (auto g : rgroups)
-        groups.insert(g - 1); // R 1-based → C++ 0-based
+        groups.insert(to_cpp_index(g));
     }
 
     Feature pp_index_value = 0;

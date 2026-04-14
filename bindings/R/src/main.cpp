@@ -28,7 +28,7 @@ bool ppforest2_has_openmp() {
 
 // [[Rcpp::export]]
 Model::Ptr ppforest2_train(TrainingSpec::Ptr spec, FeatureMatrix x, OutcomeVector y) {
-  y.array() -= 1; // R 1-based → C++ 0-based
+  to_cpp_indices(y);
 
   if (!GroupPartition::is_contiguous(y)) {
     sort(x, y);
@@ -40,14 +40,14 @@ Model::Ptr ppforest2_train(TrainingSpec::Ptr spec, FeatureMatrix x, OutcomeVecto
 // [[Rcpp::export]]
 OutcomeVector ppforest2_predict_tree(Tree const& tree, FeatureMatrix const& data) {
   OutcomeVector result = tree.predict(data);
-  result.array() += 1; // C++ 0-based → R 1-based
+  to_r_indices(result);
   return result;
 }
 
 // [[Rcpp::export]]
 OutcomeVector ppforest2_predict_tree_forest(Forest const& forest, FeatureMatrix const& data) {
   OutcomeVector result = forest.predict(data);
-  result.array() += 1; // C++ 0-based → R 1-based
+  to_r_indices(result);
   return result;
 }
 
@@ -75,33 +75,32 @@ FeatureVector ppforest2_vi_projections_forest(Forest const& forest, int n_vars, 
 FeatureVector ppforest2_vi_weighted_forest(
     Forest const& forest, FeatureMatrix const& x, OutcomeVector y, FeatureVector const& scale
 ) {
-  y.array() -= 1; // R 1-based → C++ 0-based
+  to_cpp_indices(y);
   return variable_importance_weighted_projections(forest, x, y, &scale);
 }
 
 // [[Rcpp::export]]
 FeatureVector ppforest2_vi_permuted_forest(Forest const& forest, FeatureMatrix const& x, OutcomeVector y, int seed) {
-  y.array() -= 1; // R 1-based → C++ 0-based
+  to_cpp_indices(y);
   return variable_importance_permuted(forest, x, y, seed);
 }
 
 // [[Rcpp::export]]
 double ppforest2_oob_error(Forest const& forest, FeatureMatrix const& x, OutcomeVector y) {
-  y.array() -= 1; // R 1-based → C++ 0-based
+  to_cpp_indices(y);
   return forest.oob_error(x, y);
 }
 
 // [[Rcpp::export]]
 OutcomeVector ppforest2_oob_predict(Forest const& forest, FeatureMatrix const& x) {
   OutcomeVector result = forest.oob_predict(x);
-  // Convert C++ 0-based → R 1-based; sentinel -1 stays as 0 (handled in R)
-  result.array() += 1;
+  to_r_indices(result); // sentinel -1 becomes 0 (handled in R)
   return result;
 }
 
 // [[Rcpp::export]]
 Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, OutcomeVector y) {
-  y.array() -= 1; // R 1-based → C++ 0-based
+  to_cpp_indices(y);
   NodeDataVisitor visitor(x, y);
   tree.root->accept(visitor);
 
@@ -110,15 +109,14 @@ Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, Ou
   for (std::size_t i = 0; i < visitor.nodes.size(); ++i) {
     auto const& nd = visitor.nodes[i];
 
-    // Convert 0-based group indices → R 1-based
     Rcpp::IntegerVector groups_r(nd.groups.begin(), nd.groups.end());
-    groups_r = groups_r + 1;
+    for (int k = 0; k < groups_r.size(); ++k) groups_r[k] = to_r_index(groups_r[k]);
 
     if (nd.is_leaf) {
       result[i] = Rcpp::List::create(
           Rcpp::Named("is_leaf") = true,
           Rcpp::Named("depth")   = nd.depth,
-          Rcpp::Named("value")   = nd.value + 1,
+          Rcpp::Named("value")   = to_r_index(nd.value),
           Rcpp::Named("groups")  = groups_r
       );
     } else {
@@ -244,7 +242,7 @@ Rcpp::List ppforest2_decision_regions(
     result[i] = Rcpp::List::create(
         Rcpp::Named("x")     = rx,
         Rcpp::Named("y")     = ry,
-        Rcpp::Named("group") = region.predicted_group + 1 // C++ 0-based → R 1-based
+        Rcpp::Named("group") = to_r_index(region.predicted_group)
     );
   }
 
@@ -314,7 +312,7 @@ std::string ppforest2_save_model_json(
     OutcomeVector y,
     std::vector<std::string> feature_names
 ) {
-  y.array() -= 1;
+  to_cpp_indices(y);
 
   Export<Model::Ptr> model_export{
       std::move(model),
