@@ -110,7 +110,9 @@ Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, Ou
     auto const& nd = visitor.nodes[i];
 
     Rcpp::IntegerVector groups_r(nd.groups.begin(), nd.groups.end());
-    for (int k = 0; k < groups_r.size(); ++k) groups_r[k] = to_r_index(groups_r[k]);
+    for (int k = 0; k < groups_r.size(); ++k) {
+      groups_r[k] = to_r_index(groups_r[k]);
+    }
 
     if (nd.is_leaf) {
       result[i] = Rcpp::List::create(
@@ -240,9 +242,7 @@ Rcpp::List ppforest2_decision_regions(
     }
 
     result[i] = Rcpp::List::create(
-        Rcpp::Named("x")     = rx,
-        Rcpp::Named("y")     = ry,
-        Rcpp::Named("group") = to_r_index(region.predicted_group)
+        Rcpp::Named("x") = rx, Rcpp::Named("y") = ry, Rcpp::Named("group") = to_r_index(region.predicted_group)
     );
   }
 
