@@ -37,5 +37,5 @@ model <- pptr(Type ~ ., data = iris)
 formula(model)
 #> Type ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width - 
 #>     1
-#> <environment: 0x55cca5a384c0>
+#> <environment: 0x55df9234c6e8>
 ```
