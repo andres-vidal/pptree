@@ -6,6 +6,7 @@
 
 #include "io/IO.hpp"
 #include "io/TempFile.hpp"
+#include "utils/UserError.hpp"
 
 #include <fstream>
 
@@ -165,9 +166,9 @@ TEST(FileHelpers, CheckFileNotExistsOnNonexistent) {
   io::check_file_not_exists("/nonexistent/path/that/doesnt/exist.json");
 }
 
-/* check_file_not_exists exits for an existing file. */
+/* check_file_not_exists throws for an existing file. */
 TEST(FileHelpers, CheckFileNotExistsOnExisting) {
-  EXPECT_EXIT(io::check_file_not_exists(IRIS_PATH), ExitedWithNonZero(), "");
+  EXPECT_THROW(io::check_file_not_exists(IRIS_PATH), ppforest2::UserError);
 }
 
 /* check_dir_not_exists succeeds for a nonexistent path. */
@@ -175,7 +176,17 @@ TEST(FileHelpers, CheckDirNotExistsOnNonexistent) {
   io::check_dir_not_exists("/nonexistent/path/that/doesnt/exist");
 }
 
-/* check_dir_not_exists exits for an existing directory. */
+/* check_dir_not_exists throws for an existing directory. */
 TEST(FileHelpers, CheckDirNotExistsOnExisting) {
-  EXPECT_EXIT(io::check_dir_not_exists(DATA_DIR), ExitedWithNonZero(), "");
+  EXPECT_THROW(io::check_dir_not_exists(DATA_DIR), ppforest2::UserError);
+}
+
+/* check_file_exists succeeds for an existing file. */
+TEST(FileHelpers, CheckFileExistsOnExisting) {
+  io::check_file_exists(IRIS_PATH);
+}
+
+/* check_file_exists throws for a nonexistent file. */
+TEST(FileHelpers, CheckFileExistsOnNonexistent) {
+  EXPECT_THROW(io::check_file_exists("/nonexistent/path.csv"), ppforest2::UserError);
 }

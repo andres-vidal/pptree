@@ -1,8 +1,8 @@
 #pragma once
 
 #include "utils/Types.hpp"
-#include "utils/Invariant.hpp"
 
+#include <cmath>
 #include <set>
 #include <stdexcept>
 #include <pcg_random.hpp>
@@ -56,10 +56,27 @@ namespace ppforest2::stats {
   /**
    * @brief Sample standard deviation of a vector.
    *
-   * @param data  Feature vector with at least one row.
+   * @param data  Vector with at least one row.
    * @return      Sample standard deviation.
    */
-  double sd(types::FeatureVector const& data);
+  template<typename Derived> double sd(Eigen::MatrixBase<Derived> const& data) {
+    static_assert(
+        Derived::ColsAtCompileTime == 1 || Derived::ColsAtCompileTime == Eigen::Dynamic,
+        "sd: expected a vector (single column)"
+    );
+
+    if (data.rows() == 0) {
+      throw std::invalid_argument("sd: data must have at least one row");
+    }
+
+    if (data.rows() == 1) {
+      return 0.0;
+    }
+
+    double mean = static_cast<double>(data.mean());
+
+    return std::sqrt((data.array().template cast<double>() - mean).square().sum() / (data.rows() - 1));
+  }
 
   /**
    * @brief Column-wise sample standard deviation of a matrix.

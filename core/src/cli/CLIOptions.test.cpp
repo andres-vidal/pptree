@@ -5,22 +5,19 @@
  *        (warn_unused_params), ModelStats aggregation, and file helpers.
  *
  * Tests exercise the in-process parsing path by constructing argv arrays
- * and calling parse_args() directly.  Death tests (EXPECT_EXIT) verify
- * that invalid inputs cause a non-zero exit.
+ * and calling parse_args() directly.  EXPECT_THROW tests verify
+ * that invalid inputs throw UserError.
  */
 #include <gtest/gtest.h>
 
-#include "ppforest2.hpp"
 #include "cli/CLIOptions.hpp"
-#include "io/Color.hpp"
+#include "utils/UserError.hpp"
 #include "io/Output.hpp"
 
-#include <filesystem>
 
 using namespace ppforest2;
-using namespace ppforest2::types;
 using namespace ppforest2::cli;
-using ppforest2::io::Output;
+using namespace ppforest2::io;
 
 
 #ifndef PPFOREST2_DATA_DIR
@@ -29,38 +26,21 @@ using ppforest2::io::Output;
 
 static const std::string IRIS_PATH = std::string(PPFOREST2_DATA_DIR) + "/iris.csv";
 
-/**
- * @brief Death-test predicate: matches any non-zero exit code.
- *
- * Google Test's built-in ExitedWithCode only matches a specific code.
- * This predicate accepts any non-zero exit, which is what we need
- * because CLI11 and std::exit may use different codes.
- */
-class ExitedWithNonZero {
-public:
-  bool operator()(int exit_status) const {
-#ifdef _WIN32
-    return exit_status != 0;
-
-#else
-    return testing::ExitedWithCode(0)(exit_status) == false && WIFEXITED(exit_status);
-
-#endif
+namespace {
+  /**
+   * @brief Build an argv vector and call parse_args().
+   *
+   * Convenience wrapper so tests can write:
+   *   auto opts = parse({ "ppforest2", "train", "-d", "data.csv" });
+   *
+   * @param args_list Initializer list of C-string arguments (first must be program name).
+   * @return Populated Params struct.
+   */
+  Params parse(std::initializer_list<char const*> args_list) {
+    std::vector<char const*> args(args_list);
+    return parse_args(static_cast<int>(args.size()), const_cast<char**>(args.data()));
   }
-};
 
-/**
- * @brief Build an argv vector and call parse_args().
- *
- * Convenience wrapper so tests can write:
- *   auto opts = parse({ "ppforest2", "train", "-d", "data.csv" });
- *
- * @param args_list Initializer list of C-string arguments (first must be program name).
- * @return Populated CLIOptions struct.
- */
-static CLIOptions parse(std::initializer_list<char const*> args_list) {
-  std::vector<char const*> args(args_list);
-  return parse_args(static_cast<int>(args.size()), const_cast<char**>(args.data()));
 }
 
 // ---------------------------------------------------------------------------
@@ -86,14 +66,14 @@ TEST(ParseArgs, EvaluateSubcommandWithData) {
   EXPECT_EQ(opts.data_path, IRIS_PATH);
 }
 
-/* Omitting a subcommand must exit with a non-zero code. */
+/* Omitting a subcommand must throw. */
 TEST(ParseArgs, NoSubcommandExits) {
-  EXPECT_EXIT(parse({"ppforest2"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2"}), ppforest2::UserError);
 }
 
-/* An unrecognised subcommand must exit with a non-zero code. */
+/* An unrecognised subcommand must throw. */
 TEST(ParseArgs, InvalidSubcommandExits) {
-  EXPECT_EXIT(parse({"ppforest2", "foobar"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "foobar"}), ppforest2::UserError);
 }
 
 // ---------------------------------------------------------------------------
@@ -105,10 +85,10 @@ TEST(ParseArgs, TrainDefaultValues) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str()});
   EXPECT_EQ(opts.model.size, 100);
   EXPECT_FLOAT_EQ(opts.model.lambda, 0.5f);
-  EXPECT_EQ(opts.model.threads, -1);
-  EXPECT_EQ(opts.model.seed, -1);
-  EXPECT_FLOAT_EQ(opts.model.p_vars, -1);
-  EXPECT_EQ(opts.model.n_vars, -1);
+  EXPECT_FALSE(opts.model.threads.has_value());
+  EXPECT_FALSE(opts.model.seed.has_value());
+  EXPECT_FALSE(opts.model.p_vars.has_value());
+  EXPECT_FALSE(opts.model.n_vars.has_value());
   EXPECT_TRUE(opts.model.vars_input.empty());
   EXPECT_EQ(opts.save_path, "model.json");
   EXPECT_FALSE(opts.no_save);
@@ -123,19 +103,19 @@ TEST(ParseArgs, TrainSizeOption) {
 /* -l overrides the default lambda. */
 TEST(ParseArgs, TrainLambdaOption) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "-l", "0.3"});
-  EXPECT_FLOAT_EQ(opts.model.lambda, 0.3f);
+  EXPECT_FLOAT_EQ(opts.model.lambda, 0.3F);
 }
 
 /* --threads sets the thread count explicitly. */
 TEST(ParseArgs, TrainThreadsOption) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--threads", "4"});
-  EXPECT_EQ(opts.model.threads, 4);
+  EXPECT_EQ(opts.model.threads.value(), 4);
 }
 
 /* -r sets the random seed. */
 TEST(ParseArgs, TrainSeedOption) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "-r", "0"});
-  EXPECT_EQ(opts.model.seed, 0);
+  EXPECT_EQ(opts.model.seed.value(), 0);
 }
 
 // ---------------------------------------------------------------------------
@@ -145,64 +125,62 @@ TEST(ParseArgs, TrainSeedOption) {
 /* --p-vars with a decimal value (0.8) is interpreted as a proportion. */
 TEST(ParseArgs, PVarsAsProportion) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "0.8"});
-  EXPECT_FLOAT_EQ(opts.model.p_vars, 0.8F);
-  EXPECT_EQ(opts.model.n_vars, -1);
+  EXPECT_FLOAT_EQ(opts.model.p_vars.value(), 0.8F);
+  EXPECT_FALSE(opts.model.n_vars.has_value());
 }
 
 /* --n-vars with an integer (3) is interpreted as an absolute feature count. */
 TEST(ParseArgs, NVarsAsAbsoluteCount) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--n-vars", "3"});
-  EXPECT_EQ(opts.model.n_vars, 3);
-  EXPECT_FLOAT_EQ(opts.model.p_vars, -1);
+  EXPECT_EQ(opts.model.n_vars.value(), 3);
+  EXPECT_FALSE(opts.model.p_vars.has_value());
 }
 
 /* --p-vars with a fraction "1/3" is parsed as a proportion. */
 TEST(ParseArgs, PVarsAsFraction) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "1/3"});
-  EXPECT_NEAR(opts.model.p_vars, 1.0F / 3.0F, 0.001F);
-  EXPECT_EQ(opts.model.n_vars, -1);
+  EXPECT_NEAR(opts.model.p_vars.value(), 1.0F / 3.0F, 0.001F);
+  EXPECT_FALSE(opts.model.n_vars.has_value());
 }
 
 /* --p-vars "1/2" parses to exactly 0.5. */
 TEST(ParseArgs, PVarsAsFractionHalf) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "1/2"});
-  EXPECT_FLOAT_EQ(opts.model.p_vars, 0.5F);
-  EXPECT_EQ(opts.model.n_vars, -1);
+  EXPECT_FLOAT_EQ(opts.model.p_vars.value(), 0.5F);
+  EXPECT_FALSE(opts.model.n_vars.has_value());
 }
 
 /* --p-vars "3/3" parses to 1.0 (use all features). */
 TEST(ParseArgs, PVarsAsFractionFull) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "3/3"});
-  EXPECT_FLOAT_EQ(opts.model.p_vars, 1.0F);
-  EXPECT_EQ(opts.model.n_vars, -1);
+  EXPECT_FLOAT_EQ(opts.model.p_vars.value(), 1.0F);
+  EXPECT_FALSE(opts.model.n_vars.has_value());
 }
 
-/* --p-vars with fraction > 1 (4/3) must exit. */
+/* --p-vars with fraction > 1 (4/3) must throw. */
 TEST(ParseArgs, PVarsFractionGreaterThanOneExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "4/3"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "4/3"}), ppforest2::UserError);
 }
 
-/* --p-vars with division by zero (1/0) must exit. */
+/* --p-vars with division by zero (1/0) must throw. */
 TEST(ParseArgs, PVarsFractionZeroDenominatorExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "1/0"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "1/0"}), ppforest2::UserError);
 }
 
-/* --p-vars with zero numerator (0/3) must exit — no features selected. */
+/* --p-vars with zero numerator (0/3) must throw — no features selected. */
 TEST(ParseArgs, PVarsFractionZeroNumeratorExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "0/3"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "0/3"}), ppforest2::UserError);
 }
 
-/* --p-vars with non-numeric fraction ("a/b") must exit. */
+/* --p-vars with non-numeric fraction ("a/b") must throw. */
 TEST(ParseArgs, PVarsFractionInvalidExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "a/b"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "a/b"}), ppforest2::UserError);
 }
 
 /* --n-vars and --p-vars are mutually exclusive. */
 TEST(ParseArgs, NVarsExcludesPVars) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--n-vars", "3", "--p-vars", "0.5"}),
-      ExitedWithNonZero(),
-      ""
+  EXPECT_THROW(
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--n-vars", "3", "--p-vars", "0.5"}), ppforest2::UserError
   );
 }
 
@@ -222,14 +200,9 @@ TEST(ParseArgs, TrainZeroTrees) {
   EXPECT_EQ(opts.model.size, 0);
 }
 
-/* Train without -d must exit. */
-TEST(ParseArgs, TrainMissingDataExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train"}), ExitedWithNonZero(), "");
-}
-
-/* Train with a nonexistent data file must exit. */
+/* Train with a nonexistent data file must throw. */
 TEST(ParseArgs, TrainNonexistentDataExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", "/nonexistent/file.csv"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "train", "-d", "/nonexistent/file.csv"}), ppforest2::UserError);
 }
 
 /* Lambda = 0 is a valid boundary value (pure LDA). */
@@ -244,27 +217,16 @@ TEST(ParseArgs, TrainLambdaOneValid) {
   EXPECT_FLOAT_EQ(opts.model.lambda, 1.0F);
 }
 
-/* Negative lambda must exit. */
-TEST(ParseArgs, TrainLambdaNegativeExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "-l", "-0.1"}), ExitedWithNonZero(), "");
-}
-
-/* Lambda > 1 must exit. */
-TEST(ParseArgs, TrainLambdaOutOfRangeExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "-l", "2.0"}), ExitedWithNonZero(), "");
-}
-
 /* --no-save disables model saving and clears the save path. */
 TEST(ParseArgs, TrainNoSaveFlag) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--no-save"});
   EXPECT_TRUE(opts.no_save);
-  EXPECT_TRUE(opts.save_path.empty());
 }
 
-/* --no-save and -s together must exit (mutually exclusive). */
+/* --no-save and -s together must throw (mutually exclusive). */
 TEST(ParseArgs, TrainNoSaveExcludesSave) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--no-save", "-s", "/tmp/m.json"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--no-save", "-s", "/tmp/m.json"}), ppforest2::UserError
   );
 }
 
@@ -297,14 +259,14 @@ TEST(ParseArgs, PredictNoProportionsDefault) {
   EXPECT_FALSE(opts.no_proportions);
 }
 
-/* Predict without -M (model path) must exit. */
+/* Predict without -M (model path) must throw. */
 TEST(ParseArgs, PredictMissingModelExits) {
-  EXPECT_EXIT(parse({"ppforest2", "predict", "-d", IRIS_PATH.c_str()}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "predict", "-d", IRIS_PATH.c_str()}), ppforest2::UserError);
 }
 
-/* Predict without -d (data path) must exit. */
+/* Predict without -d (data path) must throw. */
 TEST(ParseArgs, PredictMissingDataExits) {
-  EXPECT_EXIT(parse({"ppforest2", "predict", "-M", IRIS_PATH.c_str()}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "predict", "-M", IRIS_PATH.c_str()}), ppforest2::UserError);
 }
 
 // ---------------------------------------------------------------------------
@@ -320,15 +282,16 @@ TEST(ParseArgs, EvaluateOutputOption) {
 /* Evaluate must reject -s (--save is train-only). */
 TEST(ParseArgs, EvaluateNoSaveOption) {
   // Evaluate should not accept -s
-  EXPECT_EXIT(
-      parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "-s", "/tmp/model.json"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "-s", "/tmp/model.json"}), ppforest2::UserError
   );
 }
 
 /* Evaluate always has an empty save_path (save is not available). */
-TEST(ParseArgs, EvaluateSavePathAlwaysEmpty) {
+/* Evaluate never uses save_path — it stays at its default. */
+TEST(ParseArgs, EvaluateDoesNotUseSavePath) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2"});
-  EXPECT_TRUE(opts.save_path.empty());
+  EXPECT_FALSE(opts.no_save);
 }
 
 /* -e sets the experiment export directory. */
@@ -367,35 +330,21 @@ TEST(ParseArgs, EvaluateSimulateCustomParams) {
 /* -p sets the train/test split ratio. */
 TEST(ParseArgs, EvaluateTrainRatio) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "-p", "0.8"});
-  EXPECT_FLOAT_EQ(opts.evaluate.train_ratio, 0.8F);
+  EXPECT_FLOAT_EQ(opts.evaluate.train_ratio.value(), 0.8F);
 }
 
 /* -i sets fixed iteration count and disables convergence. */
 TEST(ParseArgs, EvaluateIterations) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "-i", "5"});
-  EXPECT_EQ(opts.evaluate.iterations, 5);
-  EXPECT_FALSE(opts.convergence.enabled);
+  EXPECT_EQ(opts.evaluate.iterations.value(), 5);
+  EXPECT_FALSE(opts.evaluate.convergence_enabled());
 }
 
-/* Malformed --simulate string (missing dimension) must exit. */
-TEST(ParseArgs, EvaluateInvalidSimulateFormatExits) {
-  EXPECT_EXIT(parse({"ppforest2", "evaluate", "--simulate", "100x5"}), ExitedWithNonZero(), "");
-}
-
-/* Simulation with only 1 group must exit (need >= 2 for classification). */
-TEST(ParseArgs, EvaluateGroupsMustBeGreaterThanOne) {
-  EXPECT_EXIT(parse({"ppforest2", "evaluate", "--simulate", "100x5x1"}), ExitedWithNonZero(), "");
-}
-
-/* Evaluate without -d or --simulate must exit. */
-TEST(ParseArgs, EvaluateNoDataSourceExits) {
-  EXPECT_EXIT(parse({"ppforest2", "evaluate"}), ExitedWithNonZero(), "");
-}
 
 /* Providing both -d and --simulate must exit (mutually exclusive). */
 TEST(ParseArgs, EvaluateBothDataAndSimulateExits) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "evaluate", "-d", IRIS_PATH.c_str(), "--simulate", "100x5x2"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "evaluate", "-d", IRIS_PATH.c_str(), "--simulate", "100x5x2"}), ppforest2::UserError
   );
 }
 
@@ -406,46 +355,47 @@ TEST(ParseArgs, EvaluateBothDataAndSimulateExits) {
 /* Evaluate defaults to convergence mode. */
 TEST(ParseArgs, EvaluateDefaultConvergence) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2"});
-  EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_EQ(opts.convergence.max, 200);
-  EXPECT_FLOAT_EQ(opts.convergence.cv, 0.05F);
-  EXPECT_EQ(opts.convergence.min, 10);
-  EXPECT_EQ(opts.convergence.window, 3);
+  opts.evaluate.resolve_defaults();
+  EXPECT_TRUE(opts.evaluate.convergence_enabled());
+  EXPECT_EQ(opts.evaluate.convergence.max.value(), 200);
+  EXPECT_FLOAT_EQ(*opts.evaluate.convergence.cv, 0.05F);
+  EXPECT_EQ(opts.evaluate.convergence.min.value(), 10);
+  EXPECT_EQ(opts.evaluate.convergence.window.value(), 3);
 }
 
 /* -i disables convergence and sets fixed iteration count. */
 TEST(ParseArgs, IterationsDisablesConvergence) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "-i", "5"});
-  EXPECT_FALSE(opts.convergence.enabled);
-  EXPECT_EQ(opts.evaluate.iterations, 5);
+  EXPECT_FALSE(opts.evaluate.convergence_enabled());
+  EXPECT_EQ(opts.evaluate.iterations.value(), 5);
 }
 
 /* --convergence-max overrides convergence cap without disabling it. */
 TEST(ParseArgs, MaxIterationsOverride) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "--convergence-max", "500"});
-  EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_EQ(opts.convergence.max, 500);
+  EXPECT_TRUE(opts.evaluate.convergence_enabled());
+  EXPECT_EQ(opts.evaluate.convergence.max.value(), 500);
 }
 
 /* --convergence-cv overrides the convergence threshold. */
 TEST(ParseArgs, CvThresholdOverride) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "--convergence-cv", "0.01"});
-  EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_FLOAT_EQ(opts.convergence.cv, 0.01F);
+  EXPECT_TRUE(opts.evaluate.convergence_enabled());
+  EXPECT_FLOAT_EQ(opts.evaluate.convergence.cv.value(), 0.01F);
 }
 
 /* --convergence-min overrides the minimum before convergence checking. */
 TEST(ParseArgs, MinIterationsOverride) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "--convergence-min", "20"});
-  EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_EQ(opts.convergence.min, 20);
+  EXPECT_TRUE(opts.evaluate.convergence_enabled());
+  EXPECT_EQ(opts.evaluate.convergence.min.value(), 20);
 }
 
 /* --convergence-window overrides the consecutive stable iterations required. */
 TEST(ParseArgs, StableWindowOverride) {
   auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "--convergence-window", "5"});
-  EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_EQ(opts.convergence.window, 5);
+  EXPECT_TRUE(opts.evaluate.convergence_enabled());
+  EXPECT_EQ(opts.evaluate.convergence.window.value(), 5);
 }
 
 /* All convergence parameters can be set together. */
@@ -464,26 +414,25 @@ TEST(ParseArgs, AllConvergenceParams) {
        "--convergence-window",
        "4"}
   );
-  EXPECT_TRUE(opts.convergence.enabled);
-  EXPECT_FLOAT_EQ(opts.convergence.cv, 0.02F);
-  EXPECT_EQ(opts.convergence.max, 300);
-  EXPECT_EQ(opts.convergence.min, 15);
-  EXPECT_EQ(opts.convergence.window, 4);
+  EXPECT_TRUE(opts.evaluate.convergence_enabled());
+  EXPECT_FLOAT_EQ(opts.evaluate.convergence.cv.value(), 0.02F);
+  EXPECT_EQ(opts.evaluate.convergence.max.value(), 300);
+  EXPECT_EQ(opts.evaluate.convergence.min.value(), 15);
+  EXPECT_EQ(opts.evaluate.convergence.window.value(), 4);
 }
 
-/* -i takes precedence: convergence params are parsed but converge is false. */
-TEST(ParseArgs, IterationsOverridesConvergenceParams) {
-  auto opts = parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "-i", "10", "--convergence-cv", "0.01"});
-  EXPECT_FALSE(opts.convergence.enabled);
-  EXPECT_EQ(opts.evaluate.iterations, 10);
-  // --convergence-cv is still parsed but converge is disabled
-  EXPECT_FLOAT_EQ(opts.convergence.cv, 0.01F);
+/* -i and convergence options are mutually exclusive. */
+TEST(ParseArgs, IterationsExcludesConvergenceParams) {
+  EXPECT_THROW(
+      parse({"ppforest2", "evaluate", "--simulate", "100x5x2", "-i", "10", "--convergence-cv", "0.01"}),
+      ppforest2::UserError
+  );
 }
 
 /* Simulation parameters without --simulate must exit. */
 TEST(ParseArgs, EvaluateSimParamsNeedSimulate) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "evaluate", "-d", IRIS_PATH.c_str(), "--simulate-mean", "200"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "evaluate", "-d", IRIS_PATH.c_str(), "--simulate-mean", "200"}), ppforest2::UserError
   );
 }
 
@@ -521,228 +470,173 @@ TEST(ParseArgs, VersionExits) {
   EXPECT_EXIT(parse({"ppforest2", "--version"}), testing::ExitedWithCode(0), "");
 }
 
+/* --help prints usage info and exits with code 0. */
+TEST(ParseArgs, HelpExits) {
+  EXPECT_EXIT(parse({"ppforest2", "--help"}), testing::ExitedWithCode(0), "");
+}
+
 // ---------------------------------------------------------------------------
-// init_params() — default resolution and validation
+// resolve_defaults() — seed and threads resolution
 // ---------------------------------------------------------------------------
 
-/* Sentinel lambda (-1) is replaced by the default 0.5. */
-TEST(InitParams, DefaultLambda) {
-  CLIOptions params;
-  params.model.lambda = -1;
-  params.quiet        = true;
-  init_params(params);
+/* Unset seed is auto-generated. */
+TEST(ResolveDefaults, UnsetSeedGetsGenerated) {
+  Params params;
+  EXPECT_FALSE(params.model.seed.has_value());
+  params.resolve_seed();
+  EXPECT_TRUE(params.model.seed.has_value());
+}
+
+/* An explicit seed is preserved. */
+TEST(ResolveDefaults, ExplicitSeedPreserved) {
+  Params params;
+  params.model.seed = 0;
+  params.resolve_seed();
+  EXPECT_EQ(params.model.seed.value(), 0);
+}
+
+/* Calling resolve_seed twice preserves the first generated seed. */
+TEST(ResolveDefaults, ResolveSeedIsIdempotent) {
+  Params params;
+  params.resolve_seed();
+  auto seed = params.model.seed.value();
+  params.resolve_seed();
+  EXPECT_EQ(params.model.seed.value(), seed);
+}
+
+/* resolve_defaults does not override a previously resolved seed. */
+TEST(ResolveDefaults, ResolveDefaultsPreservesResolvedSeed) {
+  Params params;
+  params.resolve_seed();
+  auto seed = params.model.seed.value();
+  params.resolve_defaults(0);
+  EXPECT_EQ(params.model.seed.value(), seed);
+}
+
+/* Unset threads is auto-detected. */
+TEST(ResolveDefaults, UnsetThreadsGetsDetected) {
+  Params params;
+  EXPECT_FALSE(params.model.threads.has_value());
+  params.resolve_defaults(0);
+  EXPECT_TRUE(params.model.threads.has_value());
+  EXPECT_GE(params.model.threads.value(), 1);
+}
+
+/* An explicit thread count is preserved. */
+TEST(ResolveDefaults, ExplicitThreadsPreserved) {
+  Params params;
+  params.model.threads = 8;
+  params.resolve_defaults(0);
+  EXPECT_EQ(params.model.threads.value(), 8);
+}
+
+// ---------------------------------------------------------------------------
+// resolve_defaults() — default resolution
+// ---------------------------------------------------------------------------
+
+/* Default lambda (0.5) is preserved when not overridden. */
+TEST(ResolveDefaults, DefaultLambda) {
+  Params params;
   EXPECT_FLOAT_EQ(params.model.lambda, 0.5F);
 }
 
 /* An explicitly set lambda is preserved. */
-TEST(InitParams, LambdaUnchangedIfSet) {
-  CLIOptions params;
+TEST(ResolveDefaults, LambdaUnchangedIfSet) {
+  Params params;
   params.model.lambda = 0.3F;
-  params.quiet        = true;
-  init_params(params);
+  params.resolve_defaults(0);
   EXPECT_FLOAT_EQ(params.model.lambda, 0.3F);
 }
 
-/* Train ratio of 0 must exit (no training data). */
-TEST(InitParams, InvalidTrainRatioZeroExits) {
-  EXPECT_EXIT(
-      {
-        CLIOptions params;
-        params.evaluate.train_ratio = 0;
-        params.quiet                = true;
-        init_params(params);
-      },
-      ExitedWithNonZero(),
-      ""
-  );
-}
-
-/* Train ratio of 1.0 must exit (no test data). */
-TEST(InitParams, InvalidTrainRatioOneExits) {
-  EXPECT_EXIT(
-      {
-        CLIOptions params;
-        params.evaluate.train_ratio = 1.0F;
-        params.quiet                = true;
-        init_params(params);
-      },
-      ExitedWithNonZero(),
-      ""
-  );
-}
-
-/* Negative train ratio must exit. */
-TEST(InitParams, InvalidTrainRatioNegativeExits) {
-  EXPECT_EXIT(
-      {
-        CLIOptions params;
-        params.evaluate.train_ratio = -0.5F;
-        params.quiet                = true;
-        init_params(params);
-      },
-      ExitedWithNonZero(),
-      ""
-  );
-}
-
-// ---------------------------------------------------------------------------
-// init_params() — used_default_* tracking flags
-// ---------------------------------------------------------------------------
-
-/* Sentinel seed (-1) sets used_default_seed to true. */
-TEST(InitParams, UsedDefaultSeedFlag) {
-  CLIOptions params;
-  params.model.seed = -1;
+/* Unset vars get defaults (p_vars=0.5, n_vars computed). */
+TEST(ResolveDefaults, UnsetVarsGetDefaults) {
+  Params params;
+  params.model.size = 10;
   params.quiet      = true;
-  init_params(params);
-  EXPECT_TRUE(params.model.used_default_seed);
+  EXPECT_FALSE(params.model.p_vars.has_value());
+  EXPECT_FALSE(params.model.n_vars.has_value());
+  params.resolve_defaults(10);
+  EXPECT_FLOAT_EQ(params.model.p_vars.value(), 0.5F);
+  EXPECT_EQ(params.model.n_vars.value(), 5);
 }
 
-/* An explicit seed clears used_default_seed. */
-TEST(InitParams, UsedDefaultSeedFlagFalse) {
-  CLIOptions params;
-  params.model.seed = 0;
-  params.quiet      = true;
-  init_params(params);
-  EXPECT_FALSE(params.model.used_default_seed);
-}
-
-/* Sentinel threads (-1) sets used_default_threads to true. */
-TEST(InitParams, UsedDefaultThreadsFlag) {
-  CLIOptions params;
-  params.model.threads = -1;
-  params.quiet         = true;
-  init_params(params);
-  EXPECT_TRUE(params.model.used_default_threads);
-}
-
-/* An explicit thread count clears used_default_threads. */
-TEST(InitParams, UsedDefaultThreadsFlagFalse) {
-  CLIOptions params;
-  params.model.threads = 8;
-  params.quiet         = true;
-  init_params(params);
-  EXPECT_FALSE(params.model.used_default_threads);
-}
-
-/* Sentinel vars (-1/-1) sets used_default_vars to true. */
-TEST(InitParams, UsedDefaultVarsFlag) {
-  CLIOptions params;
-  params.model.size   = 10;
-  params.model.p_vars = -1;
-  params.model.n_vars = -1;
-  params.quiet        = true;
-  init_params(params, 10);
-  EXPECT_TRUE(params.model.used_default_vars);
-}
-
-/* An explicit p_vars clears used_default_vars. */
-TEST(InitParams, UsedDefaultVarsFlagFalse) {
-  CLIOptions params;
+/* An explicit p_vars is preserved, n_vars computed from it. */
+TEST(ResolveDefaults, ExplicitPVarsPreserved) {
+  Params params;
   params.model.size   = 10;
   params.model.p_vars = 0.8F;
-  params.model.n_vars = -1;
   params.quiet        = true;
-  init_params(params, 10);
-  EXPECT_FALSE(params.model.used_default_vars);
+  params.resolve_defaults(10);
+  EXPECT_FLOAT_EQ(params.model.p_vars.value(), 0.8F);
+  EXPECT_EQ(params.model.n_vars.value(), 8);
 }
 
 // ---------------------------------------------------------------------------
-// init_params() — seed, threads, and vars auto-resolution
+// resolve_defaults() — seed, threads, and vars auto-resolution
 // ---------------------------------------------------------------------------
-
-/* Sentinel seed (-1) is replaced by a generated seed. */
-TEST(InitParams, AutoSeed) {
-  CLIOptions params;
-  params.model.seed = -1;
-  params.quiet      = true;
-  init_params(params);
-  EXPECT_NE(params.model.seed, -1);
-}
-
-/* An explicit seed value is preserved. */
-TEST(InitParams, SeedPreservedIfSet) {
-  CLIOptions params;
-  params.model.seed = 0;
-  params.quiet      = true;
-  init_params(params);
-  EXPECT_EQ(params.model.seed, 0);
-}
-
-/* Sentinel threads (-1) auto-detects to >= 1 thread. */
-TEST(InitParams, DefaultThreads) {
-  CLIOptions params;
-  params.model.threads = -1;
-  params.quiet         = true;
-  init_params(params);
-  EXPECT_GE(params.model.threads, 1);
-}
-
-/* An explicitly set thread count is preserved. */
-TEST(InitParams, ThreadsPreservedIfSet) {
-  CLIOptions params;
-  params.model.threads = 8;
-  params.quiet         = true;
-  init_params(params);
-  EXPECT_EQ(params.model.threads, 8);
-}
 
 /* n_vars is computed from p_vars * total_vars. */
-TEST(InitParams, NVarsFromPVars) {
-  CLIOptions params;
+TEST(ResolveDefaults, NVarsFromPVars) {
+  Params params;
   params.model.size   = 10;
   params.model.p_vars = 0.5F;
-  params.model.n_vars = -1;
   params.quiet        = true;
-  init_params(params, 10);
-  EXPECT_EQ(params.model.n_vars, 5);
+  params.resolve_defaults(10);
+  EXPECT_EQ(params.model.n_vars.value(), 5);
 }
 
 /* p_vars is back-computed from n_vars / total_vars. */
-TEST(InitParams, PVarsFromNVars) {
-  CLIOptions params;
+TEST(ResolveDefaults, PVarsFromNVars) {
+  Params params;
   params.model.size   = 10;
-  params.model.p_vars = -1;
   params.model.n_vars = 3;
   params.quiet        = true;
-  init_params(params, 10);
-  EXPECT_FLOAT_EQ(params.model.p_vars, 0.3F);
+  params.resolve_defaults(10);
+  EXPECT_FLOAT_EQ(params.model.p_vars.value(), 0.3F);
 }
 
 /* Default vars: p_vars = 0.5, n_vars = half of total. */
-TEST(InitParams, DefaultPVarsAndNVars) {
-  CLIOptions params;
-  params.model.size   = 10;
-  params.model.p_vars = -1;
-  params.model.n_vars = -1;
-  params.quiet        = true;
-  init_params(params, 10);
-  EXPECT_FLOAT_EQ(params.model.p_vars, 0.5F);
-  EXPECT_EQ(params.model.n_vars, 5);
+TEST(ResolveDefaults, DefaultPVarsAndNVars) {
+  Params params;
+  params.model.size = 10;
+  params.quiet      = true;
+  params.resolve_defaults(10);
+  EXPECT_FLOAT_EQ(params.model.p_vars.value(), 0.5F);
+  EXPECT_EQ(params.model.n_vars.value(), 5);
 }
 
 /* Vars computation is skipped for a single tree (trees = 0). */
-TEST(InitParams, NoVarsWhenSingleTree) {
-  CLIOptions params;
+TEST(ResolveDefaults, NoVarsWhenSingleTree) {
+  Params params;
   params.model.size   = 0;
   params.model.p_vars = 0.8F;
-  params.model.n_vars = -1;
   params.quiet        = true;
-  init_params(params, 10);
-  EXPECT_FLOAT_EQ(params.model.p_vars, 0.8F);
-  EXPECT_EQ(params.model.n_vars, -1);
+  params.resolve_defaults(10);
+  EXPECT_FLOAT_EQ(params.model.p_vars.value(), 0.8F);
+  EXPECT_FALSE(params.model.n_vars.has_value());
 }
 
 /* Vars computation is skipped when total_vars is 0 (unknown). */
-TEST(InitParams, NoVarsWhenZeroTotalVars) {
-  CLIOptions params;
-  params.model.size   = 10;
-  params.model.p_vars = -1;
-  params.model.n_vars = -1;
-  params.quiet        = true;
-  init_params(params, 0);
-  EXPECT_FLOAT_EQ(params.model.p_vars, -1);
-  EXPECT_EQ(params.model.n_vars, -1);
+TEST(ResolveDefaults, NoVarsWhenZeroTotalVars) {
+  Params params;
+  params.model.size = 10;
+  params.quiet      = true;
+  params.resolve_defaults(0);
+  EXPECT_FALSE(params.model.p_vars.has_value());
+  EXPECT_FALSE(params.model.n_vars.has_value());
+}
+
+/* vars_config with proportion is resolved to count when total_vars is known. */
+TEST(ResolveDefaults, VarsProportionResolvedToCount) {
+  Params params;
+  params.model.size        = 10;
+  params.model.vars_config = {{"name", "uniform"}, {"proportion", 0.5}};
+  params.model.p_vars      = 0.5F;
+  params.resolve_defaults(10);
+
+  EXPECT_FALSE(params.model.vars_config.contains("proportion"));
+  EXPECT_EQ(params.model.vars_config["name"], "uniform");
+  EXPECT_EQ(params.model.vars_config["count"].get<int>(), 5);
 }
 
 // ---------------------------------------------------------------------------
@@ -751,7 +645,7 @@ TEST(InitParams, NoVarsWhenZeroTotalVars) {
 
 /* Single tree with --threads warns that threads is ignored. */
 TEST(WarnUnusedParams, TreesZeroThreadsWarning) {
-  CLIOptions params;
+  Params params;
   params.model.size    = 0;
   params.model.threads = 4;
   params.quiet         = false;
@@ -766,7 +660,7 @@ TEST(WarnUnusedParams, TreesZeroThreadsWarning) {
 
 /* Single tree with --vars warns that vars is ignored. */
 TEST(WarnUnusedParams, TreesZeroVarsWarning) {
-  CLIOptions params;
+  Params params;
   params.model.size   = 0;
   params.model.p_vars = 0.8F;
   params.quiet        = false;
@@ -781,7 +675,7 @@ TEST(WarnUnusedParams, TreesZeroVarsWarning) {
 
 /* Single tree with both --threads and --vars emits both warnings. */
 TEST(WarnUnusedParams, TreesZeroBothWarnings) {
-  CLIOptions params;
+  Params params;
   params.model.size    = 0;
   params.model.threads = 4;
   params.model.n_vars  = 3;
@@ -799,7 +693,7 @@ TEST(WarnUnusedParams, TreesZeroBothWarnings) {
 
 /* Forest mode (trees > 0) emits no warnings. */
 TEST(WarnUnusedParams, TreesNonZeroNoWarning) {
-  CLIOptions params;
+  Params params;
   params.model.size    = 10;
   params.model.threads = 4;
   params.model.p_vars  = 0.8F;
@@ -815,7 +709,7 @@ TEST(WarnUnusedParams, TreesNonZeroNoWarning) {
 
 /* Quiet mode suppresses all parameter warnings. */
 TEST(WarnUnusedParams, QuietSuppresses) {
-  CLIOptions params;
+  Params params;
   params.model.size    = 0;
   params.model.threads = 4;
   params.model.p_vars  = 0.8f;
@@ -834,38 +728,29 @@ TEST(WarnUnusedParams, QuietSuppresses) {
 // parse_args() — additional vars validation (edge cases)
 // ---------------------------------------------------------------------------
 
-/* --p-vars of exactly 0.0 must exit — selects no features. */
+/* --p-vars of exactly 0.0 must throw — selects no features. */
 TEST(ParseArgs, PVarsProportionZeroExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "0.0"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "0.0"}), ppforest2::UserError);
 }
 
-/* --p-vars > 1.0 must exit. */
+/* --p-vars > 1.0 must throw. */
 TEST(ParseArgs, PVarsProportionOutOfRangeExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "1.5"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "1.5"}), ppforest2::UserError);
 }
 
-/* --n-vars with negative count must exit. */
-TEST(ParseArgs, NVarsNegativeCountExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--n-vars", "-1"}), ExitedWithNonZero(), "");
-}
-
-/* --n-vars with zero count must exit — selects no features. */
-TEST(ParseArgs, NVarsCountZeroExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--n-vars", "0"}), ExitedWithNonZero(), "");
-}
-
-/* --p-vars with non-numeric string ("abc") must exit. */
+/* --p-vars with non-numeric string ("abc") must throw. */
 TEST(ParseArgs, PVarsInvalidValueExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "abc"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--p-vars", "abc"}), ppforest2::UserError);
 }
 
 // ---------------------------------------------------------------------------
 // parse_args() — explicit strategy flags (--pp, --vars, --cutpoint)
 // ---------------------------------------------------------------------------
 
-/* --pp pda without lambda must exit — explicit API requires all params. */
-TEST(ParseArgs, PPStrategyNameOnlyExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda"}), ExitedWithNonZero(), "");
+/* --pp pda without lambda stores the config; validation happens at construction time. */
+TEST(ParseArgs, PPStrategyNameOnlyStoresConfig) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda"});
+  EXPECT_EQ(opts.model.pp_config["name"], "pda");
 }
 
 /* --pp pda:lambda=0.3 sets lambda to 0.3. */
@@ -877,88 +762,100 @@ TEST(ParseArgs, PPStrategyWithLambda) {
 
 /* --pp and -l are mutually exclusive. */
 TEST(ParseArgs, PPExcludesLambda) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda", "-l", "0.5"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda", "-l", "0.5"}), ppforest2::UserError
   );
 }
 
 /* -l and --pp are mutually exclusive (reverse order). */
 TEST(ParseArgs, LambdaExcludesPP) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "-l", "0.5", "--pp", "pda"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "-l", "0.5", "--pp", "pda"}), ppforest2::UserError
   );
 }
 
-/* --pp with an unknown strategy name must exit. */
-TEST(ParseArgs, PPUnknownStrategyExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "unknown"}), ExitedWithNonZero(), "");
+/* --pp with an unknown strategy name stores the config; error at construction time. */
+TEST(ParseArgs, PPUnknownStrategyStoresConfig) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "unknown"});
+  EXPECT_EQ(opts.model.pp_config["name"], "unknown");
 }
 
-/* --pp pda:unknown=1 with an unknown parameter must exit. */
-TEST(ParseArgs, PPUnknownParamExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:unknown=1"}), ExitedWithNonZero(), "");
+/* --pp pda:unknown=1 stores the config; unknown param rejected at construction time. */
+TEST(ParseArgs, PPUnknownParamStoresConfig) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:unknown=1"});
+  EXPECT_EQ(opts.model.pp_config["name"], "pda");
+  EXPECT_EQ(opts.model.pp_config["unknown"].get<int>(), 1);
 }
 
-/* --pp pda:lambda=notanumber must exit. */
-TEST(ParseArgs, PPInvalidLambdaValueExits) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:lambda=abc"}), ExitedWithNonZero(), ""
-  );
+/* --pp pda:lambda=abc stores "abc" as a string; type error at construction time. */
+TEST(ParseArgs, PPInvalidLambdaValueStoresConfig) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:lambda=abc"});
+  EXPECT_EQ(opts.model.pp_config["lambda"], "abc");
 }
 
-/* --pp pda:noequalssign must exit (missing key=value). */
+/* --pp pda:noequalssign must throw (missing key=value). */
 TEST(ParseArgs, PPMissingEqualsExits) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:noequalssign"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:noequalssign"}), ppforest2::UserError
   );
 }
 
-/* --vars all sets vars to all (forces n_vars=0). */
+/* --vars all sets vars_config without affecting n_vars/p_vars. */
 TEST(ParseArgs, VarsStrategyAll) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "all"});
-  EXPECT_EQ(opts.model.vars_input, "all");
-  EXPECT_EQ(opts.model.n_vars, 0);
+  EXPECT_EQ(opts.model.vars_config["name"], "all");
+  EXPECT_FALSE(opts.model.n_vars.has_value());
+  EXPECT_FALSE(opts.model.p_vars.has_value());
 }
 
-/* --vars uniform:count=2 sets vars for later resolution. */
+/* --vars uniform:count=2 sets vars_config without affecting n_vars/p_vars. */
 TEST(ParseArgs, VarsStrategyUniformWithCount) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "uniform:count=2"});
-  EXPECT_EQ(opts.model.n_vars, 2);
+  EXPECT_EQ(opts.model.vars_config["name"], "uniform");
+  EXPECT_EQ(opts.model.vars_config["count"].get<int>(), 2);
+  EXPECT_FALSE(opts.model.n_vars.has_value());
+}
+
+/* --vars uniform:proportion=0.5 sets vars_config without affecting n_vars/p_vars. */
+TEST(ParseArgs, VarsStrategyUniformWithProportion) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "uniform:proportion=0.5"});
+  EXPECT_EQ(opts.model.vars_config["name"], "uniform");
+  EXPECT_FLOAT_EQ(opts.model.vars_config["proportion"].get<float>(), 0.5F);
+  EXPECT_FALSE(opts.model.p_vars.has_value());
 }
 
 /* --vars and --n-vars are mutually exclusive. */
 TEST(ParseArgs, VarsStrategyExcludesNVars) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "all", "--n-vars", "2"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "all", "--n-vars", "2"}), ppforest2::UserError
   );
 }
 
 /* --n-vars and --vars are mutually exclusive (reverse order). */
 TEST(ParseArgs, NVarsExcludesVarsStrategy) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--n-vars", "2", "--vars", "all"}), ExitedWithNonZero(), ""
+  EXPECT_THROW(
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--n-vars", "2", "--vars", "all"}), ppforest2::UserError
   );
 }
 
 /* --vars and --p-vars are mutually exclusive. */
 TEST(ParseArgs, VarsStrategyExcludesPVars) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "all", "--p-vars", "0.5"}),
-      ExitedWithNonZero(),
-      ""
+  EXPECT_THROW(
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "all", "--p-vars", "0.5"}), ppforest2::UserError
   );
 }
 
-/* --vars with an unknown strategy name must exit. */
-TEST(ParseArgs, VarsStrategyUnknownExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "unknown"}), ExitedWithNonZero(), "");
+/* --vars with an unknown strategy name stores the config; error at construction time. */
+TEST(ParseArgs, VarsStrategyUnknownStoresConfig) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "unknown"});
+  EXPECT_EQ(opts.model.vars_config["name"], "unknown");
 }
 
-/* --vars uniform:unknown=1 with an unknown parameter must exit. */
-TEST(ParseArgs, VarsStrategyUnknownParamExits) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "uniform:unknown=1"}), ExitedWithNonZero(), ""
-  );
+/* --vars uniform:unknown=1 stores the config; unknown param rejected at construction time. */
+TEST(ParseArgs, VarsStrategyUnknownParamStoresConfig) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "uniform:unknown=1"});
+  EXPECT_EQ(opts.model.vars_config["name"], "uniform");
+  EXPECT_EQ(opts.model.vars_config["unknown"].get<int>(), 1);
 }
 
 /* --cutpoint mean_of_means is accepted. */
@@ -967,9 +864,10 @@ TEST(ParseArgs, ThresholdStrategyMeanOfMeans) {
   EXPECT_EQ(opts.model.cutpoint_input, "mean_of_means");
 }
 
-/* --cutpoint with an unknown strategy name must exit. */
-TEST(ParseArgs, ThresholdUnknownStrategyExits) {
-  EXPECT_EXIT(parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--cutpoint", "unknown"}), ExitedWithNonZero(), "");
+/* --cutpoint with an unknown strategy name stores the config; error at construction time. */
+TEST(ParseArgs, ThresholdUnknownStrategyStoresConfig) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--cutpoint", "unknown"});
+  EXPECT_EQ(opts.model.cutpoint_config["name"], "unknown");
 }
 
 /* --max-retries sets the max retries count. */
@@ -1013,22 +911,18 @@ TEST(ParseArgs, PPStrategySingleParamParsed) {
   EXPECT_EQ(opts.model.pp_config.size(), 2u); // name + lambda only
 }
 
-/* --pp pda:lambda=0.3,unknown=1 with multiple params rejects unknown. */
-TEST(ParseArgs, PPStrategyMultipleParamsRejectsUnknown) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:lambda=0.3,unknown=1"}),
-      ExitedWithNonZero(),
-      ""
-  );
+/* --pp pda:lambda=0.3,unknown=1 stores all params; unknown rejected at construction time. */
+TEST(ParseArgs, PPStrategyMultipleParamsStoresAll) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--pp", "pda:lambda=0.3,unknown=1"});
+  EXPECT_FLOAT_EQ(opts.model.pp_config["lambda"].get<float>(), 0.3F);
+  EXPECT_EQ(opts.model.pp_config["unknown"].get<int>(), 1);
 }
 
-/* --vars uniform:count=2,unknown=1 with multiple params rejects unknown. */
-TEST(ParseArgs, VarsStrategyMultipleParamsRejectsUnknown) {
-  EXPECT_EXIT(
-      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "uniform:count=2,unknown=1"}),
-      ExitedWithNonZero(),
-      ""
-  );
+/* --vars uniform:count=2,unknown=1 stores all params; unknown rejected at construction time. */
+TEST(ParseArgs, VarsStrategyMultipleParamsStoresAll) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "uniform:count=2,unknown=1"});
+  EXPECT_EQ(opts.model.vars_config["count"].get<int>(), 2);
+  EXPECT_EQ(opts.model.vars_config["unknown"].get<int>(), 1);
 }
 
 // ---------------------------------------------------------------------------
@@ -1042,7 +936,7 @@ TEST(ParseArgs, SummarizeSubcommand) {
   EXPECT_EQ(opts.model_path, IRIS_PATH);
 }
 
-/* Summarize without required -M must exit. */
+/* Summarize without required -M must throw. */
 TEST(ParseArgs, SummarizeWithoutModelExits) {
-  EXPECT_EXIT(parse({"ppforest2", "summarize"}), ExitedWithNonZero(), "");
+  EXPECT_THROW(parse({"ppforest2", "summarize"}), ppforest2::UserError);
 }

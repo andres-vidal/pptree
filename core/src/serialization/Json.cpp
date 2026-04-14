@@ -9,6 +9,7 @@
 #include <algorithm>
 
 using namespace ppforest2::types;
+using namespace ppforest2::stats;
 
 namespace ppforest2::serialization {
   std::vector<std::string>
@@ -150,14 +151,15 @@ namespace ppforest2::serialization {
     };
   }
 
-  json to_json(stats::ConfusionMatrix const& cm) {
+  json to_json(ConfusionMatrix const& cm) {
     json j;
 
     std::vector<std::vector<int>> matrix_data;
     for (int i = 0; i < cm.values.rows(); ++i) {
       std::vector<int> row;
+      row.reserve(static_cast<std::size_t>(cm.values.cols()));
       for (int col = 0; col < cm.values.cols(); ++col) {
-        row.push_back(cm.values(i, col));
+        row.emplace_back(cm.values(i, col));
       }
 
       matrix_data.push_back(row);
@@ -166,6 +168,7 @@ namespace ppforest2::serialization {
     j["matrix"] = matrix_data;
 
     std::vector<int> labels;
+    labels.reserve(static_cast<std::size_t>(cm.label_index.size()));
     for (auto const& [label, idx] : cm.label_index) {
       labels.push_back(label);
     }
@@ -236,14 +239,15 @@ namespace ppforest2::serialization {
     };
   }
 
-  json to_json(stats::ConfusionMatrix const& cm, GroupNames const& group_names) {
+  json to_json(ConfusionMatrix const& cm, GroupNames const& group_names) {
     json j;
 
     std::vector<std::vector<int>> matrix_data;
     for (int i = 0; i < cm.values.rows(); ++i) {
       std::vector<int> row;
+      row.reserve(static_cast<std::size_t>(cm.values.cols()));
       for (int col = 0; col < cm.values.cols(); ++col) {
-        row.push_back(cm.values(i, col));
+        row.emplace_back(cm.values(i, col));
       }
 
       matrix_data.push_back(row);
@@ -252,8 +256,9 @@ namespace ppforest2::serialization {
     j["matrix"] = matrix_data;
 
     std::vector<std::string> labels;
+    labels.reserve(static_cast<std::size_t>(cm.label_index.size()));
     for (auto const& [label, idx] : cm.label_index) {
-      labels.push_back(group_names[static_cast<std::size_t>(label)]);
+      labels.emplace_back(group_names[static_cast<std::size_t>(label)]);
     }
 
     j["labels"] = labels;
@@ -388,11 +393,11 @@ namespace ppforest2::serialization {
     return forest;
   }
 
-  template<> stats::ConfusionMatrix from_json<stats::ConfusionMatrix>(json const& j) {
-    stats::ConfusionMatrix cm;
-    auto matrix_data = j["matrix"];
-    int n            = static_cast<int>(matrix_data.size());
-    cm.values        = types::Matrix<int>::Zero(n, n);
+  template<> ConfusionMatrix from_json<ConfusionMatrix>(json const& j) {
+    ConfusionMatrix cm;
+    auto const& matrix_data = j["matrix"];
+    int n                   = static_cast<int>(matrix_data.size());
+    cm.values               = types::Matrix<int>::Zero(n, n);
 
     for (int i = 0; i < n; ++i) {
       for (int col = 0; col < n; ++col) {
@@ -440,12 +445,12 @@ namespace ppforest2::serialization {
     int const seed   = model->training_spec->seed;
 
     VariableImportance vi;
-    vi.scale = stats::sd(x);
+    vi.scale = sd(x);
     vi.scale = (vi.scale.array() > Feature(0)).select(vi.scale, Feature(1));
 
     // Training confusion matrix
     OutcomeVector train_preds = model->predict(x);
-    training_confusion_matrix  = stats::ConfusionMatrix(train_preds, y);
+    training_confusion_matrix = ConfusionMatrix(train_preds, y);
 
     // Model-specific metrics (OOB for forests)
     struct MetricsVisitor : Model::Visitor {
@@ -475,15 +480,16 @@ namespace ppforest2::serialization {
 
         std::vector<int> oob_rows;
         for (int i = 0; i < oob_preds.size(); ++i) {
-          if (oob_preds(i) >= 0)
-            oob_rows.push_back(i);
+          if (oob_preds(i) >= 0) {
+            oob_rows.emplace_back(i);
+          }
         }
 
         if (!oob_rows.empty()) {
-          OutcomeVector preds_oob  = oob_preds(oob_rows, Eigen::all).eval();
-          OutcomeVector y_oob      = y(oob_rows, Eigen::all).eval();
-          self.oob_error            = stats::error_rate(preds_oob, y_oob);
-          self.oob_confusion_matrix = stats::ConfusionMatrix(preds_oob, y_oob);
+          OutcomeVector preds_oob   = oob_preds(oob_rows, Eigen::all).eval();
+          OutcomeVector y_oob       = y(oob_rows, Eigen::all).eval();
+          self.oob_error            = error_rate(preds_oob, y_oob);
+          self.oob_confusion_matrix = ConfusionMatrix(preds_oob, y_oob);
         }
 
         vi.permuted             = variable_importance_permuted(forest, x, y, seed);
@@ -501,7 +507,7 @@ namespace ppforest2::serialization {
 
     variable_importance = std::move(vi);
   }
-} // namespace ppforest2::serialization
+}
 
 // -------------------------------------------------------------------------
 // adl_serializer implementations — Export<T>
@@ -513,9 +519,9 @@ namespace nlohmann {
 
   // Full export (labeled JSON + config + meta)
   Export<Tree> adl_serializer<Export<Tree>>::from_json(json const& j) {
-    auto spec   = TrainingSpec::from_json(j.at("config"));
-    auto& meta  = j.at("meta");
-    auto groups = meta.at("groups").get<GroupNames>();
+    auto spec        = TrainingSpec::from_json(j.at("config"));
+    auto const& meta = j.at("meta");
+    auto groups      = meta.at("groups").get<GroupNames>();
 
     return {
         Tree(node_from_json(j.at("model")["root"], groups), spec),
@@ -529,10 +535,10 @@ namespace nlohmann {
   }
 
   Export<Forest> adl_serializer<Export<Forest>>::from_json(json const& j) {
-    auto spec   = TrainingSpec::from_json(j.at("config"));
-    auto& meta  = j.at("meta");
-    auto groups = meta.at("groups").get<GroupNames>();
-    auto& mj    = j.at("model");
+    auto spec        = TrainingSpec::from_json(j.at("config"));
+    auto const& meta = j.at("meta");
+    auto groups      = meta.at("groups").get<GroupNames>();
+    auto const& mj   = j.at("model");
 
     Forest forest(spec);
     forest.degenerate = mj.value("degenerate", false);
@@ -571,7 +577,9 @@ namespace nlohmann {
             fe.n_features,
             std::move(fe.feature_names),
         };
-      } else if (model_type == "tree") {
+      }
+
+      if (model_type == "tree") {
         auto te = j.get<Export<Tree>>();
         return {
             std::make_shared<Tree>(std::move(te.model)),
@@ -581,27 +589,26 @@ namespace nlohmann {
             te.n_features,
             std::move(te.feature_names),
         };
-      } else {
-        throw std::invalid_argument("Invalid model type: " + model_type);
       }
+
+      throw std::invalid_argument("Invalid model type: " + model_type);
     }();
 
-    if (j.contains("variable_importance"))
+    if (j.contains("variable_importance")) {
       result.variable_importance = serialization::from_json<VariableImportance>(j["variable_importance"]);
-
-    if (j.contains("training_confusion_matrix"))
-      result.training_confusion_matrix =
-          serialization::from_json<stats::ConfusionMatrix>(j["training_confusion_matrix"]);
-
-    if (j.contains("oob_confusion_matrix"))
-      result.oob_confusion_matrix = serialization::from_json<stats::ConfusionMatrix>(j["oob_confusion_matrix"]);
-
-    if (j.contains("oob_error"))
+    }
+    if (j.contains("training_confusion_matrix")) {
+      result.training_confusion_matrix = serialization::from_json<ConfusionMatrix>(j["training_confusion_matrix"]);
+    }
+    if (j.contains("oob_confusion_matrix")) {
+      result.oob_confusion_matrix = serialization::from_json<ConfusionMatrix>(j["oob_confusion_matrix"]);
+    }
+    if (j.contains("oob_error")) {
       result.oob_error = j["oob_error"].get<double>();
-
+    }
     return result;
   }
-} // namespace nlohmann
+}
 
 namespace ppforest2::serialization {
   std::ostream& operator<<(std::ostream& os, TreeNode const& node) {

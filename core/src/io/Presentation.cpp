@@ -5,7 +5,13 @@
  */
 #include "io/Presentation.hpp"
 #include "io/Table.hpp"
-#include "ppforest2.hpp"
+#include "models/strategies/binarize/Binarization.hpp"
+#include "models/strategies/cutpoint/SplitCutpoint.hpp"
+#include "models/strategies/leaf/LeafStrategy.hpp"
+#include "models/strategies/partition/StepPartition.hpp"
+#include "models/strategies/pp/ProjectionPursuit.hpp"
+#include "models/strategies/stop/StopRule.hpp"
+#include "models/strategies/vars/VariableSelection.hpp"
 #include "serialization/Json.hpp"
 
 #include <fmt/format.h>
@@ -15,33 +21,6 @@
 #include <vector>
 
 namespace ppforest2::io {
-  nlohmann::json ModelStats::to_json() const {
-    nlohmann::json j = {
-        {"runs", tr_times.size()},
-        {"mean_time_ms", mean_time()},
-        {"std_time_ms", std_time()},
-        {"mean_train_error", mean_tr_error()},
-        {"std_train_error", std_tr_error()},
-        {"mean_test_error", mean_te_error()},
-        {"std_test_error", std_te_error()}
-    };
-
-    if (peak_rss_bytes >= 0) {
-      j["peak_rss_bytes"] = peak_rss_bytes;
-      j["peak_rss_mb"]    = static_cast<double>(peak_rss_bytes) / (1024.0 * 1024.0);
-    }
-
-    // Per-iteration data
-    nlohmann::json iterations = nlohmann::json::array();
-    for (int i = 0; i < tr_times.size(); ++i) {
-      iterations.push_back({{"train_time_ms", tr_times[i]}, {"train_error", tr_error[i]}, {"test_error", te_error[i]}});
-    }
-
-    j["iterations"] = iterations;
-
-    return j;
-  }
-
   void print_results(Output& out, ModelStats const& stats) {
     using namespace style;
     using namespace layout;
@@ -116,9 +95,8 @@ namespace ppforest2::io {
         int const j   = order[static_cast<std::size_t>(rank)];
         int const len = static_cast<int>(feature_names[static_cast<std::size_t>(j)].size());
 
-        if (len + 1 > var_width) {
-          var_width = len + 1;
-        }
+
+        var_width = std::max(var_width, len + 1);
       }
     }
 
@@ -376,7 +354,7 @@ namespace ppforest2::io {
         std::string value = json_value_to_string(v);
 
         if (k == "count" && hints.vars_percent >= 0) {
-          value += fmt::format(" ({}%)", hints.vars_percent);
+          value += fmt::format(" ({:.0f}%)", hints.vars_percent);
         }
 
         if (k == "count" && hints.default_vars) {

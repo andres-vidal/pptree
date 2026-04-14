@@ -5,11 +5,10 @@
  */
 #include "cli/Evaluate.hpp"
 #include "cli/Train.hpp"
-#include "ppforest2.hpp"
+#include "cli/Validation.hpp"
 
 #include <CLI/CLI.hpp>
 #include <fmt/format.h>
-#include <cmath>
 #include <vector>
 #include <filesystem>
 #include <Eigen/Dense>
@@ -20,9 +19,8 @@
 #include "utils/System.hpp"
 #include "io/Color.hpp"
 #include "io/IO.hpp"
+#include "utils/UserError.hpp"
 #include "io/Output.hpp"
-#include "io/Timing.hpp"
-#include "serialization/Json.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -33,213 +31,225 @@ using namespace ppforest2::io::style;
 using json = nlohmann::json;
 
 namespace ppforest2::cli {
-  CLI::App* setup_evaluate(CLI::App& app, CLIOptions& params) {
-    auto sub      = app.add_subcommand("evaluate", "Train and evaluate a model");
-    auto data_opt = sub->add_option("-d,--data", params.data_path, "CSV file")->check(CLI::ExistingFile);
-    auto sim_opt  = sub->add_option("--simulate", params.simulation.format, "Simulate NxMxK data");
-    data_opt->excludes(sim_opt);
-    sim_opt->excludes(data_opt);
+  namespace {
+    void add_simulation_options(CLI::App* sub, SimulateParams& simulation) {
+      auto& mean_separation = simulation.mean_separation;
+      auto& sd              = simulation.sd;
+      auto& mean            = simulation.mean;
+
+      sub->add_option("--simulate", simulation.format, "Simulate NxMxK data");
+      sub->add_option("--simulate-mean", mean, "Mean for simulated data (default: 100.0)");
+      sub->add_option("--simulate-mean-separation", mean_separation, "Mean separation between groups (default: 50.0)");
+      sub->add_option("--simulate-sd", sd, "Standard deviation for simulated data (default: 10.0)");
+
+      sub->get_option("--simulate-mean")->needs("--simulate");
+      sub->get_option("--simulate-mean-separation")->needs("--simulate");
+      sub->get_option("--simulate-sd")->needs("--simulate");
+    }
+  }
+
+
+  void add_evaluate_options(CLI::App* sub, EvaluateParams& evaluate) {
+
+    auto& convergence = evaluate.convergence;
+
+    sub->add_option("-p,--train-ratio", evaluate.train_ratio, "Train set ratio (default: 0.7)");
+    sub->add_option("-i,--iterations", evaluate.iterations, "Fixed iteration count (disables convergence)");
+    sub->add_option("--warmup", evaluate.warmup, "Warmup iterations to discard before measuring (default: 0)");
+    sub->add_option("--convergence-cv", convergence.cv, "CV threshold for convergence (default: 0.05)");
+    sub->add_option("--convergence-min", convergence.min, "Min iterations before checking convergence (default: 10)");
+    sub->add_option("--convergence-max", convergence.max, "Max iterations for convergence (default: 200)");
+    sub->add_option("--convergence-window", convergence.window, "Consecutive stable checks to stop (default: 3)");
+
+    sub->get_option("--iterations")->excludes("--convergence-cv");
+    sub->get_option("--iterations")->excludes("--convergence-window");
+    sub->get_option("--iterations")->excludes("--convergence-min");
+    sub->get_option("--iterations")->excludes("--convergence-max");
+  }
+
+  void setup_evaluate(CLI::App& app, Params& params) {
+    auto* sub = app.add_subcommand("evaluate", "Train and evaluate a model");
+    sub->add_option("-d,--data", params.data_path, "CSV file");
 
     add_model_options(sub, params.model);
-    sub->add_option("-p,--train-ratio", params.evaluate.train_ratio, "Train set ratio (default: 0.7)")
-        ->check(CLI::Range(0.01f, 0.99f));
-    sub->add_option("-i,--iterations", params.evaluate.iterations, "Fixed iteration count (disables convergence)")
-        ->check(CLI::PositiveNumber);
-    sub->add_option("--convergence-max", params.convergence.max, "Max iterations for convergence (default: 200)")
-        ->check(CLI::PositiveNumber);
-    sub->add_option("--simulate-mean", params.simulation.mean, "Mean for simulated data (default: 100.0)")
-        ->needs(sim_opt);
-    sub->add_option(
-           "--simulate-mean-separation",
-           params.simulation.mean_separation,
-           "Mean separation between groups (default: 50.0)"
-    )
-        ->needs(sim_opt)
-        ->check(CLI::PositiveNumber);
-    sub->add_option("--simulate-sd", params.simulation.sd, "Standard deviation for simulated data (default: 10.0)")
-        ->needs(sim_opt)
-        ->check(CLI::PositiveNumber);
+    add_evaluate_options(sub, params.evaluate);
+    add_simulation_options(sub, params.simulation);
+
     sub->add_option("-o,--output", params.output_path, "Save evaluation results to JSON file");
     sub->add_option("-e,--export", params.evaluate.export_path, "Export experiment bundle to directory");
-    sub->add_option("--warmup", params.convergence.warmup, "Warmup iterations to discard before measuring (default: 0)")
-        ->check(CLI::NonNegativeNumber);
-    sub->add_option("--convergence-cv", params.convergence.cv, "CV threshold for convergence (default: 0.05)")
-        ->check(CLI::Range(0.001f, 1.0f));
-    sub->add_option(
-           "--convergence-min", params.convergence.min, "Min iterations before checking convergence (default: 10)"
-    )
-        ->check(CLI::PositiveNumber);
-    sub->add_option("--convergence-window", params.convergence.window, "Consecutive stable checks to stop (default: 3)")
-        ->check(CLI::PositiveNumber);
-    return sub;
+
+    // CLI-exclusive constraints (data/simulate mutual exclusion,
+    // simulate sub-params need simulate)
+    sub->get_option("--data")->excludes("--simulate");
+    sub->get_option("--simulate")->excludes("--data");
+    ;
+
+    sub->callback([&]() { params.subcommand = Subcommand::evaluate; });
   }
 
   namespace {
-    /** @brief Result of an evaluate run containing aggregated statistics. */
-    struct EvaluateResult {
-      io::ModelStats stats;
-    };
-
-    bool check_convergence(std::vector<float> const& times, int min_iters, float cv_threshold) {
-      int n = static_cast<int>(times.size());
-
-      if (n < min_iters)
-        return false;
-
-      double sum  = 0;
-      double sum2 = 0;
-
-      for (auto t : times) {
-        sum += t;
-        sum2 += t * t;
-      }
-
-      double mean = sum / n;
-
-      if (mean <= 0)
-        return true;
-
-      double variance = (sum2 / n) - (mean * mean);
-
-      if (variance < 0)
-        variance = 0;
-
-      double cv = std::sqrt(variance) / mean;
-
-      return cv < cv_threshold;
+    template<typename T> Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1> const> as_vector(std::vector<T> const& v) {
+      return {v.data(), static_cast<Eigen::Index>(v.size())};
     }
 
-    EvaluateResult evaluate_model(
-        io::Output& out,
-        FeatureMatrix& tr_x,
-        FeatureMatrix& te_x,
-        OutcomeVector& tr_y,
-        OutcomeVector& te_y,
-        CLIOptions const& params,
-        ppforest2::stats::RNG& rng
-    ) {
-      // Run warmup iterations (discarded)
-      if (params.convergence.warmup > 0) {
-        out.println("Running {} warmup iterations:", emphasis(std::to_string(params.convergence.warmup)));
+    template<typename Derived>
+    bool check_convergence(Eigen::MatrixBase<Derived> const& values, EvaluateParams::Convergence const& conv) {
+      if (values.size() < *conv.min) {
+        return false;
       }
 
-      for (int i = 0; i < params.convergence.warmup; ++i) {
-        out.progress(i, params.convergence.warmup);
-        train_model(tr_x, tr_y, params, rng);
-        out.progress(i + 1, params.convergence.warmup);
+      double mean = static_cast<double>(values.mean());
+
+      if (mean <= 0) {
+        return true;
       }
 
-      if (params.convergence.warmup > 0) {
-        out.newline();
-      }
+      double cv = stats::sd(values) / mean;
 
-      // Determine iteration mode
-      int max_iters = params.convergence.enabled ? params.convergence.max : params.evaluate.iterations;
+      return cv < *conv.cv;
+    }
 
-      if (params.convergence.enabled) {
-        out.println(
-            "Running up to {} iterations (converge at CV < {:.0f}%):",
-            emphasis(std::to_string(max_iters)),
-            params.convergence.cv * 100
-        );
-      } else {
-        out.println("Running {} iterations:", emphasis(std::to_string(max_iters)));
-      }
+    /**
+     * @brief Tracks convergence state across iterations.
+     *
+     * In fixed-iteration mode, does nothing. In convergence mode,
+     * tracks how many consecutive iterations all metrics are stable.
+     */
+    struct ConvergenceTracker {
+      EvaluateParams const& evaluate;
 
-      // Measured iterations
-      std::vector<float> times;
-      std::vector<float> tr_errors;
-      std::vector<float> te_errors;
+      int max_iters;
+      int stable_count = 0;
 
-      int stable_count   = 0;
-      int iterations_run = 0;
+      explicit ConvergenceTracker(EvaluateParams const& evaluate)
+          : evaluate(evaluate)
+          , max_iters(evaluate.convergence_enabled() ? *evaluate.convergence.max : *evaluate.iterations) {}
 
-      for (int i = 0; i < max_iters; ++i) {
-        out.progress(i, max_iters);
+      bool enabled() const { return evaluate.convergence_enabled(); }
 
-        auto const train_result = train_model(tr_x, tr_y, params, rng);
-
-        times.push_back(static_cast<float>(train_result.duration));
-        tr_errors.push_back(ppforest2::stats::error_rate(train_result.model->predict(tr_x), tr_y));
-        te_errors.push_back(ppforest2::stats::error_rate(train_result.model->predict(te_x), te_y));
-
-        iterations_run = i + 1;
-        out.progress(iterations_run, max_iters);
-
-        // Check convergence
-        if (params.convergence.enabled && check_convergence(times, params.convergence.min, params.convergence.cv) &&
-            check_convergence(tr_errors, params.convergence.min, params.convergence.cv) &&
-            check_convergence(te_errors, params.convergence.min, params.convergence.cv)) {
-          stable_count++;
-
-          if (stable_count >= params.convergence.window) {
-            out.progress(iterations_run, iterations_run);
-            out.newline();
-            out.println("Converged after {} iterations (CV < {:.0f}%)", iterations_run, params.convergence.cv * 100);
-
-            break;
-          }
-        } else if (params.convergence.enabled) {
-          stable_count = 0;
+      void print_header(io::Output& out) const {
+        if (enabled()) {
+          out.println(
+              "Running up to {} iterations (converge at CV < {:.0f}%):",
+              emphasis(std::to_string(max_iters)),
+              evaluate.convergence.cv.value() * 100
+          );
+        } else {
+          out.println("Running {} iterations:", emphasis(std::to_string(max_iters)));
         }
       }
 
-      if (params.convergence.enabled && stable_count < params.convergence.window) {
-        out.newline();
-        out.println("{} Did not converge after {} iterations", warning("Warning:"), iterations_run);
-        out.newline();
-      } else {
-        out.newline();
+      template<typename T> bool converged(std::vector<T> const& values) const {
+        return check_convergence(as_vector(values), evaluate.convergence);
       }
 
-      // Build ModelStats from collected vectors
-      io::ModelStats model_stats;
-      model_stats.tr_times = Eigen::Map<Vector<float> const>(times.data(), times.size());
-      model_stats.tr_error = Eigen::Map<Vector<float> const>(tr_errors.data(), tr_errors.size());
-      model_stats.te_error = Eigen::Map<Vector<float> const>(te_errors.data(), te_errors.size());
+      bool update(
+          std::vector<long long> const& times,
+          std::vector<double> const& tr_errors,
+          std::vector<double> const& te_errors
+      ) {
+        if (!enabled()) {
+          return false;
+        }
 
-      return {model_stats};
-    }
+        if (converged(times) && converged(tr_errors) && converged(te_errors)) {
+          stable_count++;
+          return stable_count >= *evaluate.convergence.window;
+        }
 
-    json build_export_config(CLIOptions const& params, TrainingSpec const& spec) {
-      json config           = spec.to_json();
-      config["train-ratio"] = params.evaluate.train_ratio;
-
-      if (params.convergence.enabled) {
-        config["convergence-max"] = params.convergence.max;
-        config["convergence-cv"]  = params.convergence.cv;
-      } else {
-        config["iterations"] = params.evaluate.iterations;
+        stable_count = 0;
+        return false;
       }
 
-      config["data"] = "data.csv";
+      void print_result(io::Output& out, int iterations_run) const {
+        out.newline();
 
-      return config;
-    }
+        if (!enabled()) {
+          return;
+        }
 
-    void export_experiment(
+        if (stable_count >= *evaluate.convergence.window) {
+          out.println("Converged after {} iterations (CV < {:.0f}%)", iterations_run, *evaluate.convergence.cv * 100);
+        } else {
+          out.println("{} Did not converge after {} iterations", warning("Warning:"), iterations_run);
+          out.newline();
+        }
+      }
+    };
+
+    io::ModelStats evaluate_model(
         io::Output& out,
-        CLIOptions const& params,
-        TrainingSpec const& spec,
-        DataPacket const& full_data,
-        EvaluateResult const& eval_result
+        FeatureMatrix const& tr_x,
+        FeatureMatrix const& te_x,
+        OutcomeVector const& tr_y,
+        OutcomeVector& te_y,
+        Params const& params,
+        ppforest2::stats::RNG& rng
     ) {
-      std::string dir = params.evaluate.export_path;
+      int warmup = params.evaluate.warmup;
 
-      std::filesystem::create_directories(dir);
+      // Run warmup iterations (discarded)
+      if (warmup > 0) {
+        out.println("Running {} warmup iterations:", emphasis(std::to_string(warmup)));
+      }
 
-      json const config = build_export_config(params, spec);
-      io::json::write_file(config, dir + "/config.json");
+      for (int i = 0; i < warmup; ++i) {
+        out.progress(i, warmup);
+        train_model(tr_x, tr_y, params, rng);
+        out.progress(i + 1, warmup);
+      }
 
-      io::csv::write(full_data, dir + "/data.csv");
+      if (warmup > 0) {
+        out.newline();
+      }
 
-      io::json::write_file(eval_result.stats.to_json(), dir + "/results.json");
+      // Measured iterations
+      ConvergenceTracker tracker(params.evaluate);
+      tracker.print_header(out);
 
-      out.println("{}{}/", success("Experiment exported to "), dir);
+      std::vector<long long> times;
+      std::vector<double> tr_errors;
+      std::vector<double> te_errors;
+
+      for (int i = 0; i < tracker.max_iters; ++i) {
+        out.progress(i, tracker.max_iters);
+
+        auto const train_result = train_model(tr_x, tr_y, params, rng);
+
+        times.push_back(train_result.duration);
+        tr_errors.push_back(error_rate(train_result.model->predict(tr_x), tr_y));
+        te_errors.push_back(error_rate(train_result.model->predict(te_x), te_y));
+
+        out.progress(i + 1, tracker.max_iters);
+
+        if (tracker.update(times, tr_errors, te_errors)) {
+          int done = static_cast<int>(times.size());
+          out.progress(done, done);
+          break;
+        }
+      }
+
+      tracker.print_result(out, static_cast<int>(times.size()));
+
+      io::ModelStats stats;
+      stats.tr_times = as_vector(times);
+      stats.tr_error = as_vector(tr_errors);
+      stats.te_error = as_vector(te_errors);
+
+      return stats;
     }
   }
 
-  int run_evaluate(CLIOptions& params) {
+  int run_evaluate(Params& params) {
+    // Snapshot which params are unset before defaults are filled
+    bool default_seed    = !params.model.seed;
+    bool default_threads = !params.model.threads;
+    bool default_vars    = !params.model.p_vars && !params.model.n_vars;
+
+    params.evaluate.resolve_defaults();
+    params.resolve_seed();
+    validate_params(params);
+
     if (!params.output_path.empty()) {
       io::check_file_not_exists(params.output_path);
     }
@@ -248,51 +258,31 @@ namespace ppforest2::cli {
       io::check_dir_not_exists(params.evaluate.export_path);
     }
 
-    ppforest2::stats::RNG rng(params.model.seed);
+    ppforest2::stats::RNG rng(*params.model.seed);
     auto full_data = read_data(params, rng);
 
-    init_params(params, full_data.x.cols());
+    params.resolve_defaults(full_data.x.cols());
 
-    auto data_split = split(full_data, params.evaluate.train_ratio, rng);
+    auto data_split = split(full_data, *params.evaluate.train_ratio, rng);
 
-    FeatureMatrix tr_x  = full_data.x(data_split.tr, Eigen::all);
-    FeatureMatrix te_x  = full_data.x(data_split.te, Eigen::all);
+    FeatureMatrix tr_x = full_data.x(data_split.tr, Eigen::all);
+    FeatureMatrix te_x = full_data.x(data_split.te, Eigen::all);
     OutcomeVector tr_y = full_data.y(data_split.tr);
     OutcomeVector te_y = full_data.y(data_split.te);
 
     io::Output out(params.quiet);
-
-    auto& m           = params.model;
-    auto default_json = [](nlohmann::json const& config, std::string const& default_name) {
-      return config.is_null() ? json{{"name", default_name}} : config;
-    };
-
-    auto spec = TrainingSpec::from_json({
-        {"pp", m.pp_config},
-        {"vars", m.vars_config},
-        {"cutpoint", m.cutpoint_config},
-        {"stop", default_json(m.stop_config, "pure_node")},
-        {"binarize", default_json(m.binarize_config, "largest_gap")},
-        {"partition", default_json(m.partition_config, "by_group")},
-        {"leaf", default_json(m.leaf_config, "majority_vote")},
-        {"size", m.size},
-        {"seed", m.seed},
-        {"threads", m.threads},
-        {"max_retries", m.max_retries},
-    });
+    warn_unused_params(out, params);
 
     {
-      json const config = spec->to_json();
+      json const config = params.model.to_json();
 
       io::ConfigDisplayHints hints;
-      hints.vars_percent    = params.model.size > 0 ? static_cast<int>(params.model.p_vars * 100) : -1;
-      hints.default_vars    = params.model.used_default_vars;
-      hints.default_threads = params.model.used_default_threads;
-      hints.default_seed    = params.model.used_default_seed;
-      hints.training_samples =
-          fmt::format("{} ({}%)", tr_x.rows(), static_cast<int>(params.evaluate.train_ratio * 100));
-      hints.test_samples =
-          fmt::format("{} ({}%)", te_x.rows(), static_cast<int>((1 - params.evaluate.train_ratio) * 100));
+      hints.vars_percent     = params.model.size > 0 && params.model.p_vars ? params.model.p_vars.value() * 100 : -1;
+      hints.default_vars     = default_vars;
+      hints.default_threads  = default_threads;
+      hints.default_seed     = default_seed;
+      hints.training_samples = fmt::format("{} ({}%)", tr_x.rows(), (*params.evaluate.train_ratio * 100));
+      hints.test_samples     = fmt::format("{} ({}%)", te_x.rows(), (1 - *params.evaluate.train_ratio) * 100);
 
       io::print_configuration(out, config, hints);
     }
@@ -309,22 +299,41 @@ namespace ppforest2::cli {
       io::print_data_summary(out, meta);
     }
 
-    auto eval_result = evaluate_model(out, tr_x, te_x, tr_y, te_y, params, rng);
+    auto stats = evaluate_model(out, tr_x, te_x, tr_y, te_y, params, rng);
+
+    // Data and model info for downstream consumers (e.g. benchmark)
+    stats.data_path   = params.data_path;
+    stats.n           = static_cast<int>(full_data.x.rows());
+    stats.p           = static_cast<int>(full_data.x.cols());
+    stats.g           = static_cast<int>(full_data.groups.size());
+    stats.size        = params.model.size;
+    stats.n_vars      = params.model.n_vars;
+    stats.p_vars      = params.model.p_vars;
+    stats.train_ratio = *params.evaluate.train_ratio;
 
     // Measure peak RSS after evaluation
-    eval_result.stats.peak_rss_bytes = ppforest2::sys::get_peak_rss_bytes();
+    stats.peak_rss_bytes = ppforest2::sys::get_peak_rss_bytes();
 
-    print_results(out, eval_result.stats);
+    print_results(out, stats);
 
     // Save results to file if requested
     if (!params.output_path.empty()) {
-      io::json::write_file(eval_result.stats.to_json(), params.output_path);
+      io::json::write_file(stats.to_json(), params.output_path, user_error);
       out.saved("Results", params.output_path);
     }
 
     // Export experiment bundle if requested
     if (!params.evaluate.export_path.empty()) {
-      export_experiment(out, params, *spec, full_data, eval_result);
+      std::string dir = params.evaluate.export_path;
+      std::filesystem::create_directories(dir);
+
+      json config    = params.to_json();
+      config["data"] = "data.csv";
+      io::json::write_file(config, dir + "/config.json", user_error);
+      io::json::write_file(stats.to_json(), dir + "/results.json", user_error);
+      io::csv::write(full_data, dir + "/data.csv");
+
+      out.println("{}{}/", success("Experiment exported to "), dir);
     }
 
     return 0;

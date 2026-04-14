@@ -28,6 +28,18 @@ TEST(VarsUniformStrategy, FromJsonRoundTrip) {
   EXPECT_EQ(out, j);
 }
 
+TEST(VarsUniformStrategy, FromJsonWithProportion) {
+  json const j  = {{"name", "uniform"}, {"proportion", 0.5}};
+  auto strategy = Uniform::from_json(j);
+  ASSERT_NE(strategy, nullptr);
+}
+
+TEST(VarsUniformStrategy, FromJsonRejectsInvalidProportion) {
+  EXPECT_THROW(Uniform::from_json({{"name", "uniform"}, {"proportion", 1.5}}), std::exception);
+  EXPECT_THROW(Uniform::from_json({{"name", "uniform"}, {"proportion", 0.0}}), std::exception);
+  EXPECT_THROW(Uniform::from_json({{"name", "uniform"}, {"proportion", -0.5}}), std::exception);
+}
+
 TEST(VarsUniformStrategy, FromJsonMissingNVars) {
   json const j = {{"name", "uniform"}};
   EXPECT_THROW(Uniform::from_json(j), std::exception);

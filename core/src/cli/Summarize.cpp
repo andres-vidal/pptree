@@ -16,18 +16,22 @@
 using json = nlohmann::json;
 
 namespace ppforest2::cli {
-  CLI::App* setup_summarize(CLI::App& app, CLIOptions& params) {
-    auto sub = app.add_subcommand("summarize", "Display a saved model summary");
-    sub->add_option("-M,--model", params.model_path, "Saved model JSON file")->required()->check(CLI::ExistingFile);
-    sub->add_option("-d,--data", params.data_path, "CSV training data (recomputes metrics if provided)")
-        ->check(CLI::ExistingFile);
-    return sub;
+  void setup_summarize(CLI::App& app, Params& params) {
+    auto* sub = app.add_subcommand("summarize", "Display a saved model summary");
+    sub->add_option("-M,--model", params.model_path, "Saved model JSON file");
+    sub->add_option("-d,--data", params.data_path, "CSV training data (recomputes metrics if provided)");
+
+    // CLI-exclusive constraints (summarize doesn't use config files)
+    sub->get_option("--model")->required()->check(CLI::ExistingFile);
+    sub->get_option("--data")->check(CLI::ExistingFile);
+
+    sub->callback([&]() { params.subcommand = Subcommand::summarize; });
   }
 
-  int run_summarize(CLIOptions& params) {
+  int run_summarize(Params& params) {
     io::Output out(params.quiet);
 
-    json model_data = io::json::read_file(params.model_path);
+    json model_data = io::json::read_file(params.model_path, user_error);
 
     // Recompute metrics if data is provided and metrics are absent
     bool has_metrics = model_data.contains("training_confusion_matrix") || model_data.contains("variable_importance");
@@ -39,13 +43,10 @@ namespace ppforest2::cli {
         auto model_export = model_data.get<serialization::Export<Model::Ptr>>();
         model_export.compute_metrics(data.x, data.y);
         model_data = model_export.to_json();
-      } catch (ppforest2::UserError const& e) {
-        fmt::print(stderr, "Error: {}\n", e.what());
-        fmt::print(stderr, "File: {}\n", params.data_path);
-        return 1;
+      } catch (ppforest2::UserError const&) {
+        throw;
       } catch (std::exception const& e) {
-        fmt::print(stderr, "Error reading data: {}\n", e.what());
-        return 1;
+        throw ppforest2::UserError(fmt::format("Error reading data '{}': {}", params.data_path, e.what()));
       }
     }
 

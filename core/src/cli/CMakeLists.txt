@@ -1,6 +1,8 @@
 add_library(ppforest2-cli OBJECT
   CLIOptions.cpp
-  VarsSpec.cpp
+  ModelParams.cpp
+  EvaluateParams.cpp
+  Validation.cpp
   Train.cpp
   Predict.cpp
   Evaluate.cpp

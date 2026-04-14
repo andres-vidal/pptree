@@ -224,7 +224,7 @@ benchmark: build
 	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS}
 
 benchmark-save: build
-	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS} -o bench/results.json --csv bench/results.csv
+	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS} -o bench/results.json -o bench/results.csv
 
 benchmark-compare: build
 	@${BUILD_DIR}/ppforest2 benchmark -s ${BENCH_SCENARIOS} -b bench/results.json

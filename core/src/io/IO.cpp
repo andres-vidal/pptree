@@ -18,18 +18,16 @@
 #include <filesystem>
 
 namespace ppforest2::io {
+  void check_file_exists(std::string const& path) {
+    user_error(std::filesystem::exists(path), fmt::format("File not found: {}", path));
+  }
+
   void check_file_not_exists(std::string const& path) {
-    if (std::filesystem::exists(path)) {
-      fmt::print(stderr, "Error: File already exists: {}\n", path);
-      std::exit(1);
-    }
+    user_error(!std::filesystem::exists(path), fmt::format("File already exists: {}", path));
   }
 
   void check_dir_not_exists(std::string const& path) {
-    if (std::filesystem::exists(path)) {
-      fmt::print(stderr, "Error: Directory already exists: {}\n", path);
-      std::exit(1);
-    }
+    user_error(!std::filesystem::exists(path), fmt::format("Directory already exists: {}", path));
   }
 }
 
@@ -42,31 +40,36 @@ namespace ppforest2::io::json {
     return path + ".json";
   }
 
-  nlohmann::json read_file(std::string const& path) {
+  nlohmann::json read_file(std::string const& path, ErrorHandler on_error) {
     std::ifstream in(path);
 
-    if (!in.is_open()) {
-      fmt::print(stderr, "Error: Could not open file: {}\n", path);
-      std::exit(1);
-    }
+    on_error(in.is_open(), fmt::format("Could not open file: {}", path));
 
     try {
       return nlohmann::json::parse(in);
     } catch (nlohmann::json::parse_error const& e) {
-      fmt::print(stderr, "Error: Invalid JSON in file: {}\n", e.what());
-      std::exit(1);
+      on_error(false, fmt::format("Invalid JSON in file: {}", e.what()));
+      throw; // unreachable — on_error always throws
     }
   }
 
-  void write_file(nlohmann::json const& data, std::string const& path) {
+  void write_file(nlohmann::json const& data, std::string const& path, ErrorHandler on_error) {
     std::ofstream out(path);
 
-    if (!out.is_open()) {
-      fmt::print(stderr, "Error: Could not open file for writing: {}\n", path);
-      std::exit(1);
-    }
+    on_error(out.is_open(), fmt::format("Could not open file for writing: {}", path));
 
     out << data.dump(2);
+    out.close();
+  }
+}
+
+namespace ppforest2::io::text {
+  void write_file(std::string const& content, std::string const& path, ErrorHandler on_error) {
+    std::ofstream out(path);
+
+    on_error(out.is_open(), fmt::format("Could not open file for writing: {}", path));
+
+    out << content;
     out.close();
   }
 }
@@ -74,8 +77,9 @@ namespace ppforest2::io::json {
 namespace ppforest2::io::csv {
   namespace {
     bool is_numeric(std::string const& s) {
-      if (s.empty())
+      if (s.empty()) {
         return false;
+      }
 
       char* end = nullptr;
       std::strtod(s.c_str(), &end);
@@ -181,8 +185,9 @@ namespace ppforest2::io::csv {
       // Outcome label (last column).
       std::string const& label_str = row[static_cast<std::size_t>(n_cols - 1)];
 
-      if (label_mapping.find(label_str) == label_mapping.end()) {
-        label_mapping[label_str] = static_cast<int>(label_names.size());
+      auto [it, inserted] = label_mapping.try_emplace(label_str, static_cast<int>(label_names.size()));
+
+      if (inserted) {
         label_names.push_back(label_str);
       }
 
@@ -195,7 +200,7 @@ namespace ppforest2::io::csv {
   stats::DataPacket read_sorted(std::string const& filename) {
     stats::DataPacket data = read(filename);
 
-    types::FeatureMatrix x  = data.x;
+    types::FeatureMatrix x = data.x;
     types::OutcomeVector y = data.y;
 
     if (!stats::GroupPartition::is_contiguous(y)) {
@@ -208,10 +213,7 @@ namespace ppforest2::io::csv {
   void write(stats::DataPacket const& data, std::string const& filename) {
     std::ofstream out(filename);
 
-    if (!out.is_open()) {
-      fmt::print(stderr, "Error: Could not open file for writing: {}\n", filename);
-      std::exit(1);
-    }
+    user_error(out.is_open(), fmt::format("Could not open file for writing: {}", filename));
 
     for (int i = 0; i < data.x.rows(); ++i) {
       for (int j = 0; j < data.x.cols(); ++j) {

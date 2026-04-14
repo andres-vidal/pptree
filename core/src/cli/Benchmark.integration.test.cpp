@@ -14,10 +14,11 @@ static std::string const MINIMAL_SCENARIOS = R"({
     "train_ratio": 0.7,
     "seed": 0,
     "lambda": 0.5,
+    "p_vars": 0.5,
     "iterations": 1
   },
   "scenarios": [
-    { "name": "tiny-forest", "n": 50, "p": 3, "g": 2, "size": 5, "p_vars": 0.5 },
+    { "name": "tiny-forest", "n": 50, "p": 3, "g": 2, "size": 5 },
     { "name": "tiny-tree",   "n": 50, "p": 3, "g": 2, "size": 0 }
   ]
 })";
@@ -82,13 +83,13 @@ TEST(CLIBenchmark, BenchmarkJsonOutput) {
   }
 }
 
-/* Benchmark --csv produces valid CSV with header and data rows. */
+/* Benchmark -o with .csv extension produces valid CSV with header and data rows. */
 TEST(CLIBenchmark, BenchmarkCsvOutput) {
   auto scenarios = write_scenarios();
   TempFile const csv_out(".csv");
   csv_out.clear();
 
-  auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " --csv " + csv_out.path());
+  auto result = run_ppforest2("-q --no-color benchmark -s " + scenarios.path() + " -o " + csv_out.path());
   EXPECT_EQ(result.exit_code, 0);
 
   std::ifstream in(csv_out.path());
@@ -108,6 +109,37 @@ TEST(CLIBenchmark, BenchmarkCsvOutput) {
   }
 
   EXPECT_EQ(data_rows, 2);
+}
+
+/* Benchmark -o can be repeated to produce both JSON and CSV simultaneously. */
+TEST(CLIBenchmark, BenchmarkBothOutputFormats) {
+  auto scenarios = write_scenarios();
+  TempFile const json_out;
+  TempFile const csv_out(".csv");
+  json_out.clear();
+  csv_out.clear();
+
+  auto result = run_ppforest2(
+      "-q --no-color benchmark -s " + scenarios.path() + " -o " + json_out.path() + " -o " + csv_out.path()
+  );
+  EXPECT_EQ(result.exit_code, 0);
+
+  // JSON output is valid
+  auto j = json::parse(json_out.read());
+  EXPECT_EQ(j["results"].size(), 2u);
+
+  // CSV output has header + 2 data rows
+  std::ifstream in(csv_out.path());
+  std::string line;
+  int lines = 0;
+
+  while (std::getline(in, line)) {
+    if (!line.empty()) {
+      lines++;
+    }
+  }
+
+  EXPECT_EQ(lines, 3); // header + 2 data rows
 }
 
 /* Benchmark -b compares against a baseline without error. */
@@ -157,6 +189,7 @@ TEST(CLIBenchmark, BenchmarkWithStrategyConfig) {
     "defaults": {
       "train_ratio": 0.7,
       "seed": 0,
+      "p_vars": 0.5,
       "iterations": 1,
       "pp": { "name": "pda", "lambda": 0.3 },
       "cutpoint": { "name": "mean_of_means" }

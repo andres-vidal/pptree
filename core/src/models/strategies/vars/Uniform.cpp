@@ -42,7 +42,16 @@ namespace ppforest2::vars {
   }
 
   VariableSelection::Ptr Uniform::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "uniform vars", {"name", "count"});
+    validate_json_keys(j, "uniform vars", {"name", "count", "proportion"});
+
+    if (j.contains("proportion")) {
+      float p = j.at("proportion").get<float>();
+      invariant(p > 0 && p <= 1, "proportion must be in (0, 1]");
+      // Proportion is resolved to count later when total_vars is known.
+      // Return a placeholder — caller must resolve before use.
+      return uniform(1);
+    }
+
     return uniform(j.at("count").get<int>());
   }
 }

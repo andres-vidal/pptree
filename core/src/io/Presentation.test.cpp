@@ -17,8 +17,8 @@ using ppforest2::io::ModelStats;
 /* Mean training time across runs. */
 TEST(ModelStats, MeanTime) {
   ModelStats stats;
-  stats.tr_times = Vector<float>(3);
-  stats.tr_times << 10.0, 20.0, 30.0;
+  stats.tr_times = Vector<long long>(3);
+  stats.tr_times << 10, 20, 30;
 
   EXPECT_FLOAT_EQ(stats.mean_time(), 20.0);
 }
@@ -26,7 +26,7 @@ TEST(ModelStats, MeanTime) {
 /* Mean training error across runs. */
 TEST(ModelStats, MeanTrainError) {
   ModelStats stats;
-  stats.tr_error = Vector<float>(3);
+  stats.tr_error = Vector<double>(3);
   stats.tr_error << 0.1, 0.2, 0.3;
 
   EXPECT_FLOAT_EQ(stats.mean_tr_error(), 0.2);
@@ -35,7 +35,7 @@ TEST(ModelStats, MeanTrainError) {
 /* Mean test error across runs. */
 TEST(ModelStats, MeanTestError) {
   ModelStats stats;
-  stats.te_error = Vector<float>(3);
+  stats.te_error = Vector<double>(3);
   stats.te_error << 0.05, 0.15, 0.25;
 
   EXPECT_FLOAT_EQ(stats.mean_te_error(), 0.15);
@@ -44,8 +44,8 @@ TEST(ModelStats, MeanTestError) {
 /* Standard deviation of training time is positive for varied inputs. */
 TEST(ModelStats, StdTime) {
   ModelStats stats;
-  stats.tr_times = Vector<float>(3);
-  stats.tr_times << 10.0, 20.0, 30.0;
+  stats.tr_times = Vector<long long>(3);
+  stats.tr_times << 10, 20, 30;
 
   EXPECT_GT(stats.std_time(), 0);
 }
@@ -53,7 +53,7 @@ TEST(ModelStats, StdTime) {
 /* Standard deviation of training error is positive for varied inputs. */
 TEST(ModelStats, StdTrainError) {
   ModelStats stats;
-  stats.tr_error = Vector<float>(3);
+  stats.tr_error = Vector<double>(3);
   stats.tr_error << 0.1, 0.2, 0.3;
 
   EXPECT_GT(stats.std_tr_error(), 0);
@@ -62,7 +62,7 @@ TEST(ModelStats, StdTrainError) {
 /* Standard deviation of test error is positive for varied inputs. */
 TEST(ModelStats, StdTestError) {
   ModelStats stats;
-  stats.te_error = Vector<float>(3);
+  stats.te_error = Vector<double>(3);
   stats.te_error << 0.05, 0.15, 0.25;
 
   EXPECT_GT(stats.std_te_error(), 0);
@@ -71,11 +71,11 @@ TEST(ModelStats, StdTestError) {
 /* JSON output includes std_time_ms, std_train_error, std_test_error. */
 TEST(ModelStats, StdFieldsInJson) {
   ModelStats stats;
-  stats.tr_times = Vector<float>(2);
-  stats.tr_times << 10.0, 20.0;
-  stats.tr_error = Vector<float>(2);
+  stats.tr_times = Vector<long long>(2);
+  stats.tr_times << 10, 20;
+  stats.tr_error = Vector<double>(2);
   stats.tr_error << 0.1, 0.3;
-  stats.te_error = Vector<float>(2);
+  stats.te_error = Vector<double>(2);
   stats.te_error << 0.2, 0.4;
 
   auto j = stats.to_json();
@@ -91,11 +91,11 @@ TEST(ModelStats, StdFieldsInJson) {
 /* A single run produces zero standard deviation for all metrics. */
 TEST(ModelStats, SingleRunStdZero) {
   ModelStats stats;
-  stats.tr_times = Vector<float>(1);
-  stats.tr_times << 10.0;
-  stats.tr_error = Vector<float>(1);
+  stats.tr_times = Vector<long long>(1);
+  stats.tr_times << 10;
+  stats.tr_error = Vector<double>(1);
   stats.tr_error << 0.1;
-  stats.te_error = Vector<float>(1);
+  stats.te_error = Vector<double>(1);
   stats.te_error << 0.2;
 
   auto j = stats.to_json();
@@ -109,15 +109,21 @@ TEST(ModelStats, SingleRunStdZero) {
 /* Full JSON serialization: means, iterations array, no peak_rss when unset. */
 TEST(ModelStats, ToJson) {
   ModelStats stats;
-  stats.tr_times = Vector<float>(2);
-  stats.tr_times << 10.0, 20.0;
-  stats.tr_error = Vector<float>(2);
+  stats.n        = 150;
+  stats.p        = 4;
+  stats.g        = 3;
+  stats.tr_times = Vector<long long>(2);
+  stats.tr_times << 10, 20;
+  stats.tr_error = Vector<double>(2);
   stats.tr_error << 0.1, 0.3;
-  stats.te_error = Vector<float>(2);
+  stats.te_error = Vector<double>(2);
   stats.te_error << 0.2, 0.4;
 
   auto j = stats.to_json();
 
+  EXPECT_EQ(j["n"], 150);
+  EXPECT_EQ(j["p"], 4);
+  EXPECT_EQ(j["g"], 3);
   EXPECT_EQ(j["runs"], 2);
   EXPECT_FLOAT_EQ(j["mean_time_ms"].get<float>(), 15.0);
   EXPECT_FLOAT_EQ(j["mean_train_error"].get<float>(), 0.2);
@@ -138,11 +144,11 @@ TEST(ModelStats, ToJson) {
 /* JSON includes peak_rss_bytes/mb when set; iterations lack peak_rss. */
 TEST(ModelStats, ToJsonWithRSS) {
   ModelStats stats;
-  stats.tr_times = Vector<float>(1);
-  stats.tr_times << 100.0;
-  stats.tr_error = Vector<float>(1);
+  stats.tr_times = Vector<long long>(1);
+  stats.tr_times << 100;
+  stats.tr_error = Vector<double>(1);
   stats.tr_error << 0.05;
-  stats.te_error = Vector<float>(1);
+  stats.te_error = Vector<double>(1);
   stats.te_error << 0.1;
   stats.peak_rss_bytes = 10485760L; // 10 MB
 

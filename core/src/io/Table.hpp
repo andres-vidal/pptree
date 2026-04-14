@@ -69,7 +69,8 @@ namespace ppforest2::io::layout {
   struct Column {
     std::string label;
     int width;
-    Align align = Align::right;
+    Align align  = Align::right;
+    bool enabled = true;
   };
 
   /** @brief A row of pre-formatted cell strings. */
@@ -82,11 +83,18 @@ namespace ppforest2::io::layout {
    */
   inline std::string format_row(std::vector<Column> const& columns, Row const& cells, std::string const& sep = "  ") {
     std::string line;
+    bool first = true;
 
     for (std::size_t i = 0; i < columns.size() && i < cells.size(); ++i) {
-      if (i > 0)
-        line += sep;
+      if (!columns[i].enabled) {
+        continue;
+      }
 
+      if (!first) {
+        line += sep;
+      }
+
+      first = false;
       line += pad(cells[i], columns[i].width, columns[i].align);
     }
 
@@ -97,12 +105,19 @@ namespace ppforest2::io::layout {
    * @brief Generate a separator line spanning the full table width.
    */
   inline std::string format_separator(std::vector<Column> const& columns, std::string const& sep = "  ") {
-    int total = 0;
+    int total  = 0;
+    bool first = true;
 
     for (std::size_t i = 0; i < columns.size(); ++i) {
-      if (i > 0)
-        total += static_cast<int>(sep.size());
+      if (!columns[i].enabled) {
+        continue;
+      }
 
+      if (!first) {
+        total += static_cast<int>(sep.size());
+      }
+
+      first = false;
       total += columns[i].width;
     }
 
@@ -125,12 +140,19 @@ namespace ppforest2::io::layout {
 
   /**
    * @brief Format a row as a markdown table row.
+   *
+   * When @p columns is provided, cells corresponding to disabled columns
+   * are skipped. Without columns, all cells are included.
    */
-  inline std::string format_md_row(Row const& cells) {
+  inline std::string format_md_row(Row const& cells, std::vector<Column> const& columns = {}) {
     std::string line = "|";
 
-    for (auto const& cell : cells) {
-      line += " " + cell + " |";
+    for (std::size_t i = 0; i < cells.size(); ++i) {
+      if (!columns.empty() && i < columns.size() && !columns[i].enabled) {
+        continue;
+      }
+
+      line += " " + cells[i] + " |";
     }
 
     return line;
@@ -143,6 +165,10 @@ namespace ppforest2::io::layout {
     std::string line = "|";
 
     for (auto const& col : columns) {
+      if (!col.enabled) {
+        continue;
+      }
+
       line += (col.align == Align::right) ? "---:|" : ":---|";
     }
 

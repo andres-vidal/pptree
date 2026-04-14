@@ -28,14 +28,19 @@ using namespace ppforest2::io::style;
 using json = nlohmann::json;
 
 namespace ppforest2::cli {
-  CLI::App* setup_predict(CLI::App& app, CLIOptions& params) {
-    auto sub = app.add_subcommand("predict", "Load a model and predict on new data");
-    sub->add_option("-M,--model", params.model_path, "Saved model JSON file")->required()->check(CLI::ExistingFile);
-    sub->add_option("-d,--data", params.data_path, "CSV data to predict on")->required()->check(CLI::ExistingFile);
+  void setup_predict(CLI::App& app, Params& params) {
+    auto* sub = app.add_subcommand("predict", "Load a model and predict on new data");
+    sub->add_option("-M,--model", params.model_path, "Saved model JSON file");
+    sub->add_option("-d,--data", params.data_path, "CSV data to predict on");
     sub->add_option("-o,--output", params.output_path, "Save prediction results to JSON file");
     sub->add_flag("--no-metrics", params.no_metrics, "Omit error rate and confusion matrix from output");
     sub->add_flag("--no-proportions", params.no_proportions, "Omit vote proportions from output");
-    return sub;
+
+    // CLI-exclusive constraints (predict doesn't use config files)
+    sub->get_option("--model")->required()->check(CLI::ExistingFile);
+    sub->get_option("--data")->required()->check(CLI::ExistingFile);
+
+    sub->callback([&]() { params.subcommand = Subcommand::predict; });
   }
 }
 
@@ -117,7 +122,7 @@ namespace ppforest2::cli {
     }
   }
 
-  int run_predict(CLIOptions& params) {
+  int run_predict(Params& params) {
     io::Output out(params.quiet);
 
     // Validate output path before doing work
@@ -125,20 +130,17 @@ namespace ppforest2::cli {
       io::check_file_not_exists(params.output_path);
     }
 
-    DataPacket data = [&]() {
+    DataPacket data = [&]() -> DataPacket {
       try {
         return io::csv::read_sorted(params.data_path);
-      } catch (ppforest2::UserError const& e) {
-        fmt::print(stderr, "{} {}\n", error("Error:"), e.what());
-        fmt::print(stderr, "File: {}\n", params.data_path);
-        std::exit(1);
+      } catch (ppforest2::UserError const&) {
+        throw;
       } catch (std::exception const& e) {
-        fmt::print(stderr, "{} reading CSV file: {}\n", error("Error:"), e.what());
-        std::exit(1);
+        throw ppforest2::UserError(fmt::format("Error reading CSV file: {}", e.what()));
       }
     }();
 
-    json model_data  = io::json::read_file(params.model_path);
+    json model_data  = io::json::read_file(params.model_path, user_error);
     auto model       = model_data.get<serialization::Export<Model::Ptr>>().model;
     auto predictions = model->predict(data.x);
 
@@ -173,7 +175,7 @@ namespace ppforest2::cli {
     if (!params.output_path.empty()) {
       json file_result =
           build_predict_result(predictions, data, *model, group_names, params.no_metrics, params.no_proportions);
-      io::json::write_file(file_result, params.output_path);
+      io::json::write_file(file_result, params.output_path, user_error);
       out.saved("Results", params.output_path);
     }
 

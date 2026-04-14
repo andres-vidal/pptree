@@ -69,7 +69,7 @@ TEST(CLIEvaluate, EvaluateExport) {
   EXPECT_FLOAT_EQ(config["pp"]["lambda"].get<float>(), 0.3F);
   EXPECT_EQ(config["seed"], 0);
   EXPECT_TRUE(config.contains("threads"));
-  EXPECT_TRUE(config.contains("train-ratio"));
+  EXPECT_TRUE(config.contains("train_ratio"));
   EXPECT_TRUE(config.contains("iterations"));
 }
 
@@ -172,4 +172,33 @@ TEST(CLIEvaluate, EvaluateWithStrategyFlags) {
 TEST(CLIEvaluate, EvaluateWithVarsAll) {
   auto result = run_ppforest2("-q evaluate --simulate 50x3x2 -n 5 -r 0 -i 1 --vars all");
   EXPECT_EQ(result.exit_code, 0);
+}
+
+/* Exported config.json can be used as --config for train. */
+TEST(CLIEvaluate, ExportedConfigUsableForTraining) {
+  TempDir const dir;
+  std::string const export_path = dir.path() + "/exp";
+
+  auto eval_result = run_ppforest2(
+      "-q evaluate --simulate 50x3x2 -n 5 -r 0 -l 0.3 -i 1 "
+      "--vars uniform:count=2 --cutpoint mean_of_means "
+      "-e " +
+      export_path
+  );
+  ASSERT_EQ(eval_result.exit_code, 0);
+
+  std::string const config_path = export_path + "/config.json";
+  std::string const data_path   = export_path + "/data.csv";
+
+  TempFile model;
+  model.clear();
+  auto train_result = run_ppforest2("--config " + config_path + " -q train -d " + data_path + " -s " + model.path());
+  EXPECT_EQ(train_result.exit_code, 0) << train_result.stderr_output;
+
+  auto j = json::parse(model.read());
+  EXPECT_EQ(j["config"]["size"], 5);
+  EXPECT_FLOAT_EQ(j["config"]["pp"]["lambda"].get<float>(), 0.3F);
+  EXPECT_EQ(j["config"]["vars"]["name"], "uniform");
+  EXPECT_EQ(j["config"]["vars"]["count"], 2);
+  EXPECT_EQ(j["config"]["cutpoint"]["name"], "mean_of_means");
 }

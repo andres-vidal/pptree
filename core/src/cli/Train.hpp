@@ -21,7 +21,7 @@ namespace CLI {
 
 namespace ppforest2::cli {
   /** @brief Register train subcommand options on @p app. */
-  CLI::App* setup_train(CLI::App& app, CLIOptions& params);
+  void setup_train(CLI::App& app, Params& params);
 
   /** @brief Add shared model options (size, lambda, threads, seed, vars) to @p sub. */
   void add_model_options(CLI::App* sub, ModelParams& model);
@@ -38,7 +38,7 @@ namespace ppforest2::cli {
    * If data_path is set, reads a CSV file; otherwise generates simulated data.
    * Ensures the response vector is contiguous (sorted by group).
    */
-  ppforest2::stats::DataPacket read_data(CLIOptions const& params, ppforest2::stats::RNG& rng);
+  ppforest2::stats::DataPacket read_data(Params const& params, ppforest2::stats::RNG& rng);
 
   /**
    * @brief Train a single model (Forest or Tree) on the given dataset.
@@ -46,7 +46,7 @@ namespace ppforest2::cli {
   TrainResult train_model(
       ppforest2::types::FeatureMatrix const& x,
       ppforest2::types::OutcomeVector const& y,
-      CLIOptions const& params,
+      Params const& params,
       ppforest2::stats::RNG& rng
   );
 
@@ -54,5 +54,5 @@ namespace ppforest2::cli {
    * @brief Run the train subcommand.
    * @return Exit code (0 on success).
    */
-  int run_train(CLIOptions& params);
+  int run_train(Params& params);
 }

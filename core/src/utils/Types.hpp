@@ -10,18 +10,21 @@
  * flag PPFOREST2_DOUBLE_PRECISION (float by default).
  */
 namespace ppforest2::types {
-/** @brief Scalar type for feature values (float or double). */
-#ifdef PPFOREST2_DOUBLE_PRECISION
+  /** @brief Scalar type for feature values (float or double). */
+  // clang-format off
+  #ifdef PPFOREST2_DOUBLE_PRECISION
   using Feature = double;
-#else
+  #else
   using Feature = float;
-#endif
+  #endif
+  // clang-format on
 
   /** @brief Scalar type for group labels (integer). */
   using Outcome = int;
 
   /** @brief Dynamic-size matrix of feature values. */
   using FeatureMatrix = Eigen::Matrix<Feature, Eigen::Dynamic, Eigen::Dynamic>;
+
   /** @brief Dynamic-size column vector of feature values. */
   using FeatureVector = Eigen::Matrix<Feature, Eigen::Dynamic, 1>;
 

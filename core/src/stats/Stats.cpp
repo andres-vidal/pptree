@@ -1,4 +1,5 @@
 #include "stats/Stats.hpp"
+#include "utils/Invariant.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -50,18 +51,6 @@ namespace ppforest2::stats {
     }
 
     return 1.0 - accuracy(predictions, actual);
-  }
-
-  double sd(FeatureVector const& data) {
-    if (data.rows() == 0) {
-      throw std::invalid_argument("sd: data must have at least one row");
-    }
-
-    if (data.rows() == 1) {
-      return 0.0;
-    }
-
-    return std::sqrt((data.array() - data.mean()).square().sum() / (data.rows() - 1));
   }
 
   FeatureVector sd(FeatureMatrix const& data) {

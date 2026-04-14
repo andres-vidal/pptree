@@ -12,11 +12,11 @@ namespace CLI {
 
 namespace ppforest2::cli {
   /** @brief Register predict subcommand options on @p app. */
-  CLI::App* setup_predict(CLI::App& app, CLIOptions& params);
+  void setup_predict(CLI::App& app, Params& params);
 
   /**
    * @brief Run the predict subcommand.
    * @return Exit code (0 on success).
    */
-  int run_predict(CLIOptions& params);
+  int run_predict(Params& params);
 }

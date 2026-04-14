@@ -190,6 +190,8 @@ if(NOT PPFOREST2_CORE_ONLY)
     src/utils/Invariant.test.cpp
     src/utils/System.test.cpp
     src/cli/CLIOptions.test.cpp
+    src/cli/ModelParams.test.cpp
+    src/cli/EvaluateParams.test.cpp
     src/cli/Train.integration.test.cpp
     src/cli/Predict.integration.test.cpp
     src/cli/Evaluate.integration.test.cpp
@@ -199,7 +201,7 @@ if(NOT PPFOREST2_CORE_ONLY)
     src/cli/CLI.integration.test.cpp
     src/golden/Reproducibility.test.cpp
     src/golden/Threading.test.cpp
-    src/cli/VarsSpec.test.cpp
+    src/cli/Validation.test.cpp
     src/cli/Benchmark.test.cpp
     src/cli/BenchmarkReport.test.cpp
     src/io/IO.test.cpp

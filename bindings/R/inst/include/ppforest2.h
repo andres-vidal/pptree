@@ -367,14 +367,13 @@ namespace Rcpp {
   template<> inline TrainingSpec::Ptr as(SEXP x) {
     Rcpp::List r_training_spec(x);
 
-    auto pp       = pp::ProjectionPursuit::from_json(list_to_json(Rcpp::List(r_training_spec["pp"])));
-    auto vars     = vars::VariableSelection::from_json(list_to_json(Rcpp::List(r_training_spec["vars"])));
-    auto cutpoint = cutpoint::SplitCutpoint::from_json(list_to_json(Rcpp::List(r_training_spec["cutpoint"])));
-    auto stop     = stop::StopRule::from_json(list_to_json(Rcpp::List(r_training_spec["stop"])));
-    auto binarize = binarize::Binarization::from_json(list_to_json(Rcpp::List(r_training_spec["binarize"])));
-    auto partition =
-        partition::StepPartition::from_json(list_to_json(Rcpp::List(r_training_spec["partition"])));
-    auto leaf = leaf::LeafStrategy::from_json(list_to_json(Rcpp::List(r_training_spec["leaf"])));
+    auto pp        = pp::ProjectionPursuit::from_json(list_to_json(Rcpp::List(r_training_spec["pp"])));
+    auto vars      = vars::VariableSelection::from_json(list_to_json(Rcpp::List(r_training_spec["vars"])));
+    auto cutpoint  = cutpoint::SplitCutpoint::from_json(list_to_json(Rcpp::List(r_training_spec["cutpoint"])));
+    auto stop      = stop::StopRule::from_json(list_to_json(Rcpp::List(r_training_spec["stop"])));
+    auto binarize  = binarize::Binarization::from_json(list_to_json(Rcpp::List(r_training_spec["binarize"])));
+    auto partition = partition::StepPartition::from_json(list_to_json(Rcpp::List(r_training_spec["partition"])));
+    auto leaf      = leaf::LeafStrategy::from_json(list_to_json(Rcpp::List(r_training_spec["leaf"])));
 
     return TrainingSpec::builder()
         .pp(std::move(pp))

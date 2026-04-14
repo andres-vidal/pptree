@@ -28,7 +28,8 @@ namespace ppforest2::io {
   class TempFile {
   public:
     TempFile(std::string const& suffix = ".json") {
-#ifdef _WIN32
+      // clang-format off
+      #ifdef _WIN32
       char tmp_dir[MAX_PATH];
       GetTempPathA(MAX_PATH, tmp_dir);
       char tmp_file[MAX_PATH];
@@ -37,7 +38,7 @@ namespace ppforest2::io {
       std::remove(base.c_str());
       path_ = base + suffix;
       std::ofstream touch(path_);
-#else
+      #else
       std::string tmpl = "/tmp/ppforest2_XXXXXX" + suffix;
       std::vector<char> tmpl_buf(tmpl.begin(), tmpl.end());
       tmpl_buf.push_back('\0');
@@ -48,8 +49,8 @@ namespace ppforest2::io {
         path_ = tmpl_buf.data();
         close(fd);
       }
-
-#endif
+      #endif
+      // clang-format on
     }
 
     ~TempFile() {

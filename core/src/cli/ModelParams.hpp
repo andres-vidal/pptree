@@ -5,17 +5,21 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <string>
+#include <vector>
 
 namespace ppforest2::cli {
   /** @brief Model training parameters shared by train and evaluate. */
   struct ModelParams {
-    int size        = 100;
-    float lambda    = 0.5;
-    int threads     = -1;
-    int seed        = -1;
-    float p_vars    = -1;
-    int n_vars      = -1;
+    ModelParams() = default;
+
+    int size     = 100;
+    float lambda = 0.5;
+    std::optional<int> threads;
+    std::optional<int> seed;
+    std::optional<float> p_vars;
+    std::optional<int> n_vars;
     int max_retries = 3;
     std::string p_vars_input;
 
@@ -37,8 +41,83 @@ namespace ppforest2::cli {
     nlohmann::json partition_config;
     nlohmann::json leaf_config;
 
-    bool used_default_seed    = false;
-    bool used_default_threads = false;
-    bool used_default_vars    = false;
+    /** @brief Construct from a JSON config object. */
+    explicit ModelParams(nlohmann::json const& config);
+
+    /** @brief Parse strategy input strings and p_vars input into their final form. */
+    void resolve();
+
+    /** @brief Fill in runtime defaults (threads, vars, strategy configs). */
+    void resolve_defaults(unsigned int total_vars);
+
+    /** @brief Validate model-related fields in a JSON config. */
+    static void validate(nlohmann::json const& config, std::vector<std::string>& errors);
+
+    /** @brief Serialize to JSON config. */
+    nlohmann::json to_json() const {
+      nlohmann::json j;
+
+      j["size"]        = size;
+      j["lambda"]      = lambda;
+      j["max_retries"] = max_retries;
+
+      if (seed) {
+        j["seed"] = *seed;
+      }
+      if (threads) {
+        j["threads"] = *threads;
+      }
+      if (n_vars) {
+        j["n_vars"] = *n_vars;
+      }
+      if (p_vars) {
+        j["p_vars"] = *p_vars;
+      }
+
+      if (!pp_config.is_null()) {
+        j["pp"] = pp_config;
+      }
+      if (!vars_config.is_null()) {
+        j["vars"] = vars_config;
+      }
+      if (!cutpoint_config.is_null()) {
+        j["cutpoint"] = cutpoint_config;
+      }
+      if (!stop_config.is_null()) {
+        j["stop"] = stop_config;
+      }
+      if (!binarize_config.is_null()) {
+        j["binarize"] = binarize_config;
+      }
+      if (!partition_config.is_null()) {
+        j["partition"] = partition_config;
+      }
+      if (!leaf_config.is_null()) {
+        j["leaf"] = leaf_config;
+      }
+
+      return j;
+    }
   };
+
+  /**
+   * @brief Parse a proportion from a string or JSON value.
+   *
+   * Formats:
+   * - String: "1/3", "0.5"
+   * - JSON string: "1/3", "0.5"
+   * - JSON number: 0.5, 1.0
+   *
+   * @return A value in (0, 1].
+   * @throws UserError on invalid input.
+   */
+  float parse_proportion(std::string const& input);
+  float parse_proportion(nlohmann::json const& j);
+
+  /**
+   * @brief Parse a CLI strategy string into a JSON object.
+   *
+   * Converts e.g. `"pda:lambda=0.3"` to `{"name": "pda", "lambda": 0.3}`.
+   */
+  nlohmann::json strategy_string_to_json(std::string const& input);
 }

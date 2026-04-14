@@ -1,4 +1,4 @@
-add_library(ppforest2-io OBJECT IO.cpp Presentation.cpp)
+add_library(ppforest2-io OBJECT IO.cpp EvaluateResult.cpp Presentation.cpp)
 
 target_link_libraries(ppforest2-io PUBLIC
   ppforest2-compile

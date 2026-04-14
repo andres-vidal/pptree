@@ -6,44 +6,14 @@
 #pragma once
 
 #include "io/Color.hpp"
+#include "io/EvaluateResult.hpp"
 #include "io/Output.hpp"
 #include "models/VariableImportance.hpp"
 #include "stats/ConfusionMatrix.hpp"
-#include "stats/Stats.hpp"
-#include "utils/Types.hpp"
 
 #include <nlohmann/json.hpp>
 
 namespace ppforest2::io {
-  /**
-   * @brief Aggregated statistics across multiple training iterations.
-   *
-   * Stores per-iteration timing and error data, plus the process-wide
-   * peak RSS. Provides mean/std accessors and JSON serialization
-   * (including a per-iteration breakdown).
-   */
-  struct ModelStats {
-    types::Vector<float> tr_times;
-    types::Vector<float> tr_error;
-    types::Vector<float> te_error;
-    long peak_rss_bytes = -1;
-
-    double mean_time() const { return tr_times.mean(); }
-
-    double mean_tr_error() const { return tr_error.mean(); }
-
-    double mean_te_error() const { return te_error.mean(); }
-
-    double std_time() const { return stats::sd(tr_times); }
-
-    double std_tr_error() const { return stats::sd(tr_error); }
-
-    double std_te_error() const { return stats::sd(te_error); }
-
-    /** @brief Serialize to JSON including per-iteration breakdown. */
-    nlohmann::json to_json() const;
-  };
-
   /**
    * @brief Print evaluation results (timing, errors, memory) to stdout.
    * @param stats The aggregated model statistics.
@@ -89,7 +59,7 @@ namespace ppforest2::io {
    * that isn't stored in the saved config JSON.
    */
   struct ConfigDisplayHints {
-    int vars_percent     = -1;
+    float vars_percent   = -1;
     bool default_vars    = false;
     bool default_threads = false;
     bool default_seed    = false;

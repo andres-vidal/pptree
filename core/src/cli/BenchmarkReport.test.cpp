@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include "cli/Benchmark.hpp"
 #include "cli/BenchmarkReport.hpp"
+#include "io/IO.hpp"
 
 #include <fstream>
 #include <filesystem>
@@ -63,9 +64,9 @@ TEST_F(BenchmarkReportTest, WriteAndReadJson) {
   auto const result      = make_sample_result();
   std::string const path = (std::filesystem::temp_directory_path() / "ppforest2-test-report.json").string();
 
-  write_results_json(result, path);
+  ppforest2::io::json::write_file(result.to_json(), path);
 
-  auto loaded = parse_results(path);
+  auto loaded = SuiteResult(ppforest2::io::json::read_file(path));
 
   EXPECT_EQ(loaded.suite_name, "test suite");
   EXPECT_EQ(loaded.timestamp, "2026-01-01T00:00:00");
@@ -82,7 +83,7 @@ TEST_F(BenchmarkReportTest, WriteCsv) {
   auto const result      = make_sample_result();
   std::string const path = (std::filesystem::temp_directory_path() / "ppforest2-test-report.csv").string();
 
-  write_results_csv(result, path);
+  ppforest2::io::text::write_file(result.to_csv(), path);
 
   std::ifstream file(path);
   ASSERT_TRUE(file.is_open());
@@ -115,7 +116,7 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithoutBaseline) {
   ppforest2::io::Output out(false);
 
   testing::internal::CaptureStdout();
-  print_benchmark_markdown(out, result);
+  BenchmarkReport{result}.print(out, BenchmarkReport::Markdown{});
   auto md = testing::internal::GetCapturedStdout();
 
   // Header
@@ -128,7 +129,7 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithoutBaseline) {
   EXPECT_TRUE(md.find("| Peak RSS |") != std::string::npos);
 
   // No delta columns
-  std::string const delta = "\xCE\x94";
+  std::string const delta = "Δ";
   EXPECT_TRUE(md.find(delta) == std::string::npos);
 
   // Scenario rows
@@ -151,7 +152,8 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithBaseline) {
   ppforest2::io::Output out(false);
 
   testing::internal::CaptureStdout();
-  print_benchmark_markdown(out, current, baseline);
+  auto bl = Baseline(std::move(baseline));
+  BenchmarkReport{current, bl}.print(out, BenchmarkReport::Markdown{});
   auto md = testing::internal::GetCapturedStdout();
 
   // Both timestamps
@@ -159,15 +161,15 @@ TEST_F(BenchmarkReportTest, FormatMarkdownWithBaseline) {
   EXPECT_TRUE(md.find("Baseline:") != std::string::npos);
 
   // Delta columns present
-  std::string const delta = "\xCE\x94";
+  std::string const delta = "Δ";
   EXPECT_TRUE(md.find(delta + " Time") != std::string::npos);
   EXPECT_TRUE(md.find(delta + " RSS") != std::string::npos);
 
   // Green circle for improvement (small scenario: 12.3 vs 15.0 = -18%)
-  std::string const green = "\xF0\x9F\x9F\xA2";
+  std::string const green = "🟢";
   EXPECT_TRUE(md.find(green) != std::string::npos);
 
   // Red circle for regression (large scenario: 500 vs 400 = +25%)
-  std::string const red = "\xF0\x9F\x94\xB4";
+  std::string const red = "🔴";
   EXPECT_TRUE(md.find(red) != std::string::npos);
 }

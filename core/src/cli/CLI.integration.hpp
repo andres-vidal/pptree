@@ -14,10 +14,7 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <fstream>
 #include <string>
-#include <sstream>
-#include <filesystem>
 
 #include <nlohmann/json.hpp>
 
@@ -67,23 +64,25 @@ struct ProcessResult {
 inline ProcessResult run_ppforest2(std::string const& args) {
   ppforest2::io::TempFile stderr_file;
 
-#ifdef _WIN32
+  // clang-format off
+  #ifdef _WIN32
   std::string cmd = BINARY + " " + args + " 2>\"" + stderr_file.path() + "\"";
   FILE* pipe      = _popen(cmd.c_str(), "r");
-#else
+  #else
   std::string cmd = BINARY + " " + args + " 2>\"" + stderr_file.path() + "\"";
   FILE* pipe      = popen(cmd.c_str(), "r");
-#endif
-
-  if (!pipe) {
+  #endif
+  // clang-format on
+  if (pipe == nullptr) {
     return {-1, "", ""};
   }
 
   std::string output;
   char buffer[4096];
 
-  while (fgets(buffer, sizeof(buffer), pipe))
+  while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
     output += buffer;
+  }
 
 #ifdef _WIN32
   int exit_code = _pclose(pipe);

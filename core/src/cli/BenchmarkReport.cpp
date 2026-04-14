@@ -4,96 +4,46 @@
  */
 #include "cli/BenchmarkReport.hpp"
 #include "io/Color.hpp"
-#include "io/IO.hpp"
-#include "io/Table.hpp"
-#include "utils/Invariant.hpp"
 
 #include <fmt/format.h>
-#include <fstream>
-#include <unordered_map>
-#include <cmath>
 
 namespace ppforest2::cli {
   namespace {
-    std::string format_rss(double mb) {
-      if (mb < 0)
+    std::string format_rss(std::optional<double> mb) {
+      if (!mb) {
         return "N/A";
-
-      return fmt::format("{:.1f} MB", mb);
-    }
-
-    std::string format_delta(double current, double baseline) {
-      if (baseline <= 0)
-        return "";
-
-      double delta_pct = ((current - baseline) / baseline) * 100.0;
-      std::string sign = delta_pct >= 0 ? "+" : "";
-      std::string text = fmt::format("{}{:.1f}%", sign, delta_pct);
-
-      // For time and RSS: negative = improvement (green), positive = regression (red)
-      if (delta_pct < -1.0) {
-        return ppforest2::io::style::success(text);
-      } else if (delta_pct > 1.0) {
-        return ppforest2::io::style::error(text);
-      } else {
-        return ppforest2::io::style::muted(text);
-      }
-    }
-
-    std::string format_delta_markdown(double current, double baseline) {
-      if (baseline <= 0)
-        return "";
-
-      double delta_pct = ((current - baseline) / baseline) * 100.0;
-      std::string sign = delta_pct >= 0 ? "+" : "";
-      std::string text = fmt::format("{}{:.1f}%", sign, delta_pct);
-
-      if (delta_pct < -1.0) {
-        return fmt::format("\xF0\x9F\x9F\xA2 {}", text);
-      } else if (delta_pct > 1.0) {
-        return fmt::format("\xF0\x9F\x94\xB4 {}", text);
-      } else {
-        return fmt::format("\xE2\x9A\xAA {}", text);
-      }
-    }
-
-    std::unordered_map<std::string, ScenarioResult const*> build_baseline_index(SuiteResult const& baseline) {
-      std::unordered_map<std::string, ScenarioResult const*> index;
-
-      for (auto const& r : baseline.results) {
-        index[r.name] = &r;
       }
 
-      return index;
+      return fmt::format("{:.1f} MB", *mb);
+    }
+
+    std::string format_vars(ScenarioResult const& r) {
+      if (r.size == 0) {
+        return "--";
+      }
+
+      if (r.n_vars) {
+        return fmt::format("{}", *r.n_vars);
+      }
+
+      if (r.p_vars) {
+        return fmt::format("{:.2f}", *r.p_vars);
+      }
+
+      return "--";
+    }
+
+    std::string format_opt_delta(std::optional<double> const& val) {
+      return val ? fmt::format("{:.1f}", *val) : "";
     }
   }
 
-  void print_benchmark_table(io::Output& out, SuiteResult const& current, std::optional<SuiteResult> const& baseline) {
-    using namespace ppforest2::io::style;
+  // --- BenchmarkReport ---
+
+  std::vector<ppforest2::io::layout::Column> BenchmarkReport::make_columns(bool has_baseline) {
     using namespace ppforest2::io::layout;
 
-    bool const has_baseline = baseline.has_value();
-    auto const baseline_index =
-        has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
-
-    // Title
-    std::string title = emphasis(current.suite_name);
-
-    if (!current.timestamp.empty()) {
-      title += " " + muted("(" + current.timestamp + ")");
-    }
-
-    out.newline();
-    out.println("{}", title);
-
-    if (has_baseline && !baseline->timestamp.empty()) {
-      out.println("Baseline: {}", muted(baseline->timestamp));
-    }
-
-    out.newline();
-
-    // Build columns conditionally
-    std::vector<Column> columns = {
+    return {
         {"Scenario", 20, Align::left},
         {"n", 6, Align::right},
         {"p", 4, Align::right},
@@ -103,286 +53,293 @@ namespace ppforest2::cli {
         {"split", 5, Align::right},
         {"iters", 5, Align::right},
         {"Time (ms)", 18, Align::right},
+        {"Δ Time", 8, Align::right, has_baseline},
+        {"Peak RSS", 12, Align::right},
+        {"Δ RSS", 8, Align::right, has_baseline},
+        {"Train Err", 9, Align::right},
+        {"Δ Train", 8, Align::right, has_baseline},
+        {"Test Err", 8, Align::right},
+        {"Δ Test", 8, Align::right, has_baseline},
     };
+  }
 
-    if (has_baseline) {
-      columns.push_back({"delta", 8, Align::right});
+  double BenchmarkReport::delta_pct(double current, double baseline) {
+    return ((current - baseline) / baseline) * 100.0;
+  }
+
+  BenchmarkReport::Deltas BenchmarkReport::compute_deltas(ScenarioResult const& r, Baseline const& baseline) {
+    Deltas d;
+    auto match = baseline.find(r.name);
+
+    if (!match) {
+      return d;
     }
 
-    columns.push_back({"Peak RSS", 12, Align::right});
+    auto const& b = match->get();
 
-    if (has_baseline) {
-      columns.push_back({"delta", 8, Align::right});
+    if (b.mean_time_ms > 0) {
+      d.time = delta_pct(r.mean_time_ms, b.mean_time_ms);
     }
 
-    columns.push_back({"Train Err", 9, Align::right});
-
-    if (has_baseline) {
-      columns.push_back({"delta", 8, Align::right});
+    if (r.peak_rss_mb && b.peak_rss_mb && *b.peak_rss_mb > 0) {
+      d.rss = delta_pct(*r.peak_rss_mb, *b.peak_rss_mb);
     }
 
-    columns.push_back({"Test Err", 8, Align::right});
-
-    if (has_baseline) {
-      columns.push_back({"delta", 8, Align::right});
+    if (b.mean_tr_error > 0) {
+      d.tr_err = delta_pct(r.mean_tr_error, b.mean_tr_error);
     }
 
-    // Header — style Scenario and delta labels
-    Row header = header_labels(columns);
-    header[0]  = emphasis(header[0]);
-
-    for (auto& h : header) {
-      if (h == "delta") {
-        h = muted("delta");
-      }
+    if (b.mean_te_error > 0) {
+      d.te_err = delta_pct(r.mean_te_error, b.mean_te_error);
     }
 
-    out.println("{}", format_row(columns, header));
-    out.println("{}", muted(format_separator(columns)));
+    return d;
+  }
 
-    // Data rows
-    for (auto const& r : current.results) {
-      std::string const time_str   = fmt::format("{:.1f} +/- {:.1f}", r.mean_time_ms, r.std_time_ms);
-      std::string const vars_str   = r.size > 0 ? fmt::format("{:.2f}", r.p_vars) : muted("--");
-      std::string const split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
-      std::string const rss_str    = format_rss(r.peak_rss_mb);
-      std::string const tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
-      std::string const te_err_str = fmt::format("{:.1f}%", r.mean_te_error * 100);
+  nlohmann::json BenchmarkReport::to_json() const {
+    nlohmann::json j = result.to_json();
 
-      Row cells = {
-          r.name,
-          fmt::format("{}", r.n),
-          fmt::format("{}", r.p),
-          fmt::format("{}", r.g),
-          fmt::format("{}", r.size),
-          vars_str,
-          split_str,
-          fmt::format("{}", r.runs),
-          time_str,
-      };
+    if (baseline) {
+      j["baseline_timestamp"] = baseline->timestamp;
 
+      for (auto& rj : j["results"]) {
+        std::string name = rj["name"];
 
-      std::string rss_delta;
-      std::string tr_err_delta;
-      std::string te_err_delta;
+        for (auto const& r : result.results) {
+          if (r.name == name) {
+            auto d = compute_deltas(r, *baseline);
 
-      if (has_baseline) {
-        std::string time_delta;
+            if (d.time) {
+              rj["delta_time_pct"] = *d.time;
+            }
+            if (d.rss) {
+              rj["delta_rss_pct"] = *d.rss;
+            }
+            if (d.tr_err) {
+              rj["delta_train_error_pct"] = *d.tr_err;
+            }
+            if (d.te_err) {
+              rj["delta_test_error_pct"] = *d.te_err;
+            }
 
-        auto it = baseline_index.find(r.name);
-
-        if (it != baseline_index.end()) {
-          time_delta = format_delta(r.mean_time_ms, it->second->mean_time_ms);
-
-          if (r.peak_rss_mb >= 0 && it->second->peak_rss_mb >= 0) {
-            rss_delta = format_delta(r.peak_rss_mb, it->second->peak_rss_mb);
-          }
-
-          if (it->second->mean_tr_error > 0) {
-            tr_err_delta = format_delta(r.mean_tr_error, it->second->mean_tr_error);
-          }
-
-          if (it->second->mean_te_error > 0) {
-            te_err_delta = format_delta(r.mean_te_error, it->second->mean_te_error);
+            break;
           }
         }
-
-        cells.push_back(time_delta);
       }
-
-      cells.push_back(rss_str);
-
-      if (has_baseline) {
-        cells.push_back(rss_delta);
-      }
-
-      cells.push_back(tr_err_str);
-
-      if (has_baseline) {
-        cells.push_back(tr_err_delta);
-      }
-
-      cells.push_back(te_err_str);
-
-      if (has_baseline) {
-        cells.push_back(te_err_delta);
-      }
-
-      out.println("{}", format_row(columns, cells));
     }
 
-    // Footer
-    out.newline();
-    out.println(
-        "{} scenarios completed in {:.1f}s",
-        emphasis(std::to_string(current.results.size())),
-        current.total_time_ms / 1000.0
-    );
-    out.newline();
+    return j;
   }
 
-  void write_results_json(SuiteResult const& result, std::string const& path) {
-    ppforest2::io::json::write_file(result.to_json(), path);
-  }
-
-  void
-  print_benchmark_markdown(io::Output& out, SuiteResult const& current, std::optional<SuiteResult> const& baseline) {
-    using namespace ppforest2::io::style;
-    using namespace ppforest2::io::layout;
-
+  std::string BenchmarkReport::to_csv() const {
     bool const has_baseline = baseline.has_value();
-    auto const baseline_index =
-        has_baseline ? build_baseline_index(*baseline) : decltype(build_baseline_index(*baseline)){};
 
-    out.println("## {}", current.suite_name);
-    out.newline();
+    std::string csv;
 
-    if (!current.timestamp.empty()) {
-      out.println("Current: {}", current.timestamp);
-    }
-
-    if (has_baseline && !baseline->timestamp.empty()) {
-      out.println("Baseline: {}", baseline->timestamp);
-    }
-
-    out.newline();
-
-    // Build columns conditionally
-    std::vector<Column> columns = {
-        {"Scenario", 0, Align::left},
-        {"n", 0, Align::right},
-        {"p", 0, Align::right},
-        {"g", 0, Align::right},
-        {"size", 0, Align::right},
-        {"vars", 0, Align::right},
-        {"split", 0, Align::right},
-        {"iters", 0, Align::right},
-        {"Time (ms)", 0, Align::right},
-    };
+    csv += "scenario,n,p,g,trees,vars,train_ratio,runs,mean_time_ms,std_time_ms,"
+           "mean_train_error,mean_test_error,peak_rss_mb,scenario_time_ms";
 
     if (has_baseline) {
-      columns.push_back({"\xCE\x94 Time", 0, Align::right});
+      csv += ",delta_time_pct,delta_rss_pct,delta_train_error_pct,delta_test_error_pct";
     }
 
-    columns.push_back({"Peak RSS", 0, Align::right});
+    csv += "\n";
 
-    if (has_baseline) {
-      columns.push_back({"\xCE\x94 RSS", 0, Align::right});
-    }
-
-    columns.push_back({"Train Err", 0, Align::right});
-
-    if (has_baseline) {
-      columns.push_back({"\xCE\x94 Train", 0, Align::right});
-    }
-
-    columns.push_back({"Test Err", 0, Align::right});
-
-    if (has_baseline) {
-      columns.push_back({"\xCE\x94 Test", 0, Align::right});
-    }
-
-    out.println("{}", format_md_row(header_labels(columns)));
-    out.println("{}", format_md_separator(columns));
-
-    // Data rows
-    for (auto const& r : current.results) {
-      std::string const time_str   = fmt::format("{:.1f} \xC2\xB1 {:.1f}", r.mean_time_ms, r.std_time_ms);
-      std::string const vars_str   = r.size > 0 ? fmt::format("{:.2f}", r.p_vars) : "--";
-      std::string const split_str  = fmt::format("{}%", static_cast<int>(r.train_ratio * 100));
-      std::string const rss_str    = format_rss(r.peak_rss_mb);
-      std::string const tr_err_str = fmt::format("{:.1f}%", r.mean_tr_error * 100);
-      std::string const te_err_str = fmt::format("{:.1f}%", r.mean_te_error * 100);
-
-      Row cells = {
-          r.name,
-          fmt::format("{}", r.n),
-          fmt::format("{}", r.p),
-          fmt::format("{}", r.g),
-          fmt::format("{}", r.size),
-          vars_str,
-          split_str,
-          fmt::format("{}", r.runs),
-          time_str,
-      };
-
-      std::string time_delta, rss_delta, tr_err_delta, te_err_delta;
-
-      if (has_baseline) {
-        auto it = baseline_index.find(r.name);
-
-        if (it != baseline_index.end()) {
-          time_delta = format_delta_markdown(r.mean_time_ms, it->second->mean_time_ms);
-
-          if (r.peak_rss_mb >= 0 && it->second->peak_rss_mb >= 0) {
-            rss_delta = format_delta_markdown(r.peak_rss_mb, it->second->peak_rss_mb);
-          }
-
-          if (it->second->mean_tr_error > 0) {
-            tr_err_delta = format_delta_markdown(r.mean_tr_error, it->second->mean_tr_error);
-          }
-
-          if (it->second->mean_te_error > 0) {
-            te_err_delta = format_delta_markdown(r.mean_te_error, it->second->mean_te_error);
-          }
-        }
-
-        cells.push_back(time_delta);
-      }
-
-      cells.push_back(rss_str);
-
-      if (has_baseline) {
-        cells.push_back(rss_delta);
-      }
-
-      cells.push_back(tr_err_str);
-
-      if (has_baseline) {
-        cells.push_back(tr_err_delta);
-      }
-
-      cells.push_back(te_err_str);
-
-      if (has_baseline) {
-        cells.push_back(te_err_delta);
-      }
-
-      out.println("{}", format_md_row(cells));
-    }
-
-    out.newline();
-    out.println("{} scenarios completed in {:.1f}s", current.results.size(), current.total_time_ms / 1000.0);
-  }
-
-  void write_results_csv(SuiteResult const& result, std::string const& path) {
-    std::ofstream file(path);
-
-    invariant(file.is_open(), fmt::format("Failed to open CSV file for writing: {}", path));
-
-    // Header
-    file << "scenario,n,p,g,trees,vars,train_ratio,runs,mean_time_ms,std_time_ms,"
-         << "mean_train_error,mean_test_error,peak_rss_mb,scenario_time_ms\n";
-
-    // Data rows
     for (auto const& r : result.results) {
-      file << fmt::format(
-          "{},{},{},{},{},{:.2f},{:.2f},{},{:.2f},{:.2f},{:.4f},{:.4f},{:.1f},{:.0f}\n",
+      csv += fmt::format(
+          "{},{},{},{},{},{:.2f},{:.2f},{},{:.2f},{:.2f},{:.4f},{:.4f},{:.1f},{:.0f}",
           r.name,
           r.n,
           r.p,
           r.g,
           r.size,
-          r.p_vars,
+          r.p_vars.value_or(0),
           r.train_ratio,
           r.runs,
           r.mean_time_ms,
           r.std_time_ms,
           r.mean_tr_error,
           r.mean_te_error,
-          r.peak_rss_mb,
+          r.peak_rss_mb.value_or(-1.0),
           r.scenario_time_ms
       );
+
+      if (has_baseline) {
+        auto d = compute_deltas(r, *baseline);
+        csv += fmt::format(
+            ",{},{},{},{}",
+            format_opt_delta(d.time),
+            format_opt_delta(d.rss),
+            format_opt_delta(d.tr_err),
+            format_opt_delta(d.te_err)
+        );
+      }
+
+      csv += "\n";
     }
+
+    return csv;
+  }
+
+  void BenchmarkReport::print(io::Output& out, Style const& style) const {
+    using namespace ppforest2::io::layout;
+
+    bool const has_baseline = baseline.has_value();
+
+    // Title
+    out.newline();
+    out.println("{}", style.format_title(result.suite_name, result.timestamp));
+
+    if (has_baseline && !baseline->timestamp.empty()) {
+      out.println("{}", style.format_baseline_label(baseline->timestamp));
+    }
+
+    out.newline();
+
+    // Table
+    auto columns = make_columns(has_baseline);
+    out.println("{}", style.format_header(columns));
+
+    auto decorate = [&](std::optional<double> const& val) -> std::string {
+      if (!val) {
+        return "";
+      }
+
+      std::string text = fmt::format("{:+.1f}%", *val);
+
+      if (*val < -delta_threshold) {
+        return style.good(text);
+      } else if (*val > delta_threshold) {
+        return style.bad(text);
+      } else {
+        return style.neutral(text);
+      }
+    };
+
+    for (auto const& r : result.results) {
+      Deltas d;
+
+      if (has_baseline) {
+        d = compute_deltas(r, *baseline);
+      }
+
+      Row cells = {
+          r.name,
+          fmt::format("{}", r.n),
+          fmt::format("{}", r.p),
+          fmt::format("{}", r.g),
+          fmt::format("{}", r.size),
+          r.size > 0 ? format_vars(r) : std::string("--"),
+          fmt::format("{}%", static_cast<int>(r.train_ratio * 100)),
+          fmt::format("{}", r.runs),
+          fmt::format("{:.1f} ± {:.1f}", r.mean_time_ms, r.std_time_ms),
+          decorate(d.time),
+          format_rss(r.peak_rss_mb),
+          decorate(d.rss),
+          fmt::format("{:.1f}%", r.mean_tr_error * 100),
+          decorate(d.tr_err),
+          fmt::format("{:.1f}%", r.mean_te_error * 100),
+          decorate(d.te_err),
+      };
+
+      out.println("{}", style.format_row(columns, cells));
+    }
+
+    // Footer
+    out.newline();
+    out.println("{}", style.format_footer(result.results.size(), result.total_time_ms));
+  }
+
+  // --- Text ---
+
+  std::string BenchmarkReport::Text::good(std::string const& s) const {
+    return ppforest2::io::style::success(s);
+  }
+  std::string BenchmarkReport::Text::bad(std::string const& s) const {
+    return ppforest2::io::style::error(s);
+  }
+  std::string BenchmarkReport::Text::neutral(std::string const& s) const {
+    return ppforest2::io::style::muted(s);
+  }
+
+  std::string BenchmarkReport::Text::format_title(std::string const& name, std::string const& ts) const {
+    using namespace ppforest2::io::style;
+    std::string title = emphasis(name);
+
+    if (!ts.empty()) {
+      title += " " + muted("(" + ts + ")");
+    }
+
+    return title;
+  }
+
+  std::string BenchmarkReport::Text::format_baseline_label(std::string const& ts) const {
+    return fmt::format("Baseline: {}", ppforest2::io::style::muted(ts));
+  }
+
+  std::string BenchmarkReport::Text::format_header(Columns const& columns) const {
+    using namespace ppforest2::io::style;
+    using namespace ppforest2::io::layout;
+
+    Row header = header_labels(columns);
+    header[0]  = emphasis(header[0]);
+
+    for (auto& h : header) {
+      if (h.find("Δ") != std::string::npos) {
+        h = muted(h);
+      }
+    }
+
+    return ppforest2::io::layout::format_row(columns, header) + "\n" + muted(format_separator(columns));
+  }
+
+  std::string BenchmarkReport::Text::format_row(Columns const& columns, ppforest2::io::layout::Row const& cells) const {
+    return ppforest2::io::layout::format_row(columns, cells);
+  }
+
+  std::string BenchmarkReport::Text::format_footer(std::size_t count, double total_ms) const {
+    return fmt::format(
+        "{} scenarios completed in {:.1f}s", ppforest2::io::style::emphasis(std::to_string(count)), total_ms / 1000.0
+    );
+  }
+
+  // --- Markdown ---
+
+  std::string BenchmarkReport::Markdown::good(std::string const& s) const {
+    return fmt::format("🟢 {}", s);
+  }
+  std::string BenchmarkReport::Markdown::bad(std::string const& s) const {
+    return fmt::format("🔴 {}", s);
+  }
+  std::string BenchmarkReport::Markdown::neutral(std::string const& s) const {
+    return fmt::format("⚪ {}", s);
+  }
+
+  std::string BenchmarkReport::Markdown::format_title(std::string const& name, std::string const& ts) const {
+    std::string title = fmt::format("## {}", name);
+
+    if (!ts.empty()) {
+      title += fmt::format("\n\nCurrent: {}", ts);
+    }
+
+    return title;
+  }
+
+  std::string BenchmarkReport::Markdown::format_baseline_label(std::string const& ts) const {
+    return fmt::format("Baseline: {}", ts);
+  }
+
+  std::string BenchmarkReport::Markdown::format_header(Columns const& columns) const {
+    using namespace ppforest2::io::layout;
+    return format_md_row(header_labels(columns), columns) + "\n" + format_md_separator(columns);
+  }
+
+  std::string
+  BenchmarkReport::Markdown::format_row(Columns const& columns, ppforest2::io::layout::Row const& cells) const {
+    return ppforest2::io::layout::format_md_row(cells, columns);
+  }
+
+  std::string BenchmarkReport::Markdown::format_footer(std::size_t count, double total_ms) const {
+    return fmt::format("{} scenarios completed in {:.1f}s", count, total_ms / 1000.0);
   }
 }

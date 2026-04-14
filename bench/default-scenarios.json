@@ -6,7 +6,7 @@
     "p_vars": 0.5,
     "train_ratio": 0.7,
     "seed": 0,
-    "threads": -1,
+    "threads": 1,
     "warmup": 2,
     "convergence": {
       "cv": 0.05,

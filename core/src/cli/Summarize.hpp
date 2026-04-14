@@ -12,11 +12,11 @@ namespace CLI {
 
 namespace ppforest2::cli {
   /** @brief Register summarize subcommand options on @p app. */
-  CLI::App* setup_summarize(CLI::App& app, CLIOptions& params);
+  void setup_summarize(CLI::App& app, Params& params);
 
   /**
    * @brief Run the summarize subcommand.
    * @return Exit code (0 on success).
    */
-  int run_summarize(CLIOptions& params);
+  int run_summarize(Params& params);
 }

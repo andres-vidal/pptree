@@ -12,14 +12,13 @@
 
 #include <fmt/format.h>
 #include <cstdio>
-#include <functional>
 #include <string>
 
 namespace ppforest2::io {
   /**
    * @brief Quiet-aware, indentation-aware output context.
    *
-   * Construct once per subcommand from CLIOptions::quiet and thread
+   * Construct once per subcommand from Params::quiet and thread
    * through all printing functions. Stdout methods respect quiet mode
    * and prepend the current indentation. Stderr methods always print.
    */
@@ -130,27 +129,6 @@ namespace ppforest2::io {
 
       if (current == total) {
         fmt::print("\n");
-      }
-    }
-
-    /**
-     * @brief Run a callable, catch std::exception, print error, return 1.
-     *
-     * If the callable succeeds, returns 0. If it throws, prints the
-     * error message to stderr with red "Error:" prefix and returns 1.
-     */
-    int try_or_fail(std::function<void()> const& f, std::string const& context = "") const {
-      try {
-        f();
-        return 0;
-      } catch (std::exception const& e) {
-        if (context.empty()) {
-          errorln("{} {}", style::error("Error:"), e.what());
-        } else {
-          errorln("{} {}: {}", style::error("Error:"), context, e.what());
-        }
-
-        return 1;
       }
     }
 
