@@ -89,6 +89,13 @@ jobs:
         run: |
           make r-build
           mv ppforest2_${{ steps.version.outputs.version }}.tar.gz R-ppforest2_${{ steps.version.outputs.version }}.tar.gz
+      - name: Run benchmarks
+        run: |
+          make build
+          echo "" >> release_notes.md
+          echo "## Benchmarks" >> release_notes.md
+          echo "" >> release_notes.md
+          .build/ppforest2 benchmark -s bench/default-scenarios.json --format markdown -i 10 -q >> release_notes.md
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
