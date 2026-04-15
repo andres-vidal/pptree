@@ -79,7 +79,7 @@ plot_importance <- function(model, metric = NULL, ...) {
   } else {
     title <- paste0("Variable Importance (", metric_labels[available], ")")
     p <- ggplot2::ggplot(df, ggplot2::aes(x = importance, y = variable)) +
-      ggplot2::geom_col(fill = ppforest2_col_bar) +
+      ggplot2::geom_col(fill = ppforest2_col_bar()) +
       ggplot2::labs(
         title = title,
         x     = "Importance",

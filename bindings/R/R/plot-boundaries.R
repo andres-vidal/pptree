@@ -151,18 +151,18 @@ plot_boundaries_1d <- function(model) {
       data = region_df,
       ggplot2::aes(xmin = xmin, xmax = xmax, ymin = y_range[1], ymax = y_range[2],
                    fill = region_group),
-      alpha = ppforest2_alpha_region
+      alpha = ppforest2_alpha_region()
     ) +
     ggplot2::geom_jitter(
       data   = obs_data,
       ggplot2::aes(x = x, y = 0, color = group),
-      height = 0.3, size = ppforest2_pt_medium
+      height = 0.3, size = ppforest2_pt_medium()
     ) +
     ggplot2::geom_vline(
       xintercept = boundary_x,
       linetype   = "solid",
-      color      = ppforest2_col_boundary,
-      linewidth  = ppforest2_lw_medium
+      color      = ppforest2_col_boundary(),
+      linewidth  = ppforest2_lw_medium()
     ) +
     ggplot2::scale_fill_manual(values = group_colors, name = "Class") +
     ggplot2::scale_color_manual(values = group_colors, name = "Class") +
@@ -250,7 +250,7 @@ plot_boundaries_2d <- function(model, ...) {
     p <- p + ggplot2::geom_polygon(
       data = region_df,
       ggplot2::aes(x = x, y = y, group = region_id, fill = region_group),
-      alpha = ppforest2_alpha_region
+      alpha = ppforest2_alpha_region()
     )
   }
 
@@ -259,7 +259,7 @@ plot_boundaries_2d <- function(model, ...) {
     p <- p + ggplot2::geom_segment(
       data = segments,
       ggplot2::aes(x = x_start, y = y_start, xend = x_end, yend = y_end),
-      linewidth = ppforest2_lw_medium, color = ppforest2_col_boundary, ...
+      linewidth = ppforest2_lw_medium(), color = ppforest2_col_boundary(), ...
     )
   }
 
@@ -267,7 +267,7 @@ plot_boundaries_2d <- function(model, ...) {
   p <- p + ggplot2::geom_point(
     data = obs_data,
     ggplot2::aes(x = x, y = y, color = group),
-    size = ppforest2_pt_medium
+    size = ppforest2_pt_medium()
   )
 
   p +
@@ -447,7 +447,7 @@ plot_boundaries_pairwise <- function(model, compact = FALSE, ...) {
     p <- p + ggplot2::geom_polygon(
       data = reg_data,
       ggplot2::aes(x = x, y = y, group = region_id, fill = region_group),
-      alpha = ppforest2_alpha_region
+      alpha = ppforest2_alpha_region()
     )
   }
 
@@ -456,7 +456,7 @@ plot_boundaries_pairwise <- function(model, compact = FALSE, ...) {
     p <- p + ggplot2::geom_segment(
       data = seg_data,
       ggplot2::aes(x = x_start, y = y_start, xend = x_end, yend = y_end),
-      linewidth = ppforest2_lw_medium, color = ppforest2_col_boundary, ...
+      linewidth = ppforest2_lw_medium(), color = ppforest2_col_boundary(), ...
     )
   }
 
@@ -464,7 +464,7 @@ plot_boundaries_pairwise <- function(model, compact = FALSE, ...) {
   p <- p + ggplot2::geom_point(
     data = obs_data,
     ggplot2::aes(x = x, y = y, color = group),
-    size = ppforest2_pt_small
+    size = ppforest2_pt_small()
   )
 
   p <- p +

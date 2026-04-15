@@ -66,31 +66,50 @@ check_patchwork <- function() {
   }
 }
 
+# ------------------------------------------------------------------
+# Design option accessor
+#
+# Each constant is read from options() with a default fallback, so
+# users can customize any value globally:
+#
+#   options(ppforest2.col_bar = "steelblue")
+#   options(ppforest2.alpha_region = 0.4)
+#
+# Or restore defaults by setting to NULL:
+#
+#   options(ppforest2.col_bar = NULL)
+# ------------------------------------------------------------------
+ppforest2_opt <- function(name, default) {
+  getOption(paste0("ppforest2.", name), default)
+}
+
 # Node dimensions (must match C++ LayoutParams)
-ppforest2_node_w <- 0.8; ppforest2_node_h <- 0.7
-ppforest2_leaf_w <- 0.5; ppforest2_leaf_h <- 0.3
+ppforest2_node_w <- function() ppforest2_opt("node_w", 0.8)
+ppforest2_node_h <- function() ppforest2_opt("node_h", 0.7)
+ppforest2_leaf_w <- function() ppforest2_opt("leaf_w", 0.5)
+ppforest2_leaf_h <- function() ppforest2_opt("leaf_h", 0.3)
 
 # Line weights
-ppforest2_lw_light  <- 0.4    # edges, node borders
-ppforest2_lw_medium <- 0.6    # boundary lines, cutpoints
+ppforest2_lw_light  <- function() ppforest2_opt("lw_light",  0.4)
+ppforest2_lw_medium <- function() ppforest2_opt("lw_medium", 0.6)
 
 # Point sizes
-ppforest2_pt_small  <- 1.2    # pairwise facets
-ppforest2_pt_medium <- 1.8    # 2D boundary
+ppforest2_pt_small  <- function() ppforest2_opt("pt_small",  1.2)
+ppforest2_pt_medium <- function() ppforest2_opt("pt_medium", 1.8)
 
 # Alpha values
-ppforest2_alpha_region <- 0.25  # decision region fill
-ppforest2_alpha_hist   <- 0.65  # histogram bars
-ppforest2_alpha_leaf   <- 0.30  # leaf fill
-ppforest2_alpha_proj   <- 0.60  # projection histogram
+ppforest2_alpha_region <- function() ppforest2_opt("alpha_region", 0.25)
+ppforest2_alpha_hist   <- function() ppforest2_opt("alpha_hist",   0.65)
+ppforest2_alpha_leaf   <- function() ppforest2_opt("alpha_leaf",   0.30)
+ppforest2_alpha_proj   <- function() ppforest2_opt("alpha_proj",   0.60)
 
 # Structural colors (not data-mapped)
-ppforest2_col_edge      <- "grey55"
-ppforest2_col_border    <- "grey50"
-ppforest2_col_cutpoint <- "grey25"
-ppforest2_col_boundary  <- "grey30"
-ppforest2_col_tick      <- "grey40"
-ppforest2_col_bar       <- "#5B8BA0"
+ppforest2_col_edge     <- function() ppforest2_opt("col_edge",     "grey55")
+ppforest2_col_border   <- function() ppforest2_opt("col_border",   "grey50")
+ppforest2_col_cutpoint <- function() ppforest2_opt("col_cutpoint", "grey25")
+ppforest2_col_boundary <- function() ppforest2_opt("col_boundary", "grey30")
+ppforest2_col_tick     <- function() ppforest2_opt("col_tick",     "grey40")
+ppforest2_col_bar      <- function() ppforest2_opt("col_bar",      "#5B8BA0")
 
 #' Shared ggplot2 theme for all non-structure plots.
 #'
@@ -99,7 +118,8 @@ ppforest2_col_bar       <- "#5B8BA0"
 #' instead (no axes, no grid) since it renders on an abstract 2D canvas.
 #' @noRd
 ppforest2_theme <- function() {
-  ggplot2::theme_minimal(base_size = 11) +
+  base_size <- ppforest2_opt("base_size", 11)
+  ggplot2::theme_minimal(base_size = base_size) +
   ggplot2::theme(
     plot.title       = ggplot2::element_text(size = ggplot2::rel(1.1), hjust = 0),
     plot.title.position = "plot",

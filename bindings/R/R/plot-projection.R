@@ -67,14 +67,14 @@ plot_projection <- function(model, node = 1L, ...) {
   ggplot2::ggplot(df, ggplot2::aes(x = projected, fill = group)) +
     ggplot2::geom_histogram(
       bins     = 30,
-      alpha    = ppforest2_alpha_proj,
+      alpha    = ppforest2_alpha_proj(),
       position = "identity"
     ) +
     ggplot2::geom_vline(
       xintercept = cutpoint,
       linetype   = "dashed",
-      color      = ppforest2_col_cutpoint,
-      linewidth  = ppforest2_lw_medium
+      color      = ppforest2_col_cutpoint(),
+      linewidth  = ppforest2_lw_medium()
     ) +
     ggplot2::labs(
       title = paste0("Projected Data at Node ", node),

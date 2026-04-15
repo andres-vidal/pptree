@@ -165,10 +165,10 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
   group_colors <- get_group_colors(group_labels)
   var_names <- get_variable_names(model)
 
-  node_w <- ppforest2_node_w
-  node_h <- ppforest2_node_h
-  leaf_w <- ppforest2_leaf_w
-  leaf_h <- ppforest2_leaf_h
+  node_w <- ppforest2_node_w()
+  node_h <- ppforest2_node_h()
+  leaf_w <- ppforest2_leaf_w()
+  leaf_h <- ppforest2_leaf_h()
 
   layout <- ppforest2_tree_layout(model)
   node_df <- layout$nodes
@@ -245,7 +245,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     p <- p + ggplot2::geom_segment(
       data = edge_df,
       ggplot2::aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
-      color = ppforest2_col_edge, linewidth = ppforest2_lw_light
+      color = ppforest2_col_edge(), linewidth = ppforest2_lw_light()
     )
     # Edge labels at midpoint
     edge_label_df <- data.frame(
@@ -267,7 +267,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     p <- p + ggplot2::geom_rect(
       data = node_bg,
       ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
-      fill = "white", color = ppforest2_col_border, linewidth = ppforest2_lw_light
+      fill = "white", color = ppforest2_col_border(), linewidth = ppforest2_lw_light()
     )
   }
 
@@ -277,7 +277,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
       data = bar_df,
       ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
                    fill = group),
-      alpha = ppforest2_alpha_hist, color = NA
+      alpha = ppforest2_alpha_hist(), color = NA
     )
   }
 
@@ -286,7 +286,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     p <- p + ggplot2::geom_segment(
       data = thr_df,
       ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
-      linetype = "dashed", color = ppforest2_col_cutpoint, linewidth = ppforest2_lw_medium
+      linetype = "dashed", color = ppforest2_col_cutpoint(), linewidth = ppforest2_lw_medium()
     )
   }
 
@@ -295,7 +295,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     p <- p + ggplot2::geom_text(
       data = tick_df,
       ggplot2::aes(x = x, y = y, label = label),
-      size = 1.8, vjust = 1.5, color = ppforest2_col_tick
+      size = 1.8, vjust = 1.5, color = ppforest2_col_tick()
     )
   }
 
@@ -305,7 +305,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
       data = leaf_bg,
       ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
                    fill = group),
-      alpha = ppforest2_alpha_leaf, color = ppforest2_col_border, linewidth = ppforest2_lw_light
+      alpha = ppforest2_alpha_leaf(), color = ppforest2_col_border(), linewidth = ppforest2_lw_light()
     )
   }
 
@@ -323,7 +323,7 @@ plot_tree_structure <- function(model, max_terms = 3L, ...) {
     p <- p + ggplot2::geom_text(
       data = proj_labels,
       ggplot2::aes(x = x, y = y, label = label),
-      size = 2.0, vjust = 1, color = ppforest2_col_tick
+      size = 2.0, vjust = 1, color = ppforest2_col_tick()
     )
   }
 
