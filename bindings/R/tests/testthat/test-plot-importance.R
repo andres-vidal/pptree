@@ -56,3 +56,27 @@ describe("plot.pprf importance", {
     expect_equal(pdata, expected_order)
   })
 })
+
+describe("plot.pptr importance snapshots", {
+  skip_if_not_installed("vdiffr")
+
+  model <- pptr(Type ~ ., data = iris, seed = 0)
+
+  it("pptr-importance", {
+    vdiffr::expect_doppelganger("pptr-importance", plot(model, type = "importance"))
+  })
+})
+
+describe("plot.pprf importance snapshots", {
+  skip_if_not_installed("vdiffr")
+
+  model <- pprf(Type ~ ., data = iris, size = 5, seed = 0, threads = 1)
+
+  it("pprf-importance-projections", {
+    vdiffr::expect_doppelganger("pprf-importance-projections", plot(model, metric = "projections"))
+  })
+
+  it("pprf-importance-permuted", {
+    vdiffr::expect_doppelganger("pprf-importance-permuted", plot(model, metric = "permuted"))
+  })
+})

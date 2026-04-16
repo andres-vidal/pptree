@@ -37,6 +37,26 @@ describe("plot.pprf structure", {
   })
 })
 
+describe("plot.pptr structure snapshots", {
+  skip_if_not_installed("vdiffr")
+
+  model <- pptr(Type ~ ., data = iris, seed = 0)
+
+  it("pptr-structure", {
+    vdiffr::expect_doppelganger("pptr-structure", plot(model, type = "structure"))
+  })
+})
+
+describe("plot.pprf structure snapshots", {
+  skip_if_not_installed("vdiffr")
+
+  model <- pprf(Type ~ ., data = iris, size = 5, seed = 0, threads = 1)
+
+  it("pprf-structure", {
+    vdiffr::expect_doppelganger("pprf-structure", plot(model, type = "structure", tree_index = 1))
+  })
+})
+
 describe("format_projector", {
   it("formats top-k terms by magnitude", {
     fmt <- ppforest2:::format_projector(

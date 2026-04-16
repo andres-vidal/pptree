@@ -30,3 +30,13 @@ describe("plot.pprf projection", {
     expect_s3_class(p, "ggplot")
   })
 })
+
+describe("plot.pptr projection snapshots", {
+  skip_if_not_installed("vdiffr")
+
+  model <- pptr(Type ~ ., data = iris, seed = 0)
+
+  it("pptr-projection-root", {
+    vdiffr::expect_doppelganger("pptr-projection-root", plot(model, type = "projection", node = 1L))
+  })
+})

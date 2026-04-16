@@ -79,3 +79,16 @@ describe("plot.pprf boundaries", {
     expect_s3_class(p, "ggplot")
   })
 })
+
+describe("plot.pptr boundaries snapshots", {
+  skip_if_not_installed("vdiffr")
+
+  it("pptr-boundaries-2d", {
+    model <- pptr(
+      x = iris[, c("Sepal.Length", "Sepal.Width")],
+      y = iris$Type,
+      seed = 0
+    )
+    vdiffr::expect_doppelganger("pptr-boundaries-2d", plot(model, type = "boundaries"))
+  })
+})
