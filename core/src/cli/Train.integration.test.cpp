@@ -4,6 +4,10 @@
  */
 #include "cli/CLI.integration.hpp"
 
+#include "utils/Macros.hpp"
+
+#include <fstream>
+
 // ---------------------------------------------------------------------------
 // Train subcommand — TrainTest fixture (inherits SavedModelTest)
 // ---------------------------------------------------------------------------
@@ -591,6 +595,110 @@ TEST(CLITrain, ImplicitExplicitSingleTreeEquivalent) {
 
   EXPECT_EQ(strip_timing(json::parse(model_implicit.read())), strip_timing(json::parse(model_explicit.read())))
       << "Single tree with -l and --pp should be identical";
+}
+
+// ---------------------------------------------------------------------------
+// Edge cases — degenerate inputs
+// ---------------------------------------------------------------------------
+
+namespace {
+  using namespace ppforest2::types;
+
+  TempFile write_csv(FeatureMatrix const& x, OutcomeVector const& y) {
+    TempFile f;
+    {
+      std::ofstream out(f.path());
+
+      for (int j = 0; j < x.cols(); ++j) {
+        out << "\"x" << (j + 1) << "\",";
+      }
+      out << "\"group\"\n";
+
+      for (int i = 0; i < x.rows(); ++i) {
+        for (int j = 0; j < x.cols(); ++j) {
+          out << x(i, j) << ",";
+        }
+        out << "\"g" << static_cast<int>(y(i)) << "\"\n";
+      }
+    }
+    return f;
+  }
+}
+
+TEST(CLITrainEdgeCase, ConstantFeatureColumn) {
+  FeatureMatrix const x = MAT(Feature, rows(6), 5, 1, 5, 2, 5, 3, 5, 7, 5, 8, 5, 9);
+  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
+
+  auto csv    = write_csv(x, y);
+  auto result = run_ppforest2("-q train -d " + csv.path() + " -n 5 -r 0 --no-save");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stderr_output, "");
+}
+
+TEST(CLITrainEdgeCase, ConstantFeatureColumnSingleTree) {
+  FeatureMatrix const x = MAT(Feature, rows(6), 5, 1, 5, 2, 5, 3, 5, 7, 5, 8, 5, 9);
+  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
+
+  auto csv    = write_csv(x, y);
+  auto result = run_ppforest2("-q train -d " + csv.path() + " -n 0 --no-save");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stderr_output, "");
+}
+
+TEST(CLITrainEdgeCase, SingleObservationPerGroup) {
+  FeatureMatrix const x = MAT(Feature, rows(2), 1, 0, 0, 1);
+  OutcomeVector const y = VEC(Outcome, 0, 1);
+
+  auto csv    = write_csv(x, y);
+  auto result = run_ppforest2("-q train -d " + csv.path() + " -n 5 -r 0 --no-save");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stderr_output, "");
+}
+
+TEST(CLITrainEdgeCase, SingleObservationPerGroupSingleTree) {
+  FeatureMatrix const x = MAT(Feature, rows(2), 1, 0, 0, 1);
+  OutcomeVector const y = VEC(Outcome, 0, 1);
+
+  auto csv    = write_csv(x, y);
+  auto result = run_ppforest2("-q train -d " + csv.path() + " -n 0 --no-save");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stderr_output, "");
+}
+
+TEST(CLITrainEdgeCase, ExtremeImbalance) {
+  // clang-format off
+  FeatureMatrix const x = MAT(Feature, rows(20),
+    0, 0,  1, 1,  2, 2,  3, 0,  4, 1,
+    0, 2,  1, 0,  2, 1,  3, 2,  4, 0,
+    0, 1,  1, 2,  2, 0,  3, 1,  4, 2,
+    0, 0,  1, 1,  2, 2,  90, 90,  91, 91);
+  OutcomeVector const y = VEC(Outcome,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
+  // clang-format on
+
+  auto csv    = write_csv(x, y);
+  auto result = run_ppforest2("-q train -d " + csv.path() + " -n 5 -r 0 --no-save");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stderr_output, "");
+}
+
+TEST(CLITrainEdgeCase, ExtremeImbalanceSingleTree) {
+  // clang-format off
+  FeatureMatrix const x = MAT(Feature, rows(20),
+    0, 0,  1, 1,  2, 2,  3, 0,  4, 1,
+    0, 2,  1, 0,  2, 1,  3, 2,  4, 0,
+    0, 1,  1, 2,  2, 0,  3, 1,  4, 2,
+    0, 0,  1, 1,  2, 2,  90, 90,  91, 91);
+  OutcomeVector const y = VEC(Outcome,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
+  // clang-format on
+
+  auto csv    = write_csv(x, y);
+  auto result = run_ppforest2("-q train -d " + csv.path() + " -n 0 --no-save");
+  EXPECT_EQ(result.exit_code, 0);
+  EXPECT_EQ(result.stderr_output, "");
 }
 
 // ---------------------------------------------------------------------------

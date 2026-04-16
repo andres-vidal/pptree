@@ -261,3 +261,50 @@ describe("pptr with strategy objects", {
       "cutpoint_strategy")
   })
 })
+
+describe("pptr edge cases", {
+  it("rejects NA in features via matrix interface", {
+    x <- matrix(c(1, NA, 3, 4, 1, 2, 3, 4), ncol = 2)
+    y <- c("a", "a", "b", "b")
+    expect_error(pptr(x = x, y = y), "NA or NaN")
+  })
+
+  it("rejects NaN in features via matrix interface", {
+    x <- matrix(c(1, NaN, 3, 4, 1, 2, 3, 4), ncol = 2)
+    y <- c("a", "a", "b", "b")
+    expect_error(pptr(x = x, y = y), "NA or NaN")
+  })
+
+  it("trains with a constant feature column", {
+    df <- data.frame(x1 = rep(5, 6), x2 = c(1, 2, 3, 7, 8, 9), y = c("a", "a", "a", "b", "b", "b"))
+    expect_no_error(pptr(y ~ ., data = df, seed = 0))
+  })
+
+  it("trains with single observation per group", {
+    df <- data.frame(x1 = c(1, 0), x2 = c(0, 1), y = c("a", "b"))
+    model <- pptr(y ~ ., data = df, seed = 0)
+    expect_s3_class(model, "pptr")
+    preds <- predict(model, df)
+    expect_length(preds, 2)
+  })
+
+  it("trains with minimal dataset (n=2)", {
+    df <- data.frame(x1 = c(1, 9), y = c("a", "b"))
+    model <- pptr(y ~ ., data = df, seed = 0)
+    expect_s3_class(model, "pptr")
+    preds <- predict(model, df)
+    expect_length(preds, 2)
+  })
+
+  it("trains with extreme class imbalance", {
+    df <- data.frame(
+      x1 = c(0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 90, 91),
+      x2 = c(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 90, 91),
+      y = c(rep("a", 18), rep("b", 2))
+    )
+    model <- pptr(y ~ ., data = df, seed = 0)
+    expect_s3_class(model, "pptr")
+    preds <- predict(model, df)
+    expect_length(preds, 20)
+  })
+})

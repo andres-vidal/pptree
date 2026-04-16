@@ -202,6 +202,10 @@ resolve_model_data <- function(formula, data, x, y) {
     stop("All columns in `x` must be numeric.")
   }
 
+  if (anyNA(x)) {
+    stop("`x` must not contain NA or NaN values.")
+  }
+
   if (!is.factor(y)) {
     y <- factor(y)
   }

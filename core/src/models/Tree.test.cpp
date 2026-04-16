@@ -849,3 +849,55 @@ TEST(Tree, PredictProportionsMatchesPredictions) {
         << "Row " << i << ": proportions should have 1.0 in column for predicted group";
   }
 }
+
+// ---------------------------------------------------------------------------
+// Edge cases — "doesn't blow up" tests
+// ---------------------------------------------------------------------------
+
+TEST(TreeEdgeCase, ConstantFeatureColumn) {
+  FeatureMatrix const x = MAT(Feature, rows(6), 5, 1, 5, 2, 5, 3, 5, 7, 5, 8, 5, 9);
+  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
+
+  stats::RNG rng(0);
+  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+
+  ASSERT_EQ_DATA(tree.predict(x), VEC(Outcome, 0, 0, 0, 0, 0, 0));
+}
+
+TEST(TreeEdgeCase, SingleObservationPerGroup) {
+  FeatureMatrix const x = MAT(Feature, rows(2), 1, 0, 0, 1);
+  OutcomeVector const y = VEC(Outcome, 0, 1);
+
+  stats::RNG rng(0);
+  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+
+  ASSERT_EQ_DATA(tree.predict(x), y);
+}
+
+TEST(TreeEdgeCase, MinimalDataset) {
+  FeatureMatrix const x = MAT(Feature, rows(2), 1, 9);
+  OutcomeVector const y = VEC(Outcome, 0, 1);
+
+  stats::RNG rng(0);
+  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+
+  ASSERT_EQ_DATA(tree.predict(x), y);
+}
+
+TEST(TreeEdgeCase, ExtremeImbalance) {
+  // clang-format off
+  FeatureMatrix const x = MAT(Feature, rows(20),
+    0, 0,  1, 1,  2, 2,  3, 0,  4, 1,
+    0, 2,  1, 0,  2, 1,  3, 2,  4, 0,
+    0, 1,  1, 2,  2, 0,  3, 1,  4, 2,
+    0, 0,  1, 1,  2, 2,  90, 90,  91, 91);
+  OutcomeVector const y = VEC(Outcome,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
+  // clang-format on
+
+  stats::RNG rng(0);
+  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+
+  ASSERT_EQ_DATA(tree.predict(x), y);
+}

@@ -338,3 +338,50 @@ describe("pprf with strategy objects", {
       "leaf_strategy")
   })
 })
+
+describe("pprf edge cases", {
+  it("rejects NA in features via matrix interface", {
+    x <- matrix(c(1, NA, 3, 4, 1, 2, 3, 4), ncol = 2)
+    y <- c("a", "a", "b", "b")
+    expect_error(pprf(x = x, y = y, size = 3, threads = 1), "NA or NaN")
+  })
+
+  it("rejects NaN in features via matrix interface", {
+    x <- matrix(c(1, NaN, 3, 4, 1, 2, 3, 4), ncol = 2)
+    y <- c("a", "a", "b", "b")
+    expect_error(pprf(x = x, y = y, size = 3, threads = 1), "NA or NaN")
+  })
+
+  it("trains with a constant feature column", {
+    df <- data.frame(x1 = rep(5, 6), x2 = c(1, 2, 3, 7, 8, 9), y = c("a", "a", "a", "b", "b", "b"))
+    expect_no_error(pprf(y ~ ., data = df, size = 3, seed = 0, threads = 1))
+  })
+
+  it("trains with single observation per group", {
+    df <- data.frame(x1 = c(1, 0), x2 = c(0, 1), y = c("a", "b"))
+    model <- pprf(y ~ ., data = df, size = 3, seed = 0, threads = 1)
+    expect_s3_class(model, "pprf")
+    preds <- predict(model, df)
+    expect_length(preds, 2)
+  })
+
+  it("trains with minimal dataset (n=2)", {
+    df <- data.frame(x1 = c(1, 9), y = c("a", "b"))
+    model <- pprf(y ~ ., data = df, size = 3, seed = 0, threads = 1)
+    expect_s3_class(model, "pprf")
+    preds <- predict(model, df)
+    expect_length(preds, 2)
+  })
+
+  it("trains with extreme class imbalance", {
+    df <- data.frame(
+      x1 = c(0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 90, 91),
+      x2 = c(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 90, 91),
+      y = c(rep("a", 18), rep("b", 2))
+    )
+    model <- pprf(y ~ ., data = df, size = 5, seed = 0, threads = 1)
+    expect_s3_class(model, "pprf")
+    preds <- predict(model, df)
+    expect_length(preds, 20)
+  })
+})

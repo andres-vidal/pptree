@@ -955,3 +955,59 @@ TEST(OobPredict, ConsistentWithOobError) {
 
   ASSERT_DOUBLE_EQ(err, expected_err) << "oob_error should match manual computation from oob_predict";
 }
+
+// ---------------------------------------------------------------------------
+// Edge cases — "doesn't blow up" tests
+// ---------------------------------------------------------------------------
+
+TEST(ForestEdgeCase, ConstantFeatureColumn) {
+  FeatureMatrix const x = MAT(Feature, rows(6), 5, 1, 5, 2, 5, 3, 5, 7, 5, 8, 5, 9);
+  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
+
+  Forest const forest = Forest::train(TrainingSpec::builder().size(5).threads(1).build(), x, y);
+
+  OutcomeVector const predictions = forest.predict(x);
+  ASSERT_EQ(predictions.size(), y.size());
+  EXPECT_TRUE((predictions.array() >= 0).all() && (predictions.array() <= 1).all());
+}
+
+TEST(ForestEdgeCase, SingleObservationPerGroup) {
+  FeatureMatrix const x = MAT(Feature, rows(2), 1, 0, 0, 1);
+  OutcomeVector const y = VEC(Outcome, 0, 1);
+
+  Forest const forest = Forest::train(TrainingSpec::builder().size(5).threads(1).build(), x, y);
+
+  OutcomeVector const predictions = forest.predict(x);
+  ASSERT_EQ(predictions.size(), y.size());
+  EXPECT_TRUE((predictions.array() >= 0).all() && (predictions.array() <= 1).all());
+}
+
+TEST(ForestEdgeCase, MinimalDataset) {
+  FeatureMatrix const x = MAT(Feature, rows(2), 1, 9);
+  OutcomeVector const y = VEC(Outcome, 0, 1);
+
+  Forest const forest = Forest::train(TrainingSpec::builder().size(5).threads(1).build(), x, y);
+
+  OutcomeVector const predictions = forest.predict(x);
+  ASSERT_EQ(predictions.size(), y.size());
+  EXPECT_TRUE((predictions.array() >= 0).all() && (predictions.array() <= 1).all());
+}
+
+TEST(ForestEdgeCase, ExtremeImbalance) {
+  // clang-format off
+  FeatureMatrix const x = MAT(Feature, rows(20),
+    0, 0,  1, 1,  2, 2,  3, 0,  4, 1,
+    0, 2,  1, 0,  2, 1,  3, 2,  4, 0,
+    0, 1,  1, 2,  2, 0,  3, 1,  4, 2,
+    0, 0,  1, 1,  2, 2,  90, 90,  91, 91);
+  OutcomeVector const y = VEC(Outcome,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
+  // clang-format on
+
+  Forest const forest = Forest::train(TrainingSpec::builder().size(10).threads(1).build(), x, y);
+
+  OutcomeVector const predictions = forest.predict(x);
+  ASSERT_EQ(predictions.size(), y.size());
+  EXPECT_TRUE((predictions.array() >= 0).all() && (predictions.array() <= 1).all());
+}
