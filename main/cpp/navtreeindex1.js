@@ -1,11 +1,11 @@
 var NAVTREEINDEX1 =
 {
-"classppforest2_1_1stats_1_1Normal.html#abd0d0034cf3c3d5fa237423cabd71e08":[3,0,2,9,3,1],
-"classppforest2_1_1stats_1_1Normal.html#abd0d0034cf3c3d5fa237423cabd71e08":[4,0,1,8,3,1],
-"classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647":[3,0,2,9,3,0],
-"classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647":[4,0,1,8,3,0],
-"classppforest2_1_1stats_1_1Normal.html#acc2b13a75c9a2c7850977753102f5375":[3,0,2,9,3,2],
-"classppforest2_1_1stats_1_1Normal.html#acc2b13a75c9a2c7850977753102f5375":[4,0,1,8,3,2],
+"classppforest2_1_1stats_1_1Normal.html#a3d2b17c0123f09f9c4201df396753345":[3,0,2,9,3,2],
+"classppforest2_1_1stats_1_1Normal.html#a3d2b17c0123f09f9c4201df396753345":[4,0,1,8,3,2],
+"classppforest2_1_1stats_1_1Normal.html#a5bb770fb90679995d31e7104a945cdfb":[3,0,2,9,3,0],
+"classppforest2_1_1stats_1_1Normal.html#a5bb770fb90679995d31e7104a945cdfb":[4,0,1,8,3,0],
+"classppforest2_1_1stats_1_1Normal.html#ad0b7f0a8684bef8cdec990f20ce460bc":[3,0,2,9,3,1],
+"classppforest2_1_1stats_1_1Normal.html#ad0b7f0a8684bef8cdec990f20ce460bc":[4,0,1,8,3,1],
 "classppforest2_1_1stats_1_1Uniform.html":[3,0,2,9,6],
 "classppforest2_1_1stats_1_1Uniform.html":[4,0,1,8,6],
 "classppforest2_1_1stats_1_1Uniform.html#a09fcb567b517b89ba08a502185f7ec43":[3,0,2,9,6,2],

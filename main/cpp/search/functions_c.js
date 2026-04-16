@@ -5,7 +5,7 @@ var searchData=
   ['node_5fgroups_2',['node_groups',['../structppforest2_1_1TreeBranch.html#a1d70fa6b7049727f93fc181abdbfe1ec',1,'ppforest2::TreeBranch::node_groups()'],['../structppforest2_1_1TreeLeaf.html#aa6e7ae0b94963d52907a2035efbbdf44',1,'ppforest2::TreeLeaf::node_groups()'],['../structppforest2_1_1TreeNode.html#a8593ecd443fed079cd55bbf6fe0f239b',1,'ppforest2::TreeNode::node_groups()']]],
   ['nodecontext_3',['NodeContext',['../structppforest2_1_1NodeContext.html#ab82dc9ea84b63e1e5aceeb263f65792e',1,'ppforest2::NodeContext']]],
   ['nodedatavisitor_4',['NodeDataVisitor',['../structppforest2_1_1viz_1_1NodeDataVisitor.html#adf7d502ac6cc25c003ac8046e6546501',1,'ppforest2::viz::NodeDataVisitor']]],
-  ['normal_5',['Normal',['../classppforest2_1_1stats_1_1Normal.html#ac2a2f30409e9f241f6b345e022310647',1,'ppforest2::stats::Normal']]],
+  ['normal_5',['Normal',['../classppforest2_1_1stats_1_1Normal.html#a5bb770fb90679995d31e7104a945cdfb',1,'ppforest2::stats::Normal']]],
   ['normalize_6',['normalize',['../namespaceppforest2_1_1pp.html#af1c9cd0f355ffcb4b45747b150ac7142',1,'ppforest2::pp']]],
   ['now_5fiso8601_7',['now_iso8601',['../namespaceppforest2_1_1io.html#af3bea8d81a602627c7d483ac468c0870',1,'ppforest2::io']]]
 ];

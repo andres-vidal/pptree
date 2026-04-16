@@ -95,7 +95,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "All_8hpp.html",
-"classppforest2_1_1stats_1_1Normal.html#abd0d0034cf3c3d5fa237423cabd71e08",
+"classppforest2_1_1stats_1_1Normal.html#a3d2b17c0123f09f9c4201df396753345",
 "namespaceppforest2_1_1io_1_1text.html",
 "structppforest2_1_1TrainingSpec.html#a5fd12b597b37db0545299815eaa0b115",
 "structppforest2_1_1binarize_1_1LargestGap.html",

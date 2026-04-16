@@ -111,7 +111,7 @@ $(function(){initNavTree('namespaceppforest2_1_1types.html',''); initResizable(t
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:adeb8ffeb8e3c9fe860715ace6693b04c" id="r_adeb8ffeb8e3c9fe860715ace6693b04c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adeb8ffeb8e3c9fe860715ace6693b04c">Feature</a> = float</td></tr>
-<tr class="memdesc:adeb8ffeb8e3c9fe860715ace6693b04c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scalar type for feature values (float or double).  <br /></td></tr>
+<tr class="memdesc:adeb8ffeb8e3c9fe860715ace6693b04c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scalar type for feature values.  <br /></td></tr>
 <tr class="separator:adeb8ffeb8e3c9fe860715ace6693b04c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20733a55a09432e8f9f924eb11fb5b0d" id="r_a20733a55a09432e8f9f924eb11fb5b0d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20733a55a09432e8f9f924eb11fb5b0d">FeatureMatrix</a> = Eigen::Matrix&lt;<a class="el" href="#adeb8ffeb8e3c9fe860715ace6693b04c">Feature</a>, Eigen::Dynamic, Eigen::Dynamic&gt;</td></tr>
 <tr class="memdesc:a20733a55a09432e8f9f924eb11fb5b0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dynamic-size matrix of feature values.  <br /></td></tr>
@@ -136,7 +136,7 @@ Typedefs</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Core numeric type aliases for the <a class="el" href="namespaceppforest2.html" title="Binarization strategies for multiclass-to-binary reduction.">ppforest2</a> library. </p>
-<p>All matrix and vector types are Eigen dynamic-size types. The scalar precision for features is controlled by the compile-time flag PPFOREST2_DOUBLE_PRECISION (float by default). </p>
+<p>All matrix and vector types are Eigen dynamic-size types. <a class="el" href="#adeb8ffeb8e3c9fe860715ace6693b04c" title="Scalar type for feature values.">Feature</a> precision is single-precision (<code>float</code>), which is sufficient for classification. If a future strategy (e.g. regression) needs higher precision internally, it can cast to <code>double</code> within its own scope. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="adeb8ffeb8e3c9fe860715ace6693b04c" name="adeb8ffeb8e3c9fe860715ace6693b04c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adeb8ffeb8e3c9fe860715ace6693b04c">&#9670;&#160;</a></span>Feature</h2>
@@ -150,7 +150,7 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Scalar type for feature values (float or double). </p>
+<p>Scalar type for feature values. </p>
 
 </div>
 </div>

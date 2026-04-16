@@ -6,7 +6,7 @@ var searchData=
   ['scenario_5ftime_5fms_3',['scenario_time_ms',['../structppforest2_1_1cli_1_1ScenarioResult.html#a0c55bd0a3cc116bac43e9edfeea0320f',1,'ppforest2::cli::ScenarioResult']]],
   ['scenarios_4',['scenarios',['../structppforest2_1_1cli_1_1BenchmarkSuite.html#a10f476a4d1faab7e1b967f59eb833b6d',1,'ppforest2::cli::BenchmarkSuite']]],
   ['scenarios_5fpath_5',['scenarios_path',['../structppforest2_1_1cli_1_1BenchmarkParams.html#a4d96ac8719cee7a1f0c6469d1092289a',1,'ppforest2::cli::BenchmarkParams']]],
-  ['sd_6',['sd',['../structppforest2_1_1cli_1_1SimulateParams.html#a21ef9b43dfba26ad5390f869689ed571',1,'ppforest2::cli::SimulateParams::sd'],['../structppforest2_1_1stats_1_1SimulationParams.html#a1de01239dbb5f1395a080c20593de0ae',1,'ppforest2::stats::SimulationParams::sd']]],
+  ['sd_6',['sd',['../structppforest2_1_1cli_1_1SimulateParams.html#a21ef9b43dfba26ad5390f869689ed571',1,'ppforest2::cli::SimulateParams::sd'],['../structppforest2_1_1stats_1_1SimulationParams.html#a89036a3082225787f93357a6cee98620',1,'ppforest2::stats::SimulationParams::sd']]],
   ['seed_7',['seed',['../structppforest2_1_1cli_1_1ModelParams.html#a1a59433450f6ace23e758cbb92d7f40e',1,'ppforest2::cli::ModelParams::seed'],['../structppforest2_1_1TrainingSpec.html#acb6f0c06b217e019bd7bc1466a8b7ec2',1,'ppforest2::TrainingSpec::seed']]],
   ['seed_5f_8',['seed_',['../structppforest2_1_1TrainingSpec_1_1Builder.html#aa5600e230fef03cfb8a394a6341dd374',1,'ppforest2::TrainingSpec::Builder']]],
   ['segments_9',['segments',['../structppforest2_1_1viz_1_1BoundaryVisitor.html#a0a3bfa714ff181e1f56304b7f7525b68',1,'ppforest2::viz::BoundaryVisitor']]],
