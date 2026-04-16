@@ -40,9 +40,6 @@ if [ ! -f inst/lib/libppforest2-core.a ]; then
       done
     fi
 
-    CMAKE_NATIVE_ARCH=""
-    if [ -n "$CI" ]; then CMAKE_NATIVE_ARCH="-DPPFOREST2_NATIVE_ARCH=OFF"; fi
-
     # Split R's CXX17 into compiler path and extra flags
     R_CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17)
     R_CXX_COMPILER=$(echo "$R_CXX_FULL" | awk '{print $1}')
@@ -57,7 +54,7 @@ if [ ! -f inst/lib/libppforest2-core.a ]; then
       -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXX_STD $R_CXX_FLAGS" \
       -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
       -DPPFOREST2_CORE_ONLY=ON \
-      $CMAKE_NATIVE_ARCH $FETCH_ARGS \
+      $FETCH_ARGS \
       ../core && make ppforest2-core && cd ../..
 
     cp "$R_BUILD_DIR/libppforest2-core.a" inst/lib/

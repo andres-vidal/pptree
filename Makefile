@@ -8,12 +8,7 @@ R_BUILD_DIR = .r-build
 NLHOMANN_JSON_HEADERS_PATH = ${BUILD_DIR}/_deps/json-src/include
 PCG_HEADERS_PATH = ${BUILD_DIR}/_deps/pcg-src/include
 
-# In CI, disable -march=native to avoid mismatches between cached deps
-# and the current runner's CPU instruction set.
 CMAKE_EXTRA ?=
-ifdef CI
-CMAKE_EXTRA += -DPPFOREST2_NATIVE_ARCH=OFF
-endif
 
 clean:
 	@rm -rf ${BUILD_DIR} ${BUILD_DIR_DEBUG} ${BUILD_DIR_COV} ${R_BUILD_DIR}
@@ -156,6 +151,7 @@ r-clean:
 
 r-version:
 	@sed -i.bak 's/^Version: .*/Version: ${CORE_VERSION}/' ${R_PACKAGE_DIR}/DESCRIPTION && rm -f ${R_PACKAGE_DIR}/DESCRIPTION.bak
+	@sed -i.bak "s/^Date: .*/Date: $$(date +%Y-%m-%d)/" ${R_PACKAGE_DIR}/DESCRIPTION && rm -f ${R_PACKAGE_DIR}/DESCRIPTION.bak
 	
 	
 r-prepare: r-clean r-version fetch-deps
@@ -175,6 +171,12 @@ r-build: r-clean
 	@make r-prepare
 	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
 	@R CMD build ${R_PACKAGE_DIR}
+	@make r-clean
+
+r-test:
+	@make r-prepare
+	@Rscript -e "Rcpp::compileAttributes('${R_PACKAGE_DIR}')"
+	@PPFOREST2_FETCH_CACHE="$(CURDIR)/${BUILD_DIR}/_deps" Rscript -e "devtools::load_all('${R_PACKAGE_DIR}'); devtools::test('${R_PACKAGE_DIR}')"
 	@make r-clean
 
 r-check: r-build

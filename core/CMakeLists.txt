@@ -34,7 +34,6 @@ set(PPFOREST2_PLATFORM "${PPFOREST2_OS}-${PPFOREST2_COMPILER}")
 
 option(PPFOREST2_DOUBLE_PRECISION "Use double precision for feature data" OFF)
 option(PPFOREST2_CORE_ONLY "Build only the core library, skip CLI, tests, and benchmarks" OFF)
-option(PPFOREST2_NATIVE_ARCH "Use -march=native for CPU-specific optimization" ON)
 if(PPFOREST2_DOUBLE_PRECISION)
   add_compile_definitions(PPFOREST2_DOUBLE_PRECISION)
 endif()
@@ -45,10 +44,6 @@ add_compile_definitions(EIGEN_NO_AUTOMATIC_RESIZING)
 if(WIN32)
   # Disable vectorization to prevent alignment issues on Windows
   add_compile_definitions(EIGEN_DONT_VECTORIZE)
-endif()
-
-if(PPFOREST2_NATIVE_ARCH AND NOT CMAKE_BUILD_TYPE MATCHES Debug)
-  add_compile_options(-march=native)
 endif()
 
 option(PPFOREST2_COVERAGE "Enable code coverage instrumentation" OFF)

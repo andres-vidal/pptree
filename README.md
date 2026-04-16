@@ -1,6 +1,7 @@
 # ppforest2
 
 [![C++ Tests](https://github.com/andres-vidal/ppforest2/actions/workflows/run-test.yml/badge.svg)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-test.yml)
+[![R Tests](https://github.com/andres-vidal/ppforest2/actions/workflows/run-r-test.yml/badge.svg)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-r-test.yml)
 [![R Package Check](https://github.com/andres-vidal/ppforest2/actions/workflows/run-r-check.yml/badge.svg)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-r-check.yml)
 [![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/andres-vidal/aafefce6b546eeb2f678ca607a950941/raw/ppforest2-coverage.json)](https://github.com/andres-vidal/ppforest2/actions/workflows/run-coverage.yml)
 
@@ -340,6 +341,7 @@ The release build produces the `ppforest2` CLI binary and the `ppforest2-test` t
 ```bash
 make r-install-deps     # Install R package dependencies via pak
 make r-build            # Prepare source and run R CMD build (produces tarball)
+make r-test             # Fast: install + run R tests only (devtools)
 make r-check            # Build and run R CMD check on the tarball
 make r-check-cran       # Same as r-check with --as-cran for CRAN submission
 make r-install          # Build and install the package locally
@@ -470,6 +472,7 @@ make r-install-deps
 
 ```bash
 make r-build            # Prepare source and run R CMD build
+make r-test             # Fast: install + run R tests only
 make r-check            # Run R CMD check on the built tarball
 make r-install          # Run R CMD INSTALL on the built tarball
 make r-document         # Regenerate Roxygen man pages

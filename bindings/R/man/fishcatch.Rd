@@ -8,7 +8,7 @@
 A data frame with 159 rows and 7 variables
 }
 \source{
-\url{http://www.amstat.org/publications/jse/jse_data_archive.htm}
+\url{https://jse.amstat.org/jse_data_archive.htm}
 }
 \usage{
 data(fishcatch)

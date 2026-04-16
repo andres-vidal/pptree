@@ -1,5 +1,8 @@
-name: Run R Package Check
-on: push
+name: Run R Package Check (CRAN)
+on:
+  pull_request:
+  push:
+    branches: [main]
 jobs:
   Ubuntu:
     runs-on: ubuntu-latest
@@ -7,6 +10,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: r-lib/actions/setup-r@v2
       - uses: r-lib/actions/setup-tinytex@v2
+      - name: Install system dependencies for CRAN check
+        run: sudo apt-get install -y --no-install-recommends devscripts qpdf
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           working-directory: bindings/R
@@ -16,7 +21,7 @@ jobs:
         with:
           path: .build/_deps
           key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
-      - run: make r-check
+      - run: make r-check-cran
       - name: Show Install Logs
         if: failure()
         run: cat ppforest2.Rcheck/00install.out
@@ -35,7 +40,7 @@ jobs:
         with:
           path: .build/_deps
           key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
-      - run: make r-check
+      - run: make r-check-cran
       - name: Show Install Logs
         if: failure()
         run: cat ppforest2.Rcheck/00install.out
@@ -55,7 +60,7 @@ jobs:
         with:
           path: .build/_deps
           key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
-      - run: make r-check
+      - run: make r-check-cran
       - name: Show Install Logs
         if: failure()
         run: cat ppforest2.Rcheck/00install.out
@@ -79,7 +84,7 @@ jobs:
         with:
           path: .build/_deps
           key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
-      - run: make r-check
+      - run: make r-check-cran
       - name: Show Install Logs
         if: failure()
         run: cat ppforest2.Rcheck/00install.out

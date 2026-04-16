@@ -1,0 +1,51 @@
+name: Run R Tests
+on: push
+jobs:
+  Ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: bindings/R
+          extra-packages: any::devtools, any::vdiffr
+      - name: Cache CMake deps
+        uses: actions/cache@v4
+        with:
+          path: .build/_deps
+          key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
+      - run: make r-test
+  Mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: bindings/R
+          extra-packages: any::devtools, any::vdiffr
+      - name: Cache CMake deps
+        uses: actions/cache@v4
+        with:
+          path: .build/_deps
+          key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
+      - run: make r-test
+  Windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: bindings/R
+          extra-packages: any::devtools, any::vdiffr
+      - name: Cache CMake deps
+        uses: actions/cache@v4
+        with:
+          path: .build/_deps
+          key: ${{ runner.os }}-r-cmake-deps-${{ hashFiles('core/Dependencies.cmake') }}
+      - run: make r-test
