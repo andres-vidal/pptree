@@ -176,7 +176,7 @@ namespace ppforest2::serialization {
     j["labels"] = labels;
 
     auto ce = cm.group_errors();
-    std::vector<float> ce_vec(ce.data(), ce.data() + ce.size());
+    std::vector<Feature> ce_vec(ce.data(), ce.data() + ce.size());
     j["group_errors"] = ce_vec;
 
     return j;
@@ -185,20 +185,20 @@ namespace ppforest2::serialization {
   json to_json(VariableImportance const& vi) {
     int const p = static_cast<int>(vi.projections.size());
 
-    std::vector<float> scale_vec(vi.scale.data(), vi.scale.data() + p);
-    std::vector<float> proj_vec(vi.projections.data(), vi.projections.data() + p);
+    std::vector<Feature> scale_vec(vi.scale.data(), vi.scale.data() + p);
+    std::vector<Feature> proj_vec(vi.projections.data(), vi.projections.data() + p);
 
     json j;
     j["scale"]       = scale_vec;
     j["projections"] = proj_vec;
 
     if (vi.weighted_projections.size() == p) {
-      std::vector<float> wp_vec(vi.weighted_projections.data(), vi.weighted_projections.data() + p);
+      std::vector<Feature> wp_vec(vi.weighted_projections.data(), vi.weighted_projections.data() + p);
       j["weighted_projections"] = wp_vec;
     }
 
     if (vi.permuted.size() == p) {
-      std::vector<float> perm_vec(vi.permuted.data(), vi.permuted.data() + p);
+      std::vector<Feature> perm_vec(vi.permuted.data(), vi.permuted.data() + p);
       j["permuted"] = perm_vec;
     }
 
@@ -264,7 +264,7 @@ namespace ppforest2::serialization {
     j["labels"] = labels;
 
     auto ce = cm.group_errors();
-    std::vector<float> ce_vec(ce.data(), ce.data() + ce.size());
+    std::vector<Feature> ce_vec(ce.data(), ce.data() + ce.size());
     j["group_errors"] = ce_vec;
 
     return j;
@@ -420,20 +420,20 @@ namespace ppforest2::serialization {
 
   template<> VariableImportance from_json<VariableImportance>(json const& j) {
     VariableImportance vi;
-    auto scale_vec = j["scale"].get<std::vector<float>>();
-    auto proj_vec  = j["projections"].get<std::vector<float>>();
+    auto scale_vec = j["scale"].get<std::vector<Feature>>();
+    auto proj_vec  = j["projections"].get<std::vector<Feature>>();
     int p          = static_cast<int>(proj_vec.size());
 
     vi.scale       = Eigen::Map<types::FeatureVector const>(scale_vec.data(), p);
     vi.projections = Eigen::Map<types::FeatureVector const>(proj_vec.data(), p);
 
     if (j.contains("weighted_projections") && !j["weighted_projections"].empty()) {
-      auto wp_vec             = j["weighted_projections"].get<std::vector<float>>();
+      auto wp_vec             = j["weighted_projections"].get<std::vector<Feature>>();
       vi.weighted_projections = Eigen::Map<types::FeatureVector const>(wp_vec.data(), p);
     }
 
     if (j.contains("permuted") && !j["permuted"].empty()) {
-      auto perm_vec = j["permuted"].get<std::vector<float>>();
+      auto perm_vec = j["permuted"].get<std::vector<Feature>>();
       vi.permuted   = Eigen::Map<types::FeatureVector const>(perm_vec.data(), p);
     }
 

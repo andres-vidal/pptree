@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "stats/Stats.hpp"
+#include "utils/Types.hpp"
 
 namespace ppforest2::stats {
   /**
@@ -21,10 +22,10 @@ namespace ppforest2::stats {
    */
   class Normal {
   private:
-    float mean;
-    float std_dev;
+    types::Feature mean;
+    types::Feature std_dev;
 
-    std::optional<float> cached_z;
+    std::optional<types::Feature> cached_z;
 
     /**
        * @brief Generate a uniform random number in (0, 1).
@@ -44,7 +45,7 @@ namespace ppforest2::stats {
        * @param z  Standard normal variate.
        * @return   mean + std_dev * z.
        */
-    float denormalize(float z);
+    types::Feature denormalize(types::Feature z);
 
   public:
     /**
@@ -53,7 +54,7 @@ namespace ppforest2::stats {
        * @param mean     Distribution mean.
        * @param std_dev  Distribution standard deviation.
        */
-    Normal(float mean, float std_dev);
+    Normal(types::Feature mean, types::Feature std_dev);
 
     /**
        * @brief Generate a single normal variate via the Box-Muller transform.
@@ -71,7 +72,7 @@ namespace ppforest2::stats {
        * @param rng  Random number generator (pcg32).
        * @return     A sample from N(mean, std_dev²).
        */
-    float operator()(RNG& rng);
+    types::Feature operator()(RNG& rng);
 
     /**
        * @brief Generate multiple normal variates.
@@ -80,6 +81,6 @@ namespace ppforest2::stats {
        * @param rng    Random number generator (pcg32).
        * @return       Vector of @p count samples from N(mean, std_dev²).
        */
-    std::vector<float> operator()(int count, RNG& rng);
+    std::vector<types::Feature> operator()(int count, RNG& rng);
   };
 }

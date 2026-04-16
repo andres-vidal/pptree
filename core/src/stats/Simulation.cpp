@@ -9,7 +9,7 @@ namespace ppforest2::stats {
     types::OutcomeVector y(n);
 
     for (int i = 0; i < n; ++i) {
-      float group_mean = params.mean + (i % G) * params.mean_separation;
+      types::Feature group_mean = params.mean + (i % G) * params.mean_separation;
 
       Normal norm(group_mean, params.sd);
 

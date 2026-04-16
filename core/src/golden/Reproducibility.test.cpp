@@ -126,7 +126,7 @@ namespace {
       return;
     }
 
-    auto expected = expected_json[key].get<std::vector<float>>();
+    auto expected = expected_json[key].get<std::vector<Feature>>();
 
     ASSERT_EQ(static_cast<int>(expected.size()), actual.size()) << "VI '" << key << "' size mismatch";
 
@@ -140,7 +140,7 @@ namespace {
       ASSERT_TRUE(actual.contains(key)) << label << ": missing key '" << key << "'";
 
       if (value.is_number_float()) {
-        EXPECT_NEAR(value.get<float>(), actual[key].get<float>(), 1e-5f) << label << "." << key;
+        EXPECT_NEAR(value.get<Feature>(), actual[key].get<Feature>(), 1e-5f) << label << "." << key;
       } else {
         EXPECT_EQ(value, actual[key]) << label << "." << key;
       }
@@ -177,14 +177,14 @@ namespace {
     EXPECT_EQ(expected_groups, actual_groups) << path << ".groups mismatch";
 
     // Compare floats with tolerance
-    EXPECT_NEAR(expected["pp_index_value"].get<float>(), actual["pp_index_value"].get<float>(), tolerance)
+    EXPECT_NEAR(expected["pp_index_value"].get<Feature>(), actual["pp_index_value"].get<Feature>(), tolerance)
         << path << ".pp_index_value mismatch";
 
-    EXPECT_NEAR(expected["cutpoint"].get<float>(), actual["cutpoint"].get<float>(), tolerance)
+    EXPECT_NEAR(expected["cutpoint"].get<Feature>(), actual["cutpoint"].get<Feature>(), tolerance)
         << path << ".cutpoint mismatch";
 
-    auto expected_proj = expected["projector"].get<std::vector<float>>();
-    auto actual_proj   = actual["projector"].get<std::vector<float>>();
+    auto expected_proj = expected["projector"].get<std::vector<Feature>>();
+    auto actual_proj   = actual["projector"].get<std::vector<Feature>>();
     ASSERT_EQ(expected_proj.size(), actual_proj.size()) << path << ".projector size mismatch";
 
     for (size_t i = 0; i < expected_proj.size(); ++i) {
@@ -229,7 +229,7 @@ namespace {
     ASSERT_EQ(static_cast<int>(expected_json.size()), actual.rows()) << "Vote proportions row count mismatch";
 
     for (int i = 0; i < actual.rows(); ++i) {
-      auto expected_row = expected_json[static_cast<std::size_t>(i)].get<std::vector<float>>();
+      auto expected_row = expected_json[static_cast<std::size_t>(i)].get<std::vector<Feature>>();
       ASSERT_EQ(static_cast<int>(expected_row.size()), actual.cols())
           << "Vote proportions col count mismatch at row " << i;
 
@@ -264,7 +264,7 @@ namespace {
     compare_predictions(golden["predictions"], predictions, group_names);                   \
                                                                                             \
     ConfusionMatrix cm(predictions, data.y);                                                \
-    EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                      \
+    EXPECT_NEAR(cm.error(), golden["error_rate"].get<Feature>(), 1e-3f);                      \
     compare_confusion_matrix(golden["training_confusion_matrix"], cm, group_names);         \
                                                                                             \
     if (golden.contains("variable_importance")) {                                           \
@@ -304,7 +304,7 @@ namespace {
     compare_predictions(golden["predictions"], predictions, group_names);                                          \
                                                                                                                    \
     ConfusionMatrix cm(predictions, data.y);                                                                       \
-    EXPECT_NEAR(cm.error(), golden["error_rate"].get<float>(), 1e-3f);                                             \
+    EXPECT_NEAR(cm.error(), golden["error_rate"].get<Feature>(), 1e-3f);                                             \
     compare_confusion_matrix(golden["training_confusion_matrix"], cm, group_names);                                \
                                                                                                                    \
     if (golden.contains("oob_error")) {                                                                            \

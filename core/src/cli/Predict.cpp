@@ -47,11 +47,11 @@ namespace ppforest2::cli {
 namespace ppforest2::cli {
   namespace {
     json proportions_to_json(FeatureMatrix const& proportions) {
-      std::vector<std::vector<float>> rows;
+      std::vector<std::vector<Feature>> rows;
       rows.reserve(proportions.rows());
 
       for (Eigen::Index i = 0; i < proportions.rows(); ++i) {
-        std::vector<float> row(proportions.cols());
+        std::vector<Feature> row(proportions.cols());
 
         for (Eigen::Index j = 0; j < proportions.cols(); ++j) {
           row[j] = proportions(i, j);

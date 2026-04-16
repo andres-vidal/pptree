@@ -54,7 +54,7 @@ static std::string const PLATFORM   = PPFOREST2_PLATFORM;
 struct GoldenConfig {
   std::string csv_path;
   int size; // 0 = single tree
-  float lambda;
+  Feature lambda;
   int n_vars; // ignored for single tree
   int seed;
 

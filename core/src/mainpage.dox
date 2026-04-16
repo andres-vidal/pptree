@@ -199,9 +199,11 @@
  *
  * @section precision Numeric precision
  *
- * The core uses single-precision (`float`) arithmetic by default.
- * Compile with `-DPPFOREST2_DOUBLE_PRECISION=ON` to switch to `double`
- * throughout.  See types::Feature.
+ * The core uses single-precision (`float`) arithmetic for all feature
+ * data.  This is sufficient for classification and reduces memory usage.
+ * If a strategy needs higher precision internally (e.g. for regression
+ * loss computation), it can cast to `double` within its own scope.
+ * See types::Feature.
  *
  * @section namespaces Namespace guide
  *

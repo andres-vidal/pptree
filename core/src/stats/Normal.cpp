@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+using ppforest2::types::Feature;
+
 namespace ppforest2::stats {
   double Normal::gen_unif01(RNG& rng) {
     static constexpr uint64_t PRECISION = 53;
@@ -18,17 +20,17 @@ namespace ppforest2::stats {
     return static_cast<double>(bits) / static_cast<double>(MAX_BITS + 1);
   }
 
-  float Normal::denormalize(float z) {
+  Feature Normal::denormalize(Feature z) {
     return mean + std_dev * z;
   }
 
-  Normal::Normal(float mean, float std_dev)
+  Normal::Normal(Feature mean, Feature std_dev)
       : mean(mean)
       , std_dev(std_dev) {}
 
-  float Normal::operator()(RNG& rng) {
+  Feature Normal::operator()(RNG& rng) {
     if (cached_z.has_value()) {
-      float z = cached_z.value();
+      Feature z = cached_z.value();
       cached_z.reset();
       return denormalize(z);
     }
@@ -42,13 +44,13 @@ namespace ppforest2::stats {
     double z1 = r * std::cos(theta);
     double z2 = r * std::sin(theta);
 
-    cached_z = static_cast<float>(z2);
+    cached_z = static_cast<Feature>(z2);
 
     return denormalize(z1);
   }
 
-  std::vector<float> Normal::operator()(int count, RNG& rng) {
-    std::vector<float> result(count);
+  std::vector<Feature> Normal::operator()(int count, RNG& rng) {
+    std::vector<Feature> result(count);
 
     for (int i = 0; i < count; i++) {
       result[i] = operator()(rng);

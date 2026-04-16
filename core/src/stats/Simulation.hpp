@@ -15,9 +15,9 @@ namespace ppforest2::stats {
    * relative to the previous group.
    */
   struct SimulationParams {
-    float mean            = 100.0f; ///< Base mean for the first group.
-    float mean_separation = 50.0f;  ///< Mean shift between successive groups.
-    float sd              = 10.0f;  ///< Standard deviation within each group.
+    types::Feature mean            = 100.0f; ///< Base mean for the first group.
+    types::Feature mean_separation = 50.0f;  ///< Mean shift between successive groups.
+    types::Feature sd              = 10.0f;  ///< Standard deviation within each group.
   };
 
   /**

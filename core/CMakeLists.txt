@@ -32,11 +32,7 @@ endif()
 
 set(PPFOREST2_PLATFORM "${PPFOREST2_OS}-${PPFOREST2_COMPILER}")
 
-option(PPFOREST2_DOUBLE_PRECISION "Use double precision for feature data" OFF)
 option(PPFOREST2_CORE_ONLY "Build only the core library, skip CLI, tests, and benchmarks" OFF)
-if(PPFOREST2_DOUBLE_PRECISION)
-  add_compile_definitions(PPFOREST2_DOUBLE_PRECISION)
-endif()
 
 add_compile_definitions(EIGEN_DONT_PARALLELIZE)
 add_compile_definitions(EIGEN_NO_AUTOMATIC_RESIZING)

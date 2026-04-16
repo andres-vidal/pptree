@@ -5,19 +5,14 @@
 /**
  * @brief Core numeric type aliases for the ppforest2 library.
  *
- * All matrix and vector types are Eigen dynamic-size types.  The
- * scalar precision for features is controlled by the compile-time
- * flag PPFOREST2_DOUBLE_PRECISION (float by default).
+ * All matrix and vector types are Eigen dynamic-size types.  Feature
+ * precision is single-precision (`float`), which is sufficient for
+ * classification.  If a future strategy (e.g. regression) needs higher
+ * precision internally, it can cast to `double` within its own scope.
  */
 namespace ppforest2::types {
-  /** @brief Scalar type for feature values (float or double). */
-  // clang-format off
-  #ifdef PPFOREST2_DOUBLE_PRECISION
-  using Feature = double;
-  #else
+  /** @brief Scalar type for feature values. */
   using Feature = float;
-  #endif
-  // clang-format on
 
   /** @brief Scalar type for group labels (integer). */
   using Outcome = int;

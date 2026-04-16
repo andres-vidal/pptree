@@ -116,7 +116,7 @@ TEST(CSVReadTest, CrabsDatasetWithCategoricalSex) {
   // "sex" is the first column and is categorical (M/F)
   // All values should be 0 or 1
   for (int i = 0; i < data.x.rows(); ++i) {
-    float val = data.x(i, 0);
+    types::Feature val = data.x(i, 0);
     EXPECT_TRUE(val == 0.0f || val == 1.0f) << "Row " << i << " sex=" << val;
   }
 }

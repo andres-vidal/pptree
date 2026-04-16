@@ -79,6 +79,7 @@
 #include "stats/Normal.hpp"
 
 using namespace ppforest2::stats;
+using namespace ppforest2::types;
 
 /**
  * @brief Standard normal CDF: Φ(x) = ½ erfc(−x / √2).
@@ -397,7 +398,7 @@ TEST(Normal, BatchMeanConverges) {
 
   double sum = 0;
 
-  for (float x : samples) {
+  for (Feature x : samples) {
     sum += x;
   }
 
