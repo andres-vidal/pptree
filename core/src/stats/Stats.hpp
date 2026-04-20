@@ -25,15 +25,15 @@ namespace ppforest2::stats {
    * @param x  Feature matrix.
    * @param y  Outcome vector.
    */
-  void sort(types::FeatureMatrix& x, types::OutcomeVector& y);
+  void sort(types::FeatureMatrix& x, types::GroupIdVector& y);
 
   /**
-   * @brief Unique values of a response vector.
+   * @brief Unique group labels in a response vector.
    *
-   * @param column  Outcome vector.
-   * @return        Set of unique response values.
+   * @param column  Group ID vector.
+   * @return        Set of unique group labels.
    */
-  std::set<types::Outcome> unique(types::OutcomeVector const& column);
+  std::set<types::GroupId> unique(types::GroupIdVector const& column);
 
   /**
    * @brief Accuracy of a prediction.
@@ -42,16 +42,27 @@ namespace ppforest2::stats {
    * @param actual       Actual response vector.
    * @return             Accuracy (0 to 1).
    */
-  float accuracy(types::OutcomeVector const& predictions, types::OutcomeVector const& actual);
+  float accuracy(types::OutcomeVector const& predictions, types::GroupIdVector const& actual);
 
   /**
    * @brief Error rate of a prediction.
    *
    * @param predictions  Predicted response vector.
-   * @param actual       Actual response vector.
+   * @param actual       Actual group label vector.
    * @return             Error rate (0 to 1).
    */
-  double error_rate(types::OutcomeVector const& predictions, types::OutcomeVector const& actual);
+  double error_rate(types::OutcomeVector const& predictions, types::GroupIdVector const& actual);
+
+  /**
+   * @brief Convenience overload: accept float-typed class labels.
+   *
+   * Casts `actual` to `GroupIdVector` locally. Used by the unified training
+   * pipeline where `y` is carried as `OutcomeVector` for both modes.
+   */
+  inline double error_rate(types::OutcomeVector const& predictions, types::OutcomeVector const& actual) {
+    types::GroupIdVector const actual_int = actual.cast<types::GroupId>();
+    return error_rate(predictions, actual_int);
+  }
 
   /**
    * @brief Sample standard deviation of a vector.

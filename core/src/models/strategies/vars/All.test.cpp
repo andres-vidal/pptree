@@ -43,7 +43,7 @@ TEST(VarsAllStrategy, RegistryLookup) {
 }
 
 TEST(VarsAllStrategy, SelectsAllColumns) {
-  FeatureMatrix const x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+  FeatureMatrix x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
   All const vs;
   auto result = vs.compute(x);

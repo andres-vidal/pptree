@@ -15,7 +15,7 @@ pptr(
   cutpoint = NULL,
   stop = NULL,
   binarize = NULL,
-  partition = NULL,
+  grouping = NULL,
   leaf = NULL
 )
 }
@@ -40,38 +40,34 @@ pptr(
 
 \item{binarize}{A binarization strategy object created by \code{\link{binarize_largest_gap}} (default).}
 
-\item{partition}{A partition strategy object created by \code{\link{partition_by_group}} (default).}
+\item{grouping}{A grouping strategy object created by \code{\link{grouping_by_label}} (default).}
 
 \item{leaf}{A leaf strategy object created by \code{\link{leaf_majority_vote}} (default).}
 }
 \value{
-A pptr model trained on \code{x} and \code{y}.
+A \code{pptr} model. Its S3 class vector is
+  \code{c("pptr_classification", "pptr", "ppmodel")} or
+  \code{c("pptr_regression", "pptr", "ppmodel")} depending on the mode.
 }
 \description{
 This function trains a Project-Pursuit oblique decision tree using either a formula and data frame interface or a matrix-based interface. When using the formula interface, specify the model formula and the data frame containing the variables. For the matrix-based interface, provide matrices for the features and labels directly.
 If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
 }
+\details{
+Classification vs regression is auto-detected from `y`: a factor or character vector triggers classification; a numeric vector triggers regression.
+}
 \examples{
 
 # Example 1: formula interface with the `iris` dataset
-pptr(Type ~ ., data = iris)
+pptr(Species ~ ., data = iris)
 
 # Example 2: formula interface with the `iris` dataset with regularization
-pptr(Type ~ ., data = iris, lambda = 0.5)
+pptr(Species ~ ., data = iris, lambda = 0.5)
 
 # Example 3: matrix interface with the `iris` dataset
 pptr(x = iris[, 1:4], y = iris[, 5])
 
-# Example 4: matrix interface with the `iris` dataset with regularization
-pptr(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
-
-# Example 5: formula interface with the `crabs` dataset
-pptr(Type ~ ., data = crabs)
-
-# Example 6: formula interface with the `crabs` dataset with regularization
-pptr(Type ~ ., data = crabs, lambda = 0.5)
-
 }
 \seealso{
-\code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{cutpoint_mean_of_means}}, \code{\link{stop_pure_node}}, \code{\link{binarize_largest_gap}}, \code{\link{partition_by_group}}, \code{\link{leaf_majority_vote}}, \code{vignette("introduction")} for a tutorial
+\code{\link{predict.pptr_classification}}, \code{\link{predict.pptr_regression}}, \code{\link{formula.ppmodel}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration
 }

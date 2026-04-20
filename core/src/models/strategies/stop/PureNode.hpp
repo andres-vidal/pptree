@@ -2,7 +2,6 @@
 
 #include "models/strategies/stop/StopRule.hpp"
 #include "models/strategies/Strategy.hpp"
-#include "utils/JsonValidation.hpp"
 
 namespace ppforest2::stop {
   /**
@@ -14,6 +13,7 @@ namespace ppforest2::stop {
   struct PureNode : public StopRule {
     nlohmann::json to_json() const override;
     std::string display_name() const override { return "Pure node"; }
+    std::set<types::Mode> supported_modes() const override { return {types::Mode::Classification}; }
 
     bool should_stop(NodeContext const& ctx, stats::RNG& rng) const override;
 

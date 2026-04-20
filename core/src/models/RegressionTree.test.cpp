@@ -1,0 +1,364 @@
+#include <gtest/gtest.h>
+#include <Eigen/Dense>
+#include <cmath>
+#include <numeric>
+
+#include "models/Tree.hpp"
+#include "models/ClassificationTree.hpp"
+#include "models/ClassificationForest.hpp"
+#include "models/RegressionTree.hpp"
+#include "models/RegressionForest.hpp"
+#include "models/Forest.hpp"
+#include "models/TrainingSpec.hpp"
+#include "models/strategies/grouping/ByCutpoint.hpp"
+#include "models/strategies/leaf/MeanResponse.hpp"
+#include "models/strategies/stop/MinSize.hpp"
+#include "models/strategies/stop/MinVariance.hpp"
+#include "models/strategies/stop/CompositeStop.hpp"
+#include "stats/RegressionMetrics.hpp"
+#include "stats/Stats.hpp"
+
+using namespace ppforest2;
+using namespace ppforest2::types;
+using namespace ppforest2::stats;
+
+namespace {
+  /**
+   * @brief Create a simple regression dataset: y = x1 + x2 + noise.
+   *
+   * Returns sorted x and y (sorted ascending by y).
+   */
+  struct RegressionData {
+    FeatureMatrix x;
+    OutcomeVector y;
+  };
+
+  RegressionData make_regression_data(int n, int seed) {
+    RNG rng(static_cast<uint64_t>(seed));
+
+    FeatureMatrix x(n, 2);
+    OutcomeVector y(n);
+
+    for (int i = 0; i < n; ++i) {
+      Feature x1 = static_cast<Feature>(i) / static_cast<Feature>(n);
+      Feature x2 = static_cast<Feature>(n - i) / static_cast<Feature>(n);
+      x(i, 0)    = x1;
+      x(i, 1)    = x2;
+      y(i)       = x1 + x2 + static_cast<Feature>(i % 3) * 0.01F;
+    }
+
+    // Sort by y.
+    std::vector<int> order(static_cast<std::size_t>(n));
+    std::iota(order.begin(), order.end(), 0);
+
+    std::stable_sort(order.begin(), order.end(), [&y](int a, int b) { return y(a) < y(b); });
+
+    FeatureMatrix sorted_x(n, 2);
+    OutcomeVector sorted_y(n);
+
+    for (int i = 0; i < n; ++i) {
+      sorted_x.row(i) = x.row(order[static_cast<std::size_t>(i)]);
+      sorted_y(i)     = y(order[static_cast<std::size_t>(i)]);
+    }
+
+    return {sorted_x, sorted_y};
+  }
+
+  TrainingSpec make_regression_tree_spec(int seed = 0) {
+    return TrainingSpec::builder(types::Mode::Regression)
+        .pp(pp::pda(0.0F))
+        .grouping(grouping::by_cutpoint())
+        .leaf(leaf::mean_response())
+        .stop(stop::any({stop::min_size(5), stop::min_variance(0.001F)}))
+        .seed(seed)
+        .build();
+  }
+
+  TrainingSpec make_regression_forest_spec(int size = 10, int seed = 0) {
+    return TrainingSpec::builder(types::Mode::Regression)
+        .pp(pp::pda(0.0F))
+        .vars(vars::all())
+        .grouping(grouping::by_cutpoint())
+        .leaf(leaf::mean_response())
+        .stop(stop::any({stop::min_size(5), stop::min_variance(0.001F)}))
+        .size(size)
+        .seed(seed)
+        .threads(1)
+        .build();
+  }
+}
+// ---------------------------------------------------------------------------
+// RegressionTree tests
+// ---------------------------------------------------------------------------
+
+TEST(RegressionTree, TrainsSuccessfully) {
+  auto data = make_regression_data(30, 0);
+  auto spec = make_regression_tree_spec();
+
+  auto tree_ptr = Tree::train(spec, data.x, data.y);
+  Tree& tree    = *tree_ptr;
+
+  EXPECT_NE(tree.root, nullptr);
+  EXPECT_FALSE(tree.degenerate);
+}
+
+TEST(RegressionTree, PredictsSingleObservation) {
+  auto data = make_regression_data(30, 0);
+  auto spec = make_regression_tree_spec();
+
+  auto tree_ptr = Tree::train(spec, data.x, data.y);
+  Tree& tree    = *tree_ptr;
+
+  Outcome pred = tree.predict(static_cast<FeatureVector>(data.x.row(0)));
+
+  // Prediction should be a finite number (mean response of leaf).
+  EXPECT_TRUE(std::isfinite(pred));
+}
+
+TEST(RegressionTree, PredictsMatrix) {
+  auto data = make_regression_data(30, 0);
+  auto spec = make_regression_tree_spec();
+
+  auto tree_ptr = Tree::train(spec, data.x, data.y);
+  Tree& tree    = *tree_ptr;
+
+  OutcomeVector preds = tree.predict(data.x);
+
+  EXPECT_EQ(preds.size(), data.x.rows());
+
+  for (int i = 0; i < preds.size(); ++i) {
+    EXPECT_TRUE(std::isfinite(preds(i)));
+  }
+}
+
+TEST(RegressionTree, PredictionsAreReasonable) {
+  auto data = make_regression_data(50, 0);
+  auto spec = make_regression_tree_spec();
+
+  auto tree_ptr = Tree::train(spec, data.x, data.y);
+  Tree& tree    = *tree_ptr;
+
+  OutcomeVector preds = tree.predict(data.x);
+
+  // Training MSE should be relatively low for this simple dataset.
+  RegressionMetrics metrics(preds, data.y);
+
+  EXPECT_LT(metrics.mse, 1.0);
+  EXPECT_GT(metrics.r_squared, -0.01);
+}
+
+TEST(RegressionTree, Reproducible) {
+  auto data  = make_regression_data(30, 0);
+  auto spec1 = make_regression_tree_spec(0);
+  auto spec2 = make_regression_tree_spec(0);
+
+  auto tree1_ptr = Tree::train(spec1, data.x, data.y);
+  Tree& tree1    = *tree1_ptr;
+  auto tree2_ptr = Tree::train(spec2, data.x, data.y);
+  Tree& tree2    = *tree2_ptr;
+
+  OutcomeVector preds1 = tree1.predict(data.x);
+  OutcomeVector preds2 = tree2.predict(data.x);
+
+  for (int i = 0; i < preds1.size(); ++i) {
+    EXPECT_FLOAT_EQ(preds1(i), preds2(i));
+  }
+}
+
+TEST(RegressionTree, ConstantResponse) {
+  // All y values are the same; tree should immediately hit min_variance stop.
+  int const n = 30;
+  FeatureMatrix x(n, 2);
+  OutcomeVector y(n);
+
+  for (int i = 0; i < n; ++i) {
+    x(i, 0) = static_cast<Feature>(i);
+    x(i, 1) = static_cast<Feature>(n - i);
+    y(i)    = 5.0F;
+  }
+
+  auto spec     = make_regression_tree_spec();
+  auto tree_ptr = Tree::train(spec, x, y);
+  Tree& tree    = *tree_ptr;
+
+  EXPECT_NE(tree.root, nullptr);
+
+  OutcomeVector preds = tree.predict(x);
+  for (int i = 0; i < n; ++i) {
+    EXPECT_NEAR(preds(i), 5.0, 1e-3);
+  }
+}
+
+TEST(RegressionTree, LargeDataset) {
+  int const n = 500;
+  auto data   = make_regression_data(n, 0);
+  auto spec   = make_regression_tree_spec();
+
+  auto tree_ptr = Tree::train(spec, data.x, data.y);
+  Tree& tree    = *tree_ptr;
+
+  EXPECT_NE(tree.root, nullptr);
+
+  OutcomeVector preds = tree.predict(data.x);
+  EXPECT_EQ(preds.size(), n);
+
+  RegressionMetrics metrics(preds, data.y);
+  EXPECT_LT(metrics.mse, 1.0);
+}
+
+TEST(RegressionTree, MinSizeStop) {
+  auto data = make_regression_data(100, 0);
+
+  auto spec = TrainingSpec::builder(types::Mode::Regression)
+                  .pp(pp::pda(0.0F))
+                  .grouping(grouping::by_cutpoint())
+                  .leaf(leaf::mean_response())
+                  .stop(stop::min_size(50))
+                  .seed(0)
+                  .build();
+
+  auto tree_ptr = Tree::train(spec, data.x, data.y);
+  Tree& tree    = *tree_ptr;
+
+  EXPECT_NE(tree.root, nullptr);
+}
+
+TEST(RegressionTree, MinVarianceStop) {
+  auto data = make_regression_data(100, 0);
+
+  auto spec = TrainingSpec::builder(types::Mode::Regression)
+                  .pp(pp::pda(0.0F))
+                  .grouping(grouping::by_cutpoint())
+                  .leaf(leaf::mean_response())
+                  .stop(stop::min_variance(10.0F))
+                  .seed(0)
+                  .build();
+
+  auto tree_ptr = Tree::train(spec, data.x, data.y);
+  Tree& tree    = *tree_ptr;
+
+  EXPECT_NE(tree.root, nullptr);
+}
+
+TEST(RegressionTree, NegativeResponses) {
+  int const n = 30;
+  FeatureMatrix x(n, 2);
+  OutcomeVector y(n);
+
+  for (int i = 0; i < n; ++i) {
+    x(i, 0) = static_cast<Feature>(i);
+    x(i, 1) = static_cast<Feature>(n - i);
+    y(i)    = static_cast<Feature>(i) - 15.0F;
+  }
+
+  auto spec     = make_regression_tree_spec();
+  auto tree_ptr = Tree::train(spec, x, y);
+  Tree& tree    = *tree_ptr;
+
+  EXPECT_NE(tree.root, nullptr);
+
+  OutcomeVector preds = tree.predict(x);
+  bool has_negative   = false;
+  for (int i = 0; i < n; ++i) {
+    if (preds(i) < 0) {
+      has_negative = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(has_negative);
+}
+
+TEST(RegressionTree, LargeResponseValues) {
+  int const n = 30;
+  FeatureMatrix x(n, 2);
+  OutcomeVector y(n);
+
+  for (int i = 0; i < n; ++i) {
+    x(i, 0) = static_cast<Feature>(i);
+    x(i, 1) = static_cast<Feature>(n - i);
+    y(i)    = static_cast<Feature>(i) * 1000.0F;
+  }
+
+  auto spec     = make_regression_tree_spec();
+  auto tree_ptr = Tree::train(spec, x, y);
+  Tree& tree    = *tree_ptr;
+
+  OutcomeVector preds = tree.predict(x);
+  for (int i = 0; i < n; ++i) {
+    EXPECT_TRUE(std::isfinite(preds(i)));
+  }
+}
+
+TEST(RegressionTree, NoProgressCutpointTerminates) {
+  // If the cutpoint algorithm produces a split that leaves every row on one
+  // side, the grouping strategy has no way to make progress. Prior to the
+  // no-progress guard in build_root this would recurse without bound.
+  //
+  // Construct a weak stop rule (min_size only, no min_variance) and a small
+  // near-constant-response dataset where the cutpoint and projector combination
+  // could fail. Training must terminate rather than hang or overflow the stack.
+  int const n = 20;
+  FeatureMatrix x(n, 2);
+  OutcomeVector y(n);
+
+  for (int i = 0; i < n; ++i) {
+    x(i, 0) = static_cast<Feature>(i);
+    x(i, 1) = static_cast<Feature>(n - i);
+    y(i)    = (i < n / 2) ? 0.0F : 1.0F; // bimodal; minimum viable regression target
+  }
+
+  auto spec = TrainingSpec::builder(types::Mode::Regression)
+                  .pp(pp::pda(0.0F))
+                  .grouping(grouping::by_cutpoint())
+                  .leaf(leaf::mean_response())
+                  .stop(stop::min_size(3)) // no min_variance
+                  .seed(0)
+                  .build();
+
+  // The call must return; prior to the fix it could loop or stack overflow.
+  auto tree = Tree::train(spec, x, y);
+  EXPECT_NE(tree->root, nullptr);
+
+  // Predictions should still be finite.
+  OutcomeVector preds = tree->predict(x);
+  for (int i = 0; i < n; ++i) {
+    EXPECT_TRUE(std::isfinite(preds(i)));
+  }
+}
+
+TEST(RegressionTree, BinaryPathTerminates) {
+  int const n = 10;
+  FeatureMatrix x(n, 2);
+  OutcomeVector y(n);
+
+  for (int i = 0; i < n; ++i) {
+    x(i, 0) = static_cast<Feature>(i);
+    x(i, 1) = static_cast<Feature>(n - i);
+    y(i)    = static_cast<Feature>(i);
+  }
+
+  // min_size(n+1) causes immediate stop at root (MinSize stops when total < min_size).
+  auto spec = TrainingSpec::builder(types::Mode::Regression)
+                  .pp(pp::pda(0.0F))
+                  .grouping(grouping::by_cutpoint())
+                  .leaf(leaf::mean_response())
+                  .stop(stop::min_size(n + 1))
+                  .seed(0)
+                  .build();
+
+  auto tree_ptr = Tree::train(spec, x, y);
+  Tree& tree    = *tree_ptr;
+
+  EXPECT_NE(tree.root, nullptr);
+
+  OutcomeVector preds  = tree.predict(x);
+  double expected_mean = 0;
+  for (int i = 0; i < n; ++i) {
+    expected_mean += y(i);
+  }
+  expected_mean /= n;
+
+  for (int i = 0; i < n; ++i) {
+    EXPECT_NEAR(preds(i), expected_mean, 1e-3);
+  }
+}

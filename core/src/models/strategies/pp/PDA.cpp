@@ -1,13 +1,11 @@
 #include "models/strategies/pp/PDA.hpp"
 
 #include "models/strategies/NodeContext.hpp"
-#include "utils/Math.hpp"
+#include "utils/Invariant.hpp"
+#include "utils/JsonReader.hpp"
 
-#include <algorithm>
 #include <cmath>
 #include <limits>
-#include <numeric>
-#include <vector>
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
 
@@ -31,16 +29,17 @@ namespace ppforest2::pp {
   }
 
   void PDA::optimize(NodeContext& ctx, stats::RNG& /*rng*/) const {
+    invariant(ctx.var_selection.has_value(), "PDA requires var_selection on NodeContext");
     auto const& partition = ctx.active_partition();
-    auto reduced_x        = ctx.x(Eigen::all, ctx.var_selection.selected_cols);
+    auto reduced_x        = ctx.x(Eigen::all, ctx.var_selection->selected_cols);
     auto result           = compute(reduced_x, partition);
-    ctx.projector         = ctx.var_selection.expand(result.projector);
+    ctx.projector         = ctx.var_selection->expand(result.projector);
     ctx.pp_index_value    = result.index_value;
   }
 
-  ProjectionPursuit::Result PDA::compute(FeatureMatrix const& x, GroupPartition const& group_spec) const {
-    FeatureMatrix const B = group_spec.bgss(x);
-    FeatureMatrix const W = group_spec.wgss(x);
+  ProjectionPursuit::Result PDA::compute(FeatureMatrix const& x, GroupPartition const& y_part) const {
+    FeatureMatrix const B = y_part.bgss(x);
+    FeatureMatrix const W = y_part.wgss(x);
 
     FeatureMatrix W_pda = (Feature(1) - Feature(lambda)) * W;
     W_pda.diagonal()    = W.diagonal();
@@ -72,7 +71,8 @@ namespace ppforest2::pp {
   }
 
   ProjectionPursuit::Ptr PDA::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "PDA", {"name", "lambda"});
-    return pda(j.at("lambda").get<float>());
+    JsonReader const r{j, "pda"};
+    r.only_keys({"name", "lambda"});
+    return pda(static_cast<float>(r.require_number("lambda", 0.0, 1.0)));
   }
 }

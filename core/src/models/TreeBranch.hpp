@@ -6,9 +6,6 @@
 #include "utils/Math.hpp"
 
 namespace ppforest2 {
-  /** @brief Scalar cutpoint type for split decisions. */
-  using Cutpoint = types::Feature;
-
   /**
    * @brief Internal split node in a projection pursuit tree.
    *
@@ -22,23 +19,23 @@ namespace ppforest2 {
     /** @brief Projection vector (p). Defines the linear combination of features. */
     pp::Projector projector;
     /** @brief Split cutpoint on the projected value. */
-    Cutpoint cutpoint;
+    types::Feature cutpoint;
     /** @brief Child node for observations with projected value < cutpoint. */
     TreeNode::Ptr lower;
     /** @brief Child node for observations with projected value ≥ cutpoint. */
     TreeNode::Ptr upper;
 
     /** @brief Set of group labels reachable from this node. */
-    std::set<types::Outcome> groups;
+    std::set<types::GroupId> groups;
     /** @brief Projection pursuit index value achieved at this split. */
     types::Feature pp_index_value = 0;
 
     TreeBranch(
         pp::Projector projector,
-        Cutpoint cutpoint,
+        types::Feature cutpoint,
         TreeNode::Ptr lower,
         TreeNode::Ptr upper,
-        std::set<types::Outcome> groups = {},
+        std::set<types::GroupId> groups = {},
         types::Feature pp_index_value   = 0
     );
 
@@ -62,7 +59,7 @@ namespace ppforest2 {
 
     int group_count() const override { return static_cast<int>(groups.size()); }
 
-    std::set<types::Outcome> node_groups() const override { return groups; }
+    std::set<types::GroupId> node_groups() const override { return groups; }
 
     bool equals(TreeNode const& other) const override;
     TreeNode::Ptr clone() const override;
@@ -70,10 +67,10 @@ namespace ppforest2 {
     /** @brief Factory method that returns a unique_ptr to a new TreeBranch. */
     static Ptr make(
         pp::Projector projector,
-        Cutpoint cutpoint,
+        types::Feature cutpoint,
         TreeNode::Ptr lower,
         TreeNode::Ptr upper,
-        std::set<types::Outcome> groups = {},
+        std::set<types::GroupId> groups = {},
         types::Feature pp_index_value   = 0
     );
   };

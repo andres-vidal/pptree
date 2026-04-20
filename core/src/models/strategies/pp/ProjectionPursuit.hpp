@@ -22,7 +22,7 @@ namespace ppforest2::pp {
    *
    * Finds the optimal 1D projection for a given dataset and group
    * partition. Reads from NodeContext: x, var_selection, and the
-   * active partition (y or binary_y). Writes: projector
+   * active partition (y or binary->y). Writes: projector
    * (full-dimensional, expanded) and pp_index_value.
    */
   struct ProjectionPursuit : public Strategy<ProjectionPursuit> {
@@ -49,8 +49,8 @@ namespace ppforest2::pp {
      */
     virtual void optimize(NodeContext& ctx, stats::RNG& rng) const = 0;
 
-    /** @brief Callable shorthand for optimize(). */
-    void operator()(NodeContext& ctx, stats::RNG& rng) const { optimize(ctx, rng); }
+    /** @brief Callable shorthand for optimize(). Skips if `ctx.aborted` is set. */
+    void operator()(NodeContext& ctx, stats::RNG& rng) const;
   };
 
   /** @brief Factory function for a PDA projection pursuit strategy. */

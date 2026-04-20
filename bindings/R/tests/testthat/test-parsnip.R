@@ -22,7 +22,7 @@ describe("parsnip integration", {
       spec <- pp_rand_forest() |>
         set_engine("ppforest2") |>
         set_mode("classification")
-      fit <- spec |> fit(Type ~ ., data = iris)
+      fit <- spec |> fit(Species ~ ., data = iris)
       expect_s3_class(fit, "model_fit")
       expect_s3_class(fit$fit, "pprf")
     })
@@ -31,7 +31,7 @@ describe("parsnip integration", {
       spec <- pp_rand_forest() |>
         set_engine("ppforest2") |>
         set_mode("classification")
-      fit <- spec |> fit(Type ~ ., data = iris)
+      fit <- spec |> fit(Species ~ ., data = iris)
       preds <- predict(fit, iris)
       expect_s3_class(preds, "tbl_df")
       expect_equal(nrow(preds), nrow(iris))
@@ -42,12 +42,12 @@ describe("parsnip integration", {
       spec <- pp_rand_forest() |>
         set_engine("ppforest2") |>
         set_mode("classification")
-      fit <- spec |> fit(Type ~ ., data = iris)
+      fit <- spec |> fit(Species ~ ., data = iris)
       preds <- predict(fit, iris, type = "prob")
       expect_s3_class(preds, "tbl_df")
       expect_equal(nrow(preds), nrow(iris))
       prob_cols <- grep("^\\.pred_", colnames(preds), value = TRUE)
-      expect_equal(length(prob_cols), length(levels(iris$Type)))
+      expect_equal(length(prob_cols), length(levels(iris$Species)))
     })
   })
 
@@ -63,7 +63,7 @@ describe("parsnip integration", {
       spec <- pp_tree() |>
         set_engine("ppforest2") |>
         set_mode("classification")
-      fit <- spec |> fit(Type ~ ., data = iris)
+      fit <- spec |> fit(Species ~ ., data = iris)
       expect_s3_class(fit, "model_fit")
       expect_s3_class(fit$fit, "pptr")
     })
@@ -72,7 +72,7 @@ describe("parsnip integration", {
       spec <- pp_tree() |>
         set_engine("ppforest2") |>
         set_mode("classification")
-      fit <- spec |> fit(Type ~ ., data = iris)
+      fit <- spec |> fit(Species ~ ., data = iris)
       preds <- predict(fit, iris)
       expect_s3_class(preds, "tbl_df")
       expect_equal(nrow(preds), nrow(iris))
@@ -83,7 +83,7 @@ describe("parsnip integration", {
       spec <- pp_tree() |>
         set_engine("ppforest2") |>
         set_mode("classification")
-      fit <- spec |> fit(Type ~ ., data = iris)
+      fit <- spec |> fit(Species ~ ., data = iris)
       preds <- predict(fit, iris, type = "prob")
       expect_s3_class(preds, "tbl_df")
       expect_equal(nrow(preds), nrow(iris))

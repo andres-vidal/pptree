@@ -2,159 +2,94 @@
 #include <Eigen/Dense>
 
 #include "models/Tree.hpp"
+#include "models/ClassificationTree.hpp"
 #include "models/TreeBranch.hpp"
 #include "models/TreeLeaf.hpp"
 
 #include "models/TrainingSpec.hpp"
+#include "TestSpec.hpp"
 
 #include "stats/Simulation.hpp"
 #include "stats/Stats.hpp"
 #include "utils/Macros.hpp"
-
-#include "serialization/Json.hpp"
 
 using namespace ppforest2;
 using namespace ppforest2::pp;
 using namespace ppforest2::stats;
 using namespace ppforest2::types;
 using namespace ppforest2::math;
-using namespace ppforest2::serialization;
 namespace {
   Projector as_projector(std::vector<Feature> v) {
     return Eigen::Map<Projector>(v.data(), v.size());
   }
 }
 
-TEST(TreeLeaf, EqualsEqualResponses) {
-  TreeLeaf const r1(1);
-  TreeLeaf const r2(1);
-
-  ASSERT_TRUE(r1 == r2);
-}
-
-TEST(TreeLeaf, EqualsDifferentResponses) {
-  TreeLeaf const r1(1);
-  TreeLeaf const r2(2);
-
-  ASSERT_FALSE(r1 == r2);
-}
-
-TEST(TreeBranch, EqualsEqualConditions) {
-  TreeBranch const c1(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-  TreeBranch const c2(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-
-  ASSERT_TRUE(c1 == c2);
-}
-
-TEST(TreeBranch, EqualsCollinearProjectors) {
-  TreeBranch const c1(as_projector({1.0, 1.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-  TreeBranch const c2(as_projector({2.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-
-  ASSERT_TRUE(c1 == c2);
-}
-
-TEST(TreeBranch, EqualsApproximateThresholds) {
-  TreeBranch const c1(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-  TreeBranch const c2(as_projector({1.0, 2.0}), 3.000000000000001, TreeLeaf::make(1), TreeLeaf::make(2));
-
-  ASSERT_TRUE(c1 == c2);
-}
-
-TEST(TreeBranch, EqualsNonCollinearProjectors) {
-  TreeBranch const c1(as_projector({1.0, 0.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-  TreeBranch const c2(as_projector({0.0, 1.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-
-  ASSERT_FALSE(c1 == c2);
-}
-
-TEST(TreeBranch, EqualsDifferentThresholds) {
-  TreeBranch const c1(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-  TreeBranch const c2(as_projector({1.0, 2.0}), 4.0, TreeLeaf::make(1), TreeLeaf::make(2));
-
-  ASSERT_FALSE(c1 == c2);
-}
-
-TEST(TreeBranch, EqualsDifferentResponses) {
-  TreeBranch const c1(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-  TreeBranch const c2(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(3));
-
-  ASSERT_FALSE(c1 == c2);
-}
-
-TEST(TreeBranch, EqualsDifferentStructures) {
-  TreeBranch const c1(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2));
-  TreeBranch const c2(
-      as_projector({1.0, 2.0}),
-      3.0,
-      TreeLeaf::make(1),
-      TreeBranch::make(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2))
-  );
-
-  ASSERT_FALSE(c1 == c2);
-}
-
 TEST(Tree, EqualsEqualTrees) {
-  Tree const t1(
+  ClassificationTree const t1(
       TreeBranch::make(
           as_projector({1.0, 2.0}),
           3.0,
           TreeLeaf::make(1),
           TreeBranch::make(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2))
       ),
-      nullptr
+      test::classification_spec()
   );
 
-  Tree const t2(
+  ClassificationTree const t2(
       TreeBranch::make(
           as_projector({1.0, 2.0}),
           3.0,
           TreeLeaf::make(1),
           TreeBranch::make(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2))
       ),
-      nullptr
+      test::classification_spec()
   );
 
   ASSERT_TRUE(t1 == t2);
 }
 
 TEST(Tree, EqualsDifferentTrees) {
-  Tree const t1(TreeBranch::make(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2)), nullptr);
+  ClassificationTree const t1(
+      TreeBranch::make(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(2)), test::classification_spec()
+  );
 
-  Tree const t2(TreeBranch::make(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(3)), nullptr);
+  ClassificationTree const t2(
+      TreeBranch::make(as_projector({1.0, 2.0}), 3.0, TreeLeaf::make(1), TreeLeaf::make(3)), test::classification_spec()
+  );
 
   ASSERT_FALSE(t1 == t2);
 }
 
 TEST(Tree, TrainLDAUnivariateTwoGroups) {
-  FeatureMatrix const x = MAT(Feature, rows(10), 1, 1, 1, 1, 1, 2, 2, 2, 2, 2);
+  FeatureMatrix x = MAT(Feature, rows(10), 1, 1, 1, 1, 1, 2, 2, 2, 2, 2);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1);
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1);
 
   stats::RNG rng(0);
 
-  Tree const result = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+  auto const result = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), x, y, rng);
 
-  OutcomeVector const predictions = result.predict(x);
+  OutcomeVector const predictions = result->predict(x);
 
   ASSERT_EQ(error_rate(predictions, y), 0.0) << "Tree should achieve 0% training error on well-separated 2-group data";
 }
 
 TEST(Tree, TrainLDAUnivariateThreeGroups) {
-  FeatureMatrix const x = MAT(Feature, rows(15), 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3);
+  FeatureMatrix x = MAT(Feature, rows(15), 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2);
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2);
 
   stats::RNG rng(0);
 
-  Tree const result = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+  auto const result = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), x, y, rng);
 
-  OutcomeVector const predictions = result.predict(x);
+  OutcomeVector const predictions = result->predict(x);
 
   ASSERT_EQ(error_rate(predictions, y), 0.0) << "Tree should achieve 0% training error on well-separated 3-group data";
 }
 
 TEST(Tree, TrainLDAMultivariateTwoGroups) {
-  FeatureMatrix const x =
+  FeatureMatrix x =
       MAT(Feature,
           rows(10),
           1,
@@ -198,19 +133,19 @@ TEST(Tree, TrainLDAMultivariateTwoGroups) {
           1,
           2);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   stats::RNG rng(0);
 
-  Tree const result = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+  auto const result = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), x, y, rng);
 
-  OutcomeVector const predictions = result.predict(x);
+  OutcomeVector const predictions = result->predict(x);
 
   ASSERT_EQ(error_rate(predictions, y), 0.0) << "Tree should achieve 0% training error on well-separated 2-group data";
 }
 
 TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
-  FeatureMatrix const x =
+  FeatureMatrix x =
       MAT(Feature,
           rows(30),
           1,
@@ -369,16 +304,16 @@ TEST(Tree, TrainLDAMultivariateThreeGroupsProperties) {
 
   stats::RNG rng(0);
 
-  Tree const result = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+  auto const result = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), x, y, rng);
 
   // Property: tree should predict training data perfectly (well-separated groups)
-  OutcomeVector const predictions = result.predict(x);
+  OutcomeVector const predictions = result->predict(x);
 
   ASSERT_EQ(error_rate(predictions, y), 0.0) << "Tree should achieve 0% training error on well-separated 3-group data";
 }
 
 TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
-  FeatureMatrix const x =
+  FeatureMatrix x =
       MAT(Feature,
           rows(10),
           1,
@@ -502,14 +437,15 @@ TEST(Tree, TrainPDAMultivariateTwoGroupsProperties) {
           2,
           2);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   stats::RNG rng(0);
 
-  Tree const result = Tree::train(TrainingSpec::builder().pp(pp::pda(0.5F)).build(), x, y, rng);
+  auto const result =
+      Tree::train(TrainingSpec::builder(types::Mode::Classification).pp(pp::pda(0.5F)).build(), x, y, rng);
 
   // Property: tree should predict training data perfectly
-  OutcomeVector const predictions = result.predict(x);
+  OutcomeVector const predictions = result->predict(x);
 
   ASSERT_EQ(error_rate(predictions, y), 0.0)
       << "PDA tree should achieve 0% training error on well-separated 2-group data";
@@ -524,9 +460,9 @@ TEST(TreeSimulation, PerfectSeparationZeroError) {
   auto data = simulate(90, 4, 3, rng, params);
 
   RNG train_rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), data.x, data.y, train_rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), data.x, data.y, train_rng);
 
-  OutcomeVector const predictions = tree.predict(data.x);
+  OutcomeVector const predictions = tree->predict(data.x);
   ASSERT_EQ(error_rate(predictions, data.y), 0.0) << "Tree should achieve 0% error on perfectly separated data";
 }
 
@@ -539,9 +475,9 @@ TEST(TreeSimulation, HighOverlapBoundedError) {
   auto data = simulate(200, 4, 3, rng, params);
 
   RNG train_rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), data.x, data.y, train_rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), data.x, data.y, train_rng);
 
-  OutcomeVector const predictions = tree.predict(data.x);
+  OutcomeVector const predictions = tree->predict(data.x);
   double const err                = error_rate(predictions, data.y);
 
   ASSERT_LT(err, 0.80) << "Tree error rate on highly overlapping data should be bounded";
@@ -556,9 +492,9 @@ TEST(TreeSimulation, ManyClasses) {
   auto data = simulate(300, 4, 10, rng, params);
 
   RNG train_rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), data.x, data.y, train_rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), data.x, data.y, train_rng);
 
-  OutcomeVector const predictions = tree.predict(data.x);
+  OutcomeVector const predictions = tree->predict(data.x);
   double const err                = error_rate(predictions, data.y);
 
   ASSERT_LT(err, 0.50) << "Tree should handle 10 groups with reasonable error";
@@ -573,9 +509,9 @@ TEST(TreeSimulation, HighDimensionality) {
   auto data = simulate(100, 50, 3, rng, params);
 
   RNG train_rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), data.x, data.y, train_rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), data.x, data.y, train_rng);
 
-  OutcomeVector const predictions = tree.predict(data.x);
+  OutcomeVector const predictions = tree->predict(data.x);
   double const err                = error_rate(predictions, data.y);
 
   ASSERT_LT(err, 0.20) << "Tree should handle high-dimensional data (p=50)";
@@ -590,9 +526,9 @@ TEST(TreeSimulation, SingleFeature) {
   auto data = simulate(100, 1, 2, rng, params);
 
   RNG train_rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), data.x, data.y, train_rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), data.x, data.y, train_rng);
 
-  OutcomeVector const predictions = tree.predict(data.x);
+  OutcomeVector const predictions = tree->predict(data.x);
   double const err                = error_rate(predictions, data.y);
 
   ASSERT_LT(err, 0.10) << "Tree should handle univariate data";
@@ -607,9 +543,11 @@ TEST(TreeSimulation, PDAOnOverlappingData) {
   auto data = simulate(200, 4, 3, rng, params);
 
   RNG train_rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().pp(pp::pda(0.5F)).build(), data.x, data.y, train_rng);
+  auto const tree = Tree::train(
+      TrainingSpec::builder(types::Mode::Classification).pp(pp::pda(0.5F)).build(), data.x, data.y, train_rng
+  );
 
-  OutcomeVector const predictions = tree.predict(data.x);
+  OutcomeVector const predictions = tree->predict(data.x);
   double const err                = error_rate(predictions, data.y);
 
   ASSERT_LT(err, 0.80) << "PDA tree should produce bounded error on noisy data";
@@ -620,16 +558,18 @@ TEST(TreeSimulation, Deterministic) {
   auto data = simulate(90, 4, 3, rng);
 
   RNG rng1(0);
-  Tree const t1 = Tree::train(TrainingSpec::builder().build(), data.x, data.y, rng1);
+  auto const t1 = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), data.x, data.y, rng1);
 
   RNG rng2(0);
-  Tree const t2 = Tree::train(TrainingSpec::builder().build(), data.x, data.y, rng2);
+  auto const t2 = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), data.x, data.y, rng2);
 
-  ASSERT_EQ(t1, t2) << "Same seed should produce identical trees";
+  ASSERT_EQ(*t1, *t2) << "Same seed should produce identical trees";
 }
 
 TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
-  Tree const tree = Tree(TreeBranch::make(as_projector({1.0}), 1.5, TreeLeaf::make(0), TreeLeaf::make(1)), nullptr);
+  ClassificationTree const tree(
+      TreeBranch::make(as_projector({1.0}), 1.5, TreeLeaf::make(0), TreeLeaf::make(1)), test::classification_spec()
+  );
 
 
   FeatureVector input = VEC(Feature, 1.0);
@@ -640,14 +580,14 @@ TEST(Tree, PredictDataColumnUnivariateTwoGroups) {
 }
 
 TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
-  Tree const tree = Tree(
+  ClassificationTree const tree(
       TreeBranch::make(
           as_projector({1.0}),
           1.75,
           TreeLeaf::make(0),
           TreeBranch::make(as_projector({1.0}), 2.5, TreeLeaf::make(1), TreeLeaf::make(2))
       ),
-      nullptr
+      test::classification_spec()
   );
 
   FeatureVector input = VEC(Feature, 1.0);
@@ -661,8 +601,10 @@ TEST(Tree, PredictDataColumnUnivariateThreeGroups) {
 }
 
 TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
-  Tree const tree =
-      Tree(TreeBranch::make(as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeLeaf::make(0), TreeLeaf::make(1)), nullptr);
+  ClassificationTree const tree = ClassificationTree(
+      TreeBranch::make(as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeLeaf::make(0), TreeLeaf::make(1)),
+      test::classification_spec()
+  );
 
   FeatureVector input = VEC(Feature, 1, 0, 1, 1);
   ASSERT_EQ(tree.predict(input), 0);
@@ -672,14 +614,14 @@ TEST(Tree, PredictDataColumnMultivariateTwoGroups) {
 }
 
 TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
-  Tree const tree = Tree(
+  ClassificationTree const tree(
       TreeBranch::make(
           as_projector({0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0}),
           4.118438837901864,
           TreeBranch::make(as_projector({0.0, 1.0, 0.0, 0.0, 0.0}), 2.5, TreeLeaf::make(0), TreeLeaf::make(1)),
           TreeLeaf::make(2)
       ),
-      nullptr
+      test::classification_spec()
   );
 
   FeatureVector input = VEC(Feature, 1, 0, 0, 1, 1);
@@ -693,7 +635,9 @@ TEST(Tree, PredictDataColumnMultivariateThreeGroups) {
 }
 
 TEST(Tree, PredictDataUnivariateTwoGroups) {
-  Tree const tree = Tree(TreeBranch::make(as_projector({1.0}), 1.5, TreeLeaf::make(0), TreeLeaf::make(1)), nullptr);
+  ClassificationTree const tree(
+      TreeBranch::make(as_projector({1.0}), 1.5, TreeLeaf::make(0), TreeLeaf::make(1)), test::classification_spec()
+  );
 
   FeatureMatrix const input = MAT(Feature, rows(2), 1.0, 2.0);
 
@@ -704,14 +648,14 @@ TEST(Tree, PredictDataUnivariateTwoGroups) {
 }
 
 TEST(Tree, PredictDataUnivariateThreeGroups) {
-  Tree const tree = Tree(
+  ClassificationTree const tree(
       TreeBranch::make(
           as_projector({1.0}),
           1.75,
           TreeLeaf::make(0),
           TreeBranch::make(as_projector({1.0}), 2.5, TreeLeaf::make(1), TreeLeaf::make(2))
       ),
-      nullptr
+      test::classification_spec()
   );
 
   FeatureMatrix const input = MAT(Feature, rows(3), 1.0, 2.0, 3.0);
@@ -723,8 +667,10 @@ TEST(Tree, PredictDataUnivariateThreeGroups) {
 }
 
 TEST(Tree, PredictDataMultivariateTwoGroups) {
-  Tree const tree =
-      Tree(TreeBranch::make(as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeLeaf::make(0), TreeLeaf::make(1)), nullptr);
+  ClassificationTree const tree = ClassificationTree(
+      TreeBranch::make(as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeLeaf::make(0), TreeLeaf::make(1)),
+      test::classification_spec()
+  );
 
   FeatureMatrix const input = MAT(Feature, rows(2), 1, 0, 1, 1, 4, 0, 0, 1);
 
@@ -735,14 +681,14 @@ TEST(Tree, PredictDataMultivariateTwoGroups) {
 }
 
 TEST(Tree, PredictDataMultivariateThreeGroups) {
-  Tree tree = Tree(
+  ClassificationTree tree(
       TreeBranch::make(
           as_projector({0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0}),
           4.118438837901864,
           TreeBranch::make(as_projector({0.0, 1.0, 0.0, 0.0, 0.0}), 2.5, TreeLeaf::make(0), TreeLeaf::make(1)),
           TreeLeaf::make(2)
       ),
-      nullptr
+      test::classification_spec()
   );
 
   FeatureMatrix const input = MAT(Feature, rows(3), 1, 0, 0, 1, 1, 2, 5, 0, 0, 1, 9, 8, 0, 0, 1);
@@ -754,8 +700,10 @@ TEST(Tree, PredictDataMultivariateThreeGroups) {
 }
 
 TEST(Tree, PredictProportionsTwoGroups) {
-  Tree const tree =
-      Tree(TreeBranch::make(as_projector({1.0}), 1.5, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}), nullptr);
+  ClassificationTree const tree = ClassificationTree(
+      TreeBranch::make(as_projector({1.0}), 1.5, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}),
+      test::classification_spec()
+  );
 
   FeatureMatrix const input = MAT(Feature, rows(2), 1.0, 2.0);
 
@@ -774,7 +722,7 @@ TEST(Tree, PredictProportionsTwoGroups) {
 }
 
 TEST(Tree, PredictProportionsThreeGroups) {
-  Tree const tree = Tree(
+  ClassificationTree const tree(
       TreeBranch::make(
           as_projector({1.0}),
           1.75,
@@ -782,7 +730,7 @@ TEST(Tree, PredictProportionsThreeGroups) {
           TreeBranch::make(as_projector({1.0}), 2.5, TreeLeaf::make(1), TreeLeaf::make(2), {1, 2}),
           {0, 1, 2}
       ),
-      nullptr
+      test::classification_spec()
   );
 
   FeatureMatrix const input = MAT(Feature, rows(3), 1.0, 2.0, 3.0);
@@ -807,8 +755,9 @@ TEST(Tree, PredictProportionsThreeGroups) {
 }
 
 TEST(Tree, PredictProportionsRowsSumToOne) {
-  Tree const tree = Tree(
-      TreeBranch::make(as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}), nullptr
+  ClassificationTree const tree(
+      TreeBranch::make(as_projector({1.0, 0.0, 0.0, 0.0}), 2.5, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}),
+      test::classification_spec()
   );
 
   FeatureMatrix const input = MAT(Feature, rows(4), 1, 0, 1, 1, 4, 0, 0, 1, 2, 1, 0, 0, 3, 0, 1, 0);
@@ -824,7 +773,7 @@ TEST(Tree, PredictProportionsRowsSumToOne) {
 }
 
 TEST(Tree, PredictProportionsMatchesPredictions) {
-  Tree const tree = Tree(
+  ClassificationTree const tree(
       TreeBranch::make(
           as_projector({0.9805806756909201, -0.19611613513818427, 0.0, 0.0, 0.0}),
           4.118438837901864,
@@ -832,7 +781,7 @@ TEST(Tree, PredictProportionsMatchesPredictions) {
           TreeLeaf::make(2),
           {0, 1, 2}
       ),
-      nullptr
+      test::classification_spec()
   );
 
   FeatureMatrix const input = MAT(Feature, rows(3), 1, 0, 0, 1, 1, 2, 5, 0, 0, 1, 9, 8, 0, 0, 1);
@@ -845,7 +794,7 @@ TEST(Tree, PredictProportionsMatchesPredictions) {
 
   // The column with 1.0 in each row must match the predicted group
   for (int i = 0; i < input.rows(); ++i) {
-    EXPECT_FLOAT_EQ(proportions(i, predictions(i)), Feature(1))
+    EXPECT_FLOAT_EQ(proportions(i, static_cast<int>(predictions(i))), Feature(1))
         << "Row " << i << ": proportions should have 1.0 in column for predicted group";
   }
 }
@@ -855,49 +804,49 @@ TEST(Tree, PredictProportionsMatchesPredictions) {
 // ---------------------------------------------------------------------------
 
 TEST(TreeEdgeCase, ConstantFeatureColumn) {
-  FeatureMatrix const x = MAT(Feature, rows(6), 5, 1, 5, 2, 5, 3, 5, 7, 5, 8, 5, 9);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
+  FeatureMatrix x = MAT(Feature, rows(6), 5, 1, 5, 2, 5, 3, 5, 7, 5, 8, 5, 9);
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
 
   stats::RNG rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), x, y, rng);
 
-  ASSERT_EQ_DATA(tree.predict(x), VEC(Outcome, 0, 0, 0, 0, 0, 0));
+  ASSERT_EQ_DATA(tree->predict(x), VEC(Outcome, 0, 0, 0, 0, 0, 0));
 }
 
 TEST(TreeEdgeCase, SingleObservationPerGroup) {
-  FeatureMatrix const x = MAT(Feature, rows(2), 1, 0, 0, 1);
-  OutcomeVector const y = VEC(Outcome, 0, 1);
+  FeatureMatrix x = MAT(Feature, rows(2), 1, 0, 0, 1);
+  OutcomeVector y = VEC(Outcome, 0, 1);
 
   stats::RNG rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), x, y, rng);
 
-  ASSERT_EQ_DATA(tree.predict(x), y);
+  ASSERT_EQ_DATA(tree->predict(x), VEC(Outcome, 0, 1));
 }
 
 TEST(TreeEdgeCase, MinimalDataset) {
-  FeatureMatrix const x = MAT(Feature, rows(2), 1, 9);
-  OutcomeVector const y = VEC(Outcome, 0, 1);
+  FeatureMatrix x = MAT(Feature, rows(2), 1, 9);
+  OutcomeVector y = VEC(Outcome, 0, 1);
 
   stats::RNG rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), x, y, rng);
 
-  ASSERT_EQ_DATA(tree.predict(x), y);
+  ASSERT_EQ_DATA(tree->predict(x), VEC(Outcome, 0, 1));
 }
 
 TEST(TreeEdgeCase, ExtremeImbalance) {
   // clang-format off
-  FeatureMatrix const x = MAT(Feature, rows(20),
+  FeatureMatrix x = MAT(Feature, rows(20),
     0, 0,  1, 1,  2, 2,  3, 0,  4, 1,
     0, 2,  1, 0,  2, 1,  3, 2,  4, 0,
     0, 1,  1, 2,  2, 0,  3, 1,  4, 2,
     0, 0,  1, 1,  2, 2,  90, 90,  91, 91);
-  OutcomeVector const y = VEC(Outcome,
+  OutcomeVector y = VEC(Outcome,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
   // clang-format on
 
   stats::RNG rng(0);
-  Tree const tree = Tree::train(TrainingSpec::builder().build(), x, y, rng);
+  auto const tree = Tree::train(TrainingSpec::builder(types::Mode::Classification).build(), x, y, rng);
 
-  ASSERT_EQ_DATA(tree.predict(x), y);
+  ASSERT_EQ_DATA(tree->predict(x), y.cast<Outcome>());
 }

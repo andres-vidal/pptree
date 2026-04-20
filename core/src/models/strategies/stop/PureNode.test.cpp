@@ -49,53 +49,57 @@ TEST(PureNodeStop, RegistryUnknownStrategy) {
 }
 
 TEST(PureNodeStop, StopsOnSingleGroup) {
-  FeatureMatrix const x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0);
+  FeatureMatrix x       = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0);
   GroupPartition const gp(y);
+  OutcomeVector y_out = y.cast<Outcome>();
   RNG rng(0);
 
-  NodeContext const ctx(x, gp, 0);
+  NodeContext const ctx(x, gp, y_out, 0);
   PureNode const rule;
   EXPECT_TRUE(rule.should_stop(ctx, rng));
 }
 
 TEST(PureNodeStop, DoesNotStopOnTwoGroups) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
+  FeatureMatrix x       = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1);
   GroupPartition const gp(y);
+  OutcomeVector y_out = y.cast<Outcome>();
   RNG rng(0);
 
-  NodeContext const ctx(x, gp, 0);
+  NodeContext const ctx(x, gp, y_out, 0);
   PureNode const rule;
   EXPECT_FALSE(rule.should_stop(ctx, rng));
 }
 
 TEST(PureNodeStop, DoesNotStopOnThreeGroups) {
-  FeatureMatrix const x = MAT(Feature, rows(6), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1, 2, 2);
+  FeatureMatrix x       = MAT(Feature, rows(6), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1, 2, 2);
   GroupPartition const gp(y);
+  OutcomeVector y_out = y.cast<Outcome>();
   RNG rng(0);
 
-  NodeContext const ctx(x, gp, 0);
+  NodeContext const ctx(x, gp, y_out, 0);
   PureNode const rule;
   EXPECT_FALSE(rule.should_stop(ctx, rng));
 }
 
 TEST(PureNodeStop, IgnoresDepth) {
-  FeatureMatrix const x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0);
+  FeatureMatrix x       = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0);
   GroupPartition const gp(y);
+  OutcomeVector y_out = y.cast<Outcome>();
   RNG rng(0);
 
   PureNode const rule;
 
-  NodeContext const ctx0(x, gp, 0);
+  NodeContext const ctx0(x, gp, y_out, 0);
   EXPECT_TRUE(rule.should_stop(ctx0, rng));
 
-  NodeContext const ctx10(x, gp, 10);
+  NodeContext const ctx10(x, gp, y_out, 10);
   EXPECT_TRUE(rule.should_stop(ctx10, rng));
 
-  NodeContext const ctx100(x, gp, 100);
+  NodeContext const ctx100(x, gp, y_out, 100);
   EXPECT_TRUE(rule.should_stop(ctx100, rng));
 }
 

@@ -2,8 +2,6 @@
 
 #include "models/strategies/vars/VariableSelection.hpp"
 #include "models/strategies/Strategy.hpp"
-#include "stats/GroupPartition.hpp"
-#include "utils/JsonValidation.hpp"
 #include "utils/Types.hpp"
 
 namespace ppforest2::vars {
@@ -19,6 +17,9 @@ namespace ppforest2::vars {
 
     nlohmann::json to_json() const override;
     std::string display_name() const override { return "Uniform random"; }
+    std::set<types::Mode> supported_modes() const override {
+      return {types::Mode::Classification, types::Mode::Regression};
+    }
 
     /**
      * @brief NodeContext-based interface: select variables and write to ctx.var_selection.
@@ -33,6 +34,7 @@ namespace ppforest2::vars {
     static VariableSelection::Ptr from_json(nlohmann::json const& j);
 
     PPFOREST2_REGISTER_STRATEGY(VariableSelection, "uniform")
+    PPFOREST2_REGISTER_PRIMARY_PARAM("uniform", "count")
 
   private:
     /** @brief Number of variables to select at each split. */

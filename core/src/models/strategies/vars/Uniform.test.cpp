@@ -3,6 +3,7 @@
 
 #include "models/strategies/vars/Uniform.hpp"
 #include "models/strategies/vars/VariableSelection.hpp"
+#include "stats/GroupPartition.hpp"
 #include "stats/Stats.hpp"
 #include "utils/Types.hpp"
 #include "utils/Macros.hpp"
@@ -61,9 +62,9 @@ TEST(VarsUniformStrategy, RegistryLookup) {
 }
 
 TEST(VarsUniformStrategy, SelectsCorrectNumberOfVars) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
+  FeatureMatrix x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1);
   RNG rng(0);
 
   Uniform const vs(2);
@@ -74,7 +75,7 @@ TEST(VarsUniformStrategy, SelectsCorrectNumberOfVars) {
 }
 
 TEST(VarsUniformStrategy, AllVarsReturnsAllIndices) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+  FeatureMatrix x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
   RNG rng(0);
 
@@ -93,9 +94,9 @@ TEST(VarsUniformStrategy, RejectsZeroVars) {
 }
 
 TEST(VarsUniformStrategy, DeterministicWithSameSeed) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
+  FeatureMatrix x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1);
   GroupPartition const gp(y);
 
   Uniform const vs(2);
