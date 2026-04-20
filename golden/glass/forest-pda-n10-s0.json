@@ -7,13 +7,14 @@
       "name": "mean_of_means"
     },
     "dataset": "glass",
+    "grouping": {
+      "name": "by_label"
+    },
     "leaf": {
       "name": "majority_vote"
     },
     "max_retries": 3,
-    "partition": {
-      "name": "by_group"
-    },
+    "mode": "classification",
     "platform": "macos-clang",
     "pp": {
       "lambda": 0.0,
@@ -52,6 +53,7 @@
       "6",
       "7"
     ],
+    "mode": "classification",
     "observations": 214
   },
   "model": {
@@ -3640,6 +3642,7 @@
     ]
   },
   "oob_error": 0.5186915993690491,
+  "oob_regression_metrics": null,
   "predictions": [
     "3",
     "3",
@@ -3924,6 +3927,7 @@
       ]
     ]
   },
+  "training_regression_metrics": null,
   "variable_importance": {
     "permuted": [
       0.008768975734710693,

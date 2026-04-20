@@ -1,13 +1,12 @@
 #pragma once
 
-#include "models/strategies/pp/PDA.hpp"
-#include "models/strategies/vars/Uniform.hpp"
-#include "models/strategies/vars/All.hpp"
-#include "models/strategies/cutpoint/MeanOfMeans.hpp"
-#include "models/strategies/stop/PureNode.hpp"
-#include "models/strategies/binarize/LargestGap.hpp"
-#include "models/strategies/partition/ByGroup.hpp"
-#include "models/strategies/leaf/MajorityVote.hpp"
+#include "models/strategies/pp/ProjectionPursuit.hpp"
+#include "models/strategies/vars/VariableSelection.hpp"
+#include "models/strategies/cutpoint/Cutpoint.hpp"
+#include "models/strategies/stop/StopRule.hpp"
+#include "models/strategies/binarize/Binarization.hpp"
+#include "models/strategies/grouping/Grouping.hpp"
+#include "models/strategies/leaf/LeafStrategy.hpp"
 
 #include <memory>
 #include <thread>
@@ -18,19 +17,19 @@ namespace ppforest2 {
    * @brief Training configuration for projection pursuit trees and forests.
    *
    * Composes seven strategies (projection pursuit, variable selection,
-   * split cutpoint, stop rule, binarization, partition, leaf) together with
+   * split cutpoint, stop rule, binarization, grouping, leaf) together with
    * forest-level parameters (size, seed, threads, max retries).
    *
    * TrainingSpec is a concrete class — new strategies are plugged in
    * via the builder, not by subclassing:
    * @code
    *   // Single tree with PDA (lambda = 0.5):
-   *   auto spec = TrainingSpec::builder()
+   *   auto spec = TrainingSpec::builder(types::Mode::Classification)
    *       .pp(pp::pda(0.5))
    *       .build();
    *
    *   // Random forest with uniform variable selection:
-   *   auto spec = TrainingSpec::builder()
+   *   auto spec = TrainingSpec::builder(types::Mode::Classification)
    *       .size(100)
    *       .pp(pp::pda(0.0))
    *       .vars(vars::uniform(3))
@@ -49,15 +48,18 @@ namespace ppforest2 {
     /** @brief Variable selection strategy. */
     vars::VariableSelection::Ptr const vars;
     /** @brief Split cutpoint strategy. */
-    cutpoint::SplitCutpoint::Ptr const cutpoint;
+    cutpoint::Cutpoint::Ptr const cutpoint;
     /** @brief Stop rule strategy. */
     stop::StopRule::Ptr const stop;
     /** @brief Binarization strategy. */
     binarize::Binarization::Ptr const binarize;
-    /** @brief Partition strategy. */
-    partition::StepPartition::Ptr const partition;
+    /** @brief Grouping strategy. */
+    grouping::Grouping::Ptr const grouping;
     /** @brief Leaf creation strategy. */
     leaf::LeafStrategy::Ptr const leaf;
+
+    /** @brief Training mode (classification or regression). */
+    types::Mode const mode;
 
     /** @brief Number of trees (0 = single tree). */
     int const size;
@@ -71,22 +73,35 @@ namespace ppforest2 {
     /**
      * @brief Fluent builder for TrainingSpec.
      *
-     * All fields have sensible defaults. Call setters for only the
-     * fields you want to customize, then build() or make().
+     * `mode` is required at construction — it's structurally primary
+     * (drives the default binarize strategy and gates mode-compatibility
+     * checks), not a post-construction tweak, so there's no `.mode()`
+     * setter. Other strategies default to mode-agnostic factory values
+     * (`pp::pda`, `vars::all`, etc.) that callers override via setters.
+     * `binarize` defaults lazily at `build()` time: `largest_gap` for
+     * classification, `disabled` for regression.
+     *
+     * Default initialisation of the strategy fields is done in the
+     * constructor definition in `TrainingSpec.cpp` so the header can
+     * include only base-class strategy headers.
      */
     struct Builder {
-      pp::ProjectionPursuit::Ptr pp_           = pp::pda(0.0F);
-      vars::VariableSelection::Ptr vars_       = vars::all();
-      cutpoint::SplitCutpoint::Ptr cutpoint_   = cutpoint::mean_of_means();
-      stop::StopRule::Ptr stop_                = stop::pure_node();
-      binarize::Binarization::Ptr binarize_    = binarize::largest_gap();
-      partition::StepPartition::Ptr partition_ = partition::by_group();
-      leaf::LeafStrategy::Ptr leaf_            = leaf::majority_vote();
+      pp::ProjectionPursuit::Ptr pp_;
+      vars::VariableSelection::Ptr vars_;
+      cutpoint::Cutpoint::Ptr cutpoint_;
+      stop::StopRule::Ptr stop_;
+      binarize::Binarization::Ptr binarize_ = nullptr;
+      grouping::Grouping::Ptr grouping_;
+      leaf::LeafStrategy::Ptr leaf_;
+
+      types::Mode const mode_;
 
       int size_        = 0;
       int seed_        = 0;
       int threads_     = 0;
       int max_retries_ = 3;
+
+      explicit Builder(types::Mode mode);
 
       Builder& pp(pp::ProjectionPursuit::Ptr v) {
         pp_ = std::move(v);
@@ -96,7 +111,7 @@ namespace ppforest2 {
         vars_ = std::move(v);
         return *this;
       }
-      Builder& cutpoint(cutpoint::SplitCutpoint::Ptr v) {
+      Builder& cutpoint(cutpoint::Cutpoint::Ptr v) {
         cutpoint_ = std::move(v);
         return *this;
       }
@@ -108,8 +123,8 @@ namespace ppforest2 {
         binarize_ = std::move(v);
         return *this;
       }
-      Builder& partition(partition::StepPartition::Ptr v) {
-        partition_ = std::move(v);
+      Builder& grouping(grouping::Grouping::Ptr v) {
+        grouping_ = std::move(v);
         return *this;
       }
       Builder& leaf(leaf::LeafStrategy::Ptr v) {
@@ -134,27 +149,28 @@ namespace ppforest2 {
         return *this;
       }
 
-      TrainingSpec build() {
-        return TrainingSpec(
-            std::move(pp_),
-            std::move(vars_),
-            std::move(cutpoint_),
-            std::move(stop_),
-            std::move(binarize_),
-            std::move(partition_),
-            std::move(leaf_),
-            size_,
-            seed_,
-            threads_,
-            max_retries_
-        );
-      }
+      /**
+       * @brief Finalize the builder into a `TrainingSpec`.
+       *
+       * Resolves the mode-dependent default for `binarize` lazily:
+       * `largest_gap` for classification, `disabled` for regression.
+       * Defined in `TrainingSpec.cpp` so the factory-call concrete
+       * headers stay out of this interface.
+       */
+      TrainingSpec build();
 
-      Ptr make() { return std::make_shared<TrainingSpec>(build()); }
+      /** @brief Shorthand for `std::make_shared<TrainingSpec>(build())`. */
+      Ptr make();
     };
 
-    /** @brief Create a builder with all defaults. */
-    static Builder builder() { return Builder{}; }
+    /**
+     * @brief Create a builder for the given mode.
+     *
+     * Mode is required because it's structurally primary: it determines
+     * the default `binarize` strategy and the mode-compatibility checks
+     * for every other strategy. There is no "no-mode" TrainingSpec.
+     */
+    static Builder builder(types::Mode mode) { return Builder{mode}; }
 
     /**
      * @brief Construct a training specification.
@@ -164,7 +180,7 @@ namespace ppforest2 {
      * @param cutpoint     Split cutpoint strategy.
      * @param stop         Stop rule strategy.
      * @param binarize     Binarization strategy.
-     * @param partition    Partition strategy.
+     * @param grouping     Grouping strategy.
      * @param leaf         Leaf creation strategy.
      * @param size         Number of trees (0 = single tree).
      * @param seed         RNG seed.
@@ -174,11 +190,12 @@ namespace ppforest2 {
     TrainingSpec(
         pp::ProjectionPursuit::Ptr pp,
         vars::VariableSelection::Ptr vars,
-        cutpoint::SplitCutpoint::Ptr cutpoint,
+        cutpoint::Cutpoint::Ptr cutpoint,
         stop::StopRule::Ptr stop,
         binarize::Binarization::Ptr binarize,
-        partition::StepPartition::Ptr partition,
+        grouping::Grouping::Ptr grouping,
         leaf::LeafStrategy::Ptr leaf,
+        types::Mode mode,
         int size,
         int seed,
         int threads,
@@ -203,7 +220,10 @@ namespace ppforest2 {
     void regroup(NodeContext& ctx, stats::RNG& rng) const { (*binarize)(ctx, rng); }
 
     /** @brief Split observations into two child partitions. */
-    partition::StepPartition::Result split(NodeContext& ctx, stats::RNG& rng) const { return (*partition)(ctx, rng); }
+    grouping::Grouping::Result group(NodeContext& ctx, stats::RNG& rng) const { return (*grouping)(ctx, rng); }
+
+    /** @brief Create the initial group partition from the training response. */
+    stats::GroupPartition init_groups(types::OutcomeVector const& y) const { return grouping->init(y); }
 
     /** @brief Create a leaf node from the current node context. */
     TreeNode::Ptr create_leaf(NodeContext const& ctx, stats::RNG& rng) const { return (*leaf)(ctx, rng); }

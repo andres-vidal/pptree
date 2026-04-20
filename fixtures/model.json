@@ -1,6 +1,6 @@
 {
   "config": {
-    "data": "data/iris.csv",
+    "data": "data/classification/iris.csv",
     "pp": {
       "name": "pda",
       "lambda": 0.5
@@ -18,12 +18,13 @@
     "binarize": {
       "name": "largest_gap"
     },
-    "partition": {
-      "name": "by_group"
+    "grouping": {
+      "name": "by_label"
     },
     "leaf": {
       "name": "majority_vote"
     },
+    "mode": "classification",
     "size": 100,
     "seed": -168103375,
     "threads": 1,
@@ -2935,6 +2936,7 @@
   },
   "model_type": "forest",
   "meta": {
+    "mode": "classification",
     "observations": 150,
     "features": 4,
     "feature_names": [

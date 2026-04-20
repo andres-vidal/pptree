@@ -7,13 +7,14 @@
       "name": "mean_of_means"
     },
     "dataset": "crab",
+    "grouping": {
+      "name": "by_label"
+    },
     "leaf": {
       "name": "majority_vote"
     },
     "max_retries": 3,
-    "partition": {
-      "name": "by_group"
-    },
+    "mode": "classification",
     "platform": "macos-clang",
     "pp": {
       "lambda": 0.0,
@@ -45,6 +46,7 @@
       "OrangeMale",
       "OrangeFemale"
     ],
+    "mode": "classification",
     "observations": 200
   },
   "model": {
@@ -117,6 +119,9 @@
     }
   },
   "model_type": "tree",
+  "oob_confusion_matrix": null,
+  "oob_error": null,
+  "oob_regression_metrics": null,
   "predictions": [
     "BlueMale",
     "BlueMale",
@@ -359,6 +364,7 @@
       ]
     ]
   },
+  "training_regression_metrics": null,
   "variable_importance": {
     "projections": [
       0.13940143585205078,

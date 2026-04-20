@@ -6,6 +6,20 @@
 #include <nlohmann/json.hpp>
 
 #include "models/TrainingSpec.hpp"
+#include "models/strategies/binarize/Disabled.hpp"
+#include "models/strategies/binarize/LargestGap.hpp"
+#include "models/strategies/cutpoint/MeanOfMeans.hpp"
+#include "models/strategies/grouping/ByCutpoint.hpp"
+#include "models/strategies/grouping/ByLabel.hpp"
+#include "models/strategies/leaf/MajorityVote.hpp"
+#include "models/strategies/leaf/MeanResponse.hpp"
+#include "models/strategies/pp/PDA.hpp"
+#include "models/strategies/stop/MinSize.hpp"
+#include "models/strategies/stop/MinVariance.hpp"
+#include "models/strategies/stop/PureNode.hpp"
+#include "models/strategies/vars/All.hpp"
+#include "models/strategies/vars/Uniform.hpp"
+#include "utils/UserError.hpp"
 
 using namespace ppforest2;
 using json = nlohmann::json;
@@ -15,12 +29,12 @@ using json = nlohmann::json;
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, IsForestTrue) {
-  auto spec = TrainingSpec::builder().size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_TRUE(spec->is_forest());
 }
 
 TEST(TrainingSpec, IsForestFalse) {
-  auto spec = TrainingSpec::builder().threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_FALSE(spec->is_forest());
 }
 
@@ -29,12 +43,12 @@ TEST(TrainingSpec, IsForestFalse) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ResolveThreadsExplicit) {
-  auto spec = TrainingSpec::builder().size(5).threads(4).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(4).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_EQ(spec->resolve_threads(), 4);
 }
 
 TEST(TrainingSpec, ResolveThreadsDefault) {
-  auto spec = TrainingSpec::builder().size(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_GT(spec->resolve_threads(), 0);
 }
 
@@ -43,7 +57,7 @@ TEST(TrainingSpec, ResolveThreadsDefault) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ToJsonRoundTrip) {
-  auto spec = TrainingSpec::builder().size(5).threads(2).max_retries(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(2).max_retries(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
 
   auto j        = spec->to_json();
   auto restored = TrainingSpec::from_json(j);
@@ -57,7 +71,7 @@ TEST(TrainingSpec, ToJsonRoundTrip) {
 }
 
 TEST(TrainingSpec, ToJsonRoundTripSingleTree) {
-  auto spec = TrainingSpec::builder().pp(pp::pda(0.3F)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification).pp(pp::pda(0.3F)).make();
 
   auto j        = spec->to_json();
   auto restored = TrainingSpec::from_json(j);
@@ -81,7 +95,7 @@ TEST(TrainingSpec, FromJsonDefaultsOptionalFields) {
       {"cutpoint", {{"name", "mean_of_means"}}},
       {"stop", {{"name", "pure_node"}}},
       {"binarize", {{"name", "largest_gap"}}},
-      {"partition", {{"name", "by_group"}}},
+      {"grouping", {{"name", "by_label"}}},
       {"leaf", {{"name", "majority_vote"}}}
   };
 
@@ -103,7 +117,7 @@ TEST(TrainingSpec, FromJsonMissingPPThrows) {
       {"cutpoint", {{"name", "mean_of_means"}}},
       {"stop", {{"name", "pure_node"}}},
       {"binarize", {{"name", "largest_gap"}}},
-      {"partition", {{"name", "by_group"}}}
+      {"grouping", {{"name", "by_label"}}}
   };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
@@ -114,7 +128,7 @@ TEST(TrainingSpec, FromJsonMissingVarsThrows) {
       {"cutpoint", {{"name", "mean_of_means"}}},
       {"stop", {{"name", "pure_node"}}},
       {"binarize", {{"name", "largest_gap"}}},
-      {"partition", {{"name", "by_group"}}}
+      {"grouping", {{"name", "by_label"}}}
   };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
@@ -125,7 +139,7 @@ TEST(TrainingSpec, FromJsonMissingCutpointThrows) {
       {"vars", {{"name", "uniform"}, {"count", 2}}},
       {"stop", {{"name", "pure_node"}}},
       {"binarize", {{"name", "largest_gap"}}},
-      {"partition", {{"name", "by_group"}}}
+      {"grouping", {{"name", "by_label"}}}
   };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
@@ -136,7 +150,7 @@ TEST(TrainingSpec, FromJsonMissingStopThrows) {
       {"vars", {{"name", "uniform"}, {"count", 2}}},
       {"cutpoint", {{"name", "mean_of_means"}}},
       {"binarize", {{"name", "largest_gap"}}},
-      {"partition", {{"name", "by_group"}}}
+      {"grouping", {{"name", "by_label"}}}
   };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
@@ -147,12 +161,12 @@ TEST(TrainingSpec, FromJsonMissingBinarizeThrows) {
       {"vars", {{"name", "uniform"}, {"count", 2}}},
       {"cutpoint", {{"name", "mean_of_means"}}},
       {"stop", {{"name", "pure_node"}}},
-      {"partition", {{"name", "by_group"}}}
+      {"grouping", {{"name", "by_label"}}}
   };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
 
-TEST(TrainingSpec, FromJsonMissingPartitionThrows) {
+TEST(TrainingSpec, FromJsonMissingGroupingThrows) {
   json const j = {
       {"pp", {{"name", "pda"}, {"lambda", 0.3}}},
       {"vars", {{"name", "uniform"}, {"count", 2}}},
@@ -170,7 +184,7 @@ TEST(TrainingSpec, FromJsonMissingLeafThrows) {
       {"cutpoint", {{"name", "mean_of_means"}}},
       {"stop", {{"name", "pure_node"}}},
       {"binarize", {{"name", "largest_gap"}}},
-      {"partition", {{"name", "by_group"}}}
+      {"grouping", {{"name", "by_label"}}}
   };
   EXPECT_THROW(TrainingSpec::from_json(j), std::exception);
 }
@@ -180,7 +194,7 @@ TEST(TrainingSpec, FromJsonMissingLeafThrows) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, DisplayNameNotInJson) {
-  auto spec = TrainingSpec::builder().size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   auto j    = spec->to_json();
 
   EXPECT_FALSE(j["pp"].contains("display_name"));
@@ -194,7 +208,7 @@ TEST(TrainingSpec, DisplayNameNotInJson) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ToJsonContainsAllStrategyFields) {
-  auto spec = TrainingSpec::builder().size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   auto j    = spec->to_json();
 
 
@@ -203,6 +217,172 @@ TEST(TrainingSpec, ToJsonContainsAllStrategyFields) {
   EXPECT_EQ(j["cutpoint"], cutpoint::mean_of_means()->to_json());
   EXPECT_EQ(j["stop"], stop::pure_node()->to_json());
   EXPECT_EQ(j["binarize"], binarize::largest_gap()->to_json());
-  EXPECT_EQ(j["partition"], partition::by_group()->to_json());
+  EXPECT_EQ(j["grouping"], grouping::by_label()->to_json());
   EXPECT_EQ(j["leaf"], leaf::majority_vote()->to_json());
+}
+
+// ---------------------------------------------------------------------------
+// supported_modes() — mode/strategy compatibility validation
+// ---------------------------------------------------------------------------
+
+TEST(TrainingSpec, RejectsMajorityVoteInRegression) {
+  // MajorityVote is classification-only; the builder defaults everything else
+  // to regression-compatible.
+  auto build = [] {
+    return TrainingSpec::builder(types::Mode::Classification)
+        .grouping(grouping::by_cutpoint())
+        .stop(stop::min_size(5))
+        .leaf(leaf::majority_vote())
+        .make();
+  };
+
+  EXPECT_THROW(build(), ppforest2::UserError);
+}
+
+TEST(TrainingSpec, RejectsMeanResponseInClassification) {
+  auto build = [] {
+    return TrainingSpec::builder(types::Mode::Classification).leaf(leaf::mean_response()).make();
+  };
+
+  EXPECT_THROW(build(), ppforest2::UserError);
+}
+
+TEST(TrainingSpec, RejectsPureNodeInRegression) {
+  auto build = [] {
+    return TrainingSpec::builder(types::Mode::Classification)
+        .grouping(grouping::by_cutpoint())
+        .leaf(leaf::mean_response())
+        .stop(stop::pure_node())
+        .make();
+  };
+
+  EXPECT_THROW(build(), ppforest2::UserError);
+}
+
+TEST(TrainingSpec, RejectsMinVarianceInClassification) {
+  auto build = [] {
+    return TrainingSpec::builder(types::Mode::Classification).stop(stop::min_variance(0.01F)).make();
+  };
+
+  EXPECT_THROW(build(), ppforest2::UserError);
+}
+
+TEST(TrainingSpec, RejectsByCutpointInClassification) {
+  auto build = [] {
+    return TrainingSpec::builder(types::Mode::Classification).grouping(grouping::by_cutpoint()).make();
+  };
+
+  EXPECT_THROW(build(), ppforest2::UserError);
+}
+
+TEST(TrainingSpec, AcceptsCompatibleClassificationStrategies) {
+  auto build = [] {
+    return TrainingSpec::builder(types::Mode::Classification)
+        .stop(stop::pure_node())
+        .grouping(grouping::by_label())
+        .leaf(leaf::majority_vote())
+        .make();
+  };
+
+  EXPECT_NO_THROW(build());
+}
+
+TEST(TrainingSpec, AcceptsCompatibleRegressionStrategies) {
+  auto build = [] {
+    return TrainingSpec::builder(types::Mode::Classification)
+        .stop(stop::any({stop::min_size(5), stop::min_variance(0.01F)}))
+        .grouping(grouping::by_cutpoint())
+        .leaf(leaf::mean_response())
+        .make();
+  };
+
+  EXPECT_NO_THROW(build());
+}
+
+TEST(TrainingSpec, CompositeStopIntersectsChildModes) {
+  // stop::any(min_size, pure_node) = classification only (pure_node restricts it).
+  auto rule  = stop::any({stop::min_size(5), stop::pure_node()});
+  auto modes = rule->supported_modes();
+
+  EXPECT_TRUE(modes.count(types::Mode::Classification) > 0);
+  EXPECT_TRUE(modes.count(types::Mode::Regression) == 0);
+
+  // Using it in regression mode should fail.
+  auto build = [&] {
+    return TrainingSpec::builder(types::Mode::Classification)
+        .grouping(grouping::by_cutpoint())
+        .leaf(leaf::mean_response())
+        .stop(rule)
+        .make();
+  };
+
+  EXPECT_THROW(build(), ppforest2::UserError);
+}
+
+TEST(TrainingSpec, CompositeStopOnlyRegressionChildrenSupportsRegression) {
+  auto rule  = stop::any({stop::min_size(5), stop::min_variance(0.01F)});
+  auto modes = rule->supported_modes();
+
+  // min_size supports both; min_variance supports only regression;
+  // intersection is {Regression}.
+  EXPECT_TRUE(modes.count(types::Mode::Regression) > 0);
+  EXPECT_TRUE(modes.count(types::Mode::Classification) == 0);
+}
+
+TEST(TrainingSpec, MinSizeSupportsBothModes) {
+  auto modes = stop::min_size(5)->supported_modes();
+  EXPECT_TRUE(modes.count(types::Mode::Classification) > 0);
+  EXPECT_TRUE(modes.count(types::Mode::Regression) > 0);
+}
+
+TEST(TrainingSpec, ByLabelSupportsClassificationOnly) {
+  auto modes = grouping::by_label()->supported_modes();
+  EXPECT_TRUE(modes.count(types::Mode::Classification) > 0);
+  EXPECT_TRUE(modes.count(types::Mode::Regression) == 0);
+}
+
+TEST(TrainingSpec, AcceptsDisabledBinarizeInRegression) {
+  // `binarize::Disabled` is a mode-agnostic placeholder for specs where
+  // binarize never fires (regression's `ByCutpoint` grouping always
+  // yields 2 groups). A regression spec built with `Disabled` passes
+  // mode validation. The builder's mode-aware default also resolves
+  // to `Disabled` here — this test pins both the explicit and implicit
+  // paths.
+  auto build_explicit = [] {
+    return TrainingSpec::builder(types::Mode::Classification)
+        .grouping(grouping::by_cutpoint())
+        .leaf(leaf::mean_response())
+        .stop(stop::min_size(5))
+        .binarize(binarize::disabled())
+        .make();
+  };
+
+  auto build_default = [] {
+    return TrainingSpec::builder(types::Mode::Classification)
+        .grouping(grouping::by_cutpoint())
+        .leaf(leaf::mean_response())
+        .stop(stop::min_size(5))
+        .make(); // binarize resolves to Disabled via the builder default
+  };
+
+  EXPECT_NO_THROW(build_explicit());
+  EXPECT_NO_THROW(build_default());
+}
+
+TEST(TrainingSpec, RejectsLargestGapInRegression) {
+  // `LargestGap` is classification-only; regression specs must use
+  // `Disabled` (or another regression-compatible binarizer). This
+  // replaces the old "binarize is exempt" behavior — the placeholder
+  // lets binarize participate in mode validation like every other
+  // strategy family.
+  auto build = [] {
+    return TrainingSpec::builder(types::Mode::Classification)
+        .grouping(grouping::by_cutpoint())
+        .leaf(leaf::mean_response())
+        .stop(stop::min_size(5))
+        .binarize(binarize::largest_gap())
+        .make();
+  };
+
+  EXPECT_THROW(build(), ppforest2::UserError);
 }
