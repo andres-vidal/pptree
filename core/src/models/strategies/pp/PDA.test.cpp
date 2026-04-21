@@ -98,7 +98,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups1) {
           1,
           2);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   auto result = PDA(0).compute(x, GroupPartition(y));
   auto actual = result.projector;
@@ -156,7 +156,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups2) {
           2);
 
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   auto result = PDA(0).compute(x, GroupPartition(y));
   auto actual = result.projector;
@@ -215,7 +215,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups3) {
           2);
 
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   auto result = PDA(0).compute(x, GroupPartition(y));
   auto actual = result.projector;
@@ -272,7 +272,7 @@ TEST(Projector, LDAOptimumProjectorTwoGroups4) {
           2,
           4);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   auto result = PDA(0).compute(x, GroupPartition(y));
   auto actual = result.projector;
@@ -440,8 +440,8 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
           1,
           1);
 
-  OutcomeVector const y =
-      VEC(Outcome, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2);
+  GroupIdVector const y =
+      VEC(GroupId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2);
 
   auto result = PDA(0).compute(x, GroupPartition(y));
   auto actual = result.projector;
@@ -456,7 +456,7 @@ TEST(Projector, LDAOptimumProjectorThreeGroups1) {
 TEST(Projector, PDAOptimumProjectorLambdaOneHalfTwoGroups) {
   FeatureMatrix const x = MAT(Feature, rows(4), 1, 0, 1, 1, 1, 4, 2, 1, 0, 0, 0, 4, 3, 0, 1, 1, 1, 1, 4, 0, 1, 2, 2, 1);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1);
 
   auto result = PDA(0.5).compute(x, GroupPartition(y));
   auto actual = result.projector;
@@ -472,7 +472,7 @@ TEST(Projector, PDAOptimumProjectorZeroColumn) {
   FeatureMatrix const x =
       MAT(Feature, rows(4), 1, 0, 1, 1, 1, 4, 0, 2, 1, 0, 0, 0, 4, 0, 3, 0, 1, 1, 1, 1, 0, 4, 0, 1, 2, 2, 1, 0);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1);
 
   auto result = PDA(0.1).compute(x, GroupPartition(y));
   auto actual = result.projector;
@@ -527,7 +527,7 @@ TEST(Projector, PDALambdaOneBoundary) {
           1,
           2);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   auto result = PDA(1.0).compute(x, GroupPartition(y));
   auto actual = result.projector;

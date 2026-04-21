@@ -40,22 +40,61 @@ namespace ppforest2::stats {
    * @endcode
    */
   class GroupPartition {
-    using Group       = types::Outcome;
-    using GroupSet    = std::set<types::Outcome>;
-    using GroupMap    = std::map<types::Outcome, types::Outcome>;
-    using GroupInvMap = std::map<types::Outcome, GroupSet>;
-    using GroupVector = types::Vector<types::Outcome>;
+    using Group       = types::GroupId;
+    using GroupSet    = std::set<types::GroupId>;
+    using GroupMap    = std::map<types::GroupId, types::GroupId>;
+    using GroupInvMap = std::map<types::GroupId, GroupSet>;
+    using GroupVector = types::GroupIdVector;
 
   public:
     /** @brief Check whether all equal values in @p y form a single contiguous block. */
     static bool is_contiguous(GroupVector const& y);
+
+    /** @brief Check contiguity of an `OutcomeVector` (float-encoded labels). */
+    static bool is_contiguous(types::OutcomeVector const& y);
 
     /**
        * @brief Construct from a sorted response vector.
        *
        * @param y  Outcome vector (n) with contiguous group blocks.
        */
+    GroupPartition(types::GroupIdVector const& y);
+
+    /**
+     * @brief Construct from a float-typed response vector.
+     *
+     * Classification `y` is carried as `OutcomeVector` (float) throughout the
+     * training pipeline; this overload casts to integer labels internally
+     * before building the block map. Values must encode integer labels.
+     */
     GroupPartition(types::OutcomeVector const& y);
+
+    /**
+     * @brief Create a 2-group partition at specific row ranges.
+     *
+     * Both groups must be adjacent: start1 == end0 + 1.
+     * Used by ByCutpoint to create regression child partitions
+     * at arbitrary positions in the shared data matrix.
+     *
+     * @param start0  First row of group 0 (inclusive).
+     * @param end0    Last row of group 0 (inclusive).
+     * @param start1  First row of group 1 (inclusive).
+     * @param end1    Last row of group 1 (inclusive).
+     * @return        GroupPartition with groups {0, 1}.
+     */
+    static GroupPartition two_groups(int start0, int end0, int start1, int end1);
+
+    /**
+     * @brief Create a single-group partition at a specific row range.
+     *
+     * Used when a regression child has too few observations for a
+     * meaningful 2-group split. The stop rule will turn this into a leaf.
+     *
+     * @param start  First row (inclusive).
+     * @param end    Last row (inclusive).
+     * @return       GroupPartition with group {0}.
+     */
+    static GroupPartition single_group(int start, int end);
 
     /** @brief First row index of the block for @p group. */
     int group_start(Group const& group) const;
@@ -63,6 +102,16 @@ namespace ppforest2::stats {
     int group_end(Group const& group) const;
     /** @brief Number of observations in @p group. */
     int group_size(Group const& group) const;
+
+    /**
+     * @brief Total number of observations across all groups in the partition.
+     *
+     * Used by the tree builder to detect "no-progress" grouping splits:
+     * if a child partition covers the same row count as its parent, the
+     * split failed to partition the data and the builder converts the node
+     * to a leaf to avoid unbounded recursion.
+     */
+    int total_size() const;
 
     /**
        * @brief Extract rows belonging to a group (or supergroup).
@@ -124,7 +173,7 @@ namespace ppforest2::stats {
        */
     GroupPartition subset(GroupSet const& groups) const;
 
-    using SplitSizes = std::map<types::Outcome, int>;
+    using SplitSizes = std::map<types::GroupId, int>;
 
     /**
        * @brief Split each group's block into left and right children.
@@ -169,11 +218,11 @@ namespace ppforest2::stats {
       int start;
       int end;
       int size;
-      std::optional<types::Outcome> next;
-      std::optional<types::Outcome> prev;
+      std::optional<types::GroupId> next;
+      std::optional<types::GroupId> prev;
     };
 
-    using BlockMap = std::map<types::Outcome, Block>;
+    using BlockMap = std::map<types::GroupId, Block>;
     BlockMap const Blocks;
 
     static BlockMap init_blocks(GroupVector const& y);

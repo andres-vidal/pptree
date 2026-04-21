@@ -96,6 +96,41 @@ TEST(CLITrain, TrainNonexistentFileFails) {
   EXPECT_NE(result.exit_code, 0);
 }
 
+/* Simulated classification saves to JSON and round-trips via summarize
+ * without hitting UB. Regression test for a bug where simulated
+ * classification produced an empty `group_names` vector, which cascaded
+ * into out-of-bounds reads in the labeled leaf serializer. */
+TEST(CLITrain, TrainSimulatedClassificationRoundTrip) {
+  TempFile const config;
+  {
+    std::ofstream out(config.path());
+    out << R"({"simulate": "50x3x2", "seed": 0, "size": 5})";
+  }
+
+  TempFile const model;
+  model.clear();
+
+  auto result = run_ppforest2(
+      "-q train --config " + config.path() + " -s " + model.path()
+  );
+  ASSERT_EQ(result.exit_code, 0) << result.stderr_output;
+
+  auto j = json::parse(model.read());
+  EXPECT_EQ(j["meta"]["mode"], "classification");
+
+  // Simulated classification must produce non-empty `meta.groups` (the
+  // writer synthesizes placeholder names, falling back to the integer
+  // index as a string). The reader invariant rejects empty `meta.groups`
+  // for classification models, so this doubles as a round-trip probe.
+  ASSERT_TRUE(j["meta"].contains("groups"));
+  EXPECT_EQ(j["meta"]["groups"].size(), 2u);
+
+  // Summarize loads the saved model — if the JSON is malformed or the
+  // reader invariant fires, this fails.
+  auto summarize = run_ppforest2("-q summarize --model " + model.path());
+  EXPECT_EQ(summarize.exit_code, 0) << summarize.stderr_output;
+}
+
 // ---------------------------------------------------------------------------
 // Variable importance (always-on for forests, disabled by --no-metrics)
 // ---------------------------------------------------------------------------
@@ -140,16 +175,21 @@ TEST_F(TrainTest, VISavedToJson) {
   EXPECT_EQ(vi["permuted"].size(), 4U);
 }
 
-/* With --no-metrics the saved JSON must not contain oob_error or variable_importance. */
-TEST(CLITrain, TrainNoMetricsNotInJson) {
+/* With --no-metrics the saved JSON must expose oob_error / variable_importance
+ * as `null` (the canonical nullopt-as-null convention). The keys are always
+ * present after a fresh save so downstream tooling can distinguish "field
+ * understood but no value" from "field missing because of a writer bug". */
+TEST(CLITrain, TrainNoMetricsEmitsNullInJson) {
   TempFile const model;
   model.clear();
   auto result = run_ppforest2("-q train -d " + IRIS_CSV + " -n 5 -r 0 --no-metrics -s " + model.path());
   EXPECT_EQ(result.exit_code, 0);
 
   auto j = json::parse(model.read());
-  EXPECT_FALSE(j.contains("oob_error"));
-  EXPECT_FALSE(j.contains("variable_importance"));
+  ASSERT_TRUE(j.contains("oob_error"));
+  EXPECT_TRUE(j["oob_error"].is_null());
+  ASSERT_TRUE(j.contains("variable_importance"));
+  EXPECT_TRUE(j["variable_importance"].is_null());
 }
 
 /* Single tree training shows VI2 (projections) only, no OOB error. */
@@ -367,6 +407,145 @@ TEST(CLITrain, TrainPredictCrab) {
   EXPECT_GT(j["predictions"].size(), 0U);
   EXPECT_TRUE(j.contains("error_rate"));
   EXPECT_TRUE(j.contains("confusion_matrix"));
+}
+
+/* Regression train → predict round-trip on a real dataset (mtcars). Fences
+ * the end-to-end CLI path for `--mode regression` with a small real CSV:
+ * training reads the last column (`mpg`) as the continuous response, the
+ * saved JSON carries regression-shaped metrics, and `predict` outputs
+ * numeric predictions plus MSE/MAE/R² rather than a confusion matrix.
+ * Complements the simulated-data tests (which exercise the core pipeline)
+ * by catching bugs that depend on real-world feature distributions,
+ * non-synthetic column names, or the CSV reader's numeric-response path. */
+TEST(CLITrain, TrainPredictRegressionMtcars) {
+  TempFile const model;
+  model.clear();
+  auto train = run_ppforest2(
+      "-q train --mode regression -d " + MTCARS_CSV + " -n 5 -r 0 -s " + model.path()
+  );
+  ASSERT_EQ(train.exit_code, 0) << train.stderr_output;
+
+  // Saved JSON must carry regression-shaped metrics and nothing
+  // classification-shaped.
+  auto mj = json::parse(model.read());
+  EXPECT_EQ(mj["meta"]["mode"], "regression");
+  ASSERT_TRUE(mj.contains("training_regression_metrics"));
+  EXPECT_FALSE(mj["training_regression_metrics"].is_null());
+  ASSERT_TRUE(mj.contains("training_confusion_matrix"));
+  EXPECT_TRUE(mj["training_confusion_matrix"].is_null());
+
+  TempFile const output;
+  output.clear();
+  auto predict = run_ppforest2(
+      "-q predict -M " + model.path() + " -d " + MTCARS_CSV + " -o " + output.path()
+  );
+  ASSERT_EQ(predict.exit_code, 0) << predict.stderr_output;
+
+  auto pj = json::parse(output.read());
+  EXPECT_TRUE(pj.contains("predictions"));
+  EXPECT_EQ(pj["predictions"].size(), 32U);  // mtcars has 32 rows
+  // Regression predictions are numeric floats, never group-id ints.
+  EXPECT_TRUE(pj["predictions"][0].is_number());
+  // Regression predict JSON groups the three metrics under
+  // `regression_metrics` (symmetric with the training-side
+  // `training_regression_metrics` on the saved model). Classification
+  // predict output has flat `error_rate` and `confusion_matrix` keys;
+  // regression must have neither.
+  ASSERT_TRUE(pj.contains("regression_metrics"));
+  EXPECT_TRUE(pj["regression_metrics"].contains("mse"));
+  EXPECT_TRUE(pj["regression_metrics"].contains("mae"));
+  EXPECT_TRUE(pj["regression_metrics"].contains("r_squared"));
+  EXPECT_GE(pj["regression_metrics"]["mse"].get<double>(), 0.0);
+  EXPECT_FALSE(pj.contains("confusion_matrix"));
+  EXPECT_FALSE(pj.contains("error_rate"));
+}
+
+/* Repeated `--stop` on the CLI composes into an `any(...)` CompositeStop
+ * end-to-end: train → save → reload → inspect JSON. Fences the main
+ * ergonomic fix — users configuring the regression default's composite
+ * stop without dropping to `--config`. */
+TEST(CLITrain, TrainStopRepeatedComposesAny) {
+  TempFile const model;
+  model.clear();
+  auto train = run_ppforest2(
+      "-q train --mode regression -d " + MTCARS_CSV +
+      " -n 5 -r 0 "
+      "--stop min_size:min_size=5 "
+      "--stop min_variance:threshold=0.01 "
+      "-s " + model.path()
+  );
+  ASSERT_EQ(train.exit_code, 0) << train.stderr_output;
+
+  auto j = json::parse(model.read());
+  ASSERT_TRUE(j["config"].contains("stop"));
+  EXPECT_EQ(j["config"]["stop"]["name"], "any");
+  ASSERT_EQ(j["config"]["stop"]["rules"].size(), 2U);
+  EXPECT_EQ(j["config"]["stop"]["rules"][0]["name"], "min_size");
+  EXPECT_EQ(j["config"]["stop"]["rules"][1]["name"], "min_variance");
+}
+
+/* CLI `--stop` fully overrides a JSON config's `stop` — including nested
+ * `rules[]` when the config held a CompositeStop. No merging happens; the
+ * CLI-sourced value wins atomically. This nails the precedence contract
+ * between `--config` and `--stop` (same as every other strategy flag but
+ * worth fencing explicitly because `stop` is the one with a nested
+ * shape). If someone ever changes the semantics to *append* instead of
+ * replace (see the landmine comment in ModelParams.cpp::constructor),
+ * this test will fire. */
+TEST(CLITrain, TrainStopCLICompositeOverridesConfigComposite) {
+  TempFile const config;
+  {
+    std::ofstream out(config.path());
+    // Regression dataset: `min_variance` in the CLI override below is a
+    // regression-only strategy, so the whole scenario has to run under
+    // `--mode regression`. JSON config carries a composite with a single
+    // `min_size` rule to prove the CLI replaces it entirely (nested rules
+    // and all), not merges into it.
+    out << R"({
+      "data": ")" << MTCARS_CSV << R"(",
+      "mode": "regression",
+      "size": 5,
+      "seed": 0,
+      "stop": {
+        "name": "any",
+        "rules": [ { "name": "min_size", "min_size": 5 } ]
+      }
+    })";
+  }
+  TempFile const model;
+  model.clear();
+  auto train = run_ppforest2(
+      "-q train --config " + config.path() +
+      " --stop min_size:min_size=20 --stop min_variance:threshold=0.5 -s " + model.path()
+  );
+  ASSERT_EQ(train.exit_code, 0) << train.stderr_output;
+
+  auto j = json::parse(model.read());
+  ASSERT_TRUE(j["config"].contains("stop"));
+  auto const& stop = j["config"]["stop"];
+  EXPECT_EQ(stop["name"], "any");
+  // Must be CLI's two rules, not the config's one rule.
+  ASSERT_EQ(stop["rules"].size(), 2U) << "CLI composite should fully replace config composite";
+  EXPECT_EQ(stop["rules"][0]["name"], "min_size");
+  EXPECT_EQ(stop["rules"][0]["min_size"].get<int>(), 20);  // CLI value, not config's 5
+  EXPECT_EQ(stop["rules"][1]["name"], "min_variance");
+}
+
+/* Single `--stop` keeps the flat non-wrapped shape in the saved model —
+ * guards against accidentally wrapping every single-rule config in an
+ * any(...) with one rule (which would still work but would pollute
+ * serialized JSON with a redundant wrapper). */
+TEST(CLITrain, TrainStopSingleNoWrap) {
+  TempFile const model;
+  model.clear();
+  auto train = run_ppforest2(
+      "-q train -d " + IRIS_CSV + " -n 5 -r 0 --stop pure_node -s " + model.path()
+  );
+  ASSERT_EQ(train.exit_code, 0) << train.stderr_output;
+
+  auto j = json::parse(model.read());
+  EXPECT_EQ(j["config"]["stop"]["name"], "pure_node");
+  EXPECT_FALSE(j["config"]["stop"].contains("rules"));
 }
 
 /* Train and predict on wine data succeeds. */

@@ -8,7 +8,11 @@
 #include <gtest/gtest.h>
 
 #include "serialization/Json.hpp"
-#include "models/BootstrapTree.hpp"
+#include "models/Bagged.hpp"
+#include "models/ClassificationTree.hpp"
+#include "models/ClassificationForest.hpp"
+#include "models/RegressionTree.hpp"
+#include "models/RegressionForest.hpp"
 #include "utils/Invariant.hpp"
 #include "utils/Macros.hpp"
 
@@ -40,18 +44,18 @@ static json load_golden(std::string const& path) {
 
 TEST(JsonRoundTrip, Tree) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
-  auto e      = golden.get<Export<Tree>>();
+  auto e      = golden.get<Export<Tree::Ptr>>();
 
-  json roundtripped = to_json(e.model, e.groups);
+  json roundtripped = to_json(*e.model, e.groups);
 
   ASSERT_EQ(golden["model"], roundtripped) << "Tree JSON should be identical after round-trip";
 }
 
 TEST(JsonRoundTrip, Forest) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
-  auto e      = golden.get<Export<Forest>>();
+  auto e      = golden.get<Export<Forest::Ptr>>();
 
-  json roundtripped = to_json(e.model, e.groups);
+  json roundtripped = to_json(*e.model, e.groups);
 
   ASSERT_EQ(golden["model"], roundtripped) << "Forest JSON should be identical after round-trip";
 }
@@ -77,10 +81,10 @@ TEST(JsonRoundTrip, ModelDispatchForest) {
 }
 
 TEST(JsonRoundTrip, ConfusionMatrix) {
-  OutcomeVector predictions(6);
+  GroupIdVector predictions(6);
   predictions << 0, 0, 1, 1, 2, 2;
 
-  OutcomeVector actual(6);
+  GroupIdVector actual(6);
   actual << 0, 1, 1, 1, 2, 0;
 
   ConfusionMatrix cm(predictions, actual);
@@ -101,8 +105,8 @@ TEST(JsonRoundTrip, ConfusionMatrix) {
 
 TEST(JsonLabeled, TreeLeafValuesAreStrings) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
-  auto e      = golden.get<Export<Tree>>();
-  json j      = to_json(e.model, e.groups);
+  auto e      = golden.get<Export<Tree::Ptr>>();
+  json j      = to_json(*e.model, e.groups);
 
   // Walk to a leaf
   json const* node = &j["root"];
@@ -118,8 +122,8 @@ TEST(JsonLabeled, TreeLeafValuesAreStrings) {
 
 TEST(JsonLabeled, TreeGroupsAreStrings) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
-  auto e      = golden.get<Export<Tree>>();
-  json j      = to_json(e.model, e.groups);
+  auto e      = golden.get<Export<Tree::Ptr>>();
+  json j      = to_json(*e.model, e.groups);
 
   auto root_groups = j["root"]["groups"].get<std::vector<std::string>>();
   EXPECT_EQ(root_groups.size(), e.groups.size());
@@ -132,8 +136,8 @@ TEST(JsonLabeled, TreeGroupsAreStrings) {
 
 TEST(JsonLabeled, IntegerFormatOmitsGroupNames) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
-  auto e      = golden.get<Export<Tree>>();
-  json j      = to_json(e.model);
+  auto e      = golden.get<Export<Tree::Ptr>>();
+  json j      = to_json(*e.model);
 
   // Walk to a leaf
   json const* node = &j["root"];
@@ -145,10 +149,10 @@ TEST(JsonLabeled, IntegerFormatOmitsGroupNames) {
 }
 
 TEST(JsonLabeled, ConfusionMatrixLabelsAreStrings) {
-  OutcomeVector predictions(6);
+  GroupIdVector predictions(6);
   predictions << 0, 0, 1, 1, 2, 2;
 
-  OutcomeVector actual(6);
+  GroupIdVector actual(6);
   actual << 0, 1, 1, 1, 2, 0;
 
   GroupNames names = {"setosa", "versicolor", "virginica"};
@@ -161,23 +165,23 @@ TEST(JsonLabeled, ConfusionMatrixLabelsAreStrings) {
 
 TEST(JsonLabeled, ForestRoundTrip) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
-  auto e      = golden.get<Export<Forest>>();
+  auto e      = golden.get<Export<Forest::Ptr>>();
 
-  json roundtripped = to_json(e.model, e.groups);
+  json roundtripped = to_json(*e.model, e.groups);
 
   ASSERT_EQ(golden["model"], roundtripped) << "Forest labeled round-trip should be identical";
 }
 
 TEST(JsonLabeled, LabeledAndIntegerProduceSameModel) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
-  auto e      = golden.get<Export<Tree>>();
+  auto e      = golden.get<Export<Tree::Ptr>>();
 
   // Convert to integer format and back
-  json int_json     = to_json(e.model);
-  Tree from_integer = int_json.get<Tree>();
+  json int_json     = to_json(*e.model);
+  auto from_integer = int_json.get<Tree::Ptr>();
 
   // Both should produce the same integer-format JSON
-  EXPECT_EQ(to_json(e.model), to_json(from_integer));
+  EXPECT_EQ(to_json(*e.model), to_json(*from_integer));
 }
 
 TEST(JsonRoundTrip, ModelFromJsonFile) {
@@ -201,8 +205,8 @@ TEST(JsonRoundTrip, ModelFromJsonFile) {
 
 TEST(JsonStructure, TreeAlwaysHasDegenerate) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/tree-pda-s0.json");
-  auto e      = golden.get<Export<Tree>>();
-  json j      = to_json(e.model, e.groups);
+  auto e      = golden.get<Export<Tree::Ptr>>();
+  json j      = to_json(*e.model, e.groups);
 
   EXPECT_TRUE(j.contains("degenerate"));
   EXPECT_FALSE(j["degenerate"].get<bool>());
@@ -210,18 +214,18 @@ TEST(JsonStructure, TreeAlwaysHasDegenerate) {
 
 TEST(JsonStructure, ForestAlwaysHasDegenerate) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
-  auto e      = golden.get<Export<Forest>>();
-  json j      = to_json(e.model, e.groups);
+  auto e      = golden.get<Export<Forest::Ptr>>();
+  json j      = to_json(*e.model, e.groups);
 
   EXPECT_TRUE(j.contains("degenerate"));
   EXPECT_FALSE(j["degenerate"].get<bool>());
 }
 
 TEST(JsonStructure, ConfusionMatrixRoundTrip) {
-  OutcomeVector predictions(6);
+  GroupIdVector predictions(6);
   predictions << 0, 0, 1, 1, 2, 2;
 
-  OutcomeVector actual(6);
+  GroupIdVector actual(6);
   actual << 0, 1, 1, 1, 2, 0;
 
   ConfusionMatrix cm(predictions, actual);
@@ -236,13 +240,13 @@ TEST(JsonStructure, ConfusionMatrixRoundTrip) {
 
 TEST(JsonStructure, ForestSampleIndicesRoundTrip) {
   auto golden = load_golden(GOLDEN_DIR + "/iris/forest-pda-n5-s0.json");
-  auto e      = golden.get<Export<Forest>>();
+  auto e      = golden.get<Export<Forest::Ptr>>();
 
-  json roundtripped = to_json(e.model, e.groups);
+  json roundtripped = to_json(*e.model, e.groups);
 
-  for (size_t i = 0; i < e.model.trees.size(); ++i) {
-    auto* bt = dynamic_cast<BootstrapTree const*>(e.model.trees[i].get());
-    ASSERT_NE(bt, nullptr) << "Tree " << i << " should be a BootstrapTree";
+  for (size_t i = 0; i < e.model->trees.size(); ++i) {
+    auto* bt = dynamic_cast<BaggedTree const*>(e.model->trees[i].get());
+    ASSERT_NE(bt, nullptr) << "Tree " << i << " should be a BaggedTree";
     EXPECT_FALSE(bt->sample_indices.empty()) << "Tree " << i << " should have sample_indices";
 
     auto rt_indices = roundtripped["trees"][i]["sample_indices"].get<std::vector<int>>();

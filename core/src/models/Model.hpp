@@ -86,6 +86,10 @@ namespace ppforest2 {
      * @param y     Outcome vector (n).
      * @return      Trained model (Tree or Forest).
      */
-    static Ptr train(TrainingSpec const& spec, types::FeatureMatrix const& x, types::OutcomeVector const& y);
+    static Ptr train(
+        TrainingSpec const& spec,
+        types::FeatureMatrix& x,
+        types::OutcomeVector& y
+    );
   };
 }

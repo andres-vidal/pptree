@@ -28,7 +28,7 @@ inline void to_cpp_indices(OutcomeVector& v) {
 namespace Rcpp {
   SEXP wrap(TreeNode const&);
   SEXP wrap(Tree const&);
-  SEXP wrap(BootstrapTree const&);
+  SEXP wrap(BaggedTree const&);
   SEXP wrap(TreeLeaf const&);
   SEXP wrap(TreeBranch const&);
   SEXP wrap(Forest const&);
@@ -39,11 +39,11 @@ namespace Rcpp {
   SEXP wrap(Export<Model::Ptr> const&);
 
   template<> std::unique_ptr<TreeNode> as(SEXP);
-  template<> Tree as(SEXP);
-  template<> BootstrapTree as(SEXP);
+  template<> Tree::Ptr as(SEXP);
+  template<> std::unique_ptr<BaggedTree> as(SEXP);
   template<> TreeLeaf as(SEXP);
   template<> TreeBranch as(SEXP);
-  template<> Forest as(SEXP);
+  template<> Forest::Ptr as(SEXP);
 
   template<> Model::Ptr as(SEXP);
   template<> TrainingSpec::Ptr as(SEXP);
@@ -108,10 +108,10 @@ namespace Rcpp {
     return result;
   }
 
-  inline SEXP wrap(BootstrapTree const& tree) {
+  inline SEXP wrap(BaggedTree const& tree) {
     Rcpp::List result = Rcpp::List::create(
-        Rcpp::Named("training_spec")  = Rcpp::wrap(*tree.training_spec),
-        Rcpp::Named("root")           = Rcpp::wrap(*tree.root),
+        Rcpp::Named("training_spec")  = Rcpp::wrap(*tree.model->training_spec),
+        Rcpp::Named("root")           = Rcpp::wrap(*tree.model->root),
         Rcpp::Named("sample_indices") = Rcpp::wrap(tree.sample_indices)
     );
     result.attr("class") = CLASS_PPTR;
@@ -189,17 +189,27 @@ namespace Rcpp {
         result[key] = val.get<float>();
       } else if (val.is_boolean()) {
         result[key] = val.get<bool>();
+      } else if (val.is_object()) {
+        result[key] = json_to_list(val);
+      } else if (val.is_array()) {
+        // Array of (presumably) objects — used by composite strategies.
+        Rcpp::List arr(val.size());
+        for (std::size_t k = 0; k < val.size(); ++k) {
+          arr[k] = val[k].is_object() ? json_to_list(val[k]) : Rcpp::List();
+        }
+        result[key] = arr;
       }
     }
     return result;
   }
 
   /**
-   * Convert an Rcpp named list to a flat JSON object.
+   * Convert an Rcpp named list to a JSON object.
    *
-   * Inverse of json_to_list(). Supports string, integer, and real values.
-   * Used to generically unwrap strategy R lists so that adding a new
-   * strategy only requires implementing from_json() — no changes here.
+   * Inverse of json_to_list(). Supports string, integer, real, boolean,
+   * nested lists (objects), and unnamed lists (arrays of objects) —
+   * the latter is needed for composite strategies like stop_any whose
+   * `rules` field is a list of stop rules.
    */
   inline nlohmann::json list_to_json(Rcpp::List const& list) {
     nlohmann::json j;
@@ -217,6 +227,25 @@ namespace Rcpp {
         case INTSXP: j[key] = Rcpp::as<int>(list[i]); break;
         case REALSXP: j[key] = Rcpp::as<float>(list[i]); break;
         case LGLSXP: j[key] = Rcpp::as<bool>(list[i]); break;
+        case VECSXP: {
+          // Nested list. If it has names, treat as object; otherwise as array.
+          Rcpp::List sub(list[i]);
+          Rcpp::RObject sub_names_obj = sub.names();
+
+          if (sub_names_obj.isNULL()) {
+            // Unnamed list → JSON array. Each element is recursively a list.
+            nlohmann::json arr = nlohmann::json::array();
+            for (int k = 0; k < sub.size(); ++k) {
+              if (TYPEOF(sub[k]) == VECSXP) {
+                arr.push_back(list_to_json(Rcpp::List(sub[k])));
+              }
+            }
+            j[key] = arr;
+          } else {
+            j[key] = list_to_json(sub);
+          }
+          break;
+        }
         default: break;
       }
     }
@@ -238,14 +267,17 @@ namespace Rcpp {
   }
 
   inline SEXP wrap(TrainingSpec const& spec) {
+    std::string const mode_str = spec.mode == types::Mode::Regression ? "regression" : "classification";
+
     return Rcpp::List::create(
         Rcpp::Named("pp")          = wrap(spec.pp),
         Rcpp::Named("vars")        = wrap(spec.vars),
         Rcpp::Named("cutpoint")    = wrap(spec.cutpoint),
         Rcpp::Named("stop")        = wrap(spec.stop),
         Rcpp::Named("binarize")    = wrap(spec.binarize),
-        Rcpp::Named("partition")   = wrap(spec.partition),
+        Rcpp::Named("grouping")    = wrap(spec.grouping),
         Rcpp::Named("leaf")        = wrap(spec.leaf),
+        Rcpp::Named("mode")        = mode_str,
         Rcpp::Named("size")        = spec.size,
         Rcpp::Named("seed")        = spec.seed,
         Rcpp::Named("threads")     = spec.threads,
@@ -276,7 +308,7 @@ namespace Rcpp {
     auto lower = as<std::unique_ptr<TreeNode>>(rnode["lower"]);
     auto upper = as<std::unique_ptr<TreeNode>>(rnode["upper"]);
 
-    std::set<Outcome> groups;
+    std::set<GroupId> groups;
     if (rnode.containsElementNamed("groups")) {
       Rcpp::IntegerVector rgroups(rnode["groups"]);
       for (auto g : rgroups)
@@ -309,7 +341,7 @@ namespace Rcpp {
     auto lower = as<std::unique_ptr<TreeNode>>(rcond["lower"]);
     auto upper = as<std::unique_ptr<TreeNode>>(rcond["upper"]);
 
-    std::set<Outcome> groups;
+    std::set<GroupId> groups;
     if (rcond.containsElementNamed("groups")) {
       Rcpp::IntegerVector rgroups(rcond["groups"]);
       for (auto g : rgroups)
@@ -331,33 +363,41 @@ namespace Rcpp {
     );
   }
 
-  template<> inline Tree as(SEXP x) {
+  // Construct the concrete Tree subclass based on the spec's mode.
+  template<> inline Tree::Ptr as(SEXP x) {
     Rcpp::List rtree(x);
 
-    return Tree(as<std::unique_ptr<TreeNode>>(rtree["root"]), as<TrainingSpec::Ptr>(rtree["training_spec"]));
+    auto root = as<std::unique_ptr<TreeNode>>(rtree["root"]);
+    auto spec = as<TrainingSpec::Ptr>(rtree["training_spec"]);
+
+    if (spec && spec->mode == types::Mode::Regression) {
+      return std::make_unique<RegressionTree>(std::move(root), spec);
+    }
+
+    return std::make_unique<ClassificationTree>(std::move(root), spec);
   }
 
-  template<> inline BootstrapTree as(SEXP x) {
+  template<> inline std::unique_ptr<BaggedTree> as(SEXP x) {
     Rcpp::List rtree(x);
 
-    return BootstrapTree(
-        as<std::unique_ptr<TreeNode>>(rtree["root"]),
-        as<TrainingSpec::Ptr>(rtree["training_spec"]),
-        as<std::vector<int>>(rtree["sample_indices"])
-    );
+    auto inner = as<Tree::Ptr>(x);  // uses the mode in training_spec
+    return std::make_unique<BaggedTree>(std::move(inner), as<std::vector<int>>(rtree["sample_indices"]));
   }
 
-  template<> inline Forest as(SEXP x) {
+  template<> inline Forest::Ptr as(SEXP x) {
     Rcpp::List rforest(x);
     Rcpp::List rtrees(rforest["trees"]);
     Rcpp::List rtraining_spec(rforest["training_spec"]);
 
-    Forest forest(as<TrainingSpec::Ptr>(rtraining_spec));
+    auto spec = as<TrainingSpec::Ptr>(rtraining_spec);
 
-    for (size_t i = 0; i < rtrees.size(); i++) {
-      auto tree     = as<BootstrapTree>(rtrees[i]);
-      auto tree_ptr = std::make_unique<BootstrapTree>(std::move(tree));
-      forest.add_tree(std::move(tree_ptr));
+    Forest::Ptr forest = spec->mode == types::Mode::Regression
+        ? static_cast<Forest::Ptr>(std::make_unique<RegressionForest>(spec))
+        : static_cast<Forest::Ptr>(std::make_unique<ClassificationForest>(spec));
+
+    for (size_t i = 0; i < rtrees.size(); ++i) {
+      auto bt = as<std::unique_ptr<BaggedTree>>(rtrees[i]);
+      forest->add_tree(std::move(bt));
     }
 
     return forest;
@@ -365,9 +405,9 @@ namespace Rcpp {
 
   template<> inline Model::Ptr as(SEXP x) {
     if (Rcpp::RObject(x).inherits(CLASS_PPRF)) {
-      return std::make_shared<Forest>(as<Forest>(x));
+      return std::shared_ptr<Forest>(as<Forest::Ptr>(x).release());
     }
-    return std::make_shared<Tree>(as<Tree>(x));
+    return std::shared_ptr<Tree>(as<Tree::Ptr>(x).release());
   }
 
   /**
@@ -382,19 +422,28 @@ namespace Rcpp {
 
     auto pp        = pp::ProjectionPursuit::from_json(list_to_json(Rcpp::List(r_training_spec["pp"])));
     auto vars      = vars::VariableSelection::from_json(list_to_json(Rcpp::List(r_training_spec["vars"])));
-    auto cutpoint  = cutpoint::SplitCutpoint::from_json(list_to_json(Rcpp::List(r_training_spec["cutpoint"])));
+    auto cutpoint  = cutpoint::Cutpoint::from_json(list_to_json(Rcpp::List(r_training_spec["cutpoint"])));
     auto stop      = stop::StopRule::from_json(list_to_json(Rcpp::List(r_training_spec["stop"])));
     auto binarize  = binarize::Binarization::from_json(list_to_json(Rcpp::List(r_training_spec["binarize"])));
-    auto partition = partition::StepPartition::from_json(list_to_json(Rcpp::List(r_training_spec["partition"])));
+    auto grouping  = grouping::Grouping::from_json(list_to_json(Rcpp::List(r_training_spec["grouping"])));
     auto leaf      = leaf::LeafStrategy::from_json(list_to_json(Rcpp::List(r_training_spec["leaf"])));
 
-    return TrainingSpec::builder()
+    types::Mode mode = types::Mode::Classification;
+
+    if (r_training_spec.containsElementNamed("mode")) {
+      std::string mode_str = Rcpp::as<std::string>(r_training_spec["mode"]);
+      if (mode_str == "regression") {
+        mode = types::Mode::Regression;
+      }
+    }
+
+    return TrainingSpec::builder(mode)
         .pp(std::move(pp))
         .vars(std::move(vars))
         .cutpoint(std::move(cutpoint))
         .stop(std::move(stop))
         .binarize(std::move(binarize))
-        .partition(std::move(partition))
+        .grouping(std::move(grouping))
         .leaf(std::move(leaf))
         .size(Rcpp::as<int>(r_training_spec["size"]))
         .seed(Rcpp::as<int>(r_training_spec["seed"]))

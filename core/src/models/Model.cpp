@@ -3,11 +3,21 @@
 #include "models/Forest.hpp"
 
 namespace ppforest2 {
-  Model::Ptr Model::train(TrainingSpec const& spec, types::FeatureMatrix const& x, types::OutcomeVector const& y) {
+  Model::Ptr Model::train(
+      TrainingSpec const& spec,
+      types::FeatureMatrix& x,
+      types::OutcomeVector& y
+  ) {
+    // Tree::train / Forest::train return unique_ptr to the abstract base;
+    // convert to shared_ptr<Model> for the Model::Ptr interface.
+    //
+    // Forest::train takes x/y by const ref (bootstraps into per-tree storage
+    // internally), so binding our mutable ref to a const-ref parameter is
+    // fine — no mutation at the forest level.
     if (spec.is_forest()) {
-      return std::make_shared<Forest>(Forest::train(spec, x, y));
+      return std::shared_ptr<Forest>(Forest::train(spec, x, y).release());
     }
 
-    return std::make_shared<Tree>(Tree::train(spec, x, y));
+    return std::shared_ptr<Tree>(Tree::train(spec, x, y).release());
   }
 }

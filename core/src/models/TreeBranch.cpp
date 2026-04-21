@@ -12,10 +12,10 @@ using namespace ppforest2::pp;
 namespace ppforest2 {
   TreeBranch::TreeBranch(
       Projector projector,
-      Cutpoint cutpoint,
+      Feature cutpoint,
       TreeNode::Ptr lower,
       TreeNode::Ptr upper,
-      std::set<Outcome> groups,
+      std::set<GroupId> groups,
       Feature pp_index_value
   )
       : projector(std::move(projector))
@@ -59,10 +59,10 @@ namespace ppforest2 {
 
   TreeBranch::Ptr TreeBranch::make(
       Projector projector,
-      Cutpoint cutpoint,
+      Feature cutpoint,
       TreeNode::Ptr lower,
       TreeNode::Ptr upper,
-      std::set<Outcome> groups,
+      std::set<GroupId> groups,
       Feature pp_index_value
   ) {
     return std::make_unique<TreeBranch>(

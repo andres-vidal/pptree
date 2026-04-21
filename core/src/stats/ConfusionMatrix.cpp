@@ -14,7 +14,7 @@
 using namespace ppforest2::types;
 
 namespace ppforest2::stats {
-  std::map<int, int> get_labels_map(OutcomeVector const& groups) {
+  std::map<int, int> get_labels_map(GroupIdVector const& groups) {
     std::set<int> labels_set = unique(groups);
 
     std::map<int, int> labels_map;
@@ -27,7 +27,7 @@ namespace ppforest2::stats {
     return labels_map;
   }
 
-  ConfusionMatrix::ConfusionMatrix(OutcomeVector const& predictions, OutcomeVector const& actual)
+  ConfusionMatrix::ConfusionMatrix(GroupIdVector const& predictions, GroupIdVector const& actual)
       : label_index(get_labels_map(actual)) {
     if (predictions.rows() != actual.rows()) {
       throw std::invalid_argument("cannot compute confusion matrix if predictions and observations have different sizes"

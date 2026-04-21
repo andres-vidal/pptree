@@ -263,7 +263,7 @@ namespace {
     auto predictions = tree.predict(data.x);                                                                           \
     compare_predictions(golden["predictions"], predictions, group_names);                                              \
                                                                                                                        \
-    GroupIdVector const y_int_tree = as_group_ids(data.y);                                                             \
+    GroupIdVector const y_int_tree = data.y.cast<GroupId>();                                                             \
     ConfusionMatrix cm(predictions.cast<GroupId>(), y_int_tree);                                                       \
     EXPECT_NEAR(cm.error(), golden["error_rate"].get<Feature>(), 1e-3F);                                               \
     compare_confusion_matrix(golden["training_confusion_matrix"], cm, group_names);                                    \
@@ -305,7 +305,7 @@ namespace {
     auto predictions = forest.predict(data.x);                                                                     \
     compare_predictions(golden["predictions"], predictions, group_names);                                          \
                                                                                                                    \
-    GroupIdVector const y_int_forest = as_group_ids(data.y);                                                       \
+    GroupIdVector const y_int_forest = data.y.cast<GroupId>();                                                       \
     ConfusionMatrix cm(predictions.cast<GroupId>(), y_int_forest);                                                 \
     EXPECT_NEAR(cm.error(), golden["error_rate"].get<Feature>(), 1e-3F);                                           \
     compare_confusion_matrix(golden["training_confusion_matrix"], cm, group_names);                                \

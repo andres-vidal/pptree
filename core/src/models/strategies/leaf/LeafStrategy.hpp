@@ -42,4 +42,7 @@ namespace ppforest2::leaf {
 
   /** @brief Factory function for majority-vote leaf strategy. */
   LeafStrategy::Ptr majority_vote();
+
+  /** @brief Factory function for mean-response leaf strategy. */
+  LeafStrategy::Ptr mean_response();
 }

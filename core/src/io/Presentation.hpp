@@ -10,6 +10,7 @@
 #include "io/Output.hpp"
 #include "models/VariableImportance.hpp"
 #include "stats/ConfusionMatrix.hpp"
+#include "stats/RegressionMetrics.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -49,6 +50,19 @@ namespace ppforest2::io {
       stats::ConfusionMatrix const& cm,
       std::string const& title                    = "Confusion Matrix",
       std::vector<std::string> const& group_names = {}
+  );
+
+  /**
+   * @brief Print regression metrics to stdout.
+   *
+   * Displays MSE, MAE, and R-squared.
+   *
+   * @param out     Output context.
+   * @param rm      The regression metrics to print.
+   * @param title   Section title.
+   */
+  void print_regression_metrics(
+      Output& out, stats::RegressionMetrics const& rm, std::string const& title = "Regression Metrics"
   );
 
   /**

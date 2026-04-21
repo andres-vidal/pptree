@@ -30,79 +30,146 @@ bool ppforest2_has_openmp() {
 Model::Ptr ppforest2_train(TrainingSpec::Ptr spec, FeatureMatrix x, OutcomeVector y) {
   to_cpp_indices(y);
 
-  if (!GroupPartition::is_contiguous(y)) {
-    sort(x, y);
+  // y carries integer class labels as float; sort cast-to-int and then
+  // re-cast so `x` and `y` stay in lockstep through the sort.
+  GroupIdVector y_int = y.cast<GroupId>();
+
+  if (!GroupPartition::is_contiguous(y_int)) {
+    sort(x, y_int);
   }
 
+  OutcomeVector y_out = y_int.cast<Outcome>();
+  return Model::train(*spec, x, y_out);
+}
+
+// [[Rcpp::export]]
+Model::Ptr ppforest2_train_regression(
+    TrainingSpec::Ptr spec,
+    FeatureMatrix x,
+    OutcomeVector y
+) {
+  // Data is expected to be pre-sorted by y on the R side. The initial
+  // median-split GroupPartition is built by the grouping strategy.
   return Model::train(*spec, x, y);
 }
 
 // [[Rcpp::export]]
-OutcomeVector ppforest2_predict_tree(Tree const& tree, FeatureMatrix const& data) {
-  OutcomeVector result = tree.predict(data);
+OutcomeVector ppforest2_predict_tree(Tree::Ptr const& tree, FeatureMatrix const& data) {
+  OutcomeVector result = tree->predict(data);
   to_r_indices(result);
   return result;
 }
 
 // [[Rcpp::export]]
-OutcomeVector ppforest2_predict_tree_forest(Forest const& forest, FeatureMatrix const& data) {
-  OutcomeVector result = forest.predict(data);
+OutcomeVector ppforest2_predict_tree_forest(Forest::Ptr const& forest, FeatureMatrix const& data) {
+  OutcomeVector result = forest->predict(data);
   to_r_indices(result);
   return result;
 }
 
+// Regression prediction variants: return raw float predictions (no index shift).
 // [[Rcpp::export]]
-FeatureMatrix ppforest2_predict_tree_prob(Tree const& tree, FeatureMatrix const& data) {
-  return tree.predict(data, Proportions{});
+OutcomeVector ppforest2_predict_tree_regression(Tree::Ptr const& tree, FeatureMatrix const& data) {
+  return tree->predict(data);
 }
 
 // [[Rcpp::export]]
-FeatureMatrix ppforest2_predict_forest_prob(Forest const& forest, FeatureMatrix const& data) {
-  return forest.predict(data, Proportions{});
+OutcomeVector ppforest2_predict_forest_regression(Forest::Ptr const& forest, FeatureMatrix const& data) {
+  return forest->predict(data);
 }
 
 // [[Rcpp::export]]
-FeatureVector ppforest2_vi_projections_tree(Tree const& tree, int n_vars, FeatureVector const& scale) {
-  return variable_importance_projections(tree, n_vars, &scale);
+FeatureMatrix ppforest2_predict_tree_prob(Tree::Ptr const& tree, FeatureMatrix const& data) {
+  return tree->predict(data, Proportions{});
 }
 
 // [[Rcpp::export]]
-FeatureVector ppforest2_vi_projections_forest(Forest const& forest, int n_vars, FeatureVector const& scale) {
-  return variable_importance_projections(forest, n_vars, &scale);
+FeatureMatrix ppforest2_predict_forest_prob(Forest::Ptr const& forest, FeatureMatrix const& data) {
+  return forest->predict(data, Proportions{});
+}
+
+// [[Rcpp::export]]
+FeatureVector ppforest2_vi_projections_tree(Tree::Ptr const& tree, int n_vars, FeatureVector const& scale) {
+  return tree->vi_projections(n_vars, &scale);
+}
+
+// [[Rcpp::export]]
+FeatureVector ppforest2_vi_projections_forest(Forest::Ptr const& forest, int n_vars, FeatureVector const& scale) {
+  return forest->vi_projections(n_vars, &scale);
 }
 
 // [[Rcpp::export]]
 FeatureVector ppforest2_vi_weighted_forest(
-    Forest const& forest, FeatureMatrix const& x, OutcomeVector y, FeatureVector const& scale
+    Forest::Ptr const& forest, FeatureMatrix const& x, OutcomeVector y, FeatureVector const& scale
 ) {
-  to_cpp_indices(y);
-  return variable_importance_weighted_projections(forest, x, y, &scale);
+  bool const is_regression =
+      forest->training_spec && forest->training_spec->mode == types::Mode::Regression;
+
+  if (!is_regression) {
+    to_cpp_indices(y);
+  }
+
+  return forest->vi_weighted_projections(x, y, &scale);
 }
 
 // [[Rcpp::export]]
-FeatureVector ppforest2_vi_permuted_forest(Forest const& forest, FeatureMatrix const& x, OutcomeVector y, int seed) {
-  to_cpp_indices(y);
-  return variable_importance_permuted(forest, x, y, seed);
+FeatureVector ppforest2_vi_permuted_forest(Forest::Ptr const& forest, FeatureMatrix const& x, OutcomeVector y, int seed) {
+  bool const is_regression =
+      forest->training_spec && forest->training_spec->mode == types::Mode::Regression;
+
+  if (!is_regression) {
+    to_cpp_indices(y);
+  }
+
+  return forest->vi_permuted(x, y, seed);
+}
+
+namespace {
+  // Translate std::optional<double> into an R-visible scalar: a length-1
+  // NumericVector carrying the value, or `NA_real_` when no OOB data was
+  // available. This is the one well-defined way R callers can see
+  // "missing" — a plain `double` return value can't express NA.
+  Rcpp::NumericVector to_r_scalar(std::optional<double> const& x) {
+    if (x) return Rcpp::NumericVector::create(*x);
+    return Rcpp::NumericVector::create(NA_REAL);
+  }
 }
 
 // [[Rcpp::export]]
-double ppforest2_oob_error(Forest const& forest, FeatureMatrix const& x, OutcomeVector y) {
+Rcpp::NumericVector
+ppforest2_oob_error_classification(Forest::Ptr const& forest, FeatureMatrix const& x, OutcomeVector y) {
+  auto const& cf = dynamic_cast<ClassificationForest const&>(*forest);
   to_cpp_indices(y);
-  return forest.oob_error(x, y);
+  return to_r_scalar(cf.oob_error(x, y));
 }
 
 // [[Rcpp::export]]
-OutcomeVector ppforest2_oob_predict(Forest const& forest, FeatureMatrix const& x) {
-  OutcomeVector result = forest.oob_predict(x);
+Rcpp::NumericVector ppforest2_oob_error_regression(
+    Forest::Ptr const& forest, FeatureMatrix const& x, OutcomeVector y
+) {
+  auto const& rf = dynamic_cast<RegressionForest const&>(*forest);
+  return to_r_scalar(rf.oob_error(x, y));
+}
+
+// [[Rcpp::export]]
+OutcomeVector ppforest2_oob_predict_classification(Forest::Ptr const& forest, FeatureMatrix const& x) {
+  OutcomeVector result = forest->oob_predict(x);
   to_r_indices(result); // sentinel -1 becomes 0 (handled in R)
   return result;
 }
 
 // [[Rcpp::export]]
-Rcpp::List ppforest2_tree_node_data(Tree const& tree, FeatureMatrix const& x, OutcomeVector y) {
+OutcomeVector ppforest2_oob_predict_regression(Forest::Ptr const& forest, FeatureMatrix const& x) {
+  // No index shift for regression — returned values are raw float predictions.
+  // "No OOB tree" observations are marked with NaN (filter via is.nan() in R).
+  return forest->oob_predict(x);
+}
+
+// [[Rcpp::export]]
+Rcpp::List ppforest2_tree_node_data(Tree::Ptr const& tree, FeatureMatrix const& x, OutcomeVector y) {
   to_cpp_indices(y);
   NodeDataVisitor visitor(x, y);
-  tree.root->accept(visitor);
+  tree->root->accept(visitor);
 
   Rcpp::List result(visitor.nodes.size());
 
@@ -159,7 +226,7 @@ namespace {
 
 // [[Rcpp::export]]
 Rcpp::DataFrame ppforest2_boundary_segments(
-    Tree const& tree,
+    Tree::Ptr const& tree,
     Rcpp::IntegerVector var_indices,
     Rcpp::NumericVector fixed_values,
     double x_min,
@@ -179,7 +246,7 @@ Rcpp::DataFrame ppforest2_boundary_segments(
       static_cast<types::Feature>(y_max)
   );
 
-  tree.root->accept(visitor);
+  tree->root->accept(visitor);
 
   int n = static_cast<int>(visitor.segments.size());
   Rcpp::NumericVector xs(n), ys(n), xe(n), ye(n);
@@ -206,7 +273,7 @@ Rcpp::DataFrame ppforest2_boundary_segments(
 
 // [[Rcpp::export]]
 Rcpp::List ppforest2_decision_regions(
-    Tree const& tree,
+    Tree::Ptr const& tree,
     Rcpp::IntegerVector var_indices,
     Rcpp::NumericVector fixed_values,
     double x_min,
@@ -226,7 +293,7 @@ Rcpp::List ppforest2_decision_regions(
       static_cast<types::Feature>(y_max)
   );
 
-  tree.root->accept(visitor);
+  tree->root->accept(visitor);
 
   Rcpp::List result(visitor.regions.size());
 
@@ -250,9 +317,9 @@ Rcpp::List ppforest2_decision_regions(
 }
 
 // [[Rcpp::export]]
-Rcpp::List ppforest2_tree_layout(Tree const& tree) {
+Rcpp::List ppforest2_tree_layout(Tree::Ptr const& tree) {
   LayoutParams params;
-  TreeLayout layout = compute_tree_layout(*tree.root, params);
+  TreeLayout layout = compute_tree_layout(*tree->root, params);
 
   // Build node data frame
   int n_nodes = static_cast<int>(layout.nodes.size());
@@ -312,7 +379,7 @@ std::string ppforest2_save_model_json(
     OutcomeVector y,
     std::vector<std::string> feature_names
 ) {
-  to_cpp_indices(y);
+  bool const is_regression = model->training_spec && model->training_spec->mode == types::Mode::Regression;
 
   Export<Model::Ptr> model_export{
       std::move(model),
@@ -324,6 +391,9 @@ std::string ppforest2_save_model_json(
   };
 
   if (include_metrics) {
+    if (!is_regression) {
+      to_cpp_indices(y);
+    }
     model_export.compute_metrics(x, y);
   }
 

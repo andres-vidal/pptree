@@ -1,3 +1,8 @@
+# Null-coalescing helper. Package-private; used from json.R, stop-strategy.R,
+# and anywhere else that wants rlang's `%||%` without depending on rlang.
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
+
 # Resolve strategy objects vs shortcut params into strategy objects.
 #
 # When shortcut params are used (lambda, n_vars, p_vars), builds the
@@ -18,7 +23,7 @@
 # @param cutpoint A cutpoint_strategy object or NULL.
 # @param stop A stop_strategy object or NULL.
 # @param binarize A binarize_strategy object or NULL.
-# @param partition A partition_strategy object or NULL.
+# @param grouping A grouping_strategy object or NULL.
 # @param leaf A leaf_strategy object or NULL.
 # @param default_vars The default variable selection strategy when none is specified.
 # @param n_features Number of features, used to resolve p_vars and validate
@@ -36,10 +41,11 @@ resolve_strategies <- function(
   cutpoint = NULL,
   stop = NULL,
   binarize = NULL,
-  partition = NULL,
+  grouping = NULL,
   leaf = NULL,
   default_vars = vars_all(),
-  n_features = NULL) {
+  n_features = NULL,
+  mode = "classification") {
   if (!is.null(pp) && !lambda_missing)
     stop("Cannot use `pp` together with `lambda`. Use one API or the other.")
 
@@ -61,8 +67,8 @@ resolve_strategies <- function(
   if (!is.null(binarize) && !inherits(binarize, "binarize_strategy"))
     stop("`binarize` must be a binarize_strategy object (e.g., binarize_largest_gap()).")
 
-  if (!is.null(partition) && !inherits(partition, "partition_strategy"))
-    stop("`partition` must be a partition_strategy object (e.g., partition_by_group()).")
+  if (!is.null(grouping) && !inherits(grouping, "grouping_strategy"))
+    stop("`grouping` must be a grouping_strategy object (e.g., grouping_by_label()).")
 
   if (!is.null(leaf) && !inherits(leaf, "leaf_strategy"))
     stop("`leaf` must be a leaf_strategy object (e.g., leaf_majority_vote()).")
@@ -98,18 +104,27 @@ resolve_strategies <- function(
   if (is.null(cutpoint))
     cutpoint <- cutpoint_mean_of_means()
 
-  # Stop, binarize, partition strategies
-  if (is.null(stop))
-    stop <- stop_pure_node()
+  is_regression <- identical(mode, "regression")
 
-  if (is.null(binarize))
-    binarize <- binarize_largest_gap()
+  # Stop, binarize, grouping, leaf strategies — defaults depend on mode.
+  if (is.null(stop)) {
+    stop <- if (is_regression) stop_any(stop_min_size(5L), stop_min_variance(0.01)) else stop_pure_node()
+  }
 
-  if (is.null(partition))
-    partition <- partition_by_group()
+  if (is.null(binarize)) {
+    # Regression never reaches binarize (ByCutpoint always yields 2 groups),
+    # so default to `binarize_disabled()` — an explicit placeholder — rather
+    # than a classification-only strategy that would fail mode validation.
+    binarize <- if (is_regression) binarize_disabled() else binarize_largest_gap()
+  }
 
-  if (is.null(leaf))
-    leaf <- leaf_majority_vote()
+  if (is.null(grouping)) {
+    grouping <- if (is_regression) grouping_by_cutpoint() else grouping_by_label()
+  }
+
+  if (is.null(leaf)) {
+    leaf <- if (is_regression) leaf_mean_response() else leaf_majority_vote()
+  }
 
   list(
     pp = pp,
@@ -117,16 +132,16 @@ resolve_strategies <- function(
     cutpoint = cutpoint,
     stop = stop,
     binarize = binarize,
-    partition = partition,
+    grouping = grouping,
     leaf = leaf)
 }
 
 print_training_spec <- function(spec) {
   section_labels <- c(
     pp = "pp method", vars = "vars method", cutpoint = "cutpoint method",
-    stop = "stop rule", binarize = "binarize method", partition = "partition method",
+    stop = "stop rule", binarize = "binarize method", grouping = "grouping method",
     leaf = "leaf method")
-  for (section in c("pp", "vars", "cutpoint", "stop", "binarize", "partition", "leaf")) {
+  for (section in c("pp", "vars", "cutpoint", "stop", "binarize", "grouping", "leaf")) {
     s <- spec[[section]]
     if (is.null(s)) next
     display <- if (!is.null(s$display_name)) s$display_name else s$name
@@ -153,16 +168,17 @@ print_confusion_matrix <- function(raw_preds, model) {
 }
 
 print_oob_confusion_matrix <- function(model) {
-  oob_preds <- model$oob_predictions
-  # 0 = sentinel for no OOB trees (was -1 in C++, +1 during conversion)
-  oob_mask <- oob_preds > 0
-  preds <- factor(model$groups[oob_preds[oob_mask]], levels = model$groups)
-  actual <- factor(model$groups[model$y[oob_mask]], levels = model$groups)
+  # `oob_predictions()` is the lazy accessor; returns a factor with `NA` for
+  # observations with no OOB tree.
+  oob_preds <- oob_predictions(model)
+  oob_mask  <- !is.na(oob_preds)
+  preds     <- oob_preds[oob_mask]
+  actual    <- factor(model$groups[model$y[oob_mask]], levels = model$groups)
   cm <- table(Actual = actual, Predicted = preds)
   print(cm)
   cat("\n")
   n <- length(actual)
-  correct <- sum(preds == actual)
+  correct <- sum(as.character(preds) == as.character(actual))
   cat("OOB error: ", round((1 - correct / n) * 100, 2), "%\n", sep = "")
 }
 
@@ -206,12 +222,54 @@ resolve_model_data <- function(formula, data, x, y) {
     stop("`x` must not contain NA or NaN values.")
   }
 
-  if (!is.factor(y)) {
-    y <- factor(y)
-  }
+  # Detect mode: factor / character → classification; numeric → regression.
+  is_regression <- is.numeric(y) && !is.factor(y)
 
   if (nrow(x) != length(y)) {
     stop("`x` and `y` must have the same number of observations.")
+  }
+
+  # Reject NA / NaN / Inf in `y` before it crosses the C++ boundary.
+  # Classification: `factor(y)` happily preserves NA, and `as.numeric(factor)`
+  # keeps it, so the NA would propagate into training and hit an out-of-range
+  # cast in `to_cpp_indices` (UB).
+  # Regression: `order(y)` puts NaN at the end (default `na.last = TRUE`)
+  # and `std::stable_sort` on NaN violates strict-weak-order (UB). Any
+  # row with a non-finite y is unusable anyway.
+  if (anyNA(y)) {
+    stop("`y` must not contain NA or NaN values.")
+  }
+  if (is_regression && !all(is.finite(y))) {
+    stop("`y` must contain only finite values for regression (no Inf / -Inf).")
+  }
+
+  if (is_regression) {
+    # Regression: sort by y. The response is carried as `y` — mode-agnostic,
+    # matching the C++ unified-y convention (integer class labels for
+    # classification, continuous response for regression, single field).
+    ord <- order(y)
+    x_sorted <- x[ord, , drop = FALSE]
+    y_sorted <- as.numeric(y[ord])
+
+    n <- length(y_sorted)
+    if (n < 4L) {
+      stop("Regression requires at least 4 observations for a meaningful split.")
+    }
+
+    return(
+      list(
+        x = x_sorted,
+        y = as.matrix(y_sorted),
+        groups = character(0),
+        formula = formula,
+        mode = "regression"
+      )
+    )
+  }
+
+  # Classification path.
+  if (!is.factor(y)) {
+    y <- factor(y)
   }
 
   if (nlevels(y) < 2) {
@@ -227,7 +285,8 @@ resolve_model_data <- function(formula, data, x, y) {
       x = x,
       y = as.matrix(as.numeric(y)),
       groups = levels(y),
-      formula = formula
+      formula = formula,
+      mode = "classification"
     )
   )
 }

@@ -2,7 +2,7 @@
 
 #include "models/strategies/leaf/LeafStrategy.hpp"
 #include "models/strategies/Strategy.hpp"
-#include "utils/JsonValidation.hpp"
+#include "utils/JsonReader.hpp"
 
 namespace ppforest2::leaf {
   /**
@@ -16,6 +16,7 @@ namespace ppforest2::leaf {
   struct MajorityVote : public LeafStrategy {
     nlohmann::json to_json() const override;
     std::string display_name() const override { return "Majority vote"; }
+    std::set<types::Mode> supported_modes() const override { return {types::Mode::Classification}; }
 
     /**
      * @brief Create a majority-vote leaf from the node's group partition.

@@ -36,6 +36,15 @@ namespace ppforest2::cli {
     std::string format_opt_delta(std::optional<double> const& val) {
       return val ? fmt::format("{:.1f}", *val) : "";
     }
+
+    // Classification errors are in [0, 1]; regression MSE can be any non-negative
+    // value. Heuristic: values > 1 are almost certainly MSE, so show raw, otherwise %.
+    std::string format_err(double v) {
+      if (v > 1.0) {
+        return fmt::format("{:.3f}", v);
+      }
+      return fmt::format("{:.1f}%", v * 100);
+    }
   }
 
   // --- BenchmarkReport ---
@@ -236,9 +245,9 @@ namespace ppforest2::cli {
           decorate(d.time),
           format_rss(r.peak_rss_mb),
           decorate(d.rss),
-          fmt::format("{:.1f}%", r.mean_tr_error * 100),
+          format_err(r.mean_tr_error),
           decorate(d.tr_err),
-          fmt::format("{:.1f}%", r.mean_te_error * 100),
+          format_err(r.mean_te_error),
           decorate(d.te_err),
       };
 

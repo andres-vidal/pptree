@@ -3,7 +3,7 @@
 #include "models/strategies/pp/ProjectionPursuit.hpp"
 #include "models/strategies/Strategy.hpp"
 #include "stats/GroupPartition.hpp"
-#include "utils/JsonValidation.hpp"
+#include "utils/JsonReader.hpp"
 #include "utils/Types.hpp"
 
 namespace ppforest2::pp {
@@ -19,6 +19,9 @@ namespace ppforest2::pp {
 
     nlohmann::json to_json() const override;
     std::string display_name() const override { return lambda == 0 ? "LDA" : "PDA"; }
+    std::set<types::Mode> supported_modes() const override {
+      return {types::Mode::Classification, types::Mode::Regression};
+    }
 
     /**
      * @brief NodeContext-based interface: optimize projection and write to ctx.
@@ -37,6 +40,7 @@ namespace ppforest2::pp {
     static ProjectionPursuit::Ptr from_json(nlohmann::json const& j);
 
     PPFOREST2_REGISTER_STRATEGY(ProjectionPursuit, "pda")
+    PPFOREST2_REGISTER_PRIMARY_PARAM("pda", "lambda")
 
   private:
     /** @brief Penalty parameter for the LDA index (0 = standard LDA). */

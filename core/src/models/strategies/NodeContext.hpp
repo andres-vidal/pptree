@@ -25,6 +25,27 @@ namespace ppforest2 {
     /** @brief Depth of this node in the tree. */
     int depth;
 
+    /**
+     * @brief Optional raw response vector (for regression).
+     *
+     * When set, points at the full-length `y` vector whose values match the
+     * current `x` layout. Regression strategies (`MeanResponse` leaf,
+     * `MinVariance` stop) read it to compute arithmetic on the response.
+     * Null for classification (classification strategies use `y`'s
+     * GroupPartition exclusively).
+     */
+    types::OutcomeVector const* y_vec = nullptr;
+
+    /**
+     * @brief Mutable data pointers for in-place reordering (regression only).
+     *
+     * ByCutpoint needs to physically reorder data within each node's range
+     * to maintain sorted-by-y groups for child partitions. These are null
+     * for classification (no reordering needed).
+     */
+    types::FeatureMatrix* mutable_x = nullptr;
+    types::OutcomeVector* mutable_y_vec = nullptr;
+
     /** @brief Set by select_vars: variable selection result. */
     vars::VariableSelection::Result var_selection;
 
@@ -35,10 +56,10 @@ namespace ppforest2 {
 
     /** @brief Set by regroup (multiclass -> binary): 2-group partition with subgroups. */
     std::optional<stats::GroupPartition> binary_y;
-    /** @brief Set by regroup: outcome label assigned to binary group 0. */
-    types::Outcome binary_0 = -1;
-    /** @brief Set by regroup: outcome label assigned to binary group 1. */
-    types::Outcome binary_1 = -1;
+    /** @brief Set by regroup: group label assigned to binary group 0. */
+    types::GroupId binary_0 = -1;
+    /** @brief Set by regroup: group label assigned to binary group 1. */
+    types::GroupId binary_1 = -1;
 
     /** @brief Set by find_cutpoint: split cutpoint in projected space. */
     types::Feature cutpoint = 0;

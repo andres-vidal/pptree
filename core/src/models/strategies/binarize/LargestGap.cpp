@@ -28,11 +28,11 @@ namespace ppforest2::binarize {
   }
 
   Binarization::Result LargestGap::compute(FeatureMatrix const& projected_x, GroupPartition const& y) const {
-    std::vector<std::tuple<Outcome, Feature>> means;
+    std::vector<std::tuple<GroupId, Feature>> means;
 
     invariant(projected_x.cols() == 1, "Binary regrouping requires unidimensional data");
 
-    for (Outcome const group : y.groups) {
+    for (GroupId const group : y.groups) {
       Feature const group_mean = y.group(projected_x, group).mean();
       means.emplace_back(group, group_mean);
     }
@@ -42,7 +42,7 @@ namespace ppforest2::binarize {
     });
 
     Feature edge_gap   = -1;
-    Outcome edge_group = -1;
+    GroupId edge_group = -1;
 
     for (size_t i = 0; i + 1 < means.size(); i++) {
       Feature const gap = std::get<1>(means[i + 1]) - std::get<1>(means[i]);
@@ -57,7 +57,7 @@ namespace ppforest2::binarize {
       edge_group = std::get<0>(means.front());
     }
 
-    std::map<Outcome, int> binary_mapping;
+    std::map<GroupId, int> binary_mapping;
 
     bool edge_found = false;
     for (auto const& [group, mean] : means) {
@@ -67,8 +67,8 @@ namespace ppforest2::binarize {
 
     auto binary_y = y.remap(binary_mapping);
 
-    Outcome const group_0 = *binary_y.groups.begin();
-    Outcome const group_1 = *std::next(binary_y.groups.begin());
+    GroupId const group_0 = *binary_y.groups.begin();
+    GroupId const group_1 = *std::next(binary_y.groups.begin());
 
     return Binarization::Result{std::move(binary_y), group_0, group_1};
   }
@@ -78,7 +78,7 @@ namespace ppforest2::binarize {
   }
 
   Binarization::Ptr LargestGap::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "largest_gap binarize", {"name"});
+    JsonReader{j, "largest_gap"}.only_keys({"name"});
     return largest_gap();
   }
 }

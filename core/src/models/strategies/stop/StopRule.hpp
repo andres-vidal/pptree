@@ -3,6 +3,8 @@
 #include "models/strategies/Strategy.hpp"
 #include "stats/Stats.hpp"
 
+#include <vector>
+
 /**
  * @brief Stop rule strategies that determine when to create leaf nodes.
  *
@@ -39,4 +41,13 @@ namespace ppforest2::stop {
 
   /** @brief Factory function for pure-node stop rule. */
   StopRule::Ptr pure_node();
+
+  /** @brief Factory function for minimum-size stop rule. */
+  StopRule::Ptr min_size(int n);
+
+  /** @brief Factory function for minimum-variance stop rule. */
+  StopRule::Ptr min_variance(types::Feature threshold);
+
+  /** @brief Factory function for composite stop rule (logical OR). */
+  StopRule::Ptr any(std::vector<StopRule::Ptr> rules);
 }

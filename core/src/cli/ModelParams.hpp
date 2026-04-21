@@ -23,13 +23,20 @@ namespace ppforest2::cli {
     int max_retries = 3;
     std::string p_vars_input;
 
+    /** @brief Training mode ("classification" or "regression"). */
+    std::string mode_input = "classification";
+
     /** @brief Explicit strategy inputs (--X flags). */
     std::string pp_input;
     std::string vars_input;
     std::string cutpoint_input;
-    std::string stop_input;
+    // `--stop` is the one strategy flag that accepts repeats: multiple
+    // occurrences collect into this vector and are composed into an `any`
+    // rule at resolve time. A single --stop behaves unchanged. See the
+    // note on `CompositeStop` in `resolve()` for the semantics.
+    std::vector<std::string> stop_inputs;
     std::string binarize_input;
-    std::string partition_input;
+    std::string grouping_input;
     std::string leaf_input;
 
     /** @brief Strategy JSON objects (from CLI strings or config file). */
@@ -38,7 +45,7 @@ namespace ppforest2::cli {
     nlohmann::json cutpoint_config;
     nlohmann::json stop_config;
     nlohmann::json binarize_config;
-    nlohmann::json partition_config;
+    nlohmann::json grouping_config;
     nlohmann::json leaf_config;
 
     /** @brief Construct from a JSON config object. */
@@ -57,6 +64,7 @@ namespace ppforest2::cli {
     nlohmann::json to_json() const {
       nlohmann::json j;
 
+      j["mode"]        = mode_input;
       j["size"]        = size;
       j["lambda"]      = lambda;
       j["max_retries"] = max_retries;
@@ -89,8 +97,8 @@ namespace ppforest2::cli {
       if (!binarize_config.is_null()) {
         j["binarize"] = binarize_config;
       }
-      if (!partition_config.is_null()) {
-        j["partition"] = partition_config;
+      if (!grouping_config.is_null()) {
+        j["grouping"] = grouping_config;
       }
       if (!leaf_config.is_null()) {
         j["leaf"] = leaf_config;

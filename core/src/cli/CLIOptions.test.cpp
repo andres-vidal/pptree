@@ -24,7 +24,7 @@ using namespace ppforest2::io;
 #error "PPFOREST2_DATA_DIR must be defined"
 #endif
 
-static const std::string IRIS_PATH = std::string(PPFOREST2_DATA_DIR) + "/iris.csv";
+static const std::string IRIS_PATH = std::string(PPFOREST2_DATA_DIR) + "/classification/iris.csv";
 
 namespace {
   /**
@@ -923,6 +923,61 @@ TEST(ParseArgs, VarsStrategyMultipleParamsStoresAll) {
   auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--vars", "uniform:count=2,unknown=1"});
   EXPECT_EQ(opts.model.vars_config["count"].get<int>(), 2);
   EXPECT_EQ(opts.model.vars_config["unknown"].get<int>(), 1);
+}
+
+// ---------------------------------------------------------------------------
+// --stop (repeatable; wraps in any(...) when > 1)
+// ---------------------------------------------------------------------------
+
+/* Single --stop parses exactly like the pre-existing flat syntax — no
+ * CompositeStop wrapping, so saved models built on a single --stop have the
+ * same JSON shape as before the repeat-enabled change. */
+TEST(ParseArgs, StopSingleOccurrenceNoCompositeWrap) {
+  auto opts = parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--stop", "pure_node"});
+  EXPECT_EQ(opts.model.stop_config["name"], "pure_node");
+  EXPECT_FALSE(opts.model.stop_config.contains("rules"));
+}
+
+/* Single --stop with params round-trips name + params into stop_config. */
+TEST(ParseArgs, StopSingleOccurrenceWithParam) {
+  auto opts =
+      parse({"ppforest2", "train", "-d", IRIS_PATH.c_str(), "--stop", "min_size:min_size=5"});
+  EXPECT_EQ(opts.model.stop_config["name"], "min_size");
+  EXPECT_EQ(opts.model.stop_config["min_size"].get<int>(), 5);
+  EXPECT_FALSE(opts.model.stop_config.contains("rules"));
+}
+
+/* Two --stop occurrences compose into an `any` CompositeStop. This is the
+ * CLI-ergonomic path for the regression default: users who'd otherwise
+ * have to write a full --config JSON can now tweak the composite inline. */
+TEST(ParseArgs, StopRepeatedWrapsInAny) {
+  auto opts = parse({
+      "ppforest2", "train", "-d", IRIS_PATH.c_str(),
+      "--stop", "min_size:min_size=5",
+      "--stop", "min_variance:threshold=0.01",
+  });
+  EXPECT_EQ(opts.model.stop_config["name"], "any");
+  ASSERT_TRUE(opts.model.stop_config.contains("rules"));
+  ASSERT_EQ(opts.model.stop_config["rules"].size(), 2U);
+  EXPECT_EQ(opts.model.stop_config["rules"][0]["name"], "min_size");
+  EXPECT_EQ(opts.model.stop_config["rules"][0]["min_size"].get<int>(), 5);
+  EXPECT_EQ(opts.model.stop_config["rules"][1]["name"], "min_variance");
+  EXPECT_FLOAT_EQ(opts.model.stop_config["rules"][1]["threshold"].get<float>(), 0.01F);
+}
+
+/* Three --stop occurrences: rules array preserves order. */
+TEST(ParseArgs, StopRepeatedPreservesOrder) {
+  auto opts = parse({
+      "ppforest2", "train", "-d", IRIS_PATH.c_str(),
+      "--stop", "pure_node",
+      "--stop", "min_size:min_size=3",
+      "--stop", "min_variance:threshold=0.02",
+  });
+  EXPECT_EQ(opts.model.stop_config["name"], "any");
+  ASSERT_EQ(opts.model.stop_config["rules"].size(), 3U);
+  EXPECT_EQ(opts.model.stop_config["rules"][0]["name"], "pure_node");
+  EXPECT_EQ(opts.model.stop_config["rules"][1]["name"], "min_size");
+  EXPECT_EQ(opts.model.stop_config["rules"][2]["name"], "min_variance");
 }
 
 // ---------------------------------------------------------------------------

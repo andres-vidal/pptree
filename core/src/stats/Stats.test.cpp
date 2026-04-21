@@ -12,13 +12,13 @@ using namespace ppforest2::types;
 TEST(Stats, Sort) {
   FeatureMatrix x = MAT(Feature, rows(3), 1.0, 3.0, 1.0, 2.0, 2.0, 3.0, 3.0, 1.0, 2.0);
 
-  OutcomeVector y = VEC(Outcome, 1, 2, 1);
+  GroupIdVector y = VEC(GroupId, 1, 2, 1);
 
   sort(x, y);
 
   FeatureMatrix expected_x = MAT(Feature, rows(3), 1.0, 3.0, 1.0, 3.0, 1.0, 2.0, 2.0, 2.0, 3.0);
 
-  OutcomeVector expected_y = VEC(Outcome, 1, 1, 2);
+  GroupIdVector expected_y = VEC(GroupId, 1, 1, 2);
 
   ASSERT_EQ_DATA(expected_x, x);
   ASSERT_EQ_DATA(expected_y, y);
@@ -27,11 +27,11 @@ TEST(Stats, Sort) {
 TEST(Stats, SortAlreadySorted) {
   FeatureMatrix x = MAT(Feature, rows(3), 1.0, 10.0, 2.0, 20.0, 3.0, 30.0);
 
-  OutcomeVector y = VEC(Outcome, 0, 0, 1);
+  GroupIdVector y = VEC(GroupId, 0, 0, 1);
 
   sort(x, y);
 
-  OutcomeVector expected_y = VEC(Outcome, 0, 0, 1);
+  GroupIdVector expected_y = VEC(GroupId, 0, 0, 1);
 
   ASSERT_EQ(expected_y, y);
 }
@@ -39,11 +39,11 @@ TEST(Stats, SortAlreadySorted) {
 TEST(Stats, SortReverseSorted) {
   FeatureMatrix x = MAT(Feature, rows(4), 4.0, 3.0, 2.0, 1.0);
 
-  OutcomeVector y = VEC(Outcome, 2, 1, 1, 0);
+  GroupIdVector y = VEC(GroupId, 2, 1, 1, 0);
 
   sort(x, y);
 
-  OutcomeVector expected_y = VEC(Outcome, 0, 1, 1, 2);
+  GroupIdVector expected_y = VEC(GroupId, 0, 1, 1, 2);
 
   ASSERT_EQ(expected_y, y);
   // Feature matrix should be reordered to match
@@ -54,7 +54,7 @@ TEST(Stats, SortReverseSorted) {
 TEST(Stats, SortLargerArray) {
   FeatureMatrix x = MAT(Feature, rows(6), 6.0, 5.0, 4.0, 3.0, 2.0, 1.0);
 
-  OutcomeVector y = VEC(Outcome, 2, 1, 0, 2, 1, 0);
+  GroupIdVector y = VEC(GroupId, 2, 1, 0, 2, 1, 0);
 
   sort(x, y);
 
@@ -64,7 +64,7 @@ TEST(Stats, SortLargerArray) {
 }
 
 TEST(Stats, UniqueEmptyResult) {
-  OutcomeVector column(0);
+  GroupIdVector column(0);
   std::set<int> actual = unique(column);
   std::set<int> expected;
 
@@ -73,7 +73,7 @@ TEST(Stats, UniqueEmptyResult) {
 }
 
 TEST(Stats, UniqueSingleValue) {
-  OutcomeVector column   = VEC(Outcome, 1);
+  GroupIdVector column   = VEC(GroupId, 1);
   std::set<int> actual   = unique(column);
   std::set<int> expected = {1};
 
@@ -82,7 +82,7 @@ TEST(Stats, UniqueSingleValue) {
 }
 
 TEST(Stats, UniqueSingleValueRepeated) {
-  OutcomeVector column = VEC(Outcome, 1, 1, 1);
+  GroupIdVector column = VEC(GroupId, 1, 1, 1);
 
   std::set<int> actual   = unique(column);
   std::set<int> expected = {1};
@@ -92,7 +92,7 @@ TEST(Stats, UniqueSingleValueRepeated) {
 }
 
 TEST(Stats, UniqueMultipleValues) {
-  OutcomeVector column   = VEC(Outcome, 1, 2, 3);
+  GroupIdVector column   = VEC(GroupId, 1, 2, 3);
   std::set<int> actual   = unique(column);
   std::set<int> expected = {1, 2, 3};
 
@@ -101,7 +101,7 @@ TEST(Stats, UniqueMultipleValues) {
 }
 
 TEST(Stats, UniqueMultipleValuesRepeated) {
-  OutcomeVector column   = VEC(Outcome, 1, 2, 1);
+  GroupIdVector column   = VEC(GroupId, 1, 2, 1);
   std::set<int> actual   = unique(column);
   std::set<int> expected = {1, 2};
 
@@ -111,7 +111,7 @@ TEST(Stats, UniqueMultipleValuesRepeated) {
 
 TEST(Stats, AccuracyMax) {
   OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
-  OutcomeVector actual      = VEC(Outcome, 1, 2, 3);
+  GroupIdVector actual      = VEC(GroupId, 1, 2, 3);
 
   float result   = accuracy(predictions, actual);
   float expected = 1.0;
@@ -121,7 +121,7 @@ TEST(Stats, AccuracyMax) {
 
 TEST(Stats, AccuracyMin) {
   OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
-  OutcomeVector actual      = VEC(Outcome, 3, 3, 1);
+  GroupIdVector actual      = VEC(GroupId, 3, 3, 1);
 
   float result   = accuracy(predictions, actual);
   float expected = 0.0;
@@ -131,7 +131,7 @@ TEST(Stats, AccuracyMin) {
 
 TEST(Stats, AccuracyGeneric1) {
   OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
-  OutcomeVector actual      = VEC(Outcome, 1, 3, 3);
+  GroupIdVector actual      = VEC(GroupId, 1, 3, 3);
 
   float result   = accuracy(predictions, actual);
   float expected = 2.0 / 3.0;
@@ -141,7 +141,7 @@ TEST(Stats, AccuracyGeneric1) {
 
 TEST(Stats, AccuracyGeneric2) {
   OutcomeVector predictions = VEC(Outcome, 1, 2, 3, 4);
-  OutcomeVector actual      = VEC(Outcome, 1, 1, 3, 3);
+  GroupIdVector actual      = VEC(GroupId, 1, 1, 3, 3);
 
   float result   = accuracy(predictions, actual);
   float expected = 1.0 / 2.0;
@@ -151,21 +151,21 @@ TEST(Stats, AccuracyGeneric2) {
 
 TEST(Stats, AccuracyMorePredictionsThanObservations) {
   OutcomeVector predictions  = VEC(Outcome, 0, 1, 2);
-  OutcomeVector observations = VEC(Outcome, 0, 1);
+  GroupIdVector observations = VEC(GroupId, 0, 1);
 
   ASSERT_THROW(accuracy(predictions, observations), std::invalid_argument);
 }
 
 TEST(Stats, AccuracyMoreObservationsThanPredictions) {
   OutcomeVector predictions  = VEC(Outcome, 0, 1);
-  OutcomeVector observations = VEC(Outcome, 0, 1, 2);
+  GroupIdVector observations = VEC(GroupId, 0, 1, 2);
 
   ASSERT_THROW(accuracy(predictions, observations), std::invalid_argument);
 }
 
 TEST(Stats, ErrorRateMax) {
   OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
-  OutcomeVector actual      = VEC(Outcome, 3, 3, 1);
+  GroupIdVector actual      = VEC(GroupId, 3, 3, 1);
 
   float result   = error_rate(predictions, actual);
   float expected = 1.0;
@@ -175,7 +175,7 @@ TEST(Stats, ErrorRateMax) {
 
 TEST(Stats, ErrorRateMin) {
   OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
-  OutcomeVector actual      = VEC(Outcome, 1, 2, 3);
+  GroupIdVector actual      = VEC(GroupId, 1, 2, 3);
 
   float result   = error_rate(predictions, actual);
   float expected = 0.0;
@@ -185,7 +185,7 @@ TEST(Stats, ErrorRateMin) {
 
 TEST(Stats, ErrorRateGeneric1) {
   OutcomeVector predictions = VEC(Outcome, 1, 2, 3);
-  OutcomeVector actual      = VEC(Outcome, 1, 3, 3);
+  GroupIdVector actual      = VEC(GroupId, 1, 3, 3);
 
   float result   = error_rate(predictions, actual);
   float expected = 1.0 / 3.0;
@@ -195,7 +195,7 @@ TEST(Stats, ErrorRateGeneric1) {
 
 TEST(Stats, ErrorRateGeneric2) {
   OutcomeVector predictions = VEC(Outcome, 1, 2, 3, 4);
-  OutcomeVector actual      = VEC(Outcome, 1, 1, 3, 3);
+  GroupIdVector actual      = VEC(GroupId, 1, 1, 3, 3);
 
   float result   = error_rate(predictions, actual);
   float expected = 1.0 / 2.0;
@@ -205,14 +205,14 @@ TEST(Stats, ErrorRateGeneric2) {
 
 TEST(Stats, ErrorRateMorePredictionsThanObservations) {
   OutcomeVector predictions  = VEC(Outcome, 0, 1, 2);
-  OutcomeVector observations = VEC(Outcome, 0, 1);
+  GroupIdVector observations = VEC(GroupId, 0, 1);
 
   ASSERT_THROW(error_rate(predictions, observations), std::invalid_argument);
 }
 
 TEST(Stats, ErrorRateMoreObservationsThanPredictions) {
   OutcomeVector predictions  = VEC(Outcome, 0, 1);
-  OutcomeVector observations = VEC(Outcome, 0, 1, 2);
+  GroupIdVector observations = VEC(GroupId, 0, 1, 2);
 
   ASSERT_THROW(error_rate(predictions, observations), std::invalid_argument);
 }

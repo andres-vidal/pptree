@@ -35,10 +35,10 @@ namespace ppforest2::binarize {
     struct Result {
       /** @brief 2-group partition with subgroups mapping to original groups. */
       stats::GroupPartition binary_y;
-      /** @brief Outcome label for binary group 0. */
-      types::Outcome group_0;
-      /** @brief Outcome label for binary group 1. */
-      types::Outcome group_1;
+      /** @brief Group label for binary group 0. */
+      types::GroupId group_0;
+      /** @brief Group label for binary group 1. */
+      types::GroupId group_1;
     };
 
     /**
@@ -55,4 +55,7 @@ namespace ppforest2::binarize {
 
   /** @brief Factory function for largest-gap binarization. */
   Binarization::Ptr largest_gap();
+
+  /** @brief Factory function for the Disabled (placeholder) binarizer. */
+  Binarization::Ptr disabled();
 }

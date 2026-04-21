@@ -11,8 +11,10 @@
 
 #include <fmt/format.h>
 
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <numeric>
 #include <unordered_map>
 #include <vector>
 
@@ -159,7 +161,7 @@ namespace ppforest2::io::csv {
     int const n = static_cast<int>(raw_rows.size());
 
     types::FeatureMatrix x(n, n_features);
-    types::OutcomeVector y(n);
+    types::GroupIdVector y_int(n);
 
     std::unordered_map<std::string, int> label_mapping;
     std::vector<std::string> label_names;
@@ -190,23 +192,131 @@ namespace ppforest2::io::csv {
         label_names.push_back(label_str);
       }
 
-      y[i] = label_mapping[label_str];
+      y_int[i] = label_mapping[label_str];
     }
 
+    types::OutcomeVector y = y_int.cast<types::Outcome>();
     return stats::DataPacket(x, y, label_names, feature_names);
   }
 
   stats::DataPacket read_sorted(std::string const& filename) {
     stats::DataPacket data = read(filename);
 
-    types::FeatureMatrix x = data.x;
-    types::OutcomeVector y = data.y;
+    // Sort in place on `data.x` instead of copying it. `stats::sort` wants a
+    // `GroupIdVector`, but we can't sort the `OutcomeVector` directly without
+    // adding yet another overload; cast once up front, sort in place, and
+    // write the permuted integer labels back through a single cast. If the
+    // data is already group-contiguous, skip all of that and return as-is.
+    types::GroupIdVector y_int = data.y.cast<types::GroupId>();
 
-    if (!stats::GroupPartition::is_contiguous(y)) {
-      stats::sort(x, y);
+    if (!stats::GroupPartition::is_contiguous(y_int)) {
+      stats::sort(data.x, y_int);
+      data.y = y_int.cast<types::Outcome>();
     }
 
-    return stats::DataPacket(x, y, data.group_names, data.feature_names);
+    return data;
+  }
+
+  stats::DataPacket read_regression_sorted(std::string const& filename) {
+    ::csv::CSVReader reader(filename);
+
+    auto col_names = reader.get_col_names();
+    std::vector<std::string> feature_names;
+
+    if (!col_names.empty()) {
+      feature_names.assign(col_names.begin(), col_names.end() - 1);
+    }
+
+    std::vector<std::vector<std::string>> raw_rows;
+    int n_cols = 0;
+
+    for (::csv::CSVRow& row : reader) {
+      int row_num = static_cast<int>(raw_rows.size()) + 1;
+      ppforest2::user_error(
+          row.size() >= 2,
+          fmt::format("Row {} has only {} column(s) — expected at least 2 (features + response)", row_num, row.size())
+      );
+
+      std::vector<std::string> values;
+
+      for (int j = 0; j < row.size(); ++j) {
+        values.push_back(row[j].get<std::string>());
+      }
+
+      if (n_cols == 0) {
+        n_cols = static_cast<int>(values.size());
+      }
+
+      raw_rows.push_back(std::move(values));
+    }
+
+    ppforest2::user_error(!raw_rows.empty(), "CSV file is empty or has no data rows");
+
+    int const n_features = n_cols - 1;
+    int const n          = static_cast<int>(raw_rows.size());
+
+    // Detect categorical feature columns (same as classification reader).
+    std::vector<bool> is_categorical(static_cast<std::size_t>(n_features), false);
+
+    for (int j = 0; j < n_features; ++j) {
+      for (auto const& row : raw_rows) {
+        if (!is_numeric(row[static_cast<std::size_t>(j)])) {
+          is_categorical[static_cast<std::size_t>(j)] = true;
+          break;
+        }
+      }
+    }
+
+    std::vector<CategoricalEncoder> encoders(static_cast<std::size_t>(n_features));
+
+    types::FeatureMatrix x(n, n_features);
+    types::OutcomeVector y_cont(n);
+
+    for (int i = 0; i < n; ++i) {
+      auto const& row = raw_rows[static_cast<std::size_t>(i)];
+
+      ppforest2::user_error(
+          static_cast<int>(row.size()) == n_cols,
+          fmt::format("Row {} has {} column(s), expected {} (same as row 1)", i + 1, row.size(), n_cols)
+      );
+
+      for (int j = 0; j < n_features; ++j) {
+        auto const& val = row[static_cast<std::size_t>(j)];
+
+        if (is_categorical[static_cast<std::size_t>(j)]) {
+          x(i, j) = encoders[static_cast<std::size_t>(j)].encode(val);
+        } else {
+          x(i, j) = std::stof(val);
+        }
+      }
+
+      std::string const& y_str = row[static_cast<std::size_t>(n_cols - 1)];
+
+      ppforest2::user_error(
+          is_numeric(y_str),
+          fmt::format("Row {} response value '{}' is not numeric (regression mode)", i + 1, y_str)
+      );
+
+      y_cont(i) = std::stof(y_str);
+    }
+
+    // Sort by continuous y.
+    std::vector<int> order(static_cast<std::size_t>(n));
+    std::iota(order.begin(), order.end(), 0);
+
+    std::stable_sort(order.begin(), order.end(), [&y_cont](int a, int b) {
+      return y_cont(a) < y_cont(b);
+    });
+
+    types::FeatureMatrix sorted_x(n, n_features);
+    types::OutcomeVector sorted_y(n);
+
+    for (int i = 0; i < n; ++i) {
+      sorted_x.row(i) = x.row(order[static_cast<std::size_t>(i)]);
+      sorted_y(i)     = y_cont(order[static_cast<std::size_t>(i)]);
+    }
+
+    return stats::DataPacket(sorted_x, sorted_y, stats::DataPacket::NoGroups{}, feature_names);
   }
 
   void write(stats::DataPacket const& data, std::string const& filename) {

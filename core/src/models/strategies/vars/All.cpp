@@ -26,7 +26,7 @@ namespace ppforest2::vars {
   }
 
   VariableSelection::Ptr All::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "all vars", {"name"});
+    JsonReader{j, "all"}.only_keys({"name"});
     return all();
   }
 }

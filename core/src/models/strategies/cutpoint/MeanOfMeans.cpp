@@ -27,12 +27,12 @@ namespace ppforest2::cutpoint {
     return ((group_1 * projector).mean() + (group_2 * projector).mean()) / 2;
   }
 
-  SplitCutpoint::Ptr mean_of_means() {
+  Cutpoint::Ptr mean_of_means() {
     return std::make_shared<MeanOfMeans>();
   }
 
-  SplitCutpoint::Ptr MeanOfMeans::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "mean_of_means cutpoint", {"name"});
+  Cutpoint::Ptr MeanOfMeans::from_json(nlohmann::json const& j) {
+    JsonReader{j, "mean_of_means"}.only_keys({"name"});
     return mean_of_means();
   }
 }

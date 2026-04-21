@@ -6,19 +6,6 @@
 #include <nlohmann/json.hpp>
 
 #include "models/TrainingSpec.hpp"
-#include "models/strategies/binarize/Disabled.hpp"
-#include "models/strategies/binarize/LargestGap.hpp"
-#include "models/strategies/cutpoint/MeanOfMeans.hpp"
-#include "models/strategies/grouping/ByCutpoint.hpp"
-#include "models/strategies/grouping/ByLabel.hpp"
-#include "models/strategies/leaf/MajorityVote.hpp"
-#include "models/strategies/leaf/MeanResponse.hpp"
-#include "models/strategies/pp/PDA.hpp"
-#include "models/strategies/stop/MinSize.hpp"
-#include "models/strategies/stop/MinVariance.hpp"
-#include "models/strategies/stop/PureNode.hpp"
-#include "models/strategies/vars/All.hpp"
-#include "models/strategies/vars/Uniform.hpp"
 #include "utils/UserError.hpp"
 
 using namespace ppforest2;
@@ -289,7 +276,7 @@ TEST(TrainingSpec, AcceptsCompatibleClassificationStrategies) {
 
 TEST(TrainingSpec, AcceptsCompatibleRegressionStrategies) {
   auto build = [] {
-    return TrainingSpec::builder(types::Mode::Classification)
+    return TrainingSpec::builder(types::Mode::Regression)
         .stop(stop::any({stop::min_size(5), stop::min_variance(0.01F)}))
         .grouping(grouping::by_cutpoint())
         .leaf(leaf::mean_response())
@@ -349,7 +336,7 @@ TEST(TrainingSpec, AcceptsDisabledBinarizeInRegression) {
   // to `Disabled` here — this test pins both the explicit and implicit
   // paths.
   auto build_explicit = [] {
-    return TrainingSpec::builder(types::Mode::Classification)
+    return TrainingSpec::builder(types::Mode::Regression)
         .grouping(grouping::by_cutpoint())
         .leaf(leaf::mean_response())
         .stop(stop::min_size(5))
@@ -358,7 +345,7 @@ TEST(TrainingSpec, AcceptsDisabledBinarizeInRegression) {
   };
 
   auto build_default = [] {
-    return TrainingSpec::builder(types::Mode::Classification)
+    return TrainingSpec::builder(types::Mode::Regression)
         .grouping(grouping::by_cutpoint())
         .leaf(leaf::mean_response())
         .stop(stop::min_size(5))

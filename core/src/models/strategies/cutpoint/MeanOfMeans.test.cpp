@@ -2,7 +2,7 @@
 #include <nlohmann/json.hpp>
 
 #include "models/strategies/cutpoint/MeanOfMeans.hpp"
-#include "models/strategies/cutpoint/SplitCutpoint.hpp"
+#include "models/strategies/cutpoint/Cutpoint.hpp"
 #include "utils/Types.hpp"
 #include "utils/Macros.hpp"
 
@@ -34,7 +34,7 @@ TEST(CutpointMeanOfMeansStrategy, FromJsonUnknownParam) {
 
 TEST(CutpointMeanOfMeansStrategy, RegistryLookup) {
   json const j  = {{"name", "mean_of_means"}};
-  auto strategy = SplitCutpoint::from_json(j);
+  auto strategy = Cutpoint::from_json(j);
   ASSERT_NE(strategy, nullptr);
 
   auto out = strategy->to_json();
@@ -43,7 +43,7 @@ TEST(CutpointMeanOfMeansStrategy, RegistryLookup) {
 
 TEST(CutpointMeanOfMeansStrategy, RegistryUnknownStrategy) {
   json const j = {{"name", "unknown_cutpoint"}};
-  EXPECT_THROW(SplitCutpoint::from_json(j), std::runtime_error);
+  EXPECT_THROW(Cutpoint::from_json(j), std::runtime_error);
 }
 
 TEST(CutpointMeanOfMeansStrategy, CutpointIsMidpointOfProjectedMeans) {

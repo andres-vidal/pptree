@@ -4,12 +4,11 @@
 #include "stats/Stats.hpp"
 
 /**
- * @brief Split cutpoint strategies for computing decision cutpoints.
+ * @brief Cutpoint strategies for computing decision cutpoints.
  *
- * Contains the abstract SplitCutpoint interface and concrete
- * implementations that determine the split cutpoint in projected
- * space. The built-in MeanOfMeans uses the midpoint of the two
- * group means.
+ * Contains the abstract Cutpoint interface and concrete implementations
+ * that determine the split cutpoint in projected space. The built-in
+ * MeanOfMeans uses the midpoint of the two group means.
  */
 namespace ppforest2 {
   struct NodeContext;
@@ -26,7 +25,7 @@ namespace ppforest2::cutpoint {
    * Reads from NodeContext: x, projector, active_partition().
    * Writes: cutpoint.
    */
-  struct SplitCutpoint : public Strategy<SplitCutpoint> {
+  struct Cutpoint : public Strategy<Cutpoint> {
     /**
      * @brief Compute the split cutpoint and store it in the context.
      *
@@ -40,5 +39,5 @@ namespace ppforest2::cutpoint {
   };
 
   /** @brief Factory function for mean-of-means split cutpoint. */
-  SplitCutpoint::Ptr mean_of_means();
+  Cutpoint::Ptr mean_of_means();
 }

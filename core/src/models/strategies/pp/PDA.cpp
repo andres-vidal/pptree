@@ -72,7 +72,8 @@ namespace ppforest2::pp {
   }
 
   ProjectionPursuit::Ptr PDA::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "PDA", {"name", "lambda"});
-    return pda(j.at("lambda").get<float>());
+    JsonReader const r{j, "pda"};
+    r.only_keys({"name", "lambda"});
+    return pda(static_cast<float>(r.require_number("lambda", 0.0, 1.0)));
   }
 }

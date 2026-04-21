@@ -18,7 +18,7 @@ namespace ppforest2::stop {
   }
 
   StopRule::Ptr PureNode::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "pure_node stop", {"name"});
+    JsonReader{j, "pure_node"}.only_keys({"name"});
     return pure_node();
   }
 }

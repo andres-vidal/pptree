@@ -14,7 +14,7 @@ namespace ppforest2::stats {
    * @param groups A response vector containing group labels.
    * @return A map from label value to its 0-based index.
    */
-  std::map<int, int> get_labels_map(types::OutcomeVector const& groups);
+  std::map<int, int> get_labels_map(types::GroupIdVector const& groups);
 
   /**
    * @brief A confusion matrix comparing predicted vs actual group labels.
@@ -44,7 +44,7 @@ namespace ppforest2::stats {
      * @param actual      The true group labels (must have the same size).
      * @throws std::invalid_argument If predictions and actual have different sizes.
      */
-    ConfusionMatrix(types::OutcomeVector const& predictions, types::OutcomeVector const& actual);
+    ConfusionMatrix(types::GroupIdVector const& predictions, types::GroupIdVector const& actual);
 
     /**
      * @brief Compute per-group error rates.

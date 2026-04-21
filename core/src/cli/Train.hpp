@@ -43,9 +43,12 @@ namespace ppforest2::cli {
   /**
    * @brief Train a single model (Forest or Tree) on the given dataset.
    */
+  // `x` and `y` are mutable: regression training permutes rows in place. The
+  // CLI discards the packet after training, so mutation is invisible to the
+  // user. See `Tree::train`.
   TrainResult train_model(
-      ppforest2::types::FeatureMatrix const& x,
-      ppforest2::types::OutcomeVector const& y,
+      ppforest2::types::FeatureMatrix& x,
+      ppforest2::types::OutcomeVector& y,
       Params const& params,
       ppforest2::stats::RNG& rng
   );

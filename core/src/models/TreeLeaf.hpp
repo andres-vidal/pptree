@@ -32,7 +32,7 @@ namespace ppforest2 {
 
     int group_count() const override { return 1; }
 
-    std::set<types::Outcome> node_groups() const override { return {value}; }
+    std::set<types::GroupId> node_groups() const override { return {static_cast<types::GroupId>(value)}; }
 
     bool equals(TreeNode const& other) const override;
     TreeNode::Ptr clone() const override;

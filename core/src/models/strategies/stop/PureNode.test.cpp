@@ -50,7 +50,7 @@ TEST(PureNodeStop, RegistryUnknownStrategy) {
 
 TEST(PureNodeStop, StopsOnSingleGroup) {
   FeatureMatrix const x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0);
   GroupPartition const gp(y);
   RNG rng(0);
 
@@ -61,7 +61,7 @@ TEST(PureNodeStop, StopsOnSingleGroup) {
 
 TEST(PureNodeStop, DoesNotStopOnTwoGroups) {
   FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1);
   GroupPartition const gp(y);
   RNG rng(0);
 
@@ -72,7 +72,7 @@ TEST(PureNodeStop, DoesNotStopOnTwoGroups) {
 
 TEST(PureNodeStop, DoesNotStopOnThreeGroups) {
   FeatureMatrix const x = MAT(Feature, rows(6), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1, 2, 2);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1, 2, 2);
   GroupPartition const gp(y);
   RNG rng(0);
 
@@ -83,7 +83,7 @@ TEST(PureNodeStop, DoesNotStopOnThreeGroups) {
 
 TEST(PureNodeStop, IgnoresDepth) {
   FeatureMatrix const x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0);
   GroupPartition const gp(y);
   RNG rng(0);
 

@@ -12,7 +12,7 @@ using namespace ppforest2::types;
 TEST(GroupPartition, GroupSize) {
   FeatureMatrix const x = MAT(Feature, rows(6), 2, 2, 2, 4, 4, 4, 1, 1, 1, 6, 6, 6, 3, 3, 3, 5, 5, 5);
 
-  GroupPartition const y(VEC(Outcome, 1, 1, 2, 2, 3, 3));
+  GroupPartition const y(VEC(GroupId, 1, 1, 2, 2, 3, 3));
 
   EXPECT_EQ(2, y.group_size(1));
   EXPECT_EQ(2, y.group_size(2));
@@ -22,7 +22,7 @@ TEST(GroupPartition, GroupSize) {
 TEST(GroupPartition, GroupStart) {
   FeatureMatrix const x = MAT(Feature, rows(6), 2, 2, 2, 4, 4, 4, 1, 1, 1, 6, 6, 6, 3, 3, 3, 5, 5, 5);
 
-  GroupPartition const y(VEC(Outcome, 1, 1, 2, 2, 3, 3));
+  GroupPartition const y(VEC(GroupId, 1, 1, 2, 2, 3, 3));
 
   EXPECT_EQ(0, y.group_start(1));
   EXPECT_EQ(2, y.group_start(2));
@@ -32,7 +32,7 @@ TEST(GroupPartition, GroupStart) {
 TEST(GroupPartition, GroupEnd) {
   FeatureMatrix const x = MAT(Feature, rows(6), 2, 2, 2, 4, 4, 4, 1, 1, 1, 6, 6, 6, 3, 3, 3, 5, 5, 5);
 
-  GroupPartition const y(VEC(Outcome, 1, 1, 2, 2, 3, 3));
+  GroupPartition const y(VEC(GroupId, 1, 1, 2, 2, 3, 3));
 
   EXPECT_EQ(1, y.group_end(1));
   EXPECT_EQ(3, y.group_end(2));
@@ -42,7 +42,7 @@ TEST(GroupPartition, GroupEnd) {
 TEST(GroupPartition, Group) {
   FeatureMatrix const x = MAT(Feature, rows(6), 2, 2, 2, 4, 4, 4, 1, 1, 1, 6, 6, 6, 3, 3, 3, 5, 5, 5);
 
-  GroupPartition const y(VEC(Outcome, 1, 1, 2, 2, 3, 3));
+  GroupPartition const y(VEC(GroupId, 1, 1, 2, 2, 3, 3));
 
   EXPECT_EQ_DATA(y.group(x, 1), MAT(Feature, rows(2), 2, 2, 2, 4, 4, 4));
   EXPECT_EQ_DATA(y.group(x, 2), MAT(Feature, rows(2), 1, 1, 1, 6, 6, 6));
@@ -51,7 +51,7 @@ TEST(GroupPartition, Group) {
 
 TEST(GroupPartition, ErrorGroupsNotContiguous) {
   FeatureMatrix const x = MAT(Feature, rows(6), 2, 2, 2, 4, 4, 4, 1, 1, 1, 6, 6, 6, 3, 3, 3, 5, 5, 5);
-  OutcomeVector const y = VEC(Outcome, 1, 2, 3, 1, 2, 3);
+  GroupIdVector const y = VEC(GroupId, 1, 2, 3, 1, 2, 3);
 
   ASSERT_THROW((GroupPartition(y)), std::invalid_argument);
 }
@@ -59,7 +59,7 @@ TEST(GroupPartition, ErrorGroupsNotContiguous) {
 TEST(GroupPartition, Subset) {
   FeatureMatrix const x = MAT(Feature, rows(6), 1, 2, 2, 1, 4, 4, 2, 1, 1, 2, 6, 6, 3, 3, 3, 3, 5, 5);
 
-  GroupPartition const y      = GroupPartition(VEC(Outcome, 1, 1, 2, 2, 3, 3));
+  GroupPartition const y      = GroupPartition(VEC(GroupId, 1, 1, 2, 2, 3, 3));
   GroupPartition const subset = y.subset({1, 3});
 
   EXPECT_EQ(subset.groups, (std::set<int>{1, 3}));
@@ -82,7 +82,7 @@ TEST(GroupPartition, Subset) {
 TEST(GroupPartition, Remap) {
   FeatureMatrix const x = MAT(Feature, rows(6), 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 3, 1, 1, 3, 2, 2);
 
-  GroupPartition const y(VEC(Outcome, 1, 1, 2, 2, 3, 3));
+  GroupPartition const y(VEC(GroupId, 1, 1, 2, 2, 3, 3));
   GroupPartition const remapped = y.remap({{1, 0}, {2, 1}, {3, 0}});
 
   EXPECT_EQ(std::set<int>({0, 1}), remapped.groups);
@@ -92,7 +92,7 @@ TEST(GroupPartition, Remap) {
 TEST(GroupPartition, BetweenGroupsSumOfSquaresSingleGroup) {
   FeatureMatrix const x = MAT(Feature, rows(3), 1.0, 2.0, 6.0, 2.0, 3.0, 7.0, 3.0, 4.0, 8.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 0));
+  GroupPartition const y(VEC(GroupId, 0, 0, 0));
 
   EXPECT_EQ_DATA(y.bgss(x), MAT(Feature, rows(3), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
 }
@@ -101,7 +101,7 @@ TEST(GroupPartition, BetweenGroupsSumOfSquaresTwoEqualGroups) {
   FeatureMatrix const x =
       MAT(Feature, rows(6), 1.0, 2.0, 6.0, 2.0, 3.0, 7.0, 3.0, 4.0, 8.0, 1.0, 2.0, 6.0, 2.0, 3.0, 7.0, 3.0, 4.0, 8.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 0, 1, 1, 1));
+  GroupPartition const y(VEC(GroupId, 0, 0, 0, 1, 1, 1));
 
   EXPECT_EQ_DATA(y.bgss(x), MAT(Feature, rows(3), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
 }
@@ -109,7 +109,7 @@ TEST(GroupPartition, BetweenGroupsSumOfSquaresTwoEqualGroups) {
 TEST(GroupPartition, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
   FeatureMatrix const x = MAT(Feature, rows(8), 23.0, 25.0, 18.0, 29.0, 19.0, 21.0, 35.0, 17.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 0, 1, 1, 1, 2, 2));
+  GroupPartition const y(VEC(GroupId, 0, 0, 0, 1, 1, 1, 2, 2));
 
   EXPECT_EQ_DATA(y.bgss(x), MAT(Feature, rows(1), 19.875));
 }
@@ -117,7 +117,7 @@ TEST(GroupPartition, BetweenGroupsSumOfSquaresMultipleGroupsUnivariate) {
 TEST(GroupPartition, BetweenGroupsSumOfSquaresMultipleGroupsUnivariateNonSequentialGroups) {
   FeatureMatrix const x = MAT(Feature, rows(8), 23.0, 25.0, 18.0, 29.0, 19.0, 21.0, 35.0, 17.0);
 
-  GroupPartition const y(VEC(Outcome, 1, 1, 1, 7, 7, 7, 3, 3));
+  GroupPartition const y(VEC(GroupId, 1, 1, 1, 7, 7, 7, 3, 3));
 
   EXPECT_EQ_DATA(y.bgss(x), MAT(Feature, rows(1), 19.875));
 }
@@ -151,7 +151,7 @@ TEST(GroupPartition, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
           1.0,
           1.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 0, 1, 1, 1, 2, 2));
+  GroupPartition const y(VEC(GroupId, 0, 0, 0, 1, 1, 1, 2, 2));
 
   EXPECT_EQ_DATA(y.bgss(x), MAT(Feature, rows(3), 19.875, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
 }
@@ -159,7 +159,7 @@ TEST(GroupPartition, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate) {
 TEST(GroupPartition, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
   FeatureMatrix x = MAT(Feature, rows(3), 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 
-  GroupPartition y(VEC(Outcome, 0, 0, 0));
+  GroupPartition y(VEC(GroupId, 0, 0, 0));
 
   EXPECT_EQ_DATA(y.wgss(x), MAT(Feature, rows(3), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
 }
@@ -167,7 +167,7 @@ TEST(GroupPartition, WithinGroupsSumOfSquaresSingleGroupNoVariance) {
 TEST(GroupPartition, WithinGroupsSumOfSquaresSingleGroupWithVariance) {
   FeatureMatrix x = MAT(Feature, rows(3), 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0);
 
-  GroupPartition y(VEC(Outcome, 0, 0, 0));
+  GroupPartition y(VEC(GroupId, 0, 0, 0));
 
   EXPECT_EQ_DATA(y.wgss(x), MAT(Feature, rows(3), 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0));
 }
@@ -176,7 +176,7 @@ TEST(GroupPartition, WithinGroupsSumOfSquaresTwoEqualGroups) {
   FeatureMatrix x =
       MAT(Feature, rows(6), 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0);
 
-  GroupPartition y(VEC(Outcome, 0, 0, 0, 1, 1, 1));
+  GroupPartition y(VEC(GroupId, 0, 0, 0, 1, 1, 1));
 
 
   EXPECT_EQ_DATA(y.wgss(x), MAT(Feature, rows(3), 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0));
@@ -186,7 +186,7 @@ TEST(GroupPartition, WithinGroupsSumOfSquaresTwoGroupsSameVariance) {
   FeatureMatrix const x =
       MAT(Feature, rows(6), 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 0, 1, 1, 1));
+  GroupPartition const y(VEC(GroupId, 0, 0, 0, 1, 1, 1));
 
   EXPECT_EQ_DATA(y.wgss(x), MAT(Feature, rows(3), 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0));
 }
@@ -195,7 +195,7 @@ TEST(GroupPartition, WithinGroupsSumOfSquaresTwoGroupsDifferentVariance) {
   FeatureMatrix const x =
       MAT(Feature, rows(6), 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 1.0, 1.0, 1.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 0, 1, 1, 1));
+  GroupPartition const y(VEC(GroupId, 0, 0, 0, 1, 1, 1));
 
   EXPECT_EQ_DATA(y.wgss(x), MAT(Feature, rows(3), 16.0, 16.0, 16.0, 16.0, 16.0, 16.0, 16.0, 16.0, 16.0));
 }
@@ -229,7 +229,7 @@ TEST(GroupPartition, WithinGroupsSumOfSquaresMultipleGroupsMultivariate1) {
           5.0,
           4.0);
 
-  GroupPartition y(VEC(Outcome, 0, 0, 0, 1, 1, 1, 2, 2));
+  GroupPartition y(VEC(GroupId, 0, 0, 0, 1, 1, 1, 2, 2));
 
   EXPECT_EQ_DATA(y.wgss(x), MAT(Feature, rows(3), 24.5, 24.5, 24.5, 24.5, 24.5, 24.5, 24.5, 24.5, 24.5));
 }
@@ -271,7 +271,7 @@ TEST(GroupPartition, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
           4.0,
           0.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 0, 1, 1, 1, 2, 2));
+  GroupPartition const y(VEC(GroupId, 0, 0, 0, 1, 1, 1, 2, 2));
 
   EXPECT_EQ_DATA(
       y.wgss(x),
@@ -280,7 +280,7 @@ TEST(GroupPartition, WithinGroupsSumOfSquaresMultipleGroupsMultivariate2) {
 }
 
 TEST(GroupPartition, CollapseTwoGroups) {
-  GroupPartition const y(VEC(Outcome, 1, 1, 2, 2));
+  GroupPartition const y(VEC(GroupId, 1, 1, 2, 2));
   GroupPartition const collapsed = y.collapse();
 
   EXPECT_EQ(collapsed.groups, (std::set<int>{0}));
@@ -288,7 +288,7 @@ TEST(GroupPartition, CollapseTwoGroups) {
 }
 
 TEST(GroupPartition, CollapseThreeGroups) {
-  GroupPartition const y(VEC(Outcome, 0, 0, 1, 1, 2, 2));
+  GroupPartition const y(VEC(GroupId, 0, 0, 1, 1, 2, 2));
   GroupPartition const collapsed = y.collapse();
 
   EXPECT_EQ(collapsed.groups, (std::set<int>{0}));
@@ -296,7 +296,7 @@ TEST(GroupPartition, CollapseThreeGroups) {
 }
 
 TEST(GroupPartition, CollapseSingleGroup) {
-  GroupPartition const y(VEC(Outcome, 0, 0, 0));
+  GroupPartition const y(VEC(GroupId, 0, 0, 0));
   GroupPartition const collapsed = y.collapse();
 
   EXPECT_EQ(collapsed.groups, (std::set<int>{0}));
@@ -306,7 +306,7 @@ TEST(GroupPartition, CollapseSingleGroup) {
 TEST(GroupPartition, CollapsePreservesData) {
   FeatureMatrix x = MAT(Feature, rows(6), 2, 2, 2, 4, 4, 4, 1, 1, 1, 6, 6, 6, 3, 3, 3, 5, 5, 5);
 
-  GroupPartition const y(VEC(Outcome, 1, 1, 2, 2, 3, 3));
+  GroupPartition const y(VEC(GroupId, 1, 1, 2, 2, 3, 3));
   GroupPartition collapsed = y.collapse();
 
   EXPECT_EQ_DATA(collapsed.data(x), x);
@@ -315,7 +315,7 @@ TEST(GroupPartition, CollapsePreservesData) {
 TEST(GroupPartitionRemapped, Group) {
   FeatureMatrix x = MAT(Feature, rows(6), 2, 2, 2, 4, 4, 4, 1, 1, 1, 6, 6, 6, 3, 3, 3, 5, 5, 5);
 
-  GroupPartition const y(VEC(Outcome, 1, 1, 2, 2, 3, 3));
+  GroupPartition const y(VEC(GroupId, 1, 1, 2, 2, 3, 3));
   GroupPartition const remapped = y.remap({{1, 1}, {2, 1}, {3, 2}});
 
   EXPECT_EQ_DATA(remapped.group(x, 1), MAT(Feature, rows(4), 2, 2, 2, 4, 4, 4, 1, 1, 1, 6, 6, 6));
@@ -351,7 +351,7 @@ TEST(GroupPartitionRemapped, BetweenGroupsSumOfSquaresMultipleGroupsMultivariate
           1.0,
           1.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 1, 2, 2, 3, 4, 4));
+  GroupPartition const y(VEC(GroupId, 0, 0, 1, 2, 2, 3, 4, 4));
   GroupPartition const remapped = y.remap({{0, 0}, {1, 0}, {2, 1}, {3, 1}, {4, 2}});
 
   EXPECT_EQ_DATA(remapped.bgss(x), MAT(Feature, rows(3), 19.875, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
@@ -386,14 +386,14 @@ TEST(GroupPartitionRemapped, WithinGroupsSumOfSquaresMultipleGroupsMultivariate)
           5.0,
           4.0);
 
-  GroupPartition const y(VEC(Outcome, 0, 0, 1, 2, 2, 3, 4, 4));
+  GroupPartition const y(VEC(GroupId, 0, 0, 1, 2, 2, 3, 4, 4));
   GroupPartition const remapped = y.remap({{0, 0}, {1, 0}, {2, 1}, {3, 1}, {4, 2}});
 
   EXPECT_EQ_DATA(remapped.wgss(x), MAT(Feature, rows(3), 24.5, 24.5, 24.5, 24.5, 24.5, 24.5, 24.5, 24.5, 24.5));
 }
 
 TEST(GroupPartitionSplit, AllGroupsGoLeft) {
-  GroupPartition const y(VEC(Outcome, 0, 0, 1, 1, 1, 2, 2));
+  GroupPartition const y(VEC(GroupId, 0, 0, 1, 1, 1, 2, 2));
 
   auto [left, right] = y.split({{0, 2}, {1, 3}, {2, 2}});
 
@@ -405,7 +405,7 @@ TEST(GroupPartitionSplit, AllGroupsGoLeft) {
 }
 
 TEST(GroupPartitionSplit, AllGroupsGoRight) {
-  GroupPartition const y(VEC(Outcome, 0, 0, 1, 1, 1));
+  GroupPartition const y(VEC(GroupId, 0, 0, 1, 1, 1));
 
   auto [left, right] = y.split({});
 
@@ -417,7 +417,7 @@ TEST(GroupPartitionSplit, AllGroupsGoRight) {
 
 TEST(GroupPartitionSplit, WholeGroupsByGroup) {
   // Equivalent to subset: group 0 goes entirely left, group 1 goes entirely right.
-  GroupPartition const y(VEC(Outcome, 0, 0, 1, 1, 1));
+  GroupPartition const y(VEC(GroupId, 0, 0, 1, 1, 1));
 
   auto [left, right] = y.split({{0, 2}});
 
@@ -429,7 +429,7 @@ TEST(GroupPartitionSplit, WholeGroupsByGroup) {
 }
 
 TEST(GroupPartitionSplit, SplitGroupInHalf) {
-  GroupPartition y(VEC(Outcome, 0, 0, 0, 0, 1, 1));
+  GroupPartition y(VEC(GroupId, 0, 0, 0, 0, 1, 1));
 
   // Group 0 [0,3]: first 2 rows left, last 2 rows right. Group 1 entirely right.
   auto [left, right] = y.split({{0, 2}});
@@ -449,7 +449,7 @@ TEST(GroupPartitionSplit, SplitGroupInHalf) {
 }
 
 TEST(GroupPartitionSplit, MultipleGroupsSplitAtDifferentPoints) {
-  GroupPartition y(VEC(Outcome, 0, 0, 0, 1, 1, 1, 2, 2, 2));
+  GroupPartition y(VEC(GroupId, 0, 0, 0, 1, 1, 1, 2, 2, 2));
 
   // Group 0: 1 left, 2 right. Group 1: 2 left, 1 right. Group 2: all 3 left.
   auto [left, right] = y.split({{0, 1}, {1, 2}, {2, 3}});
@@ -465,7 +465,7 @@ TEST(GroupPartitionSplit, MultipleGroupsSplitAtDifferentPoints) {
 }
 
 TEST(GroupPartitionSplit, BlockBoundariesAreCorrect) {
-  GroupPartition y(VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1));
+  GroupPartition y(VEC(GroupId, 0, 0, 0, 0, 1, 1, 1, 1));
 
   // Group 0 [0,3]: 3 left, 1 right. Group 1 [4,7]: 1 left, 3 right.
   auto [left, right] = y.split({{0, 3}, {1, 1}});
@@ -484,7 +484,7 @@ TEST(GroupPartitionSplit, BlockBoundariesAreCorrect) {
 TEST(GroupPartitionSplit, ExtractsCorrectRows) {
   FeatureMatrix x = MAT(Feature, rows(6), 10, 20, 30, 40, 50, 60);
 
-  GroupPartition y(VEC(Outcome, 0, 0, 0, 1, 1, 1));
+  GroupPartition y(VEC(GroupId, 0, 0, 0, 1, 1, 1));
 
   // Group 0 [0,2]: 2 left, 1 right. Group 1 [3,5]: 1 left, 2 right.
   auto [left, right] = y.split({{0, 2}, {1, 1}});
@@ -509,7 +509,7 @@ TEST(GroupPartitionSplit, ExtractsCorrectRows) {
 }
 
 TEST(GroupPartitionSplit, InvalidLeftCountThrows) {
-  GroupPartition y(VEC(Outcome, 0, 0, 1, 1));
+  GroupPartition y(VEC(GroupId, 0, 0, 1, 1));
 
   EXPECT_THROW(y.split({{0, 3}}), std::exception);
   EXPECT_THROW(y.split({{0, -1}}), std::exception);

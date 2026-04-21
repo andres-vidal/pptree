@@ -36,6 +36,41 @@ namespace ppforest2::stats {
   DataPacket simulate(int n, int p, int G, RNG& rng, SimulationParams const& params = SimulationParams{});
 
   /**
+   * @brief Parameters for generating simulated regression data.
+   */
+  struct RegressionSimulationParams {
+    /** @brief Number of features that contribute to the response (rest are noise). */
+    int n_informative = 0;
+    /** @brief Base intercept added to every response. */
+    types::Feature intercept = 0.0f;
+    /** @brief Standard deviation of noise added to the response. */
+    types::Feature noise_sd = 0.1f;
+    /** @brief Standard deviation of feature values (independent features). */
+    types::Feature feature_sd = 1.0f;
+  };
+
+  /**
+   * @brief Generate a simulated regression dataset.
+   *
+   * Features are drawn from independent normal distributions. The response
+   * is a linear combination of the first @c n_informative features plus
+   * Gaussian noise. If @c n_informative is 0, it defaults to @c min(p, 5).
+   *
+   * Returned data is sorted by the continuous response, and the `y` field
+   * holds a median-split GroupIdVector (0 for the lower half, 1 for the
+   * upper half). The original continuous values are in `continuous_y`.
+   *
+   * @param n      Number of rows.
+   * @param p      Number of feature columns.
+   * @param rng    Random number generator.
+   * @param params Regression simulation parameters.
+   * @return A DataPacket prepared for regression training.
+   */
+  DataPacket simulate_regression(
+      int n, int p, RNG& rng, RegressionSimulationParams const& params = RegressionSimulationParams{}
+  );
+
+  /**
    * @brief Indices for a train/test split.
    */
   struct Split {

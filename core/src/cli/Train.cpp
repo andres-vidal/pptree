@@ -26,6 +26,10 @@ using json = nlohmann::json;
 
 namespace ppforest2::cli {
   void add_model_options(CLI::App* sub, ModelParams& model) {
+    // `mode_input` defaults to "classification" in the ModelParams struct.
+    // We don't use CLI11's default_val here because it would override config-file
+    // values whenever the CLI flag isn't passed.
+    sub->add_option("-m,--mode", model.mode_input, "Training mode (classification or regression)");
     sub->add_option("-n,--size", model.size, "Number of trees (default: 100, 0 for single tree)");
     sub->add_option("-l,--lambda", model.lambda, "Method selection (0=LDA, (0,1]=PDA)");
     sub->add_option("--threads", model.threads, "Number of threads (default: CPU cores)");
@@ -37,9 +41,20 @@ namespace ppforest2::cli {
     sub->add_option("--pp", model.pp_input, "PP strategy (e.g. pda, pda:lambda=0.5)");
     sub->add_option("--vars", model.vars_input, "Variable selection strategy (e.g. all, uniform:count=3)");
     sub->add_option("--cutpoint", model.cutpoint_input, "Split cutpoint strategy (e.g. mean_of_means)");
-    sub->add_option("--stop", model.stop_input, "Stop rule strategy (e.g. pure_node)");
+    // `--stop` is repeatable: each occurrence is one rule, and two or more
+    // occurrences are wrapped in `any(...)` at resolve time. A single
+    // `--stop` keeps the prior flat-syntax behaviour. For the full
+    // nested-JSON shape (rare — only when you need something other than
+    // `any` composition, which the library doesn't currently ship),
+    // use `--config <file>`.
+    sub->add_option(
+        "--stop", model.stop_inputs,
+        "Stop rule strategy (e.g. pure_node, min_size:min_size=5). "
+        "Repeat to compose rules via any(...) — e.g. "
+        "--stop min_size:min_size=5 --stop min_variance:threshold=0.01."
+    );
     sub->add_option("--binarize", model.binarize_input, "Binarization strategy (e.g. largest_gap)");
-    sub->add_option("--partition", model.partition_input, "Partition strategy (e.g. by_group)");
+    sub->add_option("--grouping", model.grouping_input, "Grouping strategy (e.g. by_label)");
     sub->add_option("--leaf", model.leaf_input, "Leaf strategy (e.g. majority_vote)");
 
     // Mutual exclusions (all configurable via config, so no CLI11 validators)
@@ -74,13 +89,28 @@ namespace ppforest2::cli {
 
 namespace ppforest2::cli {
   DataPacket read_data(Params const& params, ppforest2::stats::RNG& rng) {
+    bool const is_regression = params.model.mode_input == "regression";
+
     if (!params.data_path.empty()) {
       try {
-        return io::csv::read_sorted(params.data_path);
+        return is_regression ? io::csv::read_regression_sorted(params.data_path)
+                              : io::csv::read_sorted(params.data_path);
       } catch (ppforest2::UserError const&) {
         throw;
       } catch (std::exception const& e) {
         throw ppforest2::UserError(fmt::format("Error reading CSV file '{}': {}", params.data_path, e.what()));
+      }
+    }
+
+    if (is_regression) {
+      RegressionSimulationParams reg_params;
+      // Use the simulation sd as feature_sd; noise_sd defaults to 0.1.
+      reg_params.feature_sd = params.simulation.sd;
+
+      try {
+        return simulate_regression(params.simulation.rows, params.simulation.cols, rng, reg_params);
+      } catch (std::exception const& e) {
+        throw ppforest2::UserError(fmt::format("Error simulating regression data: {}", e.what()));
       }
     }
 
@@ -98,8 +128,12 @@ namespace ppforest2::cli {
     }
   }
 
-  TrainResult
-  train_model(FeatureMatrix const& x, OutcomeVector const& y, Params const& params, ppforest2::stats::RNG& rng) {
+  TrainResult train_model(
+      FeatureMatrix& x,
+      OutcomeVector& y,
+      Params const& params,
+      ppforest2::stats::RNG& rng
+  ) {
     auto const& m = params.model;
 
     auto spec = TrainingSpec::from_json({
@@ -108,8 +142,9 @@ namespace ppforest2::cli {
         {"cutpoint", m.cutpoint_config},
         {"stop", m.stop_config},
         {"binarize", m.binarize_config},
-        {"partition", m.partition_config},
+        {"grouping", m.grouping_config},
         {"leaf", m.leaf_config},
+        {"mode", m.mode_input},
         {"size", m.size},
         {"seed", *m.seed},
         {"threads", *m.threads},
@@ -148,22 +183,24 @@ namespace ppforest2::cli {
 
     params.resolve_defaults(data.x.cols());
 
-    FeatureMatrix const x = data.x;
-    OutcomeVector const y = data.y;
-
-    auto train_result = train_model(x, y, params, rng);
+    // `data.x` and `data.y` may be permuted in place during regression
+    // training (ByCutpoint). That's fine: `data` is a transient carrier —
+    // the CLI discards it after `run_train` returns, and metrics computed
+    // on the permuted layout are still correct because `y` is permuted in
+    // lockstep (per-observation pairings are preserved).
+    auto train_result = train_model(data.x, data.y, params, rng);
 
     serialization::Export<Model::Ptr> model_export{
         std::move(train_result.model),
         data.group_names,
         nullptr,
-        static_cast<int>(x.rows()),
-        static_cast<int>(x.cols()),
+        static_cast<int>(data.x.rows()),
+        static_cast<int>(data.x.cols()),
         data.feature_names,
     };
 
     if (!params.no_metrics) {
-      model_export.compute_metrics(x, y);
+      model_export.compute_metrics(data.x, data.y);
     }
 
     json model_json = model_export.to_json();

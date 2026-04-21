@@ -7,6 +7,7 @@
 #include "io/Output.hpp"
 #include "io/IO.hpp"
 #include "serialization/Json.hpp"
+#include "serialization/JsonOptional.hpp"
 #include "utils/UserError.hpp"
 
 #include <CLI/CLI.hpp>
@@ -34,7 +35,13 @@ namespace ppforest2::cli {
     json model_data = io::json::read_file(params.model_path, user_error);
 
     // Recompute metrics if data is provided and metrics are absent
-    bool has_metrics = model_data.contains("training_confusion_matrix") || model_data.contains("variable_importance");
+    // With the uniform `nullopt ↔ null` convention the keys are always
+    // present after a fresh save; treat `null` the same as absent so a
+    // `--no-metrics` model (writer skipped the computation entirely) and
+    // an "all-null" model both recompute when data is provided.
+    bool has_metrics = serialization::has_value(model_data, "training_confusion_matrix")
+                    || serialization::has_value(model_data, "training_regression_metrics")
+                    || serialization::has_value(model_data, "variable_importance");
 
     if (!params.data_path.empty() && !has_metrics) {
       try {

@@ -103,6 +103,23 @@ namespace ppforest2::io::csv {
   stats::DataPacket read_sorted(std::string const& filename);
 
   /**
+   * @brief Read a CSV file for regression training.
+   *
+   * Treats the last column as a continuous numeric response. Sorts rows
+   * by response so that `ByCutpoint::init` can build the initial
+   * median-split partition at the root without further reordering.
+   *
+   * The returned DataPacket has:
+   * - `x`: feature matrix, rows sorted ascending by y
+   * - `y`: continuous response (`OutcomeVector`), same sort order as `x`
+   * - `group_names`: empty (no class labels for regression)
+   *
+   * @param filename Path to the CSV file.
+   * @return A DataPacket prepared for regression training.
+   */
+  stats::DataPacket read_regression_sorted(std::string const& filename);
+
+  /**
    * @brief Write a DataPacket to a CSV file (features followed by label, no header).
    * @param data The DataPacket to write.
    * @param filename Output file path.

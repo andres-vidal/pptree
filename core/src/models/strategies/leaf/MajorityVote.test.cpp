@@ -51,7 +51,7 @@ TEST(MajorityVoteLeaf, RegistryUnknownStrategy) {
 
 TEST(MajorityVoteLeaf, SingleGroupReturnsIt) {
   FeatureMatrix const x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
-  OutcomeVector const y = VEC(Outcome, 2, 2, 2);
+  GroupIdVector const y = VEC(GroupId, 2, 2, 2);
   GroupPartition const gp(y);
   RNG rng(0);
 
@@ -67,7 +67,7 @@ TEST(MajorityVoteLeaf, SingleGroupReturnsIt) {
 
 TEST(MajorityVoteLeaf, MajorityGroupWins) {
   FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0, 1);
   GroupPartition const gp(y);
   RNG rng(0);
 
@@ -81,7 +81,7 @@ TEST(MajorityVoteLeaf, MajorityGroupWins) {
 
 TEST(MajorityVoteLeaf, TiedGroupsPicksSmallestLabel) {
   FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1);
   GroupPartition const gp(y);
   RNG rng(0);
 
@@ -96,7 +96,7 @@ TEST(MajorityVoteLeaf, TiedGroupsPicksSmallestLabel) {
 
 TEST(MajorityVoteLeaf, ThreeGroupsMajorityWins) {
   FeatureMatrix const x = MAT(Feature, rows(6), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-  OutcomeVector const y = VEC(Outcome, 0, 1, 1, 1, 2, 2);
+  GroupIdVector const y = VEC(GroupId, 0, 1, 1, 1, 2, 2);
   GroupPartition const gp(y);
   RNG rng(0);
 

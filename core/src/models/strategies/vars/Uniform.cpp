@@ -5,6 +5,7 @@
 #include "utils/Invariant.hpp"
 
 #include <algorithm>
+#include <limits>
 #include <numeric>
 
 namespace ppforest2::vars {
@@ -42,16 +43,20 @@ namespace ppforest2::vars {
   }
 
   VariableSelection::Ptr Uniform::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "uniform vars", {"name", "count", "proportion"});
+    JsonReader const r{j, "uniform"};
+    r.only_keys({"name", "count", "proportion"});
 
-    if (j.contains("proportion")) {
-      float p = j.at("proportion").get<float>();
-      invariant(p > 0 && p <= 1, "proportion must be in (0, 1]");
+    if (r.contains("proportion")) {
+      // `require_number` enforces the (0, 1] range (we use [tiny, 1.0] to
+      // express an open lower bound — exactly zero is rejected).
+      (void)r.require_number(
+          "proportion", std::numeric_limits<double>::min(), 1.0
+      );
       // Proportion is resolved to count later when total_vars is known.
       // Return a placeholder — caller must resolve before use.
       return uniform(1);
     }
 
-    return uniform(j.at("count").get<int>());
+    return uniform(static_cast<int>(r.require_int("count", 1)));
   }
 }

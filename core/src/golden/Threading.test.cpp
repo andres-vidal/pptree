@@ -9,6 +9,10 @@
 #include <gtest/gtest.h>
 
 #include "models/Forest.hpp"
+#include "models/ClassificationTree.hpp"
+#include "models/ClassificationForest.hpp"
+#include "models/RegressionTree.hpp"
+#include "models/RegressionForest.hpp"
 #include "models/TrainingSpec.hpp"
 #include "io/IO.hpp"
 
@@ -26,12 +30,12 @@ TEST(Threading, ForestSameResultsSingleVsMulti) {
   GTEST_SKIP() << "OpenMP not available";
 #endif
 
-  auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
+  auto data = io::csv::read_sorted(DATA_DIR + "/classification/iris.csv");
 
-  Forest const f1 =
-      Forest::train(TrainingSpec::builder().size(10).threads(1).vars(vars::uniform(2)).build(), data.x, data.y);
-  Forest const f4 =
-      Forest::train(TrainingSpec::builder().size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
+  auto f1_ptr = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(10).threads(1).vars(vars::uniform(2)).build(), data.x, data.y);
+  Forest const& f1 = *f1_ptr;
+  auto f4_ptr = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
+  Forest const& f4 = *f4_ptr;
 
   ASSERT_EQ(f1, f4) << "1-thread and 4-thread forests should be identical";
 }
@@ -41,12 +45,12 @@ TEST(Threading, ForestSameResultsAcrossRuns) {
   GTEST_SKIP() << "OpenMP not available";
 #endif
 
-  auto data = io::csv::read_sorted(DATA_DIR + "/iris.csv");
+  auto data = io::csv::read_sorted(DATA_DIR + "/classification/iris.csv");
 
-  Forest const f1 =
-      Forest::train(TrainingSpec::builder().size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
-  Forest const f2 =
-      Forest::train(TrainingSpec::builder().size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
+  auto f1_ptr = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
+  Forest const& f1 = *f1_ptr;
+  auto f2_ptr = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(10).threads(4).vars(vars::uniform(2)).build(), data.x, data.y);
+  Forest const& f2 = *f2_ptr;
 
   ASSERT_EQ(f1, f2) << "Two runs with same seed and thread count should be identical";
 }

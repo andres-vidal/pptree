@@ -9,12 +9,24 @@ ppforest2_train <- function(spec, x, y) {
     .Call('_ppforest2_ppforest2_train', PACKAGE = 'ppforest2', spec, x, y)
 }
 
+ppforest2_train_regression <- function(spec, x, y) {
+    .Call('_ppforest2_ppforest2_train_regression', PACKAGE = 'ppforest2', spec, x, y)
+}
+
 ppforest2_predict_tree <- function(tree, data) {
     .Call('_ppforest2_ppforest2_predict_tree', PACKAGE = 'ppforest2', tree, data)
 }
 
 ppforest2_predict_tree_forest <- function(forest, data) {
     .Call('_ppforest2_ppforest2_predict_tree_forest', PACKAGE = 'ppforest2', forest, data)
+}
+
+ppforest2_predict_tree_regression <- function(tree, data) {
+    .Call('_ppforest2_ppforest2_predict_tree_regression', PACKAGE = 'ppforest2', tree, data)
+}
+
+ppforest2_predict_forest_regression <- function(forest, data) {
+    .Call('_ppforest2_ppforest2_predict_forest_regression', PACKAGE = 'ppforest2', forest, data)
 }
 
 ppforest2_predict_tree_prob <- function(tree, data) {
@@ -41,12 +53,20 @@ ppforest2_vi_permuted_forest <- function(forest, x, y, seed) {
     .Call('_ppforest2_ppforest2_vi_permuted_forest', PACKAGE = 'ppforest2', forest, x, y, seed)
 }
 
-ppforest2_oob_error <- function(forest, x, y) {
-    .Call('_ppforest2_ppforest2_oob_error', PACKAGE = 'ppforest2', forest, x, y)
+ppforest2_oob_error_classification <- function(forest, x, y) {
+    .Call('_ppforest2_ppforest2_oob_error_classification', PACKAGE = 'ppforest2', forest, x, y)
 }
 
-ppforest2_oob_predict <- function(forest, x) {
-    .Call('_ppforest2_ppforest2_oob_predict', PACKAGE = 'ppforest2', forest, x)
+ppforest2_oob_error_regression <- function(forest, x, y) {
+    .Call('_ppforest2_ppforest2_oob_error_regression', PACKAGE = 'ppforest2', forest, x, y)
+}
+
+ppforest2_oob_predict_classification <- function(forest, x) {
+    .Call('_ppforest2_ppforest2_oob_predict_classification', PACKAGE = 'ppforest2', forest, x)
+}
+
+ppforest2_oob_predict_regression <- function(forest, x) {
+    .Call('_ppforest2_ppforest2_oob_predict_regression', PACKAGE = 'ppforest2', forest, x)
 }
 
 ppforest2_tree_node_data <- function(tree, x, y) {

@@ -6,13 +6,14 @@
 #include "io/Presentation.hpp"
 #include "io/Table.hpp"
 #include "models/strategies/binarize/Binarization.hpp"
-#include "models/strategies/cutpoint/SplitCutpoint.hpp"
+#include "models/strategies/cutpoint/Cutpoint.hpp"
 #include "models/strategies/leaf/LeafStrategy.hpp"
-#include "models/strategies/partition/StepPartition.hpp"
+#include "models/strategies/grouping/Grouping.hpp"
 #include "models/strategies/pp/ProjectionPursuit.hpp"
 #include "models/strategies/stop/StopRule.hpp"
 #include "models/strategies/vars/VariableSelection.hpp"
 #include "serialization/Json.hpp"
+#include "serialization/JsonOptional.hpp"
 
 #include <fmt/format.h>
 #include <algorithm>
@@ -45,8 +46,15 @@ namespace ppforest2::io {
     out.println("{}", muted(format_separator(columns)));
 
     std::string const time_str = fmt::format("{:.2f} +/- {:.2f}", stats.mean_time(), stats.std_time());
-    std::string const tr_err   = fmt::format("{:.2f}%", stats.mean_tr_error() * 100);
-    std::string const te_err   = fmt::format("{:.2f}%", stats.mean_te_error() * 100);
+
+    // Heuristic: classification error rates are in [0, 1]; anything beyond 1 is
+    // likely a regression metric (MSE / MAE) so display it as a raw number.
+    bool const as_rate = stats.mean_tr_error() <= 1.0 && stats.mean_te_error() <= 1.0;
+
+    std::string const tr_err = as_rate ? fmt::format("{:.2f}%", stats.mean_tr_error() * 100)
+                                        : fmt::format("{:.4f}", stats.mean_tr_error());
+    std::string const te_err = as_rate ? fmt::format("{:.2f}%", stats.mean_te_error() * 100)
+                                        : fmt::format("{:.4f}", stats.mean_te_error());
 
     Row cells = {
         fmt::format("{}", stats.tr_times.size()),
@@ -253,6 +261,29 @@ namespace ppforest2::io {
     out.newline();
   }
 
+  void print_regression_metrics(Output& out, stats::RegressionMetrics const& rm, std::string const& title) {
+    using namespace style;
+    using namespace layout;
+
+    out.println("{}", emphasis(title + ":"));
+    out.newline();
+
+    std::vector<Column> columns = {
+        {"Metric", 18, Align::left},
+        {"Value", 18, Align::right},
+    };
+
+    Row header = header_labels(columns);
+    out.println("{}", format_row(columns, header));
+    out.println("{}", muted(format_separator(columns)));
+
+    out.println("{}", format_row(columns, {"MSE", fmt::format("{:.6f}", rm.mse)}));
+    out.println("{}", format_row(columns, {"MAE", fmt::format("{:.6f}", rm.mae)}));
+    out.println("{}", format_row(columns, {"R\xc2\xb2", fmt::format("{:.6f}", rm.r_squared)}));
+
+    out.newline();
+  }
+
   namespace {
     std::string json_value_to_string(nlohmann::json const& v) {
       if (v.is_string()) {
@@ -313,7 +344,7 @@ namespace ppforest2::io {
         }
 
         if (key == "cutpoint") {
-          return cutpoint::SplitCutpoint::from_json(section)->display_name();
+          return cutpoint::Cutpoint::from_json(section)->display_name();
         }
 
         if (key == "stop") {
@@ -324,8 +355,8 @@ namespace ppforest2::io {
           return binarize::Binarization::from_json(section)->display_name();
         }
 
-        if (key == "partition") {
-          return partition::StepPartition::from_json(section)->display_name();
+        if (key == "grouping") {
+          return grouping::Grouping::from_json(section)->display_name();
         }
 
         if (key == "leaf") {
@@ -484,27 +515,47 @@ namespace ppforest2::io {
       out.newline();
     }
 
-    // Training confusion matrix
-    if (model_data.contains("training_confusion_matrix")) {
+    // Optional metrics: after the uniform `nullopt ↔ null` serialization
+    // convention, these keys are *always* present in the JSON but may be
+    // `null` when the value wasn't computed (e.g. regression has
+    // `training_regression_metrics` and leaves `training_confusion_matrix`
+    // as null, and vice versa). `has_value` treats absent and null
+    // identically, mirroring the reader in `Json.cpp`.
+    using serialization::has_value;
+
+    // Training metrics (regression or classification)
+    if (has_value(model_data, "training_regression_metrics")) {
+      auto rm = model_data["training_regression_metrics"].get<stats::RegressionMetrics>();
+      out.println("{} {}", emphasis("Training MSE:"), fmt::format("{:.6f}", rm.mse));
+      print_regression_metrics(out, rm, "Training Regression Metrics");
+    } else if (has_value(model_data, "training_confusion_matrix")) {
       auto cm = model_data["training_confusion_matrix"].get<stats::ConfusionMatrix>();
       out.println("{} {}", emphasis("Training Error:"), fmt::format("{:.2f}%", cm.error() * 100));
       print_confusion_matrix(out, cm, "Training Confusion Matrix", group_names);
     }
 
-    // OOB error and confusion matrix
-    if (model_data.contains("oob_error")) {
-      out.println("{} {}", emphasis("OOB Error:"), fmt::format("{:.2f}%", model_data["oob_error"].get<double>() * 100));
-    }
-
-    if (model_data.contains("oob_confusion_matrix")) {
-      auto cm = model_data["oob_confusion_matrix"].get<stats::ConfusionMatrix>();
-      print_confusion_matrix(out, cm, "OOB Confusion Matrix", group_names);
+    // OOB metrics (regression or classification)
+    if (has_value(model_data, "oob_regression_metrics")) {
+      auto rm = model_data["oob_regression_metrics"].get<stats::RegressionMetrics>();
+      out.println("{} {}", emphasis("OOB MSE:"), fmt::format("{:.6f}", rm.mse));
+      print_regression_metrics(out, rm, "OOB Regression Metrics");
     } else {
-      out.newline();
+      if (has_value(model_data, "oob_error")) {
+        out.println(
+            "{} {}", emphasis("OOB Error:"), fmt::format("{:.2f}%", model_data["oob_error"].get<double>() * 100)
+        );
+      }
+
+      if (has_value(model_data, "oob_confusion_matrix")) {
+        auto cm = model_data["oob_confusion_matrix"].get<stats::ConfusionMatrix>();
+        print_confusion_matrix(out, cm, "OOB Confusion Matrix", group_names);
+      } else {
+        out.newline();
+      }
     }
 
     // Variable importance
-    if (model_data.contains("variable_importance")) {
+    if (has_value(model_data, "variable_importance")) {
       auto vi = model_data["variable_importance"].get<VariableImportance>();
       print_variable_importance(out, vi, feature_names);
     }

@@ -1,12 +1,14 @@
 #' @useDynLib ppforest2
 #' @importFrom Rcpp evalCpp
-#' @importFrom stats model.frame model.matrix model.response formula predict
+#' @importFrom stats model.frame model.matrix model.response formula predict sd terms update
 NULL
 
 #' Trains a Project-Pursuit oblique decision tree.
 #'
 #' This function trains a Project-Pursuit oblique decision tree using either a formula and data frame interface or a matrix-based interface. When using the formula interface, specify the model formula and the data frame containing the variables. For the matrix-based interface, provide matrices for the features and labels directly.
 #' If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
+#'
+#' Classification vs regression is auto-detected from `y`: a factor or character vector triggers classification; a numeric vector triggers regression.
 #'
 #' @param formula A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.
 #' @param data A data frame containing the variables in the formula.
@@ -18,29 +20,22 @@ NULL
 #' @param cutpoint A split cutpoint strategy object created by \code{\link{cutpoint_mean_of_means}} (default).
 #' @param stop A stopping rule object created by \code{\link{stop_pure_node}} (default).
 #' @param binarize A binarization strategy object created by \code{\link{binarize_largest_gap}} (default).
-#' @param partition A partition strategy object created by \code{\link{partition_by_group}} (default).
+#' @param grouping A grouping strategy object created by \code{\link{grouping_by_label}} (default).
 #' @param leaf A leaf strategy object created by \code{\link{leaf_majority_vote}} (default).
-#' @return A pptr model trained on \code{x} and \code{y}.
-#' @seealso \code{\link{predict.pptr}}, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{cutpoint_mean_of_means}}, \code{\link{stop_pure_node}}, \code{\link{binarize_largest_gap}}, \code{\link{partition_by_group}}, \code{\link{leaf_majority_vote}}, \code{vignette("introduction")} for a tutorial
+#' @return A \code{pptr} model. Its S3 class vector is
+#'   \code{c("pptr_classification", "pptr", "ppmodel")} or
+#'   \code{c("pptr_regression", "pptr", "ppmodel")} depending on the mode.
+#' @seealso \code{\link{predict.pptr_classification}}, \code{\link{predict.pptr_regression}}, \code{\link{formula.ppmodel}}, \code{\link{print.pptr}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_tree}} for parsnip integration
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
-#' pptr(Type ~ ., data = iris)
+#' pptr(Species ~ ., data = iris)
 #'
 #' # Example 2: formula interface with the `iris` dataset with regularization
-#' pptr(Type ~ ., data = iris, lambda = 0.5)
+#' pptr(Species ~ ., data = iris, lambda = 0.5)
 #'
 #' # Example 3: matrix interface with the `iris` dataset
 #' pptr(x = iris[, 1:4], y = iris[, 5])
-#'
-#' # Example 4: matrix interface with the `iris` dataset with regularization
-#' pptr(x = iris[, 1:4], y = iris[, 5], lambda = 0.5)
-#'
-#' # Example 5: formula interface with the `crabs` dataset
-#' pptr(Type ~ ., data = crabs)
-#'
-#' # Example 6: formula interface with the `crabs` dataset with regularization
-#' pptr(Type ~ ., data = crabs, lambda = 0.5)
 #'
 #' @export
 pptr <- function(
@@ -54,17 +49,18 @@ pptr <- function(
     cutpoint = NULL,
     stop = NULL,
     binarize = NULL,
-    partition = NULL,
+    grouping = NULL,
     leaf = NULL) {
-  strategies <- resolve_strategies(
-    pp = pp, lambda = lambda, lambda_missing = missing(lambda),
-    cutpoint = cutpoint, stop = stop, binarize = binarize, partition = partition,
-    leaf = leaf)
-
   if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1 || seed != as.integer(seed)))
     stop("`seed` must be a single integer or NULL.")
 
   args <- resolve_model_data(formula, data, x, y)
+  mode <- args$mode
+
+  strategies <- resolve_strategies(
+    pp = pp, lambda = lambda, lambda_missing = missing(lambda),
+    cutpoint = cutpoint, stop = stop, binarize = binarize, grouping = grouping,
+    leaf = leaf, mode = mode)
 
   x <- args$x
   y <- args$y
@@ -81,14 +77,19 @@ pptr <- function(
     cutpoint = strategies$cutpoint,
     stop = strategies$stop,
     binarize = strategies$binarize,
-    partition = strategies$partition,
+    grouping = strategies$grouping,
     leaf = strategies$leaf,
+    mode = mode,
     size = 0L,
     seed = as.integer(seed),
     threads = 0L,
     max_retries = 3L)
 
-  model <- ppforest2_train(training_spec, args$x, args$y)
+  if (identical(mode, "regression")) {
+    model <- ppforest2_train_regression(training_spec, args$x, args$y)
+  } else {
+    model <- ppforest2_train(training_spec, args$x, args$y)
+  }
 
   if (isTRUE(model$degenerate)) {
     warning("Some splits could not separate groups (degenerate nodes). ",
@@ -97,11 +98,12 @@ pptr <- function(
             call. = FALSE)
   }
 
-  model$seed <- seed
-  model$groups <- groups
+  model$seed    <- seed
+  model$groups  <- groups
   model$formula <- formula
-  model$x <- x
-  model$y <- y
+  model$mode    <- mode
+  model$x       <- x
+  model$y       <- y
 
   scale <- apply(x, 2, sd)
   scale[scale == 0] <- 1
@@ -111,33 +113,31 @@ pptr <- function(
     projections = ppforest2_vi_projections_tree(model, ncol(x), scale)
   )
 
+  model$.cache <- .new_cache()
+
+  mode_class <- if (identical(mode, "regression")) "pptr_regression" else "pptr_classification"
+  class(model) <- c(mode_class, "pptr", "ppmodel")
+
   model
 }
 
-#' Predicts the labels or group indicators of a set of observations using a pptr model.
+
+# ---------------------------------------------------------------------------
+# Prediction: split per mode.
+# ---------------------------------------------------------------------------
+
+#' Predicts labels or per-group one-hot proportions from a pptr model (classification mode).
 #'
-#' @param object A pptr model.
-#' @param new_data A data frame or matrix of new observations to predict. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.
-#' @param type The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame with 1.0 for the predicted group and 0.0 elsewhere.
-#' @param ... For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.
-#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per group.
-#' @seealso \code{\link{pptr}} for training, \code{\link{formula.pptr}}, \code{\link{summary.pptr}}
-#' @examples
-#' # Example 1: with the `iris` dataset
-#' model <- pptr(Type ~ ., data = iris)
-#' predict(model, iris)
-#'
-#' # Example 2: with the `crabs` dataset
-#' model <- pptr(Type ~ ., data = crabs)
-#' predict(model, crabs)
-#' 
-#' # Example 3: vote proportions
-#' model <- pptr(Type ~ ., data = iris)
-#' predict(model, iris, type = "prob")
-#'
+#' @param object A \code{pptr_classification} model.
+#' @param new_data A data frame or matrix of new observations. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.
+#' @param type \code{"class"} (default) returns a factor of predicted labels; \code{"prob"} returns a data frame with 1.0 for the predicted group and 0.0 elsewhere.
+#' @param ... Backward-compat positional `new_data`.
+#' @return A factor or data frame.
+#' @seealso \code{\link{pptr}}, \code{\link{predict.pptr_regression}}
 #' @export
-predict.pptr <- function(object, new_data = NULL, type = "class", ...) {
+predict.pptr_classification <- function(object, new_data = NULL, type = NULL, ...) {
   x <- process_predict_arguments(object, new_data, ...)
+  if (is.null(type)) type <- "class"
 
   if (type == "prob") {
     probs <- ppforest2_predict_tree_prob(object, x)
@@ -146,120 +146,158 @@ predict.pptr <- function(object, new_data = NULL, type = "class", ...) {
     return(df)
   }
 
+  if (type != "class") {
+    stop("`type = \"", type, "\"` is not supported for classification trees. ",
+         "Use \"class\" (default) or \"prob\".", call. = FALSE)
+  }
+
   y <- ppforest2_predict_tree(object, x)
   as.factor(object$groups[y])
 }
 
-#' Extracts the formula used to train a pptr model.
+#' Predicts numeric responses from a pptr model (regression mode).
 #'
-#' @param x A pptr model.
-#' @param ... (unused) other parameters typically passed to formula.
-#' @return The formula used to train the model.
-#' @seealso \code{\link{pptr}} for training, \code{\link{predict.pptr}}, \code{\link{summary.pptr}}
-#' @examples
-#' model <- pptr(Type ~ ., data = iris)
-#' formula(model)
+#' @param object A \code{pptr_regression} model.
+#' @param new_data A data frame or matrix of new observations.
+#' @param type Must be \code{"response"} (default).
+#' @param ... Backward-compat positional `new_data`.
+#' @return A numeric vector.
+#' @seealso \code{\link{pptr}}, \code{\link{predict.pptr_classification}}
 #' @export
-formula.pptr <- function(x, ...) {
-  x$formula
+predict.pptr_regression <- function(object, new_data = NULL, type = NULL, ...) {
+  x <- process_predict_arguments(object, new_data, ...)
+  if (is.null(type)) type <- "response"
+
+  if (type %in% c("class", "prob")) {
+    stop("`type = \"", type, "\"` is not available for regression models. ",
+         "Use `type = \"response\"`.", call. = FALSE)
+  }
+
+  if (type != "response") {
+    stop("`type = \"", type, "\"` is not recognised. Use \"response\".", call. = FALSE)
+  }
+
+  as.numeric(ppforest2_predict_tree_regression(object, x))
 }
 
-print_node <- function(model, node, depth = 0) {
+
+# ---------------------------------------------------------------------------
+# print.pptr -- tree structure. Leaf label formatting is mode-specific via
+# the `print_node` generic dispatched on the model's class.
+# ---------------------------------------------------------------------------
+
+#' Prints the structure of a pptr tree.
+#' @param x A \code{pptr} model.
+#' @param ... Unused.
+#' @export
+print.pptr <- function(x, ...) {
+  cat("\n")
+  cat("Project-Pursuit Oblique Decision Tree:\n")
+  print_node(x, x$root)
+  cat("\n")
+  invisible(x)
+}
+
+# Internal generic: walks the tree recursively, dispatching on the model's
+# class to format leaf values differently per mode.
+print_node <- function(model, node, depth = 0) UseMethod("print_node")
+
+#' @export
+print_node.pptr_classification <- function(model, node, depth = 0) {
+  .print_node_impl(model, node, depth, function(value) model$groups[value])
+}
+
+#' @export
+print_node.pptr_regression <- function(model, node, depth = 0) {
+  .print_node_impl(model, node, depth, function(value) format(as.numeric(value), digits = 4))
+}
+
+# Shared recursion. `format_leaf` turns the raw leaf value into a display string.
+.print_node_impl <- function(model, node, depth, format_leaf) {
   indent <- paste(rep(" ", depth), collapse = "")
 
   if (!is.null(node$value)) {
-    cat(indent, "Predict:", model$groups[node$value], "\n")
-  } else {
-    projection_str <- paste(
-      "[", paste(round(node$projector, 2), collapse = " "), "] * x",
-      collapse = ""
-    )
+    cat(indent, "Predict:", format_leaf(node$value), "\n")
+    return(invisible(NULL))
+  }
 
-    cat(
-      indent,
-      "If (", projection_str, ") < ", node$cutpoint, ":\n",
-      sep = ""
-    )
+  projection_str <- paste(
+    "[", paste(round(node$projector, 2), collapse = " "), "] * x",
+    collapse = ""
+  )
 
-    if (!is.null(node$lower)) {
-      print_node(model, node$lower, depth + 1)
-    }
+  cat(indent, "If (", projection_str, ") < ", node$cutpoint, ":\n", sep = "")
 
-    cat(indent, "Else:\n", sep = "")
-    if (!is.null(node$upper)) {
-      print_node(model, node$upper, depth + 1)
-    }
+  if (!is.null(node$lower)) {
+    print_node(model, node$lower, depth + 1)
+  }
+
+  cat(indent, "Else:\n", sep = "")
+
+  if (!is.null(node$upper)) {
+    print_node(model, node$upper, depth + 1)
   }
 }
 
-#' Prints a pptr model.
-#' @param x A pptr model.
-#' @param ... (unused) other parameters typically passed to print.
-#' @seealso \code{\link{pptr}}, \code{\link{summary.pptr}}
-#' @examples
-#' model <- pptr(Type ~ ., data = iris)
-#' print(model)
-#'
-#' @export
-print.pptr <- function(x, ...) {
-  model <- x
-  if (!is.null(formula(x))) {
-    cat("\n")
-    cat("Project-Pursuit Oblique Decision Tree:\n")
-  }
 
-  print_node(model, model$root)
-  cat("\n")
-}
+# ---------------------------------------------------------------------------
+# summary -- layered via NextMethod:
+#   summary.pptr_classification / summary.pptr_regression
+#     -> summary.pptr (tree-level header + VI table)
+#       -> summary.ppmodel (data summary block)
+# ---------------------------------------------------------------------------
 
-#' Summarizes a pptr model.
-#' @param object A pptr model.
-#' @param ... (unused) other parameters typically passed to summary.
-#' @seealso \code{\link{pptr}}, \code{\link{predict.pptr}}, \code{\link{print.pptr}}
-#' @examples
-#' model <- pptr(Type ~ ., data = iris)
-#' summary(model)
-#'
 #' @export
 summary.pptr <- function(object, ...) {
   model <- object
-
-  if (!is.null(model$x)) {
-    cat("\n")
-    cat("Project-Pursuit Oblique Decision Tree\n")
-    cat("\n")
-    print_training_spec(model$training_spec)
-    cat("\n")
-    cat("Data Summary:\n")
-    cat("  observations:", nrow(model$x), "\n")
-    cat("  features:    ", ncol(model$x), "\n")
-    cat("  groups:      ", length(model$groups), "\n")
-    cat("  group names: ", paste(model$groups, collapse = ", "), "\n")
-    if (!is.null(model$formula)) {
-      cat("  formula:     ", deparse(model$formula), "\n")
-    }
-    cat("\n")
-    cat("Confusion Matrix:\n\n")
-    print_confusion_matrix(ppforest2_predict_tree(model, model$x), model)
-    cat("\n")
-    cat("Variable Importance:\n\n")
-    p <- length(model$vi$projections)
-    vnames <- if (!is.null(colnames(model$x))) colnames(model$x) else paste0("x", seq_len(p))
-    ord <- order(model$vi$projections, decreasing = TRUE)
-    tbl <- data.frame(
-      Variable   = vnames[ord],
-      sigma      = model$vi$scale[ord],
-      Projection = model$vi$projections[ord],
-      row.names  = seq_len(p)
-    )
-    names(tbl)[2] <- "\u03c3"
-    print(tbl)
-    if (!all(model$vi$scale == 1)) {
-      cat("\nNote: Variable importance was calculated using scaled coefficients (|a_j| * \u03c3_j).\n")
-      cat("Variable contributions can only be theoretically interpreted as such\n")
-      cat("if the model was trained on scaled data. Scaling also changes the\n")
-      cat("projection-pursuit optimization, which may affect the resulting tree.\n")
-    }
+  if (is.null(model$x)) {
+    cat("\n(Empty pptr model -- no training data available.)\n")
+    return(invisible(model))
   }
+
   cat("\n")
+  cat(if (identical(model$mode, "regression")) {
+    "Project-Pursuit Oblique Regression Tree\n"
+  } else {
+    "Project-Pursuit Oblique Decision Tree\n"
+  })
+  cat("\n")
+  print_training_spec(model$training_spec)
+
+  NextMethod()  # summary.ppmodel
+
+  invisible(model)
+}
+
+#' @export
+summary.pptr_classification <- function(object, ...) {
+  NextMethod()
+  model <- object
+
+  cat("Confusion Matrix:\n\n")
+  print_confusion_matrix(ppforest2_predict_tree(model, model$x), model)
+  cat("\n")
+
+  .print_vi_table(model, include_oob_importances = FALSE)
+  invisible(model)
+}
+
+#' @export
+summary.pptr_regression <- function(object, ...) {
+  NextMethod()
+  model <- object
+
+  preds <- ppforest2_predict_tree_regression(model, model$x)
+  y <- model$y
+  mse <- mean((preds - y)^2)
+  mae <- mean(abs(preds - y))
+  ss_tot <- sum((y - mean(y))^2)
+  r2 <- if (ss_tot > 0) 1 - sum((preds - y)^2) / ss_tot else 0
+  cat("Training Metrics:\n")
+  cat("  MSE:", format(mse, nsmall = 6), "\n")
+  cat("  MAE:", format(mae, nsmall = 6), "\n")
+  cat("  R\u00b2: ", format(r2, nsmall = 6), "\n\n")
+
+  .print_vi_table(model, include_oob_importances = FALSE)
+  invisible(model)
 }

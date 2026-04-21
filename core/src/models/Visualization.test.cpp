@@ -2,6 +2,10 @@
 #include <Eigen/Dense>
 
 #include "models/Visualization.hpp"
+#include "models/ClassificationTree.hpp"
+#include "models/ClassificationForest.hpp"
+#include "models/RegressionTree.hpp"
+#include "models/RegressionForest.hpp"
 #include "models/Tree.hpp"
 #include "models/TreeBranch.hpp"
 #include "models/TreeLeaf.hpp"
@@ -20,8 +24,8 @@ namespace {
     return Eigen::Map<Projector>(v.data(), v.size());
   }
 
-  Tree test_tree() {
-    return Tree(
+  ClassificationTree test_tree() {
+    return ClassificationTree(
         TreeBranch::make(
             as_projector({0.7F, 0.3F, 0.5F, 0.1F}),
             1.5F,
@@ -31,13 +35,13 @@ namespace {
             ),
             {0, 1, 2}
         ),
-        TrainingSpec::builder().pp(pp::pda(0.5F)).make()
+        TrainingSpec::builder(types::Mode::Classification).pp(pp::pda(0.5F)).make()
     );
   }
 
   // Make a deeper tree (depth 4) to stress-test memory management
-  Tree deep_tree() {
-    return Tree(
+  ClassificationTree deep_tree() {
+    return ClassificationTree(
         TreeBranch::make(
             as_projector({0.4F, 0.6F}),
             1.8F,
@@ -57,7 +61,7 @@ namespace {
             ),
             {0, 1, 2, 3}
         ),
-        TrainingSpec::builder().pp(pp::pda(0.5F)).make()
+        TrainingSpec::builder(types::Mode::Classification).pp(pp::pda(0.5F)).make()
     );
   }
 }
@@ -67,7 +71,7 @@ class VisualizationTest : public ::testing::Test {
 protected:
   FeatureMatrix x;
   OutcomeVector y;
-  Tree tree = test_tree();
+  ClassificationTree tree = test_tree();
 
   void SetUp() override {
     // 30 observations, 4 features
@@ -232,7 +236,7 @@ TEST_F(VisualizationTest, ComputeTreeLayoutEdgesHaveLabels) {
 
 // Deep tree tests stress memory management under ASan
 TEST(VisualizationDeepTree, NodeDataVisitor) {
-  Tree deep = deep_tree();
+  ClassificationTree deep = deep_tree();
 
   FeatureMatrix x(20, 2);
   OutcomeVector y(20);
@@ -251,7 +255,7 @@ TEST(VisualizationDeepTree, NodeDataVisitor) {
 }
 
 TEST(VisualizationDeepTree, BoundaryVisitor) {
-  Tree deep = deep_tree();
+  ClassificationTree deep = deep_tree();
 
   BoundaryVisitor visitor(0, 1, {}, -1.0F, 10.0F, -1.0F, 10.0F);
   deep.root->accept(visitor);
@@ -260,7 +264,7 @@ TEST(VisualizationDeepTree, BoundaryVisitor) {
 }
 
 TEST(VisualizationDeepTree, RegionVisitor) {
-  Tree deep = deep_tree();
+  ClassificationTree deep = deep_tree();
 
   RegionVisitor visitor(0, 1, {}, -1.0F, 10.0F, -1.0F, 10.0F);
   deep.root->accept(visitor);
@@ -270,7 +274,7 @@ TEST(VisualizationDeepTree, RegionVisitor) {
 }
 
 TEST(VisualizationDeepTree, ComputeTreeLayout) {
-  Tree const deep         = deep_tree();
+  ClassificationTree const deep = deep_tree();
   TreeLayout const layout = compute_tree_layout(*deep.root);
 
   // 11 nodes, 10 edges
@@ -280,7 +284,7 @@ TEST(VisualizationDeepTree, ComputeTreeLayout) {
 
 // Test repeated visitor creation/destruction (stress allocator)
 TEST(VisualizationStress, RepeatedVisitorCalls) {
-  Tree tree = test_tree();
+  ClassificationTree tree = test_tree();
 
   for (int iter = 0; iter < 50; ++iter) {
     {

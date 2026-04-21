@@ -2,7 +2,7 @@
 
 #include "models/strategies/vars/VariableSelection.hpp"
 #include "models/strategies/Strategy.hpp"
-#include "utils/JsonValidation.hpp"
+#include "utils/JsonReader.hpp"
 
 namespace ppforest2::vars {
   /**
@@ -14,6 +14,9 @@ namespace ppforest2::vars {
   struct All : public VariableSelection {
     nlohmann::json to_json() const override;
     std::string display_name() const override { return "All variables"; }
+    std::set<types::Mode> supported_modes() const override {
+      return {types::Mode::Classification, types::Mode::Regression};
+    }
 
     /**
      * @brief NodeContext-based interface: select all variables and write to ctx.var_selection.
