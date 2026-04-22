@@ -1,13 +1,11 @@
 #include "models/Forest.hpp"
 
 #include "models/ClassificationForest.hpp"
+#include "models/Model.hpp"
 #include "models/RegressionForest.hpp"
 #include "models/VIVisitor.hpp"
 #include "stats/Stats.hpp"
 #include "utils/Invariant.hpp"
-#include "utils/UserError.hpp"
-
-#include <string>
 
 using namespace ppforest2::types;
 
@@ -114,22 +112,12 @@ namespace ppforest2 {
   }
 
   Forest::Ptr Forest::train(TrainingSpec const& training_spec, FeatureMatrix const& x, OutcomeVector const& y) {
-    user_error(y.size() > 0, "Training requires a non-empty response vector.");
-    user_error(
-        y.size() == x.rows(),
-        "Response length (" + std::to_string(y.size()) + ") does not match the number of observations in x (" +
-            std::to_string(x.rows()) + ")."
-    );
-
-    Forest::Ptr forest;
+    Model::check_train_inputs(x, y);
 
     if (training_spec.mode == types::Mode::Regression) {
-      forest = RegressionForest::train(training_spec, x, y);
-    } else {
-      forest = ClassificationForest::train(training_spec, x, y);
+      return RegressionForest::train(training_spec, x, y);
     }
-
-    return forest;
+    return ClassificationForest::train(training_spec, x, y);
   }
 
 }

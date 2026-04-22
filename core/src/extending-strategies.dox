@@ -4,17 +4,17 @@
  * Tree training in ppforest2 is parameterised by seven pluggable
  * strategy interfaces.  You can add new optimisation criteria, variable
  * selection methods, splitting rules, stop conditions, binarization
- * schemes, partition methods, or leaf creation logic without modifying
+ * schemes, grouping methods, or leaf creation logic without modifying
  * the tree-building logic.
  *
  * | Interface                    | Namespace              | Purpose                              |
  * |------------------------------|------------------------|--------------------------------------|
  * | pp::ProjectionPursuit        | pp           | Projection pursuit index optimisation |
  * | vars::VariableSelection      | vars         | Variable subset selection            |
- * | cutpoint::SplitCutpoint      | cutpoint     | Split cutpoint computation           |
+ * | cutpoint::Cutpoint      | cutpoint     | Split cutpoint computation           |
  * | stop::StopRule               | stop         | Node stopping condition              |
  * | binarize::Binarization       | binarize     | Multiclass → binary regrouping       |
- * | partition::StepPartition     | partition     | Observation partitioning             |
+ * | grouping::Grouping     | grouping     | Group partition management           |
  * | leaf::LeafStrategy           | leaf         | Leaf node creation                   |
  *
  * @section strat_architecture Architecture
@@ -126,7 +126,7 @@
  *     std::string display_name() const override { return "Random"; }
  *
  *     static ProjectionPursuit::Ptr from_json(const nlohmann::json& j) {
- *       validate_json_keys(j, "random PP", {"name"});
+ *       JsonReader{j, "random"}.only_keys({"name"});
  *       return random();
  *     }
  *
@@ -162,18 +162,18 @@
  * that records which columns were selected and allows expanding a
  * reduced-dimension projector back to the original space).
  *
- * @section strat_cutpoint Adding a new cutpoint::SplitCutpoint
+ * @section strat_cutpoint Adding a new cutpoint::Cutpoint
  *
- * A SplitCutpoint computes the split cutpoint in the projected space
+ * A Cutpoint computes the split cutpoint in the projected space
  * that separates two groups.
  *
  * @subsection strat_cutpoint_interface Interface to implement
  *
  * @code
- *   struct SplitCutpoint : public Strategy<SplitCutpoint> {
+ *   struct Cutpoint : public Strategy<Cutpoint> {
  *     virtual void cutpoint(NodeContext& ctx, stats::RNG& rng) const = 0;
  *
- *     // Inherited from Strategy<SplitCutpoint>:
+ *     // Inherited from Strategy<Cutpoint>:
  *     // virtual nlohmann::json to_json() const = 0;
  *     // static Ptr from_json(const nlohmann::json& j);
  *   };
@@ -218,6 +218,6 @@
  *
  * That's it — no central registry file or TrainingSpec subclass needed.
  *
- * @see Strategy, ProjectionPursuit, VariableSelection, SplitCutpoint,
- *      StopRule, Binarization, StepPartition, LeafStrategy, TrainingSpec
+ * @see Strategy, ProjectionPursuit, VariableSelection, Cutpoint,
+ *      StopRule, Binarization, Grouping, LeafStrategy, TrainingSpec
  */

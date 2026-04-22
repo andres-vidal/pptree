@@ -80,3 +80,24 @@ describe("plot.pprf importance snapshots", {
     vdiffr::expect_doppelganger("pprf-importance-permuted", plot(model, metric = "permuted"))
   })
 })
+
+describe("plot.pprf regression importance snapshot", {
+  # Regression-side VI share the three measures with classification
+  # (projections / permuted / weighted), but the underlying numbers come
+  # from MSE-increase (regression) rather than accuracy-drop
+  # (classification). The snapshot fences the end-to-end render for a
+  # regression model so future refactors of the VI-computation path
+  # (unit scale, sign handling, label formatting) can't silently alter
+  # the plotted output.
+  skip_if_not_installed("vdiffr")
+
+  data(mtcars)
+  model <- pprf(mpg ~ ., data = mtcars, size = 5, seed = 0, threads = 1)
+
+  it("pprf-regression-importance-projections", {
+    vdiffr::expect_doppelganger(
+      "pprf-regression-importance-projections",
+      plot(model, metric = "projections")
+    )
+  })
+})

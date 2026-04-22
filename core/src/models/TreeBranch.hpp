@@ -3,7 +3,6 @@
 #include "models/TreeNode.hpp"
 #include "models/Projector.hpp"
 #include "utils/Types.hpp"
-#include "utils/Math.hpp"
 
 namespace ppforest2 {
   /**

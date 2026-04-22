@@ -1,5 +1,4 @@
 #include "models/strategies/pp/ProjectionPursuit.hpp"
-
 #include "models/strategies/NodeContext.hpp"
 
 namespace ppforest2::pp {

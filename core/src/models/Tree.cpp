@@ -1,15 +1,14 @@
 #include "models/Tree.hpp"
 
 #include "models/ClassificationTree.hpp"
+#include "models/Model.hpp"
 #include "models/RegressionTree.hpp"
 #include "models/TreeBranch.hpp"
 #include "models/VIVisitor.hpp"
 #include "models/strategies/NodeContext.hpp"
 #include "stats/Stats.hpp"
-#include "utils/UserError.hpp"
 
 #include <stack>
-#include <string>
 #include <Eigen/Dense>
 
 using namespace ppforest2::pp;
@@ -180,12 +179,7 @@ namespace ppforest2 {
   }
 
   Tree::Ptr Tree::train(TrainingSpec const& spec, FeatureMatrix& x, OutcomeVector& y, stats::RNG& rng) {
-    user_error(y.size() > 0, "Training requires a non-empty response vector.");
-    user_error(
-        y.size() == x.rows(),
-        "Response length (" + std::to_string(y.size()) + ") does not match the number of observations in x (" +
-            std::to_string(x.rows()) + ")."
-    );
+    Model::check_train_inputs(x, y);
 
     GroupPartition const y_part = spec.init_groups(y);
 

@@ -86,6 +86,15 @@ namespace ppforest2 {
      * @param y     Outcome vector (n).
      * @return      Trained model (Tree or Forest).
      */
-    static Ptr train(TrainingSpec const& spec, types::FeatureMatrix const& x, types::OutcomeVector const& y);
+    static Ptr train(TrainingSpec const& spec, types::FeatureMatrix& x, types::OutcomeVector& y);
+
+    /**
+     * @brief Validate common training inputs (y non-empty, matching x rows).
+     *
+     * Throws `UserError` on failure. Called by `Tree::train` and `Forest::train`
+     * at their entry points so both modes get the same validation and the
+     * checks aren't duplicated per-mode.
+     */
+    static void check_train_inputs(types::FeatureMatrix const& x, types::OutcomeVector const& y);
   };
 }

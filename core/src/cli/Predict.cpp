@@ -12,6 +12,7 @@
 
 #include "stats/DataPacket.hpp"
 #include "stats/ConfusionMatrix.hpp"
+#include "stats/RegressionMetrics.hpp"
 #include "io/Presentation.hpp"
 #include "io/Color.hpp"
 #include "io/Output.hpp"
@@ -88,22 +89,38 @@ namespace ppforest2::cli {
         Model const& model,
         std::vector<std::string> const& group_names,
         bool no_metrics,
-        bool no_proportions
+        bool no_proportions,
+        bool is_regression
     ) {
       json result;
 
+      if (is_regression) {
+        std::vector<Feature> pred_vec(predictions.data(), predictions.data() + predictions.size());
+        result["predictions"] = pred_vec;
+
+        if (data.y.size() > 0 && !no_metrics) {
+          stats::RegressionMetrics metrics(predictions, data.y);
+          result["regression_metrics"] = serialization::to_json(metrics);
+        }
+
+        return result;
+      }
+
+      GroupIdVector predictions_int = predictions.cast<GroupId>();
+
       if (group_names.empty()) {
-        std::vector<int> pred_vec(predictions.data(), predictions.data() + predictions.size());
+        std::vector<int> pred_vec(predictions_int.data(), predictions_int.data() + predictions_int.size());
         result["predictions"] = pred_vec;
       } else {
-        result["predictions"] = serialization::to_labels(predictions, group_names);
+        result["predictions"] = serialization::to_labels(predictions_int, group_names);
       }
 
       bool has_labels   = data.y.size() > 0;
       bool show_metrics = has_labels && !no_metrics;
 
       if (show_metrics) {
-        ConfusionMatrix cm(predictions, data.y);
+        GroupIdVector y_int = data.y.cast<GroupId>();
+        ConfusionMatrix cm(predictions_int, y_int);
         result["error_rate"] = cm.error();
         result["confusion_matrix"] =
             group_names.empty() ? serialization::to_json(cm) : serialization::to_json(cm, group_names);
@@ -130,9 +147,16 @@ namespace ppforest2::cli {
       io::check_file_not_exists(params.output_path);
     }
 
+    // Inspect the saved model's mode before reading data.
+    json model_data = io::json::read_file(params.model_path, user_error);
+
+    bool const is_regression =
+        model_data.contains("config") && model_data["config"].value("mode", "classification") == "regression";
+
     DataPacket data = [&]() -> DataPacket {
       try {
-        return io::csv::read_sorted(params.data_path);
+        return is_regression ? io::csv::read_regression_sorted(params.data_path)
+                             : io::csv::read_sorted(params.data_path);
       } catch (ppforest2::UserError const&) {
         throw;
       } catch (std::exception const& e) {
@@ -140,17 +164,18 @@ namespace ppforest2::cli {
       }
     }();
 
-    json model_data  = io::json::read_file(params.model_path, user_error);
     auto model       = model_data.get<serialization::Export<Model::Ptr>>().model;
     auto predictions = model->predict(data.x);
 
+    // `y` holds integer class labels for classification and the continuous
+    // response for regression; in both modes, empty means "no truth".
     bool has_labels   = data.y.size() > 0;
     bool show_metrics = has_labels && !params.no_metrics;
 
     // Resolve group names: prefer CSV data, fall back to saved model metadata.
     std::vector<std::string> group_names = data.group_names;
 
-    if (group_names.empty() && model_data.contains("meta") && model_data["meta"].contains("groups")) {
+    if (!is_regression && group_names.empty() && model_data.contains("meta") && model_data["meta"].contains("groups")) {
       group_names = model_data["meta"]["groups"].get<std::vector<std::string>>();
     }
 
@@ -161,9 +186,17 @@ namespace ppforest2::cli {
       out.println("{}", emphasis("Prediction results for " + model_type));
       out.newline();
 
-      ConfusionMatrix cm(predictions, data.y);
-      out.println("{} {}", emphasis("Error:"), fmt::format("{:.2f}%", cm.error() * 100));
-      print_confusion_matrix(out, cm, "Confusion Matrix", group_names);
+      if (is_regression) {
+        stats::RegressionMetrics metrics(predictions, data.y);
+        out.println("{} {}", emphasis("MSE:"), fmt::format("{:.6f}", metrics.mse));
+        io::print_regression_metrics(out, metrics, "Regression Metrics");
+      } else {
+        GroupIdVector predictions_int = predictions.cast<GroupId>();
+        GroupIdVector y_int           = data.y.cast<GroupId>();
+        ConfusionMatrix cm(predictions_int, y_int);
+        out.println("{} {}", emphasis("Error:"), fmt::format("{:.2f}%", cm.error() * 100));
+        print_confusion_matrix(out, cm, "Confusion Matrix", group_names);
+      }
     }
 
     // Hint about --output when not used
@@ -173,8 +206,9 @@ namespace ppforest2::cli {
 
     // Save results to file if requested
     if (!params.output_path.empty()) {
-      json file_result =
-          build_predict_result(predictions, data, *model, group_names, params.no_metrics, params.no_proportions);
+      json file_result = build_predict_result(
+          predictions, data, *model, group_names, params.no_metrics, params.no_proportions, is_regression
+      );
       io::json::write_file(file_result, params.output_path, user_error);
       out.saved("Results", params.output_path);
     }

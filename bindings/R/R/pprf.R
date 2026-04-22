@@ -10,6 +10,10 @@ NULL
 #' The number of variables to consider at each split is controlled by the \code{n_vars} parameter.
 #' If \code{lambda = 0}, the model is trained using Linear Discriminant Analysis (LDA). If \code{lambda > 0}, the model is trained using Penalized Discriminant Analysis (PDA).
 #'
+#' Classification vs regression is auto-detected from `y`: a factor or character vector triggers classification; a numeric vector triggers regression.
+#'
+#' OOB error, OOB predictions, permuted variable importance, and weighted variable importance are computed lazily on first access via the accessor functions (`oob_error()`, `oob_predictions()`, `permuted_importance()`, `weighted_importance()`). Training itself is fast because these OOB-based computations are deferred.
+#'
 #' @param formula A formula of the form \code{y ~ x1 + x2 + ...}, where \code{y} is a vector of labels and \code{x1}, \code{x2}, ... are the features.
 #' @param data A data frame containing the variables in the formula.
 #' @param x A matrix containing the features for each observation.
@@ -26,17 +30,19 @@ NULL
 #' @param cutpoint A split cutpoint strategy object created by \code{\link{cutpoint_mean_of_means}} (default).
 #' @param stop A stopping rule object created by \code{\link{stop_pure_node}} (default).
 #' @param binarize A binarization strategy object created by \code{\link{binarize_largest_gap}} (default).
-#' @param partition A partition strategy object created by \code{\link{partition_by_group}} (default).
+#' @param grouping A grouping strategy object created by \code{\link{grouping_by_label}} (default).
 #' @param leaf A leaf strategy object created by \code{\link{leaf_majority_vote}} (default).
-#' @return A pprf model trained on \code{x} and \code{y}.
-#' @seealso \code{\link{predict.pprf}}, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}, \code{\link{print.pprf}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{\link{pp_pda}}, \code{\link{vars_uniform}}, \code{\link{vars_all}}, \code{\link{cutpoint_mean_of_means}}, \code{\link{stop_pure_node}}, \code{\link{binarize_largest_gap}}, \code{\link{partition_by_group}}, \code{\link{leaf_majority_vote}}, \code{vignette("introduction")} for a tutorial
+#' @return A \code{pprf} model. Its S3 class vector is
+#'   \code{c("pprf_classification", "pprf", "ppmodel")} or
+#'   \code{c("pprf_regression", "pprf", "ppmodel")} depending on the mode.
+#' @seealso \code{\link{predict.pprf_classification}}, \code{\link{predict.pprf_regression}}, \code{\link{formula.ppmodel}}, \code{\link{oob_error}}, \code{\link{save_json}}, \code{\link{load_json}}, \code{\link{pp_rand_forest}} for parsnip integration, \code{vignette("introduction")} for a tutorial
 #' @examples
 #'
 #' # Example 1: formula interface with the `iris` dataset
-#' pprf(Type ~ ., data = iris)
+#' pprf(Species ~ ., data = iris)
 #'
 #' # Example 2: formula interface with the `iris` dataset with regularization
-#' pprf(Type ~ ., data = iris, lambda = 0.5)
+#' pprf(Species ~ ., data = iris, lambda = 0.5)
 #'
 #' # Example 3: matrix interface with the `iris` dataset
 #' pprf(x = iris[, 1:4], y = iris[, 5])
@@ -68,7 +74,7 @@ pprf <- function(
     cutpoint = NULL,
     stop = NULL,
     binarize = NULL,
-    partition = NULL,
+    grouping = NULL,
     leaf = NULL) {
   if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1 || seed != as.integer(seed)))
     stop("`seed` must be a single integer or NULL.")
@@ -88,14 +94,15 @@ pprf <- function(
   y <- args$y
   groups <- args$groups
   formula <- args$formula
+  mode <- args$mode
 
   strategies <- resolve_strategies(
     pp = pp, lambda = lambda, lambda_missing = missing(lambda),
     vars = vars, n_vars = n_vars, n_vars_missing = missing(n_vars),
     p_vars = p_vars, p_vars_missing = missing(p_vars),
-    cutpoint = cutpoint, stop = stop, binarize = binarize, partition = partition,
+    cutpoint = cutpoint, stop = stop, binarize = binarize, grouping = grouping,
     leaf = leaf, default_vars = vars_uniform(),
-    n_features = ncol(x))
+    n_features = ncol(x), mode = mode)
 
   if (is.null(seed)) {
     seed <- sample.int(.Machine$integer.max, 1L)
@@ -113,14 +120,19 @@ pprf <- function(
     cutpoint = strategies$cutpoint,
     stop = strategies$stop,
     binarize = strategies$binarize,
-    partition = strategies$partition,
+    grouping = strategies$grouping,
     leaf = strategies$leaf,
+    mode = mode,
     size = as.integer(size),
     seed = as.integer(seed),
     threads = if (is.null(threads)) 0L else as.integer(threads),
     max_retries = as.integer(max_retries))
 
-  model <- ppforest2_train(training_spec, x, y)
+  if (identical(mode, "regression")) {
+    model <- ppforest2_train_regression(training_spec, x, y)
+  } else {
+    model <- ppforest2_train(training_spec, x, y)
+  }
 
   if (isTRUE(model$degenerate)) {
     warning("Some splits could not separate groups (degenerate nodes). ",
@@ -132,55 +144,61 @@ pprf <- function(
             call. = FALSE)
   }
 
-  for (i in 1:size) {
-    model$trees[[i]]$groups <- groups
+  # Regression models have no groups; this loop only applies to classification.
+  if (!identical(mode, "regression")) {
+    for (i in 1:size) {
+      model$trees[[i]]$groups <- groups
+    }
   }
 
-  model$seed <- seed
-  model$groups <- groups
+  model$seed    <- seed
+  model$groups  <- groups
   model$formula <- formula
-  model$x <- x
-  model$y <- y
+  model$mode    <- mode
+  model$x       <- x
+  model$y       <- y
 
+  # Cheap, always-available VI fields. Expensive OOB-based importances
+  # (`permuted_importance()`, `weighted_importance()`) compute lazily.
   scale <- apply(x, 2, sd)
   scale[scale == 0] <- 1
-
   model$vi <- list(
     scale       = scale,
-    projections = ppforest2_vi_projections_forest(model, ncol(x), scale),
-    weighted    = ppforest2_vi_weighted_forest(model, x, y, scale),
-    permuted    = ppforest2_vi_permuted_forest(model, x, y, seed)
+    projections = ppforest2_vi_projections_forest(model, ncol(x), scale)
   )
-  model$oob_error <- ppforest2_oob_error(model, x, y)
-  model$oob_predictions <- ppforest2_oob_predict(model, x)
+
+  # Lazy-compute cache for OOB metrics and permuted/weighted importance.
+  model$.cache <- .new_cache()
+
+  # Final class assignment. Subclass first so S3 dispatch finds it; parent
+  # classes provide shared fallback methods.
+  mode_class <- if (identical(mode, "regression")) "pprf_regression" else "pprf_classification"
+  class(model) <- c(mode_class, "pprf", "ppmodel")
 
   model
 }
 
-#' Predicts the labels or vote proportions of a set of observations using a pprf model.
+
+# ---------------------------------------------------------------------------
+# Prediction: split per mode.
+# ---------------------------------------------------------------------------
+
+#' Predicts labels or vote proportions from a pprf model (classification mode).
 #'
-#' @param object A pprf model.
-#' @param new_data A data frame or matrix of new observations to predict. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.
+#' @param object A \code{pprf_classification} model.
+#' @param new_data A data frame or matrix of new observations. If \code{NULL}, the first positional argument in \code{...} is used for backward compatibility.
 #' @param type The type of prediction: \code{"class"} (default) returns a factor of predicted labels, \code{"prob"} returns a data frame of vote proportions.
 #' @param ... For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.
-#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per group, where each row sums to 1.
-#' @seealso \code{\link{pprf}} for training, \code{\link{formula.pprf}}, \code{\link{summary.pprf}}
+#' @return If \code{type = "class"}, a factor of predicted labels. If \code{type = "prob"}, a data frame with one column per group, each row summing to 1.
+#' @seealso \code{\link{pprf}}, \code{\link{predict.pprf_regression}}
 #' @examples
-#' # Example 1: with the `iris` dataset
-#' model <- pprf(Type ~ ., data = iris)
+#' model <- pprf(Species ~ ., data = iris)
 #' predict(model, iris)
-#'
-#' # Example 2: with the `crabs` dataset
-#' model <- pprf(Type ~ ., data = crabs)
-#' predict(model, crabs)
-#'
-#' # Example 3: vote proportions
-#' model <- pprf(Type ~ ., data = iris)
 #' predict(model, iris, type = "prob")
-#'
 #' @export
-predict.pprf <- function(object, new_data = NULL, type = "class", ...) {
+predict.pprf_classification <- function(object, new_data = NULL, type = NULL, ...) {
   x <- process_predict_arguments(object, new_data, ...)
+  if (is.null(type)) type <- "class"
 
   if (type == "prob") {
     probs <- ppforest2_predict_forest_prob(object, x)
@@ -189,99 +207,198 @@ predict.pprf <- function(object, new_data = NULL, type = "class", ...) {
     return(df)
   }
 
+  if (!type %in% c("class")) {
+    stop("`type = \"", type, "\"` is not supported for classification models. ",
+         "Use \"class\" (default) or \"prob\".", call. = FALSE)
+  }
+
   y <- ppforest2_predict_tree_forest(object, x)
   as.factor(object$groups[y])
 }
 
-#' Extracts the formula used to train a pprf model.
+#' Predicts numeric responses from a pprf model (regression mode).
 #'
-#' @param x A pprf model.
-#' @param ... (unused) other parameters typically passed to formula.
-#' @return The formula used to train the model.
-#' @seealso \code{\link{pprf}} for training, \code{\link{predict.pprf}}, \code{\link{summary.pprf}}
-#' @examples
-#' model <- pprf(Type ~ ., data = iris)
-#' formula(model)
+#' @param object A \code{pprf_regression} model.
+#' @param new_data A data frame or matrix of new observations.
+#' @param type Must be \code{"response"} (default).
+#' @param ... For backward compatibility, the first positional argument is treated as \code{new_data} when \code{new_data} is \code{NULL}.
+#' @return A numeric vector of mean predictions across the forest's trees.
+#' @seealso \code{\link{pprf}}, \code{\link{predict.pprf_classification}}
 #' @export
-formula.pprf <- function(x, ...) {
-  x$formula
+predict.pprf_regression <- function(object, new_data = NULL, type = NULL, ...) {
+  x <- process_predict_arguments(object, new_data, ...)
+  if (is.null(type)) type <- "response"
+
+  if (type %in% c("class", "prob")) {
+    stop("`type = \"", type, "\"` is not available for regression models. ",
+         "Use `type = \"response\"`.", call. = FALSE)
+  }
+
+  if (type != "response") {
+    stop("`type = \"", type, "\"` is not recognised. Use \"response\".", call. = FALSE)
+  }
+
+  as.numeric(ppforest2_predict_forest_regression(object, x))
 }
 
-#' Prints a pprf model.
-#' @param x A pprf model.
-#' @param ... (unused) other parameters typically passed to print.
-#' @seealso \code{\link{pprf}}, \code{\link{summary.pprf}}
-#' @examples
-#' model <- pprf(Type ~ ., data = iris)
-#' print(model)
-#'
+
+# ---------------------------------------------------------------------------
+# print.pprf -- minimal, mode-agnostic. See `summary()` for the full breakdown.
+# ---------------------------------------------------------------------------
+
+#' Prints a compact summary of a pprf forest.
+#' @param x A \code{pprf} model.
+#' @param ... Unused.
+#' @seealso \code{\link{summary.pprf}}
 #' @export
 print.pprf <- function(x, ...) {
-  model <- x
   cat("\n")
-  cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
-  cat("-------------------------------------\n")
-  for (i in seq_along(model$trees)) {
-    cat("Tree ", i, ":\n", sep = "")
-    print(model$trees[[i]])
+  cat("Random Forest of Project-Pursuit Oblique Decision Trees\n")
+  cat("  Trees:       ", length(x$trees), "\n", sep = "")
+  cat("  Mode:        ", x$mode, "\n", sep = "")
+  if (!is.null(x$groups) && length(x$groups) > 0L) {
+    cat("  Group names: ", paste(x$groups, collapse = ", "), "\n", sep = "")
+  }
+  if (!is.null(x$formula)) {
+    cat("  Formula:     ", deparse(x$formula), "\n", sep = "")
   }
   cat("\n")
+  invisible(x)
 }
 
-#' Summarizes a pprf model.
-#' @param object A pprf model.
-#' @param ... (unused) other parameters typically passed to summary.
-#' @seealso \code{\link{pprf}}, \code{\link{predict.pprf}}, \code{\link{print.pprf}}
-#' @examples
-#' model <- pprf(Type ~ ., data = iris)
-#' summary(model)
+
+# ---------------------------------------------------------------------------
+# summary -- layered via NextMethod:
+#   summary.pprf_classification / summary.pprf_regression
+#     -> summary.pprf (forest-level header, VI table)
+#       -> summary.ppmodel (data summary, config, formula)
+# ---------------------------------------------------------------------------
+
+#' @export
+summary.ppmodel <- function(object, ...) {
+  model <- object
+  cat("\n")
+  cat("Data Summary:\n")
+  cat("  observations:", nrow(model$x), "\n")
+  cat("  features:    ", ncol(model$x), "\n")
+  if (identical(model$mode, "classification")) {
+    cat("  groups:      ", length(model$groups), "\n")
+    cat("  group names: ", paste(model$groups, collapse = ", "), "\n")
+  }
+  if (!is.null(model$formula)) {
+    cat("  formula:     ", deparse(model$formula), "\n")
+  }
+  cat("\n")
+  invisible(model)
+}
+
+#' Summary of a pprf forest (shared header + VI).
 #'
+#' @param object A \code{pprf} model.
+#' @param ... Unused.
 #' @export
 summary.pprf <- function(object, ...) {
   model <- object
-
-  if (!is.null(model$x)) {
-    cat("\n")
-    cat("Random Forest of Project-Pursuit Oblique Decision Tree\n")
-    cat("\n")
-    cat("Size:", length(model$trees), "trees\n")
-    print_training_spec(model$training_spec)
-    cat("\n")
-    cat("Data Summary:\n")
-    cat("  observations:", nrow(model$x), "\n")
-    cat("  features:    ", ncol(model$x), "\n")
-    cat("  groups:      ", length(model$groups), "\n")
-    cat("  group names: ", paste(model$groups, collapse = ", "), "\n")
-    if (!is.null(model$formula)) {
-      cat("  formula:     ", deparse(model$formula), "\n")
-    }
-    cat("\n")
-    cat("Training Confusion Matrix:\n\n")
-    print_confusion_matrix(ppforest2_predict_tree_forest(model, model$x), model)
-    cat("\n")
-    cat("OOB Confusion Matrix:\n\n")
-    print_oob_confusion_matrix(model) 
-    cat("\n")
-    cat("Variable Importance:\n\n")
-    p <- length(model$vi$projections)
-    vnames <- if (!is.null(colnames(model$x))) colnames(model$x) else paste0("x", seq_len(p))
-    ord <- order(model$vi$projections, decreasing = TRUE)
-    tbl <- data.frame(
-      Variable    = vnames[ord],
-      sigma       = model$vi$scale[ord],
-      Projection  = model$vi$projections[ord],
-      Weighted    = model$vi$weighted[ord],
-      Permuted    = model$vi$permuted[ord],
-      row.names   = seq_len(p)
-    )
-    names(tbl)[2] <- "\u03c3"
-    print(tbl)
-    if (!all(model$vi$scale == 1)) {
-      cat("\nNote: Variable importance was calculated using scaled coefficients (|a_j| * \u03c3_j).\n")
-      cat("Variable contributions can only be theoretically interpreted as such\n")
-      cat("if the model was trained on scaled data. Scaling also changes the\n")
-      cat("projection-pursuit optimization, which may affect the resulting tree.\n")
-    }
+  if (is.null(model$x)) {
+    cat("\n(Empty pprf model -- no training data available.)\n")
+    return(invisible(model))
   }
+
   cat("\n")
+  cat(if (identical(model$mode, "regression")) {
+    "Random Forest of Project-Pursuit Oblique Regression Trees\n"
+  } else {
+    "Random Forest of Project-Pursuit Oblique Decision Trees\n"
+  })
+  cat("\n")
+  cat("Size:", length(model$trees), "trees\n")
+  print_training_spec(model$training_spec)
+
+  NextMethod()  # summary.ppmodel -- data summary block
+
+  # Mode-specific metrics section -- delegated to subclass below via NextMethod.
+  # Falls back to .ppmodel in NextMethod chain if no subclass match found.
+  model  # returned from NextMethod, just pass through
+}
+
+#' @export
+summary.pprf_classification <- function(object, ...) {
+  # Let the shared scaffolding (pprf -> ppmodel) run first.
+  NextMethod()
+  model <- object
+
+  cat("Training Confusion Matrix:\n\n")
+  print_confusion_matrix(ppforest2_predict_tree_forest(model, model$x), model)
+  cat("\n")
+  cat("OOB Confusion Matrix:\n\n")
+  print_oob_confusion_matrix(model)
+  cat("\n")
+
+  .print_vi_table(model, include_oob_importances = TRUE)
+  invisible(model)
+}
+
+#' @export
+summary.pprf_regression <- function(object, ...) {
+  NextMethod()
+  model <- object
+
+  # Training metrics
+  preds <- ppforest2_predict_forest_regression(model, model$x)
+  y <- model$y
+  mse <- mean((preds - y)^2)
+  mae <- mean(abs(preds - y))
+  ss_tot <- sum((y - mean(y))^2)
+  r2 <- if (ss_tot > 0) 1 - sum((preds - y)^2) / ss_tot else 0
+  cat("Training Metrics:\n")
+  cat("  MSE:", format(mse, nsmall = 6), "\n")
+  cat("  MAE:", format(mae, nsmall = 6), "\n")
+  cat("  R\u00b2: ", format(r2, nsmall = 6), "\n\n")
+
+  oob <- oob_error(model)
+  if (!is.na(oob)) {
+    cat("OOB MSE:", format(oob, nsmall = 6), "\n\n")
+  } else {
+    cat("OOB MSE: not available (no observation has any out-of-bag tree)\n\n")
+  }
+
+  .print_vi_table(model, include_oob_importances = TRUE)
+  invisible(model)
+}
+
+
+# ---------------------------------------------------------------------------
+# Helpers -- these are for `summary()`, not part of the public API.
+# ---------------------------------------------------------------------------
+
+# Print a VI table. For forests, `include_oob_importances` pulls the lazy
+# `weighted` and `permuted` importances. For trees, these are absent.
+.print_vi_table <- function(model, include_oob_importances) {
+  cat("Variable Importance:\n\n")
+
+  p <- length(model$vi$projections)
+  vnames <- if (!is.null(colnames(model$x))) colnames(model$x) else paste0("x", seq_len(p))
+  ord <- order(model$vi$projections, decreasing = TRUE)
+
+  cols <- list(
+    Variable   = vnames[ord],
+    sigma      = model$vi$scale[ord],
+    Projection = model$vi$projections[ord]
+  )
+
+  if (include_oob_importances) {
+    cols$Weighted <- weighted_importance(model)[ord]
+    cols$Permuted <- permuted_importance(model)[ord]
+  }
+
+  tbl <- do.call(data.frame, c(cols, list(row.names = seq_len(p))))
+  names(tbl)[2] <- "\u03c3"
+  print(tbl)
+
+  if (!all(model$vi$scale == 1)) {
+    cat("\nNote: Variable importance was calculated using scaled coefficients (|a_j| * \u03c3_j).\n")
+    cat("Variable contributions can only be theoretically interpreted as such\n")
+    cat("if the model was trained on scaled data. Scaling also changes the\n")
+    cat("projection-pursuit optimization, which may affect the resulting tree.\n")
+  }
 }

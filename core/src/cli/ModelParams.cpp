@@ -5,6 +5,7 @@
 #include "cli/ModelParams.hpp"
 #include "cli/JsonApply.hpp"
 #include "cli/Validation.hpp"
+#include "models/strategies/Strategy.hpp"
 #include "utils/UserError.hpp"
 
 #include <charconv>
@@ -113,7 +114,6 @@ namespace ppforest2::cli {
 
   nlohmann::json strategy_string_to_json(std::string const& input) {
     static std::regex const pattern(R"(([^:]+)(?::(.+))?)");
-    static std::regex const param_pattern(R"(([^=,]+)=([^,]*))");
 
     std::smatch match;
 
@@ -122,13 +122,52 @@ namespace ppforest2::cli {
     }
 
     nlohmann::json j;
-    j["name"] = match[1].str();
+    std::string const name = match[1].str();
+    j["name"]              = name;
 
     if (!match[2].matched) {
       return j;
     }
 
     std::string params_str = match[2].str();
+
+    // Positional shorthand: a single bare value (no `=`, no `,`) is
+    // interpreted as the strategy's primary parameter. Examples:
+    //   min_size:5       ->  {name: min_size, min_size: 5}
+    //   pda:0.3          ->  {name: pda, lambda: 0.3}
+    // Only activates when (a) the strategy has a primary-param entry in
+    // the map above, and (b) the post-`:` text is a single bare token.
+    // Anything containing `=` or `,` falls through to the explicit
+    // key=value parser — including two-param strategies that happen to
+    // have an entry for a single-param shorthand of the same name.
+    bool const has_equals = params_str.find('=') != std::string::npos;
+    bool const has_comma  = params_str.find(',') != std::string::npos;
+    if (!has_equals && !has_comma) {
+      // Query the strategy-owned shorthand registry. Each strategy that
+      // wants positional shorthand declares its primary param via
+      // `PPFOREST2_REGISTER_PRIMARY_PARAM` alongside its `from_json`
+      // factory — single source of truth, no out-of-band table to keep
+      // in sync.
+      if (auto const param = ppforest2::strategies::primary_param_for(name); param.has_value()) {
+        // Restricted to numeric values: `min_size:5` is shorthand, but
+        // `pda:lambda` (a bare identifier) is not — it's a missing `=`
+        // error. Prevents `pda:lambda` from being silently interpreted
+        // as `{name: pda, lambda: "lambda"}`, and keeps the "expected
+        // key=value" error available for the mistake it actually signals.
+        // String-valued primary params aren't currently needed; if a
+        // future strategy wants one, relax this check and document the
+        // resulting ambiguity with bare identifiers.
+        nlohmann::json const val = parse_scalar(params_str);
+        if (val.is_number()) {
+          j[*param] = val;
+          return j;
+        }
+      }
+      // Fall through to let the key=value parser raise its standard
+      // "expected key=value" error — one error-message path for the
+      // same shape of mistake regardless of whether the strategy has a
+      // primary-param entry.
+    }
 
     // Validate that all comma-separated tokens are key=value pairs
     static std::regex const token_pattern(R"([^,]+)");
@@ -152,6 +191,18 @@ namespace ppforest2::cli {
   }
 
   void ModelParams::validate(nlohmann::json const& config, std::vector<std::string>& errors) {
+    // Mode
+    if (config.contains("mode")) {
+      if (config["mode"].is_string()) {
+        auto mode = config["mode"].get<std::string>();
+        check(
+            mode == "classification" || mode == "regression", "mode must be 'classification' or 'regression'", errors
+        );
+      } else {
+        errors.push_back("mode must be a string");
+      }
+    }
+
     // Size
     if (config.contains("size")) {
       check(config["size"].is_number_integer(), "size must be an integer", errors);
@@ -196,6 +247,7 @@ namespace ppforest2::cli {
   }
 
   ModelParams::ModelParams(nlohmann::json const& config) {
+    apply(config, "mode", mode_input);
     apply(config, "size", size);
     apply(config, "lambda", lambda);
     apply(config, "seed", seed);
@@ -211,9 +263,26 @@ namespace ppforest2::cli {
     apply_strategy(config, "pp", pp_config, pp_input);
     apply_strategy(config, "vars", vars_config, vars_input);
     apply_strategy(config, "cutpoint", cutpoint_config, cutpoint_input);
-    apply_strategy(config, "stop", stop_config, stop_input);
+    // `stop` from a JSON config is always a single object (the file can
+    // directly express `CompositeStop`'s nested shape), so we route it
+    // through `apply_strategy` into `stop_config` with a throwaway
+    // scratch string. The `stop_inputs` vector only fills from the CLI
+    // `--stop` flag via `take_all()`.
+    //
+    // The scratch pattern is OK today because the JSON-only and CLI-only
+    // paths don't interleave: CLI --stop fully overrides any JSON `stop`
+    // (same precedence as every other strategy flag — see `resolve()`).
+    // If a future change wants CLI --stop to *append* to the JSON config
+    // rather than override it, this scratch path is the wrong shape:
+    // both sources need to merge into a single in-memory representation
+    // (e.g. unroll the JSON's `rules[]` into `stop_inputs` here) before
+    // `resolve()` re-serialises.
+    {
+      std::string scratch;
+      apply_strategy(config, "stop", stop_config, scratch);
+    }
     apply_strategy(config, "binarize", binarize_config, binarize_input);
-    apply_strategy(config, "partition", partition_config, partition_input);
+    apply_strategy(config, "grouping", grouping_config, grouping_input);
     apply_strategy(config, "leaf", leaf_config, leaf_input);
   }
 
@@ -221,9 +290,29 @@ namespace ppforest2::cli {
     try_parse_strategy(pp_input, "pp", pp_config);
     try_parse_strategy(vars_input, "vars", vars_config);
     try_parse_strategy(cutpoint_input, "cutpoint", cutpoint_config);
-    try_parse_strategy(stop_input, "stop", stop_config);
+    // `--stop` can be repeated. Single occurrence: parse as-is (no
+    // CompositeStop wrapping, so semantics match pre-existing configs
+    // that passed a single `name:k=v` string). Multiple occurrences:
+    // wrap the parsed rules in a `CompositeStop` with `name: "any"`,
+    // matching the JSON shape produced by `stop_any(...)` in R and by
+    // `CompositeStop::to_json()` on the core side. See
+    // `CompositeStop.cpp:19` for the non-empty-rules invariant; we only
+    // hit the wrap path when we already have ≥ 2 rules.
+    if (stop_inputs.size() == 1) {
+      try_parse_strategy(stop_inputs.front(), "stop", stop_config);
+    } else if (stop_inputs.size() > 1) {
+      nlohmann::json any_rule = {{"name", "any"}, {"rules", nlohmann::json::array()}};
+      for (auto const& s : stop_inputs) {
+        try {
+          any_rule["rules"].push_back(strategy_string_to_json(s));
+        } catch (std::exception const& e) {
+          throw ppforest2::UserError(fmt::format("Invalid --stop value '{}': {}", s, e.what()));
+        }
+      }
+      stop_config = std::move(any_rule);
+    }
     try_parse_strategy(binarize_input, "binarize", binarize_config);
-    try_parse_strategy(partition_input, "partition", partition_config);
+    try_parse_strategy(grouping_input, "grouping", grouping_config);
     try_parse_strategy(leaf_input, "leaf", leaf_config);
 
     if (!p_vars_input.empty()) {
@@ -272,16 +361,43 @@ namespace ppforest2::cli {
       vars_config["count"] = count;
     }
 
-    // Strategy config defaults (pp and vars are resolved above via implicit APIs)
+    // Strategy config defaults depend on mode.
+    bool const is_regression = mode_input == "regression";
+
     nlohmann::json defaults = {
         {"pp", {{"name", "pda"}}},
         {"vars", {{"name", "all"}}},
         {"cutpoint", {{"name", "mean_of_means"}}},
-        {"stop", {{"name", "pure_node"}}},
-        {"binarize", {{"name", "largest_gap"}}},
-        {"partition", {{"name", "by_group"}}},
-        {"leaf", {{"name", "majority_vote"}}},
     };
+
+    if (is_regression) {
+      // Composite stop rule: stop when either min_size or min_variance fires.
+      nlohmann::json min_size_rule;
+      min_size_rule["name"]     = "min_size";
+      min_size_rule["min_size"] = 5;
+
+      nlohmann::json min_var_rule;
+      min_var_rule["name"]      = "min_variance";
+      min_var_rule["threshold"] = 0.01;
+
+      nlohmann::json stop_cfg;
+      stop_cfg["name"]  = "any";
+      stop_cfg["rules"] = nlohmann::json::array({min_size_rule, min_var_rule});
+
+      defaults["stop"] = stop_cfg;
+      // `binarize::Disabled` is a mode-agnostic placeholder; regression's
+      // `ByCutpoint` grouping always yields 2 groups so binarize never
+      // fires. Explicit rather than leaving it as a classification-only
+      // `LargestGap` that would fail mode validation.
+      defaults["binarize"] = {{"name", "disabled"}};
+      defaults["grouping"] = {{"name", "by_cutpoint"}};
+      defaults["leaf"]     = {{"name", "mean_response"}};
+    } else {
+      defaults["stop"]     = {{"name", "pure_node"}};
+      defaults["binarize"] = {{"name", "largest_gap"}};
+      defaults["grouping"] = {{"name", "by_label"}};
+      defaults["leaf"]     = {{"name", "majority_vote"}};
+    }
 
     auto fill = [&](std::string const& key, nlohmann::json& config) {
       config = config.is_null() ? defaults[key] : config;
@@ -292,7 +408,7 @@ namespace ppforest2::cli {
     fill("cutpoint", cutpoint_config);
     fill("stop", stop_config);
     fill("binarize", binarize_config);
-    fill("partition", partition_config);
+    fill("grouping", grouping_config);
     fill("leaf", leaf_config);
   }
 }

@@ -8,7 +8,6 @@
  * initializer to work around a GCC miscompilation issue.
  */
 
-#include "utils/Invariant.hpp"
 #include "utils/Math.hpp"
 #include <Eigen/Dense>
 

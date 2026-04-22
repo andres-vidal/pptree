@@ -50,12 +50,13 @@ TEST(MajorityVoteLeaf, RegistryUnknownStrategy) {
 }
 
 TEST(MajorityVoteLeaf, SingleGroupReturnsIt) {
-  FeatureMatrix const x = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
-  OutcomeVector const y = VEC(Outcome, 2, 2, 2);
+  FeatureMatrix x       = MAT(Feature, rows(3), 1, 2, 3, 4, 5, 6);
+  GroupIdVector const y = VEC(GroupId, 2, 2, 2);
   GroupPartition const gp(y);
+  OutcomeVector ov = y.cast<Outcome>();
   RNG rng(0);
 
-  NodeContext const ctx(x, gp, 0);
+  NodeContext const ctx(x, gp, ov, 0);
   MajorityVote const mv;
   auto leaf = mv.create_leaf(ctx, rng);
 
@@ -66,12 +67,13 @@ TEST(MajorityVoteLeaf, SingleGroupReturnsIt) {
 }
 
 TEST(MajorityVoteLeaf, MajorityGroupWins) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1);
+  FeatureMatrix x       = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 0, 1);
   GroupPartition const gp(y);
+  OutcomeVector ov = y.cast<Outcome>();
   RNG rng(0);
 
-  NodeContext const ctx(x, gp, 0);
+  NodeContext const ctx(x, gp, ov, 0);
   MajorityVote const mv;
   auto leaf = mv.create_leaf(ctx, rng);
 
@@ -80,12 +82,13 @@ TEST(MajorityVoteLeaf, MajorityGroupWins) {
 }
 
 TEST(MajorityVoteLeaf, TiedGroupsPicksSmallestLabel) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
+  FeatureMatrix x       = MAT(Feature, rows(4), 1, 2, 3, 4, 5, 6, 7, 8);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1);
   GroupPartition const gp(y);
+  OutcomeVector ov = y.cast<Outcome>();
   RNG rng(0);
 
-  NodeContext const ctx(x, gp, 0);
+  NodeContext const ctx(x, gp, ov, 0);
   MajorityVote const mv;
   auto leaf = mv.create_leaf(ctx, rng);
 
@@ -95,12 +98,13 @@ TEST(MajorityVoteLeaf, TiedGroupsPicksSmallestLabel) {
 }
 
 TEST(MajorityVoteLeaf, ThreeGroupsMajorityWins) {
-  FeatureMatrix const x = MAT(Feature, rows(6), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-  OutcomeVector const y = VEC(Outcome, 0, 1, 1, 1, 2, 2);
+  FeatureMatrix x       = MAT(Feature, rows(6), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+  GroupIdVector const y = VEC(GroupId, 0, 1, 1, 1, 2, 2);
   GroupPartition const gp(y);
+  OutcomeVector ov = y.cast<Outcome>();
   RNG rng(0);
 
-  NodeContext const ctx(x, gp, 0);
+  NodeContext const ctx(x, gp, ov, 0);
   MajorityVote const mv;
   auto leaf = mv.create_leaf(ctx, rng);
 

@@ -4,6 +4,8 @@
  */
 #include "cli/CLI.integration.hpp"
 
+#include <fstream>
+
 // ---------------------------------------------------------------------------
 // Summarize subcommand
 // ---------------------------------------------------------------------------
@@ -106,6 +108,54 @@ TEST_F(SummarizeTest, SummarizeWithDataSkipsExistingMetrics) {
   // Model already has metrics — providing --data should not change output
   auto result = run_ppforest2("-q summarize -M " + model_->path() + " -d " + IRIS_CSV);
   EXPECT_EQ(result.exit_code, 0);
+}
+
+/* Summarize on a regression-saved model renders regression-mode metrics
+ * (OOB MSE, Regression Metrics table) without recomputation. Fences two
+ * prior bugs at once:
+ *   1. `Summarize.cpp`'s `has_metrics` gate used to check only
+ *      `training_confusion_matrix`, which is always absent for
+ *      regression models — so regression summaries always tried to
+ *      recompute, even when the saved JSON already had the values.
+ *   2. Regression metrics + the uniform `null` convention mean both
+ *      the reader and the presentation layer must tolerate `null` for
+ *      the classification-shaped fields (training_confusion_matrix,
+ *      oob_confusion_matrix) without throwing.
+ * Using simulate+--mode regression sidesteps the lack of a regression
+ * CSV in `data/` while still exercising the full train → save →
+ * summarize pipeline end-to-end. */
+TEST(CLISummarize, SummarizeRegressionModelRendersRegressionMetrics) {
+  TempFile const config;
+  {
+    std::ofstream out(config.path());
+    // NxPxG format is mandatory, but the G component is ignored by
+    // `simulate_regression` — the regression path only consumes N and P.
+    // Passing `2` keeps the validator happy without changing semantics.
+    out << R"({"simulate": "80x3x2", "mode": "regression", "seed": 0, "size": 5})";
+  }
+
+  TempFile const model;
+  model.clear();
+  auto train = run_ppforest2("-q train --config " + config.path() + " -s " + model.path());
+  ASSERT_EQ(train.exit_code, 0) << train.stderr_output;
+
+  // Saved JSON must carry the regression metrics (non-null) and leave
+  // the classification-shaped slots null.
+  auto j = json::parse(model.read());
+  EXPECT_EQ(j["meta"]["mode"], "regression");
+  ASSERT_TRUE(j.contains("training_regression_metrics"));
+  EXPECT_FALSE(j["training_regression_metrics"].is_null());
+  ASSERT_TRUE(j.contains("training_confusion_matrix"));
+  EXPECT_TRUE(j["training_confusion_matrix"].is_null());
+
+  // Summarize without --data: metrics must render from the saved JSON
+  // (no recomputation path available — the saved model carries no x/y).
+  auto result = run_ppforest2("--no-color summarize -M " + model.path());
+  ASSERT_EQ(result.exit_code, 0) << result.stderr_output;
+  EXPECT_NE(result.stdout_output.find("Training MSE"), std::string::npos) << "Regression training metrics must render";
+  EXPECT_NE(result.stdout_output.find("OOB MSE"), std::string::npos) << "Regression OOB metrics must render";
+  EXPECT_EQ(result.stdout_output.find("Confusion Matrix"), std::string::npos)
+      << "Regression model must not render confusion-matrix tables";
 }
 
 // ---------------------------------------------------------------------------

@@ -14,6 +14,7 @@
 #include <Eigen/Dense>
 
 #include "stats/DataPacket.hpp"
+#include "stats/RegressionMetrics.hpp"
 #include "stats/Simulation.hpp"
 #include "io/Presentation.hpp"
 #include "utils/System.hpp"
@@ -182,11 +183,33 @@ namespace ppforest2::cli {
         FeatureMatrix const& tr_x,
         FeatureMatrix const& te_x,
         OutcomeVector const& tr_y,
-        OutcomeVector& te_y,
+        OutcomeVector const& te_y,
         Params const& params,
         ppforest2::stats::RNG& rng
     ) {
       int warmup = params.evaluate.warmup;
+
+      bool const is_regression = params.model.mode_input == "regression";
+
+      auto compute_err = [is_regression](OutcomeVector const& preds, OutcomeVector const& y) {
+        if (is_regression) {
+          return stats::mse(preds, y);
+        }
+        GroupIdVector y_int = y.cast<GroupId>();
+        return static_cast<double>(error_rate(preds, y_int));
+      };
+
+      // Regression training permutes `x` / `y` in place. Each iteration
+      // needs a fresh copy so subsequent iterations (and the post-train
+      // predictions on `tr_x`) see the original row ordering — otherwise
+      // reproducibility breaks across iterations. Classification still
+      // needs to convert `tr_x` from const-ref to mutable for the
+      // `train_model` signature; we factor that in the helper below.
+      auto train_iteration = [&]() {
+        FeatureMatrix iter_x = tr_x;
+        OutcomeVector iter_y = tr_y;
+        return train_model(iter_x, iter_y, params, rng);
+      };
 
       // Run warmup iterations (discarded)
       if (warmup > 0) {
@@ -195,7 +218,7 @@ namespace ppforest2::cli {
 
       for (int i = 0; i < warmup; ++i) {
         out.progress(i, warmup);
-        train_model(tr_x, tr_y, params, rng);
+        train_iteration();
         out.progress(i + 1, warmup);
       }
 
@@ -214,11 +237,11 @@ namespace ppforest2::cli {
       for (int i = 0; i < tracker.max_iters; ++i) {
         out.progress(i, tracker.max_iters);
 
-        auto const train_result = train_model(tr_x, tr_y, params, rng);
+        auto const train_result = train_iteration();
 
         times.push_back(train_result.duration);
-        tr_errors.push_back(error_rate(train_result.model->predict(tr_x), tr_y));
-        te_errors.push_back(error_rate(train_result.model->predict(te_x), te_y));
+        tr_errors.push_back(compute_err(train_result.model->predict(tr_x), tr_y));
+        te_errors.push_back(compute_err(train_result.model->predict(te_x), te_y));
 
         out.progress(i + 1, tracker.max_iters);
 

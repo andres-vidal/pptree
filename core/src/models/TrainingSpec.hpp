@@ -204,23 +204,35 @@ namespace ppforest2 {
 
     // -- Forwarding methods (delegate to the underlying strategy) -----------
 
-    /** @brief Run projection pursuit optimization. */
-    void find_projection(NodeContext& ctx, stats::RNG& rng) const { (*pp)(ctx, rng); }
+    /** @brief Run projection pursuit optimization. Asserts postcondition: `ctx.projector` and `ctx.pp_index_value` are set. */
+    void find_projection(NodeContext& ctx, stats::RNG& rng) const;
 
-    /** @brief Run variable selection. */
-    void select_vars(NodeContext& ctx, stats::RNG& rng) const { (*vars)(ctx, rng); }
+    /** @brief Run variable selection. Asserts postcondition: `ctx.var_selection` is set. */
+    void select_vars(NodeContext& ctx, stats::RNG& rng) const;
 
-    /** @brief Compute the split cutpoint. */
-    void find_cutpoint(NodeContext& ctx, stats::RNG& rng) const { (*cutpoint)(ctx, rng); }
+    /** @brief Compute the split cutpoint. Asserts postcondition: `ctx.cutpoint` is set. */
+    void find_cutpoint(NodeContext& ctx, stats::RNG& rng) const;
 
-    /** @brief Check whether the node should stop growing. */
-    bool should_stop(NodeContext const& ctx, stats::RNG& rng) const { return (*stop)(ctx, rng); }
+    /**
+     * @brief Check whether the node should stop growing.
+     *
+     * Returns true if the configured stop rule fires, OR if the node has
+     * fewer than 2 groups (a tree-level invariant — no configured rule
+     * can split a single group, so stopping is the only sane option).
+     */
+    bool should_stop(NodeContext const& ctx, stats::RNG& rng) const;
 
-    /** @brief Reduce multiclass partition to binary. */
-    void regroup(NodeContext& ctx, stats::RNG& rng) const { (*binarize)(ctx, rng); }
+    /** @brief Reduce multiclass partition to binary. Asserts postcondition: `ctx.y_bin` is set. */
+    void regroup(NodeContext& ctx, stats::RNG& rng) const;
 
-    /** @brief Split observations into two child partitions. */
-    grouping::Grouping::Result group(NodeContext& ctx, stats::RNG& rng) const { return (*grouping)(ctx, rng); }
+    /**
+     * @brief Split observations into two child partitions.
+     *
+     * Writes `ctx.lower_y_part` / `ctx.upper_y_part`. Sets `ctx.aborted`
+     * if the grouping produced no progress (i.e. one child covers the
+     * whole parent).
+     */
+    void group(NodeContext& ctx, stats::RNG& rng) const;
 
     /** @brief Create the initial group partition from the training response. */
     stats::GroupPartition init_groups(types::OutcomeVector const& y) const { return grouping->init(y); }

@@ -4,10 +4,11 @@
 #include "models/TreeBranch.hpp"
 #include "models/TreeLeaf.hpp"
 #include "models/Tree.hpp"
-#include "models/BootstrapTree.hpp"
+#include "models/Bagged.hpp"
 #include "models/Forest.hpp"
 #include "models/VariableImportance.hpp"
 #include "stats/ConfusionMatrix.hpp"
+#include "stats/RegressionMetrics.hpp"
 
 #include <nlohmann/json.hpp>
 #include <optional>
@@ -65,6 +66,8 @@ namespace ppforest2::serialization {
     std::optional<stats::ConfusionMatrix> training_confusion_matrix;
     std::optional<stats::ConfusionMatrix> oob_confusion_matrix;
     std::optional<double> oob_error;
+    std::optional<stats::RegressionMetrics> training_regression_metrics;
+    std::optional<stats::RegressionMetrics> oob_regression_metrics;
     ///@}
 
     /** @brief Serialize to JSON. Only defined for Export<Model::Ptr>. */
@@ -100,17 +103,18 @@ namespace ppforest2::serialization {
 
   /** @brief Map integer response codes to group name strings. */
   std::vector<std::string>
-  to_labels(types::OutcomeVector const& predictions, std::vector<std::string> const& group_names);
+  to_labels(types::GroupIdVector const& predictions, std::vector<std::string> const& group_names);
 
   /** @name Serialization */
   ///@{
   json to_json(Model const& model);
   json to_json(TreeNode const& node);
   json to_json(Tree const& tree);
-  json to_json(BootstrapTree const& tree);
+  json to_json(BaggedTree const& tree);
   json to_json(Forest const& forest);
   json to_json(stats::ConfusionMatrix const& cm);
   json to_json(VariableImportance const& vi);
+  json to_json(stats::RegressionMetrics const& rm);
   json to_json(types::FeatureMatrix const& matrix);
   ///@}
 
@@ -119,7 +123,7 @@ namespace ppforest2::serialization {
   json to_json(Model const& model, GroupNames const& group_names);
   json to_json(TreeNode const& node, GroupNames const& group_names);
   json to_json(Tree const& tree, GroupNames const& group_names);
-  json to_json(BootstrapTree const& tree, GroupNames const& group_names);
+  json to_json(BaggedTree const& tree, GroupNames const& group_names);
   json to_json(Forest const& forest, GroupNames const& group_names);
   json to_json(stats::ConfusionMatrix const& cm, GroupNames const& group_names);
   ///@}
@@ -135,10 +139,11 @@ namespace ppforest2::serialization {
    */
   template<typename T> T from_json(json const& j);
 
-  template<> Tree from_json<Tree>(json const& j);
-  template<> Forest from_json<Forest>(json const& j);
+  template<> Tree::Ptr from_json<Tree::Ptr>(json const& j);
+  template<> Forest::Ptr from_json<Forest::Ptr>(json const& j);
   template<> stats::ConfusionMatrix from_json<stats::ConfusionMatrix>(json const& j);
   template<> VariableImportance from_json<VariableImportance>(json const& j);
+  template<> stats::RegressionMetrics from_json<stats::RegressionMetrics>(json const& j);
   ///@}
 
   /** @name Stream operators */
@@ -181,13 +186,15 @@ namespace ppforest2::serialization {
 
 // ADL serializer specializations — enables j.get<T>() for all types.
 namespace nlohmann {
-  template<> struct adl_serializer<ppforest2::Tree> {
-    static ppforest2::Tree from_json(json const& j) { return ppforest2::serialization::from_json<ppforest2::Tree>(j); }
+  template<> struct adl_serializer<ppforest2::Tree::Ptr> {
+    static ppforest2::Tree::Ptr from_json(json const& j) {
+      return ppforest2::serialization::from_json<ppforest2::Tree::Ptr>(j);
+    }
   };
 
-  template<> struct adl_serializer<ppforest2::Forest> {
-    static ppforest2::Forest from_json(json const& j) {
-      return ppforest2::serialization::from_json<ppforest2::Forest>(j);
+  template<> struct adl_serializer<ppforest2::Forest::Ptr> {
+    static ppforest2::Forest::Ptr from_json(json const& j) {
+      return ppforest2::serialization::from_json<ppforest2::Forest::Ptr>(j);
     }
   };
 
@@ -203,12 +210,18 @@ namespace nlohmann {
     }
   };
 
-  template<> struct adl_serializer<ppforest2::serialization::Export<ppforest2::Tree>> {
-    static ppforest2::serialization::Export<ppforest2::Tree> from_json(json const& j);
+  template<> struct adl_serializer<ppforest2::stats::RegressionMetrics> {
+    static ppforest2::stats::RegressionMetrics from_json(json const& j) {
+      return ppforest2::serialization::from_json<ppforest2::stats::RegressionMetrics>(j);
+    }
   };
 
-  template<> struct adl_serializer<ppforest2::serialization::Export<ppforest2::Forest>> {
-    static ppforest2::serialization::Export<ppforest2::Forest> from_json(json const& j);
+  template<> struct adl_serializer<ppforest2::serialization::Export<ppforest2::Tree::Ptr>> {
+    static ppforest2::serialization::Export<ppforest2::Tree::Ptr> from_json(json const& j);
+  };
+
+  template<> struct adl_serializer<ppforest2::serialization::Export<ppforest2::Forest::Ptr>> {
+    static ppforest2::serialization::Export<ppforest2::Forest::Ptr> from_json(json const& j);
   };
 
   template<> struct adl_serializer<ppforest2::serialization::Export<ppforest2::Model::Ptr>> {

@@ -128,7 +128,7 @@ namespace {
     result["predictions"]               = serialization::to_labels(predictions_int, data.group_names);
     result["vote_proportions"]          = to_json(model_export.model->predict(data.x, Proportions{}));
 
-    GroupIdVector const y_int = as_group_ids(data.y);
+    GroupIdVector const y_int = data.y.cast<GroupId>();
     ConfusionMatrix const cm(predictions_int, y_int);
     result["error_rate"] = cm.error();
 

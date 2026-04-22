@@ -21,19 +21,10 @@ namespace ppforest2::leaf {
   /**
    * @brief Abstract strategy for creating leaf nodes.
    *
-   * Called when the tree must produce a leaf, either because the stop
-   * rule fired or because projection pursuit failed (degenerate case).
-   *
-   * Reads from NodeContext: y (group partition).
+   * Returns a leaf node. Does not write to the context.
    */
   struct LeafStrategy : public Strategy<LeafStrategy> {
-    /**
-     * @brief Create a leaf node for the given node context.
-     *
-     * @param ctx  Node context (reads y for the group partition).
-     * @param rng  Random number generator (unused by deterministic strategies).
-     * @return     A fully constructed leaf node.
-     */
+    /** @brief Create a leaf node for the given node context. */
     virtual TreeNode::Ptr create_leaf(NodeContext const& ctx, stats::RNG& rng) const = 0;
 
     /** @brief Callable shorthand for create_leaf(). */
@@ -42,4 +33,7 @@ namespace ppforest2::leaf {
 
   /** @brief Factory function for majority-vote leaf strategy. */
   LeafStrategy::Ptr majority_vote();
+
+  /** @brief Factory function for mean-response leaf strategy. */
+  LeafStrategy::Ptr mean_response();
 }

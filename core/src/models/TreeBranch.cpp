@@ -1,5 +1,6 @@
 #include "models/TreeBranch.hpp"
 #include "models/TreeLeaf.hpp"
+#include "utils/Math.hpp"
 
 #include <algorithm>
 #include <stdexcept>

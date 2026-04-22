@@ -1,11 +1,14 @@
 #include <gtest/gtest.h>
 
-#include "models/BootstrapTree.hpp"
+#include "models/Bagged.hpp"
+#include "models/ClassificationForest.hpp"
+#include "models/ClassificationTree.hpp"
 #include "models/Forest.hpp"
 #include "models/TreeBranch.hpp"
 #include "models/TreeLeaf.hpp"
 
 #include "models/TrainingSpec.hpp"
+#include "TestSpec.hpp"
 
 #include "stats/Simulation.hpp"
 #include "stats/Stats.hpp"
@@ -25,7 +28,7 @@ namespace {
 }
 
 TEST(Forest, TrainLDAAllVariablesProperties) {
-  FeatureMatrix const x =
+  FeatureMatrix x =
       MAT(Feature,
           rows(30),
           1,
@@ -179,15 +182,23 @@ TEST(Forest, TrainLDAAllVariablesProperties) {
           1,
           1);
 
-  OutcomeVector const y =
+  OutcomeVector y =
       VEC(Outcome, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2);
 
   int const n_vars   = x.cols();
   float const lambda = 0;
   int const seed     = 0;
 
-  Forest const result =
-      Forest::train(TrainingSpec::builder().size(4).pp(pp::pda(lambda)).vars(vars::uniform(n_vars)).build(), x, y);
+  auto result_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification)
+          .size(4)
+          .pp(pp::pda(lambda))
+          .vars(vars::uniform(n_vars))
+          .build(),
+      x,
+      y
+  );
+  Forest const& result = *result_ptr;
 
   ASSERT_EQ(result.trees.size(), 4);
   ASSERT_EQ(result.training_spec->seed, seed);
@@ -199,7 +210,7 @@ TEST(Forest, TrainLDAAllVariablesProperties) {
 }
 
 TEST(Forest, TrainLDASomeVariablesProperties) {
-  FeatureMatrix const x =
+  FeatureMatrix x =
       MAT(Feature,
           rows(30),
           1,
@@ -353,7 +364,7 @@ TEST(Forest, TrainLDASomeVariablesProperties) {
           1,
           1);
 
-  OutcomeVector const y =
+  OutcomeVector y =
       VEC(Outcome, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2);
 
   int const n_vars   = 2;
@@ -361,9 +372,17 @@ TEST(Forest, TrainLDASomeVariablesProperties) {
   int const seed     = 1;
 
 
-  Forest const result = Forest::train(
-      TrainingSpec::builder().size(4).seed(seed).pp(pp::pda(lambda)).vars(vars::uniform(n_vars)).build(), x, y
+  auto result_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification)
+          .size(4)
+          .seed(seed)
+          .pp(pp::pda(lambda))
+          .vars(vars::uniform(n_vars))
+          .build(),
+      x,
+      y
   );
+  Forest const& result = *result_ptr;
 
   ASSERT_EQ(result.trees.size(), 4);
   ASSERT_EQ(result.training_spec->seed, seed);
@@ -375,7 +394,7 @@ TEST(Forest, TrainLDASomeVariablesProperties) {
 }
 
 TEST(Forest, TrainPDAAllVariablesProperties) {
-  FeatureMatrix const x =
+  FeatureMatrix x =
       MAT(Feature,
           rows(10),
           1,
@@ -499,14 +518,22 @@ TEST(Forest, TrainPDAAllVariablesProperties) {
           2,
           2);
 
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1);
 
   int const n_vars   = x.cols();
   float const lambda = 0.1;
   int const seed     = 0;
 
-  Forest const result =
-      Forest::train(TrainingSpec::builder().size(4).pp(pp::pda(lambda)).vars(vars::uniform(n_vars)).build(), x, y);
+  auto result_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification)
+          .size(4)
+          .pp(pp::pda(lambda))
+          .vars(vars::uniform(n_vars))
+          .build(),
+      x,
+      y
+  );
+  Forest const& result = *result_ptr;
 
   ASSERT_EQ(result.trees.size(), 4);
   ASSERT_EQ(result.training_spec->seed, seed);
@@ -525,13 +552,18 @@ TEST(ForestSimulation, PerfectSeparationLowOOBError) {
 
   auto data = simulate(90, 4, 3, rng, params);
 
-  Forest const forest =
-      Forest::train(TrainingSpec::builder().size(20).threads(1).vars(vars::uniform(4)).build(), data.x, data.y);
+  auto forest_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification).size(20).threads(1).vars(vars::uniform(4)).build(),
+      data.x,
+      data.y
+  );
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
-  double const err = forest.oob_error(data.x, data.y);
+  auto const err = forest.oob_error(data.x, data.y);
 
-  ASSERT_GE(err, 0.0);
-  ASSERT_LE(err, 0.05) << "Forest should achieve near-zero OOB error on perfectly separated data";
+  ASSERT_TRUE(err.has_value());
+  ASSERT_GE(*err, 0.0);
+  ASSERT_LE(*err, 0.05) << "Forest should achieve near-zero OOB error on perfectly separated data";
 }
 
 TEST(ForestSimulation, HighOverlapBoundedError) {
@@ -542,8 +574,12 @@ TEST(ForestSimulation, HighOverlapBoundedError) {
 
   auto data = simulate(200, 4, 3, rng, params);
 
-  Forest const forest =
-      Forest::train(TrainingSpec::builder().size(20).threads(1).vars(vars::uniform(4)).build(), data.x, data.y);
+  auto forest_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification).size(20).threads(1).vars(vars::uniform(4)).build(),
+      data.x,
+      data.y
+  );
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(data.x);
   double const err                = error_rate(predictions, data.y);
@@ -559,8 +595,12 @@ TEST(ForestSimulation, ManyClasses) {
 
   auto data = simulate(300, 4, 10, rng, params);
 
-  Forest const forest =
-      Forest::train(TrainingSpec::builder().size(20).threads(1).vars(vars::uniform(4)).build(), data.x, data.y);
+  auto forest_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification).size(20).threads(1).vars(vars::uniform(4)).build(),
+      data.x,
+      data.y
+  );
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(data.x);
   double const err                = error_rate(predictions, data.y);
@@ -576,8 +616,12 @@ TEST(ForestSimulation, HighDimensionality) {
 
   auto data = simulate(100, 50, 3, rng, params);
 
-  Forest const forest =
-      Forest::train(TrainingSpec::builder().size(20).threads(1).vars(vars::uniform(7)).build(), data.x, data.y);
+  auto forest_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification).size(20).threads(1).vars(vars::uniform(7)).build(),
+      data.x,
+      data.y
+  );
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(data.x);
   double const err                = error_rate(predictions, data.y);
@@ -589,10 +633,18 @@ TEST(ForestSimulation, Deterministic) {
   RNG rng(0);
   auto data = simulate(90, 4, 3, rng);
 
-  Forest const f1 =
-      Forest::train(TrainingSpec::builder().size(10).threads(1).vars(vars::uniform(4)).build(), data.x, data.y);
-  Forest const f2 =
-      Forest::train(TrainingSpec::builder().size(10).threads(1).vars(vars::uniform(4)).build(), data.x, data.y);
+  auto f1_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification).size(10).threads(1).vars(vars::uniform(4)).build(),
+      data.x,
+      data.y
+  );
+  Forest const& f1 = *f1_ptr;
+  auto f2_ptr      = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification).size(10).threads(1).vars(vars::uniform(4)).build(),
+      data.x,
+      data.y
+  );
+  Forest const& f2 = *f2_ptr;
 
   ASSERT_EQ(f1, f2) << "Same seed should produce identical forests";
 }
@@ -605,9 +657,17 @@ TEST(ForestSimulation, PDAOnOverlappingData) {
 
   auto data = simulate(200, 4, 3, rng, params);
 
-  Forest const forest = Forest::train(
-      TrainingSpec::builder().size(20).threads(1).pp(pp::pda(0.5F)).vars(vars::uniform(4)).build(), data.x, data.y
+  auto forest_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification)
+          .size(20)
+          .threads(1)
+          .pp(pp::pda(0.5F))
+          .vars(vars::uniform(4))
+          .build(),
+      data.x,
+      data.y
   );
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(data.x);
   double const err                = error_rate(predictions, data.y);
@@ -623,8 +683,12 @@ TEST(ForestSimulation, LargeDataset) {
 
   auto data = simulate(2000, 10, 4, rng, params);
 
-  Forest const forest =
-      Forest::train(TrainingSpec::builder().size(10).threads(1).vars(vars::uniform(5)).build(), data.x, data.y);
+  auto forest_ptr = Forest::train(
+      TrainingSpec::builder(types::Mode::Classification).size(10).threads(1).vars(vars::uniform(5)).build(),
+      data.x,
+      data.y
+  );
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(data.x);
   double const err                = error_rate(predictions, data.y);
@@ -633,53 +697,67 @@ TEST(ForestSimulation, LargeDataset) {
 }
 
 namespace {
-  static Forest build_three_group_forest() {
-    Forest forest;
+  static ClassificationForest build_three_group_forest() {
+    ClassificationForest forest;
 
-    forest.add_tree(std::make_unique<BootstrapTree>(
-        TreeBranch::make(
-            as_projector({0.0, 0.0, 0.0, 0.598, -0.801}),
-            -0.348,
+    forest.add_tree(std::make_unique<BaggedTree>(
+        std::make_unique<ClassificationTree>(
             TreeBranch::make(
-                as_projector({0.9995, 0.0, -0.031, 0.0, 0.0}), 5.553, TreeLeaf::make(1), TreeLeaf::make(2)
+                as_projector({0.0, 0.0, 0.0, 0.598, -0.801}),
+                -0.348,
+                TreeBranch::make(
+                    as_projector({0.9995, 0.0, -0.031, 0.0, 0.0}), 5.553, TreeLeaf::make(1), TreeLeaf::make(2)
+                ),
+                TreeLeaf::make(0)
             ),
-            TreeLeaf::make(0)
+            test::classification_spec()
         ),
-        nullptr
+        std::vector<int>{}
     ));
 
-    forest.add_tree(std::make_unique<BootstrapTree>(
-        TreeBranch::make(
-            as_projector({0.9998, 0.0, -0.019, 0.0, 0.0}),
-            5.300,
-            TreeBranch::make(as_projector({0.999, 0.0, 0.0, 0.046, 0.0}), 1.609, TreeLeaf::make(0), TreeLeaf::make(1)),
-            TreeLeaf::make(2)
+    forest.add_tree(std::make_unique<BaggedTree>(
+        std::make_unique<ClassificationTree>(
+            TreeBranch::make(
+                as_projector({0.9998, 0.0, -0.019, 0.0, 0.0}),
+                5.300,
+                TreeBranch::make(
+                    as_projector({0.999, 0.0, 0.0, 0.046, 0.0}), 1.609, TreeLeaf::make(0), TreeLeaf::make(1)
+                ),
+                TreeLeaf::make(2)
+            ),
+            test::classification_spec()
         ),
-        nullptr
+        std::vector<int>{}
     ));
 
-    forest.add_tree(std::make_unique<BootstrapTree>(
-        TreeBranch::make(
-            as_projector({0.974, -0.226, 0.0, 0.0, 0.0}),
-            3.955,
+    forest.add_tree(std::make_unique<BaggedTree>(
+        std::make_unique<ClassificationTree>(
             TreeBranch::make(
-                as_projector({0.0, 0.9996, -0.030, 0.0, 0.0}), 2.622, TreeLeaf::make(0), TreeLeaf::make(1)
+                as_projector({0.974, -0.226, 0.0, 0.0, 0.0}),
+                3.955,
+                TreeBranch::make(
+                    as_projector({0.0, 0.9996, -0.030, 0.0, 0.0}), 2.622, TreeLeaf::make(0), TreeLeaf::make(1)
+                ),
+                TreeLeaf::make(2)
             ),
-            TreeLeaf::make(2)
+            test::classification_spec()
         ),
-        nullptr
+        std::vector<int>{}
     ));
 
-    forest.add_tree(std::make_unique<BootstrapTree>(
-        TreeBranch::make(
-            as_projector({0.962, 0.0, 0.0, 0.0, -0.275}),
-            4.735,
+    forest.add_tree(std::make_unique<BaggedTree>(
+        std::make_unique<ClassificationTree>(
             TreeBranch::make(
-                as_projector({0.0, 0.0, 0.377, 0.0, -0.926}), -0.832, TreeLeaf::make(1), TreeLeaf::make(0)
+                as_projector({0.962, 0.0, 0.0, 0.0, -0.275}),
+                4.735,
+                TreeBranch::make(
+                    as_projector({0.0, 0.0, 0.377, 0.0, -0.926}), -0.832, TreeLeaf::make(1), TreeLeaf::make(0)
+                ),
+                TreeLeaf::make(2)
             ),
-            TreeLeaf::make(2)
+            test::classification_spec()
         ),
-        nullptr
+        std::vector<int>{}
     ));
 
     return forest;
@@ -687,7 +765,7 @@ namespace {
 }
 
 TEST(Forest, PredictSingleObservation) {
-  Forest const forest = build_three_group_forest();
+  ClassificationForest const forest = build_three_group_forest();
 
   ASSERT_EQ(0, forest.predict(VEC(Feature, 1, 0, 1, 1, 1)));
   ASSERT_EQ(1, forest.predict(VEC(Feature, 2, 5, 0, 0, 1)));
@@ -695,9 +773,9 @@ TEST(Forest, PredictSingleObservation) {
 }
 
 TEST(Forest, PredictBatch) {
-  Forest const forest = build_three_group_forest();
+  ClassificationForest const forest = build_three_group_forest();
 
-  FeatureMatrix const x =
+  FeatureMatrix x =
       MAT(Feature, rows(6), 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 2, 5, 0, 0, 1, 2, 5, 1, 0, 1, 9, 8, 0, 0, 1, 9, 8, 1, 0, 2);
 
   OutcomeVector const result   = forest.predict(x);
@@ -711,182 +789,7 @@ TEST(Forest, PredictBatch) {
 // ---------------------------------------------------------------------------
 
 TEST(OobError, PerfectSeparationGivesLowError) {
-  FeatureMatrix const x =
-      MAT(Feature,
-          rows(20),
-          0.0F,
-          1.0F,
-          0.1F,
-          2.0F,
-          0.2F,
-          0.5F,
-          0.3F,
-          1.5F,
-          0.4F,
-          0.8F,
-          0.5F,
-          1.2F,
-          0.6F,
-          0.9F,
-          0.7F,
-          1.8F,
-          0.8F,
-          0.6F,
-          0.9F,
-          1.1F,
-          9.0F,
-          1.0F,
-          9.1F,
-          2.0F,
-          9.2F,
-          0.5F,
-          9.3F,
-          1.5F,
-          9.4F,
-          0.8F,
-          9.5F,
-          1.2F,
-          9.6F,
-          0.9F,
-          9.7F,
-          1.8F,
-          9.8F,
-          0.6F,
-          9.9F,
-          1.1F);
-
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-
-  Forest const forest = Forest::train(TrainingSpec::builder().size(50).build(), x, y);
-
-  double const err = forest.oob_error(x, y);
-
-  ASSERT_GE(err, 0.0);
-  ASSERT_LE(err, 0.1) << "Expected near-zero OOB error for perfectly separable data";
-}
-
-TEST(OobError, AllInBagReturnsNegative) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
-
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1);
-
-  auto condition =
-      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
-
-  Forest forest;
-  forest.add_tree(std::make_unique<BootstrapTree>(
-      std::move(condition), TrainingSpec::builder().make(), std::vector<int>{0, 1, 2, 3}
-  ));
-
-  double const err = forest.oob_error(x, y);
-
-  ASSERT_DOUBLE_EQ(err, -1.0) << "No OOB observations, should return -1";
-}
-
-TEST(OobError, HandBuiltTreeWithKnownOob) {
-  FeatureMatrix const x = MAT(Feature, rows(6), 0.0F, 0.5F, 0.1F, 0.3F, 0.2F, 0.7F, 9.8F, 0.4F, 9.9F, 0.6F, 9.7F, 0.2F);
-
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
-
-  auto condition =
-      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
-
-  Forest forest;
-  forest.add_tree(std::make_unique<BootstrapTree>(
-      std::move(condition), TrainingSpec::builder().make(), std::vector<int>{0, 1, 4, 5}
-  ));
-
-  double const err = forest.oob_error(x, y);
-
-  ASSERT_DOUBLE_EQ(err, 0.0);
-}
-
-TEST(OobError, HandBuiltTreeWithOobMisclassification) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
-
-  OutcomeVector const y = VEC(Outcome, 0, 1, 1, 1);
-
-  auto condition =
-      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
-
-  Forest forest;
-  forest.add_tree(
-      std::make_unique<BootstrapTree>(std::move(condition), TrainingSpec::builder().make(), std::vector<int>{0, 2})
-  );
-
-  double const err = forest.oob_error(x, y);
-
-  ASSERT_DOUBLE_EQ(err, 0.5);
-}
-
-// ---------------------------------------------------------------------------
-// oob_predict
-// ---------------------------------------------------------------------------
-
-TEST(OobPredict, HandBuiltTreeWithKnownOob) {
-  FeatureMatrix const x = MAT(Feature, rows(6), 0.0F, 0.5F, 0.1F, 0.3F, 0.2F, 0.7F, 9.8F, 0.4F, 9.9F, 0.6F, 9.7F, 0.2F);
-
-  auto condition =
-      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
-
-  Forest forest;
-  forest.add_tree(std::make_unique<BootstrapTree>(
-      std::move(condition), TrainingSpec::builder().make(), std::vector<int>{0, 1, 4, 5}
-  ));
-
-  OutcomeVector preds = forest.oob_predict(x);
-
-  ASSERT_EQ(preds.size(), 6);
-  EXPECT_EQ(preds(0), -1) << "Row 0 in bag";
-  EXPECT_EQ(preds(1), -1) << "Row 1 in bag";
-  EXPECT_EQ(preds(2), 0) << "Row 2 OOB, x[0]=0.2 < 5";
-  EXPECT_EQ(preds(3), 1) << "Row 3 OOB, x[0]=9.8 > 5";
-  EXPECT_EQ(preds(4), -1) << "Row 4 in bag";
-  EXPECT_EQ(preds(5), -1) << "Row 5 in bag";
-}
-
-TEST(OobPredict, AllInBagReturnsSentinel) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
-
-  auto condition =
-      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
-
-  Forest forest;
-  forest.add_tree(std::make_unique<BootstrapTree>(
-      std::move(condition), TrainingSpec::builder().make(), std::vector<int>{0, 1, 2, 3}
-  ));
-
-  OutcomeVector const preds = forest.oob_predict(x);
-
-  ASSERT_EQ(preds.size(), 4);
-  EXPECT_EQ(preds(0), -1);
-  EXPECT_EQ(preds(1), -1);
-  EXPECT_EQ(preds(2), -1);
-  EXPECT_EQ(preds(3), -1);
-}
-
-TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
-  FeatureMatrix const x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
-
-  auto condition =
-      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
-
-  Forest forest;
-  forest.add_tree(
-      std::make_unique<BootstrapTree>(std::move(condition), TrainingSpec::builder().make(), std::vector<int>{0, 2})
-  );
-
-  OutcomeVector const preds = forest.oob_predict(x);
-
-  ASSERT_EQ(preds.size(), 4);
-  EXPECT_EQ(preds(0), -1) << "Row 0 in bag";
-  EXPECT_EQ(preds(1), 0) << "Row 1 OOB, x[0]=0.1 < 5 -> group 0";
-  EXPECT_EQ(preds(2), -1) << "Row 2 in bag";
-  EXPECT_EQ(preds(3), 1) << "Row 3 OOB, x[0]=9.8 > 5 -> group 1";
-}
-
-TEST(OobPredict, ConsistentWithOobError) {
-  FeatureMatrix const x =
+  FeatureMatrix x =
       MAT(Feature,
           rows(20),
           0.0F,
@@ -932,10 +835,208 @@ TEST(OobPredict, ConsistentWithOobError) {
 
   OutcomeVector y = VEC(Outcome, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-  Forest const forest = Forest::train(TrainingSpec::builder().size(50).build(), x, y);
+  auto forest_ptr    = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(50).build(), x, y);
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
+
+  auto const err = forest.oob_error(x, y);
+
+  ASSERT_TRUE(err.has_value());
+  ASSERT_GE(*err, 0.0);
+  ASSERT_LE(*err, 0.1) << "Expected near-zero OOB error for perfectly separable data";
+}
+
+TEST(OobError, AllInBagReturnsNullopt) {
+  FeatureMatrix x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
+
+  OutcomeVector y = VEC(Outcome, 0, 0, 1, 1);
+
+  auto condition =
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
+
+  ClassificationForest forest;
+  forest.add_tree(std::make_unique<BaggedTree>(
+      std::make_unique<ClassificationTree>(
+          std::move(condition), TrainingSpec::builder(types::Mode::Classification).make()
+      ),
+      std::vector<int>{0, 1, 2, 3}
+  ));
+
+  auto const err = forest.oob_error(x, y);
+
+  ASSERT_FALSE(err.has_value()) << "No OOB observations: oob_error returns nullopt";
+}
+
+TEST(OobError, HandBuiltTreeWithKnownOob) {
+  FeatureMatrix x = MAT(Feature, rows(6), 0.0F, 0.5F, 0.1F, 0.3F, 0.2F, 0.7F, 9.8F, 0.4F, 9.9F, 0.6F, 9.7F, 0.2F);
+
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
+
+  auto condition =
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
+
+  ClassificationForest forest;
+  forest.add_tree(std::make_unique<BaggedTree>(
+      std::make_unique<ClassificationTree>(
+          std::move(condition), TrainingSpec::builder(types::Mode::Classification).make()
+      ),
+      std::vector<int>{0, 1, 4, 5}
+  ));
+
+  auto const err = forest.oob_error(x, y);
+
+  ASSERT_TRUE(err.has_value());
+  ASSERT_DOUBLE_EQ(*err, 0.0);
+}
+
+TEST(OobError, HandBuiltTreeWithOobMisclassification) {
+  FeatureMatrix x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
+
+  OutcomeVector y = VEC(Outcome, 0, 1, 1, 1);
+
+  auto condition =
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
+
+  ClassificationForest forest;
+  forest.add_tree(std::make_unique<BaggedTree>(
+      std::make_unique<ClassificationTree>(
+          std::move(condition), TrainingSpec::builder(types::Mode::Classification).make()
+      ),
+      std::vector<int>{0, 2}
+  ));
+
+  auto const err = forest.oob_error(x, y);
+
+  ASSERT_TRUE(err.has_value());
+  ASSERT_DOUBLE_EQ(*err, 0.5);
+}
+
+// ---------------------------------------------------------------------------
+// oob_predict
+// ---------------------------------------------------------------------------
+
+TEST(OobPredict, HandBuiltTreeWithKnownOob) {
+  FeatureMatrix x = MAT(Feature, rows(6), 0.0F, 0.5F, 0.1F, 0.3F, 0.2F, 0.7F, 9.8F, 0.4F, 9.9F, 0.6F, 9.7F, 0.2F);
+
+  auto condition =
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
+
+  ClassificationForest forest;
+  forest.add_tree(std::make_unique<BaggedTree>(
+      std::make_unique<ClassificationTree>(
+          std::move(condition), TrainingSpec::builder(types::Mode::Classification).make()
+      ),
+      std::vector<int>{0, 1, 4, 5}
+  ));
+
+  OutcomeVector preds = forest.oob_predict(x);
+
+  ASSERT_EQ(preds.size(), 6);
+  EXPECT_EQ(preds(0), -1) << "Row 0 in bag";
+  EXPECT_EQ(preds(1), -1) << "Row 1 in bag";
+  EXPECT_EQ(preds(2), 0) << "Row 2 OOB, x[0]=0.2 < 5";
+  EXPECT_EQ(preds(3), 1) << "Row 3 OOB, x[0]=9.8 > 5";
+  EXPECT_EQ(preds(4), -1) << "Row 4 in bag";
+  EXPECT_EQ(preds(5), -1) << "Row 5 in bag";
+}
+
+TEST(OobPredict, AllInBagReturnsSentinel) {
+  FeatureMatrix x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
+
+  auto condition =
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
+
+  ClassificationForest forest;
+  forest.add_tree(std::make_unique<BaggedTree>(
+      std::make_unique<ClassificationTree>(
+          std::move(condition), TrainingSpec::builder(types::Mode::Classification).make()
+      ),
+      std::vector<int>{0, 1, 2, 3}
+  ));
 
   OutcomeVector const preds = forest.oob_predict(x);
-  double const err          = forest.oob_error(x, y);
+
+  ASSERT_EQ(preds.size(), 4);
+  EXPECT_EQ(preds(0), -1);
+  EXPECT_EQ(preds(1), -1);
+  EXPECT_EQ(preds(2), -1);
+  EXPECT_EQ(preds(3), -1);
+}
+
+TEST(OobPredict, HandBuiltTreeWithOobMisclassification) {
+  FeatureMatrix x = MAT(Feature, rows(4), 0.0F, 0.0F, 0.1F, 0.1F, 9.9F, 0.0F, 9.8F, 0.1F);
+
+  auto condition =
+      TreeBranch::make(as_projector({1.0F, 0.0F}), 5.0F, TreeLeaf::make(0), TreeLeaf::make(1), {0, 1}, 0.9F);
+
+  ClassificationForest forest;
+  forest.add_tree(std::make_unique<BaggedTree>(
+      std::make_unique<ClassificationTree>(
+          std::move(condition), TrainingSpec::builder(types::Mode::Classification).make()
+      ),
+      std::vector<int>{0, 2}
+  ));
+
+  OutcomeVector const preds = forest.oob_predict(x);
+
+  ASSERT_EQ(preds.size(), 4);
+  EXPECT_EQ(preds(0), -1) << "Row 0 in bag";
+  EXPECT_EQ(preds(1), 0) << "Row 1 OOB, x[0]=0.1 < 5 -> group 0";
+  EXPECT_EQ(preds(2), -1) << "Row 2 in bag";
+  EXPECT_EQ(preds(3), 1) << "Row 3 OOB, x[0]=9.8 > 5 -> group 1";
+}
+
+TEST(OobPredict, ConsistentWithOobError) {
+  FeatureMatrix x =
+      MAT(Feature,
+          rows(20),
+          0.0F,
+          1.0F,
+          0.1F,
+          2.0F,
+          0.2F,
+          0.5F,
+          0.3F,
+          1.5F,
+          0.4F,
+          0.8F,
+          0.5F,
+          1.2F,
+          0.6F,
+          0.9F,
+          0.7F,
+          1.8F,
+          0.8F,
+          0.6F,
+          0.9F,
+          1.1F,
+          9.0F,
+          1.0F,
+          9.1F,
+          2.0F,
+          9.2F,
+          0.5F,
+          9.3F,
+          1.5F,
+          9.4F,
+          0.8F,
+          9.5F,
+          1.2F,
+          9.6F,
+          0.9F,
+          9.7F,
+          1.8F,
+          9.8F,
+          0.6F,
+          9.9F,
+          1.1F);
+
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
+  auto forest_ptr    = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(50).build(), x, y);
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
+
+  OutcomeVector const preds = forest.oob_predict(x);
+  auto const err            = forest.oob_error(x, y);
 
   int evaluated = 0;
   int correct   = 0;
@@ -950,10 +1051,13 @@ TEST(OobPredict, ConsistentWithOobError) {
     }
   }
 
-  double const expected_err =
-      (evaluated == 0) ? -1.0 : 1.0 - static_cast<double>(correct) / static_cast<double>(evaluated);
-
-  ASSERT_DOUBLE_EQ(err, expected_err) << "oob_error should match manual computation from oob_predict";
+  if (evaluated == 0) {
+    ASSERT_FALSE(err.has_value());
+  } else {
+    double const expected_err = 1.0 - static_cast<double>(correct) / static_cast<double>(evaluated);
+    ASSERT_TRUE(err.has_value());
+    ASSERT_DOUBLE_EQ(*err, expected_err) << "oob_error should match manual computation from oob_predict";
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -961,10 +1065,11 @@ TEST(OobPredict, ConsistentWithOobError) {
 // ---------------------------------------------------------------------------
 
 TEST(ForestEdgeCase, ConstantFeatureColumn) {
-  FeatureMatrix const x = MAT(Feature, rows(6), 5, 1, 5, 2, 5, 3, 5, 7, 5, 8, 5, 9);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
+  FeatureMatrix x = MAT(Feature, rows(6), 5, 1, 5, 2, 5, 3, 5, 7, 5, 8, 5, 9);
+  OutcomeVector y = VEC(Outcome, 0, 0, 0, 1, 1, 1);
 
-  Forest const forest = Forest::train(TrainingSpec::builder().size(5).threads(1).build(), x, y);
+  auto forest_ptr = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(5).threads(1).build(), x, y);
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(x);
   ASSERT_EQ(predictions.size(), y.size());
@@ -972,10 +1077,11 @@ TEST(ForestEdgeCase, ConstantFeatureColumn) {
 }
 
 TEST(ForestEdgeCase, SingleObservationPerGroup) {
-  FeatureMatrix const x = MAT(Feature, rows(2), 1, 0, 0, 1);
-  OutcomeVector const y = VEC(Outcome, 0, 1);
+  FeatureMatrix x = MAT(Feature, rows(2), 1, 0, 0, 1);
+  OutcomeVector y = VEC(Outcome, 0, 1);
 
-  Forest const forest = Forest::train(TrainingSpec::builder().size(5).threads(1).build(), x, y);
+  auto forest_ptr = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(5).threads(1).build(), x, y);
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(x);
   ASSERT_EQ(predictions.size(), y.size());
@@ -983,10 +1089,11 @@ TEST(ForestEdgeCase, SingleObservationPerGroup) {
 }
 
 TEST(ForestEdgeCase, MinimalDataset) {
-  FeatureMatrix const x = MAT(Feature, rows(2), 1, 9);
-  OutcomeVector const y = VEC(Outcome, 0, 1);
+  FeatureMatrix x = MAT(Feature, rows(2), 1, 9);
+  OutcomeVector y = VEC(Outcome, 0, 1);
 
-  Forest const forest = Forest::train(TrainingSpec::builder().size(5).threads(1).build(), x, y);
+  auto forest_ptr = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(5).threads(1).build(), x, y);
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(x);
   ASSERT_EQ(predictions.size(), y.size());
@@ -995,17 +1102,18 @@ TEST(ForestEdgeCase, MinimalDataset) {
 
 TEST(ForestEdgeCase, ExtremeImbalance) {
   // clang-format off
-  FeatureMatrix const x = MAT(Feature, rows(20),
+  FeatureMatrix x = MAT(Feature, rows(20),
     0, 0,  1, 1,  2, 2,  3, 0,  4, 1,
     0, 2,  1, 0,  2, 1,  3, 2,  4, 0,
     0, 1,  1, 2,  2, 0,  3, 1,  4, 2,
     0, 0,  1, 1,  2, 2,  90, 90,  91, 91);
-  OutcomeVector const y = VEC(Outcome,
+  OutcomeVector y = VEC(Outcome,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
   // clang-format on
 
-  Forest const forest = Forest::train(TrainingSpec::builder().size(10).threads(1).build(), x, y);
+  auto forest_ptr = Forest::train(TrainingSpec::builder(types::Mode::Classification).size(10).threads(1).build(), x, y);
+  auto const& forest = dynamic_cast<ClassificationForest const&>(*forest_ptr);
 
   OutcomeVector const predictions = forest.predict(x);
   ASSERT_EQ(predictions.size(), y.size());

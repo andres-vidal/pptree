@@ -6,19 +6,6 @@
 #include <nlohmann/json.hpp>
 
 #include "models/TrainingSpec.hpp"
-#include "models/strategies/binarize/Disabled.hpp"
-#include "models/strategies/binarize/LargestGap.hpp"
-#include "models/strategies/cutpoint/MeanOfMeans.hpp"
-#include "models/strategies/grouping/ByCutpoint.hpp"
-#include "models/strategies/grouping/ByLabel.hpp"
-#include "models/strategies/leaf/MajorityVote.hpp"
-#include "models/strategies/leaf/MeanResponse.hpp"
-#include "models/strategies/pp/PDA.hpp"
-#include "models/strategies/stop/MinSize.hpp"
-#include "models/strategies/stop/MinVariance.hpp"
-#include "models/strategies/stop/PureNode.hpp"
-#include "models/strategies/vars/All.hpp"
-#include "models/strategies/vars/Uniform.hpp"
 #include "utils/UserError.hpp"
 
 using namespace ppforest2;
@@ -29,12 +16,18 @@ using json = nlohmann::json;
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, IsForestTrue) {
-  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification)
+                  .size(5)
+                  .threads(2)
+                  .pp(pp::pda(0.3F))
+                  .vars(vars::uniform(2))
+                  .make();
   EXPECT_TRUE(spec->is_forest());
 }
 
 TEST(TrainingSpec, IsForestFalse) {
-  auto spec = TrainingSpec::builder(types::Mode::Classification).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec =
+      TrainingSpec::builder(types::Mode::Classification).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_FALSE(spec->is_forest());
 }
 
@@ -43,12 +36,18 @@ TEST(TrainingSpec, IsForestFalse) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ResolveThreadsExplicit) {
-  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(4).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification)
+                  .size(5)
+                  .threads(4)
+                  .pp(pp::pda(0.3F))
+                  .vars(vars::uniform(2))
+                  .make();
   EXPECT_EQ(spec->resolve_threads(), 4);
 }
 
 TEST(TrainingSpec, ResolveThreadsDefault) {
-  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec =
+      TrainingSpec::builder(types::Mode::Classification).size(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
   EXPECT_GT(spec->resolve_threads(), 0);
 }
 
@@ -57,7 +56,13 @@ TEST(TrainingSpec, ResolveThreadsDefault) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ToJsonRoundTrip) {
-  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(2).max_retries(5).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
+  auto spec = TrainingSpec::builder(types::Mode::Classification)
+                  .size(5)
+                  .threads(2)
+                  .max_retries(5)
+                  .pp(pp::pda(0.3F))
+                  .vars(vars::uniform(2))
+                  .make();
 
   auto j        = spec->to_json();
   auto restored = TrainingSpec::from_json(j);
@@ -194,8 +199,13 @@ TEST(TrainingSpec, FromJsonMissingLeafThrows) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, DisplayNameNotInJson) {
-  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
-  auto j    = spec->to_json();
+  auto spec = TrainingSpec::builder(types::Mode::Classification)
+                  .size(5)
+                  .threads(2)
+                  .pp(pp::pda(0.3F))
+                  .vars(vars::uniform(2))
+                  .make();
+  auto j = spec->to_json();
 
   EXPECT_FALSE(j["pp"].contains("display_name"));
   EXPECT_FALSE(j["vars"].contains("display_name"));
@@ -208,8 +218,13 @@ TEST(TrainingSpec, DisplayNameNotInJson) {
 // ---------------------------------------------------------------------------
 
 TEST(TrainingSpec, ToJsonContainsAllStrategyFields) {
-  auto spec = TrainingSpec::builder(types::Mode::Classification).size(5).threads(2).pp(pp::pda(0.3F)).vars(vars::uniform(2)).make();
-  auto j    = spec->to_json();
+  auto spec = TrainingSpec::builder(types::Mode::Classification)
+                  .size(5)
+                  .threads(2)
+                  .pp(pp::pda(0.3F))
+                  .vars(vars::uniform(2))
+                  .make();
+  auto j = spec->to_json();
 
 
   EXPECT_EQ(j["pp"], pp::pda(0.3F)->to_json());
@@ -289,7 +304,7 @@ TEST(TrainingSpec, AcceptsCompatibleClassificationStrategies) {
 
 TEST(TrainingSpec, AcceptsCompatibleRegressionStrategies) {
   auto build = [] {
-    return TrainingSpec::builder(types::Mode::Classification)
+    return TrainingSpec::builder(types::Mode::Regression)
         .stop(stop::any({stop::min_size(5), stop::min_variance(0.01F)}))
         .grouping(grouping::by_cutpoint())
         .leaf(leaf::mean_response())
@@ -349,7 +364,7 @@ TEST(TrainingSpec, AcceptsDisabledBinarizeInRegression) {
   // to `Disabled` here — this test pins both the explicit and implicit
   // paths.
   auto build_explicit = [] {
-    return TrainingSpec::builder(types::Mode::Classification)
+    return TrainingSpec::builder(types::Mode::Regression)
         .grouping(grouping::by_cutpoint())
         .leaf(leaf::mean_response())
         .stop(stop::min_size(5))
@@ -358,7 +373,7 @@ TEST(TrainingSpec, AcceptsDisabledBinarizeInRegression) {
   };
 
   auto build_default = [] {
-    return TrainingSpec::builder(types::Mode::Classification)
+    return TrainingSpec::builder(types::Mode::Regression)
         .grouping(grouping::by_cutpoint())
         .leaf(leaf::mean_response())
         .stop(stop::min_size(5))

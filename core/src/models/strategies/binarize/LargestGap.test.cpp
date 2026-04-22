@@ -55,41 +55,41 @@ TEST(LargestGapBinarize, ThreeGroupsSplitByLargestGap) {
   // Largest gap is between group 1 (2.0) and group 2 (10.0)
   // So binary group 0 = {0, 1}, binary group 1 = {2}
   FeatureMatrix const projected_x = MAT(Feature, rows(6), 1.0, 1.0, 2.0, 2.0, 10.0, 10.0);
-  OutcomeVector const y           = VEC(Outcome, 0, 0, 1, 1, 2, 2);
+  GroupIdVector const y           = VEC(GroupId, 0, 0, 1, 1, 2, 2);
   GroupPartition const gp(y);
 
   LargestGap const lg;
   auto result = lg.compute(projected_x, gp);
 
-  EXPECT_EQ(result.binary_y.groups.size(), 2U);
+  EXPECT_EQ(result.groups.size(), 2U);
 
-  auto const group_0   = result.group_0;
-  auto const group_0_x = result.binary_y.group(projected_x, group_0).eval();
-  auto const group_0_y = result.binary_y.group(y, group_0).eval();
+  auto const group_0   = *result.groups.begin();
+  auto const group_0_x = result.group(projected_x, group_0).eval();
+  auto const group_0_y = result.group(y, group_0).eval();
 
   EXPECT_EQ(group_0, 0);
   EXPECT_EQ_DATA(group_0_x, (MAT(Feature, rows(4), 1.0, 1.0, 2.0, 2.0)));
-  EXPECT_EQ_DATA(group_0_y, (VEC(Outcome, 0, 0, 1, 1)));
+  EXPECT_EQ_DATA(group_0_y, (VEC(GroupId, 0, 0, 1, 1)));
 
-  auto const group_1   = result.group_1;
-  auto const group_1_x = result.binary_y.group(projected_x, group_1).eval();
-  auto const group_1_y = result.binary_y.group(y, group_1).eval();
+  auto const group_1   = *std::next(result.groups.begin());
+  auto const group_1_x = result.group(projected_x, group_1).eval();
+  auto const group_1_y = result.group(y, group_1).eval();
 
   EXPECT_EQ(group_1, 1);
   EXPECT_EQ_DATA(group_1_x, (MAT(Feature, rows(2), 10.0, 10.0)));
-  EXPECT_EQ_DATA(group_1_y, (VEC(Outcome, 2, 2)));
+  EXPECT_EQ_DATA(group_1_y, (VEC(GroupId, 2, 2)));
 }
 
 TEST(LargestGapBinarize, ThreeGroupsPreservesAllObservations) {
   // Three groups: means at 1.0, 5.0, 10.0. Largest gap between 5.0 and 10.0.
   // Binary group 0 = {0, 1}, binary group 1 = {2}
   FeatureMatrix const projected_x = MAT(Feature, rows(6), 1.0, 1.0, 2.0, 2.0, 10.0, 10.0);
-  OutcomeVector const y           = VEC(Outcome, 0, 0, 1, 1, 2, 2);
+  GroupIdVector const y           = VEC(GroupId, 0, 0, 1, 1, 2, 2);
   GroupPartition const gp(y);
 
   LargestGap const lg;
   auto result     = lg.compute(projected_x, gp);
-  auto const data = result.binary_y.data(projected_x).eval();
+  auto const data = result.data(projected_x).eval();
 
   EXPECT_EQ_DATA(data, projected_x);
 }
@@ -97,32 +97,32 @@ TEST(LargestGapBinarize, ThreeGroupsPreservesAllObservations) {
 TEST(LargestGapBinarize, FourGroupsSplitCorrectly) {
   // Four groups: means at 1, 2, 3, 100 -> largest gap between 3 and 100
   FeatureMatrix const projected_x = MAT(Feature, rows(8), 1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 100.0, 100.0);
-  OutcomeVector const y           = VEC(Outcome, 0, 0, 1, 1, 2, 2, 3, 3);
+  GroupIdVector const y           = VEC(GroupId, 0, 0, 1, 1, 2, 2, 3, 3);
 
   GroupPartition const gp(y);
 
   LargestGap const lg;
   auto result = lg.compute(projected_x, gp);
 
-  EXPECT_EQ(result.binary_y.groups.size(), 2U);
+  EXPECT_EQ(result.groups.size(), 2U);
 
-  auto const group_0   = result.group_0;
-  auto const group_0_x = result.binary_y.group(projected_x, group_0).eval();
-  auto const group_0_y = result.binary_y.group(y, group_0).eval();
+  auto const group_0   = *result.groups.begin();
+  auto const group_0_x = result.group(projected_x, group_0).eval();
+  auto const group_0_y = result.group(y, group_0).eval();
 
   EXPECT_EQ(group_0, 0);
   EXPECT_EQ_DATA(group_0_x, (MAT(Feature, rows(6), 1.0, 1.0, 2.0, 2.0, 3.0, 3.0)));
-  EXPECT_EQ_DATA(group_0_y, (VEC(Outcome, 0, 0, 1, 1, 2, 2)));
+  EXPECT_EQ_DATA(group_0_y, (VEC(GroupId, 0, 0, 1, 1, 2, 2)));
 
-  auto const group_1   = result.group_1;
-  auto const group_1_x = result.binary_y.group(projected_x, group_1).eval();
-  auto const group_1_y = result.binary_y.group(y, group_1).eval();
+  auto const group_1   = *std::next(result.groups.begin());
+  auto const group_1_x = result.group(projected_x, group_1).eval();
+  auto const group_1_y = result.group(y, group_1).eval();
 
   EXPECT_EQ(group_1, 1);
   EXPECT_EQ_DATA(group_1_x, (MAT(Feature, rows(2), 100.0, 100.0)));
-  EXPECT_EQ_DATA(group_1_y, (VEC(Outcome, 3, 3)));
+  EXPECT_EQ_DATA(group_1_y, (VEC(GroupId, 3, 3)));
 
-  auto const data = result.binary_y.data(projected_x).eval();
+  auto const data = result.data(projected_x).eval();
 
   EXPECT_EQ_DATA(data, projected_x);
 }
@@ -130,7 +130,7 @@ TEST(LargestGapBinarize, FourGroupsSplitCorrectly) {
 TEST(LargestGapBinarize, EqualMeansDoesNotCrash) {
   // All groups have the same projected mean -> all gaps are 0
   FeatureMatrix const projected_x = MAT(Feature, rows(6), 5.0, 5.0, 5.0, 5.0, 5.0, 5.0);
-  OutcomeVector const y           = VEC(Outcome, 0, 0, 1, 1, 2, 2);
+  GroupIdVector const y           = VEC(GroupId, 0, 0, 1, 1, 2, 2);
 
   GroupPartition const gp(y);
 
@@ -138,29 +138,27 @@ TEST(LargestGapBinarize, EqualMeansDoesNotCrash) {
   auto result = lg.compute(projected_x, gp);
 
   // Should still produce a valid binary partition
-  ASSERT_EQ(result.binary_y.groups.size(), 2U);
+  ASSERT_EQ(result.groups.size(), 2U);
 }
 
 TEST(LargestGapBinarize, NodeContextInterface) {
   // Test the NodeContext-based regroup() method
   // 3 groups, feature space where group 2 is far away on dimension 0
-  FeatureMatrix const x = MAT(Feature, rows(6), 1, 0, 2, 0, 3, 0, 4, 0, 100, 0, 101, 0);
-  OutcomeVector const y = VEC(Outcome, 0, 0, 1, 1, 2, 2);
+  FeatureMatrix x       = MAT(Feature, rows(6), 1, 0, 2, 0, 3, 0, 4, 0, 100, 0, 101, 0);
+  GroupIdVector const y = VEC(GroupId, 0, 0, 1, 1, 2, 2);
   GroupPartition const gp(y);
   RNG rng(0);
 
-  NodeContext ctx(x, gp, 0);
+  OutcomeVector ov = y.cast<Outcome>();
+  NodeContext ctx(x, gp, ov, 0);
   // Set projector to [1, 0] to project onto first dimension
   ctx.projector = VEC(Feature, 1, 0);
 
   LargestGap const lg;
   lg.regroup(ctx, rng);
 
-  ASSERT_TRUE(ctx.binary_y.has_value());
-  EXPECT_EQ(ctx.binary_y->groups.size(), 2U); // NOLINT(bugprone-unchecked-optional-access)
-  EXPECT_NE(ctx.binary_0, -1);
-  EXPECT_NE(ctx.binary_1, -1);
-  EXPECT_NE(ctx.binary_0, ctx.binary_1);
+  ASSERT_TRUE(ctx.y_bin.has_value());
+  EXPECT_EQ(ctx.y_bin->groups.size(), 2U); // NOLINT(bugprone-unchecked-optional-access)
 }
 
 TEST(LargestGapBinarize, DisplayName) {

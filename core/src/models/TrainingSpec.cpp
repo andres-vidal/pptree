@@ -1,5 +1,7 @@
 #include "models/TrainingSpec.hpp"
 
+#include "models/strategies/NodeContext.hpp"
+#include "utils/Invariant.hpp"
 #include "utils/UserError.hpp"
 
 #include <string>
@@ -39,7 +41,9 @@ namespace ppforest2 {
     );
   }
 
-  TrainingSpec::Ptr TrainingSpec::Builder::make() { return std::make_shared<TrainingSpec>(build()); }
+  TrainingSpec::Ptr TrainingSpec::Builder::make() {
+    return std::make_shared<TrainingSpec>(build());
+  }
 
   namespace {
     /**
@@ -136,5 +140,108 @@ namespace ppforest2 {
         .grouping(grouping::Grouping::from_json(j.at("grouping")))
         .leaf(leaf::LeafStrategy::from_json(j.at("leaf")))
         .make();
+  }
+
+  // -- Strategy forwarders with postcondition checks -----------------------
+  // Each forwarder asserts that the strategy upheld its write contract on
+  // `NodeContext`. That way UB from a misbehaving strategy is caught at the
+  // producer boundary, not at some later consumer's deref.
+
+  bool TrainingSpec::should_stop(NodeContext const& ctx, stats::RNG& rng) const {
+    // Tree-level invariant: a single-group node cannot be split by any
+    // grouping strategy. Regression's `ByCutpoint` can produce such a
+    // child (e.g. when all rows on one side of the cutpoint share the
+    // same response), and the regression-default stop rules (`MinSize`,
+    // `MinVariance`) won't catch it — short-circuit here so the tree
+    // builder doesn't need a special case.
+    if (ctx.y.groups.size() < 2) {
+      return true;
+    }
+    return (*stop)(ctx, rng);
+  }
+
+  void TrainingSpec::find_projection(NodeContext& ctx, stats::RNG& rng) const {
+    (*pp)(ctx, rng);
+    if (ctx.aborted) {
+      return;
+    }
+    invariant(ctx.projector.has_value(), "ProjectionPursuit must set ctx.projector");
+    invariant(ctx.pp_index_value.has_value(), "ProjectionPursuit must set ctx.pp_index_value");
+    if (ctx.projector->hasNaN()) {
+      ctx.aborted = true;
+    }
+  }
+
+  void TrainingSpec::select_vars(NodeContext& ctx, stats::RNG& rng) const {
+    (*vars)(ctx, rng);
+    if (ctx.aborted) {
+      return;
+    }
+    invariant(ctx.var_selection.has_value(), "VariableSelection must set ctx.var_selection");
+  }
+
+  void TrainingSpec::find_cutpoint(NodeContext& ctx, stats::RNG& rng) const {
+    (*cutpoint)(ctx, rng);
+    if (ctx.aborted) {
+      return;
+    }
+    invariant(ctx.cutpoint.has_value(), "Cutpoint must set ctx.cutpoint");
+
+    // Post-hoc: orient the two active-partition groups by projected mean so
+    // `lower_group` routes to the lower child and `upper_group` to the upper.
+    // This is a uniform step across all cutpoint strategies — no strategy
+    // should worry about it. Grouping consumes ctx.lower_group / upper_group.
+    auto const& y_part = ctx.active_partition();
+    invariant(y_part.groups.size() == 2, "find_cutpoint expects a 2-group active partition");
+
+    auto it              = y_part.groups.begin();
+    types::GroupId lower = *it;
+    types::GroupId upper = *std::next(it);
+
+    types::Feature const mean_lower = y_part.group(ctx.x, lower).colwise().mean().dot(*ctx.projector);
+    types::Feature const mean_upper = y_part.group(ctx.x, upper).colwise().mean().dot(*ctx.projector);
+
+    if (mean_lower > mean_upper) {
+      std::swap(lower, upper);
+    }
+
+    ctx.lower_group = lower;
+    ctx.upper_group = upper;
+  }
+
+  void TrainingSpec::regroup(NodeContext& ctx, stats::RNG& rng) const {
+    (*binarize)(ctx, rng);
+    if (ctx.aborted) {
+      return;
+    }
+    invariant(ctx.y_bin.has_value(), "Binarization must set ctx.y_bin");
+    if (ctx.y_bin->groups.size() < 2) {
+      ctx.aborted = true;
+    }
+  }
+
+  void TrainingSpec::group(NodeContext& ctx, stats::RNG& rng) const {
+    if (ctx.aborted) {
+      return;
+    }
+
+    invariant(
+        ctx.lower_group.has_value() && ctx.upper_group.has_value(),
+        "group() requires ctx.lower_group and ctx.upper_group (set by find_cutpoint)"
+    );
+    (*grouping)(ctx, *ctx.lower_group, *ctx.upper_group, rng);
+
+    invariant(
+        ctx.lower_y_part.has_value() && ctx.upper_y_part.has_value(),
+        "Grouping must set ctx.lower_y_part and ctx.upper_y_part"
+    );
+
+    // "No progress" = every row went to one side of the split. Recursing on
+    // an identical partition would be unbounded; mark the context aborted
+    // so the orchestrator writes a degenerate leaf.
+    int const parent_size = ctx.y.total_size();
+    if (ctx.lower_y_part->total_size() >= parent_size || ctx.upper_y_part->total_size() >= parent_size) {
+      ctx.aborted = true;
+    }
   }
 }

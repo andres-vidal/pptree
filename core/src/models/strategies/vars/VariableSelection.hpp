@@ -23,11 +23,7 @@ namespace ppforest2::vars {
   /**
    * @brief Abstract strategy for variable selection.
    *
-   * Before projection pursuit optimization, a variable selection strategy
-   * selects a subset of variables (columns) to work with. This reduces
-   * the cost of the PP step and introduces randomness in forests.
-   *
-   * Reads from NodeContext: x. Writes: var_selection.
+   * Writes `ctx.var_selection`.
    */
   struct VariableSelection : public Strategy<VariableSelection> {
     /**
@@ -68,16 +64,11 @@ namespace ppforest2::vars {
       }
     };
 
-    /**
-     * @brief Select a subset of variables and store the result in the context.
-     *
-     * @param ctx  Node context (reads x; writes var_selection).
-     * @param rng  Random number generator.
-     */
+    /** @brief Select a subset of variables and store the result in the context. */
     virtual void select(NodeContext& ctx, stats::RNG& rng) const = 0;
 
-    /** @brief Callable shorthand for select(). */
-    void operator()(NodeContext& ctx, stats::RNG& rng) const { select(ctx, rng); }
+    /** @brief Callable shorthand for select(). Skips if `ctx.aborted` is set. */
+    void operator()(NodeContext& ctx, stats::RNG& rng) const;
   };
 
   /** @brief Factory function: select all variables (no selection). */

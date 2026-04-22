@@ -57,7 +57,7 @@ namespace ppforest2 {
     /**
      * @brief Sorted set of group labels reachable from this node.
      */
-    virtual std::set<types::Outcome> node_groups() const = 0;
+    virtual std::set<types::GroupId> node_groups() const = 0;
 
     /** @brief Whether this node is a leaf (TreeLeaf). */
     virtual bool is_leaf() const = 0;

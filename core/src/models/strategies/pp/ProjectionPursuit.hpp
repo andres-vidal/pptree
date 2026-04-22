@@ -20,10 +20,7 @@ namespace ppforest2::pp {
   /**
    * @brief Abstract strategy for projection pursuit optimization.
    *
-   * Finds the optimal 1D projection for a given dataset and group
-   * partition. Reads from NodeContext: x, var_selection, and the
-   * active partition (y or binary->y). Writes: projector
-   * (full-dimensional, expanded) and pp_index_value.
+   * Writes `ctx.projector` and `ctx.pp_index_value`.
    */
   struct ProjectionPursuit : public Strategy<ProjectionPursuit> {
     /**
@@ -36,17 +33,7 @@ namespace ppforest2::pp {
       types::Feature index_value = 0;
     };
 
-    /**
-     * @brief Find the optimal projection and store it in the context.
-     *
-     * Reads ctx.x, ctx.var_selection, and ctx.active_partition(). Computes the
-     * optimal projector on the reduced feature space, expands it back
-     * to full dimension via ctx.var_selection.expand(), and writes the result to
-     * ctx.projector and ctx.pp_index_value.
-     *
-     * @param ctx  Node context (reads x, var_selection, active partition; writes projector, pp_index_value).
-     * @param rng  Random number generator (unused by deterministic strategies).
-     */
+    /** @brief Find the optimal projection and store it in the context. */
     virtual void optimize(NodeContext& ctx, stats::RNG& rng) const = 0;
 
     /** @brief Callable shorthand for optimize(). Skips if `ctx.aborted` is set. */

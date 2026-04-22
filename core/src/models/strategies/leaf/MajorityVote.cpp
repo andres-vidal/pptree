@@ -14,7 +14,7 @@ namespace ppforest2::leaf {
   }
 
   TreeNode::Ptr MajorityVote::create_leaf(NodeContext const& ctx, RNG& /*rng*/) const {
-    Outcome majority  = *ctx.y.groups.begin();
+    GroupId majority  = *ctx.y.groups.begin();
     int majority_size = 0;
 
     for (auto const& g : ctx.y.groups) {
@@ -34,7 +34,7 @@ namespace ppforest2::leaf {
   }
 
   LeafStrategy::Ptr MajorityVote::from_json(nlohmann::json const& j) {
-    validate_json_keys(j, "majority_vote leaf", {"name"});
+    JsonReader{j, "majority_vote"}.only_keys({"name"});
     return majority_vote();
   }
 }

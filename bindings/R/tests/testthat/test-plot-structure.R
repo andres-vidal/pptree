@@ -57,6 +57,22 @@ describe("plot.pprf structure snapshots", {
   })
 })
 
+describe("plot.pptr regression structure snapshot", {
+  # Regression trees render their leaves as mean-response values (numeric
+  # labels) rather than majority-vote class names. The snapshot fences
+  # that difference: if a future change accidentally re-routes regression
+  # leaves through the classification renderer (or vice versa), the
+  # rendered text labels will diverge from the saved image.
+  skip_if_not_installed("vdiffr")
+
+  data(mtcars)
+  model <- pptr(mpg ~ ., data = mtcars, seed = 0)
+
+  it("pptr-regression-structure", {
+    vdiffr::expect_doppelganger("pptr-regression-structure", plot(model, type = "structure"))
+  })
+})
+
 describe("format_projector", {
   it("formats top-k terms by magnitude", {
     fmt <- ppforest2:::format_projector(

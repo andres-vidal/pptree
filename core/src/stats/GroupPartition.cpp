@@ -1,10 +1,38 @@
 #include "stats/GroupPartition.hpp"
 
+#include "utils/Invariant.hpp"
+
+#include <cmath>
 #include <stdexcept>
 
 using namespace ppforest2::types;
 
 namespace ppforest2::stats {
+  namespace {
+    // Convert a float response to integer group labels, but only if every
+    // entry is a finite, integer-valued float. Guards against
+    // `ByLabel::init(OutcomeVector)` or `GroupPartition(OutcomeVector)`
+    // being handed a truly continuous response (e.g. a regression spec
+    // miswired with `grouping_by_label`), where `.cast<GroupId>()` would
+    // silently truncate to useless labels.
+    GroupIdVector validate_and_cast_to_ids(OutcomeVector const& y) {
+      for (Eigen::Index i = 0; i < y.size(); ++i) {
+        Outcome const v = y(i);
+        if (!std::isfinite(v) || v != std::floor(v)) {
+          invariant(
+              false,
+              "GroupPartition(OutcomeVector): y[" + std::to_string(i) + "] = " + std::to_string(v) +
+                  " is not an integer value. "
+                  "Classification labels must be integer-encoded; if this is a "
+                  "continuous response, use `grouping::by_cutpoint()` with "
+                  "regression mode instead."
+          );
+        }
+      }
+      return y.cast<GroupId>();
+    }
+  }
+
   bool GroupPartition::is_contiguous(GroupVector const& y) {
     GroupSet visited;
 
@@ -62,6 +90,14 @@ namespace ppforest2::stats {
       , supergroups(init_supergroups(groups))
       , subgroups(utils::invert(supergroups)) {}
 
+  GroupPartition::GroupPartition(types::OutcomeVector const& y)
+      : GroupPartition(validate_and_cast_to_ids(y)) {}
+
+  bool GroupPartition::is_contiguous(types::OutcomeVector const& y) {
+    types::GroupIdVector const y_int = y.cast<GroupId>();
+    return is_contiguous(y_int);
+  }
+
   GroupPartition::GroupPartition(BlockMap const& Blocks_)
       : groups(utils::keys(Blocks_))
       , Blocks(Blocks_)
@@ -96,6 +132,14 @@ namespace ppforest2::stats {
 
   int GroupPartition::group_size(Group const& group) const {
     return Blocks.at(group).size;
+  }
+
+  int GroupPartition::total_size() const {
+    int total = 0;
+    for (auto const& kv : Blocks) {
+      total += kv.second.size;
+    }
+    return total;
   }
 
   FeatureVector GroupPartition::mean(FeatureMatrix const& x) const {
@@ -172,6 +216,32 @@ namespace ppforest2::stats {
     }
 
     return {GroupPartition(l_blocks), GroupPartition(r_blocks)};
+  }
+
+  GroupPartition GroupPartition::two_groups(int start0, int end0, int start1, int end1) {
+    invariant(start0 >= 0 && end0 >= start0, "GroupPartition::two_groups: invalid group 0 range");
+    invariant(start1 >= 0 && end1 >= start1, "GroupPartition::two_groups: invalid group 1 range");
+    invariant(start1 == end0 + 1, "GroupPartition::two_groups: groups must be adjacent");
+
+    int size0 = end0 - start0 + 1;
+    int size1 = end1 - start1 + 1;
+
+    BlockMap blocks;
+    blocks[0] = Block{start0, end0, size0, 1, std::nullopt};
+    blocks[1] = Block{start1, end1, size1, std::nullopt, 0};
+
+    return GroupPartition(blocks);
+  }
+
+  GroupPartition GroupPartition::single_group(int start, int end) {
+    invariant(start >= 0 && end >= start, "GroupPartition::single_group: invalid range");
+
+    int size = end - start + 1;
+
+    BlockMap blocks;
+    blocks[0] = Block{start, end, size, std::nullopt, std::nullopt};
+
+    return GroupPartition(blocks);
   }
 
   GroupPartition GroupPartition::remap(GroupMap const& mapping) const {

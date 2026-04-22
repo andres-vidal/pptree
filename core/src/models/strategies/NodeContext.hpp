@@ -1,7 +1,6 @@
 #pragma once
 
 #include "models/Projector.hpp"
-#include "models/strategies/binarize/Binarization.hpp"
 #include "models/strategies/vars/VariableSelection.hpp"
 #include "stats/GroupPartition.hpp"
 #include "utils/Types.hpp"
@@ -34,6 +33,19 @@ namespace ppforest2 {
     int depth;
 
     /**
+     * @brief Sticky abort flag for the per-node strategy pipeline.
+     *
+     * When a producer step detects a degenerate outcome (NaN projector,
+     * fewer than 2 binary groups, etc.), it sets this flag. Subsequent
+     * strategies called on the same context skip their work — every
+     * strategy's `operator()` is responsible for checking this first.
+     * The orchestrator (`Tree::build_root`) then converts the aborted
+     * context into a degenerate leaf with a single check at the end of
+     * the node step.
+     */
+    bool aborted = false;
+
+    /**
      * @brief Raw response vector whose row order matches `x`.
      *
      * Regression strategies (`MeanResponse` leaf, `MinVariance` stop,
@@ -52,16 +64,28 @@ namespace ppforest2 {
     std::optional<types::Feature> pp_index_value;
 
     /**
-     * @brief Set by regroup (multiclass → binary).
+     * @brief Set by regroup (multiclass → binary): 2-group binarized partition.
      *
-     * Bundles the 2-group partition and the two binary group labels.
-     * `std::nullopt` before regroup fires (or when the node was
-     * already binary and skipped binarization).
+     * `std::nullopt` on binary nodes (no binarization needed). Consumers
+     * should read via `active_partition()`, which falls back to `y`.
      */
-    std::optional<binarize::Binarization::Result> binary;
+    std::optional<stats::GroupPartition> y_bin;
 
     /** @brief Set by find_cutpoint: split cutpoint in projected space. `std::nullopt` before find_cutpoint runs. */
     std::optional<types::Feature> cutpoint;
+
+    /**
+     * @brief Set by find_cutpoint: labels of the two groups in `active_partition()`,
+     *        oriented so `lower_group`'s projected mean < `upper_group`'s.
+     *
+     * Consumed by `Grouping::split` to route rows to lower/upper children.
+     */
+    std::optional<types::GroupId> lower_group;
+    std::optional<types::GroupId> upper_group;
+
+    /** @brief Set by group: child partitions routed to the lower / upper child nodes. */
+    std::optional<stats::GroupPartition> lower_y_part;
+    std::optional<stats::GroupPartition> upper_y_part;
 
     NodeContext(types::FeatureMatrix& x, stats::GroupPartition const& y, types::OutcomeVector& y_vec, int depth)
         : x(x)
@@ -75,6 +99,6 @@ namespace ppforest2 {
      * After binarization, returns the binary partition (2 groups).
      * Before binarization (or for 2-group nodes), returns the original partition.
      */
-    stats::GroupPartition const& active_partition() const { return binary.has_value() ? binary->y : y; }
+    stats::GroupPartition const& active_partition() const { return y_bin.has_value() ? *y_bin : y; }
   };
 }
